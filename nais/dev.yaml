@@ -1,0 +1,39 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+
+metadata:
+  name: iverksett
+  namespace: teamfamilie
+  labels:
+    team: teamfamilie
+spec:
+  image: {{ image }}
+  port: 8080
+  liveness:
+    path:  api/internal/isalive
+    initialDelay: 60
+  readiness:
+    path: api/internal/isready
+    initialDelay: 60
+  prometheus:
+    enabled: true
+    path: api/actuator/prometheus
+  replicas:
+    min: 2
+    max: 3
+  vault:
+    enabled: true
+    paths:
+      - mountPath: /var/run/secrets/nais.io/serviceuser
+        kvPath: serviceuser/data/dev/srviverksett
+  ingresses:
+    - "https://iverksett.nais.preprod.local/"
+    - "https://iverksett.dev.adeo.no/"
+    - "https://iverksett.dev-fss.nais.io"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi

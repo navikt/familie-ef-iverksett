@@ -1,0 +1,15 @@
+server:
+   servlet:
+      context-path: /
+spring:
+   application:
+      name: iverksett
+   jackson:
+      mapper:
+         accept-case-insensitive-properties: true
+      deserialization:
+         accept-single-value-as-array: true
+         fail-on-unknown-properties: true
+      serialization:
+         write-empty-json-arrays: false
+         fail-on-empty-beans: false
