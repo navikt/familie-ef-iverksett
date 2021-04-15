@@ -1,8 +1,5 @@
 name: Build
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
   pull_request:
 
@@ -11,7 +8,7 @@ env:
 
 jobs:
   build:
-    name: Build and sonar
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -28,7 +25,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Bygg og SonarCloud
+      - name: Bygg
         env:
           GITHUB_USERNAME: x-access-token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

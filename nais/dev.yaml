@@ -10,10 +10,10 @@ spec:
   image: {{ image }}
   port: 8080
   liveness:
-    path:  api/internal/isalive
+    path:  internal/isAlive
     initialDelay: 60
   readiness:
-    path: api/internal/isready
+    path: internal/isReady
     initialDelay: 60
   prometheus:
     enabled: true

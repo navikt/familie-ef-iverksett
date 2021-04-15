@@ -23,12 +23,12 @@ class HelsesjekkController {
         return SelftestResult(aggregateResult = 0, checks = null)
     }
 
-    @GetMapping("/internal/isalive")
+    @GetMapping("/internal/isAlive")
     fun isalive(): ResponseEntity<String> {
         return ResponseEntity.ok("Is alive")
     }
 
-    @GetMapping("/internal/isready")
+    @GetMapping("/internal/isReady")
     fun isready(): ResponseEntity<String> {
         return ResponseEntity.ok("Is ready")
     }

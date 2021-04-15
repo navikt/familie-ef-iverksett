@@ -1,0 +1,4 @@
+springProfile: dev
+ingress: https://familie-ef-iverksett.dev.intern.nav.no
+externalHosts:
+  - api-gw-q1.oera.no
