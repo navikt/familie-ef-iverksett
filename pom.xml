@@ -15,13 +15,12 @@
 
     <properties>
         <java.version>11</java.version>
-        <kotlin.version>1.4.10</kotlin.version>
+        <kotlin.version>1.4.31</kotlin.version>
         <swagger.version>2.9.2</swagger.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <logstash.version>6.4</logstash.version>
         <revision>1.0</revision>
         <dotenv.version>6.2.1</dotenv.version>
-        <sha1/>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.WebApplicationKt</start-class>
     </properties>
@@ -87,11 +86,13 @@
             <version>${logstash.version}</version>
         </dependency>
 
+        <!-- Environment -->
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-kotlin</artifactId>
             <version>${dotenv.version}</version>
         </dependency>
+
     </dependencies>
 
     <build>
