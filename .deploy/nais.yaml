@@ -36,4 +36,7 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: {{springProfile}}
-
+  accessPolicy:
+    inbound:
+      rules:
+        - application: familie-ef-sak
