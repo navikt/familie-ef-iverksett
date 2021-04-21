@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.infrastruktur
 
-import no.nav.familie.ef.iverksett.infrastruktur.json.VedtakJson
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
 import no.nav.familie.ef.iverksett.iverksett.tjeneste.IverksettService

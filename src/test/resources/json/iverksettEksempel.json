@@ -11,7 +11,7 @@
   ],
   "forrigeTilkjentYtelse": [
     {
-      "periodeBeløp": {
+      "periodebeløp": {
         "utbetaltPerPeriode": 0,
         "periodetype": "MÅNED",
         "fraOgMed": "2000-01-01",
@@ -29,7 +29,7 @@
   ],
   "tilkjentYtelse": [
     {
-      "periodeBeløp": {
+      "periodebeløp": {
         "utbetaltPerPeriode": 0,
         "periodetype": "MÅNED",
         "fraOgMed": "2000-01-01",
@@ -86,7 +86,7 @@
   "opphørÅrsak": "PERIODE_UTLØPT",
   "utbetalinger": [
     {
-      "periodeBeløp": {
+      "periodebeløp": {
         "utbetaltPerPeriode": 0,
         "periodetype": "MÅNED",
         "fraOgMed": "2001-01-01",
@@ -104,7 +104,7 @@
   ],
   "inntekt": [
     {
-      "periodeBeløp": {
+      "periodebeløp": {
         "utbetaltPerPeriode": 0,
         "periodetype": "MÅNED",
         "fraOgMed": "2000-01-01",
@@ -115,7 +115,7 @@
   ],
   "inntektsReduksjon": [
     {
-      "periodeBeløp": [
+      "periodebeløp": [
         {
           "utbetaltPerPeriode": 0,
           "periodetype": "MÅNED",

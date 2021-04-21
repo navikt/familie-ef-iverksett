@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
+import no.nav.familie.ef.iverksett.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.domene.Periodetype
 import java.time.LocalDate
 
@@ -11,3 +12,11 @@ data class PeriodebeløpJson(
     val tilOgMed: LocalDate,
 )
 
+fun PeriodebeløpJson.toDomain(): Periodebeløp {
+    return Periodebeløp(
+        this.utbetaltPerPeriode,
+        this.periodetype,
+        this.fraOgMed,
+        this.tilOgMed
+    )
+}

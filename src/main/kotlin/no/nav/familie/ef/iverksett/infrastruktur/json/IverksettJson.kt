@@ -59,3 +59,41 @@ data class VurderingJson(
     val begrunnelse: String? = null
 )
 
+fun VurderingJson.toDomain() : Vurdering {
+    return Vurdering(this.regelId, this.svar, this.begrunnelse)
+}
+fun DelvilkårsvurderingJson.toDomain() : Delvilkårsvurdering {
+    return Delvilkårsvurdering(this.resultat, this.vurderinger.map { it.toDomain() }.toList())
+}
+fun VilkårsvurderingJson.toDomain() : Vilkårsvurdering {
+    return Vilkårsvurdering(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toDomain() }.toList())
+}
+fun AktivitetskravJson.toDomain() : Aktivitetskrav {
+    return Aktivitetskrav(this.aktivitetspliktInntrefferDato, this.harSagtOppArbeidsforhold)
+}
+fun IverksettJson.toDomain() : Iverksett {
+    return Iverksett(
+        this.brev.map { it.toDomain() }.toList(),
+        this.forrigeTilkjentYtelse.map { it.toDomain() }.toList(),
+        this.tilkjentYtelse.map { it.toDomain() }.toList(),
+        this.fagsakId,
+        this.saksnummer,
+        this.behandlingId,
+        this.relatertBehandlingId,
+        this.kode6eller7,
+        this.tidspunktVedtak,
+        this.vilkårsvurderinger.map { it.toDomain() }.toList(),
+        this.person.toDomain(),
+        this.barn.map { it.toDomain() }.toList(),
+        this.behandlingType,
+        this.behandlingÅrsak,
+        this.behandlingResultat,
+        this.vedtak,
+        this.opphørÅrsak,
+        this.utbetalinger.map { it.toDomain() }.toList(),
+        this.inntekt.map { it.toDomain() }.toList(),
+        this.inntektsReduksjon.map { it.toDomain() }.toList(),
+        this.aktivitetskrav.toDomain(),
+        this.funksjonellId
+    )
+}
