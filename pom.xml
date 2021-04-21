@@ -17,6 +17,7 @@
         <java.version>11</java.version>
         <kotlin.version>1.4.31</kotlin.version>
         <swagger.version>2.9.2</swagger.version>
+        <felles.version>1.20210329154135_57b92f0</felles.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <logstash.version>6.4</logstash.version>
         <revision>1.0</revision>
@@ -93,6 +94,12 @@
             <version>${dotenv.version}</version>
         </dependency>
 
+        <!-- familie felles -->
+        <dependency>
+            <groupId>no.nav.familie.felles</groupId>
+            <artifactId>sikkerhet</artifactId>
+            <version>${felles.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
