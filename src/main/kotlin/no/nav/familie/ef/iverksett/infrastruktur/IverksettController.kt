@@ -2,6 +2,8 @@ package no.nav.familie.ef.iverksett.infrastruktur
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
+import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
+import no.nav.familie.ef.iverksett.infrastruktur.json.toJson
 import no.nav.familie.ef.iverksett.iverksett.tjeneste.IverksettService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController
 class IverksettController(val iverksettService: IverksettService) {
 
     @PostMapping(path = ["/iverksett"])
-    fun iverksett(@RequestBody vedtakJSON: IverksettJson): ResponseEntity<String> {
-        return ResponseEntity("Iverksett", HttpStatus.OK)
+    fun iverksettdummy(@RequestBody iverksettJson: IverksettJson): ResponseEntity<IverksettJson> {
+        return ResponseEntity(iverksettService.dummyIverksett(iverksettJson.toDomain()).toJson(), HttpStatus.OK)
     }
 
 }
