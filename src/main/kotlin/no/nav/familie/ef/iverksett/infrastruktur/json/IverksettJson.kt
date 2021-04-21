@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import no.nav.familie.ef.iverksett.domene.*
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.*
 
 data class IverksettJson(
@@ -18,7 +18,7 @@ data class IverksettJson(
     val behandlingId: String,
     val relatertBehandlingId: String? = null,
     val kode6eller7: Boolean,
-    val tidspunktVedtak: ZonedDateTime? = null,
+    val tidspunktVedtak: OffsetDateTime? = null,
     val vilkårsvurderinger: List<VilkårsvurderingJson> = emptyList(),
     val person: PersonJson,
     val barn: List<PersonJson> = ArrayList(),
