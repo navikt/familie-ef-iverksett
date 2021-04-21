@@ -7,7 +7,7 @@ class VedtakJSONTransformTest {
 
     @Test
     fun `transformerVedtakJSON forvent like verdier`() {
-        val vedtakJSON = VedtakJSON(true, "Begrunnelse")
+        val vedtakJSON = IverksettJson(true, "Begrunnelse")
         assertThat(vedtakJSON).isEqualToComparingFieldByField(vedtakJSON.transform())
     }
 }

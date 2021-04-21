@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.mottak.tjeneste
 
-import no.nav.familie.ef.iverksett.Vedtak
+import no.nav.familie.ef.iverksett.domene.Vedtak
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
