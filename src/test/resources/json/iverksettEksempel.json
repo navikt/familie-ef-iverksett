@@ -1,0 +1,133 @@
+{
+  "brev": [
+    {
+      "journalpostId": "string",
+      "brevdata": {
+        "pdf": "string",
+        "mottaker": "string",
+        "saksbehandler": "string"
+      }
+    }
+  ],
+  "forrigeTilkjentYtelse": [
+    {
+      "periodeBeløp": {
+        "utbetaltPerPeriode": 0,
+        "periodetype": "MÅNED",
+        "fraOgMed": "2000-01-01",
+        "tilOgMed": "2000-01-01"
+      },
+      "utbetalingsdetalj": {
+        "gjelderPerson": {
+          "personIdent": "string",
+          "aktorId": "string"
+        },
+        "klassekode": "string",
+        "delytelseId": "string"
+      }
+    }
+  ],
+  "tilkjentYtelse": [
+    {
+      "periodeBeløp": {
+        "utbetaltPerPeriode": 0,
+        "periodetype": "MÅNED",
+        "fraOgMed": "2000-01-01",
+        "tilOgMed": "2000-01-01"
+      },
+      "utbetalingsdetalj": {
+        "gjelderPerson": {
+          "personIdent": "string",
+          "aktorId": "string"
+        },
+        "klassekode": "string",
+        "delytelseId": "string"
+      }
+    }
+  ],
+  "fagsakId": "string",
+  "saksnummer": "string",
+  "behandlingId": "string",
+  "relatertBehandlingId": "string",
+  "kode6eller7": true,
+  "tidspunktVedtak": "2021-04-21T07:57:40.550Z",
+  "vilkårsvurderinger": [
+    {
+      "vilkårType": "FORUTGÅENDE_MEDLEMSKAP",
+      "resultat": "OPPFYLT",
+      "delvilkårsvurderinger": [
+        {
+          "resultat": "OPPFYLT",
+          "vurderinger": [
+            {
+              "regelId": "SLUTT_NODE",
+              "svar": "JA",
+              "begrunnelse": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "person": {
+    "personIdent": "string",
+    "aktorId": "string"
+  },
+  "barn": [
+    {
+      "personIdent": "string",
+      "aktorId": "string"
+    }
+  ],
+  "behandlingType": "SAKSBEHANDLINGSBLANKETT",
+  "behandlingÅrsak": "SØKNAD",
+  "behandlingResultat": "FERDIGSTILT",
+  "vedtak": "INNVILGET",
+  "opphørÅrsak": "PERIODE_UTLØPT",
+  "utbetalinger": [
+    {
+      "periodeBeløp": {
+        "utbetaltPerPeriode": 0,
+        "periodetype": "MÅNED",
+        "fraOgMed": "2001-01-01",
+        "tilOgMed": "2000-01-01"
+      },
+      "utbetalingsdetalj": {
+        "gjelderPerson": {
+          "personIdent": "string",
+          "aktorId": "string"
+        },
+        "klassekode": "string",
+        "delytelseId": "string"
+      }
+    }
+  ],
+  "inntekt": [
+    {
+      "periodeBeløp": {
+        "utbetaltPerPeriode": 0,
+        "periodetype": "MÅNED",
+        "fraOgMed": "2000-01-01",
+        "tilOgMed": "2000-01-01"
+      },
+      "inntektstype": "ARBEIDINNTEKT"
+    }
+  ],
+  "inntektsReduksjon": [
+    {
+      "periodeBeløp": [
+        {
+          "utbetaltPerPeriode": 0,
+          "periodetype": "MÅNED",
+          "fraOgMed": "2000-01-01",
+          "tilOgMed": "2000-01-01"
+        }
+      ]
+    }
+  ],
+  "aktivitetskrav": {
+    "aktivitetspliktInntrefferDato": "2000-01-01",
+    "harSagtOppArbeidsforhold": true
+  },
+  "funksjonellId": "string"
+}
