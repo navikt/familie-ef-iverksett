@@ -1,6 +1,6 @@
-package no.nav.familie.ef.iverksett.infrastruktur.json
+package no.nav.familie.ef.iverksett.domene
 
-enum class SvarIdJson {
+enum class SvarId {
 
     // Felles
     JA,
