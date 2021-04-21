@@ -20,3 +20,12 @@ fun PeriodebeløpJson.toDomain(): Periodebeløp {
         this.tilOgMed
     )
 }
+
+fun Periodebeløp.toJson(): PeriodebeløpJson {
+    return PeriodebeløpJson(
+        this.utbetaltPerPeriode,
+        this.periodetype,
+        this.fraOgMed,
+        this.tilOgMed
+    )
+}

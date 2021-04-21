@@ -59,19 +59,23 @@ data class VurderingJson(
     val begrunnelse: String? = null
 )
 
-fun VurderingJson.toDomain() : Vurdering {
+fun VurderingJson.toDomain(): Vurdering {
     return Vurdering(this.regelId, this.svar, this.begrunnelse)
 }
-fun DelvilkårsvurderingJson.toDomain() : Delvilkårsvurdering {
+
+fun DelvilkårsvurderingJson.toDomain(): Delvilkårsvurdering {
     return Delvilkårsvurdering(this.resultat, this.vurderinger.map { it.toDomain() }.toList())
 }
-fun VilkårsvurderingJson.toDomain() : Vilkårsvurdering {
+
+fun VilkårsvurderingJson.toDomain(): Vilkårsvurdering {
     return Vilkårsvurdering(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toDomain() }.toList())
 }
-fun AktivitetskravJson.toDomain() : Aktivitetskrav {
+
+fun AktivitetskravJson.toDomain(): Aktivitetskrav {
     return Aktivitetskrav(this.aktivitetspliktInntrefferDato, this.harSagtOppArbeidsforhold)
 }
-fun IverksettJson.toDomain() : Iverksett {
+
+fun IverksettJson.toDomain(): Iverksett {
     return Iverksett(
         this.brev.map { it.toDomain() }.toList(),
         this.forrigeTilkjentYtelse.map { it.toDomain() }.toList(),
@@ -94,6 +98,49 @@ fun IverksettJson.toDomain() : Iverksett {
         this.inntekt.map { it.toDomain() }.toList(),
         this.inntektsReduksjon.map { it.toDomain() }.toList(),
         this.aktivitetskrav.toDomain(),
+        this.funksjonellId
+    )
+}
+
+fun Vurdering.toJson(): VurderingJson {
+    return VurderingJson(this.regelId, this.svar, this.begrunnelse)
+}
+
+fun Delvilkårsvurdering.toJson(): DelvilkårsvurderingJson {
+    return DelvilkårsvurderingJson(this.resultat, this.vurderinger.map { it.toJson() }.toList())
+}
+
+fun Vilkårsvurdering.toJson(): VilkårsvurderingJson {
+    return VilkårsvurderingJson(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toJson() }.toList())
+}
+
+fun Aktivitetskrav.toJson(): AktivitetskravJson {
+    return AktivitetskravJson(this.aktivitetspliktInntrefferDato, this.harSagtOppArbeidsforhold)
+}
+
+fun Iverksett.toJson(): IverksettJson {
+    return IverksettJson(
+        this.brev.map { it.toJson() }.toList(),
+        this.forrigeTilkjentYtelse.map { it.toJson() }.toList(),
+        this.tilkjentYtelse.map { it.toJson() }.toList(),
+        this.fagsakId,
+        this.saksnummer,
+        this.behandlingId,
+        this.relatertBehandlingId,
+        this.kode6eller7,
+        this.tidspunktVedtak,
+        this.vilkårsvurderinger.map { it.toJson() }.toList(),
+        this.person.toJson(),
+        this.barn.map { it.toJson() }.toList(),
+        this.behandlingType,
+        this.behandlingÅrsak,
+        this.behandlingResultat,
+        this.vedtak,
+        this.opphørÅrsak,
+        this.utbetalinger.map { it.toJson() }.toList(),
+        this.inntekt.map { it.toJson() }.toList(),
+        this.inntektsReduksjon.map { it.toJson() }.toList(),
+        this.aktivitetskrav.toJson(),
         this.funksjonellId
     )
 }

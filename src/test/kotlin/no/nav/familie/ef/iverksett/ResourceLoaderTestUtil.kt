@@ -18,6 +18,7 @@ class ResourceLoaderTestUtil {
         fun toString(resource: Resource) : String {
             return Resources.toString(resource.url, StandardCharsets.UTF_8)
         }
+
         fun getResourceFrom(filename: String): Resource {
             return try {
                 ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResource("classpath:/json/$filename")

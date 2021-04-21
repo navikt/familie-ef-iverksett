@@ -14,9 +14,18 @@ data class UtbetalingsdetaljJson(
     val delytelseId: String
 )
 
-fun UtbetalingJson.toDomain() : Utbetaling {
+fun UtbetalingJson.toDomain(): Utbetaling {
     return Utbetaling(this.periodebeløp.toDomain(), this.utbetalingsdetalj.toDomain())
 }
-fun UtbetalingsdetaljJson.toDomain() : Utbetalingsdetalj {
+
+fun UtbetalingsdetaljJson.toDomain(): Utbetalingsdetalj {
     return Utbetalingsdetalj(this.gjelderPerson.toDomain(), this.klassekode, this.delytelseId)
+}
+
+fun Utbetaling.toJson(): UtbetalingJson {
+    return UtbetalingJson(this.periodebeløp.toJson(), this.utbetalingsdetalj.toJson())
+}
+
+fun Utbetalingsdetalj.toJson(): UtbetalingsdetaljJson {
+    return UtbetalingsdetaljJson(this.gjelderPerson.toJson(), this.klassekode, this.delytelseId)
 }
