@@ -99,12 +99,28 @@
             <version>${dotenv.version}</version>
         </dependency>
 
-        <!-- familie felles -->
+        <!-- NAV internt -->
+        <dependency>
+            <groupId>no.nav.security</groupId>
+            <artifactId>token-client-spring</artifactId>
+            <version>${token-validation.version}</version>
+        </dependency>
         <dependency>
             <groupId>no.nav.familie.felles</groupId>
             <artifactId>sikkerhet</artifactId>
             <version>${felles.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.familie.felles</groupId>
+            <artifactId>log</artifactId>
+            <version>${felles.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.familie.felles</groupId>
+            <artifactId>util</artifactId>
+            <version>${felles.version}</version>
+        </dependency>
+
 
         <!-- Security -->
         <dependency>
