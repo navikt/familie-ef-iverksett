@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.infrastruktur.json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class IverksettJSONTransformTest {
+class IverksettJsonTransformTest {
 
     @Test
     fun `transformerVedtakJSON forvent like verdier`() {

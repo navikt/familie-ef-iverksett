@@ -1,6 +1,6 @@
-package no.nav.familie.ef.iverksett.infrastruktur.json
+package no.nav.familie.ef.iverksett.domene
 
-enum class RegelIdJson(val beskrivelse: String) {
+enum class RegelId(val beskrivelse: String) {
 
     SLUTT_NODE("SLUTT_NODE"),
 

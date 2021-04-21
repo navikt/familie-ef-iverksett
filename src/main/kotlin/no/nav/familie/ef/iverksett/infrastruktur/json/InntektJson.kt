@@ -1,14 +1,11 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
+import no.nav.familie.ef.iverksett.domene.InntektsType
+
 data class InntektJson(
-    val periodeBeløp: PeriodeBeløpJson,
-    val inntektstype: InntektstypeJson
+    val periodebeløp: PeriodebeløpJson,
+    val inntektstype: InntektsType
 )
 
-data class InntektsreduksjonJson(val periodeBeløp: List<PeriodeBeløpJson> = emptyList())
+data class InntektsreduksjonJson(val periodebeløp: List<PeriodebeløpJson> = emptyList())
 
-enum class InntektstypeJson {
-    ARBEIDINNTEKT,
-    KAPITALINNTEKT,
-    TRYGD_ELLER_STØNAD
-}
