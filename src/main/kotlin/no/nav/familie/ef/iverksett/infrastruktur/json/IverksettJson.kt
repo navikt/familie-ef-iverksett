@@ -64,11 +64,11 @@ fun VurderingJson.toDomain(): Vurdering {
 }
 
 fun DelvilkårsvurderingJson.toDomain(): Delvilkårsvurdering {
-    return Delvilkårsvurdering(this.resultat, this.vurderinger.map { it.toDomain() }.toList())
+    return Delvilkårsvurdering(this.resultat, this.vurderinger.map { it.toDomain() })
 }
 
 fun VilkårsvurderingJson.toDomain(): Vilkårsvurdering {
-    return Vilkårsvurdering(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toDomain() }.toList())
+    return Vilkårsvurdering(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toDomain() })
 }
 
 fun AktivitetskravJson.toDomain(): Aktivitetskrav {
@@ -77,26 +77,26 @@ fun AktivitetskravJson.toDomain(): Aktivitetskrav {
 
 fun IverksettJson.toDomain(): Iverksett {
     return Iverksett(
-        this.brev.map { it.toDomain() }.toList(),
-        this.forrigeTilkjentYtelse.map { it.toDomain() }.toList(),
-        this.tilkjentYtelse.map { it.toDomain() }.toList(),
+        this.brev.map { it.toDomain() },
+        this.forrigeTilkjentYtelse.map { it.toDomain() },
+        this.tilkjentYtelse.map { it.toDomain() },
         this.fagsakId,
         this.saksnummer,
         this.behandlingId,
         this.relatertBehandlingId,
         this.kode6eller7,
         this.tidspunktVedtak,
-        this.vilkårsvurderinger.map { it.toDomain() }.toList(),
+        this.vilkårsvurderinger.map { it.toDomain() },
         this.person.toDomain(),
-        this.barn.map { it.toDomain() }.toList(),
+        this.barn.map { it.toDomain() },
         this.behandlingType,
         this.behandlingÅrsak,
         this.behandlingResultat,
         this.vedtak,
         this.opphørÅrsak,
-        this.utbetalinger.map { it.toDomain() }.toList(),
-        this.inntekt.map { it.toDomain() }.toList(),
-        this.inntektsReduksjon.map { it.toDomain() }.toList(),
+        this.utbetalinger.map { it.toDomain() },
+        this.inntekt.map { it.toDomain() },
+        this.inntektsReduksjon.map { it.toDomain() },
         this.aktivitetskrav.toDomain(),
         this.funksjonellId
     )
@@ -107,11 +107,11 @@ fun Vurdering.toJson(): VurderingJson {
 }
 
 fun Delvilkårsvurdering.toJson(): DelvilkårsvurderingJson {
-    return DelvilkårsvurderingJson(this.resultat, this.vurderinger.map { it.toJson() }.toList())
+    return DelvilkårsvurderingJson(this.resultat, this.vurderinger.map { it.toJson() })
 }
 
 fun Vilkårsvurdering.toJson(): VilkårsvurderingJson {
-    return VilkårsvurderingJson(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toJson() }.toList())
+    return VilkårsvurderingJson(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toJson() })
 }
 
 fun Aktivitetskrav.toJson(): AktivitetskravJson {
@@ -120,26 +120,26 @@ fun Aktivitetskrav.toJson(): AktivitetskravJson {
 
 fun Iverksett.toJson(): IverksettJson {
     return IverksettJson(
-        this.brev.map { it.toJson() }.toList(),
-        this.forrigeTilkjentYtelse.map { it.toJson() }.toList(),
-        this.tilkjentYtelse.map { it.toJson() }.toList(),
+        this.brev.map { it.toJson() },
+        this.forrigeTilkjentYtelse.map { it.toJson() },
+        this.tilkjentYtelse.map { it.toJson() },
         this.fagsakId,
         this.saksnummer,
         this.behandlingId,
         this.relatertBehandlingId,
         this.kode6eller7,
         this.tidspunktVedtak,
-        this.vilkårsvurderinger.map { it.toJson() }.toList(),
+        this.vilkårsvurderinger.map { it.toJson() },
         this.person.toJson(),
-        this.barn.map { it.toJson() }.toList(),
+        this.barn.map { it.toJson() },
         this.behandlingType,
         this.behandlingÅrsak,
         this.behandlingResultat,
         this.vedtak,
         this.opphørÅrsak,
-        this.utbetalinger.map { it.toJson() }.toList(),
-        this.inntekt.map { it.toJson() }.toList(),
-        this.inntektsReduksjon.map { it.toJson() }.toList(),
+        this.utbetalinger.map { it.toJson() },
+        this.inntekt.map { it.toJson() },
+        this.inntektsReduksjon.map { it.toJson() },
         this.aktivitetskrav.toJson(),
         this.funksjonellId
     )

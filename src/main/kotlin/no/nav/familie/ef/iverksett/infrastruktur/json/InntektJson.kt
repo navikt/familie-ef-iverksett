@@ -12,7 +12,7 @@ data class InntektJson(
 data class InntektsreduksjonJson(val periodebeløp: List<PeriodebeløpJson> = emptyList())
 
 fun InntektsreduksjonJson.toDomain(): Inntektsreduksjon {
-    return Inntektsreduksjon(this.periodebeløp.map { it.toDomain() }.toList())
+    return Inntektsreduksjon(this.periodebeløp.map { it.toDomain() })
 }
 
 fun InntektJson.toDomain(): Inntekt {
