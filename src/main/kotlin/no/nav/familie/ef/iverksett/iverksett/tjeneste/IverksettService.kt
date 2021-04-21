@@ -1,15 +1,15 @@
-package no.nav.familie.ef.iverksett.mottak.tjeneste
+package no.nav.familie.ef.iverksett.iverksett.tjeneste
 
-import no.nav.familie.ef.iverksett.domene.Vedtak
+import no.nav.familie.ef.iverksett.domene.Iverksett
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class MottakService() {
+class IverksettService() {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun test(vedtak: Vedtak): String {
-        return vedtak.toString()
+    fun iverksett(iverksett: Iverksett): String {
+        return iverksett.toString()
     }
 }

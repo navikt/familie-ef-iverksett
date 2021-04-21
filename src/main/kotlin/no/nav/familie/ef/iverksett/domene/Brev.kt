@@ -1,4 +1,12 @@
 package no.nav.familie.ef.iverksett.domene
 
-class Brev {
-}
+data class Brev(
+    val journalpostId: String,
+    val brevdata: Brevdata
+)
+
+data class Brevdata(
+    val pdf: String,
+    val mottaker: String,
+    val saksbehandler: String
+)

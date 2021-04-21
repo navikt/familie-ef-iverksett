@@ -36,6 +36,9 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: {{springProfile}}
+  azure:
+    application:
+      enabled: true
   accessPolicy:
     inbound:
       rules:
