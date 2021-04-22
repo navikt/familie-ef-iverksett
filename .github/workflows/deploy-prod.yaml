@@ -1,6 +1,8 @@
 name: Build-Deploy prod
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/familie-iverksett:${{ github.sha }}
 
