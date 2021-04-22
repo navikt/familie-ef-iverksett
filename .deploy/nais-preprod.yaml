@@ -36,6 +36,9 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
+  envFrom:
+    - secret: familie
+    - secret: familie-ef-iverksett
   azure:
     application:
       enabled: true
@@ -43,3 +46,4 @@ spec:
     inbound:
       rules:
         - application: familie-ef-sak
+        - application: familie-ef-sak-lokal
