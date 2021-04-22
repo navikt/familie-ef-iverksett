@@ -1,4 +1,4 @@
-name: Build-Deploy dev
+name: Build dev
 on: [pull_request]
 
 env:
