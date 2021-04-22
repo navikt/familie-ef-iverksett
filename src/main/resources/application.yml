@@ -21,10 +21,11 @@ no.nav.security.jwt:
          accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
 
 management:
-   endpoints:
-      web:
-         exposure:
-            include: '*'
-   endpoint:
-      health:
-         show-details: always
+   endpoint.health.show-details: always
+   endpoints.web:
+      exposure.include: info, health, metrics, prometheus
+      base-path: "/internal"
+      path-mapping:
+         health: "status/isAlive"
+   metrics.export.prometheus.enabled: true
+   metrics.web.server.auto-time-requests: true
