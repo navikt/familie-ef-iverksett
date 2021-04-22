@@ -9,13 +9,13 @@
 apiVersion: nais.io/v1
 kind: AzureAdApplication
 metadata:
-  name: familie-ef-sak-lokal
+  name: familie-ef-iverksett-lokal
   namespace: teamfamilie
   labels:
     team: teamfamilie
 spec:
   preAuthorizedApplications:
-    - application: familie-ef-iverksett-lokal
+    - application: familie-ef-sak-lokal
       cluster: dev-gcp
       namespace: teamfamilie
   tenant: trygdeetaten.no
