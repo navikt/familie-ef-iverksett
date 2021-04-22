@@ -17,8 +17,8 @@ spring:
 no.nav.security.jwt:
    issuer:
       aad:
-         discoveryurl: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/v2.0/.well-known/openid-configuration
-         accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+         discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+         accepted_audience: ${AZURE_APP_CLIENT_ID}
 
 management:
    endpoint.health.show-details: always
