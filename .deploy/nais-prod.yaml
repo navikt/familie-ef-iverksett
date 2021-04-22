@@ -8,7 +8,7 @@ metadata:
 spec:
   image: {{ image }}
   ingresses:
-    - {{ingress}}
+    - https://familie-ef-iverksett.intern.nav.no
   liveness:
     path: /internal/status/isAlive
     initialDelay: 30
@@ -35,7 +35,7 @@ spec:
     enabled: true
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: {{springProfile}}
+      value: prod
   azure:
     application:
       enabled: true

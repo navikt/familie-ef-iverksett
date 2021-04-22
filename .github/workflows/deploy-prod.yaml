@@ -1,6 +1,8 @@
 name: Build-Deploy prod
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/familie-iverksett:${{ github.sha }}
 
@@ -47,8 +49,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
-          RESOURCE: .deploy/nais.yaml
-          VARS: .deploy/vars-prod.yaml
+          RESOURCE: .deploy/nais-prod.yaml
       - name: Post deploy failures to Slack
         if: failure()
         run: |
