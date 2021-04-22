@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-@RequestMapping(consumes = [MULTIPART_FORM_DATA_VALUE], path = ["/api"])
+@RequestMapping(path = ["/api"])
 @ProtectedWithClaims(issuer = "azuread")
 class IverksettController(val iverksettService: IverksettService) {
 
-    @PostMapping(path = ["/iverksett"])
+    @PostMapping(consumes = [MULTIPART_FORM_DATA_VALUE], path = ["/iverksett"])
     fun iverksettdummy(
         @RequestPart("iverksett") iverksettJson: IverksettJson,
         @RequestPart("brevdataPdf") brevdataPdf: MultipartFile
