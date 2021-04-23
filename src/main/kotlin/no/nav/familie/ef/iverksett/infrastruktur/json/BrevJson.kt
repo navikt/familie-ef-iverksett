@@ -9,14 +9,14 @@ data class BrevJson(
 )
 
 data class BrevdataJson(
-    val pdf: String,
     val mottaker: String,
     val saksbehandler: String
 )
 
-fun BrevdataJson.toDomain() : Brevdata {
-    return Brevdata(this.pdf, this.mottaker, this.saksbehandler)
+fun BrevdataJson.toDomain(): Brevdata {
+    return Brevdata(this.mottaker, this.saksbehandler)
 }
-fun BrevJson.toDomain() : Brev {
+
+fun BrevJson.toDomain(): Brev {
     return Brev(this.journalpostId, this.brevdata.toDomain())
 }

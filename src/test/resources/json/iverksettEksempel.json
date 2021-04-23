@@ -3,7 +3,6 @@
     {
       "journalpostId": "string",
       "brevdata": {
-        "pdf": "string",
         "mottaker": "string",
         "saksbehandler": "string"
       }

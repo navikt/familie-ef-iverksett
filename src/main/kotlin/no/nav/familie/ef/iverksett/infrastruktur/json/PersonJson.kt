@@ -7,6 +7,6 @@ data class PersonJson(
     val aktorId: String? = null
 )
 
-fun PersonJson.toDomain() : Person {
+fun PersonJson.toDomain(): Person {
     return Person(this.personIdent, this.aktorId)
 }

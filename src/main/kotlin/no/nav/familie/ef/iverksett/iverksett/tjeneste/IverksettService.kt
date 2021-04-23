@@ -9,7 +9,7 @@ class IverksettService() {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun iverksett(iverksett: Iverksett): String {
-        return iverksett.toString()
+    fun dummyIverksett(iverksett: Iverksett): Iverksett {
+        return iverksett
     }
 }
