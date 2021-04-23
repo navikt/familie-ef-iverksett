@@ -13,3 +13,19 @@ spring:
       serialization:
          write-empty-json-arrays: false
          fail-on-empty-beans: false
+
+no.nav.security.jwt:
+   issuer:
+      azuread:
+         discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+         accepted_audience: ${AZURE_APP_CLIENT_ID}
+
+management:
+   endpoint.health.show-details: always
+   endpoints.web:
+      exposure.include: info, health, metrics, prometheus
+      base-path: "/internal"
+      path-mapping:
+         health: "status/isAlive"
+   metrics.export.prometheus.enabled: true
+   metrics.web.server.auto-time-requests: true
