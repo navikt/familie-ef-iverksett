@@ -6,7 +6,6 @@ data class Brev(
 )
 
 data class Brevdata(
-    val pdf: String,
     val mottaker: String,
     val saksbehandler: String
 )

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import no.nav.familie.ef.iverksett.domene.*
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.OffsetDateTime
 import java.util.*
 
 data class IverksettJson(
@@ -18,7 +18,7 @@ data class IverksettJson(
     val behandlingId: String,
     val relatertBehandlingId: String? = null,
     val kode6eller7: Boolean,
-    val tidspunktVedtak: ZonedDateTime? = null,
+    val tidspunktVedtak: OffsetDateTime? = null,
     val vilkårsvurderinger: List<VilkårsvurderingJson> = emptyList(),
     val person: PersonJson,
     val barn: List<PersonJson> = ArrayList(),
@@ -59,3 +59,45 @@ data class VurderingJson(
     val begrunnelse: String? = null
 )
 
+fun VurderingJson.toDomain(): Vurdering {
+    return Vurdering(this.regelId, this.svar, this.begrunnelse)
+}
+
+fun DelvilkårsvurderingJson.toDomain(): Delvilkårsvurdering {
+    return Delvilkårsvurdering(this.resultat, this.vurderinger.map { it.toDomain() })
+}
+
+fun VilkårsvurderingJson.toDomain(): Vilkårsvurdering {
+    return Vilkårsvurdering(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toDomain() })
+}
+
+fun AktivitetskravJson.toDomain(): Aktivitetskrav {
+    return Aktivitetskrav(this.aktivitetspliktInntrefferDato, this.harSagtOppArbeidsforhold)
+}
+
+fun IverksettJson.toDomain(): Iverksett {
+    return Iverksett(
+        this.brev.map { it.toDomain() },
+        this.forrigeTilkjentYtelse.map { it.toDomain() },
+        this.tilkjentYtelse.map { it.toDomain() },
+        this.fagsakId,
+        this.saksnummer,
+        this.behandlingId,
+        this.relatertBehandlingId,
+        this.kode6eller7,
+        this.tidspunktVedtak,
+        this.vilkårsvurderinger.map { it.toDomain() },
+        this.person.toDomain(),
+        this.barn.map { it.toDomain() },
+        this.behandlingType,
+        this.behandlingÅrsak,
+        this.behandlingResultat,
+        this.vedtak,
+        this.opphørÅrsak,
+        this.utbetalinger.map { it.toDomain() },
+        this.inntekt.map { it.toDomain() },
+        this.inntektsReduksjon.map { it.toDomain() },
+        this.aktivitetskrav.toDomain(),
+        this.funksjonellId
+    )
+}
