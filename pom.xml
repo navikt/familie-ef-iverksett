@@ -22,6 +22,7 @@
         <logstash.version>6.4</logstash.version>
         <revision>1.0</revision>
         <dotenv.version>6.2.1</dotenv.version>
+        <logback.spring.starter>2.7.1</logback.spring.starter>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.WebApplicationKt</start-class>
     </properties>
@@ -131,6 +132,14 @@
             <groupId>no.nav.familie.felles</groupId>
             <artifactId>util</artifactId>
             <version>${felles.version}</version>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>net.rakugakibox.spring.boot</groupId>
+            <artifactId>logback-access-spring-boot-starter</artifactId>
+            <version>${logback.spring.starter}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
