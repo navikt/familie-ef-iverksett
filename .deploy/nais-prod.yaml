@@ -8,13 +8,13 @@ metadata:
 spec:
   image: {{ image }}
   ingresses:
-    - {{ingress}}
+    - https://familie-ef-iverksett.intern.nav.no
   liveness:
-    path: /internal/isAlive
+    path: /internal/status/isAlive
     initialDelay: 30
     failureThreshold: 10
   readiness:
-    path: /internal/isReady
+    path: /internal/status/isAlive
     initialDelay: 30
     failureThreshold: 10
   prometheus:
@@ -35,7 +35,10 @@ spec:
     enabled: true
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: {{springProfile}}
+      value: prod
+  envFrom:
+    - secret: familie
+    - secret: familie-ef-iverksett
   azure:
     application:
       enabled: true
