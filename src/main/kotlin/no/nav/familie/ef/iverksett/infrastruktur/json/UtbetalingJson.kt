@@ -21,11 +21,3 @@ fun UtbetalingJson.toDomain(): Utbetaling {
 fun UtbetalingsdetaljJson.toDomain(): Utbetalingsdetalj {
     return Utbetalingsdetalj(this.gjelderPerson.toDomain(), this.klassekode, this.delytelseId)
 }
-
-fun Utbetaling.toJson(): UtbetalingJson {
-    return UtbetalingJson(this.periodebeløp.toJson(), this.utbetalingsdetalj.toJson())
-}
-
-fun Utbetalingsdetalj.toJson(): UtbetalingsdetaljJson {
-    return UtbetalingsdetaljJson(this.gjelderPerson.toJson(), this.klassekode, this.delytelseId)
-}

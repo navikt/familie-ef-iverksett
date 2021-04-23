@@ -1,8 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur
 
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
-import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
-import no.nav.familie.ef.iverksett.infrastruktur.json.toJson
 import no.nav.familie.ef.iverksett.iverksett.tjeneste.IverksettService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE
@@ -21,8 +19,8 @@ class IverksettController(val iverksettService: IverksettService) {
     fun iverksettdummy(
         @RequestPart("iverksett") iverksettJson: IverksettJson,
         @RequestPart("brevdataPdf") brevdataPdf: MultipartFile
-    ): IverksettJson {
-        return iverksettService.dummyIverksett(iverksettJson.toDomain()).toJson()
+    ) {
+
     }
 
 }

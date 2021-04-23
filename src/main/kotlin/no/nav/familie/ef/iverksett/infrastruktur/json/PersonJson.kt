@@ -10,7 +10,3 @@ data class PersonJson(
 fun PersonJson.toDomain(): Person {
     return Person(this.personIdent, this.aktorId)
 }
-
-fun Person.toJson(): PersonJson {
-    return PersonJson(this.personIdent, this.aktorId)
-}

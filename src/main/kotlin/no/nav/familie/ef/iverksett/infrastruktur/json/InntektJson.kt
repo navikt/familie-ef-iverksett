@@ -18,11 +18,3 @@ fun InntektsreduksjonJson.toDomain(): Inntektsreduksjon {
 fun InntektJson.toDomain(): Inntekt {
     return Inntekt(this.periodebeløp.toDomain(), this.inntektstype)
 }
-
-fun Inntektsreduksjon.toJson(): InntektsreduksjonJson {
-    return InntektsreduksjonJson(this.periodebeløp.map { it.toJson() }.toList())
-}
-
-fun Inntekt.toJson(): InntektJson {
-    return InntektJson(this.periodebeløp.toJson(), this.inntektstype)
-}
