@@ -2,6 +2,8 @@ server:
    servlet:
       context-path: /
 spring:
+   actuators:
+
    flyway:
       enabled: false
    datasource:
@@ -32,10 +34,9 @@ no.nav.security.jwt:
          accepted_audience: ${AZURE_APP_CLIENT_ID}
 
 management:
-   endpoints:
-      web:
-         exposure:
-            include: '*'
-   endpoint:
-      health:
-         show-details: always
+   endpoint.health.show-details: always
+   endpoints.web:
+      exposure.include: info, health, metrics, prometheus
+      base-path: "/internal"
+      path-mapping:
+         info: "isAlive"

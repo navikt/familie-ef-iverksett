@@ -9,17 +9,16 @@ spec:
   image: {{ image }}
   ingresses:
       - https://familie-ef-iverksett.dev.intern.nav.no
-  liveness:
-    path: /internal/status/isAlive
+  livenstatusess:
+    path: /internal/isAlive
     initialDelay: 30
     failureThreshold: 10
   readiness:
-    path: /internal/status/isAlive
+    path: /internal/isAlive
     initialDelay: 30
     failureThreshold: 10
   prometheus:
-    enabled: true
-    path: /internal/prometheus
+    enabled: false
   replicas:
     min: 2
     max: 4
