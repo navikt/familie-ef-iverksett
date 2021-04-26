@@ -1,4 +1,11 @@
-
-
-
-
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      connection-test-query: "select 1"
+      max-lifetime: 30000
+      minimum-idle: 1
