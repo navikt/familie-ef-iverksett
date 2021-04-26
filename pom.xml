@@ -134,6 +134,12 @@
             <version>${felles.version}</version>
         </dependency>
 
+        <!-- Database -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>net.rakugakibox.spring.boot</groupId>
