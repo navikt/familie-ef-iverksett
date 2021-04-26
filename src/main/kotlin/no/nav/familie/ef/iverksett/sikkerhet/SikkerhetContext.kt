@@ -1,0 +1,33 @@
+package no.nav.familie.ef.sak.sikkerhet
+
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
+
+object SikkerhetContext {
+
+    private const val SYSTEM_NAVN = "System"
+    private const val SYSTEM_FORKORTELSE = "VL"
+
+    fun hentSaksbehandler(): String {
+        return Result.runCatching { SpringTokenValidationContextHolder().tokenValidationContext }
+                .fold(onSuccess = {
+                    it.getClaims("azuread")?.get("preferred_username")?.toString() ?: SYSTEM_FORKORTELSE
+                },
+                      onFailure = { SYSTEM_FORKORTELSE })
+    }
+
+    fun hentSaksbehandlerNavn(): String {
+        return Result.runCatching { SpringTokenValidationContextHolder().tokenValidationContext }
+                .fold(onSuccess = { it.getClaims("azuread")?.get("name")?.toString() ?: SYSTEM_NAVN },
+                      onFailure = { SYSTEM_NAVN })
+    }
+
+    private fun hentGruppeFraToken(): List<String> {
+        return Result.runCatching { SpringTokenValidationContextHolder().tokenValidationContext }
+                .fold(onSuccess = {
+                    @Suppress("UNCHECKED_CAST")
+                    it.getClaims("azuread")?.get("groups") as List<String>? ?: emptyList()
+                },
+                      onFailure = { emptyList() })
+    }
+
+}

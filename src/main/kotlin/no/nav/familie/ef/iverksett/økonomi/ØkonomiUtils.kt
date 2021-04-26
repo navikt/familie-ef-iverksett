@@ -97,6 +97,5 @@ object ØkonomiUtils {
      */
     private fun erNyPeriode(forrigeMaksDato: LocalDate?, førsteEndring: LocalDate) =
             forrigeMaksDato != null && førsteEndring.isAfter(forrigeMaksDato)
-
 }
 
