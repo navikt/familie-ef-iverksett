@@ -16,14 +16,10 @@
         "fraOgMed": "2000-01-01",
         "tilOgMed": "2000-01-01"
       },
-      "utbetalingsdetalj": {
-        "gjelderPerson": {
-          "personIdent": "string",
-          "aktorId": "string"
-        },
-        "klassekode": "string",
-        "delytelseId": "string"
-      }
+      "personIdent": "string",
+      "periodeId": 0,
+      "forrigePeriodeId": 0,
+      "stønadsType": "OVERGANGSSTØNAD"
     }
   ],
   "tilkjentYtelse": [
@@ -34,14 +30,10 @@
         "fraOgMed": "2000-01-01",
         "tilOgMed": "2000-01-01"
       },
-      "utbetalingsdetalj": {
-        "gjelderPerson": {
-          "personIdent": "string",
-          "aktorId": "string"
-        },
-        "klassekode": "string",
-        "delytelseId": "string"
-      }
+      "personIdent": "string",
+      "periodeId": 0,
+      "forrigePeriodeId": 0,
+      "stønadsType": "OVERGANGSSTØNAD"
     }
   ],
   "fagsakId": "string",
@@ -49,7 +41,7 @@
   "behandlingId": "string",
   "relatertBehandlingId": "string",
   "kode6eller7": true,
-  "tidspunktVedtak": "2021-04-21T07:57:40.550Z",
+  "tidspunktVedtak": "2021-04-27T11:40:43.714Z",
   "vilkårsvurderinger": [
     {
       "vilkårType": "FORUTGÅENDE_MEDLEMSKAP",
@@ -83,24 +75,6 @@
   "behandlingResultat": "FERDIGSTILT",
   "vedtak": "INNVILGET",
   "opphørÅrsak": "PERIODE_UTLØPT",
-  "utbetalinger": [
-    {
-      "periodebeløp": {
-        "utbetaltPerPeriode": 0,
-        "periodetype": "MÅNED",
-        "fraOgMed": "2001-01-01",
-        "tilOgMed": "2000-01-01"
-      },
-      "utbetalingsdetalj": {
-        "gjelderPerson": {
-          "personIdent": "string",
-          "aktorId": "string"
-        },
-        "klassekode": "string",
-        "delytelseId": "string"
-      }
-    }
-  ],
   "inntekt": [
     {
       "periodebeløp": {

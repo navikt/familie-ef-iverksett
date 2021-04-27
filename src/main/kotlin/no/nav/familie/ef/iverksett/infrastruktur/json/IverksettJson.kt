@@ -11,8 +11,8 @@ import java.util.*
 
 data class IverksettJson(
     val brev: List<BrevJson> = emptyList(),
-    val forrigeTilkjentYtelse: List<UtbetalingJson> = emptyList(),
-    val tilkjentYtelse: List<UtbetalingJson> = emptyList(),
+    val forrigeTilkjentYtelse: List<AndeltilkjentYtelseJson> = emptyList(),
+    val tilkjentYtelse: List<AndeltilkjentYtelseJson> = emptyList(),
     val fagsakId: String,
     val saksnummer: String? = null,
     val behandlingId: String,
@@ -27,7 +27,6 @@ data class IverksettJson(
     val behandlingResultat: BehandlingResultat,
     val vedtak: Vedtak? = null,
     val opphørÅrsak: OpphørÅrsak,
-    val utbetalinger: List<UtbetalingJson>,
     val inntekt: List<InntektJson> = ArrayList(),
     val inntektsReduksjon: List<InntektsreduksjonJson> = emptyList(),
     val aktivitetskrav: AktivitetskravJson,
@@ -94,7 +93,6 @@ fun IverksettJson.toDomain(): Iverksett {
         this.behandlingResultat,
         this.vedtak,
         this.opphørÅrsak,
-        this.utbetalinger.map { it.toDomain() },
         this.inntekt.map { it.toDomain() },
         this.inntektsReduksjon.map { it.toDomain() },
         this.aktivitetskrav.toDomain(),

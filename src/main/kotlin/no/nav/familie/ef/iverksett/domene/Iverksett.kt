@@ -6,8 +6,8 @@ import java.util.*
 
 data class Iverksett(
     val brev: List<Brev> = emptyList(),
-    val forrigeTilkjentYtelse: List<Utbetaling> = emptyList(),
-    val tilkjentYtelse: List<Utbetaling> = emptyList(),
+    val forrigeTilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
+    val tilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
     val fagsakId: String,
     val saksnummer: String? = null,
     val behandlingId: String,
@@ -22,7 +22,6 @@ data class Iverksett(
     val behandlingResultat: BehandlingResultat,
     val vedtak: Vedtak? = null,
     val opphørÅrsak: OpphørÅrsak,
-    val utbetalinger: List<Utbetaling>,
     val inntekt: List<Inntekt> = ArrayList(),
     val inntektsReduksjon: List<Inntektsreduksjon> = emptyList(),
     val aktivitetskrav: Aktivitetskrav,
