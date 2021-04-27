@@ -1,53 +1,63 @@
 package no.nav.familie.ef.iverksett.domene
 
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Embedded
+import org.springframework.data.relational.core.mapping.MappedCollection
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.*
 
 data class Iverksett(
-    val brev: List<Brev> = emptyList(),
-    val forrigeTilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
-    val tilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
-    val fagsakId: String,
-    val saksnummer: String? = null,
-    val behandlingId: String,
-    val relatertBehandlingId: String? = null,
-    val kode6eller7: Boolean,
-    val tidspunktVedtak: OffsetDateTime? = null,
-    val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
-    val person: Person,
-    val barn: List<Person> = ArrayList(),
-    val behandlingType: BehandlingType,
-    val behandlingÅrsak: BehandlingÅrsak,
-    val behandlingResultat: BehandlingResultat,
-    val vedtak: Vedtak? = null,
-    val opphørÅrsak: OpphørÅrsak,
-    val inntekt: List<Inntekt> = ArrayList(),
-    val inntektsReduksjon: List<Inntektsreduksjon> = emptyList(),
-    val aktivitetskrav: Aktivitetskrav,
-    val funksjonellId: String
+        @Id
+        val id: UUID = UUID.randomUUID(),
+        @MappedCollection(idColumn = "iverksett_id")
+        val brev: List<Brev> = emptyList(),
+        @MappedCollection(idColumn = "")
+        val forrigeTilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
+        @MappedCollection(idColumn = "")
+        val tilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
+        val fagsakId: String,
+        val saksnummer: String? = null,
+        val behandlingId: String,
+        val relatertBehandlingId: String? = null,
+        val kode6eller7: Boolean,
+        val tidspunktVedtak: OffsetDateTime? = null,
+        val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
+        @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL, prefix = "person_")
+        val person: Person,
+        val barn: List<Person> = ArrayList(),
+        val behandlingType: BehandlingType,
+        val behandlingÅrsak: BehandlingÅrsak,
+        val behandlingResultat: BehandlingResultat,
+        val vedtak: Vedtak? = null,
+        val opphørÅrsak: OpphørÅrsak,
+        val inntekt: List<Inntekt> = ArrayList(),
+        val inntektsReduksjon: List<Inntektsreduksjon> = emptyList(),
+        @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL, prefix = "aktivitetskrav_")
+        val aktivitetskrav: Aktivitetskrav,
+        val funksjonellId: String
 )
 
 data class Aktivitetskrav(
-    val aktivitetspliktInntrefferDato: LocalDate,
-    val harSagtOppArbeidsforhold: Boolean
+        val aktivitetspliktInntreffer: LocalDate,
+        val harSagtOppArbeidsforhold: Boolean
 )
 
 data class Vilkårsvurdering(
-    val vilkårType: VilkårType,
-    val resultat: Vilkårsresultat,
-    val delvilkårsvurderinger: List<Delvilkårsvurdering> = emptyList()
+        val vilkårType: VilkårType,
+        val resultat: Vilkårsresultat,
+        val delvilkårsvurderinger: List<Delvilkårsvurdering> = emptyList()
 )
 
 data class Delvilkårsvurdering(
-    val resultat: Vilkårsresultat,
-    val vurderinger: List<Vurdering> = emptyList()
+        val resultat: Vilkårsresultat,
+        val vurderinger: List<Vurdering> = emptyList()
 )
 
 data class Vurdering(
-    val regelId: RegelId,
-    val svar: SvarId? = null,
-    val begrunnelse: String? = null
+        val regelId: RegelId,
+        val svar: SvarId? = null,
+        val begrunnelse: String? = null
 )
 
 enum class Vilkårsresultat(val beskrivelse: String) {
