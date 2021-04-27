@@ -75,7 +75,7 @@ fun AktivitetskravJson.toDomain(): Aktivitetskrav {
     return Aktivitetskrav(this.aktivitetspliktInntrefferDato, this.harSagtOppArbeidsforhold)
 }
 
-inline fun IverksettJson.toDomain(): Iverksett {
+fun IverksettJson.toDomain(): Iverksett {
     return Iverksett(
         this.brev.map { it.toDomain() },
         this.forrigeTilkjentYtelse.map { it.toDomain() },
