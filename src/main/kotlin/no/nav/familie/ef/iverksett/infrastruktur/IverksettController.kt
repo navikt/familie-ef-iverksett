@@ -20,7 +20,6 @@ class IverksettController(val iverksettService: IverksettService) {
         @RequestPart("iverksett") iverksettJson: IverksettJson,
         @RequestPart("brevdataPdf") brevdataPdf: MultipartFile
     ) {
-
     }
 
 }

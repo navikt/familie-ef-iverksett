@@ -9,17 +9,16 @@ spec:
   image: {{ image }}
   ingresses:
       - https://familie-ef-iverksett.dev.intern.nav.no
-  liveness:
-    path: /internal/status/isAlive
+  livenstatusess:
+    path: /internal/isAlive
     initialDelay: 30
     failureThreshold: 10
   readiness:
-    path: /internal/status/isAlive
+    path: /internal/isAlive
     initialDelay: 30
     failureThreshold: 10
   prometheus:
-    enabled: true
-    path: /internal/prometheus
+    enabled: false
   replicas:
     min: 2
     max: 4
@@ -47,3 +46,12 @@ spec:
       rules:
         - application: familie-ef-sak
         - application: familie-ef-sak-lokal
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
+        databases:
+          - name: familie-ef-iverksett
+            envVarPrefix: DB
+            diskAutoresize: true
+            tier: db-g1-small
+            cascadingDelete: false
