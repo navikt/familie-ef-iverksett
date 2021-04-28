@@ -22,6 +22,7 @@
         <revision>1.0</revision>
         <dotenv.version>6.2.1</dotenv.version>
         <logback.spring.starter>2.7.1</logback.spring.starter>
+        <arrow.version>0.11.0</arrow.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.WebApplicationKt</start-class>
     </properties>
@@ -131,6 +132,13 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <!-- Arrow -->
+        <dependency>
+            <groupId>io.arrow-kt</groupId>
+            <artifactId>arrow-core</artifactId>
+            <version>${arrow.version}</version>
         </dependency>
 
         <!-- Test -->

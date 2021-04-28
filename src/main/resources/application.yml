@@ -24,8 +24,7 @@ spring:
       serialization:
          write-empty-json-arrays: false
          fail-on-empty-beans: false
-logging:
-   config: "classpath:logback-spring.xml"
+
 no.nav.security.jwt:
    issuer:
       aad:
