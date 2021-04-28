@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.domene
 
+
 import java.util.*
 
 data class AndelTilkjentYtelse(val periodebeløp: Periodebeløp,
