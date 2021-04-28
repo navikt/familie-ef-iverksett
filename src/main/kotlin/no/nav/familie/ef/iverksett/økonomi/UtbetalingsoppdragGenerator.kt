@@ -56,7 +56,7 @@ object UtbetalingsoppdragGenerator {
                                                 type = nyTilkjentYtelseMedMetaData.stønadstype)
 
         val utbetalingsoppdrag =
-                Utbetalingsoppdrag(saksbehandlerId = nyTilkjentYtelse.sporbar.endret.endretAv,
+                Utbetalingsoppdrag(saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
                                    kodeEndring = aksjonskodePåOppdragsnivå,
                                    fagSystem = nyTilkjentYtelseMedMetaData.stønadstype.tilKlassifisering(),
                                    saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),

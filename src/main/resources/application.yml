@@ -31,6 +31,18 @@ no.nav.security.jwt:
       aad:
          discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
          accepted_audience: ${AZURE_APP_CLIENT_ID}
+   client:
+      registration:
+         familie-oppdrag:
+            resource-url: ${FAMILIE_OPPDRAG_API_URL}
+            token-endpoint-url: ${AZUREAD_TOKEN_ENDPOINT_URL}
+            grant-type: client_credentials
+            scope: ${FAMILIE_OPPDRAG_SCOPE}
+            authentication:
+               client-id: ${AZURE_APP_CLIENT_ID}
+               client-secret: ${AZURE_APP_CLIENT_SECRET}
+               client-auth-method: client_secret_basic
+
 
 management:
    endpoint.health.show-details: always
