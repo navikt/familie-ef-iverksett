@@ -34,7 +34,7 @@ no.nav.security.jwt:
 management:
    endpoint.health.show-details: always
    endpoints.web:
-      exposure.include: info, health, metrics, prometheus
+      exposure.include: info, health, metrics, prometheus, mappings
       base-path: "/internal"
       path-mapping:
          info: "isAlive"

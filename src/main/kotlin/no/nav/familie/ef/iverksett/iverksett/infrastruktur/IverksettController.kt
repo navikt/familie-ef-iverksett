@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.infrastruktur
+package no.nav.familie.ef.iverksett.iverksett.infrastruktur
 
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
 import no.nav.familie.ef.iverksett.iverksett.tjeneste.IverksettService
