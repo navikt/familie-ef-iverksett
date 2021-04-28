@@ -3,6 +3,9 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse.Companion.disjunkteAndeler
 import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse.Companion.snittAndeler
+import no.nav.familie.ef.iverksett.domene.Periodebeløp
+import no.nav.familie.ef.iverksett.domene.Periodetype
+import no.nav.familie.ef.iverksett.domene.Stønadstype
 import java.time.LocalDate
 import java.util.*
 
@@ -16,14 +19,13 @@ fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, th
 @Deprecated("Bør erstattes med å gjøre 'stønadFom' og  'stønadTom'  nullable")
 val NULL_DATO: LocalDate = LocalDate.MIN
 
-fun nullAndelTilkjentYtelse(behandlingId: UUID, personIdent: String, periodeId: PeriodeId?): AndelTilkjentYtelse =
-        AndelTilkjentYtelse(beløp = 0,
-                            stønadFom = NULL_DATO,
-                            stønadTom = NULL_DATO,
+fun nullAndelTilkjentYtelse(behandlingId: UUID, personIdent: String, periodeId: PeriodeId?, stønadstype: Stønadstype): AndelTilkjentYtelse =
+        AndelTilkjentYtelse(periodebeløp = Periodebeløp(0, Periodetype.MÅNED, NULL_DATO, NULL_DATO),
                             personIdent = personIdent,
                             periodeId = periodeId?.gjeldende,
                             kildeBehandlingId = behandlingId,
-                            forrigePeriodeId = periodeId?.forrige)
+                            forrigePeriodeId = periodeId?.forrige,
+                            stønadsType = stønadstype)
 
 object ØkonomiUtils {
 
@@ -44,7 +46,7 @@ object ØkonomiUtils {
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val består =
                 if (førsteEndring != null)
-                    forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.stønadFom.isBefore(førsteEndring) }
+                    forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.periodebeløp.fraOgMed.isBefore(førsteEndring) }
                 else forrigeAndeler
         return består.sortedBy { it.periodeId }
     }
@@ -58,8 +60,8 @@ object ØkonomiUtils {
      */
     fun andelerTilOpprettelse(andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
                               beståendeAndeler: List<AndelTilkjentYtelse>): List<AndelTilkjentYtelse> {
-        return beståendeAndeler.maxByOrNull { it.stønadTom }?.let { sisteBeståendeAndel ->
-            andelerNyTilkjentYtelse.filter { it.stønadFom.isAfter(sisteBeståendeAndel.stønadTom) }
+        return beståendeAndeler.maxByOrNull { it.periodebeløp.tilOgMed }?.let { sisteBeståendeAndel ->
+            andelerNyTilkjentYtelse.filter { it.periodebeløp.fraOgMed.isAfter(sisteBeståendeAndel.periodebeløp.fraOgMed) }
         } ?: andelerNyTilkjentYtelse
     }
 
@@ -73,7 +75,7 @@ object ØkonomiUtils {
     fun andelTilOpphørMedDato(andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
                               andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>): Pair<AndelTilkjentYtelse, LocalDate>? {
 
-        val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.stønadTom }.maxOrNull()
+        val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.periodebeløp.tilOgMed }.maxOrNull()
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
@@ -88,7 +90,7 @@ object ØkonomiUtils {
 
     private fun finnDatoForFørsteEndredeAndel(andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
                                               andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>) =
-            andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse).minByOrNull { it.stønadFom }?.stønadFom
+            andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse).minByOrNull { it.periodebeløp.fraOgMed }?.periodebeløp?.fraOgMed
 
     /**
      * Sjekker om den nye endringen er etter maks datot for tidligere perioder

@@ -97,7 +97,7 @@ internal class UtbetalingsoppdragGeneratorTest {
 
         val nyePerioder = opprettTilkjentYtelseMedMetadata(behandlingB,
                                                            andel1,
-                                                           andel2.copy(stønadTom = andel2.stønadTom.minusMonths(2)),
+                                                           andel2.copy(periodebeløp = andel2.periodebeløp.copy(tilOgMed = andel2.periodebeløp.tilOgMed.minusMonths(2))),
                                                            andel3)
         val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdrag(nyePerioder, førsteTilkjentYtelse)
 
@@ -157,13 +157,12 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     private fun opprettAndel(beløp: Int, stønadFom: LocalDate, stønadTom: LocalDate) =
-            AndelTilkjentYtelse(beløp,
-                                stønadFom = stønadFom,
-                                stønadTom = stønadTom,
+            AndelTilkjentYtelse(periodebeløp = Periodebeløp(beløp, Periodetype.MÅNED, stønadFom, stønadTom),
                                 personIdent = "1",
                                 periodeId = 100, // overskreves
                                 forrigePeriodeId = 100, // overskreves
-                                kildeBehandlingId = UUID.randomUUID()) // overskreves
+                                kildeBehandlingId = UUID.randomUUID(), // overskreves
+                                stønadsType = Stønadstype.OVERGANGSSTØNAD) // overskreves
 
     private fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID,
                                                  vararg andelTilkjentYtelse: AndelTilkjentYtelse) =

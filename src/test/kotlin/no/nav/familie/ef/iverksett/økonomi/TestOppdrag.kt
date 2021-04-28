@@ -1,10 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.domene.Stønadstype
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.domene.*
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
@@ -50,17 +47,15 @@ data class TestOppdrag(val type: TestOppdragType,
     fun tilAndelTilkjentYtelse(): AndelTilkjentYtelse? {
 
         return if (beløp != null && startPeriode != null && sluttPeriode != null)
-            AndelTilkjentYtelse(beløp = this.beløp,
-                                stønadFom = startPeriode,
-                                stønadTom = sluttPeriode,
+            AndelTilkjentYtelse(periodebeløp = Periodebeløp(this.beløp, Periodetype.MÅNED, startPeriode, sluttPeriode),
                                 personIdent = fnr,
                                 periodeId = linjeId,
                                 kildeBehandlingId = if (TestOppdragType.Output == type) oppdragId else null,
-                                forrigePeriodeId = forrigeLinjeId)
+                                forrigePeriodeId = forrigeLinjeId, stønadsType = ytelse.tilStønadstype())
         else if (TestOppdragType.Output == type && beløp == null && startPeriode == null && sluttPeriode == null)
             nullAndelTilkjentYtelse(behandlingId = oppdragId ?: error("Må ha satt OppdragId på Output"),
                                     personIdent = fnr,
-                                    periodeId = PeriodeId(linjeId!!, forrigeLinjeId))
+                                    periodeId = PeriodeId(linjeId!!, forrigeLinjeId),ytelse.tilStønadstype())
         else
             null
     }
