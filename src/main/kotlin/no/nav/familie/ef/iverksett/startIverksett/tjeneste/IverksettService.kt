@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.iverksett.tjeneste
+package no.nav.familie.ef.iverksett.startIverksett.tjeneste
 
 import no.nav.familie.ef.iverksett.domene.Iverksett
 import org.slf4j.LoggerFactory

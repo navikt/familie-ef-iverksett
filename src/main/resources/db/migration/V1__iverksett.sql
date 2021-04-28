@@ -1,11 +1,11 @@
-create table Iverksett
+create table iverksett
 (
     behandlingid                             UUID not null PRIMARY KEY,
-    iverksett                                json,
+    iverksettJson                            json,
     versjon                                  varchar
 );
 
-create table Brev
+create table brev
 (
   behandlingid uuid references Iverksett(behandlingid),
   journalpostId varchar,
