@@ -13,10 +13,10 @@ data class BrevdataJson(
     val saksbehandler: String
 )
 
-fun BrevdataJson.toDomain(): Brevdata {
-    return Brevdata(this.mottaker, this.saksbehandler)
+fun BrevdataJson.toDomain(pdf: ByteArray): Brevdata {
+    return Brevdata(this.mottaker, this.saksbehandler, pdf)
 }
 
-fun BrevJson.toDomain(): Brev {
-    return Brev(this.journalpostId, this.brevdata.toDomain())
+fun BrevJson.toDomain(pdf: ByteArray): Brev {
+    return Brev(this.journalpostId, this.brevdata.toDomain(pdf))
 }

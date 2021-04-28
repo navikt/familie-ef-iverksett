@@ -9,13 +9,15 @@ class AndeltilkjentYtelseJson(
     val personIdent: String,
     val periodeId: Long? = null,
     val forrigePeriodeId: Long? = null,
-    val stønadsType: StønadsType)
+    val stønadsType: StønadsType
+)
 
-fun AndeltilkjentYtelseJson.toDomain() : AndelTilkjentYtelse {
+fun AndeltilkjentYtelseJson.toDomain(): AndelTilkjentYtelse {
     return AndelTilkjentYtelse(
         this.periodebeløp,
         this.personIdent,
         this.periodeId,
         this.forrigePeriodeId,
-        this.stønadsType)
+        this.stønadsType
+    )
 }

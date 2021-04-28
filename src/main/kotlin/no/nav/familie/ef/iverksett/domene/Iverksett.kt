@@ -8,22 +8,17 @@ import java.time.OffsetDateTime
 import java.util.*
 
 data class Iverksett(
-        @Id
-        val id: UUID = UUID.randomUUID(),
-        @MappedCollection(idColumn = "iverksett_id")
         val brev: List<Brev> = emptyList(),
-        @MappedCollection(idColumn = "")
         val forrigeTilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
-        @MappedCollection(idColumn = "")
         val tilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
         val fagsakId: String,
         val saksnummer: String? = null,
         val behandlingId: String,
+        val eksternId: Long,
         val relatertBehandlingId: String? = null,
         val kode6eller7: Boolean,
         val tidspunktVedtak: OffsetDateTime? = null,
         val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
-        @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL, prefix = "person_")
         val person: Person,
         val barn: List<Person> = ArrayList(),
         val behandlingType: BehandlingType,
@@ -31,9 +26,6 @@ data class Iverksett(
         val behandlingResultat: BehandlingResultat,
         val vedtak: Vedtak? = null,
         val opphørÅrsak: OpphørÅrsak,
-        val inntekt: List<Inntekt> = ArrayList(),
-        val inntektsReduksjon: List<Inntektsreduksjon> = emptyList(),
-        @Embedded(onEmpty = Embedded.OnEmpty.USE_NULL, prefix = "aktivitetskrav_")
         val aktivitetskrav: Aktivitetskrav,
         val funksjonellId: String
 )
