@@ -1,9 +1,10 @@
 package no.nav.familie.ef.iverksett.startIverksett.infrastruktur
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
+import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.lagreIverksett.tjeneste.LagreIverksettService
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -12,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import java.util.stream.Collectors
 
 @RestController
-@RequestMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], path = ["/api/iverksett"])
+@RequestMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],
+                path = ["/api/iverksett"],
+                produces = [MediaType.APPLICATION_JSON_VALUE])
 //@ProtectedWithClaims(issuer = "azuread")
 class IverksettController(
         val lagreIverksettService: LagreIverksettService,
@@ -23,16 +27,26 @@ class IverksettController(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    /**
-     * TODO : Legg til multipart request med brev fra pdf
-     */
     @PostMapping
-    fun iverksett(@RequestPart("iverksettJson") iverksettJson: IverksettJson,
+    fun iverksett(@RequestPart("data") data: IverksettJson,
                   @RequestPart("fil") fil: List<MultipartFile>): HttpStatus {
-        lagreIverksettService.lagreIverksettJson(objectMapper.writeValueAsString(iverksettJson), emptyList()).mapLeft {
-            logger.error("Kunne ikke iverksette request : $iverksettJson")
+        val brevListe = opprettBrevListe(data, fil)
+        lagreIverksettService.lagreIverksettJson(objectMapper.writeValueAsString(data), brevListe).mapLeft {
+            logger.error("Kunne ikke iverksette request : $data")
             return HttpStatus.INTERNAL_SERVER_ERROR
         }
         return HttpStatus.OK
+    }
+
+    private fun opprettBrevListe(data: IverksettJson, fil: List<MultipartFile>): List<Brev> {
+        return data.brev.stream().map { brev ->
+            val pdf = fil.stream().filter { it.name == brev.journalpostId }.map { it.bytes }.findFirst()
+
+            if (pdf.isPresent) {
+                brev.toDomain(pdf.get())
+            } else {
+                throw Exception("Data mangler brev")
+            }
+        }.collect(Collectors.toList())
     }
 }
