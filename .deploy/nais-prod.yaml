@@ -46,12 +46,12 @@ spec:
     inbound:
       rules:
         - application: familie-ef-sak
-    gcp:
-      sqlInstances:
-        - type: POSTGRES_12 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
-          databases:
-            - name: familie-ef-iverksett
-              envVarPrefix: DB
-              diskAutoresize: true
-              tier: db-g1-small
-              cascadingDelete: false
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
+        databases:
+          - name: familie-ef-iverksett
+            envVarPrefix: DB
+            diskAutoresize: true
+            tier: db-g1-small
+            cascadingDelete: false
