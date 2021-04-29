@@ -1,64 +1,37 @@
 package no.nav.familie.ef.iverksett.lagreIverksett.infrastruktur
 
-import arrow.core.Either
 import no.nav.familie.ef.iverksett.domene.Brev
-import no.nav.familie.ef.iverksett.lagreIverksett.tjeneste.KunneIkkeLagreIverksett
 import no.nav.familie.ef.iverksett.lagreIverksett.tjeneste.LagreIverksett
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.jdbc.support.GeneratedKeyHolder
-import org.springframework.jdbc.support.KeyHolder
-import java.sql.Connection
-import java.sql.SQLException
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
-class LagreIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) : LagreIverksett {
+open class LagreIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) : LagreIverksett {
 
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    companion object {
-        val IVERKSETT_JSON_VERSJON: Int = 1
-    }
-
-    override fun lagre(iverksettJson: String, brev: List<Brev>): Either<KunneIkkeLagreIverksett, Int> {
+    @Transactional
+    override fun lagre(behandlingsId: UUID, iverksettJson: String, brev: List<Brev>) {
         try {
-            return Either.Right(lagreIverksett(iverksettJson, brev))
+            return lagreIverksett(behandlingsId, iverksettJson, brev)
         } catch (exception: Exception) {
-            logger.error("Kunne ikke lagre iverksett json : ${exception}")
-            return Either.Left(KunneIkkeLagreIverksett)
+            secureLogger.error("Kunne ikke lagre iverksett json for behandlingsId ${behandlingsId}: ${exception}")
+            throw Exception("Feil ved LagreIverksett til basen")
         }
     }
 
-    private fun lagreIverksett(json: String, brev: List<Brev>): Int {
-
-        val sql = "insert into iverksett values(:uuid, to_json(:json::json), :versjon)"
-        val keyHolder: KeyHolder = GeneratedKeyHolder()
-        var affectedRows = 0
-
-        namedParameterJdbcTemplate.jdbcTemplate.execute { connection: Connection ->
-            connection.autoCommit = false
-            var mapSqlParameterSource = MapSqlParameterSource(
-                mapOf(
-                    "uuid" to UUID.randomUUID(),
-                    "json" to json,
-                    "versjon" to IVERKSETT_JSON_VERSJON
-                )
+    private fun lagreIverksett(behandlingsId: UUID, json: String, brev: List<Brev>) {
+        val sql = "insert into iverksett values(:behandlingsId, to_json(:json::json))"
+        var mapSqlParameterSource = MapSqlParameterSource(
+            mapOf(
+                "behandlingsId" to behandlingsId,
+                "json" to json
             )
-            val savepoint = connection.setSavepoint()
-            try {
-                affectedRows = namedParameterJdbcTemplate.update(sql, mapSqlParameterSource, keyHolder)
-                val behandlingsId: UUID = keyHolder.keyList[0].get("behandlingid") as UUID
-                brev.forEach { lagreBrev(behandlingsId, it) }
-                connection.commit()
-            } catch (ex: SQLException) {
-                connection.rollback(savepoint)
-                throw ex
-            } finally {
-                connection.close()
-            }
-        }
-        return affectedRows
+        )
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
+        brev.forEach { lagreBrev(behandlingsId, it) }
     }
 
     private fun lagreBrev(behandlingsId: UUID, brev: Brev) {
@@ -70,10 +43,7 @@ class LagreIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                 "pdf" to brev.brevdata.pdf
             )
         )
-        val affectedRows = namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
-        if (affectedRows != 1) {
-            throw Exception("Kunne ikke legge til brev for behandlingsid : ${behandlingsId})")
-        }
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
 
 }

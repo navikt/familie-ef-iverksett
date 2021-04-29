@@ -1,14 +1,13 @@
 create table iverksett
 (
-    behandlingid                             UUID not null PRIMARY KEY,
-    iverksettJson                            json,
-    versjon                                  varchar
+    behandling_id uuid not null primary key,
+    data          json
 );
 
 create table brev
 (
-  behandlingid uuid references Iverksett(behandlingid),
-  journalpostId varchar,
-  pdf           bytea
+    behandling_id  uuid references iverksett (behandling_id),
+    journalpost_id varchar,
+    pdf            bytea
 );
 
