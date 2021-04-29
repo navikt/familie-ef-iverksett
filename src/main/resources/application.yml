@@ -51,3 +51,5 @@ management:
       base-path: "/internal"
       path-mapping:
          info: "isAlive"
+
+FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.${ON_PREM_URL_ENV}-fss-pub.nais.io
