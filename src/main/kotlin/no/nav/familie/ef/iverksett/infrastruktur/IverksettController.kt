@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur
 
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
-import no.nav.familie.ef.iverksett.iverksett.tjeneste.IverksettService
+import no.nav.familie.ef.iverksett.service.IverksettService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE
 import org.springframework.web.bind.annotation.PostMapping
