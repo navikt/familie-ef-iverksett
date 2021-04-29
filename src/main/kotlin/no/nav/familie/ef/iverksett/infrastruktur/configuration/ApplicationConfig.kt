@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean
 
 @SpringBootConfiguration
 @ConfigurationPropertiesScan
-//@EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger"])
+@EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger"])
 class ApplicationConfig {
 
     private val logger = LoggerFactory.getLogger(this::class.java)

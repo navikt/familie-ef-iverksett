@@ -30,12 +30,11 @@ class IverksettController(
 
     @PostMapping
     fun iverksett(@RequestPart("data") data: IverksettJson,
-                  @RequestPart("fil") fil: List<MultipartFile>): HttpStatus {
+                  @RequestPart("fil") fil: List<MultipartFile>) {
         val brevListe = opprettBrevListe(data, fil)
         lagreIverksettService.lagreIverksettJson(UUID.fromString(data.behandlingId),
                                                  objectMapper.writeValueAsString(data),
                                                  brevListe)
-        return HttpStatus.OK
     }
 
     private fun opprettBrevListe(data: IverksettJson, fil: List<MultipartFile>): List<Brev> {
