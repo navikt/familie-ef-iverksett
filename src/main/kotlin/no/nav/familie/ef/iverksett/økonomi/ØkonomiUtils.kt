@@ -5,7 +5,7 @@ import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse.Companion.disjunkt
 import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse.Companion.snittAndeler
 import no.nav.familie.ef.iverksett.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.domene.Periodetype
-import no.nav.familie.ef.iverksett.domene.Stønadstype
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import java.time.LocalDate
 import java.util.*
 
@@ -19,7 +19,7 @@ fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, th
 @Deprecated("Bør erstattes med å gjøre 'stønadFom' og  'stønadTom'  nullable")
 val NULL_DATO: LocalDate = LocalDate.MIN
 
-fun nullAndelTilkjentYtelse(behandlingId: UUID, personIdent: String, periodeId: PeriodeId?, stønadstype: Stønadstype): AndelTilkjentYtelse =
+fun nullAndelTilkjentYtelse(behandlingId: UUID, personIdent: String, periodeId: PeriodeId?, stønadstype: StønadType): AndelTilkjentYtelse =
         AndelTilkjentYtelse(periodebeløp = Periodebeløp(0, Periodetype.MÅNED, NULL_DATO, NULL_DATO),
                             personIdent = personIdent,
                             periodeId = periodeId?.gjeldende,

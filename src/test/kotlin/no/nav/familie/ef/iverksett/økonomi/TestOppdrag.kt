@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.økonomi
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import no.nav.familie.ef.iverksett.domene.*
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
@@ -265,7 +266,7 @@ object TestOppdragRunner {
                                                        forrigeTilkjentYtelse: TilkjentYtelse? = null) =
             UtbetalingsoppdragGenerator
                     .lagTilkjentYtelseMedUtbetalingsoppdrag(TilkjentYtelseMedMetaData(tilkjentYtelse = nyTilkjentYtelse,
-                                                                                      stønadstype = Stønadstype.OVERGANGSSTØNAD,
+                                                                                      stønadstype = StønadType.OVERGANGSSTØNAD,
                                                                                       eksternBehandlingId = behandlingEksternId,
                                                                                       eksternFagsakId = fagsakEksternId,
                                                                                       saksbehandlerId = saksbehandlerId),

@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.domene.*
 import no.nav.familie.ef.iverksett.økonomi.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
@@ -162,7 +163,7 @@ internal class UtbetalingsoppdragGeneratorTest {
                                 periodeId = 100, // overskreves
                                 forrigePeriodeId = 100, // overskreves
                                 kildeBehandlingId = UUID.randomUUID(), // overskreves
-                                stønadsType = Stønadstype.OVERGANGSSTØNAD) // overskreves
+                                stønadsType = StønadType.OVERGANGSSTØNAD) // overskreves
 
     private fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID,
                                                  vararg andelTilkjentYtelse: AndelTilkjentYtelse) =
@@ -175,7 +176,7 @@ internal class UtbetalingsoppdragGeneratorTest {
                                                                       type = TilkjentYtelseType.ENDRING,
                                                                       andelerTilkjentYtelse = andelTilkjentYtelse.toList()),
                                       eksternBehandlingId = 1,
-                                      stønadstype = Stønadstype.OVERGANGSSTØNAD,
+                                      stønadstype = StønadType.OVERGANGSSTØNAD,
                                       eksternFagsakId = 1,
                                       saksbehandlerId = "VL")
 

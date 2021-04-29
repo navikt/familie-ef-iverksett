@@ -1,16 +1,16 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.domene.Stønadstype
+import no.nav.familie.kontrakter.ef.felles.StønadType
 
-fun Stønadstype.tilKlassifisering() = when (this) {
-    Stønadstype.OVERGANGSSTØNAD -> "EFOG"
-    Stønadstype.BARNETILSYN -> "EFBT"
-    Stønadstype.SKOLEPENGER -> "EFSP"
+fun StønadType.tilKlassifisering() = when (this) {
+    StønadType.OVERGANGSSTØNAD -> "EFOG"
+    StønadType.BARNETILSYN -> "EFBT"
+    StønadType.SKOLEPENGER -> "EFSP"
 }
 
 fun String.tilStønadstype() = when(this) {
-    "EFOG" -> Stønadstype.OVERGANGSSTØNAD
-    "EFBT" -> Stønadstype.BARNETILSYN
-    "EFSP" -> Stønadstype.SKOLEPENGER
+    "EFOG" -> StønadType.OVERGANGSSTØNAD
+    "EFBT" -> StønadType.BARNETILSYN
+    "EFSP" -> StønadType.SKOLEPENGER
     else -> throw IllegalArgumentException("$this er ikke gyldig stønadstype")
 }

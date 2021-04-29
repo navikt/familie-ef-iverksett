@@ -1,12 +1,13 @@
 package no.nav.familie.ef.iverksett.domene
 
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import java.util.*
 
 data class AndelTilkjentYtelse(val periodebeløp: Periodebeløp,
                                val personIdent: String,
                                val periodeId: Long? = null,
                                val forrigePeriodeId: Long? = null,
-                               val stønadsType: Stønadstype,
+                               val stønadsType: StønadType,
                                val kildeBehandlingId: UUID? = null) {
 
     private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean {

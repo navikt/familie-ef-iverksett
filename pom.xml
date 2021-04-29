@@ -133,6 +133,11 @@
             <version>${felles-kontrakter.version}</version>
         </dependency>
         <dependency>
+            <groupId>no.nav.familie.kontrakter</groupId>
+            <artifactId>enslig-forsorger</artifactId>
+            <version>${felles-kontrakter.version}</version>
+        </dependency>
+        <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>token-client-spring</artifactId>
             <version>${token-validation-spring.version}</version>

@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.domene.Stønadstype
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.math.BigDecimal
@@ -26,7 +26,7 @@ data class UtbetalingsperiodeMal(val tilkjentYtelse: TilkjentYtelse,
      * @return Periode til utbetalingsoppdrag
      */
     fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
-                           type: Stønadstype,
+                           type: StønadType,
                            behandlingId: Long,
                            opphørKjedeFom: LocalDate? = null): Utbetalingsperiode =
             Utbetalingsperiode(erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode,

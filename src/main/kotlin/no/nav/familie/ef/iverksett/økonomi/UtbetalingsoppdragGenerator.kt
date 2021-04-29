@@ -1,12 +1,12 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.domene.Stønadstype
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.økonomi.ØkonomiUtils.andelTilOpphørMedDato
 import no.nav.familie.ef.iverksett.økonomi.ØkonomiUtils.andelerTilOpprettelse
 import no.nav.familie.ef.iverksett.økonomi.ØkonomiUtils.beståendeAndeler
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.ENDR
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
@@ -88,7 +88,7 @@ object UtbetalingsoppdragGenerator {
 
     private fun lagUtbetalingsperioderForOpphør(andeler: Pair<AndelTilkjentYtelse, LocalDate>,
                                                 behandlingId: Long,
-                                                type: Stønadstype,
+                                                type: StønadType,
                                                 tilkjentYtelse: TilkjentYtelse): List<Utbetalingsperiode> {
         val utbetalingsperiodeMal = UtbetalingsperiodeMal(tilkjentYtelse, true)
         val (sisteAndelIKjede, opphørKjedeFom) = andeler
@@ -100,7 +100,7 @@ object UtbetalingsoppdragGenerator {
 
     private fun lagUtbetalingsperioderForOpprettelse(andeler: List<AndelTilkjentYtelse>,
                                                      behandlingId: Long,
-                                                     type: Stønadstype,
+                                                     type: StønadType,
                                                      tilkjentYtelse: TilkjentYtelse): List<Utbetalingsperiode> {
 
         val utbetalingsperiodeMal = UtbetalingsperiodeMal(tilkjentYtelse)
