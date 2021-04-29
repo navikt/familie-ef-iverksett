@@ -8,7 +8,6 @@ data class Inntekt(
 )
 
 data class Inntektsreduksjon(
-    @MappedCollection(idColumn = "inntektsreduksjon_id")
     val periodebeløp: List<Periodebeløp> = emptyList()
 )
 

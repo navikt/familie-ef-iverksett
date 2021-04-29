@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import java.util.*
 import java.util.stream.Collectors
 
 @RestController
@@ -31,10 +32,9 @@ class IverksettController(
     fun iverksett(@RequestPart("data") data: IverksettJson,
                   @RequestPart("fil") fil: List<MultipartFile>): HttpStatus {
         val brevListe = opprettBrevListe(data, fil)
-        lagreIverksettService.lagreIverksettJson(objectMapper.writeValueAsString(data), brevListe).mapLeft {
-            logger.error("Kunne ikke iverksette request : $data")
-            return HttpStatus.INTERNAL_SERVER_ERROR
-        }
+        lagreIverksettService.lagreIverksettJson(UUID.fromString(data.behandlingId),
+                                                 objectMapper.writeValueAsString(data),
+                                                 brevListe)
         return HttpStatus.OK
     }
 
