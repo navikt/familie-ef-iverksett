@@ -1,1 +1,2 @@
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev-fss-pub.nais.io
+STS_URL: https://api-gw-q1.oera.no/legacy-sts/rest/v1/sts/token?grant_type=client_credentials&scope=openid

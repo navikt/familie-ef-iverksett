@@ -1,3 +1,5 @@
+application:
+   name: familie-ef-iverksett
 server:
    servlet:
       context-path: /
@@ -35,7 +37,7 @@ no.nav.security.jwt:
       registration:
          familie-oppdrag:
             resource-url: ${FAMILIE_OPPDRAG_API_URL}
-            token-endpoint-url: ${AZUREAD_TOKEN_ENDPOINT_URL}
+            token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
             grant-type: client_credentials
             scope: ${FAMILIE_OPPDRAG_SCOPE}
             authentication:
@@ -53,3 +55,4 @@ management:
          info: "isAlive"
 
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.prod-fss-pub.nais.io
+STS_URL: https://api-gw.oera.no/legacy-sts/rest/v1/sts/token?grant_type=client_credentials&scope=openid
