@@ -9,18 +9,16 @@ import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
-import org.springframework.web.multipart.MultipartResolver
-import org.springframework.web.multipart.support.StandardServletMultipartResolver
 
 @SpringBootConfiguration
 @ConfigurationPropertiesScan
-//@EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger"])
+@EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger"])
 class ApplicationConfig {
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
     fun kotlinModule(): KotlinModule = KotlinModule()
-
-    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
     fun logFilter(): FilterRegistrationBean<LogFilter> {
