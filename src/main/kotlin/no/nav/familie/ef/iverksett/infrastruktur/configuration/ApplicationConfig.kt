@@ -9,9 +9,11 @@ import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
 
 @SpringBootConfiguration
 @ConfigurationPropertiesScan
+@ComponentScan("no.nav.familie.ef.iverksett")
 @EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger"])
 class ApplicationConfig {
 
