@@ -55,4 +55,3 @@ management:
          info: "isAlive"
 
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.prod-fss-pub.nais.io
-STS_URL: https://api-gw.oera.no/legacy-sts/rest/v1/sts/token?grant_type=client_credentials&scope=openid
