@@ -46,6 +46,9 @@ spec:
     inbound:
       rules:
         - application: familie-ef-sak
+    outbound:
+      external:
+        - host: familie-oppdrag.prod-fss-pub.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_12 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
