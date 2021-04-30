@@ -30,7 +30,7 @@ logging:
    config: "classpath:logback-spring.xml"
 no.nav.security.jwt:
    issuer:
-      azureread:
+      azuread:
          discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
          accepted_audience: ${AZURE_APP_CLIENT_ID}
    client:

@@ -6,6 +6,7 @@ import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 class SimuleringController(
         private val simuleringService: SimuleringService,
 ) {
-    @PostMapping()
-    fun hentSimulering(simuleringDto: SimuleringDto): Ressurs<DetaljertSimuleringResultat> {
+    @PostMapping
+    fun hentSimulering(@RequestBody simuleringDto: SimuleringDto): Ressurs<DetaljertSimuleringResultat> {
         val detaljertSimuleringResultat = simuleringService.hentSimulering(simuleringDto)
         return Ressurs.success(detaljertSimuleringResultat)
     }

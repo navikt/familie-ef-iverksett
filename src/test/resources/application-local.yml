@@ -5,7 +5,7 @@ logging:
   config: "classpath:logback-local.xml"
 no.nav.security.jwt:
   issuer:
-    azureread:
+    azuread:
       discoveryurl: https://login.microsoftonline.com/navq.onmicrosoft.com/v2.0/.well-known/openid-configuration
       accepted_audience: ${AZURE_APP_CLIENT_ID}
 
