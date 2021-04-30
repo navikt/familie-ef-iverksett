@@ -1,3 +1,5 @@
+application:
+   name: familie-ef-iverksett
 server:
    servlet:
       context-path: /
@@ -24,12 +26,25 @@ spring:
       serialization:
          write-empty-json-arrays: false
          fail-on-empty-beans: false
-
+logging:
+   config: "classpath:logback-spring.xml"
 no.nav.security.jwt:
    issuer:
       aad:
          discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
          accepted_audience: ${AZURE_APP_CLIENT_ID}
+   client:
+      registration:
+         familie-oppdrag:
+            resource-url: ${FAMILIE_OPPDRAG_API_URL}
+            token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
+            grant-type: client_credentials
+            scope: ${FAMILIE_OPPDRAG_SCOPE}
+            authentication:
+               client-id: ${AZURE_APP_CLIENT_ID}
+               client-secret: ${AZURE_APP_CLIENT_SECRET}
+               client-auth-method: client_secret_basic
+
 
 management:
    endpoint.health.show-details: always
@@ -38,3 +53,5 @@ management:
       base-path: "/internal"
       path-mapping:
          info: "isAlive"
+
+FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.prod-fss-pub.nais.io

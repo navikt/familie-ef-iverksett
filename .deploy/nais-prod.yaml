@@ -10,11 +10,11 @@ spec:
   ingresses:
     - https://familie-ef-iverksett.intern.nav.no
   liveness:
-    path: /internal/status/isAlive
+    path: /internal/isAlive
     initialDelay: 30
     failureThreshold: 10
   readiness:
-    path: /internal/status/isAlive
+    path: /internal/isAlive
     initialDelay: 30
     failureThreshold: 10
   prometheus:
@@ -46,3 +46,15 @@ spec:
     inbound:
       rules:
         - application: familie-ef-sak
+    outbound:
+      external:
+        - host: familie-oppdrag.prod-fss-pub.nais.io
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
+        databases:
+          - name: familie-ef-iverksett
+            envVarPrefix: DB
+            diskAutoresize: true
+            tier: db-g1-small
+            cascadingDelete: false
