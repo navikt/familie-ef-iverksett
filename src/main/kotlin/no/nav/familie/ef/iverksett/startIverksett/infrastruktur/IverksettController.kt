@@ -5,6 +5,8 @@ import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.lagreIverksett.tjeneste.LagreIverksettService
+import no.nav.security.token.support.core.api.Protected
+import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,7 +21,7 @@ import java.util.stream.Collectors
 @RequestMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE],
                 path = ["/api/iverksett"],
                 produces = [MediaType.APPLICATION_JSON_VALUE])
-//@ProtectedWithClaims(issuer = "azuread")
+@ProtectedWithClaims(issuer = "azuread")
 class IverksettController(
         val lagreIverksettService: LagreIverksettService,
         val objectMapper: ObjectMapper
