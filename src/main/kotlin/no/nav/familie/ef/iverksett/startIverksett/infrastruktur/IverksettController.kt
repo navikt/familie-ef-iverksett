@@ -6,7 +6,6 @@ import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.lagreIverksett.tjeneste.LagreIverksettService
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -38,14 +37,9 @@ class IverksettController(
     }
 
     private fun opprettBrevListe(data: IverksettJson, fil: List<MultipartFile>): List<Brev> {
-        return data.brev.stream().map { brev ->
-            val pdf = fil.stream().filter { it.name == brev.journalpostId }.map { it.bytes }.findFirst()
-
-            if (pdf.isPresent) {
-                brev.toDomain(pdf.get())
-            } else {
-                throw Exception("Data mangler brev")
-            }
-        }.collect(Collectors.toList())
+        return data.brev.map { brev ->
+            val pdf = fil.find { it.originalFilename == brev.journalpostId }!!.bytes
+            brev.toDomain(pdf)
+        }
     }
 }
