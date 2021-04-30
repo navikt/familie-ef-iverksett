@@ -35,7 +35,8 @@
         "utbetaltPerPeriode": 0
       },
       "personIdent": "string",
-      "stønadsType": "BARNETILSYN"
+      "stønadsType": "BARNETILSYN",
+      "kildeBehandlingId" : "cef0cbf3-6458-4f13-a418-ee4d7e7505dd"
     }
   ],
   "funksjonellId": "string",
@@ -59,7 +60,8 @@
         "utbetaltPerPeriode": 0
       },
       "personIdent": "string",
-      "stønadsType": "BARNETILSYN"
+      "stønadsType": "BARNETILSYN",
+      "kildeBehandlingId": "cef0cbf3-6458-4f13-a418-ee4d7e7505dd"
     }
   ],
   "vedtak": "AVSLÅTT",
