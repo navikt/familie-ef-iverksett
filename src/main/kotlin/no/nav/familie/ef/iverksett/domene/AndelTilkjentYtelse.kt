@@ -7,9 +7,3 @@ data class AndelTilkjentYtelse(
     val forrigePeriodeId: Long? = null,
     val stønadsType: StønadsType
 )
-
-enum class StønadsType {
-    OVERGANGSSTØNAD,
-    BARNETILSYN,
-    SKOLEPENGER
-}
