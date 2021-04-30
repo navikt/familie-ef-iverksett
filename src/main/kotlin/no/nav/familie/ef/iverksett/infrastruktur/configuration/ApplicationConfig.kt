@@ -2,8 +2,6 @@ package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import no.nav.familie.http.config.RestTemplateAzure
-import no.nav.familie.http.interceptor.StsBearerTokenClientInterceptor
-import no.nav.familie.http.sts.StsRestClient
 import no.nav.familie.log.filter.LogFilter
 import no.nav.familie.log.filter.RequestTimeFilter
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client
@@ -26,10 +24,10 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 class ApplicationConfig {
 
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
     @Bean
     fun kotlinModule(): KotlinModule = KotlinModule()
-
-    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
     fun logFilter(): FilterRegistrationBean<LogFilter> {
@@ -48,4 +46,5 @@ class ApplicationConfig {
         filterRegistration.order = 2
         return filterRegistration
     }
+
 }

@@ -16,6 +16,7 @@ data class IverksettJson(
     val fagsakId: String,
     val saksnummer: String? = null,
     val behandlingId: String,
+    val eksternId: Long,
     val relatertBehandlingId: String? = null,
     val kode6eller7: Boolean,
     val tidspunktVedtak: OffsetDateTime? = null,
@@ -27,8 +28,6 @@ data class IverksettJson(
     val behandlingResultat: BehandlingResultat,
     val vedtak: Vedtak? = null,
     val opphørÅrsak: OpphørÅrsak,
-    val inntekt: List<InntektJson> = ArrayList(),
-    val inntektsReduksjon: List<InntektsreduksjonJson> = emptyList(),
     val aktivitetskrav: AktivitetskravJson,
     val funksjonellId: String
 )
@@ -74,14 +73,15 @@ fun AktivitetskravJson.toDomain(): Aktivitetskrav {
     return Aktivitetskrav(this.aktivitetspliktInntrefferDato, this.harSagtOppArbeidsforhold)
 }
 
-fun IverksettJson.toDomain(): Iverksett {
+fun IverksettJson.toDomain(pdf: ByteArray): Iverksett {
     return Iverksett(
-        this.brev.map { it.toDomain() },
+        this.brev.map { it.toDomain(pdf) },
         this.forrigeTilkjentYtelse.map { it.toDomain() },
         this.tilkjentYtelse.map { it.toDomain() },
         this.fagsakId,
         this.saksnummer,
         this.behandlingId,
+        this.eksternId,
         this.relatertBehandlingId,
         this.kode6eller7,
         this.tidspunktVedtak,
@@ -93,8 +93,6 @@ fun IverksettJson.toDomain(): Iverksett {
         this.behandlingResultat,
         this.vedtak,
         this.opphørÅrsak,
-        this.inntekt.map { it.toDomain() },
-        this.inntektsReduksjon.map { it.toDomain() },
         this.aktivitetskrav.toDomain(),
         this.funksjonellId
     )

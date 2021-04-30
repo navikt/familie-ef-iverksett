@@ -1,9 +1,12 @@
-package no.nav.familie.ef.iverksett.service
+package no.nav.familie.ef.iverksett.startIverksett.tjeneste
 
 import no.nav.familie.ef.iverksett.domene.Iverksett
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
+/**
+ * TODO : Service for starting av iverksetting
+ */
 @Service
 class IverksettService() {
 

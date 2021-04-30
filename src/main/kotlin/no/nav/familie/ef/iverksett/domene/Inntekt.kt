@@ -1,11 +1,15 @@
 package no.nav.familie.ef.iverksett.domene
 
+import org.springframework.data.relational.core.mapping.MappedCollection
+
 data class Inntekt(
     val periodebeløp: Periodebeløp,
     val inntektstype: InntektsType
 )
 
-data class Inntektsreduksjon(val periodebeløp: List<Periodebeløp> = emptyList())
+data class Inntektsreduksjon(
+    val periodebeløp: List<Periodebeløp> = emptyList()
+)
 
 enum class InntektsType {
     ARBEIDINNTEKT,

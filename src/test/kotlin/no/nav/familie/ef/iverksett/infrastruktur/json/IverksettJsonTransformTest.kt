@@ -14,6 +14,6 @@ class IverksettJsonTransformTest {
     @Test
     fun `deserialiser JSON til IverksettJson, kall toDomain, forvent like IverksettJson`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
-        mapper.readValue<IverksettJson>(json).toDomain()
+        mapper.readValue<IverksettJson>(json).toDomain(ByteArray(0))
     }
 }

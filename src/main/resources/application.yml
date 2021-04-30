@@ -30,7 +30,7 @@ logging:
    config: "classpath:logback-spring.xml"
 no.nav.security.jwt:
    issuer:
-      aad:
+      azureread:
          discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
          accepted_audience: ${AZURE_APP_CLIENT_ID}
    client:
@@ -49,7 +49,7 @@ no.nav.security.jwt:
 management:
    endpoint.health.show-details: always
    endpoints.web:
-      exposure.include: info, health, metrics, prometheus
+      exposure.include: info, health, metrics, prometheus, mappings
       base-path: "/internal"
       path-mapping:
          info: "isAlive"
