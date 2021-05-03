@@ -1,0 +1,19 @@
+server:
+  port: 9094
+logging:
+  config: "classpath:logback-local.xml"
+no.nav.security.jwt:
+  issuer.azuread:
+    discoveryurl: http://metadata
+    accepted_audience: aud-localhost
+    cookie_name: localhost-idtoken
+    proxy_url: #Default satt, skal være null i integrasjonstest
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+FAMILIE_OPPDRAG_API_URL: http://localhost:8087
+AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
+
+AZURE_APP_TENANT_ID: navq.onmicrosoft.com
