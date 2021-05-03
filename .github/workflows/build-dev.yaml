@@ -1,8 +1,6 @@
 name: Build
 on: [pull_request]
 
-env:
-
 jobs:
   build:
     name: Build, push and deploy to dev-gcp
