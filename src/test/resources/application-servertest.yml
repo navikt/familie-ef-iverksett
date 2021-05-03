@@ -16,6 +16,4 @@ spring:
 FAMILIE_OPPDRAG_API_URL: http://localhost:8087
 AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
 
-STS_APIKEY: 1
-PDL_APIKEY: 2
 AZURE_APP_TENANT_ID: navq.onmicrosoft.com
