@@ -22,12 +22,12 @@ open class LagreIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbc
         }
     }
 
-    private fun lagreIverksett(behandlingsId: UUID, json: String, brev: List<Brev>) {
-        val sql = "insert into iverksett values(:behandlingsId, :json)"
+    private fun lagreIverksett(behandlingsId: UUID, iverksettJson: String, brev: List<Brev>) {
+        val sql = "insert into iverksett values(:behandlingsId, :iverksettJson::json)"
         var mapSqlParameterSource = MapSqlParameterSource(
             mapOf(
                 "behandlingsId" to behandlingsId,
-                "json" to json
+                "iverksettJson" to iverksettJson
             )
         )
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
