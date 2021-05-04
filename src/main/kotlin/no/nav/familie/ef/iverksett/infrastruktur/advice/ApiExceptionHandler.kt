@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
-
 @Suppress("unused")
 @ControllerAdvice
 class ApiExceptionHandler {
@@ -30,7 +29,7 @@ class ApiExceptionHandler {
     }
 
     @ExceptionHandler(ApiFeil::class)
-    fun handleThrowable(feil: ApiFeil): ResponseEntity<String> {
+    fun handleApiFeil(feil: ApiFeil): ResponseEntity<String> {
         return ResponseEntity.status(feil.httpStatus).body(feil.feil)
     }
 
