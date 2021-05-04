@@ -25,7 +25,7 @@ class LagreIverksettJdbcTest : ServerTest() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
         val iverksett = objectMapper.readValue<IverksettJson>(json)
         lagreIverksettService.lagreIverksettJson(
-            UUID.randomUUID(),
+            UUID.fromString(iverksett.behandlingId),
             objectMapper.writeValueAsString(iverksett),
             listOf(Brev("1", Brevdata("mottaker", "saksbehandler", ByteArray(4096))))
         )
