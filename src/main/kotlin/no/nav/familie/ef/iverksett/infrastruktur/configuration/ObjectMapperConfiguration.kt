@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 class ObjectMapperConfiguration {
 
     @Bean
-    open fun objectMapperBuilder(): ObjectMapper {
+    open fun objectMapper(): ObjectMapper {
         return ObjectMapper().registerModule(KotlinModule()).registerModule(JavaTimeModule())
     }
 
