@@ -7,7 +7,6 @@ import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.domene.Brevdata
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
-import no.nav.familie.ef.iverksett.lagreIverksett.tjeneste.LagreIverksettService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
@@ -15,7 +14,7 @@ import java.util.*
 class LagreIverksettJdbcTest : ServerTest() {
 
     @Autowired
-    private lateinit var lagreIverksettService: LagreIverksettService
+    private lateinit var lagreIverksettJdbc: LagreIverksettJdbc
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -24,7 +23,7 @@ class LagreIverksettJdbcTest : ServerTest() {
     fun `deserialiser og lagre iverksett, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
         val iverksett = objectMapper.readValue<IverksettJson>(json)
-        lagreIverksettService.lagreIverksettJson(
+        lagreIverksettJdbc.lagre(
             UUID.fromString(iverksett.behandlingId),
             objectMapper.writeValueAsString(iverksett),
             listOf(Brev("1", Brevdata("mottaker", "saksbehandler", ByteArray(4096))))

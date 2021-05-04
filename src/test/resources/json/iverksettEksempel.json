@@ -9,7 +9,7 @@
       "personIdent": "string"
     }
   ],
-  "behandlingId": "string",
+  "behandlingId": "2ba6094e-acdd-11eb-8529-0242ac130003",
   "behandlingResultat": "ANNULLERT",
   "behandlingType": "FØRSTEGANGSBEHANDLING",
   "behandlingÅrsak": "DØDSFALL",
