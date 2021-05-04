@@ -4,6 +4,8 @@ server:
    servlet:
       context-path: /
 spring:
+   main:
+      allow-bean-definition-overriding: true
    flyway:
       enabled: true
    datasource:
@@ -28,6 +30,7 @@ spring:
          fail-on-empty-beans: false
 logging:
    config: "classpath:logback-spring.xml"
+
 no.nav.security.jwt:
    issuer:
       azuread:
