@@ -30,9 +30,7 @@ class ApiExceptionHandler : DefaultHandlerExceptionResolver() {
         httpServletResponse: HttpServletResponse
     ): ResponseEntity<String> {
 
-        val defaultHandlerResolve: ModelAndView? =
-            doResolveException(httpServletRequest, httpServletResponse, null, exception)
-        if (defaultHandlerResolve != null) {
+        if (doResolveException(httpServletRequest, httpServletResponse, null, exception) != null) {
             return uventetFeil(
                 exception,
                 resolveStatus(httpServletResponse.status)
