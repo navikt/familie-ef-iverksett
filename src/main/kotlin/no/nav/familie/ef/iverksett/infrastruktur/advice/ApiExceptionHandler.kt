@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -30,7 +29,7 @@ class ApiExceptionHandler : DefaultHandlerExceptionResolver() {
         httpServletResponse: HttpServletResponse
     ): ResponseEntity<String> {
 
-        if (doResolveException(httpServletRequest, httpServletResponse, null, exception) != null) {
+        doResolveException(httpServletRequest, httpServletResponse, null, exception)?.let {
             return uventetFeil(
                 exception,
                 resolveStatus(httpServletResponse.status)
