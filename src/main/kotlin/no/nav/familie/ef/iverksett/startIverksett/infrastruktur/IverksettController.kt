@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.lagreIverksett.tjeneste.LagreIverksettService
+import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
@@ -22,7 +23,8 @@ import java.util.*
 @ProtectedWithClaims(issuer = "azuread")
 class IverksettController(
         val lagreIverksettService: LagreIverksettService,
-        val objectMapper: ObjectMapper
+        val objectMapper: ObjectMapper,
+        val vedtakstatistikkService: VedtakstatistikkService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -34,6 +36,11 @@ class IverksettController(
         lagreIverksettService.lagreIverksettJson(UUID.fromString(data.behandlingId),
                                                  objectMapper.writeValueAsString(data),
                                                  brevListe)
+    }
+
+    @PostMapping("/vedtakstatistikk")
+    fun sendStatistikk(@RequestPart("data") data: String) {
+        vedtakstatistikkService.sendTilKafka(data)
     }
 
     private fun opprettBrevListe(data: IverksettJson, fil: List<MultipartFile>): List<Brev> {
