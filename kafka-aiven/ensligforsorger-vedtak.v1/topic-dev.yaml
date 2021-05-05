@@ -1,0 +1,20 @@
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: ensligforsorger-vedtak.v1
+  namespace: teamfamilie
+  labels:
+    team: teamfamilie
+spec:
+  pool: nav-dev
+  config:
+    cleanupPolicy: delete
+    minimumInSyncReplicas: 1
+    partitions: 1
+    replication: 3
+    retentionBytes: -1
+    retentionHours: 72
+  acl:
+    - team: teamfamilie
+      application: familie-ef-iverksett
+      access: write
