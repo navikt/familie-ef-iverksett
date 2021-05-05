@@ -45,7 +45,7 @@ class IverksettControllerTest : ServerTest() {
     }
 
     @Test
-    internal fun `mangler brev, forvent 500`() {
+    internal fun `mangler brev, forvent 400`() {
         val listMedBrev = listOf(opprettBrev("1"), opprettBrev("2"))
 
         val iverksettJson = opprettIverksettJson(behandlingId = behandlingId.toString(), listMedBrev)
@@ -57,7 +57,7 @@ class IverksettControllerTest : ServerTest() {
                                                                  HttpMethod.POST,
                                                                  HttpEntity(request, headers))
 
-        assertThat(respons.statusCode.value()).isEqualTo(500)
+        assertThat(respons.statusCode.value()).isEqualTo(400)
     }
 
     @Test
