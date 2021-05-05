@@ -24,7 +24,7 @@ class ApiExceptionHandler : DefaultHandlerExceptionResolver() {
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleThrowable(
+    fun handleException(
         exception: Exception,
         httpServletRequest: HttpServletRequest,
         httpServletResponse: HttpServletResponse
