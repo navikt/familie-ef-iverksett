@@ -12,7 +12,7 @@ jobs:
       - name: deploy to dev
         uses: nais/deploy/actions/deploy@v1
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_API_KEY }}
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/ensligforsorger-vedtak.v1/topic-dev.yaml
           PRINT_PAYLOAD: true
