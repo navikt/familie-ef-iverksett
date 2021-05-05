@@ -58,3 +58,5 @@ spec:
             diskAutoresize: true
             tier: db-g1-small
             cascadingDelete: false
+  kafka:
+    pool: nav-dev
