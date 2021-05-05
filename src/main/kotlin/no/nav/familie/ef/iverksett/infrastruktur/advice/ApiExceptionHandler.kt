@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
 
 @Suppress("unused")
 @ControllerAdvice
@@ -20,12 +21,33 @@ class ApiExceptionHandler {
 
     @ExceptionHandler(Throwable::class)
     fun handleThrowable(throwable: Throwable): ResponseEntity<String> {
-        secureLogger.error("En feil har oppstått", throwable)
-        logger.error("En feil har oppstått: ${rootCause(throwable)} ")
+        val responseStatus = throwable::class.annotations.find { it is ResponseStatus }?.let { it as ResponseStatus }
+        if (responseStatus != null) {
+            return håndtertResponseStatusFeil(throwable, responseStatus)
+        }
+        return uventetFeil(throwable)
+    }
 
+    private fun uventetFeil(throwable: Throwable): ResponseEntity<String> {
+        secureLogger.error("En feil har oppstått", throwable)
+        logger.error("En feil har oppstått - throwable=${rootCause(throwable)} ")
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("En uventet feil oppstod.")
+            .body("Uventet feil")
+    }
+
+    private fun håndtertResponseStatusFeil(
+        throwable: Throwable,
+        responseStatus: ResponseStatus
+    ): ResponseEntity<String> {
+        val status = if (responseStatus.value != HttpStatus.INTERNAL_SERVER_ERROR) responseStatus.value else responseStatus.code
+        val loggMelding = "En håndtert feil har oppstått" +
+                " throwable=${rootCause(throwable)}" +
+                " reason=${responseStatus.reason}" +
+                " status=$status"
+
+        secureLogger.error(loggMelding, throwable)
+        return ResponseEntity.status(status).body("Håndtert feil")
     }
 
     @ExceptionHandler(ApiFeil::class)
