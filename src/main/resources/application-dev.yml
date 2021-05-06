@@ -14,4 +14,4 @@ spring:
           location: ${KAFKA_TRUSTSTORE_PATH}
           password: ${KAFKA_CREDSTORE_PASSWORD}
 
-FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev-fss-pub.nais.io
+FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev.intern.nav.no

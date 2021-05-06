@@ -19,7 +19,7 @@ fun simuleringDto(): SimuleringDto {
             stønadTom = LocalDate.of(2021, 12, 31),
             opphørFom = null,
             utbetalingsoppdrag = null,
-            vedtaksdato = null,
+            vedtaksdato = LocalDate.of(2021, 5, 1),
             status = TilkjentYtelseStatus.IKKE_KLAR,
             type = TilkjentYtelseType.FØRSTEGANGSBEHANDLING,
             andelerTilkjentYtelse = listOf(

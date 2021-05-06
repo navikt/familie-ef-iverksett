@@ -28,7 +28,7 @@ class OppdragClient(@Value("\${FAMILIE_OPPDRAG_API_URL}")
     private val konsistensavstemmingUriV2: URI =
             UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/v2/konsistensavstemming").build().toUri()
 
-    private val postSimuleringUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("simulering/v1").build().toUri()
+    private val postSimuleringUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/simulering/v1").build().toUri()
 
     fun iverksettOppdrag(utbetalingsoppdrag: Utbetalingsoppdrag): String {
         return postForEntity<Ressurs<String>>(postOppdragUri, utbetalingsoppdrag).getDataOrThrow()
