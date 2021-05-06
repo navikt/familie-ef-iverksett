@@ -9,5 +9,5 @@ no.nav.security.jwt:
       discoveryurl: https://login.microsoftonline.com/navq.onmicrosoft.com/v2.0/.well-known/openid-configuration
       accepted_audience: ${AZURE_APP_CLIENT_ID}
 
-FAMILIE_OPPDRAG_API_URL: http://localhost:8087
+FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev.intern.nav.no
 AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
