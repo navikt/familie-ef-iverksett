@@ -1,19 +1,20 @@
 package no.nav.familie.ef.iverksett.infrastruktur.advice
 
+import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import org.slf4j.LoggerFactory
 import org.springframework.core.NestedExceptionUtils
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.context.request.WebRequest
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @Suppress("unused")
 @ControllerAdvice
-class ApiExceptionHandler : DefaultHandlerExceptionResolver() {
+class ApiExceptionHandler : ResponseEntityExceptionHandler() {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
@@ -22,20 +23,39 @@ class ApiExceptionHandler : DefaultHandlerExceptionResolver() {
         return NestedExceptionUtils.getMostSpecificCause(throwable).javaClass.simpleName
     }
 
-    @ExceptionHandler(Exception::class)
-    fun handleException(
-        exception: Exception,
-        httpServletRequest: HttpServletRequest,
-        httpServletResponse: HttpServletResponse
-    ): ResponseEntity<String> {
+    override fun handleExceptionInternal(
+        ex: Exception,
+        body: Any?,
+        headers: HttpHeaders,
+        status: HttpStatus,
+        request: WebRequest
+    ): ResponseEntity<Any> {
+        secureLogger.error("En feil har oppstått", ex)
+        logger.error("En feil har oppstått - throwable=${rootCause(ex)} status=${status.value()}")
+        return super.handleExceptionInternal(ex, body, headers, status, request)
+    }
 
-        doResolveException(httpServletRequest, httpServletResponse, null, exception)?.let {
-            return uventetFeil(
-                exception,
-                resolveStatus(httpServletResponse.status)
-            )
+    @ExceptionHandler(Throwable::class)
+    fun handleThrowable(throwable: Throwable): ResponseEntity<String> {
+        val responseStatus = throwable::class.annotations.find { it is ResponseStatus }?.let { it as ResponseStatus }
+        if (responseStatus != null) {
+            return håndtertResponseStatusFeil(throwable, responseStatus)
         }
-        return uventetFeil(exception, HttpStatus.INTERNAL_SERVER_ERROR)
+        return uventetFeil(throwable)
+    }
+
+    private fun håndtertResponseStatusFeil(
+        throwable: Throwable,
+        responseStatus: ResponseStatus
+    ): ResponseEntity<String> {
+        val status = if (responseStatus.value != HttpStatus.INTERNAL_SERVER_ERROR) responseStatus.value else responseStatus.code
+        val loggMelding = "En håndtert feil har oppstått" +
+                " throwable=${rootCause(throwable)}" +
+                " reason=${responseStatus.reason}" +
+                " status=$status"
+
+        loggFeil(throwable, loggMelding)
+        return ResponseEntity.status(status).body("Håndtert feil")
     }
 
     @ExceptionHandler(ApiFeil::class)
@@ -47,12 +67,19 @@ class ApiExceptionHandler : DefaultHandlerExceptionResolver() {
         return HttpStatus.resolve(status) ?: HttpStatus.INTERNAL_SERVER_ERROR
     }
 
-    private fun uventetFeil(throwable: Throwable, httpStatus: HttpStatus): ResponseEntity<String> {
+    private fun uventetFeil(throwable: Throwable): ResponseEntity<String> {
         secureLogger.error("En feil har oppstått", throwable)
-        logger.error("En feil har oppstått - throwable=${rootCause(throwable)}, status : ${httpStatus.value()} ")
+        logger.error("En feil har oppstått - throwable=${rootCause(throwable)} ")
         return ResponseEntity
-            .status(httpStatus)
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body("Uventet feil")
+    }
+
+    private fun loggFeil(throwable: Throwable, loggMelding: String) {
+        when (throwable) {
+            is JwtTokenUnauthorizedException -> logger.debug(loggMelding)
+            else -> logger.error(loggMelding)
+        }
     }
 
 }
