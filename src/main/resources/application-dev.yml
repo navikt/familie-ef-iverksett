@@ -4,14 +4,14 @@ spring:
     properties:
       security:
         protocol: SSL
-        ssl:
-          keystore:
-            type: PKCS12
-            location: ${KAFKA_KEYSTORE_PATH}
-            password: ${KAFKA_CREDSTORE_PASSWORD}
-          truststore:
-            type: PKCS12
-            location: ${KAFKA_TRUSTSTORE_PATH}
-            password: ${KAFKA_CREDSTORE_PASSWORD}
+      ssl:
+        keystore:
+          type: PKCS12
+          location: ${KAFKA_KEYSTORE_PATH}
+          password: ${KAFKA_CREDSTORE_PASSWORD}
+        truststore:
+          type: PKCS12
+          location: ${KAFKA_TRUSTSTORE_PATH}
+          password: ${KAFKA_CREDSTORE_PASSWORD}
 
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev-fss-pub.nais.io
