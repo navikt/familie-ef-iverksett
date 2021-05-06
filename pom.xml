@@ -28,6 +28,7 @@
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.WebApplicationKt</start-class>
         <felles-kontrakter.version>2.0_20210506101703_8c0e695</felles-kontrakter.version>
+        <familie.kontrakter.stonadsstatistikk-ef>2.0_20210506161536_e1e5da8</familie.kontrakter.stonadsstatistikk-ef>
         <token-validation-spring.version>1.3.5</token-validation-spring.version>
     </properties>
 
@@ -141,6 +142,11 @@
             <groupId>no.nav.familie.kontrakter</groupId>
             <artifactId>enslig-forsorger</artifactId>
             <version>${felles-kontrakter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.familie.eksterne.kontrakter</groupId>
+            <artifactId>stonadsstatistikk-ef</artifactId>
+            <version>${familie.kontrakter.stonadsstatistikk-ef}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
