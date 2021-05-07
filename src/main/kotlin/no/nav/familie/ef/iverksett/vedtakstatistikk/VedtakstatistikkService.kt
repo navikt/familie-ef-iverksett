@@ -64,7 +64,7 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
     private fun mapTilUtbetaling(andeltilkjentYtelseJson: AndeltilkjentYtelseJson, saksnummer: String?): Utbetaling {
         return Utbetaling(mapTilPeriodeBeløp(andeltilkjentYtelseJson.periodebeløp),
                           Utbetalingsdetalj(gjelderPerson = Person(andeltilkjentYtelseJson.personIdent),
-                                            klassekode = andeltilkjentYtelseJson.stønadsType.tilKlassifisering(),
+                                            klassekode = andeltilkjentYtelseJson.stønadsType!!.tilKlassifisering(),
                                             delytelseId = saksnummer + andeltilkjentYtelseJson.periodeId))
     }
 
