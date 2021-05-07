@@ -13,7 +13,10 @@ import no.nav.familie.ef.iverksett.infrastruktur.json.PersonJson
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
-fun opprettIverksettJson(behandlingId: String, brev: List<BrevJson>): IverksettJson {
+fun opprettIverksettJson(behandlingId: String,
+                         brev: List<BrevJson>,
+                         tidspunktVedtak: LocalDate? = LocalDate.now(),
+                         aktivitetspliktInntrefferDato: LocalDate? = LocalDate.now()): IverksettJson {
     return IverksettJson(
             brev = brev,
             vedtak = Vedtak.INNVILGET,
@@ -25,14 +28,14 @@ fun opprettIverksettJson(behandlingId: String, brev: List<BrevJson>): IverksettJ
             eksternId = 1L,
             relatertBehandlingId = "2",
             kode6eller7 = false,
-            tidspunktVedtak = LocalDate.now(),
+            tidspunktVedtak = tidspunktVedtak,
             vilkårsvurderinger = emptyList(),
             person = PersonJson(personIdent = "12345678910", aktorId = null),
             barn = emptyList(),
             behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
             behandlingResultat = BehandlingResultat.FERDIGSTILT,
             opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
-            aktivitetskrav = AktivitetskravJson(LocalDate.now(), false),
+            aktivitetskrav = AktivitetskravJson(aktivitetspliktInntrefferDato!!, false),
             funksjonellId = "0",
             behandlingÅrsak = BehandlingÅrsak.SØKNAD
     )

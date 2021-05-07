@@ -39,7 +39,7 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
                              behandlingId = iverksettJson.behandlingId,
                              relatertBehandlingId = iverksettJson.relatertBehandlingId,
                              kode6eller7 = iverksettJson.kode6eller7,
-                             tidspunktVedtak = iverksettJson.tidspunktVedtak?.atStartOfDay(ZoneId.systemDefault()), //?
+                             tidspunktVedtak = iverksettJson.tidspunktVedtak?.atStartOfDay(ZoneId.of("Europe/Paris")), //?
                              vilkårsvurderinger = iverksettJson.vilkårsvurderinger.map { mapTilVilkårsvurderinger(it) },
                              person = mapTilPerson(iverksettJson.person),
                              barn = iverksettJson.barn.map { mapTilPerson(it) },
