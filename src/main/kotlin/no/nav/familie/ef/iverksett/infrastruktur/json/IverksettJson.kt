@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import no.nav.familie.ef.iverksett.domene.*
 import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.ZonedDateTime
 import java.util.*
 
 data class IverksettJson(
@@ -19,7 +20,7 @@ data class IverksettJson(
     val eksternId: Long,
     val relatertBehandlingId: String? = null,
     val kode6eller7: Boolean,
-    val tidspunktVedtak: OffsetDateTime? = null,
+    val tidspunktVedtak: LocalDate? = null,
     val vilkårsvurderinger: List<VilkårsvurderingJson> = emptyList(),
     val person: PersonJson,
     val barn: List<PersonJson> = ArrayList(),

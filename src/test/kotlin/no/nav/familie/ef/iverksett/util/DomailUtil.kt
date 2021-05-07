@@ -25,7 +25,7 @@ fun opprettIverksettJson(behandlingId: String, brev: List<BrevJson>): IverksettJ
             eksternId = 1L,
             relatertBehandlingId = "2",
             kode6eller7 = false,
-            tidspunktVedtak = OffsetDateTime.now(),
+            tidspunktVedtak = LocalDate.now(),
             vilkårsvurderinger = emptyList(),
             person = PersonJson(personIdent = "12345678910", aktorId = null),
             barn = emptyList(),

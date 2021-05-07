@@ -1,10 +1,7 @@
 package no.nav.familie.ef.iverksett.domene
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Embedded
-import org.springframework.data.relational.core.mapping.MappedCollection
 import java.time.LocalDate
-import java.time.OffsetDateTime
+import java.time.ZonedDateTime
 import java.util.*
 
 data class Iverksett(
@@ -17,7 +14,7 @@ data class Iverksett(
         val eksternId: Long,
         val relatertBehandlingId: String? = null,
         val kode6eller7: Boolean,
-        val tidspunktVedtak: OffsetDateTime? = null,
+        val tidspunktVedtak: LocalDate? = null,
         val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
         val person: Person,
         val barn: List<Person> = ArrayList(),
