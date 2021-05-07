@@ -10,7 +10,7 @@ class AndeltilkjentYtelseJson(
         val personIdent: String,
         val periodeId: Long? = null,
         val forrigePeriodeId: Long? = null,
-        val stønadsType: StønadType,
+        val stønadsType: StønadType? = null,
         val kildeBehandlingId: UUID? = null)
 
 fun AndeltilkjentYtelseJson.toDomain(): AndelTilkjentYtelse {
