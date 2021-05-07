@@ -8,7 +8,7 @@ data class AndelTilkjentYtelse(val periodebeløp: Periodebeløp,
                                val personIdent: String,
                                val periodeId: Long? = null,
                                val forrigePeriodeId: Long? = null,
-                               val stønadsType: StønadType,
+                               val stønadsType: StønadType? = null,
                                val kildeBehandlingId: UUID? = null,
                                val inntektbeløp: Periodebeløp? = null,
                                val inntektstype: Inntektstype? = null) {
