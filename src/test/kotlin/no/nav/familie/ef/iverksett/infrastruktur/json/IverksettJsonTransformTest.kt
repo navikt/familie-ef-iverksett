@@ -12,8 +12,9 @@ class IverksettJsonTransformTest {
     var mapper: ObjectMapper = ObjectMapper().registerModule(KotlinModule()).registerModule(JavaTimeModule())
 
     @Test
-    fun `deserialiser JSON til IverksettJson, kall toDomain, forvent like IverksettJson`() {
+    fun `deserialiser JSON til IverksettJson, kall toDomain, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
-        mapper.readValue<IverksettJson>(json).toDomain(ByteArray(0))
+        val iverksettJson = mapper.readValue<IverksettJson>(json)
+        val iverksett = iverksettJson.toDomain()
     }
 }

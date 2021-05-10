@@ -15,9 +15,6 @@ fun simuleringDto(): SimuleringDto {
             id = UUID.randomUUID(),
             behandlingId = behandlingId,
             personident = "12345611111",
-            stønadFom = LocalDate.of(2021, 1, 1),
-            stønadTom = LocalDate.of(2021, 12, 31),
-            opphørFom = null,
             utbetalingsoppdrag = null,
             vedtaksdato = LocalDate.of(2021, 5, 1),
             status = TilkjentYtelseStatus.IKKE_KLAR,
@@ -48,9 +45,6 @@ fun simuleringDto(): SimuleringDto {
         id = UUID.randomUUID(),
         behandlingId = behandlingId,
         personident = "12345611111",
-        stønadFom = LocalDate.of(2021, 1, 1),
-        stønadTom = LocalDate.of(2023, 12, 31),
-        opphørFom = null,
         utbetalingsoppdrag = null,
         vedtaksdato = null,
         status = TilkjentYtelseStatus.IKKE_KLAR,
@@ -75,21 +69,23 @@ fun simuleringDto(): SimuleringDto {
     return SimuleringDto(tilkjentYtelseMedMetaData, tilkjentYtelse)
 }
 
-fun detaljertSimuleringResultat() : DetaljertSimuleringResultat {
+fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
     return DetaljertSimuleringResultat(
         simuleringMottaker = listOf(
-            SimuleringMottaker(simulertPostering = listOf(
-                SimulertPostering(
-                    fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER,
-                    fom = LocalDate.of(2021, 1, 1),
-                    tom = LocalDate.of(2021, 12, 31),
-                    betalingType = BetalingType.DEBIT,
-                    beløp = BigDecimal.valueOf(15000),
-                    posteringType = PosteringType.YTELSE,
-                    forfallsdato = LocalDate.of(2021, 10, 1),
-                    utenInntrekk = false
-                )
-            ), mottakerNummer = null, mottakerType = MottakerType.BRUKER)
+            SimuleringMottaker(
+                simulertPostering = listOf(
+                    SimulertPostering(
+                        fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER,
+                        fom = LocalDate.of(2021, 1, 1),
+                        tom = LocalDate.of(2021, 12, 31),
+                        betalingType = BetalingType.DEBIT,
+                        beløp = BigDecimal.valueOf(15000),
+                        posteringType = PosteringType.YTELSE,
+                        forfallsdato = LocalDate.of(2021, 10, 1),
+                        utenInntrekk = false
+                    )
+                ), mottakerNummer = null, mottakerType = MottakerType.BRUKER
+            )
         )
     )
 }
