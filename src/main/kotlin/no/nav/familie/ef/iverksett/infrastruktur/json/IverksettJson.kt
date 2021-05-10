@@ -10,9 +10,8 @@ import java.time.OffsetDateTime
 import java.util.*
 
 data class IverksettJson(
-    val brev: List<BrevJson> = emptyList(),
-    val forrigeTilkjentYtelse: List<AndeltilkjentYtelseJson> = emptyList(),
-    val tilkjentYtelse: List<AndeltilkjentYtelseJson> = emptyList(),
+    val forrigeTilkjentYtelse: TilkjentYtelseJson? = null,
+    val tilkjentYtelse: TilkjentYtelseMedMetadataJson,
     val fagsakId: String,
     val saksnummer: String? = null,
     val behandlingId: String,
@@ -21,7 +20,7 @@ data class IverksettJson(
     val kode6eller7: Boolean,
     val tidspunktVedtak: OffsetDateTime? = null,
     val vilkårsvurderinger: List<VilkårsvurderingJson> = emptyList(),
-    val person: PersonJson,
+    val personIdent: String,
     val barn: List<PersonJson> = ArrayList(),
     val behandlingType: BehandlingType,
     val behandlingÅrsak: BehandlingÅrsak,
@@ -73,27 +72,26 @@ fun AktivitetskravJson.toDomain(): Aktivitetskrav {
     return Aktivitetskrav(this.aktivitetspliktInntrefferDato, this.harSagtOppArbeidsforhold)
 }
 
-fun IverksettJson.toDomain(pdf: ByteArray): Iverksett {
+fun IverksettJson.toDomain(): Iverksett {
     return Iverksett(
-        this.brev.map { it.toDomain(pdf) },
-        this.forrigeTilkjentYtelse.map { it.toDomain() },
-        this.tilkjentYtelse.map { it.toDomain() },
-        this.fagsakId,
-        this.saksnummer,
-        this.behandlingId,
-        this.eksternId,
-        this.relatertBehandlingId,
-        this.kode6eller7,
-        this.tidspunktVedtak,
-        this.vilkårsvurderinger.map { it.toDomain() },
-        this.person.toDomain(),
-        this.barn.map { it.toDomain() },
-        this.behandlingType,
-        this.behandlingÅrsak,
-        this.behandlingResultat,
-        this.vedtak,
-        this.opphørÅrsak,
-        this.aktivitetskrav.toDomain(),
-        this.funksjonellId
+        forrigeTilkjentYtelse = this.forrigeTilkjentYtelse?.toDomain(),
+        tilkjentYtelse = this.tilkjentYtelse.toDomain(),
+        fagsakId = this.fagsakId,
+        saksnummer = this.saksnummer,
+        behandlingId = this.behandlingId,
+        eksternId = this.eksternId,
+        relatertBehandlingId = this.relatertBehandlingId,
+        kode6eller7 = this.kode6eller7,
+        tidspunktVedtak = this.tidspunktVedtak,
+        vilkårsvurderinger = this.vilkårsvurderinger.map { it.toDomain() },
+        personIdent = this.personIdent,
+        barn = this.barn.map { it.toDomain() },
+        behandlingType = this.behandlingType,
+        behandlingÅrsak = this.behandlingÅrsak,
+        behandlingResultat = this.behandlingResultat,
+        vedtak = this.vedtak,
+        opphørÅrsak = this.opphørÅrsak,
+        aktivitetskrav = this.aktivitetskrav.toDomain(),
+        funksjonellId = this.funksjonellId
     )
 }

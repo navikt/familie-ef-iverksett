@@ -5,20 +5,22 @@ import no.nav.familie.ef.iverksett.domene.Periodebeløp
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import java.util.*
 
-class AndeltilkjentYtelseJson(
-        val periodebeløp: Periodebeløp,
-        val personIdent: String,
-        val periodeId: Long? = null,
-        val forrigePeriodeId: Long? = null,
-        val stønadsType: StønadType,
-        val kildeBehandlingId: UUID? = null)
+class AndelTilkjentYtelseJson(
+    val periodebeløp: Periodebeløp,
+    val personIdent: String,
+    val periodeId: Long? = null,
+    val forrigePeriodeId: Long? = null,
+    val stønadsType: StønadType,
+    val kildeBehandlingId: UUID? = null
+)
 
-fun AndeltilkjentYtelseJson.toDomain(): AndelTilkjentYtelse {
+fun AndelTilkjentYtelseJson.toDomain(): AndelTilkjentYtelse {
     return AndelTilkjentYtelse(
-            this.periodebeløp,
-            this.personIdent,
-            this.periodeId,
-            this.forrigePeriodeId,
-            this.stønadsType,
-            this.kildeBehandlingId)
+        this.periodebeløp,
+        this.personIdent,
+        this.periodeId,
+        this.forrigePeriodeId,
+        this.stønadsType,
+        this.kildeBehandlingId
+    )
 }
