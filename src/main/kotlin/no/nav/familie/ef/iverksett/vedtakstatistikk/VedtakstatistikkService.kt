@@ -39,7 +39,7 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
                              behandlingId = iverksettJson.behandlingId,
                              relatertBehandlingId = iverksettJson.relatertBehandlingId,
                              kode6eller7 = iverksettJson.kode6eller7,
-                             tidspunktVedtak = iverksettJson.tidspunktVedtak?.atStartOfDay(ZoneId.of("Europe/Paris")), //?
+                             tidspunktVedtak = iverksettJson.tidspunktVedtak?.atStartOfDay(ZoneId.of("Europe/Paris")),
                              vilkårsvurderinger = iverksettJson.vilkårsvurderinger.map { mapTilVilkårsvurderinger(it) },
                              person = mapTilPerson(iverksettJson.person),
                              barn = iverksettJson.barn.map { mapTilPerson(it) },
@@ -50,9 +50,8 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
                              utbetalinger = iverksettJson.tilkjentYtelse.map {
                                  mapTilUtbetaling(it, iverksettJson.saksnummer)
                              },
-                            //TODO implementasjon av inntekt i sak mangler
-                             inntekt = iverksettJson.tilkjentYtelse.map {
-                                 Inntekt(mapTilPeriodeBeløp(it.inntektbeløp),
+                             inntekt = iverksettJson.inntekt.map {
+                                 Inntekt(mapTilPeriodeBeløp(it.periodebeløp),
                                          Inntektstype.valueOf(it.inntektstype.name))
                              },
                              aktivitetskrav = Aktivitetskrav(iverksettJson.aktivitetskrav.aktivitetspliktInntrefferDato,

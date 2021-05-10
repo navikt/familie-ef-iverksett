@@ -11,15 +11,7 @@ class AndeltilkjentYtelseJson(
         val periodeId: Long? = null,
         val forrigePeriodeId: Long? = null,
         val stønadsType: StønadType? = null,
-        val kildeBehandlingId: UUID? = null,
-        val inntektbeløp: Periodebeløp,
-        val inntektstype: Inntektstype)
-
-enum class Inntektstype {
-    ARBEIDINNTEKT,
-    KAPITALINNTEKT,
-    TRYGD_ELLER_STØNAD
-}
+        val kildeBehandlingId: UUID? = null)
 
 fun AndeltilkjentYtelseJson.toDomain(): AndelTilkjentYtelse {
     return AndelTilkjentYtelse(
@@ -28,7 +20,5 @@ fun AndeltilkjentYtelseJson.toDomain(): AndelTilkjentYtelse {
             this.periodeId,
             this.forrigePeriodeId,
             this.stønadsType,
-            this.kildeBehandlingId,
-            this.inntektbeløp,
-            this.inntektstype)
+            this.kildeBehandlingId)
 }

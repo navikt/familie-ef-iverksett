@@ -8,6 +8,7 @@ data class Iverksett(
         val brev: List<Brev> = emptyList(),
         val forrigeTilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
         val tilkjentYtelse: List<AndelTilkjentYtelse> = emptyList(),
+        val inntekt: List<Inntekt> = emptyList(),
         val fagsakId: String,
         val saksnummer: String? = null,
         val behandlingId: String,

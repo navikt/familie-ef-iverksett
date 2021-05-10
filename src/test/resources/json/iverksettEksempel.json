@@ -36,14 +36,7 @@
       },
       "personIdent": "string",
       "stønadsType": "BARNETILSYN",
-      "kildeBehandlingId" : "cef0cbf3-6458-4f13-a418-ee4d7e7505dd",
-      "inntektbeløp": {
-        "fraOgMed": "2021-04-28",
-        "periodetype": "MÅNED",
-        "tilOgMed": "2021-04-28",
-        "utbetaltPerPeriode": 0
-      },
-      "inntektstype": "ARBEIDINNTEKT"
+      "kildeBehandlingId": "cef0cbf3-6458-4f13-a418-ee4d7e7505dd"
     }
   ],
   "funksjonellId": "string",
@@ -68,13 +61,17 @@
       },
       "personIdent": "string",
       "stønadsType": "BARNETILSYN",
-      "kildeBehandlingId": "cef0cbf3-6458-4f13-a418-ee4d7e7505dd",
-      "inntektbeløp": {
-        "fraOgMed": "2021-04-28",
-        "periodetype": "MÅNED",
-        "tilOgMed": "2021-04-28",
-        "utbetaltPerPeriode": 0
-      },
+      "kildeBehandlingId": "cef0cbf3-6458-4f13-a418-ee4d7e7505dd"
+    }
+  ],
+  "inntekt": [
+    {
+    "periodebeløp": {
+      "fraOgMed": "2021-04-28",
+      "periodetype": "MÅNED",
+      "tilOgMed": "2021-04-28",
+      "utbetaltPerPeriode": 0
+    },
       "inntektstype": "ARBEIDINNTEKT"
     }
   ],

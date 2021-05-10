@@ -8,7 +8,13 @@ import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingResultat
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
+import no.nav.familie.eksterne.kontrakter.ef.Inntekt
+import no.nav.familie.eksterne.kontrakter.ef.Inntektstype
+import no.nav.familie.eksterne.kontrakter.ef.PeriodeBeløp
+import no.nav.familie.eksterne.kontrakter.ef.Periodetype
 import no.nav.familie.eksterne.kontrakter.ef.Person
+import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
+import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -48,8 +54,19 @@ class VedtakstatistikkServiceTest {
                              behandlingÅrsak = BehandlingÅrsak.SØKNAD,
                              behandlingResultat = BehandlingResultat.FERDIGSTILT,
                              vedtak = Vedtak.INNVILGET,
-                             utbetalinger = emptyList(),
-                             inntekt = emptyList(),
+                             utbetalinger = listOf(Utbetaling(
+                                     PeriodeBeløp(1000,
+                                                  Periodetype.MÅNED,
+                                                  LocalDate.parse("2021-01-01"),
+                                                  LocalDate.parse("2021-02-01")),
+                                     Utbetalingsdetalj(gjelderPerson = Person(personIdent = "12345678910"),
+                                                       klassekode = "EFOG",
+                                                       delytelseId = "11"))),
+                             inntekt = listOf(Inntekt(PeriodeBeløp(1000,
+                                                                   Periodetype.MÅNED,
+                                                                   LocalDate.parse("2021-01-01"),
+                                                                   LocalDate.parse("2021-02-01")),
+                                                      Inntektstype.ARBEIDINNTEKT)),
                              aktivitetskrav = Aktivitetskrav(aktivitetspliktInntrefferDato, false),
                              funksjonellId = "0")
     }
