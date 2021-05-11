@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -13,22 +14,24 @@ import java.util.*
     taskStepType = IverksettMotOppdragTask.TYPE,
     beskrivelse = "Utfører iverksetting av utbetalning mot økonomi."
 )
-class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService, val oppdragClient: OppdragClient) : AsyncTaskStep {
+class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService, val oppdragClient: OppdragClient, val taskRepository: TaskRepository) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = task.payload
-        var iverksett = hentIverksettService.hentIverksett(behandlingId)
+        val iverksett = hentIverksettService.hentIverksett(behandlingId)
         val utbetaling = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
             iverksett.tilkjentYtelse,
             iverksett.forrigeTilkjentYtelse
         )
 
-        // Lagre denne (utbetaling, som en json)
-        // Sende til oppdragssystemet
+        // TODO : Lagre denne (utbetaling, som en json)
         utbetaling.utbetalingsoppdrag?.let { oppdragClient.iverksettOppdrag(it) }
             ?: error("Utbetalingsoppdrag mangler for iverksetting")
-        // Lag ny task
+    }
 
+    override fun onCompletion(task: Task) {
+        val nesteTask = VentePåStatusFraØkonomiTask.opprettTask(task.payload)
+        taskRepository.save(nesteTask)
     }
 
 
