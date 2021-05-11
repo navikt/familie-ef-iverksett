@@ -1,18 +1,30 @@
 package no.nav.familie.ef.iverksett.startIverksett.tjeneste
 
+import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.domene.Iverksett
-import org.slf4j.LoggerFactory
+import no.nav.familie.ef.iverksett.lagreIverksett.tjeneste.LagreIverksettService
+import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
+import java.util.*
 
-/**
- * TODO : Service for starting av iverksetting
- */
 @Service
-class IverksettService() {
+class IverksettService(val taskRepository: TaskRepository, val lagreIverksettService: LagreIverksettService) {
 
-    private val logger = LoggerFactory.getLogger(javaClass)
+    fun startIverksetting(iverksett: Iverksett, brev: Brev) {
 
-    fun dummyIverksett(iverksett: Iverksett): Iverksett {
-        return iverksett
+        lagreIverksettService.lagreIverksett(
+            UUID.fromString(iverksett.behandlingId),
+            iverksett,
+            brev
+        )
+        val task = IverksettMotOppdragTask.opprettTask(
+            iverksett.behandlingId,
+            iverksett.personIdent,
+            iverksett.tilkjentYtelse.saksbehandlerId
+        )
+        taskRepository.save(task)
     }
+
+
 }

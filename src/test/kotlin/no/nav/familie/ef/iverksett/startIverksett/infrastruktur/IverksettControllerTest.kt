@@ -29,16 +29,13 @@ class IverksettControllerTest : ServerTest() {
 
     @Test
     internal fun `starte iverksetting gir 200 OK`() {
-        val listMedBrev = listOf(opprettBrev("1"), opprettBrev("2"))
-
-        val iverksettJson = opprettIverksettJson(behandlingId = behandlingId.toString(), listMedBrev)
+        val iverksettJson = opprettIverksettJson(behandlingId = behandlingId.toString())
         val request = MultipartBuilder()
                 .withJson("data", iverksettJson)
                 .withByteArray("fil", "1", byteArrayOf(12))
-                .withByteArray("fil", "2", byteArrayOf(12))
                 .build()
 
-        val respons: ResponseEntity<Any> = restTemplate.exchange(localhostUrl("/api/iverksett/"),
+        val respons: ResponseEntity<Any> = restTemplate.exchange(localhostUrl("/api/iverksett/start"),
                                                                  HttpMethod.POST,
                                                                  HttpEntity(request, headers))
         assertThat(respons.statusCode.value()).isEqualTo(200)
@@ -46,34 +43,16 @@ class IverksettControllerTest : ServerTest() {
 
     @Test
     internal fun `mangler brev, forvent 400`() {
-        val listMedBrev = listOf(opprettBrev("1"), opprettBrev("2"))
 
-        val iverksettJson = opprettIverksettJson(behandlingId = behandlingId.toString(), listMedBrev)
+        val iverksettJson = opprettIverksettJson(behandlingId = behandlingId.toString())
         val request = MultipartBuilder()
                 .withJson("data", iverksettJson)
                 .build()
 
-        val respons: ResponseEntity<String> = restTemplate.exchange(localhostUrl("/api/iverksett/"),
+        val respons: ResponseEntity<String> = restTemplate.exchange(localhostUrl("/api/iverksett/start"),
                                                                  HttpMethod.POST,
                                                                  HttpEntity(request, headers))
 
         assertThat(respons.statusCode.value()).isEqualTo(400)
-    }
-
-    @Test
-    internal fun `feil filename på brev, forvent 500`() {
-        val listMedBrev = listOf(opprettBrev("1"), opprettBrev("2"))
-        val iverksettJson = opprettIverksettJson(behandlingId = behandlingId.toString(), listMedBrev)
-        val request = MultipartBuilder()
-                .withJson("data", iverksettJson)
-                .withByteArray("fil", "11", byteArrayOf(12))
-                .withByteArray("fil", "22", byteArrayOf(12))
-                .build()
-
-        val respons: ResponseEntity<String> = restTemplate.exchange(localhostUrl("/api/iverksett/"),
-                                                                 HttpMethod.POST,
-                                                                 HttpEntity(request, headers))
-
-        assertThat(respons.statusCode.value()).isEqualTo(500)
     }
 }

@@ -4,7 +4,10 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.ServerTest
+import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
+import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.lagreIverksett.infrastruktur.LagreIverksettJdbc
+import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.ef.iverksett.util.opprettIverksettJson
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,13 +29,19 @@ class LagreIverksettServiceTest : ServerTest() {
     @Test
     internal fun `lagre iverksett data og brev`() {
         val behandlingId = UUID.randomUUID()
-        val iverksettJson = opprettIverksettJson(behandlingId.toString(), emptyList()).toString()
+        val iverksettJson: IverksettJson = opprettIverksettJson(behandlingId.toString())
 
         every { lagreIverksett.lagre(any(), any(), any()) } returns Unit
 
-        lagreIverksettService.lagreIverksettJson(behandlingsId = behandlingId,
-                                                 iverksettJson = iverksettJson,
-                                                 emptyList())
-        verify(exactly = 1) { lagreIverksett.lagre(behandlingId, iverksettJson, emptyList()) }
+        val iverksett = iverksettJson.toDomain()
+        val brev = opprettBrev()
+
+        lagreIverksettService.lagreIverksett(
+            behandlingsId = behandlingId,
+            iverksett = iverksett,
+            brev = brev
+        )
+
+        verify(exactly = 1) { lagreIverksett.lagre(behandlingId, iverksett, brev) }
     }
 }

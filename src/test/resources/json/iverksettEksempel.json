@@ -1,6 +1,6 @@
 {
   "aktivitetskrav": {
-    "aktivitetspliktInntrefferDato": "2021-04-28",
+    "aktivitetspliktInntrefferDato": "2021-05-10",
     "harSagtOppArbeidsforhold": true
   },
   "barn": [
@@ -9,72 +9,71 @@
       "personIdent": "string"
     }
   ],
-  "behandlingId": "2ba6094e-acdd-11eb-8529-0242ac130003",
+  "behandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003",
   "behandlingResultat": "ANNULLERT",
   "behandlingType": "FØRSTEGANGSBEHANDLING",
   "behandlingÅrsak": "DØDSFALL",
-  "brev": [
-    {
-      "brevdata": {
-        "mottaker": "string",
-        "saksbehandler": "string"
-      },
-      "journalpostId": "string"
-    }
-  ],
   "eksternId": 0,
   "fagsakId": "string",
-  "forrigeTilkjentYtelse": [
-    {
-      "forrigePeriodeId": 0,
-      "periodeId": 0,
-      "periodebeløp": {
-        "fraOgMed": "2021-04-28",
-        "periodetype": "MÅNED",
-        "tilOgMed": "2021-04-28",
-        "utbetaltPerPeriode": 0
-      },
-      "personIdent": "string",
-      "stønadsType": "BARNETILSYN",
-      "kildeBehandlingId": "cef0cbf3-6458-4f13-a418-ee4d7e7505dd"
-    }
-  ],
+  "forrigeTilkjentYtelse": {
+    "andelerTilkjentYtelse": [
+      {
+        "forrigePeriodeId": 0,
+        "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "periodeId": 0,
+        "periodebeløp": {
+          "fraOgMed": "2021-05-10",
+          "periodetype": "MÅNED",
+          "tilOgMed": "2021-05-10",
+          "utbetaltPerPeriode": 0
+        },
+        "personIdent": "string",
+        "stønadsType": "BARNETILSYN"
+      }
+    ],
+    "behandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "personident": "string",
+    "status": "AKTIV",
+    "type": "ENDRING",
+    "vedtaksdato": "2021-05-10"
+  },
   "funksjonellId": "string",
   "kode6eller7": true,
   "opphørÅrsak": "PERIODE_UTLØPT",
-  "person": {
-    "aktorId": "string",
-    "personIdent": "string"
-  },
+  "personIdent": "string",
   "relatertBehandlingId": "string",
   "saksnummer": "string",
-  "tidspunktVedtak": "2021-04-28T15:29:20.085Z",
-  "tilkjentYtelse": [
-    {
-      "forrigePeriodeId": 0,
-      "periodeId": 0,
-      "periodebeløp": {
-        "fraOgMed": "2021-04-28",
-        "periodetype": "MÅNED",
-        "tilOgMed": "2021-04-28",
-        "utbetaltPerPeriode": 0
-      },
-      "personIdent": "string",
-      "stønadsType": "BARNETILSYN",
-      "kildeBehandlingId": "cef0cbf3-6458-4f13-a418-ee4d7e7505dd"
+  "tidspunktVedtak": "2021-05-10T20:49:16.178Z",
+  "tilkjentYtelse": {
+    "eksternBehandlingId": 0,
+    "eksternFagsakId": 0,
+    "saksbehandlerId": "string",
+    "stønadstype": "BARNETILSYN",
+    "tilkjentYtelseJson": {
+      "andelerTilkjentYtelse": [
+        {
+          "forrigePeriodeId": 0,
+          "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "periodeId": 0,
+          "periodebeløp": {
+            "fraOgMed": "2021-05-10",
+            "periodetype": "MÅNED",
+            "tilOgMed": "2021-05-10",
+            "utbetaltPerPeriode": 0
+          },
+          "personIdent": "string",
+          "stønadsType": "BARNETILSYN"
+        }
+      ],
+      "behandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "personident": "string",
+      "status": "AKTIV",
+      "type": "ENDRING",
+      "vedtaksdato": "2021-05-10"
     }
-  ],
-  "inntekt": [
-    {
-    "periodebeløp": {
-      "fraOgMed": "2021-04-28",
-      "periodetype": "MÅNED",
-      "tilOgMed": "2021-04-28",
-      "utbetaltPerPeriode": 0
-    },
-      "inntektstype": "ARBEIDINNTEKT"
-    }
-  ],
+  },
   "vedtak": "AVSLÅTT",
   "vilkårsvurderinger": [
     {

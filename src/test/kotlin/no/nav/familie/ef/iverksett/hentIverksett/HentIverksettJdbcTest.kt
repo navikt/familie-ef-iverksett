@@ -1,34 +1,41 @@
-package no.nav.familie.ef.iverksett.lagreIverksett.infrastruktur
+package no.nav.familie.ef.iverksett.hentIverksett
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.ServerTest
+import no.nav.familie.ef.iverksett.domene.Iverksett
+import no.nav.familie.ef.iverksett.hentIverksett.infrastruktur.HentIverksettJdbc
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
+import no.nav.familie.ef.iverksett.lagreIverksett.infrastruktur.LagreIverksettJdbc
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.annotation.DirtiesContext
 import java.util.*
 
-class LagreIverksettJdbcTest : ServerTest() {
+class HentIverksettJdbcTest : ServerTest() {
 
     @Autowired
     private lateinit var lagreIverksettJdbc: LagreIverksettJdbc
 
     @Autowired
+    private lateinit var hentIverksettJdbc: HentIverksettJdbc
+
+    @Autowired
     private lateinit var objectMapper: ObjectMapper
 
     @Test
-    fun `deserialiser og lagre iverksett, forvent ingen unntak`() {
+    fun `lagre og hent iverksett, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
-        val iverksett = objectMapper.readValue<IverksettJson>(json).toDomain()
+        val iverksett: Iverksett = objectMapper.readValue<IverksettJson>(json).toDomain()
         lagreIverksettJdbc.lagre(
-            UUID.randomUUID(),
+            UUID.fromString(iverksett.behandlingId),
             iverksett,
             opprettBrev()
         )
+        val ret = hentIverksettJdbc.hent(iverksett.behandlingId)
     }
+
 
 }
