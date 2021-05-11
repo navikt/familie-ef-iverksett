@@ -7,6 +7,7 @@ create table iverksett
 create table brev
 (
     behandling_id  uuid references iverksett (behandling_id),
+    journalpost_id varchar,
     pdf            bytea
 );
 
