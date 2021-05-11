@@ -39,7 +39,8 @@ class HentIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
 
         val sql = "select data from iverksett where behandling_id = :behandlingsId"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingsId", UUID.fromString(behandlingsId))
-        val json = namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource, String::class.java)!!
+        val json = namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource, String::class.java)
+            ?: error("Finner ikke iverksett med behandlingId=${behandlingsId}")
         val iverksett = objectMapper.readValue<Iverksett>(json)
         return iverksett
     }
