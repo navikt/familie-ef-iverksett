@@ -23,7 +23,8 @@ data class Iverksett(
     val vedtak: Vedtak? = null,
     val opphørÅrsak: OpphørÅrsak,
     val aktivitetskrav: Aktivitetskrav,
-    val funksjonellId: String
+    val funksjonellId: String,
+    val tilhørendeEnhet: String
 )
 
 data class Aktivitetskrav(

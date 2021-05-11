@@ -15,3 +15,4 @@ spring:
           password: ${KAFKA_CREDSTORE_PASSWORD}
 
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev-fss-pub.nais.io
+FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.dev-fss-pub.nais.io
