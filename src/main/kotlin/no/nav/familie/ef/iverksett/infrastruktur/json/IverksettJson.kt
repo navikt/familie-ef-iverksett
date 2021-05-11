@@ -11,6 +11,7 @@ import java.util.*
 data class IverksettJson(
     val forrigeTilkjentYtelse: TilkjentYtelseJson? = null,
     val tilkjentYtelse: TilkjentYtelseMedMetadataJson,
+    val inntekt: List<InntektJson> = emptyList(),
     val fagsakId: String,
     val saksnummer: String? = null,
     val behandlingId: String,
@@ -75,7 +76,7 @@ fun IverksettJson.toDomain(): Iverksett {
     return Iverksett(
         forrigeTilkjentYtelse = this.forrigeTilkjentYtelse?.toDomain(),
         tilkjentYtelse = this.tilkjentYtelse.toDomain(),
-        inntekt = this.inntekt.toDomain(),
+        inntekt = this.inntekt.map { it.toDomain() },
         fagsakId = this.fagsakId,
         saksnummer = this.saksnummer,
         behandlingId = this.behandlingId,

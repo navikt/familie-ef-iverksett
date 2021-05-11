@@ -39,7 +39,7 @@ class IverksettController(
 
     @PostMapping("/vedtakstatistikk", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendStatistikk(@RequestBody data: IverksettJson) {
-        vedtakstatistikkService.sendTilKafka(data)
+        vedtakstatistikkService.sendTilKafka(data.toDomain())
     }
 
     private fun opprettBrev(iverksettJson: IverksettJson, fil: MultipartFile): Brev {

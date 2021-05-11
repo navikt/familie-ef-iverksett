@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import io.mockk.mockk
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.util.opprettIverksettJson
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
@@ -30,11 +31,11 @@ class VedtakstatistikkServiceTest {
         val behandlingId = "123"
         val tidspunktVedtak = LocalDate.now()
 
-        val iverksettJson = opprettIverksettJson(behandlingId, emptyList(), tidspunktVedtak, tidspunktVedtak)
+        val iverksett = opprettIverksettJson(behandlingId, tidspunktVedtak).toDomain()
         val behandlingDVH = opprettBehandlingDVH(behandlingId = behandlingId,
                                                  tidspunktVedtak = tidspunktVedtak,
                                                  aktivitetspliktInntrefferDato = tidspunktVedtak)
-        vedtakstatistikkService.sendTilKafka(iverksettJson = iverksettJson)
+        vedtakstatistikkService.sendTilKafka(iverksett = iverksett)
         verify(exactly = 1) { vedtakstatistikkKafkaProducer.sendVedtak(behandlingDVH) }
     }
 
@@ -53,7 +54,7 @@ class VedtakstatistikkServiceTest {
                              behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
                              behandlingÅrsak = BehandlingÅrsak.SØKNAD,
                              behandlingResultat = BehandlingResultat.FERDIGSTILT,
-                             vedtak = Vedtak.INNVILGET,
+                             vedtak = null,
                              utbetalinger = listOf(Utbetaling(
                                      PeriodeBeløp(1000,
                                                   Periodetype.MÅNED,
@@ -61,13 +62,13 @@ class VedtakstatistikkServiceTest {
                                                   LocalDate.parse("2021-02-01")),
                                      Utbetalingsdetalj(gjelderPerson = Person(personIdent = "12345678910"),
                                                        klassekode = "EFOG",
-                                                       delytelseId = "11"))),
+                                                       delytelseId = "01"))),
                              inntekt = listOf(Inntekt(PeriodeBeløp(1000,
                                                                    Periodetype.MÅNED,
                                                                    LocalDate.parse("2021-01-01"),
                                                                    LocalDate.parse("2021-02-01")),
                                                       Inntektstype.ARBEIDINNTEKT)),
-                             aktivitetskrav = Aktivitetskrav(aktivitetspliktInntrefferDato, false),
+                             aktivitetskrav = Aktivitetskrav(LocalDate.parse("2021-02-01"), false),
                              funksjonellId = "0")
     }
 }
