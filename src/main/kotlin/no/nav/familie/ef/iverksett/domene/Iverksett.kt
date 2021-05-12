@@ -1,19 +1,19 @@
 package no.nav.familie.ef.iverksett.domene
 
 import java.time.LocalDate
-import java.time.OffsetDateTime
 import java.util.*
 
 data class Iverksett(
     val forrigeTilkjentYtelse: TilkjentYtelse? = null,
     val tilkjentYtelse: TilkjentYtelseMedMetaData,
+    val inntekt: List<Inntekt> = emptyList(),
     val fagsakId: String,
     val saksnummer: String? = null,
     val behandlingId: String,
     val eksternId: Long,
     val relatertBehandlingId: String? = null,
     val kode6eller7: Boolean,
-    val tidspunktVedtak: OffsetDateTime? = null,
+    val tidspunktVedtak: LocalDate? = null,
     val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
     val personIdent: String,
     val barn: List<Person> = ArrayList(),

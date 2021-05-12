@@ -15,7 +15,7 @@ data class AndelTilkjentYtelse(val periodebeløp: Periodebeløp,
                 && this.periodebeløp.fraOgMed == other.periodebeløp.fraOgMed
                 && this.periodebeløp.tilOgMed == other.periodebeløp.tilOgMed
                 && this.periodebeløp.utbetaltPerPeriode == other.periodebeløp.utbetaltPerPeriode
-           )
+               )
     }
 
     fun erNull() = this.periodebeløp.utbetaltPerPeriode == 0

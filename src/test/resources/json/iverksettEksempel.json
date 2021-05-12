@@ -74,6 +74,17 @@
       "vedtaksdato": "2021-05-10"
     }
   },
+  "inntekt": [
+    {
+      "periodebeløp": {
+        "fraOgMed": "2021-04-28",
+        "periodetype": "MÅNED",
+        "tilOgMed": "2021-04-28",
+        "utbetaltPerPeriode": 0
+      },
+      "inntektstype": "ARBEIDINNTEKT"
+    }
+  ],
   "vedtak": "AVSLÅTT",
   "vilkårsvurderinger": [
     {
