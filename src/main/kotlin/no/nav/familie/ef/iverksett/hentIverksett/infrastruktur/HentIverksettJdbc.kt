@@ -20,7 +20,7 @@ class HentIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         try {
             return hentIverksettStringOgTransformer(behandlingId)
         } catch (ex: Exception) {
-            secureLogger.error("Kunne ikke hente iverksett for behandlingId ${behandlingId}: ${ex}")
+            secureLogger.error("Kunne ikke hente iverksett for behandlingId $behandlingId", ex)
             throw Exception("Feil ved HentIverksett til basen")
         }
     }

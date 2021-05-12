@@ -13,10 +13,7 @@ fun simuleringDto(): SimuleringDto {
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
         tilkjentYtelse = TilkjentYtelse(
             id = UUID.randomUUID(),
-            behandlingId = behandlingId,
-            personident = "12345611111",
             utbetalingsoppdrag = null,
-            vedtaksdato = LocalDate.of(2021, 5, 1),
             status = TilkjentYtelseStatus.IKKE_KLAR,
             type = TilkjentYtelseType.FØRSTEGANGSBEHANDLING,
             andelerTilkjentYtelse = listOf(
@@ -27,10 +24,8 @@ fun simuleringDto(): SimuleringDto {
                         fraOgMed = LocalDate.of(2021, 1, 1),
                         tilOgMed = LocalDate.of(2023, 12, 31)
                     ),
-                    personIdent = "12345611111",
                     periodeId = 2,
                     forrigePeriodeId = 1,
-                    stønadsType = StønadType.OVERGANGSSTØNAD,
                     kildeBehandlingId = UUID.randomUUID()
                 )
             )
@@ -38,15 +33,16 @@ fun simuleringDto(): SimuleringDto {
         saksbehandlerId = "saksbehandlerId",
         eksternBehandlingId = 1,
         stønadstype = StønadType.OVERGANGSSTØNAD,
-        eksternFagsakId = 1
-    )
+        eksternFagsakId = 1,
+        behandlingId = behandlingId,
+        personIdent = "12345611111",
+        vedtaksdato = LocalDate.of(2021, 5, 1),
+
+        )
 
     val tilkjentYtelse = TilkjentYtelse(
         id = UUID.randomUUID(),
-        behandlingId = behandlingId,
-        personident = "12345611111",
         utbetalingsoppdrag = null,
-        vedtaksdato = null,
         status = TilkjentYtelseStatus.IKKE_KLAR,
         type = TilkjentYtelseType.FØRSTEGANGSBEHANDLING,
         andelerTilkjentYtelse = listOf(
@@ -57,10 +53,8 @@ fun simuleringDto(): SimuleringDto {
                     fraOgMed = LocalDate.of(2021, 1, 1),
                     tilOgMed = LocalDate.of(2023, 12, 31)
                 ),
-                personIdent = "12345611111",
                 periodeId = 1,
                 forrigePeriodeId = null,
-                stønadsType = StønadType.OVERGANGSSTØNAD,
                 kildeBehandlingId = UUID.randomUUID()
             )
         )

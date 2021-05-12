@@ -26,9 +26,9 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = hentIverksettService.hentIverksett(behandlingId.toString())
         val oppdragId = OppdragId(
-            fagsystem = iverksett.tilkjentYtelse.stønadstype.tilKlassifisering(),
-            personIdent = iverksett.personIdent,
-            behandlingsId = iverksett.behandlingId
+            fagsystem = iverksett.fagsak.stønadstype.tilKlassifisering(),
+            personIdent = iverksett.søker.personIdent,
+            behandlingsId = iverksett.behandling.behandlingId.toString()
         )
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)

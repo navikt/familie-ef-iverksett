@@ -41,7 +41,7 @@ internal class IverksettMotOppdragTaskTest {
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId, Properties()))
         verify(exactly = 1) { oppdragClient.iverksettOppdrag(any()) }
         assertThat(oppdragSlot.captured.fagSystem).isEqualTo("EFOG")
-        assertThat(oppdragSlot.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.ENDR)
+        assertThat(oppdragSlot.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.NY)
     }
 
     @Test

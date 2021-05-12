@@ -14,14 +14,14 @@ class IverksettService(val taskRepository: TaskRepository, val lagreIverksettSer
     fun startIverksetting(iverksett: Iverksett, brev: Brev) {
 
         lagreIverksettService.lagreIverksett(
-            UUID.fromString(iverksett.behandlingId),
+            iverksett.behandling.behandlingId,
             iverksett,
             brev
         )
         val task = IverksettMotOppdragTask.opprettTask(
-            iverksett.behandlingId,
-            iverksett.personIdent,
-            iverksett.tilkjentYtelse.saksbehandlerId
+            iverksett.behandling.behandlingId.toString(),
+            iverksett.søker.personIdent,
+            iverksett.vedtak.saksbehandlerId
         )
         taskRepository.save(task)
     }
