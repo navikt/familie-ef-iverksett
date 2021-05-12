@@ -4,7 +4,6 @@ import no.nav.familie.ef.iverksett.domene.*
 import no.nav.familie.ef.iverksett.infrastruktur.json.*
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import java.time.LocalDate
-import java.time.OffsetDateTime
 import java.util.*
 
 fun opprettIverksettDto(behandlingId: String): IverksettDto {

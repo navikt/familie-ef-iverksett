@@ -7,7 +7,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
-import no.nav.familie.ef.iverksett.util.opprettIverksettJson
+import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.prosessering.domene.Task
@@ -33,7 +33,7 @@ internal class JournalførVedtaksbrevTaskTest {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot)) } returns ArkiverDokumentResponse(
                 journalpostId,
                 true)
-        every { hentIverksettService.hentIverksett(behandlingId) }.returns(opprettIverksettJson(behandlingId = behandlingId).toDomain())
+        every { hentIverksettService.hentIverksett(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
         every { hentIverksettService.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
         every { taskRepository.save(capture(distribuerVedtaksbrevTask)) } returns Task(DistribuerVedtaksbrevTask.TYPE,
                                                                                        behandlingId,
