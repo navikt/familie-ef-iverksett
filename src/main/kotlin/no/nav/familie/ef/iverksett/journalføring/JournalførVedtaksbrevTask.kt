@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.journalføring
 
-import no.nav.familie.ef.iverksett.domene.Iverksett
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
@@ -9,6 +8,7 @@ import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -20,7 +20,9 @@ import java.util.*
     beskrivelse = "Journalfører vedtaksbrev."
 )
 
-class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService, val journalpostClient: JournalpostClient) : AsyncTaskStep {
+class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
+                                val journalpostClient: JournalpostClient,
+                                val taskRepository: TaskRepository) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
@@ -40,18 +42,19 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
         ).journalpostId
 
         // Legg til behandlingjournalpost ?
+        lagDistribuerVedtaksbrevTask(behandlingId, journalpostId)
     }
 
-    override fun onCompletion(task: Task) {
-        // Lag distribuer vedtaksbrev task
+    private fun lagDistribuerVedtaksbrevTask(behandlingId: UUID, journalpostId: String) {
+        taskRepository.save(DistribuerVedtaksbrevTask.opprettTask(behandlingId, journalpostId))
     }
 
     companion object {
 
-        fun opprettTask(iverksett: Iverksett): Task =
+        fun opprettTask(behandlingId: String): Task =
             Task(
                 type = TYPE,
-                payload = iverksett.behandlingId
+                payload = behandlingId
             )
 
         const val TYPE = "journalførVedtaksbrev"

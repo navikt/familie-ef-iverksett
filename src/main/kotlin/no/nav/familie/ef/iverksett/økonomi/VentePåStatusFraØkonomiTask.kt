@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
+import no.nav.familie.ef.iverksett.journalføring.JournalførVedtaksbrevTask
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -39,6 +40,7 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
     }
 
     override fun onCompletion(task: Task) {
+       val nesteTask = JournalførVedtaksbrevTask.opprettTask(task.payload)
         lagJournalførTask()
     }
 
