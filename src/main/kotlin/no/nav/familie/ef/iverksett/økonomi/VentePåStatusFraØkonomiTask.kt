@@ -7,29 +7,31 @@ import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = VentePåStatusFraØkonomiTask.TYPE,
-    maxAntallFeil = 50,
-    settTilManuellOppfølgning = true,
-    triggerTidVedFeilISekunder = 15 * 60L,
-    beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
+        taskStepType = VentePåStatusFraØkonomiTask.TYPE,
+        maxAntallFeil = 50,
+        settTilManuellOppfølgning = true,
+        triggerTidVedFeilISekunder = 15 * 60L,
+        beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
 )
 
-class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettService, val oppdragClient: OppdragClient) :
-    AsyncTaskStep {
+class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettService,
+                                  val oppdragClient: OppdragClient,
+                                  val taskRepository: TaskRepository) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = hentIverksettService.hentIverksett(behandlingId.toString())
         val oppdragId = OppdragId(
-            fagsystem = iverksett.tilkjentYtelse.stønadstype.tilKlassifisering(),
-            personIdent = iverksett.personIdent,
-            behandlingsId = iverksett.behandlingId
+                fagsystem = iverksett.tilkjentYtelse.stønadstype.tilKlassifisering(),
+                personIdent = iverksett.personIdent,
+                behandlingsId = iverksett.behandlingId
         )
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)
@@ -40,22 +42,17 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
     }
 
     override fun onCompletion(task: Task) {
-       val nesteTask = JournalførVedtaksbrevTask.opprettTask(task.payload)
-        lagJournalførTask()
-    }
+        val nesteTask = JournalførVedtaksbrevTask.opprettTask(task.payload)
+        taskRepository.save(nesteTask)
 
-    fun lagJournalførTask() {
-        // TODO : Implement later
     }
 
     companion object {
 
         fun opprettTask(behandlingId: String): Task =
-            Task(
-                type = TYPE,
-                payload = behandlingId,
-                triggerTid = LocalDateTime.now().plusMinutes(15)
-            )
+                Task(type = TYPE,
+                     payload = behandlingId,
+                     triggerTid = LocalDateTime.now().plusMinutes(15))
 
 
         const val TYPE = "sjekkStatusPåOppdrag"

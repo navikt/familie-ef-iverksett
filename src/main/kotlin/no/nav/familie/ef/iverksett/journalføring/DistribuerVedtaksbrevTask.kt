@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.journalføring
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -25,7 +24,6 @@ class DistribuerVedtaksbrevTask(val journalpostClient: JournalpostClient) : Asyn
         val taskData = objectMapper.readValue<DistribuerVedtaksbrevTaskData>(task.payload)
         val bestillingId = journalpostClient.distribuerBrev(taskData.journalpostId)
         logger.info("Distribuer vedtaksbrev journalpost=[${taskData.journalpostId}] for behandling=[${taskData.behandlingId}] med bestillingId=[$bestillingId]")
-
     }
 
     companion object {
