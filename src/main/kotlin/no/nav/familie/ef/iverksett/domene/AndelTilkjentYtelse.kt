@@ -1,21 +1,17 @@
 package no.nav.familie.ef.iverksett.domene
 
-import no.nav.familie.kontrakter.ef.felles.StønadType
-import java.util.*
+import java.util.UUID
 
 data class AndelTilkjentYtelse(val periodebeløp: Periodebeløp,
-                               val personIdent: String,
                                val periodeId: Long? = null,
                                val forrigePeriodeId: Long? = null,
-                               val stønadsType: StønadType? = null,
                                val kildeBehandlingId: UUID? = null) {
 
     private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean {
-        return (this.personIdent == other.personIdent
-                && this.periodebeløp.fraOgMed == other.periodebeløp.fraOgMed
-                && this.periodebeløp.tilOgMed == other.periodebeløp.tilOgMed
-                && this.periodebeløp.utbetaltPerPeriode == other.periodebeløp.utbetaltPerPeriode
-           )
+        return ( this.periodebeløp.fraOgMed == other.periodebeløp.fraOgMed
+               && this.periodebeløp.tilOgMed == other.periodebeløp.tilOgMed
+               && this.periodebeløp.utbetaltPerPeriode == other.periodebeløp.utbetaltPerPeriode
+        )
     }
 
     fun erNull() = this.periodebeløp.utbetaltPerPeriode == 0

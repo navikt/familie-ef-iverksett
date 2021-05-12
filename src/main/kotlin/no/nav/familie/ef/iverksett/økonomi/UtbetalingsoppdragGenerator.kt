@@ -36,17 +36,17 @@ object UtbetalingsoppdragGenerator {
         val andelerTilOpprettelse = andelerTilOpprettelse(andelerNyTilkjentYtelse, beståendeAndeler)
 
         val andelerTilOpprettelseMedPeriodeId =
-                lagAndelerMedPeriodeId(andelerTilOpprettelse, sistePeriodeIdIForrigeKjede, nyTilkjentYtelse.behandlingId)
+                lagAndelerMedPeriodeId(andelerTilOpprettelse, sistePeriodeIdIForrigeKjede, nyTilkjentYtelseMedMetaData.behandlingId)
 
         val utbetalingsperioderSomOpprettes =
                 lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
                                                      behandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
-                                                     tilkjentYtelse = nyTilkjentYtelse,
+                                                     tilkjentYtelse = nyTilkjentYtelseMedMetaData,
                                                      type = nyTilkjentYtelseMedMetaData.stønadstype)
 
         val utbetalingsperioderSomOpphøres = andelTilOpphørMedDato?.let {
             lagUtbetalingsperioderForOpphør(andeler = andelTilOpphørMedDato,
-                                            tilkjentYtelse = nyTilkjentYtelse,
+                                            tilkjentYtelse = nyTilkjentYtelseMedMetaData,
                                             behandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
                                             type = nyTilkjentYtelseMedMetaData.stønadstype)
         } ?: emptyList()
@@ -56,7 +56,7 @@ object UtbetalingsoppdragGenerator {
                                    kodeEndring = if (forrigeTilkjentYtelse == null) NY else ENDR,
                                    fagSystem = nyTilkjentYtelseMedMetaData.stønadstype.tilKlassifisering(),
                                    saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),
-                                   aktoer = nyTilkjentYtelse.personident,
+                                   aktoer = nyTilkjentYtelseMedMetaData.personIdent,
                                    utbetalingsperiode = listOf(utbetalingsperioderSomOpprettes,
                                                                utbetalingsperioderSomOpphøres)
                                            .flatten()
@@ -77,9 +77,8 @@ object UtbetalingsoppdragGenerator {
     private fun List<AndelTilkjentYtelse>.ellerNullAndel(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
                                                          sistePeriodeIdIForrigeKjede: PeriodeId?): List<AndelTilkjentYtelse> {
         return if (this.isEmpty()) {
-            listOf(nullAndelTilkjentYtelse(nyTilkjentYtelseMedMetaData.tilkjentYtelse.behandlingId,
-                                           nyTilkjentYtelseMedMetaData.tilkjentYtelse.personident,
-                                           sistePeriodeIdIForrigeKjede,nyTilkjentYtelseMedMetaData.stønadstype))
+            listOf(nullAndelTilkjentYtelse(nyTilkjentYtelseMedMetaData.behandlingId,
+                                           sistePeriodeIdIForrigeKjede))
 
         } else {
             this
@@ -89,7 +88,7 @@ object UtbetalingsoppdragGenerator {
     private fun lagUtbetalingsperioderForOpphør(andeler: Pair<AndelTilkjentYtelse, LocalDate>,
                                                 behandlingId: Long,
                                                 type: StønadType,
-                                                tilkjentYtelse: TilkjentYtelse): List<Utbetalingsperiode> {
+                                                tilkjentYtelse: TilkjentYtelseMedMetaData): List<Utbetalingsperiode> {
         val utbetalingsperiodeMal = UtbetalingsperiodeMal(tilkjentYtelse, true)
         val (sisteAndelIKjede, opphørKjedeFom) = andeler
         return listOf(utbetalingsperiodeMal.lagPeriodeFraAndel(andel = sisteAndelIKjede,
@@ -101,7 +100,7 @@ object UtbetalingsoppdragGenerator {
     private fun lagUtbetalingsperioderForOpprettelse(andeler: List<AndelTilkjentYtelse>,
                                                      behandlingId: Long,
                                                      type: StønadType,
-                                                     tilkjentYtelse: TilkjentYtelse): List<Utbetalingsperiode> {
+                                                     tilkjentYtelse: TilkjentYtelseMedMetaData): List<Utbetalingsperiode> {
 
         val utbetalingsperiodeMal = UtbetalingsperiodeMal(tilkjentYtelse)
         return andeler.map { utbetalingsperiodeMal.lagPeriodeFraAndel(it, type, behandlingId) }

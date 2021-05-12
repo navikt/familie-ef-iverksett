@@ -20,7 +20,7 @@ class LagreIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
         try {
             return lagreIverksett(behandlingId, iverksett, brev)
         } catch (exception: Exception) {
-            secureLogger.error("Kunne ikke lagre iverksett json for behandlingId ${behandlingId}: ${exception}")
+            secureLogger.error("Kunne ikke lagre iverksett json for behandlingId ${behandlingId}", exception)
             throw Exception("Feil ved LagreIverksett til basen")
         }
     }
@@ -29,7 +29,7 @@ class LagreIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
         val sql = "insert into iverksett values(:behandlingId, :iverksettJson::json)"
         val iverksettString = objectMapper.writeValueAsString(iverksett)
 
-        var mapSqlParameterSource = MapSqlParameterSource(
+        val mapSqlParameterSource = MapSqlParameterSource(
             mapOf(
                     "behandlingId" to behandlingId,
                     "iverksettJson" to iverksettString
@@ -41,7 +41,7 @@ class LagreIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
 
     private fun lagreBrev(behandlingId: UUID, brev: Brev) {
         val sql = "insert into brev values(:behandlingId, :pdf)"
-        var mapSqlParameterSource = MapSqlParameterSource(
+        val mapSqlParameterSource = MapSqlParameterSource(
             mapOf(
                 "behandlingId" to behandlingId,
                 "pdf" to brev.pdf

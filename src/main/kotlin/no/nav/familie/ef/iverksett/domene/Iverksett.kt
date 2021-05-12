@@ -1,31 +1,51 @@
 package no.nav.familie.ef.iverksett.domene
 
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import java.time.LocalDate
-import java.time.OffsetDateTime
 import java.util.*
 
 data class Iverksett(
-    val forrigeTilkjentYtelse: TilkjentYtelse? = null,
-    val tilkjentYtelse: TilkjentYtelseMedMetaData,
-    val fagsakId: String,
-    val saksnummer: String? = null,
-    val behandlingId: String,
-    val eksternId: Long,
-    val relatertBehandlingId: String? = null,
-    val kode6eller7: Boolean,
-    val tidspunktVedtak: OffsetDateTime? = null,
-    val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
-    val personIdent: String,
-    val barn: List<Person> = ArrayList(),
-    val behandlingType: BehandlingType,
-    val behandlingÅrsak: BehandlingÅrsak,
-    val behandlingResultat: BehandlingResultat,
-    val vedtak: Vedtak? = null,
-    val opphørÅrsak: OpphørÅrsak,
-    val aktivitetskrav: Aktivitetskrav,
-    val funksjonellId: String,
-    val tilhørendeEnhet: String
+        val fagsak: Fagsakdetaljer,
+        val behandling: Behandlingsdetaljer,
+        val søker: Søker,
+        val vedtak: Vedtaksdetaljer,
 )
+
+data class Fagsakdetaljer(
+        val fagsakId: UUID,
+        val eksternId: Long,
+        val stønadstype: StønadType
+)
+
+data class Søker(
+        val aktivitetskrav: Aktivitetskrav,
+        val personIdent: String,
+        val barn: List<Barn> = ArrayList(),
+        val tilhørendeEnhet: String,
+        val kode6eller7: Boolean,
+)
+
+data class Vedtaksdetaljer(
+        val vedtak: Vedtak,
+        val vedtaksdato: LocalDate,
+        val opphørÅrsak: OpphørÅrsak?,
+        val saksbehandlerId: String,
+        val beslutterId: String,
+        val tilkjentYtelse: TilkjentYtelse,
+        val inntekter: List<Inntekt>
+)
+
+data class Behandlingsdetaljer(
+        val forrigeBehandlingId: String? = null,
+        val behandlingId: UUID,
+        val eksternId: Long,
+        val behandlingType: BehandlingType,
+        val behandlingÅrsak: BehandlingÅrsak,
+        val behandlingResultat: BehandlingResultat,
+        val relatertBehandlingId: String? = null,
+        val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
+
+        )
 
 data class Aktivitetskrav(
     val aktivitetspliktInntreffer: LocalDate,

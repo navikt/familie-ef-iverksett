@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi
 
+import no.nav.familie.ef.iverksett.domene.toMedMetadata
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -19,9 +20,18 @@ class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService, va
     override fun doTask(task: Task) {
         val behandlingId = task.payload
         val iverksett = hentIverksettService.hentIverksett(behandlingId)
+        val forrigeTilkjentYtelse = null // TODO: Hent ut forrigeTilkjentYtelse fra lokal DB
         val utbetaling = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-            iverksett.tilkjentYtelse,
-            iverksett.forrigeTilkjentYtelse
+            iverksett.vedtak.tilkjentYtelse.toMedMetadata(saksbehandlerId = iverksett.vedtak.saksbehandlerId,
+                                                          eksternBehandlingId = iverksett.behandling.eksternId,
+                                                          stønadType = iverksett.fagsak.stønadstype,
+                                                          eksternFagsakId = iverksett.fagsak.eksternId,
+                                                          personIdent = iverksett.søker.personIdent,
+                                                          behandlingId = iverksett.behandling.behandlingId,
+                                                          vedtaksdato = iverksett.vedtak.vedtaksdato
+
+            ),
+            forrigeTilkjentYtelse
         )
 
         // TODO : Lagre denne (utbetaling, som en json)

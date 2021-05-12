@@ -31,11 +31,11 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
 
         val journalpostId = journalpostClient.arkiverDokument(
             ArkiverDokumentRequest(
-                fnr = iverksett.personIdent,
+                fnr = iverksett.søker.personIdent,
                 forsøkFerdigstill = true,
                 hoveddokumentvarianter = listOf(dokument),
-                fagsakId = iverksett.saksnummer,
-                journalførendeEnhet = iverksett.tilhørendeEnhet
+                fagsakId = iverksett.fagsak.eksternId.toString(),
+                journalførendeEnhet = iverksett.søker.tilhørendeEnhet
             )
         ).journalpostId
 
@@ -51,7 +51,7 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
         fun opprettTask(iverksett: Iverksett): Task =
             Task(
                 type = TYPE,
-                payload = iverksett.behandlingId
+                payload = iverksett.behandling.behandlingId.toString()
             )
 
         const val TYPE = "journalførVedtaksbrev"

@@ -7,43 +7,39 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.*
 
-fun opprettIverksettJson(behandlingId: String): IverksettJson {
+fun opprettIverksettDto(behandlingId: String): IverksettDto {
 
-    val tilkjentYtelseJson = TilkjentYtelseJson(
-        id = UUID.randomUUID(),
-        behandlingId = UUID.randomUUID(),
-        personident = "personident",
-        status = TilkjentYtelseStatus.AKTIV,
-        type = TilkjentYtelseType.ENDRING,
-        andelerTilkjentYtelse = emptyList()
+    val tilkjentYtelse = TilkjentYtelseDto(
+            id = UUID.randomUUID(),
+            status = TilkjentYtelseStatus.AKTIV,
+            type = TilkjentYtelseType.ENDRING,
+            andelerTilkjentYtelse = emptyList()
     )
 
-    return IverksettJson(
-        forrigeTilkjentYtelse = tilkjentYtelseJson,
-        tilkjentYtelse = TilkjentYtelseMedMetadataJson(
-            tilkjentYtelseJson = tilkjentYtelseJson,
-            saksbehandlerId = "saksbehandlerid",
-            eksternBehandlingId = 0,
-            stønadstype = StønadType.OVERGANGSSTØNAD,
-            eksternFagsakId = 0
-        ),
-        fagsakId = "1",
-        saksnummer = "1",
-        behandlingId = behandlingId,
-        eksternId = 1L,
-        relatertBehandlingId = "2",
-        kode6eller7 = false,
-        tidspunktVedtak = OffsetDateTime.now(),
-        vilkårsvurderinger = emptyList(),
-        personIdent = "12345678910",
-        barn = emptyList(),
-        behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-        behandlingResultat = BehandlingResultat.FERDIGSTILT,
-        opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
-        aktivitetskrav = AktivitetskravJson(LocalDate.now(), false),
-        funksjonellId = "0",
-        behandlingÅrsak = BehandlingÅrsak.SØKNAD,
-        tilhørendeEnhet = "4489"
+    return IverksettDto(
+            fagsak = FagsakdetaljerDto(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
+            behandling = BehandlingsdetaljerDto(behandlingId = UUID.randomUUID(),
+                                                forrigeBehandlingId = null,
+                                                eksternId = 9L,
+                                                behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+                                                behandlingÅrsak = BehandlingÅrsak.SØKNAD,
+                                                behandlingResultat = BehandlingResultat.FERDIGSTILT,
+                                                relatertBehandlingId = null,
+                                                vilkårsvurderinger = emptyList()),
+            søker = SøkerDto(aktivitetskrav = AktivitetskravDto(
+                    aktivitetspliktInntrefferDato = LocalDate.of(2021, 5, 1),
+                    harSagtOppArbeidsforhold = false),
+                             personIdent = "12345678910",
+                             barn = emptyList(),
+                             tilhørendeEnhet = "4489",
+                             kode6eller7 = false),
+            vedtak = VedtaksdetaljerDto(vedtak = Vedtak.INNVILGET,
+                                        vedtaksdato = LocalDate.of(2021, 5, 12),
+                                        opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
+                                        saksbehandlerId = "A12345",
+                                        beslutterId = "B23456",
+                                        tilkjentYtelse = tilkjentYtelse,
+                                        inntekter = emptyList())
     )
 }
 

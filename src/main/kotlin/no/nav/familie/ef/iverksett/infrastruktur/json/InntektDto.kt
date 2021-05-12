@@ -4,17 +4,17 @@ import no.nav.familie.ef.iverksett.domene.Inntekt
 import no.nav.familie.ef.iverksett.domene.InntektsType
 import no.nav.familie.ef.iverksett.domene.Inntektsreduksjon
 
-data class InntektJson(
-    val periodebeløp: PeriodebeløpJson,
-    val inntektstype: InntektsType
+data class InntektDto(
+        val periodebeløp: PeriodebeløpDto,
+        val inntektstype: InntektsType
 )
 
-data class InntektsreduksjonJson(val periodebeløp: List<PeriodebeløpJson> = emptyList())
+data class InntektsreduksjonDto(val periodebeløp: List<PeriodebeløpDto> = emptyList())
 
-fun InntektsreduksjonJson.toDomain(): Inntektsreduksjon {
+fun InntektsreduksjonDto.toDomain(): Inntektsreduksjon {
     return Inntektsreduksjon(this.periodebeløp.map { it.toDomain() })
 }
 
-fun InntektJson.toDomain(): Inntekt {
+fun InntektDto.toDomain(): Inntekt {
     return Inntekt(this.periodebeløp.toDomain(), this.inntektstype)
 }

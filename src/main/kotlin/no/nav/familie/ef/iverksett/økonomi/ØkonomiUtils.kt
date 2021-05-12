@@ -19,13 +19,11 @@ fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, th
 @Deprecated("Bør erstattes med å gjøre 'stønadFom' og  'stønadTom'  nullable")
 val NULL_DATO: LocalDate = LocalDate.MIN
 
-fun nullAndelTilkjentYtelse(behandlingId: UUID, personIdent: String, periodeId: PeriodeId?, stønadstype: StønadType): AndelTilkjentYtelse =
+fun nullAndelTilkjentYtelse(behandlingId: UUID, periodeId: PeriodeId?): AndelTilkjentYtelse =
         AndelTilkjentYtelse(periodebeløp = Periodebeløp(0, Periodetype.MÅNED, NULL_DATO, NULL_DATO),
-                            personIdent = personIdent,
                             periodeId = periodeId?.gjeldende,
                             kildeBehandlingId = behandlingId,
-                            forrigePeriodeId = periodeId?.forrige,
-                            stønadsType = stønadstype)
+                            forrigePeriodeId = periodeId?.forrige)
 
 object ØkonomiUtils {
 
