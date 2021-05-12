@@ -10,6 +10,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 data class IverksettJson(
+
     val forrigeTilkjentYtelse: TilkjentYtelseJson? = null,
     val tilkjentYtelse: TilkjentYtelseMedMetadataJson,
     val fagsakId: String,
@@ -28,7 +29,8 @@ data class IverksettJson(
     val vedtak: Vedtak? = null,
     val opphørÅrsak: OpphørÅrsak,
     val aktivitetskrav: AktivitetskravJson,
-    val funksjonellId: String
+    val funksjonellId: String,
+    val tilhørendeEnhet: String
 )
 
 data class AktivitetskravJson(
@@ -92,6 +94,7 @@ fun IverksettJson.toDomain(): Iverksett {
         vedtak = this.vedtak,
         opphørÅrsak = this.opphørÅrsak,
         aktivitetskrav = this.aktivitetskrav.toDomain(),
-        funksjonellId = this.funksjonellId
+        funksjonellId = this.funksjonellId,
+        tilhørendeEnhet = this.tilhørendeEnhet
     )
 }

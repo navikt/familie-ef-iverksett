@@ -15,6 +15,7 @@
   "behandlingÅrsak": "DØDSFALL",
   "eksternId": 0,
   "fagsakId": "string",
+  "tilhørendeEnhet": "4489",
   "forrigeTilkjentYtelse": {
     "andelerTilkjentYtelse": [
       {

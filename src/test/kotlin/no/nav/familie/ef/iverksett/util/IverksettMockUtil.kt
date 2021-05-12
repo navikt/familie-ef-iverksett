@@ -42,7 +42,8 @@ fun opprettIverksettJson(behandlingId: String): IverksettJson {
         opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
         aktivitetskrav = AktivitetskravJson(LocalDate.now(), false),
         funksjonellId = "0",
-        behandlingÅrsak = BehandlingÅrsak.SØKNAD
+        behandlingÅrsak = BehandlingÅrsak.SØKNAD,
+        tilhørendeEnhet = "4489"
     )
 }
 

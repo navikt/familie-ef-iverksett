@@ -17,7 +17,8 @@ class SimuleringService(
                     simuleringDto.forrigeTilkjentYtelse
             )
 
-            val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag!!
+            val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
+                                     ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
 
             return oppdragKlient.hentSimulering(utbetalingsoppdrag)
         } catch (feil: Throwable) {
