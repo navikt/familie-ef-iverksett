@@ -33,11 +33,11 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
 
         val journalpostId = journalpostClient.arkiverDokument(
             ArkiverDokumentRequest(
-                fnr = iverksett.personIdent,
+                fnr = iverksett.søker.personIdent,
                 forsøkFerdigstill = true,
                 hoveddokumentvarianter = listOf(dokument),
-                fagsakId = iverksett.saksnummer,
-                journalførendeEnhet = iverksett.tilhørendeEnhet
+                fagsakId = iverksett.fagsak.eksternId.toString(),
+                journalførendeEnhet = iverksett.søker.tilhørendeEnhet
             )
         ).journalpostId
 

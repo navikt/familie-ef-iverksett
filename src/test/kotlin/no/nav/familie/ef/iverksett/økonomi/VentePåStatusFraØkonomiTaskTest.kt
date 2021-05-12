@@ -4,7 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
-import no.nav.familie.ef.iverksett.util.opprettIverksettJson
+import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
@@ -23,7 +23,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
     @Test
     internal fun `kjør doTask for VentePåStatusFraØkonomiTaskhvis, forvent ingen unntak`() {
         every { oppdragClient.hentStatus(any()) } returns OppdragStatus.KVITTERT_OK
-        every { hentIverksettService.hentIverksett(any()) } returns opprettIverksettJson(behandlingId).toDomain()
+        every { hentIverksettService.hentIverksett(any()) } returns opprettIverksettDto(behandlingId).toDomain()
         ventePåStatusFraØkonomiTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId, Properties()))
     }
 }

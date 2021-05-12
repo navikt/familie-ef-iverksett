@@ -159,25 +159,24 @@ internal class UtbetalingsoppdragGeneratorTest {
 
     private fun opprettAndel(beløp: Int, stønadFom: LocalDate, stønadTom: LocalDate) =
             AndelTilkjentYtelse(periodebeløp = Periodebeløp(beløp, Periodetype.MÅNED, stønadFom, stønadTom),
-                                personIdent = "1",
                                 periodeId = 100, // overskreves
                                 forrigePeriodeId = 100, // overskreves
-                                kildeBehandlingId = UUID.randomUUID(), // overskreves
-                                stønadsType = StønadType.OVERGANGSSTØNAD) // overskreves
+                                kildeBehandlingId = UUID.randomUUID()) // overskreves
 
     private fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID,
                                                  vararg andelTilkjentYtelse: AndelTilkjentYtelse) =
             TilkjentYtelseMedMetaData(tilkjentYtelse = TilkjentYtelse(id = UUID.randomUUID(),
-                                                                      behandlingId = behandlingId,
-                                                                      personident = "1",
                                                                       utbetalingsoppdrag = null,
-                                                                      vedtaksdato = LocalDate.now(),
                                                                       status = TilkjentYtelseStatus.OPPRETTET,
                                                                       type = TilkjentYtelseType.ENDRING,
                                                                       andelerTilkjentYtelse = andelTilkjentYtelse.toList()),
+                                      personIdent = "1",
+                                      behandlingId = behandlingId,
                                       eksternBehandlingId = 1,
                                       stønadstype = StønadType.OVERGANGSSTØNAD,
                                       eksternFagsakId = 1,
-                                      saksbehandlerId = "VL")
+                                      saksbehandlerId = "VL",
+                                      vedtaksdato = LocalDate.of(2021, 5, 12)
+            )
 
 }

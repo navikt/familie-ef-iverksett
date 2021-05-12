@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
@@ -15,7 +16,7 @@ import java.time.LocalDate
  * @param[erEndringPåEksisterendePeriode] ved true vil oppdrag sette asksjonskode ENDR på linje og ikke referere bakover
  * @return mal med tilpasset lagPeriodeFraAndel
  */
-data class UtbetalingsperiodeMal(val tilkjentYtelse: TilkjentYtelse,
+data class UtbetalingsperiodeMal(val tilkjentYtelse: TilkjentYtelseMedMetaData,
                                  val erEndringPåEksisterendePeriode: Boolean = false) {
 
     /**
@@ -33,13 +34,13 @@ data class UtbetalingsperiodeMal(val tilkjentYtelse: TilkjentYtelse,
                                opphør = if (erEndringPåEksisterendePeriode) Opphør(opphørKjedeFom!!) else null,
                                forrigePeriodeId = andel.forrigePeriodeId,
                                periodeId = andel.periodeId!!,
-                               datoForVedtak = tilkjentYtelse.vedtaksdato!!,
+                               datoForVedtak = tilkjentYtelse.vedtaksdato,
                                klassifisering = type.tilKlassifisering(),
                                vedtakdatoFom = andel.periodebeløp.fraOgMed,
                                vedtakdatoTom = andel.periodebeløp.tilOgMed,
                                sats = BigDecimal(andel.periodebeløp.utbetaltPerPeriode),
                                satsType = Utbetalingsperiode.SatsType.MND,
-                               utbetalesTil = tilkjentYtelse.personident,
+                               utbetalesTil = tilkjentYtelse.personIdent,
                                behandlingId = behandlingId)
 
 }

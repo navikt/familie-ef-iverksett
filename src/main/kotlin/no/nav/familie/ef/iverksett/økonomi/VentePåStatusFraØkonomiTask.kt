@@ -14,11 +14,11 @@ import java.util.*
 
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = VentePåStatusFraØkonomiTask.TYPE,
-        maxAntallFeil = 50,
-        settTilManuellOppfølgning = true,
-        triggerTidVedFeilISekunder = 15 * 60L,
-        beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
+    taskStepType = VentePåStatusFraØkonomiTask.TYPE,
+    maxAntallFeil = 50,
+    settTilManuellOppfølgning = true,
+    triggerTidVedFeilISekunder = 15 * 60L,
+    beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
 )
 
 class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettService,
@@ -29,9 +29,9 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = hentIverksettService.hentIverksett(behandlingId.toString())
         val oppdragId = OppdragId(
-                fagsystem = iverksett.tilkjentYtelse.stønadstype.tilKlassifisering(),
-                personIdent = iverksett.personIdent,
-                behandlingsId = iverksett.behandlingId
+            fagsystem = iverksett.fagsak.stønadstype.tilKlassifisering(),
+            personIdent = iverksett.søker.personIdent,
+            behandlingsId = iverksett.behandling.behandlingId.toString()
         )
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)

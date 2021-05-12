@@ -4,11 +4,11 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
+import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.lagreIverksett.infrastruktur.LagreIverksettJdbc
 import no.nav.familie.ef.iverksett.util.opprettBrev
-import no.nav.familie.ef.iverksett.util.opprettIverksettJson
+import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -27,11 +27,11 @@ class LagreIverksettServiceTest : ServerTest() {
     @Test
     internal fun `lagre iverksett data og brev`() {
         val behandlingId = UUID.randomUUID()
-        val iverksettJson: IverksettJson = opprettIverksettJson(behandlingId.toString())
+        val iverksettDto: IverksettDto = opprettIverksettDto(behandlingId.toString())
 
         every { lagreIverksettJdbc.lagre(any(), any(), any()) } returns Unit
 
-        val iverksett = iverksettJson.toDomain()
+        val iverksett = iverksettDto.toDomain()
         val brev = opprettBrev()
 
         lagreIverksettService.lagreIverksett(

@@ -6,7 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
-import no.nav.familie.ef.iverksett.util.opprettIverksettJson
+import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
@@ -31,7 +31,7 @@ internal class IverksettMotOppdragTaskTest {
 
     @BeforeEach
     internal fun setUp() {
-        every { hentIverksettService.hentIverksett(any()) } returns opprettIverksettJson(behandlingId).toDomain()
+        every { hentIverksettService.hentIverksett(any()) } returns opprettIverksettDto(behandlingId).toDomain()
     }
 
     @Test
@@ -41,7 +41,7 @@ internal class IverksettMotOppdragTaskTest {
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId, Properties()))
         verify(exactly = 1) { oppdragClient.iverksettOppdrag(any()) }
         assertThat(oppdragSlot.captured.fagSystem).isEqualTo("EFOG")
-        assertThat(oppdragSlot.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.ENDR)
+        assertThat(oppdragSlot.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.NY)
     }
 
     @Test
