@@ -15,15 +15,13 @@ import java.util.*
 
 class LagreIverksettServiceTest : ServerTest() {
 
-    private lateinit var lagreIverksett: LagreIverksett
     private lateinit var lagreIverksettJdbc: LagreIverksettJdbc
     private lateinit var lagreIverksettService: LagreIverksettService
 
     @BeforeEach
     fun setUp() {
-        lagreIverksett = mockk()
         lagreIverksettJdbc = mockk()
-        lagreIverksettService = LagreIverksettService(lagreIverksett)
+        lagreIverksettService = LagreIverksettService(lagreIverksettJdbc)
     }
 
     @Test
@@ -31,17 +29,17 @@ class LagreIverksettServiceTest : ServerTest() {
         val behandlingId = UUID.randomUUID()
         val iverksettJson: IverksettJson = opprettIverksettJson(behandlingId.toString())
 
-        every { lagreIverksett.lagre(any(), any(), any()) } returns Unit
+        every { lagreIverksettJdbc.lagre(any(), any(), any()) } returns Unit
 
         val iverksett = iverksettJson.toDomain()
         val brev = opprettBrev()
 
         lagreIverksettService.lagreIverksett(
-            behandlingsId = behandlingId,
+            behandlingId = behandlingId,
             iverksett = iverksett,
             brev = brev
         )
 
-        verify(exactly = 1) { lagreIverksett.lagre(behandlingId, iverksett, brev) }
+        verify(exactly = 1) { lagreIverksettJdbc.lagre(behandlingId, iverksett, brev) }
     }
 }

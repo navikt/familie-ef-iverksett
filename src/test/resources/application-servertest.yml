@@ -10,6 +10,7 @@ no.nav.security.jwt:
     proxy_url: #Default satt, skal være null i integrasjonstest
 
 FAMILIE_OPPDRAG_API_URL: http://localhost:8087
+FAMILIE_INTEGRASJONER_API_URL: http://localhost:8085
 AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
 
 AZURE_APP_TENANT_ID: navq.onmicrosoft.com
