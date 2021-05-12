@@ -41,7 +41,6 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
             )
         ).journalpostId
 
-        // Legg til behandlingjournalpost ?
         lagDistribuerVedtaksbrevTask(behandlingId, journalpostId)
     }
 
@@ -59,6 +58,4 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
 
         const val TYPE = "journalførVedtaksbrev"
     }
-
-
 }
