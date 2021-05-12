@@ -28,7 +28,7 @@ class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService, va
                                                           eksternFagsakId = iverksett.fagsak.eksternId,
                                                           personIdent = iverksett.søker.personIdent,
                                                           behandlingId = iverksett.behandling.behandlingId,
-                                                          vedtaksdato = iverksett.vedtak.tidspunktVedtak
+                                                          vedtaksdato = iverksett.vedtak.vedtaksdato
 
             ),
             forrigeTilkjentYtelse

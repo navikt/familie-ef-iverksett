@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.startIverksett.infrastruktur
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain

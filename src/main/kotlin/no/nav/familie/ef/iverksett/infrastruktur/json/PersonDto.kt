@@ -15,12 +15,12 @@ fun PersonDto.toDomain(): Person {
 
 data class BarnDto(
         val personIdent: String? = null,
-        val terminDato: LocalDate? = null
+        val termindato: LocalDate? = null
 )
 
 fun BarnDto.toDomain(): Barn {
     return Barn(
             personIdent = this.personIdent,
-            terminDato = this.terminDato
+            termindato = this.termindato
     )
 }

@@ -1,9 +1,5 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import no.nav.familie.ef.iverksett.domene.*
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import java.time.LocalDate
@@ -44,7 +40,7 @@ data class BehandlingsdetaljerDto(
 
 data class VedtaksdetaljerDto(
         val vedtak: Vedtak,
-        val tidspunktVedtak: LocalDate,
+        val vedtaksdato: LocalDate,
         val opphørÅrsak: OpphørÅrsak?,
         val saksbehandlerId: String,
         val beslutterId: String,
@@ -53,9 +49,6 @@ data class VedtaksdetaljerDto(
 )
 
 data class AktivitetskravDto(
-
-        @JsonSerialize(using = ToStringSerializer::class)
-        @JsonDeserialize(using = LocalDateDeserializer::class)
         val aktivitetspliktInntrefferDato: LocalDate,
         val harSagtOppArbeidsforhold: Boolean
 )
@@ -63,25 +56,25 @@ data class AktivitetskravDto(
 data class VilkårsvurderingDto(
         val vilkårType: VilkårType,
         val resultat: Vilkårsresultat,
-        val delvilkårsvurderinger: List<DelvilkårsvurderingJson> = emptyList()
+        val delvilkårsvurderinger: List<DelvilkårsvurderingDto> = emptyList()
 )
 
-data class DelvilkårsvurderingJson(
+data class DelvilkårsvurderingDto(
         val resultat: Vilkårsresultat,
-        val vurderinger: List<VurderingJson> = emptyList()
+        val vurderinger: List<VurderingDto> = emptyList()
 )
 
-data class VurderingJson(
+data class VurderingDto(
         val regelId: RegelId,
         val svar: SvarId? = null,
         val begrunnelse: String? = null
 )
 
-fun VurderingJson.toDomain(): Vurdering {
+fun VurderingDto.toDomain(): Vurdering {
     return Vurdering(this.regelId, this.svar, this.begrunnelse)
 }
 
-fun DelvilkårsvurderingJson.toDomain(): Delvilkårsvurdering {
+fun DelvilkårsvurderingDto.toDomain(): Delvilkårsvurdering {
     return Delvilkårsvurdering(this.resultat, this.vurderinger.map { it.toDomain() })
 }
 
@@ -103,8 +96,8 @@ fun SøkerDto.toDomain(): Søker {
     return Søker(aktivitetskrav = this.aktivitetskrav.toDomain(),
                  personIdent = this.personIdent,
                  barn = this.barn.map { it.toDomain()},
-                 tilhørendeEnhet = "",
-                 kode6eller7 = false)
+                 tilhørendeEnhet = this.tilhørendeEnhet,
+                 kode6eller7 = this.kode6eller7)
 }
 
 fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
@@ -120,7 +113,7 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
 
 fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
     return Vedtaksdetaljer(vedtak = this.vedtak,
-                           tidspunktVedtak = this.tidspunktVedtak,
+                           vedtaksdato = this.vedtaksdato,
                            opphørÅrsak = this.opphørÅrsak,
                            saksbehandlerId = this.saksbehandlerId,
                            beslutterId = this.beslutterId,

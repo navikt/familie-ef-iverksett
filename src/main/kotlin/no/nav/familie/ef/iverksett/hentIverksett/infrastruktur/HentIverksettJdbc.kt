@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.hentIverksett.infrastruktur
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.domene.Iverksett
+import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -12,7 +12,7 @@ import java.sql.ResultSet
 import java.util.*
 
 @Repository
-class HentIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate, val objectMapper: ObjectMapper) {
+class HentIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 

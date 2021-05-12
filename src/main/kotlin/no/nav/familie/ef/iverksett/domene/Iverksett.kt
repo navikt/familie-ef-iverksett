@@ -27,7 +27,7 @@ data class Søker(
 
 data class Vedtaksdetaljer(
         val vedtak: Vedtak,
-        val tidspunktVedtak: LocalDate,
+        val vedtaksdato: LocalDate,
         val opphørÅrsak: OpphørÅrsak?,
         val saksbehandlerId: String,
         val beslutterId: String,

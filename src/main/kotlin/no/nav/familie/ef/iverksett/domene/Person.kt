@@ -9,5 +9,5 @@ data class Person(
 
 data class Barn(
         val personIdent: String? = null,
-        val terminDato: LocalDate? = null
+        val termindato: LocalDate? = null
 )

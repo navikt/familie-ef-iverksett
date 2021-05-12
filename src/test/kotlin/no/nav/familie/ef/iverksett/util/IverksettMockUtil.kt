@@ -7,7 +7,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.*
 
-fun opprettIverksettJson(behandlingId: String): IverksettDto {
+fun opprettIverksettDto(behandlingId: String): IverksettDto {
 
     val tilkjentYtelse = TilkjentYtelseDto(
             id = UUID.randomUUID(),
@@ -34,7 +34,7 @@ fun opprettIverksettJson(behandlingId: String): IverksettDto {
                              tilhørendeEnhet = "4489",
                              kode6eller7 = false),
             vedtak = VedtaksdetaljerDto(vedtak = Vedtak.INNVILGET,
-                                        tidspunktVedtak = LocalDate.of(2021, 5, 12),
+                                        vedtaksdato = LocalDate.of(2021, 5, 12),
                                         opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                                         saksbehandlerId = "A12345",
                                         beslutterId = "B23456",
