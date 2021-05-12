@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
+import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class VedtakstatistikkKafkaProducer(
-    private val kafkaTemplate: KafkaTemplate<String, BehandlingDVH>
+    private val kafkaTemplate: KafkaTemplate<String, String>
 ) {
     @Value("\${ENSLIG_FORSORGER_VEDTAK_TOPIC}")
     lateinit var topic: String
@@ -20,7 +21,7 @@ class VedtakstatistikkKafkaProducer(
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
         runCatching {
-            kafkaTemplate.send(topic, vedtakStatistikk)
+            kafkaTemplate.send(topic, vedtakStatistikk.toJson())
             logger.info("$vedtakStatistikk sent to Kafka.")
         }.onFailure {
             val errorMessage = "Could not send vedtak to Kafka. Check secure logs for more information."
@@ -30,3 +31,5 @@ class VedtakstatistikkKafkaProducer(
         }
     }
 }
+
+private fun Any.toJson(): String = objectMapper.writeValueAsString(this)
