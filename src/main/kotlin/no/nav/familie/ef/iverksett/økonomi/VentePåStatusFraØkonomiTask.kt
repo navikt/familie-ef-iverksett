@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
-import no.nav.familie.ef.iverksett.journalføring.JournalførVedtaksbrevTask
+import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -9,7 +9,6 @@ import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.util.*
 
 @Service
@@ -42,21 +41,10 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
     }
 
     override fun onCompletion(task: Task) {
-        val nesteTask = JournalførVedtaksbrevTask.opprettTask(task.payload)
-        taskRepository.save(nesteTask)
-
+        taskRepository.save(task.opprettNesteTask())
     }
 
     companion object {
-
-        fun opprettTask(behandlingId: String): Task =
-                Task(type = TYPE,
-                     payload = behandlingId,
-                     triggerTid = LocalDateTime.now().plusMinutes(15))
-
-
         const val TYPE = "sjekkStatusPåOppdrag"
     }
-
-
 }

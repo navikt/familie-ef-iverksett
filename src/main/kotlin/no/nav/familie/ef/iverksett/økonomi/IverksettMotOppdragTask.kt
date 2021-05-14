@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.domene.toMedMetadata
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
+import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -40,26 +41,10 @@ class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService, va
     }
 
     override fun onCompletion(task: Task) {
-        val nesteTask = VentePåStatusFraØkonomiTask.opprettTask(task.payload)
-        taskRepository.save(nesteTask)
+        taskRepository.save(task.opprettNesteTask())
     }
-
 
     companion object {
-
-        fun opprettTask(behandlingId: String, personIdent: String, saksbehandler: String): Task {
-            return Task(type = TYPE,
-                        payload = behandlingId,
-                        properties = Properties().apply {
-                            this["personIdent"] = personIdent
-                            this["behandlingId"] = behandlingId
-                            this["saksbehandler"] = saksbehandler
-                        })
-
-        }
-
-        const val TYPE = "utførIverksettingAvUtbetalning"
+        const val TYPE = "utførIverksettingAvUtbetaling"
     }
-
-
 }
