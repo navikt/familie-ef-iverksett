@@ -21,7 +21,7 @@ internal class IverksettMotOppdragTaskTest {
     val oppdragClient = mockk<OppdragClient>()
     val taskRepository = mockk<TaskRepository>()
     val hentIverksettService = mockk<HentIverksettService>()
-    val behandlingId = UUID.randomUUID().toString()
+    val behandlingId = UUID.randomUUID()
     val iverksettMotOppdragTask =
         IverksettMotOppdragTask(
             hentIverksettService = hentIverksettService,
@@ -38,7 +38,7 @@ internal class IverksettMotOppdragTaskTest {
     internal fun `skal sende utbetaling til oppdrag`() {
         val oppdragSlot = slot<Utbetalingsoppdrag>()
         every { oppdragClient.iverksettOppdrag(capture(oppdragSlot)) } returns "abc"
-        iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId, Properties()))
+        iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
         verify(exactly = 1) { oppdragClient.iverksettOppdrag(any()) }
         assertThat(oppdragSlot.captured.fagSystem).isEqualTo("EFOG")
         assertThat(oppdragSlot.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.NY)
@@ -47,10 +47,10 @@ internal class IverksettMotOppdragTaskTest {
     @Test
     internal fun `skal opprette ny task når den er ferdig`() {
         val taskSlot = slot<Task>()
-        val task = Task(IverksettMotOppdragTask.TYPE, behandlingId, Properties())
+        val task = Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties())
         every { taskRepository.save(capture(taskSlot)) } returns task
         iverksettMotOppdragTask.onCompletion(task)
-        assertThat(taskSlot.captured.payload).isEqualTo(behandlingId)
+        assertThat(taskSlot.captured.payload).isEqualTo(behandlingId.toString())
         assertThat(taskSlot.captured.type).isEqualTo(VentePåStatusFraØkonomiTask.TYPE)
     }
 }

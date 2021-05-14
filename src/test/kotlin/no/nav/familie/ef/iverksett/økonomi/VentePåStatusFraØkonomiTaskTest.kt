@@ -16,7 +16,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
     val oppdragClient = mockk<OppdragClient>()
     val hentIverksettService = mockk<HentIverksettService>()
     val taskRepository = mockk<TaskRepository>()
-    val behandlingId = UUID.randomUUID().toString()
+    val behandlingId = UUID.randomUUID()
 
     val ventePåStatusFraØkonomiTask = VentePåStatusFraØkonomiTask(hentIverksettService, oppdragClient, taskRepository)
 
@@ -24,6 +24,6 @@ internal class VentePåStatusFraØkonomiTaskTest {
     internal fun `kjør doTask for VentePåStatusFraØkonomiTaskhvis, forvent ingen unntak`() {
         every { oppdragClient.hentStatus(any()) } returns OppdragStatus.KVITTERT_OK
         every { hentIverksettService.hentIverksett(any()) } returns opprettIverksettDto(behandlingId).toDomain()
-        ventePåStatusFraØkonomiTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId, Properties()))
+        ventePåStatusFraØkonomiTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
     }
 }

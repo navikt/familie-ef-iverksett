@@ -3,10 +3,11 @@ package no.nav.familie.ef.iverksett.infrastruktur.json
 import no.nav.familie.ef.iverksett.domene.Inntekt
 import no.nav.familie.ef.iverksett.domene.InntektsType
 import no.nav.familie.ef.iverksett.domene.Inntektsreduksjon
+import no.nav.familie.ef.iverksett.domene.Periodebeløp
 
 data class InntektDto(
         val periodebeløp: PeriodebeløpDto,
-        val inntektstype: InntektsType
+        val inntektstype: InntektsType? = null
 )
 
 data class InntektsreduksjonDto(val periodebeløp: List<PeriodebeløpDto> = emptyList())

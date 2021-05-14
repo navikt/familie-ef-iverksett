@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
@@ -33,9 +34,9 @@ class IverksettController(
         iverksettService.startIverksetting(iverksettDto.toDomain(), opprettBrev(iverksettDto, fil))
     }
 
-    @PostMapping("/vedtakstatistikk")
-    fun sendStatistikk(@RequestPart("data") data: String) {
-        vedtakstatistikkService.sendTilKafka(data)
+    @PostMapping("/vedtakstatistikk", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun sendStatistikk(@RequestBody data: IverksettDto) {
+        vedtakstatistikkService.sendTilKafka(data.toDomain())
     }
 
     private fun opprettBrev(iverksettDto: IverksettDto, fil: MultipartFile): Brev {

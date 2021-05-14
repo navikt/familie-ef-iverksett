@@ -1,7 +1,5 @@
 package no.nav.familie.ef.iverksett.domene
 
-import org.springframework.data.relational.core.mapping.MappedCollection
-
 data class Inntekt(
     val periodebeløp: Periodebeløp,
     val inntektstype: InntektsType? = null // TODO: Dette har vi ikke

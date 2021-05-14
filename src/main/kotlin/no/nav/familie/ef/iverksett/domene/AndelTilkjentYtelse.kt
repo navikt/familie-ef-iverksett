@@ -9,9 +9,9 @@ data class AndelTilkjentYtelse(val periodebeløp: Periodebeløp,
 
     private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean {
         return ( this.periodebeløp.fraOgMed == other.periodebeløp.fraOgMed
-               && this.periodebeløp.tilOgMed == other.periodebeløp.tilOgMed
-               && this.periodebeløp.utbetaltPerPeriode == other.periodebeløp.utbetaltPerPeriode
-        )
+                && this.periodebeløp.tilOgMed == other.periodebeløp.tilOgMed
+                && this.periodebeløp.utbetaltPerPeriode == other.periodebeløp.utbetaltPerPeriode
+               )
     }
 
     fun erNull() = this.periodebeløp.utbetaltPerPeriode == 0

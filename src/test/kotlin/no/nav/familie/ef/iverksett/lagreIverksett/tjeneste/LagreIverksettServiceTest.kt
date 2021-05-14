@@ -27,7 +27,7 @@ class LagreIverksettServiceTest : ServerTest() {
     @Test
     internal fun `lagre iverksett data og brev`() {
         val behandlingId = UUID.randomUUID()
-        val iverksettDto: IverksettDto = opprettIverksettDto(behandlingId.toString())
+        val iverksettDto: IverksettDto = opprettIverksettDto(behandlingId)
 
         every { lagreIverksettJdbc.lagre(any(), any(), any()) } returns Unit
 

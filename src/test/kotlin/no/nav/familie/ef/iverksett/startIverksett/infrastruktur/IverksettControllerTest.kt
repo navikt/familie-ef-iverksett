@@ -28,7 +28,7 @@ class IverksettControllerTest : ServerTest() {
 
     @Test
     internal fun `starte iverksetting gir 200 OK`() {
-        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId.toString())
+        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
         val request = MultipartBuilder()
                 .withJson("data", iverksettJson)
                 .withByteArray("fil", "1", byteArrayOf(12))
@@ -43,7 +43,7 @@ class IverksettControllerTest : ServerTest() {
     @Test
     internal fun `mangler brev, forvent 400`() {
 
-        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId.toString())
+        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
         val request = MultipartBuilder()
                 .withJson("data", iverksettJson)
                 .build()

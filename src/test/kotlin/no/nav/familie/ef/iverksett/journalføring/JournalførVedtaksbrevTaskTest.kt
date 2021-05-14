@@ -25,7 +25,8 @@ internal class JournalførVedtaksbrevTaskTest {
 
     @Test
     internal fun `skal journalføre brev og opprette ny task`() {
-        val behandlingId = UUID.randomUUID().toString()
+        val behandlingId = UUID.randomUUID()
+        val behandlingIdString = behandlingId.toString()
         val journalpostId = "123456789"
         val arkiverDokumentRequestSlot = slot<ArkiverDokumentRequest>()
         val distribuerVedtaksbrevTask = slot<Task>()
@@ -33,17 +34,17 @@ internal class JournalførVedtaksbrevTaskTest {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot)) } returns ArkiverDokumentResponse(
                 journalpostId,
                 true)
-        every { hentIverksettService.hentIverksett(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
-        every { hentIverksettService.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
+        every { hentIverksettService.hentIverksett(behandlingIdString) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
+        every { hentIverksettService.hentBrev(behandlingIdString) }.returns(Brev(behandlingIdString, ByteArray(256)))
         every { taskRepository.save(capture(distribuerVedtaksbrevTask)) } returns Task(DistribuerVedtaksbrevTask.TYPE,
-                                                                                       behandlingId,
+                                                                                       behandlingIdString,
                                                                                        Properties())
 
-        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingId, Properties()))
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any()) }
         assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
-        assertThat(distribuerVedtaksbrevTask.captured.payload).contains(behandlingId)
+        assertThat(distribuerVedtaksbrevTask.captured.payload).contains(behandlingIdString)
         assertThat(distribuerVedtaksbrevTask.captured.payload).contains(journalpostId)
         assertThat(distribuerVedtaksbrevTask.captured.type).isEqualTo(DistribuerVedtaksbrevTask.TYPE)
     }

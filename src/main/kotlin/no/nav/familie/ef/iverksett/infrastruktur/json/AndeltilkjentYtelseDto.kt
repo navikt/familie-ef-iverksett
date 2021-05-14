@@ -7,7 +7,7 @@ import java.math.BigDecimal
 import java.util.*
 
 class AndelTilkjentYtelseDto(
-    val periodebeløp: Periodebeløp,
+    val periodebeløp: PeriodebeløpDto,
     val periodeId: Long? = null,
     val forrigePeriodeId: Long? = null,
     val kildeBehandlingId: UUID? = null
@@ -15,7 +15,7 @@ class AndelTilkjentYtelseDto(
 
 fun AndelTilkjentYtelseDto.toDomain(): AndelTilkjentYtelse {
     return AndelTilkjentYtelse(
-        this.periodebeløp,
+        this.periodebeløp.toDomain(),
         this.periodeId,
         this.forrigePeriodeId,
         this.kildeBehandlingId
