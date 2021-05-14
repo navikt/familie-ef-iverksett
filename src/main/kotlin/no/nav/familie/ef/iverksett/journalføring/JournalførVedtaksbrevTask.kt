@@ -49,13 +49,6 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
     }
 
     companion object {
-
-        fun opprettTask(behandlingId: String): Task =
-            Task(
-                type = TYPE,
-                payload = behandlingId
-            )
-
         const val TYPE = "journalførVedtaksbrev"
     }
 }
