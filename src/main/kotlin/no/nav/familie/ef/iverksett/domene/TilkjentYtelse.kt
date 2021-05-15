@@ -9,9 +9,7 @@ data class TilkjentYtelse(
         val id: UUID = UUID.randomUUID(),
         val utbetalingsoppdrag: Utbetalingsoppdrag? = null,
         val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
-        val type: TilkjentYtelseType = TilkjentYtelseType.FØRSTEGANGSBEHANDLING,
         val andelerTilkjentYtelse: List<AndelTilkjentYtelse>) {
-
 }
 
 fun TilkjentYtelse.toMedMetadata(
@@ -42,9 +40,4 @@ enum class TilkjentYtelseStatus {
     AVSLUTTET
 }
 
-enum class TilkjentYtelseType {
-    FØRSTEGANGSBEHANDLING,
-    OPPHØR,
-    ENDRING
-}
 

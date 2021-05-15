@@ -44,7 +44,8 @@ data class VedtaksdetaljerDto(
         val opphørÅrsak: OpphørÅrsak?,
         val saksbehandlerId: String,
         val beslutterId: String,
-        val tilkjentYtelse: TilkjentYtelseDto,
+        @Deprecated("Bruk andelerTilkjentYtelse") val tilkjentYtelse: TilkjentYtelseDto?=null,
+        val andelerTilkjentYtelse: List<AndelTilkjentYtelseDto>?=null,
         val inntekter: List<InntektDto>
 )
 
@@ -117,8 +118,17 @@ fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
                            opphørÅrsak = this.opphørÅrsak,
                            saksbehandlerId = this.saksbehandlerId,
                            beslutterId = this.beslutterId,
-                           tilkjentYtelse = this.tilkjentYtelse.toDomain(),
+                           tilkjentYtelse = lagTilkjentYtelse(this),
                            inntekter = this.inntekter.map { it.toDomain() })
+}
+
+fun lagTilkjentYtelse(vedtaksdetaljer: VedtaksdetaljerDto) : TilkjentYtelse {
+    if (vedtaksdetaljer.andelerTilkjentYtelse != null)
+        return TilkjentYtelse(andelerTilkjentYtelse = vedtaksdetaljer.andelerTilkjentYtelse.map { it.toDomain() })
+    else if (vedtaksdetaljer.tilkjentYtelse != null)
+        return vedtaksdetaljer.tilkjentYtelse.toDomain()
+    else
+        throw IllegalStateException("tilkjentYtelse eller andelTilkjentYtelse må ha en verdi")
 }
 
 fun IverksettDto.toDomain(): Iverksett {

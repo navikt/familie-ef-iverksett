@@ -6,8 +6,6 @@ import no.nav.familie.ef.iverksett.domene.BehandlingÅrsak
 import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.domene.OpphørÅrsak
 import no.nav.familie.ef.iverksett.domene.Periodetype
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelseStatus
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelseType
 import no.nav.familie.ef.iverksett.domene.Vedtak
 import no.nav.familie.ef.iverksett.infrastruktur.json.AktivitetskravDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.AndelTilkjentYtelseDto
@@ -37,13 +35,6 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                                                      periodeId = 1,
                                                      forrigePeriodeId = null,
                                                      kildeBehandlingId = UUID.randomUUID())
-    val tilkjentYtelse = TilkjentYtelseDto(
-            id = UUID.randomUUID(),
-            status = TilkjentYtelseStatus.AKTIV,
-            type = TilkjentYtelseType.ENDRING,
-            andelerTilkjentYtelse = listOf(andelTilkjentYtelse)
-    )
-
     return IverksettDto(
             fagsak = FagsakdetaljerDto(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
             behandling = BehandlingsdetaljerDto(behandlingId = behandlingId,
@@ -66,8 +57,8 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                                         opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                                         saksbehandlerId = "A12345",
                                         beslutterId = "B23456",
-                                        tilkjentYtelse = tilkjentYtelse,
-                                        inntekter = listOf(inntekt))
+                                        inntekter = listOf(inntekt),
+                                        andelerTilkjentYtelse = listOf(andelTilkjentYtelse))
     )
 }
 
