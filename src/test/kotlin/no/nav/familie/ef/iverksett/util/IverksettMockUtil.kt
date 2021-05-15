@@ -7,7 +7,6 @@ import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.domene.OpphørÅrsak
 import no.nav.familie.ef.iverksett.domene.Periodetype
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelseStatus
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelseType
 import no.nav.familie.ef.iverksett.domene.Vedtak
 import no.nav.familie.ef.iverksett.infrastruktur.json.AktivitetskravDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.AndelTilkjentYtelseDto
@@ -38,9 +37,6 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                                                      forrigePeriodeId = null,
                                                      kildeBehandlingId = UUID.randomUUID())
     val tilkjentYtelse = TilkjentYtelseDto(
-            id = UUID.randomUUID(),
-            status = TilkjentYtelseStatus.AKTIV,
-            type = TilkjentYtelseType.ENDRING,
             andelerTilkjentYtelse = listOf(andelTilkjentYtelse)
     )
 

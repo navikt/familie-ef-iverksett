@@ -9,7 +9,6 @@ data class TilkjentYtelse(
         val id: UUID = UUID.randomUUID(),
         val utbetalingsoppdrag: Utbetalingsoppdrag? = null,
         val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
-        val type: TilkjentYtelseType = TilkjentYtelseType.FØRSTEGANGSBEHANDLING,
         val andelerTilkjentYtelse: List<AndelTilkjentYtelse>) {
 
 }
@@ -40,11 +39,5 @@ enum class TilkjentYtelseStatus {
     SENDT_TIL_IVERKSETTING,
     AKTIV,
     AVSLUTTET
-}
-
-enum class TilkjentYtelseType {
-    FØRSTEGANGSBEHANDLING,
-    OPPHØR,
-    ENDRING
 }
 

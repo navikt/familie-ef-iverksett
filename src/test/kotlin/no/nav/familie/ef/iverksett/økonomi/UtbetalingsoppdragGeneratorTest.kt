@@ -168,7 +168,6 @@ internal class UtbetalingsoppdragGeneratorTest {
             TilkjentYtelseMedMetaData(tilkjentYtelse = TilkjentYtelse(id = UUID.randomUUID(),
                                                                       utbetalingsoppdrag = null,
                                                                       status = TilkjentYtelseStatus.OPPRETTET,
-                                                                      type = TilkjentYtelseType.ENDRING,
                                                                       andelerTilkjentYtelse = andelTilkjentYtelse.toList()),
                                       personIdent = "1",
                                       behandlingId = behandlingId,

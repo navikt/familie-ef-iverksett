@@ -15,7 +15,6 @@ fun simuleringDto(): SimuleringDto {
             id = UUID.randomUUID(),
             utbetalingsoppdrag = null,
             status = TilkjentYtelseStatus.IKKE_KLAR,
-            type = TilkjentYtelseType.FØRSTEGANGSBEHANDLING,
             andelerTilkjentYtelse = listOf(
                 AndelTilkjentYtelse(
                     periodebeløp = Periodebeløp(
@@ -44,7 +43,6 @@ fun simuleringDto(): SimuleringDto {
         id = UUID.randomUUID(),
         utbetalingsoppdrag = null,
         status = TilkjentYtelseStatus.IKKE_KLAR,
-        type = TilkjentYtelseType.FØRSTEGANGSBEHANDLING,
         andelerTilkjentYtelse = listOf(
             AndelTilkjentYtelse(
                 periodebeløp = Periodebeløp(
