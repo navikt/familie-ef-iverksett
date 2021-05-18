@@ -35,6 +35,7 @@ class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService, va
             forrigeTilkjentYtelse
         )
 
+        // Lagre ned
         // TODO : Lagre denne (utbetaling, som en json)
         utbetaling.utbetalingsoppdrag?.let { oppdragClient.iverksettOppdrag(it) }
             ?: error("Utbetalingsoppdrag mangler for iverksetting")

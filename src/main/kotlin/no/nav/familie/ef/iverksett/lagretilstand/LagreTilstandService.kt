@@ -2,13 +2,13 @@ package no.nav.familie.ef.iverksett.lagretilstand
 
 class LagreTilstandService(val lagreTilstand: LagreTilstand) {
 
-    fun lagreJournalPostResultat(journalPostResultatJson: String) {
-        lagreTilstand.lagreJournalPostResultat(journalPostResultatJson)
+    fun lagreJournalPostResultat(behandligId: String, journalPostResultatJson: String) {
+        lagreTilstand.lagreJournalPostResultat(behandligId, journalPostResultatJson)
     }
-    fun lagreOppdragResultat(oppdragResultatJson: String) {
-        lagreTilstand.lagreOppdragResultat(oppdragResultatJson)
+    fun lagreOppdragResultat(behandligId: String, oppdragResultatJson: String) {
+        lagreTilstand.lagreOppdragResultat(behandligId, oppdragResultatJson)
     }
-    fun lagreTilkjentYtelseForUtbetaling(tilkjentYtelseForUtbetaling: String) {
-        lagreTilstand.lagreTilkjentYtelseForUtbetaling(tilkjentYtelseForUtbetaling)
+    fun lagreTilkjentYtelseForUtbetaling(behandligId: String, tilkjentYtelseForUtbetaling: String) {
+        lagreTilstand.lagreTilkjentYtelseForUtbetaling(behandligId, tilkjentYtelseForUtbetaling)
     }
 }
