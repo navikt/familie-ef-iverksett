@@ -19,6 +19,7 @@ import java.util.*
 private const val behandlingEksternId = 0L
 private const val fagsakEksternId = 1L
 private const val saksbehandlerId = "VL"
+private val vedtaksdato = LocalDate.of(2021,5,12)
 
 enum class TestOppdragType {
     Input,
@@ -49,14 +50,12 @@ data class TestOppdrag(val type: TestOppdragType,
 
         return if (beløp != null && startPeriode != null && sluttPeriode != null)
             AndelTilkjentYtelse(periodebeløp = Periodebeløp(this.beløp, Periodetype.MÅNED, startPeriode, sluttPeriode),
-                                personIdent = fnr,
                                 periodeId = linjeId,
                                 kildeBehandlingId = if (TestOppdragType.Output == type) oppdragId else null,
-                                forrigePeriodeId = forrigeLinjeId, stønadsType = ytelse.tilStønadstype())
+                                forrigePeriodeId = forrigeLinjeId)
         else if (TestOppdragType.Output == type && beløp == null && startPeriode == null && sluttPeriode == null)
             nullAndelTilkjentYtelse(behandlingId = oppdragId ?: error("Må ha satt OppdragId på Output"),
-                                    personIdent = fnr,
-                                    periodeId = PeriodeId(linjeId!!, forrigeLinjeId),ytelse.tilStønadstype())
+                                    periodeId = PeriodeId(linjeId!!, forrigeLinjeId))
         else
             null
     }
@@ -68,7 +67,7 @@ data class TestOppdrag(val type: TestOppdragType,
                                opphør = opphørsdato?.let { Opphør(it) },
                                periodeId = linjeId,
                                forrigePeriodeId = forrigeLinjeId,
-                               datoForVedtak = LocalDate.now(),
+                               datoForVedtak = vedtaksdato,
                                klassifisering = ytelse,
                                vedtakdatoFom = startPeriode,
                                vedtakdatoTom = sluttPeriode,
@@ -108,12 +107,16 @@ class TestOppdragGroup {
         }
     }
 
-    val input: TilkjentYtelse by lazy {
-        TilkjentYtelse(behandlingId = oppdragId ?: error("Må ha satt oppdragId når man kaller input"),
-                       personident = personIdent!!,
-                       andelerTilkjentYtelse = andelerTilkjentYtelseInn,
-                // Ikke påkrevd, men exception ellers
-                       vedtaksdato = LocalDate.now())
+    val input: TilkjentYtelseMedMetaData by lazy {
+        TilkjentYtelseMedMetaData(TilkjentYtelse(andelerTilkjentYtelse = andelerTilkjentYtelseInn),
+                                  stønadstype = StønadType.OVERGANGSSTØNAD,
+                                  eksternBehandlingId = behandlingEksternId,
+                                  eksternFagsakId = fagsakEksternId,
+                                  saksbehandlerId = saksbehandlerId,
+                                  personIdent = personIdent!!,
+                                  behandlingId = oppdragId!!,
+                                  vedtaksdato = vedtaksdato
+        )
     }
 
     val output: TilkjentYtelse by lazy {
@@ -126,12 +129,9 @@ class TestOppdragGroup {
                                    avstemmingTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS),
                                    utbetalingsperiode = utbetalingsperioder.map { it.copy(behandlingId = behandlingEksternId) })
 
-        TilkjentYtelse(id = input.id,
-                       behandlingId = input.behandlingId,
-                       personident = personIdent!!,
+        TilkjentYtelse(id = input.tilkjentYtelse.id,
                        andelerTilkjentYtelse = andelerTilkjentYtelseUt,
-                       utbetalingsoppdrag = utbetalingsoppdrag,
-                       vedtaksdato = input.vedtaksdato)
+                       utbetalingsoppdrag = utbetalingsoppdrag)
 
     }
 }
@@ -262,14 +262,10 @@ object TestOppdragRunner {
         return tilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag.copy(avstemmingTidspunkt = nyAvstemmingsitdspunkt))
     }
 
-    private fun lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelse: TilkjentYtelse,
+    private fun lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelse: TilkjentYtelseMedMetaData,
                                                        forrigeTilkjentYtelse: TilkjentYtelse? = null) =
             UtbetalingsoppdragGenerator
-                    .lagTilkjentYtelseMedUtbetalingsoppdrag(TilkjentYtelseMedMetaData(tilkjentYtelse = nyTilkjentYtelse,
-                                                                                      stønadstype = StønadType.OVERGANGSSTØNAD,
-                                                                                      eksternBehandlingId = behandlingEksternId,
-                                                                                      eksternFagsakId = fagsakEksternId,
-                                                                                      saksbehandlerId = saksbehandlerId),
+                    .lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelse,
                                                             forrigeTilkjentYtelse)
 
 }

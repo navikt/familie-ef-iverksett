@@ -1,13 +1,11 @@
 package no.nav.familie.ef.iverksett.startIverksett.infrastruktur
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import no.nav.familie.ef.iverksett.domene.Brev
-import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettJson
+import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.startIverksett.tjeneste.IverksettService
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -25,25 +23,24 @@ import org.springframework.web.multipart.MultipartFile
 @ProtectedWithClaims(issuer = "azuread")
 class IverksettController(
     val vedtakstatistikkService: VedtakstatistikkService,
-    val objectMapper: ObjectMapper,
     val iverksettService: IverksettService
 ) {
 
     @PostMapping("/start")
     fun iverksett(
-        @RequestPart("data") iverksettJson: IverksettJson,
-        @RequestPart("fil") fil: MultipartFile
+            @RequestPart("data") iverksettDto: IverksettDto,
+            @RequestPart("fil") fil: MultipartFile
     ) {
-        iverksettService.startIverksetting(iverksettJson.toDomain(), opprettBrev(iverksettJson, fil))
+        iverksettService.startIverksetting(iverksettDto.toDomain(), opprettBrev(iverksettDto, fil))
     }
 
     @PostMapping("/vedtakstatistikk", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun sendStatistikk(@RequestBody data: IverksettJson) {
+    fun sendStatistikk(@RequestBody data: IverksettDto) {
         vedtakstatistikkService.sendTilKafka(data.toDomain())
     }
 
-    private fun opprettBrev(iverksettJson: IverksettJson, fil: MultipartFile): Brev {
-        return Brev(iverksettJson.behandlingId, fil.bytes)
+    private fun opprettBrev(iverksettDto: IverksettDto, fil: MultipartFile): Brev {
+        return Brev(iverksettDto.behandling.behandlingId, fil.bytes)
     }
 
 

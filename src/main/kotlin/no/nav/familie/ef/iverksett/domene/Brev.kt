@@ -1,6 +1,8 @@
 package no.nav.familie.ef.iverksett.domene
 
+import java.util.UUID
+
 data class Brev(
-        val behandlingsId: String,
+        val behandlingId: UUID,
         val pdf: ByteArray
 )

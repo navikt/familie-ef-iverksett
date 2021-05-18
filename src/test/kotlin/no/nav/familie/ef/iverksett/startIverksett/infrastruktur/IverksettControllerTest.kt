@@ -1,8 +1,7 @@
 package no.nav.familie.ef.iverksett.startIverksett.infrastruktur
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.util.opprettBrev
-import no.nav.familie.ef.iverksett.util.opprettIverksettJson
+import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.http.client.MultipartBuilder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -29,7 +28,7 @@ class IverksettControllerTest : ServerTest() {
 
     @Test
     internal fun `starte iverksetting gir 200 OK`() {
-        val iverksettJson = opprettIverksettJson(behandlingId = behandlingId.toString())
+        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
         val request = MultipartBuilder()
                 .withJson("data", iverksettJson)
                 .withByteArray("fil", "1", byteArrayOf(12))
@@ -44,7 +43,7 @@ class IverksettControllerTest : ServerTest() {
     @Test
     internal fun `mangler brev, forvent 400`() {
 
-        val iverksettJson = opprettIverksettJson(behandlingId = behandlingId.toString())
+        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
         val request = MultipartBuilder()
                 .withJson("data", iverksettJson)
                 .build()

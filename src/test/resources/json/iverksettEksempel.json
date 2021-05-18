@@ -1,107 +1,73 @@
 {
-  "aktivitetskrav": {
-    "aktivitetspliktInntrefferDato": "2021-05-10",
-    "harSagtOppArbeidsforhold": true
+  "fagsak": {
+    "fagsakId": "234bed7c-b1d3-11eb-9999-0242ac130003",
+    "eksternId": 12,
+    "stønadstype": "BARNETILSYN"
   },
-  "barn": [
-    {
-      "aktorId": "string",
-      "personIdent": "string"
-    }
-  ],
-  "behandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003",
-  "behandlingResultat": "ANNULLERT",
-  "behandlingType": "FØRSTEGANGSBEHANDLING",
-  "behandlingÅrsak": "DØDSFALL",
-  "eksternId": 0,
-  "fagsakId": "string",
-  "forrigeTilkjentYtelse": {
-    "andelerTilkjentYtelse": [
+  "behandling": {
+    "behandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003",
+    "forrigeBehandlingId": null,
+    "behandlingResultat": "ANNULLERT",
+    "behandlingType": "FØRSTEGANGSBEHANDLING",
+    "behandlingÅrsak": "DØDSFALL",
+    "eksternId": 14,
+    "relatertBehandlingId": "999abcde-fabc-11eb-8529-0242ac130003",
+    "vilkårsvurderinger": [
       {
-        "forrigePeriodeId": 0,
-        "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "periodeId": 0,
-        "periodebeløp": {
-          "fraOgMed": "2021-05-10",
-          "periodetype": "MÅNED",
-          "tilOgMed": "2021-05-10",
-          "utbetaltPerPeriode": 0
-        },
+        "delvilkårsvurderinger": [
+          {
+            "resultat": "IKKE_AKTUELL",
+            "vurderinger": [
+              {
+                "begrunnelse": "string",
+                "regelId": "BOR_OG_OPPHOLDER_SEG_I_NORGE",
+                "svar": "ANDRE_FORELDER_MEDLEM_MINST_5_ÅR_AVBRUDD_MINDRE_ENN_10_ÅR"
+              }
+            ]
+          }
+        ],
+        "resultat": "IKKE_AKTUELL",
+        "vilkårType": "AKTIVITET"
+      }
+    ]
+  },
+  "søker": {
+    "aktivitetskrav": {
+      "aktivitetspliktInntrefferDato": "2021-05-10",
+      "harSagtOppArbeidsforhold": true
+    },
+    "barn": [
+      {
         "personIdent": "string",
-        "stønadsType": "BARNETILSYN"
+        "termindato": null
       }
     ],
-    "behandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "personident": "string",
-    "status": "AKTIV",
-    "type": "ENDRING",
-    "vedtaksdato": "2021-05-10"
+    "tilhørendeEnhet": "4489",
+    "kode6eller7": true,
+    "personIdent": "12345678901"
   },
-  "funksjonellId": "string",
-  "kode6eller7": true,
-  "opphørÅrsak": "PERIODE_UTLØPT",
-  "personIdent": "string",
-  "relatertBehandlingId": "string",
-  "saksnummer": "string",
-  "tidspunktVedtak": "2021-05-10T20:49:16.178Z",
-  "tilkjentYtelse": {
-    "eksternBehandlingId": 0,
-    "eksternFagsakId": 0,
-    "saksbehandlerId": "string",
-    "stønadstype": "BARNETILSYN",
-    "tilkjentYtelseJson": {
+  "vedtak": {
+    "vedtak": "AVSLÅTT",
+    "opphørÅrsak": "PERIODE_UTLØPT",
+    "vedtaksdato": "2021-05-10",
+    "saksbehandlerId": "A123456",
+    "beslutterId": "B123456",
+    "inntekter": [],
+    "tilkjentYtelse": {
       "andelerTilkjentYtelse": [
         {
-          "forrigePeriodeId": 0,
           "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "periodeId": 0,
           "periodebeløp": {
             "fraOgMed": "2021-05-10",
             "periodetype": "MÅNED",
             "tilOgMed": "2021-05-10",
-            "utbetaltPerPeriode": 0
-          },
-          "personIdent": "string",
-          "stønadsType": "BARNETILSYN"
+            "beløp": 0
+          }
         }
       ],
-      "behandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      "personident": "string",
       "status": "AKTIV",
-      "type": "ENDRING",
-      "vedtaksdato": "2021-05-10"
+      "type": "ENDRING"
     }
-  },
-  "inntekt": [
-    {
-      "periodebeløp": {
-        "fraOgMed": "2021-04-28",
-        "periodetype": "MÅNED",
-        "tilOgMed": "2021-04-28",
-        "utbetaltPerPeriode": 0
-      },
-      "inntektstype": "ARBEIDINNTEKT"
-    }
-  ],
-  "vedtak": "AVSLÅTT",
-  "vilkårsvurderinger": [
-    {
-      "delvilkårsvurderinger": [
-        {
-          "resultat": "IKKE_AKTUELL",
-          "vurderinger": [
-            {
-              "begrunnelse": "string",
-              "regelId": "BOR_OG_OPPHOLDER_SEG_I_NORGE",
-              "svar": "ANDRE_FORELDER_MEDLEM_MINST_5_ÅR_AVBRUDD_MINDRE_ENN_10_ÅR"
-            }
-          ]
-        }
-      ],
-      "resultat": "IKKE_AKTUELL",
-      "vilkårType": "AKTIVITET"
-    }
-  ]
+  }
 }

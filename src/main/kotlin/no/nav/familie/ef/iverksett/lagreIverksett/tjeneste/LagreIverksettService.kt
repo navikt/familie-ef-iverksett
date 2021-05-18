@@ -2,12 +2,15 @@ package no.nav.familie.ef.iverksett.lagreIverksett.tjeneste
 
 import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.domene.Iverksett
+import no.nav.familie.ef.iverksett.lagreIverksett.infrastruktur.LagreIverksettJdbc
+import org.springframework.stereotype.Service
 import java.util.*
 
-class LagreIverksettService(val lagreIverksett: LagreIverksett) {
+@Service
+class LagreIverksettService(val lagreIverksettJdbc: LagreIverksettJdbc) {
 
-    fun lagreIverksett(behandlingsId: UUID, iverksett: Iverksett, brev: Brev) {
-        return lagreIverksett.lagre(behandlingsId, iverksett, brev)
+    fun lagreIverksett(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {
+        return lagreIverksettJdbc.lagre(behandlingId, iverksett, brev)
     }
 
 }
