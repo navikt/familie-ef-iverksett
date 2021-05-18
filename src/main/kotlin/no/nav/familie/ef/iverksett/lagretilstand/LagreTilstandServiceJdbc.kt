@@ -10,13 +10,28 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
+    override fun lagreTilkjentYtelseForUtbetaling(behandlingId: String, tilkjentYtelseForUtbetaling: String) {
+        val sql = "insert into iverksett_resultat values(:behandlingId, null, :tilkjentYtelseForUtbetaling::json, null)"
+        val mapSqlParameterSource = MapSqlParameterSource(
+            mapOf(
+                "behandlingId" to behandlingId,
+                "tilkjentYtelseForUtbetaling" to tilkjentYtelseForUtbetaling
+            )
+        )
+        try {
+            namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
+        } catch (ex: Exception) {
+            secureLogger.error("Kunne ikke lagre tilkjentYtelseForUtbetaling til basen, behandlingID : ${behandlingId}, tilkjentYtelseForUtbetaling : ${tilkjentYtelseForUtbetaling}")
+        }
+    }
     override fun lagreOppdragResultat(behandlingId: String, oppdragResultatJson: String) {
 
-        val sql = "insert into iverksett_resultat values(:behandlingId, null, :oppdragResultatJson::json, null)"
+        val sql =
+            "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultatJson::json where behandling_id = :behandlingId"
         val mapSqlParameterSource =
             MapSqlParameterSource(
                 mapOf(
-                    "behandlingId" to behandligId,
+                    "behandlingId" to behandlingId,
                     "oppdragResultatJson" to oppdragResultatJson
                 )
             )
@@ -44,20 +59,5 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
         }
     }
 
-    override fun lagreTilkjentYtelseForUtbetaling(behandlingId: String, tilkjentYtelseForUtbetaling: String) {
-        val sql =
-            "update iverksett_resultat set tilkjentYtelseForUtbetaling = :tilkjentYtelseForUtbetaling::json where behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource(
-            mapOf(
-                "behandlingId" to behandlingId,
-                "tilkjentYtelseForUtbetaling" to tilkjentYtelseForUtbetaling
-            )
-        )
-        try {
-            namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
-        } catch (ex: Exception) {
-            secureLogger.error("Kunne ikke lagre tilkjentYtelseForUtbetaling til basen, behandlingID : ${behandlingId}, tilkjentYtelseForUtbetaling : ${tilkjentYtelseForUtbetaling}")
-        }
-    }
 
 }
