@@ -67,5 +67,25 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
         }
     }
 
+    override fun lagreDistribuerVedtaksbrevResultat(
+        behandlingId: String,
+        distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat
+    ) {
+        val sql =
+            "update iverksett_resultat set distribuertVedtaksBrevResultat = :distribuerVedtaksbrevResultat::json where behandling_id = :behandlingId"
+        val distribuerVedtaksbrevResultatJson = objectMapper.writeValueAsString(distribuerVedtaksbrevResultat)
+        val mapSqlParameterSource = MapSqlParameterSource(
+            mapOf(
+                "behandlingId" to behandlingId,
+                "distribuerVedtaksbrevResultat" to distribuerVedtaksbrevResultatJson
+            )
+        )
+        try {
+            namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
+        } catch (ex: Exception) {
+            secureLogger.error("Kunne ikke lagre journalPostResultatJson til basen, behandlingID : ${behandlingId}, journalPostResultatJson : ${distribuerVedtaksbrevResultatJson}")
+        }
+    }
+
 
 }

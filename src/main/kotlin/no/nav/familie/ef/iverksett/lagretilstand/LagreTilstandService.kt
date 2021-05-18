@@ -15,4 +15,7 @@ class LagreTilstandService(val lagreTilstand: LagreTilstand) {
     fun lagreTilkjentYtelseForUtbetaling(behandligId: String, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
         lagreTilstand.lagreTilkjentYtelseForUtbetaling(behandligId, tilkjentYtelseForUtbetaling)
     }
+    fun lagreDistribuerVedtaksbrevResultat(behandligId: String, distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat) {
+        lagreTilstand.lagreDistribuerVedtaksbrevResultat(behandligId, distribuerVedtaksbrevResultat)
+    }
 }
