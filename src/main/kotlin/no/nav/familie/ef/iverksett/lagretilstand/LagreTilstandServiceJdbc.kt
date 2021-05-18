@@ -1,5 +1,7 @@
 package no.nav.familie.ef.iverksett.lagretilstand
 
+import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
+import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -10,13 +12,15 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    override fun lagreTilkjentYtelseForUtbetaling(behandlingId: String, tilkjentYtelseForUtbetaling: String) {
+    override fun lagreTilkjentYtelseForUtbetaling(behandlingId: String, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
         val sql = "insert into iverksett_resultat values(:behandlingId, null, :tilkjentYtelseForUtbetaling::json, null)"
+
+        val tilkjentYtelseForUtbetalingJson = objectMapper.writeValueAsString(tilkjentYtelseForUtbetaling)
         val mapSqlParameterSource = MapSqlParameterSource(
-            mapOf(
-                "behandlingId" to behandlingId,
-                "tilkjentYtelseForUtbetaling" to tilkjentYtelseForUtbetaling
-            )
+                mapOf(
+                        "behandlingId" to behandlingId,
+                        "tilkjentYtelseForUtbetaling" to tilkjentYtelseForUtbetalingJson
+                )
         )
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
@@ -24,17 +28,20 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
             secureLogger.error("Kunne ikke lagre tilkjentYtelseForUtbetaling til basen, behandlingID : ${behandlingId}, tilkjentYtelseForUtbetaling : ${tilkjentYtelseForUtbetaling}")
         }
     }
-    override fun lagreOppdragResultat(behandlingId: String, oppdragResultatJson: String) {
+
+    override fun lagreOppdragResultat(behandlingId: String, oppdragResultat: OppdragResultat) {
 
         val sql =
-            "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultatJson::json where behandling_id = :behandlingId"
+                "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultat::json where behandling_id = :behandlingId"
+
+        val oppdragResultatJson = objectMapper.writeValueAsString(oppdragResultat)
         val mapSqlParameterSource =
-            MapSqlParameterSource(
-                mapOf(
-                    "behandlingId" to behandlingId,
-                    "oppdragResultatJson" to oppdragResultatJson
+                MapSqlParameterSource(
+                        mapOf(
+                                "behandlingId" to behandlingId,
+                                "oppdragResultatJson" to oppdragResultatJson
+                        )
                 )
-            )
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
@@ -42,15 +49,16 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
         }
     }
 
-    override fun lagreJournalPostResultat(behandlingId: String, journalPostResultatJson: String) {
+    override fun lagreJournalPostResultat(behandlingId: String, journalPostResultat: JournalpostResultat) {
 
         val sql =
-            "update iverksett_resultat set journalpostResultat = :journalpostResultat::json where behandling_id = :behandlingId"
+                "update iverksett_resultat set journalpostResultat = :journalpostResultat::json where behandling_id = :behandlingId"
+        val journalPostResultatJson = objectMapper.writeValueAsString(journalPostResultat)
         val mapSqlParameterSource = MapSqlParameterSource(
-            mapOf(
-                "behandlingId" to behandlingId,
-                "journalpostResultat" to journalPostResultatJson
-            )
+                mapOf(
+                        "behandlingId" to behandlingId,
+                        "journalpostResultat" to journalPostResultatJson
+                )
         )
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)

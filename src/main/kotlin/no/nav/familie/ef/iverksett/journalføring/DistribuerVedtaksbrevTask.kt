@@ -23,6 +23,7 @@ class DistribuerVedtaksbrevTask(val journalpostClient: JournalpostClient) : Asyn
     override fun doTask(task: Task) {
         val taskData = objectMapper.readValue<DistribuerVedtaksbrevTaskData>(task.payload)
         val bestillingId = journalpostClient.distribuerBrev(taskData.journalpostId)
+        //
         logger.info("Distribuer vedtaksbrev journalpost=[${taskData.journalpostId}] for behandling=[${taskData.behandlingId}] med bestillingId=[$bestillingId]")
     }
 

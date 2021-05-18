@@ -1,6 +1,8 @@
 package no.nav.familie.ef.iverksett.journalføring
 
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
+import no.nav.familie.ef.iverksett.lagretilstand.JournalpostResultat
+import no.nav.familie.ef.iverksett.lagretilstand.LagreTilstandService
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
@@ -22,7 +24,8 @@ import java.util.*
 
 class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
                                 val journalpostClient: JournalpostClient,
-                                val taskRepository: TaskRepository) : AsyncTaskStep {
+                                val taskRepository: TaskRepository,
+                                val lagreTilstandService: LagreTilstandService) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
@@ -40,6 +43,10 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
                 journalførendeEnhet = iverksett.søker.tilhørendeEnhet
             )
         ).journalpostId
+
+        lagreTilstandService.lagreJournalPostResultat(behandligId = behandlingId.toString(),
+                                                      JournalpostResultat(journalpostId = journalpostId,
+                                                                          bestillingId = journalpostId))
 
         lagDistribuerVedtaksbrevTask(behandlingId, journalpostId)
     }
