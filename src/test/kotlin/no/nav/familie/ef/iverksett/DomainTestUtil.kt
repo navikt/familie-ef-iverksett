@@ -19,10 +19,10 @@ fun simuleringDto(): SimuleringDto {
             andelerTilkjentYtelse = listOf(
                 AndelTilkjentYtelse(
                     periodebeløp = Periodebeløp(
-                        utbetaltPerPeriode = 15000,
-                        periodetype = Periodetype.MÅNED,
-                        fraOgMed = LocalDate.of(2021, 1, 1),
-                        tilOgMed = LocalDate.of(2023, 12, 31)
+                            beløp = 15000,
+                            periodetype = Periodetype.MÅNED,
+                            fraOgMed = LocalDate.of(2021, 1, 1),
+                            tilOgMed = LocalDate.of(2023, 12, 31)
                     ),
                     periodeId = 2,
                     forrigePeriodeId = 1,
@@ -48,10 +48,10 @@ fun simuleringDto(): SimuleringDto {
         andelerTilkjentYtelse = listOf(
             AndelTilkjentYtelse(
                 periodebeløp = Periodebeløp(
-                    utbetaltPerPeriode = 15000,
-                    periodetype = Periodetype.MÅNED,
-                    fraOgMed = LocalDate.of(2021, 1, 1),
-                    tilOgMed = LocalDate.of(2023, 12, 31)
+                        beløp = 15000,
+                        periodetype = Periodetype.MÅNED,
+                        fraOgMed = LocalDate.of(2021, 1, 1),
+                        tilOgMed = LocalDate.of(2023, 12, 31)
                 ),
                 periodeId = 1,
                 forrigePeriodeId = null,

@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
@@ -38,7 +37,7 @@ data class UtbetalingsperiodeMal(val tilkjentYtelse: TilkjentYtelseMedMetaData,
                                klassifisering = type.tilKlassifisering(),
                                vedtakdatoFom = andel.periodebeløp.fraOgMed,
                                vedtakdatoTom = andel.periodebeløp.tilOgMed,
-                               sats = BigDecimal(andel.periodebeløp.utbetaltPerPeriode),
+                               sats = BigDecimal(andel.periodebeløp.beløp),
                                satsType = Utbetalingsperiode.SatsType.MND,
                                utbetalesTil = tilkjentYtelse.personIdent,
                                behandlingId = behandlingId)

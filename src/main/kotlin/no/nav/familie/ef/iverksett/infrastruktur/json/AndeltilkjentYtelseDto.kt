@@ -8,16 +8,12 @@ import java.util.*
 
 class AndelTilkjentYtelseDto(
     val periodebeløp: PeriodebeløpDto,
-    val periodeId: Long? = null,
-    val forrigePeriodeId: Long? = null,
     val kildeBehandlingId: UUID? = null
 )
 
 fun AndelTilkjentYtelseDto.toDomain(): AndelTilkjentYtelse {
     return AndelTilkjentYtelse(
-        this.periodebeløp.toDomain(),
-        this.periodeId,
-        this.forrigePeriodeId,
-        this.kildeBehandlingId
+        periodebeløp = this.periodebeløp.toDomain(),
+        kildeBehandlingId = this.kildeBehandlingId
     )
 }

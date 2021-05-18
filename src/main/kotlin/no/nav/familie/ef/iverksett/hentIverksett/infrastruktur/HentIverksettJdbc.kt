@@ -16,7 +16,7 @@ class HentIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    fun hent(behandlingId: String): Iverksett {
+    fun hent(behandlingId: UUID): Iverksett {
         try {
             return hentIverksettStringOgTransformer(behandlingId)
         } catch (ex: Exception) {
@@ -25,20 +25,20 @@ class HentIverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         }
     }
 
-    fun hentBrev(behandlingId: String): Brev {
+    fun hentBrev(behandlingId: UUID): Brev {
         val sql = "select * from brev where behandling_id = :behandlingId"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         return namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource) { resultSet: ResultSet, rowIndex: Int ->
             val behandlingId = resultSet.getString("behandling_id")
             val pdf = resultSet.getBytes("pdf")
-            Brev(behandlingId, pdf)
+            Brev(UUID.fromString(behandlingId), pdf)
         } ?: error("Fant ikke brev for behandlingId : ${behandlingId}")
     }
 
-    private fun hentIverksettStringOgTransformer(behandlingId: String): Iverksett {
+    private fun hentIverksettStringOgTransformer(behandlingId: UUID): Iverksett {
 
         val sql = "select data from iverksett where behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", UUID.fromString(behandlingId))
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         val json = namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource, String::class.java)
             ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
         val iverksett = objectMapper.readValue<Iverksett>(json)
