@@ -6,16 +6,16 @@ import org.springframework.stereotype.Service
 @Service
 class LagreTilstandService(val lagreTilstand: LagreTilstand) {
 
-    fun lagreJournalPostResultat(behandligId: String, journalPostResultatJson: JournalpostResultat) {
-        lagreTilstand.lagreJournalPostResultat(behandligId, journalPostResultatJson)
+    fun lagreJournalPostResultat(behandlingId: String, journalPostResultatJson: JournalpostResultat) {
+        lagreTilstand.lagreJournalPostResultat(behandlingId, journalPostResultatJson)
     }
-    fun lagreOppdragResultat(behandligId: String, oppdragResultatJson: OppdragResultat) {
-        lagreTilstand.lagreOppdragResultat(behandligId, oppdragResultatJson)
+    fun lagreOppdragResultat(behandlingId: String, oppdragResultatJson: OppdragResultat) {
+        lagreTilstand.lagreOppdragResultat(behandlingId, oppdragResultatJson)
     }
-    fun lagreTilkjentYtelseForUtbetaling(behandligId: String, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
-        lagreTilstand.lagreTilkjentYtelseForUtbetaling(behandligId, tilkjentYtelseForUtbetaling)
+    fun lagreTilkjentYtelseForUtbetaling(behandlingId: String, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
+        lagreTilstand.lagreTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelseForUtbetaling)
     }
-    fun lagreDistribuerVedtaksbrevResultat(behandligId: String, distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat) {
-        lagreTilstand.lagreDistribuerVedtaksbrevResultat(behandligId, distribuerVedtaksbrevResultat)
+    fun lagreDistribuerVedtaksbrevResultat(behandlingId: String, distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat) {
+        lagreTilstand.lagreDistribuerVedtaksbrevResultat(behandlingId, distribuerVedtaksbrevResultat)
     }
 }

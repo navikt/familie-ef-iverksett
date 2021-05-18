@@ -7,6 +7,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
+import no.nav.familie.ef.iverksett.lagretilstand.LagreTilstandService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
@@ -21,7 +22,8 @@ internal class JournalførVedtaksbrevTaskTest {
     val hentIverksettService = mockk<HentIverksettService>()
     val journalpostClient = mockk<JournalpostClient>()
     val taskRepository = mockk<TaskRepository>()
-    val journalførVedtaksbrevTask = JournalførVedtaksbrevTask(hentIverksettService, journalpostClient, taskRepository)
+    val lagreTilstandService = mockk<LagreTilstandService>()
+    val journalførVedtaksbrevTask = JournalførVedtaksbrevTask(hentIverksettService, journalpostClient, taskRepository, lagreTilstandService)
 
     @Test
     internal fun `skal journalføre brev og opprette ny task`() {
@@ -39,10 +41,13 @@ internal class JournalførVedtaksbrevTaskTest {
         every { taskRepository.save(capture(distribuerVedtaksbrevTask)) } returns Task(DistribuerVedtaksbrevTask.TYPE,
                                                                                        behandlingIdString,
                                                                                        Properties())
+        every { lagreTilstandService.lagreJournalPostResultat(behandlingIdString, any()) } returns Unit
+
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any()) }
+        verify(exactly = 1){lagreTilstandService.lagreJournalPostResultat(behandlingIdString, any())}
         assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
         assertThat(distribuerVedtaksbrevTask.captured.payload).contains(behandlingIdString)
         assertThat(distribuerVedtaksbrevTask.captured.payload).contains(journalpostId)

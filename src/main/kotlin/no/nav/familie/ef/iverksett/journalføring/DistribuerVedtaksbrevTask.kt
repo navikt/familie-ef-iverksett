@@ -1,6 +1,8 @@
 package no.nav.familie.ef.iverksett.journalføring
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.familie.ef.iverksett.lagretilstand.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.lagretilstand.LagreTilstandService
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -16,14 +18,16 @@ import java.util.*
                      settTilManuellOppfølgning = true,
                      triggerTidVedFeilISekunder = 15 * 60L,
                      beskrivelse = "Distribuerer vedtaksbrev.")
-class DistribuerVedtaksbrevTask(val journalpostClient: JournalpostClient) : AsyncTaskStep {
+class DistribuerVedtaksbrevTask(val journalpostClient: JournalpostClient,
+                                val lagreTilstandService: LagreTilstandService) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun doTask(task: Task) {
         val taskData = objectMapper.readValue<DistribuerVedtaksbrevTaskData>(task.payload)
         val bestillingId = journalpostClient.distribuerBrev(taskData.journalpostId)
-        //
+        lagreTilstandService.lagreDistribuerVedtaksbrevResultat(behandlingId = taskData.behandlingId.toString(),
+                                                                DistribuerVedtaksbrevResultat(bestillingId = bestillingId))
         logger.info("Distribuer vedtaksbrev journalpost=[${taskData.journalpostId}] for behandling=[${taskData.behandlingId}] med bestillingId=[$bestillingId]")
     }
 

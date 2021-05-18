@@ -37,7 +37,7 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
         )
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)
-        lagreTilstandService.lagreOppdragResultat(behandligId = behandlingId.toString(),
+        lagreTilstandService.lagreOppdragResultat(behandlingId = behandlingId.toString(),
                                                   OppdragResultat(oppdragStatus = oppdragstatus))
         when (oppdragstatus) {
             OppdragStatus.KVITTERT_OK -> return

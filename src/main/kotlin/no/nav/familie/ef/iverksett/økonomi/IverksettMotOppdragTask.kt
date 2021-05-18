@@ -39,7 +39,7 @@ class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService,
             forrigeTilkjentYtelse
         )
 
-        lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandligId = behandlingId, utbetaling)
+        lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let { oppdragClient.iverksettOppdrag(it) }
             ?: error("Utbetalingsoppdrag mangler for iverksetting")
     }
