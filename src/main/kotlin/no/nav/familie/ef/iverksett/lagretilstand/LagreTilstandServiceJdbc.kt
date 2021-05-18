@@ -29,7 +29,7 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
         }
     }
 
-    override fun lagreOppdragResultat(behandlingId: String, oppdragResultat: OppdragResultat) {
+    override fun oppdaterOppdragResultat(behandlingId: String, oppdragResultat: OppdragResultat) {
 
         val sql =
                 "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultat::json where behandling_id = :behandlingId"
@@ -49,7 +49,7 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
         }
     }
 
-    override fun lagreJournalPostResultat(behandlingId: String, journalPostResultat: JournalpostResultat) {
+    override fun oppdaterJournalpostResultat(behandlingId: String, journalPostResultat: JournalpostResultat) {
 
         val sql =
                 "update iverksett_resultat set journalpostResultat = :journalpostResultat::json where behandling_id = :behandlingId"
@@ -67,7 +67,7 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
         }
     }
 
-    override fun lagreDistribuerVedtaksbrevResultat(
+    override fun oppdaterDistribuerVedtaksbrevResultat(
         behandlingId: String,
         distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat
     ) {
