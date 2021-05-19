@@ -30,7 +30,7 @@ class HentIverksettJdbcTest : ServerTest() {
             iverksett,
             opprettBrev()
         )
-        val ret = hentIverksettJdbc.hent(iverksett.behandling.behandlingId.toString())
+        val ret = hentIverksettJdbc.hent(iverksett.behandling.behandlingId)
     }
 
 

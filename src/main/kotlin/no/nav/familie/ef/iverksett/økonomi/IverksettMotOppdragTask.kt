@@ -23,7 +23,7 @@ class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService,
                               val lagreTilstandService: LagreTilstandService) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
-        val behandlingId = task.payload
+        val behandlingId = UUID.fromString(task.payload)
         val iverksett = hentIverksettService.hentIverksett(behandlingId)
         val forrigeTilkjentYtelse = null // TODO: Hent ut forrigeTilkjentYtelse fra lokal DB
         val utbetaling = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(

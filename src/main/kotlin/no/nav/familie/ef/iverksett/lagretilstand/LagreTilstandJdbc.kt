@@ -6,13 +6,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) : LagreTilstand {
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    override fun lagreTilkjentYtelseForUtbetaling(behandlingId: String, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
+    override fun lagreTilkjentYtelseForUtbetaling(behandlingId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
         val sql = "insert into iverksett_resultat values(:behandlingId, null, :tilkjentYtelseForUtbetaling::json, null)"
 
         val tilkjentYtelseForUtbetalingJson = objectMapper.writeValueAsString(tilkjentYtelseForUtbetaling)
@@ -27,7 +28,7 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         }
     }
 
-    override fun oppdaterOppdragResultat(behandlingId: String, oppdragResultat: OppdragResultat) {
+    override fun oppdaterOppdragResultat(behandlingId: UUID, oppdragResultat: OppdragResultat) {
 
         val sql =
             "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultat::json where behandling_id = :behandlingId"
@@ -44,7 +45,7 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         }
     }
 
-    override fun oppdaterJournalpostResultat(behandlingId: String, journalPostResultat: JournalpostResultat) {
+    override fun oppdaterJournalpostResultat(behandlingId: UUID, journalPostResultat: JournalpostResultat) {
 
         val sql =
             "update iverksett_resultat set journalpostResultat = :journalpostResultat::json where behandling_id = :behandlingId"
@@ -61,7 +62,7 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
     }
 
     override fun oppdaterDistribuerVedtaksbrevResultat(
-        behandlingId: String,
+        behandlingId: UUID,
         distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat
     ) {
         val sql =

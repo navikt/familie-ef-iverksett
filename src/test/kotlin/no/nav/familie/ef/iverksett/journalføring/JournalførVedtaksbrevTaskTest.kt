@@ -36,18 +36,18 @@ internal class JournalførVedtaksbrevTaskTest {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot)) } returns ArkiverDokumentResponse(
                 journalpostId,
                 true)
-        every { hentIverksettService.hentIverksett(behandlingIdString) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
-        every { hentIverksettService.hentBrev(behandlingIdString) }.returns(Brev(behandlingIdString, ByteArray(256)))
+        every { hentIverksettService.hentIverksett(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
+        every { hentIverksettService.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
         every { taskRepository.save(capture(distribuerVedtaksbrevTask)) } returns Task(DistribuerVedtaksbrevTask.TYPE,
                                                                                        behandlingIdString,
                                                                                        Properties())
-        every { lagreTilstandService.lagreJournalPostResultat(behandlingIdString, any()) } returns Unit
+        every { lagreTilstandService.lagreJournalPostResultat(behandlingId, any()) } returns Unit
 
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any()) }
-        verify(exactly = 1){lagreTilstandService.lagreJournalPostResultat(behandlingIdString, any())}
+        verify(exactly = 1){lagreTilstandService.lagreJournalPostResultat(behandlingId, any())}
         assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
         assertThat(distribuerVedtaksbrevTask.captured.payload).contains(behandlingIdString)
         assertThat(distribuerVedtaksbrevTask.captured.payload).contains(journalpostId)

@@ -3,7 +3,6 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 import no.nav.familie.ef.iverksett.domene.Iverksett
 import no.nav.familie.ef.iverksett.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.domene.Vilkårsresultat
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
@@ -28,6 +27,8 @@ import java.time.ZoneId
 @Service
 class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: VedtakstatistikkKafkaProducer) {
 
+     val europeiskZoneId = ZoneId.of("Europe/Paris")
+
     fun sendTilKafka(iverksett: Iverksett) {
         val vedtakstatistikk = hentBehandlingDVH(iverksett)
         vedtakstatistikkKafkaProducer.sendVedtak(vedtakstatistikk)
@@ -37,9 +38,9 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
         return BehandlingDVH(fagsakId = iverksett.fagsak.fagsakId.toString(),
                              saksnummer = iverksett.fagsak.eksternId.toString(),
                              behandlingId = iverksett.behandling.behandlingId.toString(),
-                             relatertBehandlingId = iverksett.behandling.relatertBehandlingId,
+                             relatertBehandlingId = iverksett.behandling.relatertBehandlingId?.toString(),
                              kode6eller7 = iverksett.søker.kode6eller7,
-                             tidspunktVedtak = iverksett.vedtak.vedtaksdato.atStartOfDay(ZoneId.of("Europe/Paris")),
+                             tidspunktVedtak = iverksett.vedtak.vedtaksdato.atStartOfDay(europeiskZoneId),
                              vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map { mapTilVilkårsvurderinger(it) },
                              person = mapTilPerson(personIdent = iverksett.søker.personIdent),
                              barn = iverksett.søker.barn.map { mapTilPerson(it.personIdent) },
@@ -69,7 +70,7 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
 
 
     private fun mapTilPeriodeBeløp(periodebeløp: Periodebeløp): PeriodeBeløp {
-        return PeriodeBeløp(utbetaltPerPeriode = periodebeløp.utbetaltPerPeriode,
+        return PeriodeBeløp(utbetaltPerPeriode = periodebeløp.beløp,
                             periodetype = Periodetype.valueOf(periodebeløp.periodetype.name),
                             fraOgMed = periodebeløp.fraOgMed,
                             tilOgMed = periodebeløp.tilOgMed)

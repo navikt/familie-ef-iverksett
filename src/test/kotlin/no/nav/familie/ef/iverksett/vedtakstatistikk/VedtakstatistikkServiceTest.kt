@@ -6,8 +6,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
-import no.nav.familie.ef.iverksett.util.opprettIverksettDto
+import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingResultat
@@ -40,13 +39,14 @@ class VedtakstatistikkServiceTest {
         val behandlingDvhSlot = slot<BehandlingDVH>()
         every { vedtakstatistikkKafkaProducer.sendVedtak(capture(behandlingDvhSlot)) } just Runs
 
-        val iverksett = opprettIverksettDto(behandlingId).toDomain()
+        val iverksett = opprettIverksett(behandlingId)
+        vedtakstatistikkService.sendTilKafka(iverksett = iverksett)
+        verify(exactly = 1) { vedtakstatistikkKafkaProducer.sendVedtak(any()) }
+
         val behandlingDVH = opprettBehandlingDVH(behandlingId = behandlingId.toString(),
                                                  fagsakId = iverksett.fagsak.fagsakId.toString(),
                                                  tidspunktVedtak = iverksett.vedtak.vedtaksdato,
                                                  aktivitetspliktInntrefferDato = tidspunktVedtak)
-        vedtakstatistikkService.sendTilKafka(iverksett = iverksett)
-        verify(exactly = 1) { vedtakstatistikkKafkaProducer.sendVedtak(any()) }
         assertThat(behandlingDVH).isEqualTo(behandlingDvhSlot.captured)
     }
 

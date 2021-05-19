@@ -29,9 +29,9 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = hentIverksettService.hentIverksett(behandlingId.toString())
+        val iverksett = hentIverksettService.hentIverksett(behandlingId)
 
-        val vedtaksbrev = hentIverksettService.hentBrev(behandlingId.toString())
+        val vedtaksbrev = hentIverksettService.hentBrev(behandlingId)
         val dokument = Dokument(vedtaksbrev.pdf, Filtype.PDFA, dokumenttype = Dokumenttype.VEDTAKSBREV_OVERGANGSSTØNAD)
 
         val journalpostId = journalpostClient.arkiverDokument(
@@ -44,7 +44,7 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
             )
         ).journalpostId
 
-        lagreTilstandService.lagreJournalPostResultat(behandlingId = behandlingId.toString(),
+        lagreTilstandService.lagreJournalPostResultat(behandlingId = behandlingId,
                                                       JournalpostResultat(journalpostId = journalpostId,
                                                                           bestillingId = journalpostId))
 

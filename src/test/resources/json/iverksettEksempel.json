@@ -11,7 +11,7 @@
     "behandlingType": "FØRSTEGANGSBEHANDLING",
     "behandlingÅrsak": "DØDSFALL",
     "eksternId": 14,
-    "relatertBehandlingId": "string",
+    "relatertBehandlingId": "999abcde-fabc-11eb-8529-0242ac130003",
     "vilkårsvurderinger": [
       {
         "delvilkårsvurderinger": [
@@ -56,14 +56,12 @@
     "tilkjentYtelse": {
       "andelerTilkjentYtelse": [
         {
-          "forrigePeriodeId": 0,
           "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "periodeId": 0,
           "periodebeløp": {
             "fraOgMed": "2021-05-10",
             "periodetype": "MÅNED",
             "tilOgMed": "2021-05-10",
-            "utbetaltPerPeriode": 0
+            "beløp": 0
           }
         }
       ],

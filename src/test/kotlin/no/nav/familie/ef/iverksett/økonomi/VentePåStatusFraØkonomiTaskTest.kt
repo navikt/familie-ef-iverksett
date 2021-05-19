@@ -28,9 +28,9 @@ internal class VentePåStatusFraØkonomiTaskTest {
     internal fun `kjør doTask for VentePåStatusFraØkonomiTaskhvis, forvent ingen unntak`() {
         every { oppdragClient.hentStatus(any()) } returns OppdragStatus.KVITTERT_OK
         every { hentIverksettService.hentIverksett(any()) } returns opprettIverksettDto(behandlingId).toDomain()
-        every { lagreTilstandService.lagreOppdragResultat(behandlingId.toString(), any()) } returns Unit
+        every { lagreTilstandService.lagreOppdragResultat(behandlingId, any()) } returns Unit
 
         ventePåStatusFraØkonomiTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
-        verify(exactly = 1) { lagreTilstandService.lagreOppdragResultat(behandlingId.toString(), any()) }
+        verify(exactly = 1) { lagreTilstandService.lagreOppdragResultat(behandlingId, any()) }
     }
 }
