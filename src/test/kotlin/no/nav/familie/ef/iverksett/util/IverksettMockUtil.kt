@@ -16,7 +16,6 @@ import no.nav.familie.ef.iverksett.domene.Periodetype
 import no.nav.familie.ef.iverksett.domene.Søker
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelseStatus
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelseType
 import no.nav.familie.ef.iverksett.domene.Vedtak
 import no.nav.familie.ef.iverksett.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.infrastruktur.json.AktivitetskravDto
@@ -46,9 +45,6 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                                                                                     tilOgMed = LocalDate.of(2021, 12, 31)),
                                                      kildeBehandlingId = UUID.randomUUID())
     val tilkjentYtelse = TilkjentYtelseDto(
-            id = UUID.randomUUID(),
-            status = TilkjentYtelseStatus.AKTIV,
-            type = TilkjentYtelseType.ENDRING,
             andelerTilkjentYtelse = listOf(andelTilkjentYtelse)
     )
 
