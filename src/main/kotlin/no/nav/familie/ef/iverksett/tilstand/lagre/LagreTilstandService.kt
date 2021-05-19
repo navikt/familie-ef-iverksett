@@ -1,5 +1,8 @@
-package no.nav.familie.ef.iverksett.lagretilstand
+package no.nav.familie.ef.iverksett.tilstand.lagre
 
+import no.nav.familie.ef.iverksett.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import org.springframework.stereotype.Service
 import java.util.*

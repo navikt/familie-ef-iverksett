@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.økonomi
 
+import no.nav.familie.ef.iverksett.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
-import no.nav.familie.ef.iverksett.lagretilstand.LagreTilstandService
-import no.nav.familie.ef.iverksett.lagretilstand.OppdragResultat
+import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -25,7 +25,8 @@ import java.util.*
 class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettService,
                                   val oppdragClient: OppdragClient,
                                   val taskRepository: TaskRepository,
-                                  val lagreTilstandService: LagreTilstandService) : AsyncTaskStep {
+                                  val lagreTilstandService: LagreTilstandService
+) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
@@ -38,7 +39,8 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)
         lagreTilstandService.lagreOppdragResultat(behandlingId = behandlingId,
-                                                  OppdragResultat(oppdragStatus = oppdragstatus))
+                                                  OppdragResultat(oppdragStatus = oppdragstatus)
+        )
         when (oppdragstatus) {
             OppdragStatus.KVITTERT_OK -> return
             else -> error("Status fra oppdrag er ikke ok, status : ${oppdragstatus}")

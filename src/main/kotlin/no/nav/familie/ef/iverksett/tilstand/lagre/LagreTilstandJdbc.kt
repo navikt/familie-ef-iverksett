@@ -1,5 +1,8 @@
-package no.nav.familie.ef.iverksett.lagretilstand
+package no.nav.familie.ef.iverksett.tilstand.lagre
 
+import no.nav.familie.ef.iverksett.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
@@ -65,7 +68,7 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat
     ) {
         val sql =
-            "update iverksett_resultat set vedtaksBrevResultat = :vedtaksBrevResultat::json where behandling_id = :behandlingId"
+            "update iverksett_resultat set vedtaksBrevResultat = :distribuerVedtaksbrevResultatJson::json where behandling_id = :behandlingId"
         val distribuerVedtaksbrevResultatJson = objectMapper.writeValueAsString(distribuerVedtaksbrevResultat)
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
             .addValue("distribuerVedtaksbrevResultatJson", distribuerVedtaksbrevResultatJson)

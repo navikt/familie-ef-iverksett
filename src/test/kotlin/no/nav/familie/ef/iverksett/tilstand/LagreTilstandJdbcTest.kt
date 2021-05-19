@@ -1,10 +1,8 @@
-package no.nav.familie.ef.iverksett.lagretilstand
+package no.nav.familie.ef.iverksett.tilstand
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.domene.Periodebeløp
-import no.nav.familie.ef.iverksett.domene.Periodetype
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.domene.*
+import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandJdbc
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order

@@ -4,8 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.lagretilstand.DistribuerVedtaksbrevResultat
-import no.nav.familie.ef.iverksett.lagretilstand.LagreTilstandService
+import no.nav.familie.ef.iverksett.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.*

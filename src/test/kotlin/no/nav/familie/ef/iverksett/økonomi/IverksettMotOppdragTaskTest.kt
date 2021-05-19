@@ -6,7 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
-import no.nav.familie.ef.iverksett.lagretilstand.LagreTilstandService
+import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.prosessering.domene.Task

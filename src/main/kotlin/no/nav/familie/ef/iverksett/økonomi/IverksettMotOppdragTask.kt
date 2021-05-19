@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.domene.toMedMetadata
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
-import no.nav.familie.ef.iverksett.lagretilstand.LagreTilstandService
+import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -20,7 +20,8 @@ import java.util.*
 class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService,
                               val oppdragClient: OppdragClient,
                               val taskRepository: TaskRepository,
-                              val lagreTilstandService: LagreTilstandService) : AsyncTaskStep {
+                              val lagreTilstandService: LagreTilstandService
+) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
