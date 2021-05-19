@@ -15,6 +15,7 @@ import java.util.*
 class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) : LagreTilstand {
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun lagreTilkjentYtelseForUtbetaling(behandlingId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
         val sql = "insert into iverksett_resultat values(:behandlingId, null, :tilkjentYtelseForUtbetaling::json, null)"
@@ -42,8 +43,8 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
-            secureLogger.error("Kunne ikke lagre oppdragResultatJson til basen, behandlingID : ${behandlingId}, oppdragResultatJson : ${oppdragResultatJson}")
-            throw Exception("Feil ved lagring av tilkjent ytelse")
+            logger.error("Kunne ikke lagre oppdragResultatJson til basen, behandlingID : ${behandlingId}, oppdragResultatJson : ${oppdragResultatJson}")
+            throw Exception("Feil ved lagring av oppdragsresultat = ${oppdragResultat}")
         }
     }
 
@@ -58,8 +59,8 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
-            secureLogger.error("Kunne ikke lagre journalPostResultatJson til basen, behandlingID : ${behandlingId}, journalPostResultatJson : ${journalPostResultatJson}")
-            throw Exception("Feil ved lagring av tilkjent ytelse")
+            logger.error("Kunne ikke lagre journalPostResultatJson til basen, behandlingID : ${behandlingId}, journalPostResultatJson : ${journalPostResultatJson}")
+            throw Exception("Feil ved lagring av journalpost resultat : ${journalPostResultat}")
         }
     }
 
@@ -76,8 +77,8 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
-            secureLogger.error("Kunne ikke lagre journalPostResultatJson til basen, behandlingID : ${behandlingId}, journalPostResultatJson : ${distribuerVedtaksbrevResultatJson}")
-            throw Exception("Feil ved lagring av tilkjent ytelse")
+            logger.error("Kunne ikke lagre journalPostResultatJson til basen, behandlingID : ${behandlingId}, journalPostResultatJson : ${distribuerVedtaksbrevResultatJson}")
+            throw Exception("Feil ved lagring av vedtaksbrev resultat : ${distribuerVedtaksbrevResultat}")
         }
     }
 
