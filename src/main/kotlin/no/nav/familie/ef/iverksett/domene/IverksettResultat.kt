@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.lagretilstand
+package no.nav.familie.ef.iverksett.domene
 
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
