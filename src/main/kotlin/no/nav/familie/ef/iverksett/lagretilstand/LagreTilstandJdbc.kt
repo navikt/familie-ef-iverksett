@@ -31,12 +31,11 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
     override fun oppdaterOppdragResultat(behandlingId: UUID, oppdragResultat: OppdragResultat) {
 
         val sql =
-            "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultat::json where behandling_id = :behandlingId"
+            "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultatJson::json where behandling_id = :behandlingId"
 
         val oppdragResultatJson = objectMapper.writeValueAsString(oppdragResultat)
-        val mapSqlParameterSource =
-            MapSqlParameterSource("behandlingId", behandlingId)
-                .addValue("oppdragResultatJson", oppdragResultatJson)
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+            .addValue("oppdragResultatJson", oppdragResultatJson)
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
@@ -66,10 +65,10 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat
     ) {
         val sql =
-            "update iverksett_resultat set distribuertVedtaksBrevResultat = :distribuerVedtaksbrevResultat::json where behandling_id = :behandlingId"
+            "update iverksett_resultat set vedtaksBrevResultat = :vedtaksBrevResultat::json where behandling_id = :behandlingId"
         val distribuerVedtaksbrevResultatJson = objectMapper.writeValueAsString(distribuerVedtaksbrevResultat)
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-            .addValue("distribuerVedtaksbrevResultat", distribuerVedtaksbrevResultatJson)
+            .addValue("distribuerVedtaksbrevResultatJson", distribuerVedtaksbrevResultatJson)
 
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)

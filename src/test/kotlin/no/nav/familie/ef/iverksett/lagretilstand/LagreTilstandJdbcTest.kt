@@ -6,13 +6,15 @@ import no.nav.familie.ef.iverksett.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.domene.Periodetype
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
+import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import java.util.*
 
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class LagreTilstandJdbcTest : ServerTest() {
 
     @Autowired
