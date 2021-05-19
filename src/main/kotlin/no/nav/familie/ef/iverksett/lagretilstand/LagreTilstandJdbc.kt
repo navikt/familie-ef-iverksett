@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 
 @Repository
-class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) : LagreTilstand {
+class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) : LagreTilstand {
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
@@ -16,54 +16,47 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
         val sql = "insert into iverksett_resultat values(:behandlingId, null, :tilkjentYtelseForUtbetaling::json, null)"
 
         val tilkjentYtelseForUtbetalingJson = objectMapper.writeValueAsString(tilkjentYtelseForUtbetaling)
-        val mapSqlParameterSource = MapSqlParameterSource(
-                mapOf(
-                        "behandlingId" to behandlingId,
-                        "tilkjentYtelseForUtbetaling" to tilkjentYtelseForUtbetalingJson
-                )
-        )
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+            .addValue("tilkjentYtelseForUtbetaling", tilkjentYtelseForUtbetalingJson)
+
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
-            secureLogger.error("Kunne ikke lagre tilkjentYtelseForUtbetaling til basen, behandlingID : ${behandlingId}, tilkjentYtelseForUtbetaling : ${tilkjentYtelseForUtbetaling}")
+            secureLogger.error("Kunne ikke lagre tilkjentYtelseForUtbetaling til basen, behandlingID = ${behandlingId}, tilkjentYtelseForUtbetaling = ${tilkjentYtelseForUtbetaling}")
+            throw Exception("Feil ved lagring av tilkjent ytelse")
         }
     }
 
     override fun oppdaterOppdragResultat(behandlingId: String, oppdragResultat: OppdragResultat) {
 
         val sql =
-                "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultat::json where behandling_id = :behandlingId"
+            "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultat::json where behandling_id = :behandlingId"
 
         val oppdragResultatJson = objectMapper.writeValueAsString(oppdragResultat)
         val mapSqlParameterSource =
-                MapSqlParameterSource(
-                        mapOf(
-                                "behandlingId" to behandlingId,
-                                "oppdragResultatJson" to oppdragResultatJson
-                        )
-                )
+            MapSqlParameterSource("behandlingId", behandlingId)
+                .addValue("oppdragResultatJson", oppdragResultatJson)
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
             secureLogger.error("Kunne ikke lagre oppdragResultatJson til basen, behandlingID : ${behandlingId}, oppdragResultatJson : ${oppdragResultatJson}")
+            throw Exception("Feil ved lagring av tilkjent ytelse")
         }
     }
 
     override fun oppdaterJournalpostResultat(behandlingId: String, journalPostResultat: JournalpostResultat) {
 
         val sql =
-                "update iverksett_resultat set journalpostResultat = :journalpostResultat::json where behandling_id = :behandlingId"
+            "update iverksett_resultat set journalpostResultat = :journalpostResultat::json where behandling_id = :behandlingId"
         val journalPostResultatJson = objectMapper.writeValueAsString(journalPostResultat)
-        val mapSqlParameterSource = MapSqlParameterSource(
-                mapOf(
-                        "behandlingId" to behandlingId,
-                        "journalpostResultat" to journalPostResultatJson
-                )
-        )
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+            .addValue("journalpostResultat", journalPostResultatJson)
+
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
             secureLogger.error("Kunne ikke lagre journalPostResultatJson til basen, behandlingID : ${behandlingId}, journalPostResultatJson : ${journalPostResultatJson}")
+            throw Exception("Feil ved lagring av tilkjent ytelse")
         }
     }
 
@@ -74,16 +67,14 @@ class LagreTilstandServiceJdbc(val namedParameterJdbcTemplate: NamedParameterJdb
         val sql =
             "update iverksett_resultat set distribuertVedtaksBrevResultat = :distribuerVedtaksbrevResultat::json where behandling_id = :behandlingId"
         val distribuerVedtaksbrevResultatJson = objectMapper.writeValueAsString(distribuerVedtaksbrevResultat)
-        val mapSqlParameterSource = MapSqlParameterSource(
-            mapOf(
-                "behandlingId" to behandlingId,
-                "distribuerVedtaksbrevResultat" to distribuerVedtaksbrevResultatJson
-            )
-        )
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+            .addValue("distribuerVedtaksbrevResultat", distribuerVedtaksbrevResultatJson)
+
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
             secureLogger.error("Kunne ikke lagre journalPostResultatJson til basen, behandlingID : ${behandlingId}, journalPostResultatJson : ${distribuerVedtaksbrevResultatJson}")
+            throw Exception("Feil ved lagring av tilkjent ytelse")
         }
     }
 

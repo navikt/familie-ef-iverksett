@@ -13,10 +13,10 @@ import java.time.LocalDate
 import java.util.*
 
 
-internal class LagreTilstandServiceJdbcTest : ServerTest() {
+internal class LagreTilstandJdbcTest : ServerTest() {
 
     @Autowired
-    private lateinit var lagreTilstandServiceJdbc: LagreTilstandServiceJdbc
+    private lateinit var lagreTilstandServiceJdbc: LagreTilstandJdbc
 
     val behandlingsId = UUID.randomUUID()
     val journalpostId = UUID.randomUUID()
