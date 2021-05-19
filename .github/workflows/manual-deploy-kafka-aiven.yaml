@@ -14,5 +14,5 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: kafka-aiven/ensligforsorger-vedtak.v1/topic-dev.yaml
+          RESOURCE: kafka-aiven/aapen-ensligforsorger-vedtak-test/topic-dev.yaml
           PRINT_PAYLOAD: true
