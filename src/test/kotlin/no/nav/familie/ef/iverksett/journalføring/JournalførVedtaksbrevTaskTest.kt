@@ -36,8 +36,8 @@ internal class JournalførVedtaksbrevTaskTest {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot)) } returns ArkiverDokumentResponse(
                 journalpostId,
                 true)
-        every { hentIverksettService.hentIverksett(behandlingIdString) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
-        every { hentIverksettService.hentBrev(behandlingIdString) }.returns(Brev(behandlingIdString, ByteArray(256)))
+        every { hentIverksettService.hentIverksett(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
+        every { hentIverksettService.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
         every { taskRepository.save(capture(distribuerVedtaksbrevTask)) } returns Task(DistribuerVedtaksbrevTask.TYPE,
                                                                                        behandlingIdString,
                                                                                        Properties())

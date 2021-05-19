@@ -40,7 +40,7 @@ class IverksettController(
     }
 
     private fun opprettBrev(iverksettDto: IverksettDto, fil: MultipartFile): Brev {
-        return Brev(iverksettDto.behandling.behandlingId.toString(), fil.bytes)
+        return Brev(iverksettDto.behandling.behandlingId, fil.bytes)
     }
 
 

@@ -29,7 +29,7 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = hentIverksettService.hentIverksett(behandlingId.toString())
+        val iverksett = hentIverksettService.hentIverksett(behandlingId)
         val oppdragId = OppdragId(
             fagsystem = iverksett.fagsak.stønadstype.tilKlassifisering(),
             personIdent = iverksett.søker.personIdent,

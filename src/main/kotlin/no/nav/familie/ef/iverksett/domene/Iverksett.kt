@@ -36,13 +36,13 @@ data class Vedtaksdetaljer(
 )
 
 data class Behandlingsdetaljer(
-        val forrigeBehandlingId: String? = null,
+        val forrigeBehandlingId: UUID? = null,
         val behandlingId: UUID,
         val eksternId: Long,
         val behandlingType: BehandlingType,
         val behandlingÅrsak: BehandlingÅrsak,
         val behandlingResultat: BehandlingResultat,
-        val relatertBehandlingId: String? = null,
+        val relatertBehandlingId: UUID? = null,
         val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
 
         )

@@ -28,12 +28,12 @@ data class FagsakdetaljerDto(
 
 data class BehandlingsdetaljerDto(
         val behandlingId: UUID,
-        val forrigeBehandlingId: String? = null,
+        val forrigeBehandlingId: UUID? = null,
         val eksternId: Long,
         val behandlingType: BehandlingType,
         val behandlingÅrsak: BehandlingÅrsak,
         val behandlingResultat: BehandlingResultat,
-        val relatertBehandlingId: String? = null,
+        val relatertBehandlingId: UUID? = null,
         val vilkårsvurderinger: List<VilkårsvurderingDto> = emptyList()
 )
 

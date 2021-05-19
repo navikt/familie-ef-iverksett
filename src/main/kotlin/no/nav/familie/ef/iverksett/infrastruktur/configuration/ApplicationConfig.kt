@@ -56,6 +56,9 @@ class ApplicationConfig {
         return filterRegistration
     }
 
+    @Bean
+    @Primary fun objectMapper() = objectMapper
+
     /**
      * Overskrever felles sin som bruker proxy, som ikke skal brukes på gcp
      */
