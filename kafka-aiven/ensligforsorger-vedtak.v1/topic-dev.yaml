@@ -1,7 +1,7 @@
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
-  name: ensligforsorger-vedtak.v1
+  name: aapen-ensligforsorger-vedtak-test
   namespace: teamfamilie
   labels:
     team: teamfamilie
