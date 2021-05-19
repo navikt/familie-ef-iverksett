@@ -41,13 +41,13 @@ internal class JournalførVedtaksbrevTaskTest {
         every { taskRepository.save(capture(distribuerVedtaksbrevTask)) } returns Task(DistribuerVedtaksbrevTask.TYPE,
                                                                                        behandlingIdString,
                                                                                        Properties())
-        every { lagreTilstandService.lagreJournalPostResultat(behandlingIdString, any()) } returns Unit
+        every { lagreTilstandService.lagreJournalPostResultat(behandlingId, any()) } returns Unit
 
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any()) }
-        verify(exactly = 1){lagreTilstandService.lagreJournalPostResultat(behandlingIdString, any())}
+        verify(exactly = 1){lagreTilstandService.lagreJournalPostResultat(behandlingId, any())}
         assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
         assertThat(distribuerVedtaksbrevTask.captured.payload).contains(behandlingIdString)
         assertThat(distribuerVedtaksbrevTask.captured.payload).contains(journalpostId)

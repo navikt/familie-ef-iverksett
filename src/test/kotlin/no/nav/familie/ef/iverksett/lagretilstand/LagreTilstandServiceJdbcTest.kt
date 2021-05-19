@@ -30,32 +30,32 @@ internal class LagreTilstandServiceJdbcTest : ServerTest() {
             andelerTilkjentYtelse = listOf(
                 AndelTilkjentYtelse(
                     periodebeløp = Periodebeløp(
-                        utbetaltPerPeriode = 100,
+                        beløp = 100,
                         Periodetype.MÅNED,
                         fraOgMed = LocalDate.now(),
                         tilOgMed = LocalDate.now().plusMonths(1)
                     ),
                     periodeId = 1L,
                     forrigePeriodeId = 1L,
-                    kildeBehandlingId = UUID.randomUUID()
+                    kildeBehandlingId = behandlingsId
                 )
             )
         )
-        lagreTilstandServiceJdbc.lagreTilkjentYtelseForUtbetaling(UUID.randomUUID().toString(), tilkjentYtelse)
+        lagreTilstandServiceJdbc.lagreTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
     }
 
     @Test
     @Order(2)
     fun `oppdater oppdrag, forvent ingen unntak`() {
         val oppdragResultat = OppdragResultat(oppdragStatus = OppdragStatus.KVITTERT_OK)
-        lagreTilstandServiceJdbc.oppdaterOppdragResultat(behandlingsId.toString(), oppdragResultat)
+        lagreTilstandServiceJdbc.oppdaterOppdragResultat(behandlingsId, oppdragResultat)
     }
 
     @Test
     @Order(3)
     fun `oppdater journalpost, forvent ingen unntak`() {
         lagreTilstandServiceJdbc.oppdaterJournalpostResultat(
-            behandlingsId.toString(),
+            behandlingsId,
             JournalpostResultat(
                 journalpostId = journalpostId.toString(),
                 bestillingId = journalpostId.toString()
@@ -67,7 +67,7 @@ internal class LagreTilstandServiceJdbcTest : ServerTest() {
     @Order(4)
     fun `oppdater distribuerVedtaksbrev, forvent ingen unntak`() {
         lagreTilstandServiceJdbc.oppdaterDistribuerVedtaksbrevResultat(
-            behandlingsId.toString(),
+            behandlingsId,
             DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
         )
     }

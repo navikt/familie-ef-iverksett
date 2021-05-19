@@ -25,12 +25,12 @@ internal class DistribuerVedtaksbrevTaskTest {
         val distribuerVedtaksbrevResultat = slot<DistribuerVedtaksbrevResultat>()
 
         every { journalpostClient.distribuerBrev(journalpostId) } returns bestillingId
-        every { lagreTilstandService.lagreDistribuerVedtaksbrevResultat(behandlingId.toString(), capture(distribuerVedtaksbrevResultat)) } returns Unit
+        every { lagreTilstandService.lagreDistribuerVedtaksbrevResultat(behandlingId, capture(distribuerVedtaksbrevResultat)) } returns Unit
         
         distribuerVedtaksbrevTask.doTask(task)
 
         verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostId) }
-        verify(exactly = 1) { lagreTilstandService.lagreDistribuerVedtaksbrevResultat(behandlingId.toString(), any())}
+        verify(exactly = 1) { lagreTilstandService.lagreDistribuerVedtaksbrevResultat(behandlingId, any())}
         assertThat(distribuerVedtaksbrevResultat.captured.bestillingId).isEqualTo(bestillingId)
         assertThat(distribuerVedtaksbrevResultat.captured.dato).isNotNull()
     }

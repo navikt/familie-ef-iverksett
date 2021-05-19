@@ -41,11 +41,11 @@ internal class IverksettMotOppdragTaskTest {
     internal fun `skal sende utbetaling til oppdrag`() {
         val oppdragSlot = slot<Utbetalingsoppdrag>()
         every { oppdragClient.iverksettOppdrag(capture(oppdragSlot)) } returns "abc"
-        every { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId.toString(), any()) } returns Unit
+        every { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
 
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
         verify(exactly = 1) { oppdragClient.iverksettOppdrag(any()) }
-        verify(exactly = 1) { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId.toString(), any()) }
+        verify(exactly = 1) { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId, any()) }
         assertThat(oppdragSlot.captured.fagSystem).isEqualTo("EFOG")
         assertThat(oppdragSlot.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.NY)
     }

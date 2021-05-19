@@ -44,7 +44,7 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
             )
         ).journalpostId
 
-        lagreTilstandService.lagreJournalPostResultat(behandlingId = behandlingId.toString(),
+        lagreTilstandService.lagreJournalPostResultat(behandlingId = behandlingId,
                                                       JournalpostResultat(journalpostId = journalpostId,
                                                                           bestillingId = journalpostId))
 

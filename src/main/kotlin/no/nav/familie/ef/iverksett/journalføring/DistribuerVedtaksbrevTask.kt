@@ -26,7 +26,7 @@ class DistribuerVedtaksbrevTask(val journalpostClient: JournalpostClient,
     override fun doTask(task: Task) {
         val taskData = objectMapper.readValue<DistribuerVedtaksbrevTaskData>(task.payload)
         val bestillingId = journalpostClient.distribuerBrev(taskData.journalpostId)
-        lagreTilstandService.lagreDistribuerVedtaksbrevResultat(behandlingId = taskData.behandlingId.toString(),
+        lagreTilstandService.lagreDistribuerVedtaksbrevResultat(behandlingId = taskData.behandlingId,
                                                                 DistribuerVedtaksbrevResultat(bestillingId = bestillingId))
         logger.info("Distribuer vedtaksbrev journalpost=[${taskData.journalpostId}] for behandling=[${taskData.behandlingId}] med bestillingId=[$bestillingId]")
     }

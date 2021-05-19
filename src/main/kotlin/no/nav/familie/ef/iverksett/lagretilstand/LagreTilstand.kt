@@ -1,11 +1,12 @@
 package no.nav.familie.ef.iverksett.lagretilstand
 
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
+import java.util.*
 
 interface LagreTilstand {
 
-    fun lagreTilkjentYtelseForUtbetaling(behandligId: String, tilkjentYtelseForUtbetaling: TilkjentYtelse)
-    fun oppdaterOppdragResultat(behandligId: String, oppdragResultatJson: OppdragResultat)
-    fun oppdaterJournalpostResultat(behandligId: String, journalPostResultatJson: JournalpostResultat)
-    fun oppdaterDistribuerVedtaksbrevResultat(behandlingId: String, distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat)
+    fun lagreTilkjentYtelseForUtbetaling(behandligId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse)
+    fun oppdaterOppdragResultat(behandligId: UUID, oppdragResultatJson: OppdragResultat)
+    fun oppdaterJournalpostResultat(behandligId: UUID, journalPostResultatJson: JournalpostResultat)
+    fun oppdaterDistribuerVedtaksbrevResultat(behandlingId: UUID, distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat)
 }
