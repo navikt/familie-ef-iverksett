@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.domene.Periodetype
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
@@ -21,6 +22,7 @@ internal class LagreTilstandServiceJdbcTest : ServerTest() {
     val journalpostId = UUID.randomUUID()
 
     @Test
+    @Order(1)
     fun `lagre tilkjentytelse, forvent ingen unntak`() {
         val tilkjentYtelse = TilkjentYtelse(
             id = behandlingsId,
@@ -43,12 +45,14 @@ internal class LagreTilstandServiceJdbcTest : ServerTest() {
     }
 
     @Test
+    @Order(2)
     fun `oppdater oppdrag, forvent ingen unntak`() {
         val oppdragResultat = OppdragResultat(oppdragStatus = OppdragStatus.KVITTERT_OK)
         lagreTilstandServiceJdbc.oppdaterOppdragResultat(behandlingsId.toString(), oppdragResultat)
     }
 
     @Test
+    @Order(3)
     fun `oppdater journalpost, forvent ingen unntak`() {
         lagreTilstandServiceJdbc.oppdaterJournalpostResultat(
             behandlingsId.toString(),
@@ -60,6 +64,7 @@ internal class LagreTilstandServiceJdbcTest : ServerTest() {
     }
 
     @Test
+    @Order(4)
     fun `oppdater distribuerVedtaksbrev, forvent ingen unntak`() {
         lagreTilstandServiceJdbc.oppdaterDistribuerVedtaksbrevResultat(
             behandlingsId.toString(),
