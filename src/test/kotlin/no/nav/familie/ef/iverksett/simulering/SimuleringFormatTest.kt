@@ -1,19 +1,14 @@
 package no.nav.familie.ef.iverksett.simulering
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
+import no.nav.familie.kontrakter.felles.objectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 class SimuleringFormatTest {
 
-    var objectMapper: ObjectMapper = ObjectMapper()
-            .registerModule(KotlinModule())
-            .registerModule(JavaTimeModule())
 
     @Test
     fun `sjekk at v1 lar seg deserialisere`() {
@@ -21,7 +16,7 @@ class SimuleringFormatTest {
         val simuleringDtoV1 = objectMapper.readValue<SimuleringDto>(v1)
 
         assertNotNull(simuleringDtoV1.forrigeTilkjentYtelse)
-        assertEquals(2,simuleringDtoV1.nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.size)
-        assertEquals(1,simuleringDtoV1.forrigeTilkjentYtelse!!.andelerTilkjentYtelse.size)
+        assertEquals(2, simuleringDtoV1.nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.size)
+        assertEquals(1, simuleringDtoV1.forrigeTilkjentYtelse!!.andelerTilkjentYtelse.size)
     }
 }
