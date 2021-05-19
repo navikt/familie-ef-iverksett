@@ -4,10 +4,7 @@ import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.domene.*
 import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandJdbc
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
-import org.junit.jupiter.api.MethodOrderer
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import java.util.*
@@ -21,9 +18,8 @@ internal class LagreTilstandJdbcTest : ServerTest() {
     val behandlingsId = UUID.randomUUID()
     val journalpostId = UUID.randomUUID()
 
-    @Test
-    @Order(1)
-    fun `lagre tilkjentytelse, forvent ingen unntak`() {
+    @BeforeEach
+    fun beforeEach() {
         val tilkjentYtelse = TilkjentYtelse(
             id = behandlingsId,
             utbetalingsoppdrag = null,
@@ -45,14 +41,12 @@ internal class LagreTilstandJdbcTest : ServerTest() {
     }
 
     @Test
-    @Order(2)
     fun `oppdater oppdrag, forvent ingen unntak`() {
         val oppdragResultat = OppdragResultat(oppdragStatus = OppdragStatus.KVITTERT_OK)
         lagreTilstandServiceJdbc.oppdaterOppdragResultat(behandlingsId, oppdragResultat)
     }
 
     @Test
-    @Order(3)
     fun `oppdater journalpost, forvent ingen unntak`() {
         lagreTilstandServiceJdbc.oppdaterJournalpostResultat(
             behandlingsId,
@@ -64,7 +58,6 @@ internal class LagreTilstandJdbcTest : ServerTest() {
     }
 
     @Test
-    @Order(4)
     fun `oppdater distribuerVedtaksbrev, forvent ingen unntak`() {
         lagreTilstandServiceJdbc.oppdaterDistribuerVedtaksbrevResultat(
             behandlingsId,
