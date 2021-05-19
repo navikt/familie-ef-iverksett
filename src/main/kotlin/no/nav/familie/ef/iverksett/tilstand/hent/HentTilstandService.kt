@@ -5,7 +5,7 @@ import java.util.*
 
 class HentTilstandService(val hentTilstand: HentTilstand) {
 
-    fun hentTilkjentYtelse(behandlingId: UUID): TilkjentYtelse {
+    fun hentTilkjentYtelse(behandlingId: UUID): TilkjentYtelse? {
         return hentTilstand.hentTilkjentYtelse(behandlingId)
     }
 }

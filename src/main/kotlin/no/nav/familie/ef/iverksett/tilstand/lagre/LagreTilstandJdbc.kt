@@ -15,11 +15,10 @@ import java.util.*
 class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) : LagreTilstand {
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
-    private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun lagreTilkjentYtelseForUtbetaling(behandlingId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
-        val sql = "insert into iverksett_resultat values(:behandlingId, null, :tilkjentYtelseForUtbetaling::json, null)"
 
+        val sql = "insert into iverksett_resultat values(:behandlingId, :tilkjentYtelseForUtbetaling::json, null, null)"
         val tilkjentYtelseForUtbetalingJson = objectMapper.writeValueAsString(tilkjentYtelseForUtbetaling)
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
             .addValue("tilkjentYtelseForUtbetaling", tilkjentYtelseForUtbetalingJson)
@@ -27,26 +26,26 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         } catch (ex: Exception) {
-            secureLogger.error("Kunne ikke lagre tilkjentYtelseForUtbetaling til basen, behandlingID = ${behandlingId}, tilkjentYtelseForUtbetaling = ${tilkjentYtelseForUtbetaling}")
+            secureLogger.error(
+                "Kunne ikke lagre tilkjentYtelseForUtbetaling til basen, behandlingID = ${behandlingId}, " +
+                        "tilkjentYtelseForUtbetaling = ${tilkjentYtelseForUtbetaling}"
+            )
             throw Exception("Feil ved lagring av tilkjent ytelse")
         }
     }
 
     override fun oppdaterOppdragResultat(behandlingId: UUID, oppdragResultat: OppdragResultat) {
-
         val sql =
             "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultatJson::json where behandling_id = :behandlingId"
 
         val oppdragResultatJson = objectMapper.writeValueAsString(oppdragResultat)
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
             .addValue("oppdragResultatJson", oppdragResultatJson)
-        try {
-            namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
-        } catch (ex: Exception) {
-            logger.error("Kunne ikke lagre oppdragResultatJson til basen, behandlingID : ${behandlingId}, oppdragResultatJson : ${oppdragResultatJson}")
-            throw Exception("Feil ved lagring av oppdragsresultat = ${oppdragResultat}")
-        }
+
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
+            ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, oppdragResultatJson : ${oppdragResultatJson}")
     }
+
 
     override fun oppdaterJournalpostResultat(behandlingId: UUID, journalPostResultat: JournalpostResultat) {
 
@@ -56,12 +55,8 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
             .addValue("journalpostResultat", journalPostResultatJson)
 
-        try {
-            namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
-        } catch (ex: Exception) {
-            logger.error("Kunne ikke lagre journalPostResultatJson til basen, behandlingID : ${behandlingId}, journalPostResultatJson : ${journalPostResultatJson}")
-            throw Exception("Feil ved lagring av journalpost resultat : ${journalPostResultat}")
-        }
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
+            ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId},journalPostResultatJson : ${journalPostResultatJson}")
     }
 
     override fun oppdaterDistribuerVedtaksbrevResultat(
@@ -74,13 +69,9 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
             .addValue("distribuerVedtaksbrevResultatJson", distribuerVedtaksbrevResultatJson)
 
-        try {
-            namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
-        } catch (ex: Exception) {
-            logger.error("Kunne ikke lagre journalPostResultatJson til basen, behandlingID : ${behandlingId}, journalPostResultatJson : ${distribuerVedtaksbrevResultatJson}")
-            throw Exception("Feil ved lagring av vedtaksbrev resultat : ${distribuerVedtaksbrevResultat}")
-        }
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
+            ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, " +
+                             "distribuerVedtaksbrevResultatJson : ${distribuerVedtaksbrevResultatJson}")
     }
-
 
 }

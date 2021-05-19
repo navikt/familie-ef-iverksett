@@ -1,15 +1,17 @@
-package no.nav.familie.ef.iverksett.tilstand
+package no.nav.familie.ef.iverksett.tilstand.lagre
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.domene.*
-import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandJdbc
+import no.nav.familie.ef.iverksett.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.LocalDate
 import java.util.*
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class LagreTilstandJdbcTest : ServerTest() {
 
     @Autowired
@@ -18,26 +20,11 @@ internal class LagreTilstandJdbcTest : ServerTest() {
     val behandlingsId = UUID.randomUUID()
     val journalpostId = UUID.randomUUID()
 
+    val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
+
     @BeforeEach
     fun beforeEach() {
-        val tilkjentYtelse = TilkjentYtelse(
-            id = behandlingsId,
-            utbetalingsoppdrag = null,
-            andelerTilkjentYtelse = listOf(
-                AndelTilkjentYtelse(
-                    periodebeløp = Periodebeløp(
-                        beløp = 100,
-                        Periodetype.MÅNED,
-                        fraOgMed = LocalDate.now(),
-                        tilOgMed = LocalDate.now().plusMonths(1)
-                    ),
-                    periodeId = 1L,
-                    forrigePeriodeId = 1L,
-                    kildeBehandlingId = behandlingsId
-                )
-            )
-        )
-        lagreTilstandServiceJdbc.lagreTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
+       lagreTilstandServiceJdbc.lagreTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
     }
 
     @Test
@@ -63,5 +50,14 @@ internal class LagreTilstandJdbcTest : ServerTest() {
             behandlingsId,
             DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
         )
+    }
+
+    @Test
+    fun `oppdater distribuerVedtaksbrev med feil behandlingId, forvent IllegalStateException`() {
+        assertThrows<IllegalStateException> {
+            lagreTilstandServiceJdbc.oppdaterDistribuerVedtaksbrevResultat(
+            UUID.randomUUID(),
+            DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
+        )}
     }
 }

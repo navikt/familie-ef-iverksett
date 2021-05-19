@@ -5,5 +5,5 @@ import java.util.*
 
 interface HentTilstand {
 
-    fun hentTilkjentYtelse(behandlingId: UUID) : TilkjentYtelse
+    fun hentTilkjentYtelse(behandlingId: UUID): TilkjentYtelse?
 }
