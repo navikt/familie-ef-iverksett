@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.journalføring
 
 import no.nav.familie.ef.iverksett.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
+import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
@@ -48,12 +49,10 @@ class JournalførVedtaksbrevTask(val hentIverksettService: HentIverksettService,
         lagreTilstandService.lagreJournalPostResultat(behandlingId = behandlingId,
                                                       JournalpostResultat(journalpostId = journalpostId)
         )
-
-        lagDistribuerVedtaksbrevTask(behandlingId, journalpostId)
     }
 
-    private fun lagDistribuerVedtaksbrevTask(behandlingId: UUID, journalpostId: String) {
-        taskRepository.save(DistribuerVedtaksbrevTask.opprettTask(behandlingId, journalpostId))
+    override fun onCompletion(task: Task) {
+        taskRepository.save(task.opprettNesteTask())
     }
 
     companion object {
