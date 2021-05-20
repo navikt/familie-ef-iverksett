@@ -2,14 +2,6 @@ package no.nav.familie.ef.iverksett.domene
 
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import java.time.LocalDateTime
-import java.util.*
-
-data class IverksettResultat(
-    val behandlingId: UUID,
-    val tilkjentYtelseForUtbetaling: TilkjentYtelse,
-    val oppdragResultat: OppdragResultat? = null,
-    val journalpostResultat: JournalpostResultat? = null
-)
 
 data class JournalpostResultat(
     val journalpostId: String,
