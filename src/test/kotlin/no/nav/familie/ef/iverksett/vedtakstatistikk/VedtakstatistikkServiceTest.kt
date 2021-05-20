@@ -40,7 +40,6 @@ class VedtakstatistikkServiceTest {
     @Test
     internal fun `vedtakstatistikk skal kalle kafka producer med riktig data`() {
         val behandlingId = UUID.randomUUID()
-        val tidspunktVedtak = LocalDate.now()
 
         val behandlingDvhSlot = slot<BehandlingDVH>()
         every { vedtakstatistikkKafkaProducer.sendVedtak(capture(behandlingDvhSlot)) } just Runs
@@ -51,8 +50,7 @@ class VedtakstatistikkServiceTest {
 
         val behandlingDVH = opprettBehandlingDVH(behandlingId = behandlingId.toString(),
                                                  fagsakId = iverksett.fagsak.fagsakId.toString(),
-                                                 tidspunktVedtak = iverksett.vedtak.vedtaksdato,
-                                                 aktivitetspliktInntrefferDato = tidspunktVedtak)
+                                                 tidspunktVedtak = iverksett.vedtak.vedtaksdato)
         assertThat(behandlingDVH).isEqualTo(behandlingDvhSlot.captured)
     }
 
@@ -75,8 +73,7 @@ class VedtakstatistikkServiceTest {
 
     private fun opprettBehandlingDVH(behandlingId: String,
                                      fagsakId: String,
-                                     tidspunktVedtak: LocalDate,
-                                     aktivitetspliktInntrefferDato: LocalDate): BehandlingDVH {
+                                     tidspunktVedtak: LocalDate): BehandlingDVH {
         return BehandlingDVH(fagsakId = fagsakId,
                              saksnummer = "1",
                              behandlingId = behandlingId,
