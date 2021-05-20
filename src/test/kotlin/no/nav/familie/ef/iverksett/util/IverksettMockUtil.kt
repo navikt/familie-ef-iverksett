@@ -90,8 +90,8 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                                                   periodeId = 1)
     val tilkjentYtelse = TilkjentYtelse(
             id = UUID.randomUUID(),
+            utbetalingsoppdrag = null,
             status = TilkjentYtelseStatus.AKTIV,
-            type = TilkjentYtelseType.ENDRING,
             andelerTilkjentYtelse = listOf(andelTilkjentYtelse)
     )
 
@@ -106,7 +106,7 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                                              relatertBehandlingId = null,
                                              vilkårsvurderinger = emptyList()),
             søker = Søker(aktivitetskrav = Aktivitetskrav(
-                    aktivitetspliktInntreffer = LocalDate.of(2021, 5, 1),
+                    aktivitetspliktInntrefferDato = LocalDate.of(2021, 5, 1),
                     harSagtOppArbeidsforhold = false),
                           personIdent = "12345678910",
                           barn = emptyList(),

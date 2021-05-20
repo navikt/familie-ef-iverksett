@@ -53,7 +53,7 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
                                  Inntekt(mapTilPeriodeBeløp(inntekt.periodebeløp),
                                          inntekt.inntektstype?.let {Inntektstype.valueOf(it.name) } ?: Inntektstype.ARBEIDINNTEKT)
                              },
-                             aktivitetskrav = Aktivitetskrav(iverksett.søker.aktivitetskrav.aktivitetspliktInntreffer,
+                             aktivitetskrav = Aktivitetskrav(iverksett.søker.aktivitetskrav.aktivitetspliktInntrefferDato,
                                                              iverksett.søker.aktivitetskrav.harSagtOppArbeidsforhold),
                              funksjonellId = iverksett.behandling.eksternId.toString())
 

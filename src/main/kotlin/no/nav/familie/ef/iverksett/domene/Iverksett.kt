@@ -48,7 +48,7 @@ data class Behandlingsdetaljer(
         )
 
 data class Aktivitetskrav(
-    val aktivitetspliktInntreffer: LocalDate,
+    val aktivitetspliktInntrefferDato: LocalDate,
     val harSagtOppArbeidsforhold: Boolean
 )
 

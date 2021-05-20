@@ -1,11 +1,16 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
+import no.nav.familie.ef.iverksett.domene.VilkårType
+import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
+import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
@@ -20,6 +25,7 @@ import no.nav.familie.eksterne.kontrakter.ef.Person
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
+import no.nav.familie.kontrakter.felles.objectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -48,6 +54,23 @@ class VedtakstatistikkServiceTest {
                                                  tidspunktVedtak = iverksett.vedtak.vedtaksdato,
                                                  aktivitetspliktInntrefferDato = tidspunktVedtak)
         assertThat(behandlingDVH).isEqualTo(behandlingDvhSlot.captured)
+    }
+
+    @Test
+    internal fun `map fra iverksettDtoEksempel til behandlingDVH`() {
+        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
+
+        val iverksettDto = objectMapper.readValue<IverksettDto>(json)
+        val iverksett = iverksettDto.toDomain()
+
+        val behandlingDvhSlot = slot<BehandlingDVH>()
+        every { vedtakstatistikkKafkaProducer.sendVedtak(capture(behandlingDvhSlot)) } just Runs
+        vedtakstatistikkService.sendTilKafka(iverksett)
+
+        assertThat(behandlingDvhSlot.captured).isNotNull
+        assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.size).isEqualTo(1)
+        //Egen test på vilkårtype, da det er mismatch mellom ekstern kontrakt og ef. F.eks. finnes ikke aktivitet i kontrakt.
+        assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.first().vilkår.name).isEqualTo(VilkårType.SIVILSTAND.name)
     }
 
     private fun opprettBehandlingDVH(behandlingId: String,
