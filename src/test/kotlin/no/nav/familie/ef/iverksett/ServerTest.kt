@@ -11,6 +11,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.ApplicationContext
 import org.springframework.http.HttpHeaders
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -26,17 +28,23 @@ abstract class ServerTest {
 
     @Autowired
     private lateinit var applicationContext: ApplicationContext
+    @Autowired
+    private lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
 
     @LocalServerPort
     private var port: Int? = 0
 
     @AfterEach
     fun reset() {
+        resetDatabase()
         resetWiremockServers()
     }
 
     private fun resetWiremockServers() {
         applicationContext.getBeansOfType(WireMockServer::class.java).values.forEach(WireMockServer::resetRequests)
+    }
+    private fun resetDatabase(){
+        namedParameterJdbcTemplate.update("truncate table brev, iverksett, iverksett_resultat cascade", MapSqlParameterSource())
     }
 
     protected fun getPort(): String {
