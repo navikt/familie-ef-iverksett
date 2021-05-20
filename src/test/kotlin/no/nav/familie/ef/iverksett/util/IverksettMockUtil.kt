@@ -125,3 +125,24 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
 fun opprettBrev(): Brev {
     return Brev(UUID.fromString("234bed7c-b1d3-11eb-8529-0242ac130003"), ByteArray(256))
 }
+
+fun opprettTilkjentYtelse(behandlingId: UUID): TilkjentYtelse {
+
+    return TilkjentYtelse(
+        id = behandlingId,
+        utbetalingsoppdrag = null,
+        andelerTilkjentYtelse = listOf(
+            AndelTilkjentYtelse(
+                periodebeløp = Periodebeløp(
+                    beløp = 100,
+                    Periodetype.MÅNED,
+                    fraOgMed = LocalDate.now(),
+                    tilOgMed = LocalDate.now().plusMonths(1)
+                ),
+                periodeId = 1L,
+                forrigePeriodeId = 1L,
+                kildeBehandlingId = UUID.randomUUID()
+            )
+        )
+    )
+}

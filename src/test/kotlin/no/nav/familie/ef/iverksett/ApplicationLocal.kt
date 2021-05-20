@@ -13,6 +13,8 @@ fun main(args: Array<String>) {
 
     SpringApplicationBuilder(ApplicationConfig::class.java)
         .initializers(DbContainerInitializer())
-        .profiles("local")
+        .profiles("local",
+                  "mock-integrasjoner",
+                  "mock-oppdrag")
         .run(*args)
 }

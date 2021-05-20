@@ -6,6 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
+import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.prosessering.domene.Task
@@ -21,12 +22,14 @@ internal class IverksettMotOppdragTaskTest {
     val oppdragClient = mockk<OppdragClient>()
     val taskRepository = mockk<TaskRepository>()
     val hentIverksettService = mockk<HentIverksettService>()
+    val lagreTilstandService = mockk<LagreTilstandService>()
     val behandlingId = UUID.randomUUID()
     val iverksettMotOppdragTask =
         IverksettMotOppdragTask(
             hentIverksettService = hentIverksettService,
             oppdragClient = oppdragClient,
-            taskRepository = taskRepository
+            taskRepository = taskRepository,
+            lagreTilstandService = lagreTilstandService
         )
 
     @BeforeEach
@@ -38,8 +41,11 @@ internal class IverksettMotOppdragTaskTest {
     internal fun `skal sende utbetaling til oppdrag`() {
         val oppdragSlot = slot<Utbetalingsoppdrag>()
         every { oppdragClient.iverksettOppdrag(capture(oppdragSlot)) } returns "abc"
+        every { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
+
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
         verify(exactly = 1) { oppdragClient.iverksettOppdrag(any()) }
+        verify(exactly = 1) { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId, any()) }
         assertThat(oppdragSlot.captured.fagSystem).isEqualTo("EFOG")
         assertThat(oppdragSlot.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.NY)
     }

@@ -1,0 +1,1 @@
+alter table brev drop column journalpost_id
