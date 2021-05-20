@@ -57,8 +57,7 @@ internal class LagreTilstandJdbcTest : ServerTest() {
         lagreTilstandServiceJdbc.oppdaterJournalpostResultat(
             behandlingsId,
             JournalpostResultat(
-                journalpostId = journalpostId.toString(),
-                bestillingId = journalpostId.toString()
+                journalpostId = journalpostId.toString()
             )
         )
     }
@@ -68,7 +67,7 @@ internal class LagreTilstandJdbcTest : ServerTest() {
     fun `oppdater distribuerVedtaksbrev, forvent ingen unntak`() {
         lagreTilstandServiceJdbc.oppdaterDistribuerVedtaksbrevResultat(
             behandlingsId,
-            DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
+            DistribuerVedtaksbrevResultat(bestillingId = "12345")
         )
     }
 }

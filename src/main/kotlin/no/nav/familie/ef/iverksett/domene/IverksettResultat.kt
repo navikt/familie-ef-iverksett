@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.domene
 
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import java.time.LocalDateTime
 import java.util.*
@@ -14,8 +13,7 @@ data class IverksettResultat(
 
 data class JournalpostResultat(
     val journalpostId: String,
-    val journalført: LocalDateTime = LocalDateTime.now(),
-    val bestillingId: String? = null
+    val journalført: LocalDateTime = LocalDateTime.now()
 )
 
 data class OppdragResultat(val oppdragStatus: OppdragStatus, val oppdragStatusOppdatert: LocalDateTime = LocalDateTime.now())
