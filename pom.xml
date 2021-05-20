@@ -28,7 +28,7 @@
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.WebApplicationKt</start-class>
         <felles-kontrakter.version>2.0_20210506101703_8c0e695</felles-kontrakter.version>
-        <familie.kontrakter.stonadsstatistikk-ef>2.0_20210506161536_e1e5da8</familie.kontrakter.stonadsstatistikk-ef>
+        <familie.kontrakter.stonadsstatistikk-ef>2.0_20210520150847_3c00370</familie.kontrakter.stonadsstatistikk-ef>
         <token-validation-spring.version>1.3.5</token-validation-spring.version>
     </properties>
 

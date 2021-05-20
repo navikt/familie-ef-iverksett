@@ -66,5 +66,5 @@ management:
          info: "isAlive"
 
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.prod-fss-pub.nais.io
-ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.ensligforsorger-vedtak.v1
+ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-test
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.prod-fss-pub.nais.io

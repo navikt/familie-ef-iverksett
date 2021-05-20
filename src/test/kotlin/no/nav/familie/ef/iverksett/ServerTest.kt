@@ -1,16 +1,22 @@
 package no.nav.familie.ef.iverksett
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import io.mockk.mockk
 import no.nav.familie.ef.iverksett.infrastruktur.database.DbContainerInitializer
 import no.nav.familie.ef.iverksett.util.onBehalfOfToken
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.ApplicationContext
+import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpHeaders
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.ActiveProfiles
