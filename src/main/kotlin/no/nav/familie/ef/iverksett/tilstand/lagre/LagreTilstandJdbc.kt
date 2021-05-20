@@ -36,11 +36,11 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
 
     override fun oppdaterOppdragResultat(behandlingId: UUID, oppdragResultat: OppdragResultat) {
         val sql =
-            "update iverksett_resultat set tilkjentYtelseForUtbetaling = :oppdragResultatJson::json where behandling_id = :behandlingId"
+            "update iverksett_resultat set oppdragResultat = :oppdragResultat::json where behandling_id = :behandlingId"
 
         val oppdragResultatJson = objectMapper.writeValueAsString(oppdragResultat)
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-            .addValue("oppdragResultatJson", oppdragResultatJson)
+            .addValue("oppdragResultat", oppdragResultatJson)
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
             ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, oppdragResultatJson : ${oppdragResultatJson}")
