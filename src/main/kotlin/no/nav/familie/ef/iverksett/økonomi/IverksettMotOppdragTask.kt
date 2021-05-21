@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.domene.toMedMetadata
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
+import no.nav.familie.ef.iverksett.tilstand.hent.HentTilstandService
 import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -20,13 +21,14 @@ import java.util.*
 class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService,
                               val oppdragClient: OppdragClient,
                               val taskRepository: TaskRepository,
-                              val lagreTilstandService: LagreTilstandService
+                              val lagreTilstandService: LagreTilstandService,
+                              val hentTilstandService: HentTilstandService
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = hentIverksettService.hentIverksett(behandlingId)
-        val forrigeTilkjentYtelse = null // TODO: Hent ut forrigeTilkjentYtelse fra lokal DB
+        val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let { hentTilstandService.hentTilkjentYtelse(it) }
         val utbetaling = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
             iverksett.vedtak.tilkjentYtelse.toMedMetadata(saksbehandlerId = iverksett.vedtak.saksbehandlerId,
                                                           eksternBehandlingId = iverksett.behandling.eksternId,
