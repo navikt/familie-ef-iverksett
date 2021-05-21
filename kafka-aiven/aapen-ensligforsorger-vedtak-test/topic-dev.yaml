@@ -17,7 +17,7 @@ spec:
   acl:
     - team: teamfamilie
       application: familie-ef-iverksett
-      access: write
+      access: readwrite
     - team: dv-familie
       application: dvh-famef-konsumer
       access: read
