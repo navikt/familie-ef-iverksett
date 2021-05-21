@@ -5,47 +5,47 @@ import java.time.LocalDate
 import java.util.*
 
 data class Iverksett(
-        val fagsak: Fagsakdetaljer,
-        val behandling: Behandlingsdetaljer,
-        val søker: Søker,
-        val vedtak: Vedtaksdetaljer,
+    val fagsak: Fagsakdetaljer,
+    val behandling: Behandlingsdetaljer,
+    val søker: Søker,
+    val vedtak: Vedtaksdetaljer,
 )
 
 data class Fagsakdetaljer(
-        val fagsakId: UUID,
-        val eksternId: Long,
-        val stønadstype: StønadType
+    val fagsakId: UUID,
+    val eksternId: Long,
+    val stønadstype: StønadType
 )
 
 data class Søker(
-        val aktivitetskrav: Aktivitetskrav,
-        val personIdent: String,
-        val barn: List<Barn> = ArrayList(),
-        val tilhørendeEnhet: String,
-        val kode6eller7: Boolean,
+    val aktivitetskrav: Aktivitetskrav,
+    val personIdent: String,
+    val barn: List<Barn> = ArrayList(),
+    val tilhørendeEnhet: String,
+    val kode6eller7: Boolean,
 )
 
 data class Vedtaksdetaljer(
-        val vedtak: Vedtak,
-        val vedtaksdato: LocalDate,
-        val opphørÅrsak: OpphørÅrsak?,
-        val saksbehandlerId: String,
-        val beslutterId: String,
-        val tilkjentYtelse: TilkjentYtelse,
-        val inntekter: List<Inntekt>
+    val vedtak: Vedtak,
+    val vedtaksdato: LocalDate,
+    val opphørÅrsak: OpphørÅrsak?,
+    val saksbehandlerId: String,
+    val beslutterId: String,
+    val tilkjentYtelse: TilkjentYtelse,
+    val inntekter: List<Inntekt>
 )
 
 data class Behandlingsdetaljer(
-        val forrigeBehandlingId: UUID? = null,
-        val behandlingId: UUID,
-        val eksternId: Long,
-        val behandlingType: BehandlingType,
-        val behandlingÅrsak: BehandlingÅrsak,
-        val behandlingResultat: BehandlingResultat,
-        val relatertBehandlingId: UUID? = null,
-        val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
+    val forrigeBehandlingId: UUID? = null,
+    val behandlingId: UUID,
+    val eksternId: Long,
+    val behandlingType: BehandlingType,
+    val behandlingÅrsak: BehandlingÅrsak,
+    val behandlingResultat: BehandlingResultat,
+    val relatertBehandlingId: UUID? = null,
+    val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
 
-        )
+    )
 
 data class Aktivitetskrav(
     val aktivitetspliktInntrefferDato: LocalDate,
@@ -135,4 +135,12 @@ enum class BehandlingResultat {
 
 enum class OpphørÅrsak {
     PERIODE_UTLØPT
+}
+
+enum class IverksettStatus {
+    SENDT_TIL_OPPDRAG,
+    FEILET_MOT_OPPDRAG,
+    OK_MOT_OPPDRAG,
+    JOURNALFØRT,
+    DISTRIBUERT,
 }

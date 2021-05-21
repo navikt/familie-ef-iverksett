@@ -1,10 +1,11 @@
 package no.nav.familie.ef.iverksett.tilstand.hent
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.domene.*
 import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandJdbc
+import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
+import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -52,5 +53,19 @@ internal class HentTilstandJdbcTest : ServerTest() {
     fun `hent ikke-eksisterende journalpost resultat, forvent nullverdi i retur og ingen unntak`() {
         val hentetJournalpostResultat = hentTilstandJdbc.hentJournalpostResultat(UUID.randomUUID())
         assertThat(hentetJournalpostResultat).isEqualTo(null)
+    }
+
+    @Test
+    fun `lagre tilkjentYtelse, hent IverksettResultat med riktig behandlingsID`() {
+
+        val resultat = IverksettResultatMockBuilder.Builder()
+            .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
+            .journalPostResultat()
+            .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
+        lagreTilstandJdbc.oppdaterOppdragResultat(behandlingId, resultat.oppdragResultat!!)
+        lagreTilstandJdbc.oppdaterJournalpostResultat(behandlingId, resultat.journalpostResultat!!)
+        lagreTilstandJdbc.oppdaterDistribuerVedtaksbrevResultat(behandlingId, resultat.vedtaksbrevResultat!!)
+        val iverksettResultat = hentTilstandJdbc.hentIverksettResultat(behandlingId)
+        assertThat(iverksettResultat).isEqualTo(resultat)
     }
 }
