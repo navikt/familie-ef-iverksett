@@ -22,10 +22,11 @@ import java.util.*
     beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
 )
 
-class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettService,
-                                  val oppdragClient: OppdragClient,
-                                  val taskRepository: TaskRepository,
-                                  val lagreTilstandService: LagreTilstandService
+class VentePåStatusFraØkonomiTask(
+    val hentIverksettService: HentIverksettService,
+    val oppdragClient: OppdragClient,
+    val taskRepository: TaskRepository,
+    val lagreTilstandService: LagreTilstandService
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
@@ -38,8 +39,9 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
         )
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)
-        lagreTilstandService.lagreOppdragResultat(behandlingId = behandlingId,
-                                                  OppdragResultat(oppdragStatus = oppdragstatus)
+        lagreTilstandService.lagreOppdragResultat(
+            behandlingId = behandlingId,
+            OppdragResultat(oppdragStatus = oppdragstatus)
         )
         when (oppdragstatus) {
             OppdragStatus.KVITTERT_OK -> return
@@ -52,6 +54,7 @@ class VentePåStatusFraØkonomiTask(val hentIverksettService: HentIverksettServi
     }
 
     companion object {
+
         const val TYPE = "sjekkStatusPåOppdrag"
     }
 }
