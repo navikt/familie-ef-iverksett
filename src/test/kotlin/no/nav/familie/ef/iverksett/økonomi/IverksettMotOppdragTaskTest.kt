@@ -6,6 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
+import no.nav.familie.ef.iverksett.tilstand.hent.HentTilstandService
 import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
@@ -23,13 +24,15 @@ internal class IverksettMotOppdragTaskTest {
     val taskRepository = mockk<TaskRepository>()
     val hentIverksettService = mockk<HentIverksettService>()
     val lagreTilstandService = mockk<LagreTilstandService>()
+    val hentTilstandService = mockk<HentTilstandService>()
     val behandlingId = UUID.randomUUID()
     val iverksettMotOppdragTask =
         IverksettMotOppdragTask(
             hentIverksettService = hentIverksettService,
             oppdragClient = oppdragClient,
             taskRepository = taskRepository,
-            lagreTilstandService = lagreTilstandService
+            lagreTilstandService = lagreTilstandService,
+            hentTilstandService = hentTilstandService
         )
 
     @BeforeEach
@@ -42,7 +45,7 @@ internal class IverksettMotOppdragTaskTest {
         val oppdragSlot = slot<Utbetalingsoppdrag>()
         every { oppdragClient.iverksettOppdrag(capture(oppdragSlot)) } returns "abc"
         every { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
-
+        every { hentTilstandService.hentTilkjentYtelse(any()) } returns null
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
         verify(exactly = 1) { oppdragClient.iverksettOppdrag(any()) }
         verify(exactly = 1) { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId, any()) }
