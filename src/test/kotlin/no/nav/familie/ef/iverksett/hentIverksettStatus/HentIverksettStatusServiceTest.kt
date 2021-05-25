@@ -10,7 +10,7 @@ import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 
 internal class HentIverksettStatusServiceTest {
 
@@ -24,7 +24,7 @@ internal class HentIverksettStatusServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { hentTilstandService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
-            .build(behandlingsId, tilkjentYtelse)
+                .build(behandlingsId, tilkjentYtelse)
 
         val status = hentIverksettStatusService.utledStatus(behandlingsId)
         assertThat(status).isEqualTo(IverksettStatus.SENDT_TIL_OPPDRAG)
@@ -35,8 +35,8 @@ internal class HentIverksettStatusServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { hentTilstandService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
-            .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_FUNKSJONELL_FEIL))
-            .build(behandlingsId, tilkjentYtelse)
+                .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_FUNKSJONELL_FEIL))
+                .build(behandlingsId, tilkjentYtelse)
 
         val status = hentIverksettStatusService.utledStatus(behandlingsId)
         assertThat(status).isEqualTo(IverksettStatus.FEILET_MOT_OPPDRAG)
@@ -47,8 +47,8 @@ internal class HentIverksettStatusServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { hentTilstandService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
-            .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
-            .build(behandlingsId, tilkjentYtelse)
+                .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
+                .build(behandlingsId, tilkjentYtelse)
 
         val status = hentIverksettStatusService.utledStatus(behandlingsId)
         assertThat(status).isEqualTo(IverksettStatus.OK_MOT_OPPDRAG)
@@ -59,9 +59,9 @@ internal class HentIverksettStatusServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { hentTilstandService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
-            .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
-            .journalPostResultat()
-            .build(behandlingsId, tilkjentYtelse)
+                .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
+                .journalPostResultat()
+                .build(behandlingsId, tilkjentYtelse)
 
         val status = hentIverksettStatusService.utledStatus(behandlingsId)
         assertThat(status).isEqualTo(IverksettStatus.JOURNALFØRT)
@@ -72,12 +72,12 @@ internal class HentIverksettStatusServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { hentTilstandService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
-            .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
-            .journalPostResultat()
-            .vedtaksbrevResultat(behandlingsId).build(behandlingsId, tilkjentYtelse)
+                .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
+                .journalPostResultat()
+                .vedtaksbrevResultat(behandlingsId).build(behandlingsId, tilkjentYtelse)
 
         val status = hentIverksettStatusService.utledStatus(behandlingsId)
-        assertThat(status).isEqualTo(IverksettStatus.DISTRIBUERT)
+        assertThat(status).isEqualTo(IverksettStatus.OK)
     }
 
 

@@ -4,16 +4,16 @@ import no.nav.familie.ef.iverksett.domene.IverksettStatus
 import no.nav.familie.ef.iverksett.tilstand.hent.HentTilstandService
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class HentIverksettStatusService(val hentTilstandService: HentTilstandService) {
 
-    fun utledStatus(behandlingId: UUID): IverksettStatus {
+    fun utledStatus(behandlingId: UUID): IverksettStatus? {
         val iverksettResultat = hentTilstandService.hentIverksettResultat(behandlingId)
         iverksettResultat?.let {
             it.vedtaksbrevResultat?.let {
-                return IverksettStatus.DISTRIBUERT
+                return IverksettStatus.OK
             }
             it.journalpostResultat?.let {
                 return IverksettStatus.JOURNALFØRT
@@ -22,11 +22,15 @@ class HentIverksettStatusService(val hentTilstandService: HentTilstandService) {
                 if (it.oppdragStatus == OppdragStatus.KVITTERT_OK) {
                     return IverksettStatus.OK_MOT_OPPDRAG
                 }
+                if (it.oppdragStatus == OppdragStatus.LAGT_PÅ_KØ) {
+                    return IverksettStatus.SENDT_TIL_OPPDRAG
+                }
                 return IverksettStatus.FEILET_MOT_OPPDRAG
             }
             it.tilkjentYtelseForUtbetaling?.let {
                 return IverksettStatus.SENDT_TIL_OPPDRAG
             }
-        }
+            return IverksettStatus.IKKE_PÅBEGYNT
+        } ?: return null
     }
 }

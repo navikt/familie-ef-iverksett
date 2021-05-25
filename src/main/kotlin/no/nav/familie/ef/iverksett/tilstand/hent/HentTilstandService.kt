@@ -4,7 +4,7 @@ import no.nav.familie.ef.iverksett.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class HentTilstandService(val hentTilstand: HentTilstand) {
@@ -17,7 +17,7 @@ class HentTilstandService(val hentTilstand: HentTilstand) {
         return hentTilstand.hentJournalpostResultat(behandlingId)
     }
 
-    fun hentIverksettResultat(behandlingId: UUID): IverksettResultat {
+    fun hentIverksettResultat(behandlingId: UUID): IverksettResultat? {
         return hentTilstand.hentIverksettResultat(behandlingId)
     }
 }
