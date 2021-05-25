@@ -26,7 +26,8 @@ internal class HentTilstandJdbcTest : ServerTest() {
 
     @BeforeEach
     fun beforeEach() {
-        lagreTilstandJdbc.lagreTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
+        lagreTilstandJdbc.opprettTomtResultat(behandlingId)
+        lagreTilstandJdbc.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
     }
 
     @Test
@@ -62,6 +63,7 @@ internal class HentTilstandJdbcTest : ServerTest() {
             .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
             .journalPostResultat()
             .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
+        lagreTilstandJdbc.oppdaterTilkjentYtelseForUtbetaling(behandlingId, resultat.tilkjentYtelseForUtbetaling)
         lagreTilstandJdbc.oppdaterOppdragResultat(behandlingId, resultat.oppdragResultat!!)
         lagreTilstandJdbc.oppdaterJournalpostResultat(behandlingId, resultat.journalpostResultat!!)
         lagreTilstandJdbc.oppdaterDistribuerVedtaksbrevResultat(behandlingId, resultat.vedtaksbrevResultat!!)

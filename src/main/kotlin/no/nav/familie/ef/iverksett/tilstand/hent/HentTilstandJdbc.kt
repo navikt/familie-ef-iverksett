@@ -63,4 +63,6 @@ class HentTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplat
             return null
         }
     }
+
+
 }

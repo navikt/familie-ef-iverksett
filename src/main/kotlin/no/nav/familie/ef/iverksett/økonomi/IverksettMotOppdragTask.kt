@@ -3,13 +3,14 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.domene.toMedMetadata
 import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
+import no.nav.familie.ef.iverksett.tilstand.hent.HentTilstandService
 import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 
 @Service
@@ -20,29 +21,30 @@ import java.util.*
 class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService,
                               val oppdragClient: OppdragClient,
                               val taskRepository: TaskRepository,
-                              val lagreTilstandService: LagreTilstandService
+                              val lagreTilstandService: LagreTilstandService,
+                              val hentTilstandService: HentTilstandService
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = hentIverksettService.hentIverksett(behandlingId)
-        val forrigeTilkjentYtelse = null // TODO: Hent ut forrigeTilkjentYtelse fra lokal DB
+        val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let { hentTilstandService.hentTilkjentYtelse(it) }
         val utbetaling = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-            iverksett.vedtak.tilkjentYtelse.toMedMetadata(saksbehandlerId = iverksett.vedtak.saksbehandlerId,
-                                                          eksternBehandlingId = iverksett.behandling.eksternId,
-                                                          stønadType = iverksett.fagsak.stønadstype,
-                                                          eksternFagsakId = iverksett.fagsak.eksternId,
-                                                          personIdent = iverksett.søker.personIdent,
-                                                          behandlingId = iverksett.behandling.behandlingId,
-                                                          vedtaksdato = iverksett.vedtak.vedtaksdato
+                iverksett.vedtak.tilkjentYtelse.toMedMetadata(saksbehandlerId = iverksett.vedtak.saksbehandlerId,
+                                                              eksternBehandlingId = iverksett.behandling.eksternId,
+                                                              stønadType = iverksett.fagsak.stønadstype,
+                                                              eksternFagsakId = iverksett.fagsak.eksternId,
+                                                              personIdent = iverksett.søker.personIdent,
+                                                              behandlingId = iverksett.behandling.behandlingId,
+                                                              vedtaksdato = iverksett.vedtak.vedtaksdato
 
-            ),
-            forrigeTilkjentYtelse
+                ),
+                forrigeTilkjentYtelse
         )
 
         lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let { oppdragClient.iverksettOppdrag(it) }
-            ?: error("Utbetalingsoppdrag mangler for iverksetting")
+        ?: error("Utbetalingsoppdrag mangler for iverksetting")
     }
 
     override fun onCompletion(task: Task) {
@@ -50,6 +52,7 @@ class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService,
     }
 
     companion object {
+
         const val TYPE = "utførIverksettingAvUtbetaling"
     }
 }
