@@ -17,7 +17,7 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     override fun opprettTomtResultat(behandlingId: UUID) {
-        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL)"
+        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL)"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         try {
             namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
