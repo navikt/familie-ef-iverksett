@@ -6,7 +6,7 @@ import java.util.*
 
 data class IverksettResultat(
     val behandlingId: UUID,
-    val tilkjentYtelseForUtbetaling: TilkjentYtelse,
+    val tilkjentYtelseForUtbetaling: TilkjentYtelse?,
     val oppdragResultat: OppdragResultat? = null,
     val journalpostResultat: JournalpostResultat? = null,
     val vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null
