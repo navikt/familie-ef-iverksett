@@ -21,7 +21,7 @@ class HentIverksettStatusController(
 ) {
 
     @GetMapping("/hentstatus/{behandlingId}")
-    fun hentStatus(@PathVariable behandlingId: String): IverksettStatus {
-        return hentIverksettStatusService.utledStatus(UUID.fromString(behandlingId))
+    fun hentStatus(@PathVariable behandlingId: UUID): IverksettStatus {
+        return hentIverksettStatusService.utledStatus(behandlingId)
     }
 }
