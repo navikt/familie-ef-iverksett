@@ -1,8 +1,8 @@
-package no.nav.familie.ef.iverksett.iverksett.hent.tjeneste
+package no.nav.familie.ef.iverksett.iverksett.hent
 
 import no.nav.familie.ef.iverksett.iverksett.Brev
 import no.nav.familie.ef.iverksett.iverksett.Iverksett
-import no.nav.familie.ef.iverksett.iverksett.hent.infrastruktur.HentIverksettJdbc
+import no.nav.familie.ef.iverksett.iverksett.hent.HentIverksettJdbc
 import org.springframework.stereotype.Service
 import java.util.UUID
 

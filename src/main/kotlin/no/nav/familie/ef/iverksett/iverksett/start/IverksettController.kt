@@ -1,9 +1,8 @@
-package no.nav.familie.ef.iverksett.iverksett.start.infrastruktur
+package no.nav.familie.ef.iverksett.iverksett.start
 
 import no.nav.familie.ef.iverksett.iverksett.Brev
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
-import no.nav.familie.ef.iverksett.iverksett.start.tjeneste.IverksettService
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType

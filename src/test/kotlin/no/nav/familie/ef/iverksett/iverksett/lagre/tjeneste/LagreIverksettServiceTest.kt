@@ -6,7 +6,8 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
-import no.nav.familie.ef.iverksett.iverksett.lagre.infrastruktur.LagreIverksettJdbc
+import no.nav.familie.ef.iverksett.iverksett.lagre.LagreIverksettJdbc
+import no.nav.familie.ef.iverksett.iverksett.lagre.LagreIverksettService
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import org.junit.jupiter.api.BeforeEach

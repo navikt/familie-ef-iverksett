@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.iverksett.lagre.infrastruktur
+package no.nav.familie.ef.iverksett.iverksett.lagre
 
 import no.nav.familie.ef.iverksett.iverksett.Brev
 import no.nav.familie.ef.iverksett.iverksett.Iverksett

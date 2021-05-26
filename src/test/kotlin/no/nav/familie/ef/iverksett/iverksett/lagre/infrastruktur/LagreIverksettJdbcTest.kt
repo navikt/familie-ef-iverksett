@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
+import no.nav.familie.ef.iverksett.iverksett.lagre.LagreIverksettJdbc
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.kontrakter.felles.objectMapper
 import org.junit.jupiter.api.Test

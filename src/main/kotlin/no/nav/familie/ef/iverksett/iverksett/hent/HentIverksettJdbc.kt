@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.iverksett.hent.infrastruktur
+package no.nav.familie.ef.iverksett.iverksett.hent
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.iverksett.Brev
