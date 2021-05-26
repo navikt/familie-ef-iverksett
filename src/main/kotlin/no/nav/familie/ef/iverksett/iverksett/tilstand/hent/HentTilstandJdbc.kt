@@ -1,12 +1,10 @@
 package no.nav.familie.ef.iverksett.iverksett.tilstand.hent
 
-import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.familie.ef.iverksett.iverksett.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksett.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksett.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksett.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.ef.iverksett.util.getJson
+import no.nav.familie.ef.iverksett.util.queryForJson
 import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
@@ -24,9 +22,7 @@ class HentTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplat
         val sql = "SELECT tilkjentytelseforutbetaling FROM iverksett_resultat WHERE behandling_id = :behandlingId"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         try {
-            val tilkjentYtelseJson =
-                    namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource, String::class.java)!!
-            return objectMapper.readValue<TilkjentYtelse>(tilkjentYtelseJson)
+            return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)!!
         } catch (emptyResultDataAccess: EmptyResultDataAccessException) {
             logger.error("Kunne ikke finne tilkjent ytelse for utbetaling fra basen med behandlingID = ${behandlingId} (nullverdi)")
             return null
@@ -37,9 +33,7 @@ class HentTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplat
         val sql = "SELECT journalpostresultat FROM iverksett_resultat WHERE behandling_id = :behandlingId"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         try {
-            val journalpostResultat =
-                    namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource, String::class.java)!!
-            return objectMapper.readValue<JournalpostResultat>(journalpostResultat)
+            return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)!!
         } catch (emptyResultDataAccess: EmptyResultDataAccessException) {
             logger.error("Kunne ikke finne journalpost for behandlingID = ${behandlingId}")
             return null
@@ -53,10 +47,10 @@ class HentTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplat
             return namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource) { rs: ResultSet, _: Int ->
                 IverksettResultat(
                         UUID.fromString(rs.getString("behandling_id")),
-                        objectMapper.readValue<TilkjentYtelse>(rs.getString("tilkjentYtelseForUtbetaling")),
-                        rs.getString("oppdragResultat")?.let { objectMapper.readValue<OppdragResultat>(it) },
-                        rs.getString("journalpostResultat")?.let { objectMapper.readValue<JournalpostResultat>(it) },
-                        rs.getString("vedtaksBrevResultat")?.let { objectMapper.readValue<DistribuerVedtaksbrevResultat>(it) })
+                        rs.getJson("tilkjentYtelseForUtbetaling"),
+                        rs.getJson("oppdragResultat"),
+                        rs.getJson("journalpostResultat"),
+                        rs.getJson("vedtaksBrevResultat"))
             }!!
         } catch (ex: EmptyResultDataAccessException) {
             logger.info("Kunne ikke hente IverksettResultat for behandlingId=${behandlingId}")
