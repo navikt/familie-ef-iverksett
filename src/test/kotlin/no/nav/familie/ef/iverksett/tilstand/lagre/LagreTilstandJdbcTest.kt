@@ -24,7 +24,13 @@ internal class LagreTilstandJdbcTest : ServerTest() {
 
     @BeforeEach
     fun beforeEach() {
-       lagreTilstandServiceJdbc.lagreTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
+       lagreTilstandServiceJdbc.opprettTomtResultat(behandlingsId)
+    }
+
+    @Test
+    fun `oppdater tilkjent ytelse, forvent ingen unntak`() {
+        val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
+        lagreTilstandServiceJdbc.oppdaterTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
     }
 
     @Test

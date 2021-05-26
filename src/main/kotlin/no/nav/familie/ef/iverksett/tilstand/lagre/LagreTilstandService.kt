@@ -5,20 +5,27 @@ import no.nav.familie.ef.iverksett.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class LagreTilstandService(val lagreTilstand: LagreTilstand) {
 
+    fun opprettTomtResultat(behandlingId: UUID) {
+        lagreTilstand.opprettTomtResultat(behandlingId)
+    }
+
     fun lagreJournalPostResultat(behandlingId: UUID, journalPostResultatJson: JournalpostResultat) {
         lagreTilstand.oppdaterJournalpostResultat(behandlingId, journalPostResultatJson)
     }
+
     fun lagreOppdragResultat(behandlingId: UUID, oppdragResultatJson: OppdragResultat) {
         lagreTilstand.oppdaterOppdragResultat(behandlingId, oppdragResultatJson)
     }
+
     fun lagreTilkjentYtelseForUtbetaling(behandlingId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
-        lagreTilstand.lagreTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelseForUtbetaling)
+        lagreTilstand.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelseForUtbetaling)
     }
+
     fun lagreDistribuerVedtaksbrevResultat(behandlingId: UUID, distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat) {
         lagreTilstand.oppdaterDistribuerVedtaksbrevResultat(behandlingId, distribuerVedtaksbrevResultat)
     }

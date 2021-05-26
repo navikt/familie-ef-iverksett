@@ -2,7 +2,8 @@ package no.nav.familie.ef.iverksett.domene
 
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import java.time.LocalDate
-import java.util.*
+import java.util.ArrayList
+import java.util.UUID
 
 data class Iverksett(
         val fagsak: Fagsakdetaljer,
@@ -48,25 +49,25 @@ data class Behandlingsdetaljer(
         )
 
 data class Aktivitetskrav(
-    val aktivitetspliktInntrefferDato: LocalDate,
-    val harSagtOppArbeidsforhold: Boolean
+        val aktivitetspliktInntrefferDato: LocalDate,
+        val harSagtOppArbeidsforhold: Boolean
 )
 
 data class Vilkårsvurdering(
-    val vilkårType: VilkårType,
-    val resultat: Vilkårsresultat,
-    val delvilkårsvurderinger: List<Delvilkårsvurdering> = emptyList()
+        val vilkårType: VilkårType,
+        val resultat: Vilkårsresultat,
+        val delvilkårsvurderinger: List<Delvilkårsvurdering> = emptyList()
 )
 
 data class Delvilkårsvurdering(
-    val resultat: Vilkårsresultat,
-    val vurderinger: List<Vurdering> = emptyList()
+        val resultat: Vilkårsresultat,
+        val vurderinger: List<Vurdering> = emptyList()
 )
 
 data class Vurdering(
-    val regelId: RegelId,
-    val svar: SvarId? = null,
-    val begrunnelse: String? = null
+        val regelId: RegelId,
+        val svar: SvarId? = null,
+        val begrunnelse: String? = null
 )
 
 enum class Vilkårsresultat(val beskrivelse: String) {
@@ -135,4 +136,13 @@ enum class BehandlingResultat {
 
 enum class OpphørÅrsak {
     PERIODE_UTLØPT
+}
+
+enum class IverksettStatus {
+    SENDT_TIL_OPPDRAG,
+    FEILET_MOT_OPPDRAG,
+    OK_MOT_OPPDRAG,
+    JOURNALFØRT,
+    OK,
+    IKKE_PÅBEGYNT
 }
