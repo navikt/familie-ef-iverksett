@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
-import no.nav.familie.ef.iverksett.domene.Periodebeløp
-import no.nav.familie.ef.iverksett.domene.Periodetype
+import no.nav.familie.ef.iverksett.iverksett.Periodebeløp
+import no.nav.familie.ef.iverksett.iverksett.Periodetype
 import java.time.LocalDate
 
 data class PeriodebeløpDto(

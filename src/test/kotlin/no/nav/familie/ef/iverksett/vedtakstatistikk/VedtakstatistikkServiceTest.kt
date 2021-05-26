@@ -8,7 +8,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
-import no.nav.familie.ef.iverksett.domene.VilkårType
+import no.nav.familie.ef.iverksett.iverksett.VilkårType
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.util.opprettIverksett

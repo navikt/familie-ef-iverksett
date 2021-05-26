@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelse
 
 data class TilkjentYtelseDto(
     val andelerTilkjentYtelse: List<AndelTilkjentYtelseDto>

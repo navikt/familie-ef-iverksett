@@ -1,6 +1,11 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.domene.*
+import no.nav.familie.ef.iverksett.iverksett.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.Periodebeløp
+import no.nav.familie.ef.iverksett.iverksett.Periodetype
+import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelseStatus
 import no.nav.familie.ef.iverksett.økonomi.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import org.assertj.core.api.Assertions.assertThat

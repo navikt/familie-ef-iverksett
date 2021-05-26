@@ -1,7 +1,11 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import no.nav.familie.ef.iverksett.domene.*
+import no.nav.familie.ef.iverksett.iverksett.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.Periodebeløp
+import no.nav.familie.ef.iverksett.iverksett.Periodetype
+import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør

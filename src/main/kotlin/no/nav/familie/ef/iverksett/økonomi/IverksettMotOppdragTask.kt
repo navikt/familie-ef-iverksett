@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.domene.toMedMetadata
-import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
+import no.nav.familie.ef.iverksett.iverksett.toMedMetadata
+import no.nav.familie.ef.iverksett.iverksett.hent.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.tilstand.hent.HentTilstandService
 import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService

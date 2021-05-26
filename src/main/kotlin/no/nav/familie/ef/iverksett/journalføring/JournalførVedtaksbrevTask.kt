@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.journalføring
 
-import no.nav.familie.ef.iverksett.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
+import no.nav.familie.ef.iverksett.iverksett.JournalpostResultat
+import no.nav.familie.ef.iverksett.iverksett.hent.tjeneste.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype

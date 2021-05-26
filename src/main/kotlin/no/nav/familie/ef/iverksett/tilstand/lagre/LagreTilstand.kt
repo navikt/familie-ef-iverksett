@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.tilstand.lagre
 
-import no.nav.familie.ef.iverksett.domene.DistribuerVedtaksbrevResultat
-import no.nav.familie.ef.iverksett.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.iverksett.JournalpostResultat
+import no.nav.familie.ef.iverksett.iverksett.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelse
 import java.util.UUID
 
 interface LagreTilstand {
