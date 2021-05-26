@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.iverksett.start
 
-import no.nav.familie.ef.iverksett.iverksett.Brev
-import no.nav.familie.ef.iverksett.iverksett.Iverksett
+import no.nav.familie.ef.iverksett.iverksett.domene.Brev
+import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksett.lagre.LagreIverksettService
-import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
+import no.nav.familie.ef.iverksett.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository

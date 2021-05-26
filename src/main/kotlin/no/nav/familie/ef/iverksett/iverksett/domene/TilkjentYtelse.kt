@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.iverksett
+package no.nav.familie.ef.iverksett.iverksett.domene
 
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag

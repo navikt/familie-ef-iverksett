@@ -1,8 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksett.lagre
 
-import no.nav.familie.ef.iverksett.iverksett.Brev
-import no.nav.familie.ef.iverksett.iverksett.Iverksett
-import no.nav.familie.ef.iverksett.iverksett.lagre.LagreIverksettJdbc
+import no.nav.familie.ef.iverksett.iverksett.domene.Brev
+import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
 import org.springframework.stereotype.Service
 import java.util.*
 

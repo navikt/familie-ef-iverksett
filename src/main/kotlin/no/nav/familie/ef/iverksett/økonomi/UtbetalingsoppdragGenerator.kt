@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.iverksett.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.økonomi.ØkonomiUtils.andelTilOpphørMedDato
 import no.nav.familie.ef.iverksett.økonomi.ØkonomiUtils.andelerTilOpprettelse
 import no.nav.familie.ef.iverksett.økonomi.ØkonomiUtils.beståendeAndeler

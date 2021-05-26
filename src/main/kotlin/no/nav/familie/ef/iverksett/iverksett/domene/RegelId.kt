@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.iverksett
+package no.nav.familie.ef.iverksett.iverksett.domene
 
 enum class RegelId(val beskrivelse: String) {
 

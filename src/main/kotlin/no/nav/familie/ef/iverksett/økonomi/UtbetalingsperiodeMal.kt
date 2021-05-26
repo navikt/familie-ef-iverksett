@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.iverksett.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode

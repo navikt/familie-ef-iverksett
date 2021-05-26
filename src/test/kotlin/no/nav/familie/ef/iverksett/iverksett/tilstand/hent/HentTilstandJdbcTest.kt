@@ -1,10 +1,10 @@
-package no.nav.familie.ef.iverksett.tilstand.hent
+package no.nav.familie.ef.iverksett.iverksett.tilstand.hent
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.iverksett.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksett.OppdragResultat
-import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelse
-import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandJdbc
+import no.nav.familie.ef.iverksett.iverksett.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.iverksett.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.tilstand.lagre.LagreTilstandJdbc
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus

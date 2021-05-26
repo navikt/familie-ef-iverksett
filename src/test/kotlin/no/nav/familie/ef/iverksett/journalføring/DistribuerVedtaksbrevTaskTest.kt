@@ -4,10 +4,10 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.iverksett.DistribuerVedtaksbrevResultat
-import no.nav.familie.ef.iverksett.iverksett.JournalpostResultat
-import no.nav.familie.ef.iverksett.tilstand.hent.HentTilstandService
-import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
+import no.nav.familie.ef.iverksett.iverksett.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.iverksett.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.iverksett.tilstand.hent.HentTilstandService
+import no.nav.familie.ef.iverksett.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.prosessering.domene.Task
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

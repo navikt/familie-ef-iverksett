@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
-import no.nav.familie.ef.iverksett.iverksett.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse
 import java.util.*
 
 class AndelTilkjentYtelseDto(

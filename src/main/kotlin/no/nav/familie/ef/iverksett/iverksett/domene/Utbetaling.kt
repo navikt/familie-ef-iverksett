@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.iverksett
+package no.nav.familie.ef.iverksett.iverksett.domene
 
 data class Utbetaling(
         val periodebeløp: Periodebeløp,

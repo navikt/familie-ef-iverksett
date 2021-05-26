@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.iverksett.hent
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.iverksett.Iverksett
+import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
 import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.iverksett.lagre.LagreIverksettJdbc

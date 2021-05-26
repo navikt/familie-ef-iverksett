@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksett.lagre
 
-import no.nav.familie.ef.iverksett.iverksett.Brev
-import no.nav.familie.ef.iverksett.iverksett.Iverksett
+import no.nav.familie.ef.iverksett.iverksett.domene.Brev
+import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
 import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource

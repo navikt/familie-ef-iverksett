@@ -1,11 +1,11 @@
 package no.nav.familie.ef.iverksett
 
-import no.nav.familie.ef.iverksett.iverksett.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksett.Periodebeløp
-import no.nav.familie.ef.iverksett.iverksett.Periodetype
-import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelseStatus
+import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.Periodebeløp
+import no.nav.familie.ef.iverksett.iverksett.domene.Periodetype
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelseStatus
 import no.nav.familie.ef.iverksett.simulering.SimuleringDto
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.simulering.*

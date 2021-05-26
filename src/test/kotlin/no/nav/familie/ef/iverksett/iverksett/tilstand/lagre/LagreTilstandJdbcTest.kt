@@ -1,9 +1,9 @@
-package no.nav.familie.ef.iverksett.tilstand.lagre
+package no.nav.familie.ef.iverksett.iverksett.tilstand.lagre
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.iverksett.DistribuerVedtaksbrevResultat
-import no.nav.familie.ef.iverksett.iverksett.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksett.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksett.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.iverksett.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.iverksett.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.junit.jupiter.api.BeforeEach

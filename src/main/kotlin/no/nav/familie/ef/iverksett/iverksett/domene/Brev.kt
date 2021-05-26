@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.iverksett
+package no.nav.familie.ef.iverksett.iverksett.domene
 
 import java.util.UUID
 

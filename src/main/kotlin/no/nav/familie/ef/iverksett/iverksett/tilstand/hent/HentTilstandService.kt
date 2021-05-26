@@ -1,8 +1,8 @@
-package no.nav.familie.ef.iverksett.tilstand.hent
+package no.nav.familie.ef.iverksett.iverksett.tilstand.hent
 
-import no.nav.familie.ef.iverksett.iverksett.IverksettResultat
-import no.nav.familie.ef.iverksett.iverksett.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksett.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.IverksettResultat
+import no.nav.familie.ef.iverksett.iverksett.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
 import org.springframework.stereotype.Service
 import java.util.UUID
 
