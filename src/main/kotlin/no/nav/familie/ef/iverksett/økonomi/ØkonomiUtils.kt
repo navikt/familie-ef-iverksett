@@ -1,11 +1,10 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse.Companion.disjunkteAndeler
-import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse.Companion.snittAndeler
-import no.nav.familie.ef.iverksett.domene.Periodebeløp
-import no.nav.familie.ef.iverksett.domene.Periodetype
-import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse.Companion.disjunkteAndeler
+import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse.Companion.snittAndeler
+import no.nav.familie.ef.iverksett.iverksett.domene.Periodebeløp
+import no.nav.familie.ef.iverksett.iverksett.domene.Periodetype
 import java.time.LocalDate
 import java.util.*
 

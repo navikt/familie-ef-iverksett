@@ -1,9 +1,8 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
-import no.nav.familie.ef.iverksett.domene.Inntekt
-import no.nav.familie.ef.iverksett.domene.InntektsType
-import no.nav.familie.ef.iverksett.domene.Inntektsreduksjon
-import no.nav.familie.ef.iverksett.domene.Periodebeløp
+import no.nav.familie.ef.iverksett.iverksett.domene.Inntekt
+import no.nav.familie.ef.iverksett.iverksett.domene.InntektsType
+import no.nav.familie.ef.iverksett.iverksett.domene.Inntektsreduksjon
 
 data class InntektDto(
         val periodebeløp: PeriodebeløpDto,

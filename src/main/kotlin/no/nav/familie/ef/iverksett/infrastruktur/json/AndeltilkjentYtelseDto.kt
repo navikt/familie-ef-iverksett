@@ -1,9 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
-import no.nav.familie.ef.iverksett.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.domene.Periodebeløp
-import no.nav.familie.kontrakter.ef.felles.StønadType
-import java.math.BigDecimal
+import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse
 import java.util.*
 
 class AndelTilkjentYtelseDto(

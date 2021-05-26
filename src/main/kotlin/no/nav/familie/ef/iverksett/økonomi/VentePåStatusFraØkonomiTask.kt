@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
+import no.nav.familie.ef.iverksett.iverksett.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksett.hent.HentIverksettService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
-import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
+import no.nav.familie.ef.iverksett.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.AsyncTaskStep

@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
-import no.nav.familie.ef.iverksett.domene.Barn
-import no.nav.familie.ef.iverksett.domene.Person
+import no.nav.familie.ef.iverksett.iverksett.domene.Barn
+import no.nav.familie.ef.iverksett.iverksett.domene.Person
 import java.time.LocalDate
 
 data class PersonDto(

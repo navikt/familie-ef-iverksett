@@ -1,6 +1,23 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
-import no.nav.familie.ef.iverksett.domene.*
+import no.nav.familie.ef.iverksett.iverksett.domene.Aktivitetskrav
+import no.nav.familie.ef.iverksett.iverksett.domene.BehandlingResultat
+import no.nav.familie.ef.iverksett.iverksett.domene.BehandlingType
+import no.nav.familie.ef.iverksett.iverksett.domene.Behandlingsdetaljer
+import no.nav.familie.ef.iverksett.iverksett.domene.BehandlingÅrsak
+import no.nav.familie.ef.iverksett.iverksett.domene.Delvilkårsvurdering
+import no.nav.familie.ef.iverksett.iverksett.domene.Fagsakdetaljer
+import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksett.domene.OpphørÅrsak
+import no.nav.familie.ef.iverksett.iverksett.domene.RegelId
+import no.nav.familie.ef.iverksett.iverksett.domene.SvarId
+import no.nav.familie.ef.iverksett.iverksett.domene.Søker
+import no.nav.familie.ef.iverksett.iverksett.domene.Vedtak
+import no.nav.familie.ef.iverksett.iverksett.domene.Vedtaksdetaljer
+import no.nav.familie.ef.iverksett.iverksett.domene.VilkårType
+import no.nav.familie.ef.iverksett.iverksett.domene.Vilkårsresultat
+import no.nav.familie.ef.iverksett.iverksett.domene.Vilkårsvurdering
+import no.nav.familie.ef.iverksett.iverksett.domene.Vurdering
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import java.time.LocalDate
 import java.util.*

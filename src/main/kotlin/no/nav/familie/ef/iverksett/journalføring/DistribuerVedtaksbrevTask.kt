@@ -1,9 +1,8 @@
 package no.nav.familie.ef.iverksett.journalføring
 
-import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.familie.ef.iverksett.domene.DistribuerVedtaksbrevResultat
-import no.nav.familie.ef.iverksett.tilstand.hent.HentTilstandService
-import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
+import no.nav.familie.ef.iverksett.iverksett.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.iverksett.tilstand.hent.HentTilstandService
+import no.nav.familie.ef.iverksett.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task

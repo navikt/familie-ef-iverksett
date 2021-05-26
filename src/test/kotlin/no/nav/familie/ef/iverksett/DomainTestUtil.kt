@@ -1,6 +1,11 @@
 package no.nav.familie.ef.iverksett
 
-import no.nav.familie.ef.iverksett.domene.*
+import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.Periodebeløp
+import no.nav.familie.ef.iverksett.iverksett.domene.Periodetype
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelseStatus
 import no.nav.familie.ef.iverksett.simulering.SimuleringDto
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.simulering.*
@@ -11,11 +16,11 @@ import java.util.*
 fun simuleringDto(): SimuleringDto {
     val behandlingId = UUID.randomUUID()
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
-        tilkjentYtelse = TilkjentYtelse(
-            id = UUID.randomUUID(),
-            utbetalingsoppdrag = null,
-            status = TilkjentYtelseStatus.IKKE_KLAR,
-            andelerTilkjentYtelse = listOf(
+            tilkjentYtelse = TilkjentYtelse(
+                    id = UUID.randomUUID(),
+                    utbetalingsoppdrag = null,
+                    status = TilkjentYtelseStatus.IKKE_KLAR,
+                    andelerTilkjentYtelse = listOf(
                 AndelTilkjentYtelse(
                     periodebeløp = Periodebeløp(
                             beløp = 15000,
@@ -29,21 +34,21 @@ fun simuleringDto(): SimuleringDto {
                 )
             )
         ),
-        saksbehandlerId = "saksbehandlerId",
-        eksternBehandlingId = 1,
-        stønadstype = StønadType.OVERGANGSSTØNAD,
-        eksternFagsakId = 1,
-        behandlingId = behandlingId,
-        personIdent = "12345611111",
-        vedtaksdato = LocalDate.of(2021, 5, 1),
+            saksbehandlerId = "saksbehandlerId",
+            eksternBehandlingId = 1,
+            stønadstype = StønadType.OVERGANGSSTØNAD,
+            eksternFagsakId = 1,
+            behandlingId = behandlingId,
+            personIdent = "12345611111",
+            vedtaksdato = LocalDate.of(2021, 5, 1),
 
-        )
+            )
 
     val tilkjentYtelse = TilkjentYtelse(
-        id = UUID.randomUUID(),
-        utbetalingsoppdrag = null,
-        status = TilkjentYtelseStatus.IKKE_KLAR,
-        andelerTilkjentYtelse = listOf(
+            id = UUID.randomUUID(),
+            utbetalingsoppdrag = null,
+            status = TilkjentYtelseStatus.IKKE_KLAR,
+            andelerTilkjentYtelse = listOf(
             AndelTilkjentYtelse(
                 periodebeløp = Periodebeløp(
                         beløp = 15000,
