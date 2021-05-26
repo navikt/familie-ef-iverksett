@@ -27,7 +27,7 @@ class LagreTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTempla
         }
     }
 
-    override fun oppdaterTilkjentYtelseForUtbetaling(behandlingId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
+    override fun oppdaterTilkjentYtelseForUtbetaling(behandlingId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse?) {
 
         val sql =
                 "UPDATE iverksett_resultat SET tilkjentytelseforutbetaling = :tilkjentYtelseForUtbetaling::JSON WHERE behandling_id = :behandlingId"

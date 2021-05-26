@@ -1,7 +1,9 @@
 package no.nav.familie.ef.iverksett.tilstand.hent
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.domene.*
+import no.nav.familie.ef.iverksett.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandJdbc
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
@@ -11,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 internal class HentTilstandJdbcTest : ServerTest() {
 
@@ -60,10 +62,10 @@ internal class HentTilstandJdbcTest : ServerTest() {
     fun `lagre tilkjentYtelse, hent IverksettResultat med riktig behandlingsID`() {
 
         val resultat = IverksettResultatMockBuilder.Builder()
-            .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
-            .journalPostResultat()
-            .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
-        lagreTilstandJdbc.oppdaterTilkjentYtelseForUtbetaling(behandlingId, resultat.tilkjentYtelseForUtbetaling!!)
+                .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
+                .journalPostResultat()
+                .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
+        lagreTilstandJdbc.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
         lagreTilstandJdbc.oppdaterOppdragResultat(behandlingId, resultat.oppdragResultat!!)
         lagreTilstandJdbc.oppdaterJournalpostResultat(behandlingId, resultat.journalpostResultat!!)
         lagreTilstandJdbc.oppdaterDistribuerVedtaksbrevResultat(behandlingId, resultat.vedtaksbrevResultat!!)

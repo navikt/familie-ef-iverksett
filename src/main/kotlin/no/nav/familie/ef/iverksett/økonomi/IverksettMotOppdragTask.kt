@@ -28,7 +28,9 @@ class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService,
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = hentIverksettService.hentIverksett(behandlingId)
-        val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let { hentTilstandService.hentTilkjentYtelse(it) }
+        val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
+            hentTilstandService.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=${it}")
+        }
         val utbetaling = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                 iverksett.vedtak.tilkjentYtelse.toMedMetadata(saksbehandlerId = iverksett.vedtak.saksbehandlerId,
                                                               eksternBehandlingId = iverksett.behandling.eksternId,
