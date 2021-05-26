@@ -53,7 +53,7 @@ class HentTilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplat
             return namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource) { rs: ResultSet, _: Int ->
                 IverksettResultat(
                         UUID.fromString(rs.getString("behandling_id")),
-                        objectMapper.readValue<TilkjentYtelse>(rs.getString("tilkjentYtelseForUtbetaling")),
+                        rs.getString("tilkjentYtelseForUtbetaling")?.let { objectMapper.readValue<TilkjentYtelse>(it) },
                         rs.getString("oppdragResultat")?.let { objectMapper.readValue<OppdragResultat>(it) },
                         rs.getString("journalpostResultat")?.let { objectMapper.readValue<JournalpostResultat>(it) },
                         rs.getString("vedtaksBrevResultat")?.let { objectMapper.readValue<DistribuerVedtaksbrevResultat>(it) })
