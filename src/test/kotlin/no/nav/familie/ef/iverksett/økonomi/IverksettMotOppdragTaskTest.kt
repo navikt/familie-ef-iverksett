@@ -15,7 +15,8 @@ import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.Properties
+import java.util.UUID
 
 internal class IverksettMotOppdragTaskTest {
 
@@ -27,13 +28,13 @@ internal class IverksettMotOppdragTaskTest {
     val hentTilstandService = mockk<HentTilstandService>()
     val behandlingId = UUID.randomUUID()
     val iverksettMotOppdragTask =
-        IverksettMotOppdragTask(
-            hentIverksettService = hentIverksettService,
-            oppdragClient = oppdragClient,
-            taskRepository = taskRepository,
-            lagreTilstandService = lagreTilstandService,
-            hentTilstandService = hentTilstandService
-        )
+            IverksettMotOppdragTask(
+                    hentIverksettService = hentIverksettService,
+                    oppdragClient = oppdragClient,
+                    taskRepository = taskRepository,
+                    lagreTilstandService = lagreTilstandService,
+                    hentTilstandService = hentTilstandService
+            )
 
     @BeforeEach
     internal fun setUp() {

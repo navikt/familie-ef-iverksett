@@ -11,37 +11,37 @@ import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = VentePåStatusFraØkonomiTask.TYPE,
-    maxAntallFeil = 50,
-    settTilManuellOppfølgning = true,
-    triggerTidVedFeilISekunder = 15 * 60L,
-    beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
+        taskStepType = VentePåStatusFraØkonomiTask.TYPE,
+        maxAntallFeil = 50,
+        settTilManuellOppfølgning = true,
+        triggerTidVedFeilISekunder = 15 * 60L,
+        beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
 )
 
 class VentePåStatusFraØkonomiTask(
-    val hentIverksettService: HentIverksettService,
-    val oppdragClient: OppdragClient,
-    val taskRepository: TaskRepository,
-    val lagreTilstandService: LagreTilstandService
+        val hentIverksettService: HentIverksettService,
+        val oppdragClient: OppdragClient,
+        val taskRepository: TaskRepository,
+        val lagreTilstandService: LagreTilstandService
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = hentIverksettService.hentIverksett(behandlingId)
         val oppdragId = OppdragId(
-            fagsystem = iverksett.fagsak.stønadstype.tilKlassifisering(),
-            personIdent = iverksett.søker.personIdent,
-            behandlingsId = iverksett.behandling.behandlingId.toString()
+                fagsystem = iverksett.fagsak.stønadstype.tilKlassifisering(),
+                personIdent = iverksett.søker.personIdent,
+                behandlingsId = iverksett.behandling.behandlingId.toString()
         )
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)
         lagreTilstandService.lagreOppdragResultat(
-            behandlingId = behandlingId,
-            OppdragResultat(oppdragStatus = oppdragstatus)
+                behandlingId = behandlingId,
+                OppdragResultat(oppdragStatus = oppdragstatus)
         )
         when (oppdragstatus) {
             OppdragStatus.KVITTERT_OK -> return
