@@ -41,11 +41,15 @@ spec:
   azure:
     application:
       enabled: true
+      claims:
+        groups:
+          - "928636f4-fd0d-4149-978e-a6fb68bb19de"  # 0000-GA-STDAPPS gir tilgang til prosessering
   accessPolicy:
     inbound:
       rules:
         - application: familie-ef-sak
         - application: familie-ef-sak-lokal
+        - application: familie-prosessering
     outbound:
       external:
         - host: familie-oppdrag.dev-fss-pub.nais.io
