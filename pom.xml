@@ -45,19 +45,9 @@
             <id>github</id>
             <url>https://maven.pkg.github.com/navikt/familie-felles</url>
         </repository>
-        <repository>
-            <id>github2</id>
-            <name>GitHub Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/navikt/familie-jms-integrasjon/</url>
-        </repository>
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>no.nav.vedtak.felles</groupId>
-            <artifactId>jms-integrasjon</artifactId>
-            <version>2.0.0</version>
-        </dependency>
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -190,10 +180,15 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
 
-        <!-- JMS -->
+        <!-- MQ / JMS -->
         <dependency>
             <groupId>javax.jms</groupId>
             <artifactId>javax.jms-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.mq</groupId>
+            <artifactId>com.ibm.mq.allclient</artifactId>
+            <version>9.2.2.0</version>
         </dependency>
 
         <!-- Test -->
