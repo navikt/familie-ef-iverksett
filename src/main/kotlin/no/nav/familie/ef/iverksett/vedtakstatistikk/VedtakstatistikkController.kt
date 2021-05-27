@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
-import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
-import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping

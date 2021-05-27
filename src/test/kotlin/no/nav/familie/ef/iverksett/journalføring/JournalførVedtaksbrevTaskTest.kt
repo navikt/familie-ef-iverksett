@@ -4,10 +4,10 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksett.domene.Brev
 import no.nav.familie.ef.iverksett.iverksett.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksett.hent.HentIverksettService
-import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
 import no.nav.familie.ef.iverksett.iverksett.tilstand.lagre.LagreTilstandService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse

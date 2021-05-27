@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.iverksett.hentstatus
 
-import no.nav.familie.ef.iverksett.iverksett.domene.IverksettStatus
+import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

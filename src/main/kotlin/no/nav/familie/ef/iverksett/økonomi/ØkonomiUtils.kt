@@ -4,9 +4,9 @@ import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse.Companion.disjunkteAndeler
 import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse.Companion.snittAndeler
 import no.nav.familie.ef.iverksett.iverksett.domene.Periodebeløp
-import no.nav.familie.ef.iverksett.iverksett.domene.Periodetype
+import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 data class KjedeId(val klassifisering: String, val personIdent: String)
 
@@ -87,7 +87,8 @@ object ØkonomiUtils {
 
     private fun finnDatoForFørsteEndredeAndel(andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
                                               andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>) =
-            andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse).minByOrNull { it.periodebeløp.fraOgMed }?.periodebeløp?.fraOgMed
+            andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse)
+                    .minByOrNull { it.periodebeløp.fraOgMed }?.periodebeløp?.fraOgMed
 
     /**
      * Sjekker om den nye endringen er etter maks datot for tidligere perioder

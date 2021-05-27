@@ -2,11 +2,11 @@ package no.nav.familie.ef.iverksett.iverksett.hentstatus
 
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.familie.ef.iverksett.iverksett.domene.IverksettStatus
 import no.nav.familie.ef.iverksett.iverksett.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksett.tilstand.hent.HentTilstandService
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
+import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
