@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.arena
 
-import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
+
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,8 +16,8 @@ class VedtakhendelseController(
 ) {
 
     @PostMapping("/vedtakhendelse", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun sendStatistikk(@RequestBody data: IverksettDto) {
-        vedtakhendelseProducer.produce("test - fagsakId: " + data.fagsak.fagsakId)
+    fun sendStatistikk(@RequestBody data: String) {
+        vedtakhendelseProducer.produce("testmelding $data" )
     }
 
 }
