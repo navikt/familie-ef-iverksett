@@ -1,91 +1,24 @@
-package no.nav.familie.ef.iverksett.infrastruktur.json
+package no.nav.familie.ef.iverksett.infrastruktur.transformer
 
 import no.nav.familie.ef.iverksett.iverksett.domene.Aktivitetskrav
-import no.nav.familie.ef.iverksett.iverksett.domene.BehandlingResultat
-import no.nav.familie.ef.iverksett.iverksett.domene.BehandlingType
 import no.nav.familie.ef.iverksett.iverksett.domene.Behandlingsdetaljer
-import no.nav.familie.ef.iverksett.iverksett.domene.BehandlingÅrsak
 import no.nav.familie.ef.iverksett.iverksett.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksett.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksett.domene.OpphørÅrsak
-import no.nav.familie.ef.iverksett.iverksett.domene.RegelId
-import no.nav.familie.ef.iverksett.iverksett.domene.SvarId
 import no.nav.familie.ef.iverksett.iverksett.domene.Søker
-import no.nav.familie.ef.iverksett.iverksett.domene.Vedtak
 import no.nav.familie.ef.iverksett.iverksett.domene.Vedtaksdetaljer
-import no.nav.familie.ef.iverksett.iverksett.domene.VilkårType
-import no.nav.familie.ef.iverksett.iverksett.domene.Vilkårsresultat
 import no.nav.familie.ef.iverksett.iverksett.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksett.domene.Vurdering
-import no.nav.familie.kontrakter.ef.felles.StønadType
-import java.time.LocalDate
-import java.util.*
+import no.nav.familie.kontrakter.ef.iverksett.AktivitetskravDto
+import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
+import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
+import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
+import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
 
-data class IverksettDto(
-        val fagsak: FagsakdetaljerDto,
-        val behandling: BehandlingsdetaljerDto,
-        val søker: SøkerDto,
-        val vedtak: VedtaksdetaljerDto,
-)
-
-data class SøkerDto(
-        val aktivitetskrav: AktivitetskravDto,
-        val personIdent: String,
-        val barn: List<BarnDto> = ArrayList(),
-        val tilhørendeEnhet: String,
-        val kode6eller7: Boolean,
-)
-
-data class FagsakdetaljerDto(
-        val fagsakId: UUID,
-        val eksternId: Long,
-        val stønadstype: StønadType
-)
-
-data class BehandlingsdetaljerDto(
-        val behandlingId: UUID,
-        val forrigeBehandlingId: UUID? = null,
-        val eksternId: Long,
-        val behandlingType: BehandlingType,
-        val behandlingÅrsak: BehandlingÅrsak,
-        val behandlingResultat: BehandlingResultat,
-        val relatertBehandlingId: UUID? = null,
-        val vilkårsvurderinger: List<VilkårsvurderingDto> = emptyList()
-)
-
-
-data class VedtaksdetaljerDto(
-        val vedtak: Vedtak,
-        val vedtaksdato: LocalDate,
-        val opphørÅrsak: OpphørÅrsak?,
-        val saksbehandlerId: String,
-        val beslutterId: String,
-        val tilkjentYtelse: TilkjentYtelseDto,
-        val inntekter: List<InntektDto>
-)
-
-data class AktivitetskravDto(
-        val aktivitetspliktInntrefferDato: LocalDate,
-        val harSagtOppArbeidsforhold: Boolean
-)
-
-data class VilkårsvurderingDto(
-        val vilkårType: VilkårType,
-        val resultat: Vilkårsresultat,
-        val delvilkårsvurderinger: List<DelvilkårsvurderingDto> = emptyList()
-)
-
-data class DelvilkårsvurderingDto(
-        val resultat: Vilkårsresultat,
-        val vurderinger: List<VurderingDto> = emptyList()
-)
-
-data class VurderingDto(
-        val regelId: RegelId,
-        val svar: SvarId? = null,
-        val begrunnelse: String? = null
-)
 
 fun VurderingDto.toDomain(): Vurdering {
     return Vurdering(this.regelId, this.svar, this.begrunnelse)

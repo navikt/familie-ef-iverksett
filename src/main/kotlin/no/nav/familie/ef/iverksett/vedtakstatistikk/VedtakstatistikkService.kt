@@ -3,7 +3,6 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksett.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksett.domene.Vilkårsresultat
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
@@ -21,6 +20,8 @@ import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsvurdering
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
+
 import org.springframework.stereotype.Service
 import java.time.ZoneId
 

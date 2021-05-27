@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksett.hentstatus
 
-import no.nav.familie.ef.iverksett.iverksett.domene.IverksettStatus
 import no.nav.familie.ef.iverksett.iverksett.tilstand.hent.HentTilstandService
+import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.springframework.stereotype.Service
 import java.util.UUID

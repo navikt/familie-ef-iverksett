@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksett.domene
 
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import java.time.LocalDate
 import java.util.UUID
@@ -31,13 +32,5 @@ fun TilkjentYtelse.toMedMetadata(
                                      behandlingId = behandlingId,
                                      vedtaksdato = vedtaksdato
     )
-}
-
-enum class TilkjentYtelseStatus {
-    IKKE_KLAR,
-    OPPRETTET,
-    SENDT_TIL_IVERKSETTING,
-    AKTIV,
-    AVSLUTTET
 }
 

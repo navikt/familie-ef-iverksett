@@ -4,12 +4,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
-import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksett.lagre.LagreIverksettJdbc
 import no.nav.familie.ef.iverksett.iverksett.lagre.LagreIverksettService
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
