@@ -14,3 +14,10 @@ FAMILIE_INTEGRASJONER_API_URL: http://localhost:8085
 AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
 
 AZURE_APP_TENANT_ID: navq.onmicrosoft.com
+
+MQ_QUEUE_MANAGER: queuemanager
+MQ_HOSTNAME: hostname
+MQ_PORT: 1234
+MQ_CHANNEL: channelname
+SERVICEBRUKER: dummy
+SERVICEBRUKER_PASSORD: dummy

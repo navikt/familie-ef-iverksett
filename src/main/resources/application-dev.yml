@@ -16,3 +16,9 @@ spring:
 
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev-fss-pub.nais.io
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.dev-fss-pub.nais.io
+
+# MQ
+MQ_QUEUE_MANAGER: MQLS01
+MQ_CHANNEL: Q1_FAMILIE_EF_IVERKS
+MQ_HOSTNAME: b27apvl219.preprod.local
+MQ_PORT: 1413
