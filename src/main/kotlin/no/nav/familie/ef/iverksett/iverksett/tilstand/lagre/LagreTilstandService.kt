@@ -5,6 +5,8 @@ import no.nav.familie.ef.iverksett.iverksett.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksett.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
@@ -18,6 +20,7 @@ class LagreTilstandService(val lagreTilstand: LagreTilstand) {
         lagreTilstand.oppdaterJournalpostResultat(behandlingId, journalPostResultatJson)
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun lagreOppdragResultat(behandlingId: UUID, oppdragResultatJson: OppdragResultat) {
         lagreTilstand.oppdaterOppdragResultat(behandlingId, oppdragResultatJson)
     }
