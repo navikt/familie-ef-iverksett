@@ -19,5 +19,6 @@ MQ_QUEUE_MANAGER: queuemanager
 MQ_HOSTNAME: hostname
 MQ_PORT: 1234
 MQ_CHANNEL: channelname
+VEDTAKHENDELSER_QUEUE_NAME: vedtakhendelserQueueName
 SERVICEBRUKER: dummy
 SERVICEBRUKER_PASSORD: dummy

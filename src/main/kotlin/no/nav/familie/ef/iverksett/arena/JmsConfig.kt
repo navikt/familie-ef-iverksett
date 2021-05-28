@@ -38,11 +38,14 @@ class JmsConfig {
     @Value("\${SERVICEBRUKER_PASSORD}")
     lateinit var servicebrukerPassord: String
 
+    @Value("\${VEDTAKHENDELSER_QUEUE_NAME}")
+    lateinit var vedtakhendelserQueueName: String
+
 
     @Bean
     fun jmsTemplate(connectionFactory: ConnectionFactory): JmsTemplate {
         val jmsTemplate = JmsTemplate(connectionFactory)
-        jmsTemplate.defaultDestinationName = "QA.Q1_475.SOB_VEDTAKHENDELSER_ARE"
+        jmsTemplate.defaultDestinationName = vedtakhendelserQueueName
         return jmsTemplate
     }
 

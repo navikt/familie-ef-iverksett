@@ -8,6 +8,7 @@ no.nav.security.jwt:
     azuread:
       discoveryurl: https://login.microsoftonline.com/navq.onmicrosoft.com/v2.0/.well-known/openid-configuration
       accepted_audience: ${AZURE_APP_CLIENT_ID}
+management.health.jms.enabled: false #Skrur av MQ-helsesjekk - da dette kobles fra lokalt
 
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev.intern.nav.no
 AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
@@ -18,5 +19,6 @@ MQ_QUEUE_MANAGER: queuemanager
 MQ_HOSTNAME: hostname
 MQ_PORT: 1234
 MQ_CHANNEL: channelname
+VEDTAKHENDELSER_QUEUE_NAME: vedtakhendelserQueueName
 SERVICEBRUKER: dummy
 SERVICEBRUKER_PASSORD: dummy

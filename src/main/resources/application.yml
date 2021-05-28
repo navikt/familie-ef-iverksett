@@ -68,3 +68,10 @@ management:
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.prod-fss-pub.nais.io
 ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-test
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.prod-fss-pub.nais.io
+
+# MQ
+MQ_QUEUE_MANAGER: MPLS01
+MQ_CHANNEL: P_FAMILIE_EF_IVERKS
+MQ_HOSTNAME: a01apvl247.adeo.no
+MQ_PORT: 1414
+VEDTAKHENDELSER_QUEUE_NAME: QA.P_475.SOB_VEDTAKHENDELSER_ARE
