@@ -42,7 +42,7 @@ class JmsConfig {
     @Bean
     fun jmsTemplate(connectionFactory: ConnectionFactory): JmsTemplate {
         val jmsTemplate = JmsTemplate(connectionFactory)
-        jmsTemplate.defaultDestinationName = "Q1_475.SOB_VEDTAKHENDELSER_ARE"
+        jmsTemplate.defaultDestinationName = "QA.Q1_475.SOB_VEDTAKHENDELSER_ARE"
         return jmsTemplate
     }
 
