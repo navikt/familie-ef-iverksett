@@ -5,9 +5,9 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
-import no.nav.familie.ef.iverksett.iverksett.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.iverksett.hent.HentIverksettService
-import no.nav.familie.ef.iverksett.iverksett.tilstand.lagre.LagreTilstandService
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.IverksettDbUtil
+import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandDbUtil
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.domene.Task
@@ -19,20 +19,20 @@ import java.util.*
 internal class VentePåStatusFraØkonomiTaskTest {
 
     val oppdragClient = mockk<OppdragClient>()
-    val hentIverksettService = mockk<HentIverksettService>()
+    val iverksettDbUtil = mockk<IverksettDbUtil>()
     val taskRepository = mockk<TaskRepository>()
-    val lagreTilstandService = mockk<LagreTilstandService>()
+    val lagreTilstandService = mockk<TilstandDbUtil>()
     val behandlingId = UUID.randomUUID()
 
     val ventePåStatusFraØkonomiTask =
-            VentePåStatusFraØkonomiTask(hentIverksettService, oppdragClient, taskRepository, lagreTilstandService)
+            VentePåStatusFraØkonomiTask(iverksettDbUtil, oppdragClient, taskRepository, lagreTilstandService)
 
     @Test
     internal fun `kjør doTask for VentePåStatusFraØkonomiTaskhvis, forvent ingen unntak`() {
         val oppdragResultatSlot = slot<OppdragResultat>()
 
         every { oppdragClient.hentStatus(any()) } returns OppdragStatus.KVITTERT_OK
-        every { hentIverksettService.hentIverksett(any()) } returns opprettIverksettDto(behandlingId).toDomain()
+        every { iverksettDbUtil.hentIverksett(any()) } returns opprettIverksettDto(behandlingId).toDomain()
         every { lagreTilstandService.lagreOppdragResultat(behandlingId, any()) } returns Unit
 
         ventePåStatusFraØkonomiTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))

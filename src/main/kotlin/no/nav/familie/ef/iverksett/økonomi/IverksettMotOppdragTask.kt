@@ -1,10 +1,10 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.iverksett.domene.toMedMetadata
-import no.nav.familie.ef.iverksett.iverksett.hent.HentIverksettService
+import no.nav.familie.ef.iverksett.iverksetting.domene.toMedMetadata
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
-import no.nav.familie.ef.iverksett.iverksett.tilstand.hent.HentTilstandService
-import no.nav.familie.ef.iverksett.iverksett.tilstand.lagre.LagreTilstandService
+import no.nav.familie.ef.iverksett.iverksetting.IverksettDbUtil
+import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -18,18 +18,17 @@ import java.util.UUID
         taskStepType = IverksettMotOppdragTask.TYPE,
         beskrivelse = "Utfører iverksetting av utbetalning mot økonomi."
 )
-class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService,
+class IverksettMotOppdragTask(val iverksettDbUtil: IverksettDbUtil,
                               val oppdragClient: OppdragClient,
                               val taskRepository: TaskRepository,
-                              val lagreTilstandService: LagreTilstandService,
-                              val hentTilstandService: HentTilstandService
+                              val tilstandDbUtil: TilstandDbUtil
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = hentIverksettService.hentIverksett(behandlingId)
+        val iverksett = iverksettDbUtil.hentIverksett(behandlingId)
         val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
-            hentTilstandService.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=${it}")
+            tilstandDbUtil.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=${it}")
         }
         val utbetaling = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                 iverksett.vedtak.tilkjentYtelse.toMedMetadata(saksbehandlerId = iverksett.vedtak.saksbehandlerId,
@@ -44,7 +43,7 @@ class IverksettMotOppdragTask(val hentIverksettService: HentIverksettService,
                 forrigeTilkjentYtelse
         )
 
-        lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
+        tilstandDbUtil.lagreTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let { oppdragClient.iverksettOppdrag(it) }
         ?: error("Utbetalingsoppdrag mangler for iverksetting")
     }

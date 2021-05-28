@@ -1,14 +1,14 @@
 package no.nav.familie.ef.iverksett.infrastruktur.transformer
 
-import no.nav.familie.ef.iverksett.iverksett.domene.Aktivitetskrav
-import no.nav.familie.ef.iverksett.iverksett.domene.Behandlingsdetaljer
-import no.nav.familie.ef.iverksett.iverksett.domene.Delvilkårsvurdering
-import no.nav.familie.ef.iverksett.iverksett.domene.Fagsakdetaljer
-import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksett.domene.Søker
-import no.nav.familie.ef.iverksett.iverksett.domene.Vedtaksdetaljer
-import no.nav.familie.ef.iverksett.iverksett.domene.Vilkårsvurdering
-import no.nav.familie.ef.iverksett.iverksett.domene.Vurdering
+import no.nav.familie.ef.iverksett.iverksetting.domene.Aktivitetskrav
+import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
+import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetskravDto
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto

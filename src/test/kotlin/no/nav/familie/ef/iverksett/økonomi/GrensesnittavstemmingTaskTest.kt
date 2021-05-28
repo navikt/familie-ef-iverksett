@@ -4,6 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.økonomi.grensesnitt.GrensesnittavstemmingPayload
+import no.nav.familie.ef.iverksett.økonomi.grensesnitt.GrensesnittavstemmingTask
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
