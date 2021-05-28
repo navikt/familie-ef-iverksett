@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
@@ -13,18 +13,18 @@ import java.util.Properties
 import java.util.UUID
 
 @Service
-class IverksettingService(val taskRepository: TaskRepository, val iverksettingDbUtil: IverksettingDbUtil,
-                          val tilstandDbUtil: TilstandDbUtil) {
+class IverksettingService(val taskRepository: TaskRepository, val iverksettingRepository: IverksettingRepository,
+                          val tilstandRepository: TilstandRepository) {
 
     fun startIverksetting(iverksett: Iverksett, brev: Brev) {
 
-        iverksettingDbUtil.lagreIverksett(
+        iverksettingRepository.lagre(
                 iverksett.behandling.behandlingId,
                 iverksett,
                 brev
         )
 
-        tilstandDbUtil.opprettTomtResultat(iverksett.behandling.behandlingId)
+        tilstandRepository.opprettTomtResultat(iverksett.behandling.behandlingId)
 
         val førsteHovedflytTask = Task(type = IverksettMotOppdragTask.TYPE,
                                        payload = iverksett.behandling.behandlingId.toString(),
@@ -38,7 +38,7 @@ class IverksettingService(val taskRepository: TaskRepository, val iverksettingDb
     }
 
     fun utledStatus(behandlingId: UUID): IverksettStatus? {
-        val iverksettResultat = tilstandDbUtil.hentIverksettResultat(behandlingId)
+        val iverksettResultat = tilstandRepository.hentIverksettResultat(behandlingId)
         iverksettResultat?.let {
             it.vedtaksbrevResultat?.let {
                 return IverksettStatus.OK

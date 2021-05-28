@@ -13,7 +13,7 @@ import java.sql.ResultSet
 import java.util.UUID
 
 @Repository
-class IverksettingJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     @Transactional
     fun lagre(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {

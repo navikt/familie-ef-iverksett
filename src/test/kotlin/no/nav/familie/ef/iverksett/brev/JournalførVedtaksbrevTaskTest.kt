@@ -8,10 +8,10 @@ import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
-import no.nav.familie.ef.iverksett.iverksetting.IverksettingDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
@@ -19,16 +19,17 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.Properties
+import java.util.UUID
 
 internal class JournalførVedtaksbrevTaskTest {
 
-    val iverksettDbUtil = mockk<IverksettingDbUtil>()
+    val iverksettingRepository = mockk<IverksettingRepository>()
     val journalpostClient = mockk<JournalpostClient>()
     val taskRepository = mockk<TaskRepository>()
-    val lagreTilstandService = mockk<TilstandDbUtil>()
+    val tilstandRepository = mockk<TilstandRepository>()
     val journalførVedtaksbrevTask =
-            JournalførVedtaksbrevTask(iverksettDbUtil, journalpostClient, taskRepository, lagreTilstandService)
+            JournalførVedtaksbrevTask(iverksettingRepository, journalpostClient, taskRepository, tilstandRepository)
     val behandlingId = UUID.randomUUID()
 
     @Test
@@ -42,14 +43,14 @@ internal class JournalførVedtaksbrevTaskTest {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot)) } returns ArkiverDokumentResponse(
                 journalpostId,
                 true)
-        every { iverksettDbUtil.hentIverksett(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
-        every { iverksettDbUtil.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
-        every { lagreTilstandService.lagreJournalPostResultat(behandlingId, capture(journalpostResultatSlot)) } returns Unit
+        every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
+        every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
+        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, capture(journalpostResultatSlot)) } returns Unit
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any()) }
-        verify(exactly = 1) { lagreTilstandService.lagreJournalPostResultat(behandlingId, any()) }
+        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any()) }
         assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
     }

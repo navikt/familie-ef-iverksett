@@ -12,16 +12,16 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
 
-class IverksettingJdbcTest : ServerTest() {
+class IverksettingRepositoryTest : ServerTest() {
 
     @Autowired
-    private lateinit var iverksettingJdbc: IverksettingJdbc
+    private lateinit var iverksettingRepository: IverksettingRepository
 
     @Test
     fun `deserialiser og lagre iverksett, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
         val iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
-        iverksettingJdbc.lagre(
+        iverksettingRepository.lagre(
             UUID.randomUUID(),
             iverksett,
             opprettBrev()
@@ -32,12 +32,12 @@ class IverksettingJdbcTest : ServerTest() {
     fun `lagre og hent iverksett, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
-        iverksettingJdbc.lagre(
+        iverksettingRepository.lagre(
                 iverksett.behandling.behandlingId,
                 iverksett,
                 opprettBrev()
         )
-        val ret = iverksettingJdbc.hent(iverksett.behandling.behandlingId)
+        val ret = iverksettingRepository.hent(iverksett.behandling.behandlingId)
         // TODO: Sjekk innholdet?
     }
 }

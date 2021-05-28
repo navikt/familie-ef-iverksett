@@ -12,11 +12,13 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
 import java.util.UUID
 
 @Repository
-class TilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun opprettTomtResultat(behandlingId: UUID) {
         val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL)"
@@ -36,6 +38,7 @@ class TilstandJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
         ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}")
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun oppdaterOppdragResultat(behandlingId: UUID, oppdragResultat: OppdragResultat) {
         val sql = "UPDATE iverksett_resultat SET oppdragresultat = :oppdragResultat::JSON WHERE behandling_id = :behandlingId"
 
