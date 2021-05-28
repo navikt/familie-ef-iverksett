@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(path = ["/api/iverksett"])
+@RequestMapping(path = ["/api/statistikk/vedtakstatistikk"])
 @ProtectedWithClaims(issuer = "azuread")
 class VedtakstatistikkController(
         val vedtakstatistikkService: VedtakstatistikkService,
 ) {
 
-    @PostMapping("/vedtakstatistikk", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendStatistikk(@RequestBody data: IverksettDto) {
         vedtakstatistikkService.sendTilKafka(data.toDomain())
     }
