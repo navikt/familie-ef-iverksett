@@ -10,7 +10,7 @@ import java.util.UUID
 fun ResultSet.getUUID(columnLabel: String): UUID = UUID.fromString(this.getString(columnLabel))
 
 inline fun <reified T> ResultSet.getJson(columnLabel: String): T? {
-    return objectMapper.readValue<T>(this.getBytes(columnLabel))
+    return this.getBytes(columnLabel)?.let { objectMapper.readValue<T>(it) }
 }
 
 inline fun <reified T> NamedParameterJdbcTemplate.queryForJson(sql: String, paramSource: SqlParameterSource): T? {
