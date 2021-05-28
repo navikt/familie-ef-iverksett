@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(path = ["/api/iverksett/vedtakstatistikk"])
+@RequestMapping(path = ["/api/statistikk/vedtakstatistikk"])
 @ProtectedWithClaims(issuer = "azuread")
 class VedtakstatistikkController(
         val vedtakstatistikkService: VedtakstatistikkService,

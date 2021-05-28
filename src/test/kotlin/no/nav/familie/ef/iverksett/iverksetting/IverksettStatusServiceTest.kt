@@ -1,22 +1,27 @@
-package no.nav.familie.ef.iverksett.iverksettingstatus
+package no.nav.familie.ef.iverksett.iverksetting
 
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandDbUtil
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
 internal class IverksettStatusServiceTest {
 
-    val tilstandDbUtil: TilstandDbUtil = mockk<TilstandDbUtil>()
+    val tilstandDbUtil = mockk<TilstandDbUtil>()
+    val taskRepository = mockk<TaskRepository>()
+    val iverksettingDbUtil = mockk<IverksettingDbUtil>()
 
-    private var iverksettStatusService: IverksettStatusService = IverksettStatusService(tilstandDbUtil)
+    private var iverksettStatusService: IverksettingService = IverksettingService(taskRepository = taskRepository,
+                                                                                  tilstandDbUtil = tilstandDbUtil,
+                                                                                  iverksettingDbUtil = iverksettingDbUtil)
 
 
     @Test

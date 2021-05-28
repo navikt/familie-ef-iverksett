@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksetting.IverksettDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingDbUtil
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
-import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandDbUtil
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
@@ -23,7 +23,7 @@ import java.util.*
     beskrivelse = "Journalfører vedtaksbrev."
 )
 
-class JournalførVedtaksbrevTask(val iverksettDbUtil: IverksettDbUtil,
+class JournalførVedtaksbrevTask(val iverksettingDbUtil: IverksettingDbUtil,
                                 val journalpostClient: JournalpostClient,
                                 val taskRepository: TaskRepository,
                                 val tilstandDbUtil: TilstandDbUtil
@@ -31,9 +31,9 @@ class JournalførVedtaksbrevTask(val iverksettDbUtil: IverksettDbUtil,
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettDbUtil.hentIverksett(behandlingId)
+        val iverksett = iverksettingDbUtil.hentIverksett(behandlingId)
 
-        val vedtaksbrev = iverksettDbUtil.hentBrev(behandlingId)
+        val vedtaksbrev = iverksettingDbUtil.hentBrev(behandlingId)
         val dokument = Dokument(vedtaksbrev.pdf, Filtype.PDFA, dokumenttype = Dokumenttype.VEDTAKSBREV_OVERGANGSSTØNAD)
 
         val journalpostId = journalpostClient.arkiverDokument(

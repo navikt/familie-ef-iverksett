@@ -6,8 +6,8 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.iverksetting.IverksettDbUtil
-import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandDbUtil
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.domene.Task
@@ -19,7 +19,7 @@ import java.util.*
 internal class VentePåStatusFraØkonomiTaskTest {
 
     val oppdragClient = mockk<OppdragClient>()
-    val iverksettDbUtil = mockk<IverksettDbUtil>()
+    val iverksettDbUtil = mockk<IverksettingDbUtil>()
     val taskRepository = mockk<TaskRepository>()
     val lagreTilstandService = mockk<TilstandDbUtil>()
     val behandlingId = UUID.randomUUID()

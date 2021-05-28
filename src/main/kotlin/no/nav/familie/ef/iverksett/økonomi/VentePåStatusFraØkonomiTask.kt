@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.iverksetting.IverksettDbUtil
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
-import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandDbUtil
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -23,7 +23,7 @@ import java.util.UUID
 )
 
 class VentePåStatusFraØkonomiTask(
-        val iverksettDbUtil: IverksettDbUtil,
+        val iverksettingDbUtil: IverksettingDbUtil,
         val oppdragClient: OppdragClient,
         val taskRepository: TaskRepository,
         val tilstandDbUtil: TilstandDbUtil
@@ -31,7 +31,7 @@ class VentePåStatusFraØkonomiTask(
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettDbUtil.hentIverksett(behandlingId)
+        val iverksett = iverksettingDbUtil.hentIverksett(behandlingId)
         val oppdragId = OppdragId(
                 fagsystem = iverksett.fagsak.stønadstype.tilKlassifisering(),
                 personIdent = iverksett.søker.personIdent,

@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.toMedMetadata
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
-import no.nav.familie.ef.iverksett.iverksetting.IverksettDbUtil
-import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.domene.toMedMetadata
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandDbUtil
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -18,7 +18,7 @@ import java.util.UUID
         taskStepType = IverksettMotOppdragTask.TYPE,
         beskrivelse = "Utfører iverksetting av utbetalning mot økonomi."
 )
-class IverksettMotOppdragTask(val iverksettDbUtil: IverksettDbUtil,
+class IverksettMotOppdragTask(val iverksettingDbUtil: IverksettingDbUtil,
                               val oppdragClient: OppdragClient,
                               val taskRepository: TaskRepository,
                               val tilstandDbUtil: TilstandDbUtil
@@ -26,7 +26,7 @@ class IverksettMotOppdragTask(val iverksettDbUtil: IverksettDbUtil,
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettDbUtil.hentIverksett(behandlingId)
+        val iverksett = iverksettingDbUtil.hentIverksett(behandlingId)
         val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
             tilstandDbUtil.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=${it}")
         }

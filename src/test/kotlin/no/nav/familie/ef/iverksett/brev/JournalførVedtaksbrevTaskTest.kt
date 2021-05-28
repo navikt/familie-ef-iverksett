@@ -8,10 +8,10 @@ import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
-import no.nav.familie.ef.iverksett.iverksetting.IverksettDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingDbUtil
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandDbUtil
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
@@ -23,7 +23,7 @@ import java.util.*
 
 internal class JournalførVedtaksbrevTaskTest {
 
-    val iverksettDbUtil = mockk<IverksettDbUtil>()
+    val iverksettDbUtil = mockk<IverksettingDbUtil>()
     val journalpostClient = mockk<JournalpostClient>()
     val taskRepository = mockk<TaskRepository>()
     val lagreTilstandService = mockk<TilstandDbUtil>()

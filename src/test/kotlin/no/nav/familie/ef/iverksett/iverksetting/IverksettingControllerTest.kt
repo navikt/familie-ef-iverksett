@@ -12,10 +12,10 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import java.util.*
+import java.util.UUID
 
 
-class IverksettControllerTest : ServerTest() {
+class IverksettingControllerTest : ServerTest() {
 
     private val behandlingId = UUID.randomUUID()
 
@@ -49,8 +49,8 @@ class IverksettControllerTest : ServerTest() {
                 .build()
 
         val respons: ResponseEntity<String> = restTemplate.exchange(localhostUrl("/api/iverksett"),
-                                                                 HttpMethod.POST,
-                                                                 HttpEntity(request, headers))
+                                                                    HttpMethod.POST,
+                                                                    HttpEntity(request, headers))
 
         assertThat(respons.statusCode.value()).isEqualTo(400)
     }

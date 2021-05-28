@@ -5,8 +5,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
-import no.nav.familie.ef.iverksett.iverksetting.IverksettJdbc
-import no.nav.familie.ef.iverksett.iverksetting.IverksettDbUtil
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
@@ -14,15 +12,15 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
 
-class IverksettDbUtilTest : ServerTest() {
+class IverksettingDbUtilTest : ServerTest() {
 
-    private lateinit var iverksettJdbc: IverksettJdbc
-    private lateinit var iverksettDbUtil: IverksettDbUtil
+    private lateinit var iverksettingJdbc: IverksettingJdbc
+    private lateinit var iverksettingDbUtil: IverksettingDbUtil
 
     @BeforeEach
     fun setUp() {
-        iverksettJdbc = mockk()
-        iverksettDbUtil = IverksettDbUtil(iverksettJdbc)
+        iverksettingJdbc = mockk()
+        iverksettingDbUtil = IverksettingDbUtil(iverksettingJdbc)
     }
 
     @Test
@@ -30,17 +28,17 @@ class IverksettDbUtilTest : ServerTest() {
         val behandlingId = UUID.randomUUID()
         val iverksettDto: IverksettDto = opprettIverksettDto(behandlingId)
 
-        every { iverksettJdbc.lagre(any(), any(), any()) } returns Unit
+        every { iverksettingJdbc.lagre(any(), any(), any()) } returns Unit
 
         val iverksett = iverksettDto.toDomain()
         val brev = opprettBrev()
 
-        iverksettDbUtil.lagreIverksett(
+        iverksettingDbUtil.lagreIverksett(
             behandlingId = behandlingId,
             iverksett = iverksett,
             brev = brev
         )
 
-        verify(exactly = 1) { iverksettJdbc.lagre(behandlingId, iverksett, brev) }
+        verify(exactly = 1) { iverksettingJdbc.lagre(behandlingId, iverksett, brev) }
     }
 }

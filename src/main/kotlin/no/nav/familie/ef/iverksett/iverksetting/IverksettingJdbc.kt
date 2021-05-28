@@ -10,10 +10,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
-import java.util.*
+import java.util.UUID
 
 @Repository
-class IverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+class IverksettingJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     @Transactional
     fun lagre(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {
@@ -21,26 +21,26 @@ class IverksettJdbc(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) 
     }
 
     private fun lagreIverksett(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {
-        val sql = "insert into iverksett values(:behandlingId, :iverksettJson::json)"
+        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON)"
         val iverksettString = objectMapper.writeValueAsString(iverksett)
 
         val mapSqlParameterSource = MapSqlParameterSource(
-            mapOf(
-                    "behandlingId" to behandlingId,
-                    "iverksettJson" to iverksettString
-            )
+                mapOf(
+                        "behandlingId" to behandlingId,
+                        "iverksettJson" to iverksettString
+                )
         )
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
         lagreBrev(behandlingId, brev)
     }
 
     private fun lagreBrev(behandlingId: UUID, brev: Brev) {
-        val sql = "insert into brev values(:behandlingId, :pdf)"
+        val sql = "INSERT INTO brev VALUES(:behandlingId, :pdf)"
         val mapSqlParameterSource = MapSqlParameterSource(
-            mapOf(
-                "behandlingId" to behandlingId,
-                "pdf" to brev.pdf
-            )
+                mapOf(
+                        "behandlingId" to behandlingId,
+                        "pdf" to brev.pdf
+                )
         )
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }

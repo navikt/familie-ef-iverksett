@@ -5,8 +5,8 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
-import no.nav.familie.ef.iverksett.iverksetting.IverksettDbUtil
-import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingDbUtil
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandDbUtil
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.prosessering.domene.Task
@@ -22,12 +22,12 @@ internal class IverksettMotOppdragTaskTest {
 
     val oppdragClient = mockk<OppdragClient>()
     val taskRepository = mockk<TaskRepository>()
-    val iverksettDbUtil = mockk<IverksettDbUtil>()
+    val iverksettDbUtil = mockk<IverksettingDbUtil>()
     val tilstandDbUtil = mockk<TilstandDbUtil>()
     val behandlingId = UUID.randomUUID()
     val iverksettMotOppdragTask =
             IverksettMotOppdragTask(
-                    iverksettDbUtil = iverksettDbUtil,
+                    iverksettingDbUtil = iverksettDbUtil,
                     oppdragClient = oppdragClient,
                     taskRepository = taskRepository,
                     tilstandDbUtil = tilstandDbUtil

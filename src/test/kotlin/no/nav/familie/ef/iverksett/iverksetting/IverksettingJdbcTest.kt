@@ -5,7 +5,6 @@ import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.IverksettJdbc
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -13,16 +12,16 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
 
-class IverksettJdbcTest : ServerTest() {
+class IverksettingJdbcTest : ServerTest() {
 
     @Autowired
-    private lateinit var iverksettJdbc: IverksettJdbc
+    private lateinit var iverksettingJdbc: IverksettingJdbc
 
     @Test
     fun `deserialiser og lagre iverksett, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
         val iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
-        iverksettJdbc.lagre(
+        iverksettingJdbc.lagre(
             UUID.randomUUID(),
             iverksett,
             opprettBrev()
@@ -33,12 +32,12 @@ class IverksettJdbcTest : ServerTest() {
     fun `lagre og hent iverksett, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
-        iverksettJdbc.lagre(
+        iverksettingJdbc.lagre(
                 iverksett.behandling.behandlingId,
                 iverksett,
                 opprettBrev()
         )
-        val ret = iverksettJdbc.hent(iverksett.behandling.behandlingId)
+        val ret = iverksettingJdbc.hent(iverksett.behandling.behandlingId)
         // TODO: Sjekk innholdet?
     }
 }

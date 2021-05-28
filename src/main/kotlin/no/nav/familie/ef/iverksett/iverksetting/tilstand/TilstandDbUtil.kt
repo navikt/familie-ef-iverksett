@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand
+package no.nav.familie.ef.iverksett.iverksetting.tilstand
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat

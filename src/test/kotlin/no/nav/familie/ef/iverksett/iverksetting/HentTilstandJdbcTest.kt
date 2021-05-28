@@ -1,10 +1,10 @@
-package no.nav.familie.ef.iverksett.iverksettingstatus.tilstand
+package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksettingstatus.status.tilstand.TilstandJdbc
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandJdbc
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
