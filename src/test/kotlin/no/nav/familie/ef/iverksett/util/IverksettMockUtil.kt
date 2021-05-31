@@ -21,7 +21,7 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
-import no.nav.familie.kontrakter.ef.felles.Vedtak
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetskravDto
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
@@ -83,7 +83,7 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                     kode6eller7 = false
             ),
             vedtak = VedtaksdetaljerDto(
-                    vedtak = Vedtak.INNVILGET,
+                    vedtaksresultat = Vedtaksresultat.INNVILGET,
                     vedtaksdato = LocalDate.of(2021, 5, 12),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",
@@ -145,7 +145,7 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     kode6eller7 = false
             ),
             vedtak = Vedtaksdetaljer(
-                    vedtak = Vedtak.INNVILGET,
+                    vedtaksresultat = Vedtaksresultat.INNVILGET,
                     vedtaksdato = LocalDate.of(2021, 5, 12),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",
