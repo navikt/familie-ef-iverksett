@@ -32,7 +32,7 @@ class SendFattetVedtakTilInfotrygdTask(private val infotrygdFeedClient: Infotryg
     }
 
     override fun onCompletion(task: Task) {
-        //taskRepository.save(task.opprettNesteTask()) // TODO når SendPerioderTilInfotrygdTask kommer
+        taskRepository.save(task.opprettNesteTask())
     }
 
     companion object {
