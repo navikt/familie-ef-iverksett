@@ -2,6 +2,8 @@ package no.nav.familie.ef.iverksett.infrastruktur.json
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.objectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

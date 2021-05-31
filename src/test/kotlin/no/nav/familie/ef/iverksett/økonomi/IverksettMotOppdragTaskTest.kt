@@ -4,10 +4,9 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.hentIverksett.tjeneste.HentIverksettService
-import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
-import no.nav.familie.ef.iverksett.tilstand.hent.HentTilstandService
-import no.nav.familie.ef.iverksett.tilstand.lagre.LagreTilstandService
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.prosessering.domene.Task
@@ -15,40 +14,39 @@ import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.Properties
+import java.util.UUID
 
 internal class IverksettMotOppdragTaskTest {
 
 
     val oppdragClient = mockk<OppdragClient>()
     val taskRepository = mockk<TaskRepository>()
-    val hentIverksettService = mockk<HentIverksettService>()
-    val lagreTilstandService = mockk<LagreTilstandService>()
-    val hentTilstandService = mockk<HentTilstandService>()
+    val iverksettingRepository = mockk<IverksettingRepository>()
+    val tilstandRepository = mockk<TilstandRepository>()
     val behandlingId = UUID.randomUUID()
     val iverksettMotOppdragTask =
-        IverksettMotOppdragTask(
-            hentIverksettService = hentIverksettService,
-            oppdragClient = oppdragClient,
-            taskRepository = taskRepository,
-            lagreTilstandService = lagreTilstandService,
-            hentTilstandService = hentTilstandService
-        )
+            IverksettMotOppdragTask(
+                    iverksettingRepository = iverksettingRepository,
+                    oppdragClient = oppdragClient,
+                    taskRepository = taskRepository,
+                    tilstandRepository = tilstandRepository
+            )
 
     @BeforeEach
     internal fun setUp() {
-        every { hentIverksettService.hentIverksett(any()) } returns opprettIverksettDto(behandlingId).toDomain()
+        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId).toDomain()
     }
 
     @Test
     internal fun `skal sende utbetaling til oppdrag`() {
         val oppdragSlot = slot<Utbetalingsoppdrag>()
         every { oppdragClient.iverksettOppdrag(capture(oppdragSlot)) } returns "abc"
-        every { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
-        every { hentTilstandService.hentTilkjentYtelse(any()) } returns null
+        every { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
+        every { tilstandRepository.hentTilkjentYtelse(any()) } returns null
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
         verify(exactly = 1) { oppdragClient.iverksettOppdrag(any()) }
-        verify(exactly = 1) { lagreTilstandService.lagreTilkjentYtelseForUtbetaling(behandlingId, any()) }
+        verify(exactly = 1) { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) }
         assertThat(oppdragSlot.captured.fagSystem).isEqualTo("EFOG")
         assertThat(oppdragSlot.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.NY)
     }

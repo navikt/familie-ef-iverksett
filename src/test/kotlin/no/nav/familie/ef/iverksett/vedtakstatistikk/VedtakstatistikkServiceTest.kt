@@ -8,9 +8,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
-import no.nav.familie.ef.iverksett.domene.VilkårType
-import no.nav.familie.ef.iverksett.infrastruktur.json.IverksettDto
-import no.nav.familie.ef.iverksett.infrastruktur.json.toDomain
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
@@ -25,6 +23,8 @@ import no.nav.familie.eksterne.kontrakter.ef.Person
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
+import no.nav.familie.kontrakter.ef.felles.VilkårType
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.objectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
