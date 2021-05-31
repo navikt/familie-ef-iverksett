@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
-import no.nav.familie.ef.iverksett.journalføring.DistribuerVedtaksbrevTask
-import no.nav.familie.ef.iverksett.journalføring.JournalførVedtaksbrevTask
+import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
+import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.VentePåStatusFraØkonomiTask
 import no.nav.familie.prosessering.domene.Task

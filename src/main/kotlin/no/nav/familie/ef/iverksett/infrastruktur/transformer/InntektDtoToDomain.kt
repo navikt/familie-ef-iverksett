@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.transformer
 
-import no.nav.familie.ef.iverksett.iverksett.domene.Inntekt
-import no.nav.familie.ef.iverksett.iverksett.domene.Inntektsreduksjon
+import no.nav.familie.ef.iverksett.iverksetting.domene.Inntekt
+import no.nav.familie.ef.iverksett.iverksetting.domene.Inntektsreduksjon
 import no.nav.familie.kontrakter.ef.iverksett.InntektDto
 import no.nav.familie.kontrakter.ef.iverksett.InntektsreduksjonDto
 
