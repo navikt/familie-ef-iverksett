@@ -6,7 +6,7 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
 import no.nav.familie.kontrakter.ef.felles.RegelId
 import no.nav.familie.kontrakter.ef.felles.StønadType
-import no.nav.familie.kontrakter.ef.felles.Vedtak
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
@@ -37,7 +37,7 @@ data class Søker(
 )
 
 data class Vedtaksdetaljer(
-        val vedtak: Vedtak,
+        val vedtaksresultat: Vedtaksresultat,
         val vedtaksdato: LocalDate,
         val opphørÅrsak: OpphørÅrsak?,
         val saksbehandlerId: String,

@@ -48,7 +48,7 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
                              behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
                              behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
                              behandlingResultat = BehandlingResultat.valueOf(iverksett.behandling.behandlingResultat.name),
-                             vedtak = Vedtak.valueOf(iverksett.vedtak.vedtak.name),
+                             vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
                              utbetalinger = mapTilUtbetaling(iverksett.vedtak.tilkjentYtelse, iverksett.fagsak.stønadstype, iverksett.fagsak.eksternId, iverksett.søker.personIdent),
                              inntekt = iverksett.vedtak.inntekter.map { inntekt ->
                                  Inntekt(mapTilPeriodeBeløp(inntekt.periodebeløp),
