@@ -83,7 +83,7 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                     kode6eller7 = false
             ),
             vedtak = VedtaksdetaljerDto(
-                    vedtaksresultat = Vedtaksresultat.INNVILGET,
+                    resultat = Vedtaksresultat.INNVILGET,
                     vedtaksdato = LocalDate.of(2021, 5, 12),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",

@@ -47,7 +47,7 @@
     "personIdent": "12345678901"
   },
   "vedtak": {
-    "vedtak": "AVSLÅTT",
+    "resultat": "AVSLÅTT",
     "opphørÅrsak": "PERIODE_UTLØPT",
     "vedtaksdato": "2021-05-10",
     "saksbehandlerId": "A123456",

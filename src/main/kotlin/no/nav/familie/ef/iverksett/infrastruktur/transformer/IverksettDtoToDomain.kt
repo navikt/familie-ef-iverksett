@@ -62,7 +62,7 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
 }
 
 fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
-    return Vedtaksdetaljer(vedtaksresultat = this.vedtaksresultat,
+    return Vedtaksdetaljer(vedtaksresultat = this.resultat,
                            vedtaksdato = this.vedtaksdato,
                            opphørÅrsak = this.opphørÅrsak,
                            saksbehandlerId = this.saksbehandlerId,
