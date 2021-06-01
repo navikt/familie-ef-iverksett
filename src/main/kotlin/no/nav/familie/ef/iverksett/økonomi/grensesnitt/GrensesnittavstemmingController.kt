@@ -23,6 +23,9 @@ class GrensesnittavstemmingController(val taskRepository: TaskRepository) {
     fun settIGangGrensesnittavstemming(): ResponseEntity<Ressurs<String>> {
         val iDag = LocalDate.now()
 
+        if (true) {
+            return ResponseEntity.ok(Ressurs.success("Har allerede laget task for grensesnittavstemming for overgangsstønad"))
+        }
         logger.info("Lager task for grensesnittavstemming")
         val grensesnittavstemmingTask =
                 GrensesnittavstemmingDto(StønadType.OVERGANGSSTØNAD, iDag.minusDays(1), iDag.atStartOfDay()).tilTask()

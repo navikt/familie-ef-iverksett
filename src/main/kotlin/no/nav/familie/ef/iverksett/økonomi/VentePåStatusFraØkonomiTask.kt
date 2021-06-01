@@ -35,7 +35,7 @@ class VentePåStatusFraØkonomiTask(
         val oppdragId = OppdragId(
                 fagsystem = iverksett.fagsak.stønadstype.tilKlassifisering(),
                 personIdent = iverksett.søker.personIdent,
-                behandlingsId = iverksett.behandling.behandlingId.toString()
+                behandlingsId = iverksett.behandling.eksternId.toString()
         )
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)
