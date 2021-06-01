@@ -34,7 +34,7 @@ data class Søker(
         val barn: List<Barn> = ArrayList(),
         val tilhørendeEnhet: String,
         val kode6eller7: Boolean,
-        val personIdenter: Set<String> = setOf(personIdent) // TODO skal settes fra iverksett-dto
+        val allePersonIdenter: Set<String> = emptySet()
 )
 
 data class Vedtaksdetaljer(

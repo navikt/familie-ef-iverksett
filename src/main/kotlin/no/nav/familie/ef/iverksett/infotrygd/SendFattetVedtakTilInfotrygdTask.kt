@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.infotrygd
 
-import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -25,7 +24,7 @@ class SendFattetVedtakTilInfotrygdTask(private val infotrygdFeedClient: Infotryg
         val iverksett = iverksettingRepository.hent(behandlingId)
 
         val stønadstype = iverksett.fagsak.stønadstype
-        val personIdenter = iverksett.søker.personIdenter
+        val personIdenter = iverksett.søker.allePersonIdenter
         val startDato = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.periodebeløp.fraOgMed }
                         ?: error("Finner ikke noen andel med fraOgMed for behandling=$behandlingId")
 

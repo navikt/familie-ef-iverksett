@@ -57,6 +57,6 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
 
         val nyTilkjentYtelse = tilkjentYtelse.copy(andelerTilkjentYtelse = andelerTilkjentYtelse)
         return iverksett.copy(vedtak = vedtak.copy(tilkjentYtelse = nyTilkjentYtelse),
-                              søker = iverksett.søker.copy(personIdenter = personIdenter))
+                              søker = iverksett.søker.copy(allePersonIdenter = personIdenter))
     }
 }

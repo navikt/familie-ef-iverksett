@@ -142,7 +142,8 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     personIdent = "12345678910",
                     barn = emptyList(),
                     tilhørendeEnhet = "4489",
-                    kode6eller7 = false
+                    kode6eller7 = false,
+                    allePersonIdenter = setOf("12345678910")
             ),
             vedtak = Vedtaksdetaljer(
                     vedtaksresultat = Vedtaksresultat.INNVILGET,
