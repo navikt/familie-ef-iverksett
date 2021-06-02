@@ -24,7 +24,7 @@ class BehandlingstatistikkControllerTest : ServerTest() {
     @Test
     internal fun `Sende behandlingsstatistikk skal gi 200 OK`() {
         val behandlingStatistikkDto = BehandlingStatistikkDto(UUID.randomUUID(), "aktor", "saksbehandler", "saksnummer",
-                                                              ZonedDateTime.now(), ZonedDateTime.now(), Hendelse.PÅBEGYNT)
+                                                              ZonedDateTime.now(), Hendelse.PÅBEGYNT, "", "")
         val response: ResponseEntity<HttpStatus> =
                 restTemplate.exchange(localhostUrl("/api/statistikk/behandlingstatistikk/"), HttpMethod.POST,
                                       HttpEntity(behandlingStatistikkDto, headers))

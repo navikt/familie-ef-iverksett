@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping(path = ["/api/statistikk/behandlingstatistikk"])
 @ProtectedWithClaims(issuer = "azuread")
-class BehandlingstatistikkController {
+class BehandlingstatistikkController(val behandlingstatistikkService: BehandlingstatistikkService) {
 
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun sendBehandlingstatistikk(@RequestBody behandlingStatistikk: BehandlingStatistikkDto): ResponseEntity<Unit> {
-        //TODO: sende behandlingsstatistikk til DVH
-        return ResponseEntity(HttpStatus.OK)
+    fun sendBehandlingstatistikk(@RequestBody behandlingStatistikk: BehandlingStatistikkDto) {
+        behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikk)
     }
 }
