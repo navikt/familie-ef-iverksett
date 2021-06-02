@@ -74,6 +74,15 @@ management:
       path-mapping:
          info: "isAlive"
 
+arena-mq:
+   queueManager: MPLS01
+   channel: P_FAMILIE_EF_IVERKS
+   hostname: a01apvl247.adeo.no
+   port: 1414
+   queueName: QA.P_475.SOB_VEDTAKHENDELSER_ARE
+   servicebruker: ${SERVICEBRUKER}
+   servicebrukerPassord: ${SERVICEBRUKER_PASSORD}
+
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.prod-fss-pub.nais.io
 ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-test
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.prod-fss-pub.nais.io

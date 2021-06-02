@@ -4,7 +4,7 @@ import com.ibm.mq.constants.CMQC
 import com.ibm.mq.jms.MQConnectionFactory
 import com.ibm.mq.jms.MQQueueConnectionFactory
 import com.ibm.msg.client.wmq.WMQConstants
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jms.annotation.EnableJms
@@ -16,36 +16,15 @@ import javax.jms.JMSException
 
 @Configuration
 @EnableJms
-class JmsConfig {
+@EnableConfigurationProperties(ArenaMqConfigProperties::class)
+class ArenaMqConfig(val arenaMqConfigProperties: ArenaMqConfigProperties) {
 
     private val UTF_8_WITH_PUA = 1208
-
-    @Value("\${MQ_QUEUE_MANAGER}")
-    lateinit var queueManager: String
-
-    @Value("\${MQ_HOSTNAME}")
-    lateinit var hostname: String
-
-    @Value("\${MQ_PORT}")
-    lateinit var port: String
-
-    @Value("\${MQ_CHANNEL}")
-    lateinit var channel: String
-
-    @Value("\${SERVICEBRUKER}")
-    lateinit var servicebruker: String
-
-    @Value("\${SERVICEBRUKER_PASSORD}")
-    lateinit var servicebrukerPassord: String
-
-    @Value("\${VEDTAKHENDELSER_QUEUE_NAME}")
-    lateinit var vedtakhendelserQueueName: String
-
 
     @Bean
     fun jmsTemplate(connectionFactory: ConnectionFactory): JmsTemplate {
         val jmsTemplate = JmsTemplate(connectionFactory)
-        jmsTemplate.defaultDestinationName = vedtakhendelserQueueName
+        jmsTemplate.defaultDestinationName = arenaMqConfigProperties.queueName
         return jmsTemplate
     }
 
@@ -53,18 +32,18 @@ class JmsConfig {
     @Throws(JMSException::class)
     fun queueConnectionFactory(): ConnectionFactory {
         val connectionFactory: MQConnectionFactory = MQQueueConnectionFactory()
-        connectionFactory.queueManager = queueManager
-        connectionFactory.hostName = hostname
-        connectionFactory.port = Integer.valueOf(port)
-        connectionFactory.channel = channel
+        connectionFactory.queueManager = arenaMqConfigProperties.queueManager
+        connectionFactory.hostName = arenaMqConfigProperties.hostName
+        connectionFactory.port = Integer.valueOf(arenaMqConfigProperties.port)
+        connectionFactory.channel = arenaMqConfigProperties.channel
         connectionFactory.transportType = WMQConstants.WMQ_CM_CLIENT
         connectionFactory.ccsid = UTF_8_WITH_PUA
         connectionFactory.setIntProperty(WMQConstants.JMS_IBM_ENCODING, CMQC.MQENC_NATIVE)
         connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA)
         val adapter = UserCredentialsConnectionFactoryAdapter()
         adapter.setTargetConnectionFactory(connectionFactory)
-        adapter.setUsername(servicebruker)
-        adapter.setPassword(servicebrukerPassord)
+        adapter.setUsername(arenaMqConfigProperties.servicebruker)
+        adapter.setPassword(arenaMqConfigProperties.servicebrukerPassord)
 
         val cachingConnectionFactory = CachingConnectionFactory()
         cachingConnectionFactory.targetConnectionFactory = adapter

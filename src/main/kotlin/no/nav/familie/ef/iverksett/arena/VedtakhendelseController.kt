@@ -16,7 +16,7 @@ class VedtakhendelseController(
 ) {
 
     @PostMapping("/vedtakhendelse", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun sendStatistikk(@RequestBody data: String) {
+    fun sendVedtakhendelse(@RequestBody data: String) {
         vedtakhendelseProducer.produce("testmelding $data" )
     }
 
