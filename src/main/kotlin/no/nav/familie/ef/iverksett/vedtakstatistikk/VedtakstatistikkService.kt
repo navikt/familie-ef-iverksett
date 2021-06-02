@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
-import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksett.domene.Periodebeløp
-import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
@@ -48,7 +48,7 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
                              behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
                              behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
                              behandlingResultat = BehandlingResultat.valueOf(iverksett.behandling.behandlingResultat.name),
-                             vedtak = Vedtak.valueOf(iverksett.vedtak.vedtak.name),
+                             vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
                              utbetalinger = mapTilUtbetaling(iverksett.vedtak.tilkjentYtelse, iverksett.fagsak.stønadstype, iverksett.fagsak.eksternId, iverksett.søker.personIdent),
                              inntekt = iverksett.vedtak.inntekter.map { inntekt ->
                                  Inntekt(mapTilPeriodeBeløp(inntekt.periodebeløp),
@@ -81,7 +81,7 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
         return Person(personIdent = personIdent, aktorId = aktorId)
     }
 
-    private fun mapTilVilkårsvurderinger(vilkårsvurdering: no.nav.familie.ef.iverksett.iverksett.domene.Vilkårsvurdering): Vilkårsvurdering {
+    private fun mapTilVilkårsvurderinger(vilkårsvurdering: no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering): Vilkårsvurdering {
         return Vilkårsvurdering(vilkår = Vilkår.valueOf(vilkårsvurdering.vilkårType.name),
                                 oppfylt = vilkårsvurdering.resultat == Vilkårsresultat.OPPFYLT)
     }

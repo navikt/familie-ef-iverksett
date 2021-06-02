@@ -1,27 +1,27 @@
 package no.nav.familie.ef.iverksett.util
 
-import no.nav.familie.ef.iverksett.iverksett.domene.Aktivitetskrav
-import no.nav.familie.ef.iverksett.iverksett.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksett.domene.Behandlingsdetaljer
-import no.nav.familie.ef.iverksett.iverksett.domene.Brev
-import no.nav.familie.ef.iverksett.iverksett.domene.DistribuerVedtaksbrevResultat
-import no.nav.familie.ef.iverksett.iverksett.domene.Fagsakdetaljer
-import no.nav.familie.ef.iverksett.iverksett.domene.Inntekt
-import no.nav.familie.ef.iverksett.iverksett.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksett.domene.IverksettResultat
-import no.nav.familie.ef.iverksett.iverksett.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksett.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.iverksett.domene.Periodebeløp
-import no.nav.familie.ef.iverksett.iverksett.domene.Søker
-import no.nav.familie.ef.iverksett.iverksett.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksett.domene.Vedtaksdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Aktivitetskrav
+import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
+import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Inntekt
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
+import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.kontrakter.ef.felles.BehandlingResultat
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
-import no.nav.familie.kontrakter.ef.felles.Vedtak
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetskravDto
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
@@ -83,7 +83,7 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                     kode6eller7 = false
             ),
             vedtak = VedtaksdetaljerDto(
-                    vedtak = Vedtak.INNVILGET,
+                    resultat = Vedtaksresultat.INNVILGET,
                     vedtaksdato = LocalDate.of(2021, 5, 12),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",
@@ -145,7 +145,7 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     kode6eller7 = false
             ),
             vedtak = Vedtaksdetaljer(
-                    vedtak = Vedtak.INNVILGET,
+                    vedtaksresultat = Vedtaksresultat.INNVILGET,
                     vedtaksdato = LocalDate.of(2021, 5, 12),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",

@@ -2,8 +2,8 @@ package no.nav.familie.ef.iverksett.infrastruktur.transformer
 
 import no.nav.familie.ef.iverksett.infrastruktur.json.BarnDto
 import no.nav.familie.ef.iverksett.infrastruktur.json.PersonDto
-import no.nav.familie.ef.iverksett.iverksett.domene.Barn
-import no.nav.familie.ef.iverksett.iverksett.domene.Person
+import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
+import no.nav.familie.ef.iverksett.iverksetting.domene.Person
 
 fun PersonDto.toDomain(): Person {
     return Person(this.personIdent, this.aktorId)
