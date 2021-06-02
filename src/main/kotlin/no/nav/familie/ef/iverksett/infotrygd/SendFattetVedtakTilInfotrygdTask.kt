@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.infotrygd
 
+import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
 import no.nav.familie.prosessering.AsyncTaskStep

@@ -6,6 +6,7 @@ import no.nav.familie.kontrakter.ef.infotrygd.Periode
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -16,12 +17,16 @@ import java.util.UUID
         beskrivelse = "Sender periodehendelse til infotrygd"
 )
 class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFeedClient,
-                                   private val iverksettingRepository: IverksettingRepository) : AsyncTaskStep {
+                                   private val iverksettingRepository: IverksettingRepository,
+                                   @Value("\${NAIS_CLUSTER_NAME:prod}") private val cluster: String) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
+        if (!cluster.contains("dev")) {
+            error("Må håndtere fullOvergangsstønad før denne kjøres i prod")
+        }
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
         val stønadstype = iverksett.fagsak.stønadstype
-        val personIdenter = iverksett.søker.personIdenter
+        val personIdenter = iverksett.søker.allePersonIdenter
         val perioder = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.map {
             Periode(startdato = it.periodebeløp.fraOgMed,
                     sluttdato = it.periodebeløp.tilOgMed,
