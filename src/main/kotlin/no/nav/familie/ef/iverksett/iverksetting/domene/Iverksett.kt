@@ -34,6 +34,7 @@ data class Søker(
         val barn: List<Barn> = ArrayList(),
         val tilhørendeEnhet: String,
         val kode6eller7: Boolean,
+        val allePersonIdenter: Set<String> = emptySet()
 )
 
 data class Vedtaksdetaljer(
