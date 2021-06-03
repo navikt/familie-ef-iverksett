@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
@@ -50,8 +49,7 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
                              vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
                              utbetalinger = mapTilUtbetaling(iverksett.vedtak.tilkjentYtelse,
                                                              iverksett.fagsak.stønadstype,
-                                                             iverksett.fagsak.eksternId,
-                                                             iverksett.søker.personIdent),
+                                                             iverksett.fagsak.eksternId),
                              inntekt = iverksett.vedtak.inntekter.map { inntekt ->
                                  Inntekt(
                                          beløp = inntekt.beløp,
@@ -67,40 +65,36 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
     }
 
     private fun hentHarSagtOppEllerRedusertFraVurderinger(vilkårsvurderinger: List<Vilkårsvurdering>): Boolean? {
-        return vilkårsvurderinger
-                       .find { it.vilkårType == VilkårType.SAGT_OPP_ELLER_REDUSERT }
-                       ?.let { vilkårsvurderingDto ->
-                           if (vilkårsvurderingDto.resultat == Vilkårsresultat.SKAL_IKKE_VURDERES) {
-                               return null
-                           } else {
-                               vilkårsvurderingDto.delvilkårsvurderinger
-                                       .any { delvilkår ->
-                                           val vurdering =
-                                                   delvilkår.vurderinger.find { vurdering -> vurdering.regelId == RegelId.SAGT_OPP_ELLER_REDUSERT }
-                                           vurdering?.svar?.let {
-                                               when (it) {
-                                                   SvarId.JA -> true
-                                                   SvarId.NEI -> false
-                                                   else -> error("Sagt opp eller redusert har bara ja eller nej som svarslaternativ $it")
+        val vilkårsvurdering = vilkårsvurderinger.find { it.vilkårType == VilkårType.SAGT_OPP_ELLER_REDUSERT }
+                               ?: error("Finner ikke vurderingen for sagt opp eller redusert")
 
-                                               }
-                                           } ?: error("Finner ikke delvilkårsvurderingen for sagt opp eller reducert")
-                                       }
-                           }
-                       } ?: error("Finner ikke vurderingen for sagt opp eller redusert")
+        return if (vilkårsvurdering.resultat == Vilkårsresultat.SKAL_IKKE_VURDERES) {
+            null
+        } else {
+            vilkårsvurdering.delvilkårsvurderinger.flatMap { it.vurderinger }
+                    .firstOrNull { it.regelId == RegelId.SAGT_OPP_ELLER_REDUSERT }
+                    ?.let { harSagtOppEllerRedusertStilling(it.svar) }
+            ?: error("Finner ikke delvilkårsvurderingen for sagt opp eller redusert stilling")
+        }
+    }
+
+    private fun harSagtOppEllerRedusertStilling(svarId: SvarId?) = when (svarId) {
+        SvarId.JA -> true
+        SvarId.NEI -> false
+        else -> error("Sagt opp eller redusert har bara ja eller nej som svarslaternativ $svarId")
+
     }
 
     private fun mapTilUtbetaling(tilkjentYtelse: TilkjentYtelse,
                                  stønadsType: StønadType,
-                                 eksternFagsakId: Long,
-                                 personIdent: String): List<Utbetaling> {
+                                 eksternFagsakId: Long): List<Utbetaling> {
         return tilkjentYtelse.andelerTilkjentYtelse.map {
             Utbetaling(
                     beløp = it.periodebeløp.beløp,
                     fraOgMed = it.periodebeløp.fraOgMed,
                     tilOgMed = it.periodebeløp.tilOgMed,
-                       Utbetalingsdetalj(klassekode = stønadsType.tilKlassifisering(),
-                                         delytelseId = eksternFagsakId.toString() + it.periodeId))
+                    Utbetalingsdetalj(klassekode = stønadsType.tilKlassifisering(),
+                                      delytelseId = eksternFagsakId.toString() + it.periodeId))
         }
     }
 
