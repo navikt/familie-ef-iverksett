@@ -44,7 +44,8 @@
     ],
     "tilhørendeEnhet": "4489",
     "kode6eller7": true,
-    "personIdent": "12345678901"
+    "personIdent": "12345678901",
+    "allePersonIdenter": ["12345678901"]
   },
   "vedtak": {
     "resultat": "AVSLÅTT",

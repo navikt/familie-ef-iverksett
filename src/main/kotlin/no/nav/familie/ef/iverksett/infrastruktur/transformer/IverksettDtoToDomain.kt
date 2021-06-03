@@ -45,7 +45,7 @@ fun FagsakdetaljerDto.toDomain(): Fagsakdetaljer {
 fun SøkerDto.toDomain(): Søker {
     return Søker(aktivitetskrav = this.aktivitetskrav.toDomain(),
                  personIdent = this.personIdent,
-                 barn = this.barn.map { it.toDomain()},
+                 barn = this.barn.map { it.toDomain() },
                  tilhørendeEnhet = this.tilhørendeEnhet,
                  kode6eller7 = this.kode6eller7)
 }

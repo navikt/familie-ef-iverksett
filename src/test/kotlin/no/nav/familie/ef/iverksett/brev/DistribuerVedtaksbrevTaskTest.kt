@@ -18,7 +18,7 @@ internal class DistribuerVedtaksbrevTaskTest {
 
     val journalpostClient = mockk<JournalpostClient>()
     val tilstandRepository = mockk<TilstandRepository>()
-    val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository)
+    val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository, mockk(relaxed = true))
 
     @Test
     internal fun `skal distribuere brev`() {
