@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
+import no.nav.familie.ef.iverksett.util.VilkårsvurderingUtil.hentHarSagtOppEllerRedusertFraVurderinger
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
@@ -14,12 +15,9 @@ import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
-import no.nav.familie.kontrakter.ef.felles.RegelId
 import no.nav.familie.kontrakter.ef.felles.StønadType
-import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering.UGRADERT
-import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import org.springframework.stereotype.Service
 import java.time.ZoneId
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsvurdering as VilkårsvurderingEkstern
@@ -51,37 +49,16 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
                                                              iverksett.fagsak.stønadstype,
                                                              iverksett.fagsak.eksternId),
                              inntekt = iverksett.vedtak.inntekter.map { inntekt ->
-                                 Inntekt(
-                                         beløp = inntekt.beløp,
+                                 Inntekt(beløp = inntekt.beløp,
                                          samordningsfradrag = inntekt.samordningsfradrag,
                                          fraOgMed = inntekt.fraOgMed,
                                          tilOgMed = inntekt.tilOgMed
                                  )
                              },
-                             aktivitetskrav = Aktivitetskrav(harSagtOppArbeidsforhold = hentHarSagtOppEllerRedusertFraVurderinger(
-                                     iverksett.behandling.vilkårsvurderinger)),
+                             aktivitetskrav = Aktivitetskrav(
+                                     harSagtOppArbeidsforhold = hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger)
+                             ),
                              funksjonellId = iverksett.behandling.eksternId.toString())
-
-    }
-
-    private fun hentHarSagtOppEllerRedusertFraVurderinger(vilkårsvurderinger: List<Vilkårsvurdering>): Boolean? {
-        val vilkårsvurdering = vilkårsvurderinger.find { it.vilkårType == VilkårType.SAGT_OPP_ELLER_REDUSERT }
-                               ?: error("Finner ikke vurderingen for sagt opp eller redusert")
-
-        return if (vilkårsvurdering.resultat == Vilkårsresultat.SKAL_IKKE_VURDERES) {
-            null
-        } else {
-            vilkårsvurdering.delvilkårsvurderinger.flatMap { it.vurderinger }
-                    .firstOrNull { it.regelId == RegelId.SAGT_OPP_ELLER_REDUSERT }
-                    ?.let { harSagtOppEllerRedusertStilling(it.svar) }
-            ?: error("Finner ikke delvilkårsvurderingen for sagt opp eller redusert stilling")
-        }
-    }
-
-    private fun harSagtOppEllerRedusertStilling(svarId: SvarId?) = when (svarId) {
-        SvarId.JA -> true
-        SvarId.NEI -> false
-        else -> error("Sagt opp eller redusert har bara ja eller nej som svarslaternativ $svarId")
 
     }
 
