@@ -1,12 +1,13 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
-import no.nav.familie.kontrakter.ef.iverksett.InntektsType
+import no.nav.familie.kontrakter.ef.iverksett.Periodetype
+import java.time.LocalDate
 
 data class Inntekt(
-        val periodebeløp: Periodebeløp,
-        val inntektstype: InntektsType? = null // TODO: Dette har vi ikke
+        val beløp: Int,
+        val samordningsfradrag: Int,
+        var periodetype: Periodetype,
+        val fraOgMed: LocalDate,
+        val tilOgMed: LocalDate,
 )
 
-data class Inntektsreduksjon(
-        val periodebeløp: List<Periodebeløp> = emptyList()
-)

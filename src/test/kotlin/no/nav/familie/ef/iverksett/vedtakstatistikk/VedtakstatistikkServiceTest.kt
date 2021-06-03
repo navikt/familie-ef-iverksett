@@ -23,6 +23,8 @@ import no.nav.familie.eksterne.kontrakter.ef.Person
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
+import no.nav.familie.eksterne.kontrakter.ef.Vilkår
+import no.nav.familie.eksterne.kontrakter.ef.Vilkårsvurdering
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -66,9 +68,10 @@ class VedtakstatistikkServiceTest {
         vedtakstatistikkService.sendTilKafka(iverksett)
 
         assertThat(behandlingDvhSlot.captured).isNotNull
-        assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.size).isEqualTo(1)
+        assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.size).isEqualTo(2)
         //Egen test på vilkårtype, da det er mismatch mellom ekstern kontrakt og ef. F.eks. finnes ikke aktivitet i kontrakt.
         assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.first().vilkår.name).isEqualTo(VilkårType.AKTIVITET.name)
+        assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.last().vilkår.name).isEqualTo(VilkårType.SAGT_OPP_ELLER_REDUSERT.name)
     }
 
     private fun opprettBehandlingDVH(behandlingId: String,
@@ -80,27 +83,23 @@ class VedtakstatistikkServiceTest {
                              relatertBehandlingId = null,
                              kode6eller7 = false,
                              tidspunktVedtak = tidspunktVedtak.atStartOfDay(ZoneId.of("Europe/Paris")),
-                             vilkårsvurderinger = emptyList(),
+                             vilkårsvurderinger = listOf(Vilkårsvurdering(vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT, oppfylt = true))
+                             ,
                              person = Person(personIdent = "12345678910"),
                              barn = emptyList(),
                              behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
                              behandlingÅrsak = BehandlingÅrsak.SØKNAD,
-                             behandlingResultat = BehandlingResultat.FERDIGSTILT,
                              vedtak = Vedtak.INNVILGET,
                              utbetalinger = listOf(Utbetaling(
-                                     PeriodeBeløp(5000,
-                                                  Periodetype.MÅNED,
-                                                  LocalDate.parse("2021-01-01"),
-                                                  LocalDate.parse("2021-12-31")),
-                                     Utbetalingsdetalj(gjelderPerson = Person(personIdent = "12345678910"),
-                                                       klassekode = "EFOG",
+                                     beløp = 5000,
+                                      fraOgMed = LocalDate.parse("2021-01-01"),
+                                      tilOgMed = LocalDate.parse("2021-12-31"),
+                                     Utbetalingsdetalj(klassekode = "EFOG",
                                                        delytelseId = "11"))),
-                             inntekt = listOf(Inntekt(PeriodeBeløp(150000,
-                                                                   Periodetype.MÅNED,
-                                                                   LocalDate.parse("2021-01-01"),
-                                                                   LocalDate.parse("2021-12-31")),
-                                                      Inntektstype.ARBEIDINNTEKT)),
-                             aktivitetskrav = Aktivitetskrav(LocalDate.parse("2021-05-01"), false),
+                             inntekt = listOf(Inntekt(beløp = 150000,
+                                                              fraOgMed =     LocalDate.parse("2021-01-01"),
+                                                                   tilOgMed = LocalDate.parse("2021-12-31"))),
+                             aktivitetskrav = Aktivitetskrav(false),
                              funksjonellId = "9")
     }
 }
