@@ -25,21 +25,20 @@ class BehandlingstatistikkService {
     fun opprettBehandlingDVH(behandlingstatistikk: BehandlingStatistikkDto): BehandlingDVH {
         return BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
                              aktorId = behandlingstatistikk.personIdent,
-                             saksbehandler = behandlingstatistikk.saksbehandlerId,
+                             saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
                              registrertTid = behandlingstatistikk.hendelseTidspunkt,
                              endretTid = behandlingstatistikk.hendelseTidspunkt,
                              tekniskTid = ZonedDateTime.now(), //mulig skal flyttes
                              sakYtelse = "EFOG",
                              behandlingType = "Førstegangsbehandling",
                              behandlingStatus = behandlingstatistikk.hendelse.toString(),
-                             opprettetAv = behandlingstatistikk.saksbehandlerId,
+                             opprettetAv = behandlingstatistikk.gjeldendeSaksbehandlerId,
                              opprettetEnhet = "", //finne ut
                              ansvarligEnhet = "", //finne ut
                              saksnummer = behandlingstatistikk.saksnummer,
                              mottattTid = behandlingstatistikk.hendelseTidspunkt,
                              behandlingResultat = behandlingstatistikk.behandlingResultat,
                              resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
-                             venteAarsak = behandlingstatistikk.venteAarsak,
                              behandlingMetode = "MANUELL",
                              avsender = "NAV Enslig forelder") //Er dette riktig?
 
