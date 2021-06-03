@@ -25,7 +25,7 @@ import java.time.Duration
 import java.time.temporal.ChronoUnit
 
 @SpringBootConfiguration
-@ConfigurationPropertiesScan
+@ConfigurationPropertiesScan("no.nav.familie.ef.iverksett.arena")
 @ComponentScan("no.nav.familie.ef.iverksett", "no.nav.familie.prosessering", "no.nav.familie.sikkerhet")
 @EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger"])
 @Import(RestTemplateAzure::class)

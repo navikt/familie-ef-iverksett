@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.infotrygd
 
+import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
@@ -17,6 +18,7 @@ import java.util.UUID
         beskrivelse = "Sender periodehendelse til infotrygd"
 )
 class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFeedClient,
+                                   private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
                                    private val iverksettingRepository: IverksettingRepository,
                                    @Value("\${NAIS_CLUSTER_NAME:prod}") private val cluster: String) : AsyncTaskStep {
 
@@ -26,7 +28,8 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
         }
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
         val stønadstype = iverksett.fagsak.stønadstype
-        val personIdenter = iverksett.søker.allePersonIdenter
+        val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
+                .map { it.personIdent }.toSet()
         val perioder = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.map {
             Periode(startdato = it.periodebeløp.fraOgMed,
                     sluttdato = it.periodebeløp.tilOgMed,

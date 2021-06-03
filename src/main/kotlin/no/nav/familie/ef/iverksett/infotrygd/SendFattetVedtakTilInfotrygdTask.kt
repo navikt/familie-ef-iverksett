@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.infotrygd
 
+import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
@@ -17,6 +18,7 @@ import java.util.UUID
         beskrivelse = "Sender hendelse om fattet vedtak til infotrygd"
 )
 class SendFattetVedtakTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFeedClient,
+                                       private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
                                        private val iverksettingRepository: IverksettingRepository,
                                        private val taskRepository: TaskRepository) : AsyncTaskStep {
 
@@ -25,7 +27,8 @@ class SendFattetVedtakTilInfotrygdTask(private val infotrygdFeedClient: Infotryg
         val iverksett = iverksettingRepository.hent(behandlingId)
 
         val stønadstype = iverksett.fagsak.stønadstype
-        val personIdenter = iverksett.søker.allePersonIdenter
+        val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
+                .map { it.personIdent }.toSet()
         val startDato = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.periodebeløp.fraOgMed }
                         ?: error("Finner ikke noen andel med fraOgMed for behandling=$behandlingId")
 

@@ -33,8 +33,7 @@ data class Søker(
         val personIdent: String,
         val barn: List<Barn> = ArrayList(),
         val tilhørendeEnhet: String,
-        val kode6eller7: Boolean,
-        val allePersonIdenter: Set<String> = emptySet()
+        val kode6eller7: Boolean
 )
 
 data class Vedtaksdetaljer(

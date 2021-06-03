@@ -47,8 +47,7 @@ fun SøkerDto.toDomain(): Søker {
                  personIdent = this.personIdent,
                  barn = this.barn.map { it.toDomain() },
                  tilhørendeEnhet = this.tilhørendeEnhet,
-                 kode6eller7 = this.kode6eller7,
-                 allePersonIdenter = this.allePersonIdenter.toSet())
+                 kode6eller7 = this.kode6eller7)
 }
 
 fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
