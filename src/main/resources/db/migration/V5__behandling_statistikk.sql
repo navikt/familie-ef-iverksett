@@ -1,7 +1,7 @@
 create table behandling_statistikk
 (
     behandling_id               uuid primary key,
-    behandlingDVH               json,
+    behandling_dvh              json,
     hendelse                    varchar
 
 );

@@ -17,7 +17,7 @@ class BehandlingstatistikkRepository(val namedParameterJdbcTemplate: NamedParame
     }
 
     private fun lagreBehandlingstatistikk(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {
-        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :behandlingDVH::JSON, :hendelse)"
+        val sql = "INSERT INTO behandling_statistikk VALUES(:behandlingId, :behandlingDVH::JSON, :hendelse)"
         val behandlingDVHString = objectMapper.writeValueAsString(behandlingDVH)
 
         val mapSqlParameterSource = MapSqlParameterSource(
@@ -31,7 +31,7 @@ class BehandlingstatistikkRepository(val namedParameterJdbcTemplate: NamedParame
     }
 
     fun hent(behandlingId: UUID, hendelse: Hendelse): BehandlingDVH? {
-        val sql = "SELECT behandlingDVH FROM  WHERE behandling_id = :behandlingId AND hendelse= :hendelse "
+        val sql = "SELECT behandling_dvh FROM behandling_statistikk WHERE behandling_id = :behandlingId AND hendelse= :hendelse "
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         mapSqlParameterSource.addValue("hendelse", hendelse.toString())
         return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
