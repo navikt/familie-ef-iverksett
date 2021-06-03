@@ -12,13 +12,9 @@ import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
-import no.nav.familie.eksterne.kontrakter.ef.BehandlingResultat
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
 import no.nav.familie.eksterne.kontrakter.ef.Inntekt
-import no.nav.familie.eksterne.kontrakter.ef.Inntektstype
-import no.nav.familie.eksterne.kontrakter.ef.PeriodeBeløp
-import no.nav.familie.eksterne.kontrakter.ef.Periodetype
 import no.nav.familie.eksterne.kontrakter.ef.Person
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
@@ -83,8 +79,8 @@ class VedtakstatistikkServiceTest {
                              relatertBehandlingId = null,
                              kode6eller7 = false,
                              tidspunktVedtak = tidspunktVedtak.atStartOfDay(ZoneId.of("Europe/Paris")),
-                             vilkårsvurderinger = listOf(Vilkårsvurdering(vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT, oppfylt = true))
-                             ,
+                             vilkårsvurderinger = listOf(Vilkårsvurdering(vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT,
+                                                                          oppfylt = true)),
                              person = Person(personIdent = "12345678910"),
                              barn = emptyList(),
                              behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
@@ -92,14 +88,15 @@ class VedtakstatistikkServiceTest {
                              vedtak = Vedtak.INNVILGET,
                              utbetalinger = listOf(Utbetaling(
                                      beløp = 5000,
-                                      fraOgMed = LocalDate.parse("2021-01-01"),
-                                      tilOgMed = LocalDate.parse("2021-12-31"),
+                                     fraOgMed = LocalDate.parse("2021-01-01"),
+                                     tilOgMed = LocalDate.parse("2021-12-31"),
                                      Utbetalingsdetalj(klassekode = "EFOG",
                                                        delytelseId = "11"))),
                              inntekt = listOf(Inntekt(beløp = 150000,
-                                                              fraOgMed =     LocalDate.parse("2021-01-01"),
-                                                                   tilOgMed = LocalDate.parse("2021-12-31"))),
-                             aktivitetskrav = Aktivitetskrav(false),
+                                                      samordningsfradrag = 100,
+                                                      fraOgMed = LocalDate.parse("2021-01-01"),
+                                                      tilOgMed = LocalDate.parse("2021-12-31"))),
+                             aktivitetskrav = Aktivitetskrav(true),
                              funksjonellId = "9")
     }
 }
