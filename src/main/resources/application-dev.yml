@@ -14,6 +14,13 @@ spring:
           location: ${KAFKA_TRUSTSTORE_PATH}
           password: ${KAFKA_CREDSTORE_PASSWORD}
 
+arena-mq:
+  queueManager: MQLS01
+  channel: Q1_FAMILIE_EF_IVERKS
+  hostname: b27apvl219.preprod.local
+  port: 1413
+  queueName: QA.Q1_475.SOB_VEDTAKHENDELSER_ARE
+
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev-fss-pub.nais.io
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.dev-fss-pub.nais.io
 INFOTRYGD_FEED_API_URL: https://familie-ef-infotrygd-feed.dev-fss-pub.nais.io
