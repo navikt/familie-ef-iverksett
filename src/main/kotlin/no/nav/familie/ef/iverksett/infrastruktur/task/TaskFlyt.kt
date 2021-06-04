@@ -16,7 +16,7 @@ class TaskType(
 
 fun hovedflyt() = listOf(
         TaskType(IverksettMotOppdragTask.TYPE),
-        TaskType(VentePåStatusFraØkonomiTask.TYPE, 15),
+        TaskType(VentePåStatusFraØkonomiTask.TYPE, 3),
         TaskType(JournalførVedtaksbrevTask.TYPE),
         TaskType(DistribuerVedtaksbrevTask.TYPE),
         TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
