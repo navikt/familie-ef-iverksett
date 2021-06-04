@@ -7,6 +7,8 @@ import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.lagPeriodeFraAndel
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
+import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingTilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingUtbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import org.slf4j.LoggerFactory
