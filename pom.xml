@@ -30,6 +30,8 @@
         <felles-kontrakter.version>2.0_20210602212816_2e16190</felles-kontrakter.version>
         <familie.kontrakter.stonadsstatistikk-ef>2.0_20210603153743_8236958</familie.kontrakter.stonadsstatistikk-ef>
         <token-validation-spring.version>1.3.5</token-validation-spring.version>
+        <ibm-mq-client.version>9.2.2.0</ibm-mq-client.version>
+        <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
     </properties>
 
     <repositories>
@@ -44,6 +46,10 @@
         <repository>
             <id>github</id>
             <url>https://maven.pkg.github.com/navikt/familie-felles</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -188,7 +194,18 @@
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>com.ibm.mq.allclient</artifactId>
-            <version>9.2.2.0</version>
+            <version>${ibm-mq-client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+        <!-- Genererte klasser fra Arenas vedtakhendelser XSD -->
+        <dependency>
+            <groupId>com.github.navikt.tjenestespesifikasjoner</groupId>
+            <artifactId>arena-vedtakhendelser</artifactId>
+            <version>${arena-vedtakhendelser.version}</version>
         </dependency>
 
         <!-- Test -->

@@ -1,6 +1,8 @@
 package no.nav.familie.ef.iverksett.arena
 
 
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,8 +18,9 @@ class VedtakhendelseController(
 ) {
 
     @PostMapping("/vedtakhendelse", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun sendVedtakhendelse(@RequestBody data: String) {
-        vedtakhendelseProducer.produce("testmelding $data" )
+    fun sendVedtakhendelse(@RequestBody data: IverksettDto) {
+        val vedtakHendelse = mapIverksettTilVedtakHendelser(data.toDomain())
+        vedtakhendelseProducer.produce(vedtakHendelse)
     }
 
 }
