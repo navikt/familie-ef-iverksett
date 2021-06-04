@@ -18,7 +18,7 @@ import java.util.UUID
         taskStepType = VentePåStatusFraØkonomiTask.TYPE,
         maxAntallFeil = 50,
         settTilManuellOppfølgning = true,
-        triggerTidVedFeilISekunder = 15 * 60L,
+        triggerTidVedFeilISekunder = 5 * 60L,
         beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
 )
 
@@ -35,7 +35,7 @@ class VentePåStatusFraØkonomiTask(
         val oppdragId = OppdragId(
                 fagsystem = iverksett.fagsak.stønadstype.tilKlassifisering(),
                 personIdent = iverksett.søker.personIdent,
-                behandlingsId = iverksett.behandling.behandlingId.toString()
+                behandlingsId = iverksett.behandling.eksternId.toString()
         )
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)

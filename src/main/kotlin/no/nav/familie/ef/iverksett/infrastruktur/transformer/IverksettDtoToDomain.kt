@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.infrastruktur.transformer
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Aktivitetskrav
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
@@ -9,7 +8,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
-import no.nav.familie.kontrakter.ef.iverksett.AktivitetskravDto
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
@@ -32,10 +30,6 @@ fun VilkårsvurderingDto.toDomain(): Vilkårsvurdering {
     return Vilkårsvurdering(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toDomain() })
 }
 
-fun AktivitetskravDto.toDomain(): Aktivitetskrav {
-    return Aktivitetskrav(this.aktivitetspliktInntrefferDato, this.harSagtOppArbeidsforhold)
-}
-
 fun FagsakdetaljerDto.toDomain(): Fagsakdetaljer {
     return Fagsakdetaljer(fagsakId = this.fagsakId,
                           eksternId = this.eksternId,
@@ -43,11 +37,10 @@ fun FagsakdetaljerDto.toDomain(): Fagsakdetaljer {
 }
 
 fun SøkerDto.toDomain(): Søker {
-    return Søker(aktivitetskrav = this.aktivitetskrav.toDomain(),
-                 personIdent = this.personIdent,
-                 barn = this.barn.map { it.toDomain()},
+    return Søker(personIdent = this.personIdent,
+                 barn = this.barn.map { it.toDomain() } ,
                  tilhørendeEnhet = this.tilhørendeEnhet,
-                 kode6eller7 = this.kode6eller7)
+                 adressebeskyttelse = this.adressebeskyttelse)
 }
 
 fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
@@ -56,13 +49,11 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
                                eksternId = this.eksternId,
                                behandlingType = this.behandlingType,
                                behandlingÅrsak = this.behandlingÅrsak,
-                               behandlingResultat = this.behandlingResultat,
-                               relatertBehandlingId = this.relatertBehandlingId,
                                vilkårsvurderinger = this.vilkårsvurderinger.map { it.toDomain() })
 }
 
 fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
-    return Vedtaksdetaljer(vedtak = this.vedtak,
+    return Vedtaksdetaljer(vedtaksresultat = this.resultat,
                            vedtaksdato = this.vedtaksdato,
                            opphørÅrsak = this.opphørÅrsak,
                            saksbehandlerId = this.saksbehandlerId,

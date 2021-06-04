@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.util
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Aktivitetskrav
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
+import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Inntekt
@@ -15,36 +15,42 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
-import no.nav.familie.kontrakter.ef.felles.BehandlingResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
+import no.nav.familie.kontrakter.ef.felles.RegelId
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
-import no.nav.familie.kontrakter.ef.felles.Vedtak
-import no.nav.familie.kontrakter.ef.iverksett.AktivitetskravDto
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.ef.felles.VilkårType
+import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.InntektDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.PeriodebeløpDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
+import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
+import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
 import java.time.LocalDate
 import java.util.UUID
 
 fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
 
     val inntekt = InntektDto(
-            periodebeløp = PeriodebeløpDto(
-                    beløp = 150000,
-                    periodetype = Periodetype.MÅNED,
-                    fraOgMed = LocalDate.of(2021, 1, 1),
-                    tilOgMed = LocalDate.of(2021, 12, 31)
-            ), inntektstype = null
+            beløp = 150000,
+            samordningsfradrag = 0,
+            periodetype = Periodetype.MÅNED,
+            fraOgMed = LocalDate.of(2021, 1, 1),
+            tilOgMed = LocalDate.of(2021, 12, 31)
     )
 
     val andelTilkjentYtelse = AndelTilkjentYtelseDto(
@@ -68,22 +74,32 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                     eksternId = 9L,
                     behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
                     behandlingÅrsak = BehandlingÅrsak.SØKNAD,
-                    behandlingResultat = BehandlingResultat.FERDIGSTILT,
-                    relatertBehandlingId = null,
-                    vilkårsvurderinger = emptyList()
+                    vilkårsvurderinger = listOf(
+                            VilkårsvurderingDto(
+                                    vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
+                                    resultat = Vilkårsresultat.OPPFYLT,
+                                    delvilkårsvurderinger = listOf(
+                                            DelvilkårsvurderingDto(
+                                                    resultat = Vilkårsresultat.OPPFYLT,
+                                                    vurderinger = listOf(
+                                                            VurderingDto(
+                                                                    regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
+                                                                    svar = SvarId.JA,
+                                                                    begrunnelse = "Nei")
+                                                    )
+                                            )
+                                    )
+                            )
+                    )
             ),
             søker = SøkerDto(
-                    aktivitetskrav = AktivitetskravDto(
-                            aktivitetspliktInntrefferDato = LocalDate.of(2021, 5, 1),
-                            harSagtOppArbeidsforhold = false
-                    ),
                     personIdent = "12345678910",
                     barn = emptyList(),
                     tilhørendeEnhet = "4489",
-                    kode6eller7 = false
+                    adressebeskyttelse = null
             ),
             vedtak = VedtaksdetaljerDto(
-                    vedtak = Vedtak.INNVILGET,
+                    resultat = Vedtaksresultat.INNVILGET,
                     vedtaksdato = LocalDate.of(2021, 5, 12),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",
@@ -97,12 +113,11 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
 fun opprettIverksett(behandlingId: UUID): Iverksett {
 
     val inntekt = Inntekt(
-            periodebeløp = Periodebeløp(
-                    beløp = 150000,
-                    periodetype = Periodetype.MÅNED,
-                    fraOgMed = LocalDate.of(2021, 1, 1),
-                    tilOgMed = LocalDate.of(2021, 12, 31)
-            ), inntektstype = null
+            beløp = 150000,
+            samordningsfradrag = 100,
+            periodetype = Periodetype.MÅNED,
+            fraOgMed = LocalDate.of(2021, 1, 1),
+            tilOgMed = LocalDate.of(2021, 12, 31)
     )
 
     val andelTilkjentYtelse = AndelTilkjentYtelse(
@@ -129,22 +144,33 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     eksternId = 9L,
                     behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
                     behandlingÅrsak = BehandlingÅrsak.SØKNAD,
-                    behandlingResultat = BehandlingResultat.FERDIGSTILT,
                     relatertBehandlingId = null,
-                    vilkårsvurderinger = emptyList()
+                    vilkårsvurderinger = listOf(
+                            Vilkårsvurdering(
+                                    vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
+                                    resultat = Vilkårsresultat.OPPFYLT,
+                                    delvilkårsvurderinger = listOf(
+                                            Delvilkårsvurdering(
+                                                    resultat = Vilkårsresultat.OPPFYLT,
+                                                    vurderinger = listOf(
+                                                            Vurdering(
+                                                                    regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
+                                                                    svar = SvarId.JA,
+                                                                    begrunnelse = "Nei")
+                                                    )
+                                            )
+                                    )
+                            )
+                    )
+
             ),
             søker = Søker(
-                    aktivitetskrav = Aktivitetskrav(
-                            aktivitetspliktInntrefferDato = LocalDate.of(2021, 5, 1),
-                            harSagtOppArbeidsforhold = false
-                    ),
                     personIdent = "12345678910",
                     barn = emptyList(),
                     tilhørendeEnhet = "4489",
-                    kode6eller7 = false
             ),
             vedtak = Vedtaksdetaljer(
-                    vedtak = Vedtak.INNVILGET,
+                    vedtaksresultat = Vedtaksresultat.INNVILGET,
                     vedtaksdato = LocalDate.of(2021, 5, 12),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",
