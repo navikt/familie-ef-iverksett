@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.behandlingstatistikk
 
+import no.nav.familie.ef.iverksett.behandlingstatistikk.BehandlingDvhUtil.Companion.byggBehandlingDVH
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingStatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
@@ -15,33 +16,16 @@ class BehandlingstatistikkService {
         //send til DVH
     }
 
-    fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingStatistikkDto): BehandlingDVH {
+    private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingStatistikkDto): BehandlingDVH {
+        var builder = BehandlingDvhBuilder.Builder()
         return when (behandlingstatistikk.hendelse) {
-            Hendelse.MOTTATT -> opprettBehandlingDVH(behandlingstatistikk)
-            else -> error("Hendelse mangler implementasjon")
+            Hendelse.MOTTATT -> byggBehandlingDVH(behandlingstatistikk, builder)
+            Hendelse.PÅBEGYNT -> byggBehandlingDVH(behandlingstatistikk, builder, ZonedDateTime.now())
+            Hendelse.VEDTATT -> TODO()
+            Hendelse.BESLUTTET -> TODO()
+            Hendelse.FERDIG -> TODO()
         }
     }
 
-    fun opprettBehandlingDVH(behandlingstatistikk: BehandlingStatistikkDto): BehandlingDVH {
-        return BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
-                             aktorId = behandlingstatistikk.personIdent,
-                             saksbehandler = behandlingstatistikk.saksbehandlerId,
-                             registrertTid = behandlingstatistikk.hendelseTidspunkt,
-                             endretTid = behandlingstatistikk.hendelseTidspunkt,
-                             tekniskTid = ZonedDateTime.now(), //mulig skal flyttes
-                             sakYtelse = "EFOG",
-                             behandlingType = "Førstegangsbehandling",
-                             behandlingStatus = behandlingstatistikk.hendelse.toString(),
-                             opprettetAv = behandlingstatistikk.saksbehandlerId,
-                             opprettetEnhet = "", //finne ut
-                             ansvarligEnhet = "", //finne ut
-                             saksnummer = behandlingstatistikk.saksnummer,
-                             mottattTid = behandlingstatistikk.hendelseTidspunkt,
-                             behandlingResultat = behandlingstatistikk.behandlingResultat,
-                             resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
-                             venteAarsak = behandlingstatistikk.venteAarsak,
-                             behandlingMetode = "MANUELL",
-                             avsender = "NAV Enslig forelder") //Er dette riktig?
 
-    }
 }

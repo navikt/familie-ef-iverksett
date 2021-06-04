@@ -8,6 +8,7 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.Properties
 import java.util.UUID
@@ -15,6 +16,8 @@ import java.util.UUID
 @Service
 class IverksettingService(val taskRepository: TaskRepository, val iverksettingRepository: IverksettingRepository,
                           val tilstandRepository: TilstandRepository) {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     fun startIverksetting(iverksett: Iverksett, brev: Brev) {
 
