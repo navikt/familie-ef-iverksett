@@ -19,7 +19,7 @@ class TaskTypeTest {
         val ventePåStatusFraØkonomiTask = iverksettMotOppdragTask.opprettNesteTask()
 
         assertThat(ventePåStatusFraØkonomiTask.type).isEqualTo(VentePåStatusFraØkonomiTask.TYPE)
-        assertThat(ventePåStatusFraØkonomiTask.triggerTid).isAfter(LocalDateTime.now().plusMinutes(13))
+        assertThat(ventePåStatusFraØkonomiTask.triggerTid).isAfter(LocalDateTime.now().plusMinutes(2))
 
         val journalførVedtaksbrevTask = ventePåStatusFraØkonomiTask.opprettNesteTask()
         assertThat(journalførVedtaksbrevTask.type).isEqualTo(JournalførVedtaksbrevTask.TYPE)
