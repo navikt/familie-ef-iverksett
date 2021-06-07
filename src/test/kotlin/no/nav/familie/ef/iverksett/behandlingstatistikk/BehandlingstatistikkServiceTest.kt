@@ -23,7 +23,10 @@ internal class BehandlingstatistikkServiceTest : ServerTest() {
     @Test
     fun `lagre BehandlingsstatistikkDto for alle hendelser i sekvens, forvent ingen unntak`() {
         val uuid = UUID.randomUUID()
-        enumValues<Hendelse>().forEach { behandlingstatistikkService.lagreBehandlingstatistikk(opprettBehandlingStatistikkDto(uuid, it)) }
+        enumValues<Hendelse>().forEach {
+            behandlingstatistikkService.lagreBehandlingstatistikk(opprettBehandlingStatistikkDto(uuid,
+                                                                                                 it))
+        }
 
     }
 }
