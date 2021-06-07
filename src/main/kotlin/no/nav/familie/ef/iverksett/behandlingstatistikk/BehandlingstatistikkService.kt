@@ -7,14 +7,15 @@ import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 
 @Service
-class BehandlingstatistikkService(private val behandlingstatistikkRepository: BehandlingstatistikkRepository) {
+class BehandlingstatistikkService(private val behandlingstatistikkProducer: BehandlingstatistikkProducer,
+                                  private val behandlingstatistikkRepository: BehandlingstatistikkRepository) {
 
     fun lagreBehandlingstatistikk(behandlingstatistikk: BehandlingStatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingstatistikk)
         behandlingstatistikkRepository.lagre(behandlingstatistikk.behandlingId,
                                              behandlingDVH,
                                              behandlingstatistikk.hendelse)
-
+        behandlingstatistikkProducer.sendBehandling(behandlingDVH)
     }
 
     private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingStatistikkDto): BehandlingDVH {
