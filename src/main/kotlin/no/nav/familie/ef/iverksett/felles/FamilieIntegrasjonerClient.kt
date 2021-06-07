@@ -34,7 +34,7 @@ class FamilieIntegrasjonerClient(
 
     companion object {
 
-        const val PATH_HENT_IDENTER = "personopplysning/v1/identer/ENF"
+        const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
     }
 
 }
