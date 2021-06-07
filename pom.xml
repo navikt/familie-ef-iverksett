@@ -183,6 +183,17 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
 
+        <!-- MQ / JMS -->
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>javax.jms-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.mq</groupId>
+            <artifactId>com.ibm.mq.allclient</artifactId>
+            <version>9.2.2.0</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>net.rakugakibox.spring.boot</groupId>

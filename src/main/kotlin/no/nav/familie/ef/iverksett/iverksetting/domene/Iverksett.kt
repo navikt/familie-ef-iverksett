@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
-import no.nav.familie.kontrakter.ef.felles.BehandlingResultat
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
@@ -9,6 +8,7 @@ import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
+import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 
 import java.time.LocalDate
@@ -29,11 +29,10 @@ data class Fagsakdetaljer(
 )
 
 data class Søker(
-        val aktivitetskrav: Aktivitetskrav,
         val personIdent: String,
         val barn: List<Barn> = ArrayList(),
         val tilhørendeEnhet: String,
-        val kode6eller7: Boolean,
+        val adressebeskyttelse: AdressebeskyttelseGradering? = null
 )
 
 data class Vedtaksdetaljer(
@@ -52,7 +51,6 @@ data class Behandlingsdetaljer(
         val eksternId: Long,
         val behandlingType: BehandlingType,
         val behandlingÅrsak: BehandlingÅrsak,
-        val behandlingResultat: BehandlingResultat,
         val relatertBehandlingId: UUID? = null,
         val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
 
