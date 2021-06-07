@@ -16,29 +16,15 @@ class BehandlingstatistikkRepository(private val namedParameterJdbcTemplate: Nam
         return lagreBehandlingstatistikk(behandlingId, behandlingDVH, hendelse)
     }
 
-    fun hent(behandlingId: UUID, hendelse: Hendelse): BehandlingDVH {
+    fun hent(behandlingId: UUID, hendelse: Hendelse): BehandlingDVH? {
         val sql = "SELECT behandling_dvh FROM behandling_statistikk WHERE behandling_id = :behandlingId AND hendelse= :hendelse "
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         mapSqlParameterSource.addValue("hendelse", hendelse.toString())
-        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)!!
+        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
     }
 
     private fun lagreBehandlingstatistikk(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {
         val sql = "INSERT INTO behandling_statistikk VALUES(:behandlingId, :behandlingDVH::JSON, :hendelse)"
-        val behandlingDVHString = objectMapper.writeValueAsString(behandlingDVH)
-
-        val mapSqlParameterSource = MapSqlParameterSource(
-                mapOf(
-                        "behandlingId" to behandlingId,
-                        "behandlingDVH" to behandlingDVHString,
-                        "hendelse" to hendelse.toString()
-                )
-        )
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
-    }
-
-    private fun oppdaterBehandlingstatistikk(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {
-        val sql = "UPDATE behandling_statistikk SET behandling_dvh = :tilkjentYtelseForUtbetaling::JSON WHERE behandling_id = :behandlingId\")"
         val behandlingDVHString = objectMapper.writeValueAsString(behandlingDVH)
 
         val mapSqlParameterSource = MapSqlParameterSource(
