@@ -21,25 +21,25 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
 
         return when (behandlingstatistikk.hendelse) {
             Hendelse.MOTTATT -> {
-                val behandlingDVH = BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
-                                                  sakId = behandlingstatistikk.saksnummer,
-                                                  aktorId = behandlingstatistikk.personIdent,
-                                                  registrertTid = behandlingstatistikk.hendelseTidspunkt,
-                                                  endretTid = behandlingstatistikk.hendelseTidspunkt,
-                                                  tekniskTid = behandlingstatistikk.hendelseTidspunkt,
-                                                  behandlingStatus = Hendelse.MOTTATT.toString(),
-                                                  opprettetAv = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                                  saksnummer = behandlingstatistikk.saksnummer,
-                                                  mottattTid = behandlingstatistikk.hendelseTidspunkt,
-                                                  saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                                  opprettetEnhet = "",
-                                                  ansvarligEnhet = "",
-                                                  behandlingMetode = "MANUELL",
-                                                  avsender = "NAV enslig forelder",
-                                                  behandlingType = "Førstegangsbehandling",
-                                                  sakYtelse = "EFOG"
+                BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
+                              sakId = behandlingstatistikk.saksnummer,
+                              aktorId = behandlingstatistikk.personIdent,
+                              registrertTid = behandlingstatistikk.hendelseTidspunkt,
+                              endretTid = behandlingstatistikk.hendelseTidspunkt,
+                              tekniskTid = behandlingstatistikk.hendelseTidspunkt,
+                              behandlingStatus = Hendelse.MOTTATT.toString(),
+                              opprettetAv = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                              saksnummer = behandlingstatistikk.saksnummer,
+                              mottattTid = behandlingstatistikk.hendelseTidspunkt,
+                              saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                              opprettetEnhet = "",
+                              ansvarligEnhet = "",
+                              behandlingMetode = "MANUELL",
+                              avsender = "NAV enslig forelder",
+                              behandlingType = "Førstegangsbehandling",
+                              sakYtelse = "EFOG"
                 )
-                behandlingDVH
+
             }
             Hendelse.PÅBEGYNT -> {
                 val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.MOTTATT)
@@ -47,7 +47,6 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                                      tekniskTid = ZonedDateTime.now(),
                                      saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
                                      behandlingStatus = Hendelse.MOTTATT.toString())
-                behandlingDVH
 
             }
             Hendelse.VEDTATT -> {
@@ -57,7 +56,7 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                                      tekniskTid = ZonedDateTime.now(),
                                      saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
                                      behandlingStatus = Hendelse.VEDTATT.toString())
-                behandlingDVH
+
 
             }
             Hendelse.BESLUTTET -> {
@@ -70,7 +69,6 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                                      behandlingStatus = Hendelse.BESLUTTET.toString(),
                                      behandlingResultat = behandlingstatistikk.behandlingResultat,
                                      resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse)
-                behandlingDVH
             }
             Hendelse.FERDIG -> {
                 val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.VEDTATT)
@@ -80,7 +78,6 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                                      saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
                                      ansvarligBeslutter = behandlingstatistikk.gjeldendeSaksbehandlerId,
                                      behandlingStatus = Hendelse.BESLUTTET.toString())
-                behandlingDVH
             }
         }
     }
