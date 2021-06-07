@@ -16,6 +16,7 @@ import no.nav.familie.kontrakter.ef.infotrygd.Periode
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.personopplysning.PersonIdentMedHistorikk
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.BeforeEach
@@ -29,6 +30,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
     private val infotrygdFeedClient = mockk<InfotrygdFeedClient>(relaxed = true)
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>(relaxed = true)
     private val iverksettingRepository = mockk<IverksettingRepository>()
+    private val taskRepository = mockk<TaskRepository>()
 
     private val behandlingId = UUID.randomUUID()
 
@@ -45,7 +47,11 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     @Test
     internal fun `skal sende perioder fra andeler til infotrygd`() {
-        val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient, familieIntegrasjonerClient, iverksettingRepository, "dev")
+        val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient,
+                                                familieIntegrasjonerClient,
+                                                iverksettingRepository,
+                                                taskRepository,
+                                                "dev")
         val iverksett = opprettData(AndelTilkjentYtelse(
                 Periodebeløp(2, Periodetype.MÅNED, LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31))))
         every { iverksettingRepository.hent(behandlingId) } returns iverksett
@@ -61,7 +67,11 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     @Test
     internal fun `skal sende tom liste med perioder til infotrygd hvis det ikke finnes noen andeler`() {
-        val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient, familieIntegrasjonerClient, iverksettingRepository, "dev")
+        val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient,
+                                                familieIntegrasjonerClient,
+                                                iverksettingRepository,
+                                                taskRepository,
+                                                "dev")
         every { iverksettingRepository.hent(behandlingId) } returns opprettData()
 
         task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
@@ -73,7 +83,11 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     @Test
     internal fun `skal kaste feil hvis det er prod`() {
-        val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient, familieIntegrasjonerClient, iverksettingRepository, "prod")
+        val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient,
+                                                familieIntegrasjonerClient,
+                                                iverksettingRepository,
+                                                taskRepository,
+                                                "prod")
         assertThat(catchThrowable { task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString())) })
                 .hasMessageContaining("Må håndtere fullOvergangsstønad før denne kjøres i prod")
     }

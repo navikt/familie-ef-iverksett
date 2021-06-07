@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
+import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.VentePåStatusFraØkonomiTask
 import no.nav.familie.prosessering.domene.Task
@@ -20,7 +21,8 @@ fun hovedflyt() = listOf(
         TaskType(JournalførVedtaksbrevTask.TYPE),
         TaskType(DistribuerVedtaksbrevTask.TYPE),
         TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
-        TaskType(SendPerioderTilInfotrygdTask.TYPE)
+        TaskType(SendPerioderTilInfotrygdTask.TYPE),
+        TaskType(VedtakstatistikkTask.TYPE)
 )
 
 fun TaskType.nesteHovedflytTask() = hovedflyt().zipWithNext().first { this.type == it.first.type }.second
