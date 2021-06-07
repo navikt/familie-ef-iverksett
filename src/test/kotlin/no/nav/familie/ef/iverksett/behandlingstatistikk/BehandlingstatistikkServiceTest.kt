@@ -1,5 +1,8 @@
 package no.nav.familie.ef.iverksett.behandlingstatistikk
 
-import org.junit.jupiter.api.Assertions.*
+import no.nav.familie.ef.iverksett.ServerTest
 
-internal class BehandlingstatistikkServiceTest
+internal class BehandlingstatistikkServiceTest : ServerTest() {
+
+
+}

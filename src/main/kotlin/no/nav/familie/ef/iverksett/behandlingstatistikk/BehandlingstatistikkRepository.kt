@@ -10,10 +10,17 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-class BehandlingstatistikkRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+class BehandlingstatistikkRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun lagre(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {
         return lagreBehandlingstatistikk(behandlingId, behandlingDVH, hendelse)
+    }
+
+    fun hent(behandlingId: UUID, hendelse: Hendelse): BehandlingDVH {
+        val sql = "SELECT behandling_dvh FROM behandling_statistikk WHERE behandling_id = :behandlingId AND hendelse= :hendelse "
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+        mapSqlParameterSource.addValue("hendelse", hendelse.toString())
+        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)!!
     }
 
     private fun lagreBehandlingstatistikk(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {
@@ -28,12 +35,5 @@ class BehandlingstatistikkRepository(val namedParameterJdbcTemplate: NamedParame
                 )
         )
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
-    }
-
-    fun hent(behandlingId: UUID, hendelse: Hendelse): BehandlingDVH? {
-        val sql = "SELECT behandling_dvh FROM behandling_statistikk WHERE behandling_id = :behandlingId AND hendelse= :hendelse "
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        mapSqlParameterSource.addValue("hendelse", hendelse.toString())
-        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
     }
 }
