@@ -36,4 +36,18 @@ class BehandlingstatistikkRepository(private val namedParameterJdbcTemplate: Nam
         )
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
+
+    private fun oppdaterBehandlingstatistikk(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {
+        val sql = "UPDATE behandling_statistikk SET behandling_dvh = :tilkjentYtelseForUtbetaling::JSON WHERE behandling_id = :behandlingId\")"
+        val behandlingDVHString = objectMapper.writeValueAsString(behandlingDVH)
+
+        val mapSqlParameterSource = MapSqlParameterSource(
+                mapOf(
+                        "behandlingId" to behandlingId,
+                        "behandlingDVH" to behandlingDVHString,
+                        "hendelse" to hendelse.toString()
+                )
+        )
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
+    }
 }

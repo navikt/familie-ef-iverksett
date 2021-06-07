@@ -5,8 +5,8 @@ import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import java.time.ZonedDateTime
 import java.util.UUID
 
-fun opprettBehandlingStatistikkDto(hendelse: Hendelse): BehandlingStatistikkDto {
-    return BehandlingStatistikkDto(behandlingId = UUID.randomUUID(),
+fun opprettBehandlingStatistikkDto(behandlingId: UUID, hendelse: Hendelse): BehandlingStatistikkDto {
+    return BehandlingStatistikkDto(behandlingId = behandlingId,
                                    "12345678910",
                                    "123",
                                    "456",
