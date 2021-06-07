@@ -49,8 +49,10 @@ abstract class ServerTest {
     private fun resetWiremockServers() {
         applicationContext.getBeansOfType(WireMockServer::class.java).values.forEach(WireMockServer::resetRequests)
     }
-    private fun resetDatabase(){
-        namedParameterJdbcTemplate.update("truncate table brev, iverksett, iverksett_resultat cascade", MapSqlParameterSource())
+
+    private fun resetDatabase() {
+        namedParameterJdbcTemplate.update("TRUNCATE TABLE brev, iverksett, iverksett_resultat, behandling_statistikk CASCADE",
+                                          MapSqlParameterSource())
     }
 
     protected fun getPort(): String {
