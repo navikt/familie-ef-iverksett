@@ -43,39 +43,39 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
             }
             Hendelse.PÅBEGYNT -> {
                 val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.MOTTATT)
-                behandlingDVH!!.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
-                                     tekniskTid = ZonedDateTime.now(),
-                                     saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                     behandlingStatus = Hendelse.PÅBEGYNT.name)
+                behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
+                                   tekniskTid = ZonedDateTime.now(),
+                                   saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                                   behandlingStatus = Hendelse.PÅBEGYNT.name)
 
             }
             Hendelse.VEDTATT -> {
                 val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.PÅBEGYNT)
-                behandlingDVH!!.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
-                                     vedtakTid = behandlingstatistikk.hendelseTidspunkt,
-                                     tekniskTid = ZonedDateTime.now(),
-                                     saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                     behandlingStatus = Hendelse.VEDTATT.name,
-                                     behandlingResultat = behandlingstatistikk.behandlingResultat,
-                                     resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse)
+                behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
+                                   vedtakTid = behandlingstatistikk.hendelseTidspunkt,
+                                   tekniskTid = ZonedDateTime.now(),
+                                   saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                                   behandlingStatus = Hendelse.VEDTATT.name,
+                                   behandlingResultat = behandlingstatistikk.behandlingResultat,
+                                   resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse)
 
 
             }
             Hendelse.BESLUTTET -> {
                 val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.VEDTATT)
-                behandlingDVH!!.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
-                                     tekniskTid = ZonedDateTime.now(),
-                                     ansvarligBeslutter = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                     behandlingStatus = Hendelse.BESLUTTET.name,
-                                     behandlingResultat = behandlingstatistikk.behandlingResultat,
-                                     resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse)
+                behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
+                                   tekniskTid = ZonedDateTime.now(),
+                                   ansvarligBeslutter = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                                   behandlingStatus = Hendelse.BESLUTTET.name,
+                                   behandlingResultat = behandlingstatistikk.behandlingResultat,
+                                   resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse)
             }
             Hendelse.FERDIG -> {
                 val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.VEDTATT)
-                behandlingDVH!!.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
-                                     tekniskTid = ZonedDateTime.now(),
-                                     ferdigBehandletTid = behandlingstatistikk.hendelseTidspunkt,
-                                     behandlingStatus = Hendelse.FERDIG.name)
+                behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
+                                   tekniskTid = ZonedDateTime.now(),
+                                   ferdigBehandletTid = behandlingstatistikk.hendelseTidspunkt,
+                                   behandlingStatus = Hendelse.FERDIG.name)
             }
         }
     }
