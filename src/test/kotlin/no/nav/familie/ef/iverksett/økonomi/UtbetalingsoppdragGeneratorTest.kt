@@ -103,7 +103,8 @@ internal class UtbetalingsoppdragGeneratorTest {
 
         val nyePerioder = opprettTilkjentYtelseMedMetadata(behandlingB,
                                                            andel1,
-                                                           andel2.copy(periodebeløp = andel2.periodebeløp.copy(tilOgMed = andel2.periodebeløp.tilOgMed.minusMonths(2))),
+                                                           andel2.copy(periodebeløp = andel2.periodebeløp.copy(tilOgMed = andel2.periodebeløp.tilOgMed.minusMonths(
+                                                                   2))),
                                                            andel3)
         val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdrag(nyePerioder, førsteTilkjentYtelse)
 
