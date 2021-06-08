@@ -25,7 +25,8 @@ class BehandlingstatistikkRepository(private val namedParameterJdbcTemplate: Nam
     }
 
     private fun lagreBehandlingstatistikk(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {
-        val sql = "INSERT INTO behandling_statistikk VALUES(:behandlingId, :behandlingDVH::JSON, :hendelse)"
+        val sql =
+                "INSERT INTO behandling_statistikk VALUES(:behandlingId, :behandlingDVH::JSON, :hendelse)"
         val behandlingDVHString = objectMapper.writeValueAsString(behandlingDVH)
 
         val mapSqlParameterSource = MapSqlParameterSource(

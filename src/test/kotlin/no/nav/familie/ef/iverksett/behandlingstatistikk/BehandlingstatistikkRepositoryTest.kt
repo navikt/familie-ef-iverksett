@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -51,14 +52,17 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
 
     @Test
     fun `hent behandlingstatistikk med ikke-eksisterende id, forvent nullverdi i retur og ingen unntak`() {
-        val hentetBehandlingstatistikk = behandlingstatistikkRepository.hent(UUID.randomUUID(), Hendelse.PÅBEGYNT)
-        assertThat(hentetBehandlingstatistikk).isEqualTo(null)
+        Assertions.assertThrows(NullPointerException::class.java) {
+            behandlingstatistikkRepository.hent(UUID.randomUUID(), Hendelse.PÅBEGYNT)
+        }
+
     }
 
     @Test
     fun `hent behandlingstatistikk med ikke-eksisterende hendelse, forvent nullverdi i retur og ingen unntak`() {
-        val hentetBehandlingstatistikk = behandlingstatistikkRepository.hent(UUID.randomUUID(), Hendelse.FERDIG)
-        assertThat(hentetBehandlingstatistikk).isEqualTo(null)
+        Assertions.assertThrows(NullPointerException::class.java) {
+            behandlingstatistikkRepository.hent(UUID.randomUUID(), Hendelse.FERDIG)
+        }
     }
 
     private fun opprettBehandlingstatistikk(behandlingId: UUID): BehandlingDVH {
@@ -70,7 +74,7 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
                              tekniskTid = ZonedDateTime.now(),
                              sakYtelse = "EFOG",
                              behandlingType = "Førstegangsbehandling",
-                             behandlingStatus = "PÅBEGYNT",
+                             behandlingStatus = "MOTTATT",
                              opprettetAv = "gjeldendeSaksbehandlerId",
                              opprettetEnhet = "",
                              ansvarligEnhet = "",
