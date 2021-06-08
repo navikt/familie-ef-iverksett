@@ -16,11 +16,12 @@ class BehandlingstatistikkRepository(private val namedParameterJdbcTemplate: Nam
         return lagreBehandlingstatistikk(behandlingId, behandlingDVH, hendelse)
     }
 
-    fun hent(behandlingId: UUID, hendelse: Hendelse): BehandlingDVH? {
+    fun hent(behandlingId: UUID, hendelse: Hendelse): BehandlingDVH {
         val sql = "SELECT behandling_dvh FROM behandling_statistikk WHERE behandling_id = :behandlingId AND hendelse= :hendelse "
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         mapSqlParameterSource.addValue("hendelse", hendelse.toString())
         return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+               ?: throw NullPointerException("Ingen treff på behandling_id=${behandlingId} med hendelse=${hendelse.name}")
     }
 
     private fun lagreBehandlingstatistikk(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {
@@ -31,7 +32,7 @@ class BehandlingstatistikkRepository(private val namedParameterJdbcTemplate: Nam
                 mapOf(
                         "behandlingId" to behandlingId,
                         "behandlingDVH" to behandlingDVHString,
-                        "hendelse" to hendelse.toString()
+                        "hendelse" to hendelse.name
                 )
         )
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)

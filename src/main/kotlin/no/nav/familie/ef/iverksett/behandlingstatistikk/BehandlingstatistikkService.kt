@@ -26,8 +26,8 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                               aktorId = behandlingstatistikk.personIdent,
                               registrertTid = behandlingstatistikk.hendelseTidspunkt,
                               endretTid = behandlingstatistikk.hendelseTidspunkt,
-                              tekniskTid = behandlingstatistikk.hendelseTidspunkt,
-                              behandlingStatus = Hendelse.MOTTATT.toString(),
+                              tekniskTid = ZonedDateTime.now(),
+                              behandlingStatus = Hendelse.MOTTATT.name,
                               opprettetAv = behandlingstatistikk.gjeldendeSaksbehandlerId,
                               saksnummer = behandlingstatistikk.saksnummer,
                               mottattTid = behandlingstatistikk.hendelseTidspunkt,
@@ -46,7 +46,7 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                 behandlingDVH!!.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
                                      tekniskTid = ZonedDateTime.now(),
                                      saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                     behandlingStatus = Hendelse.MOTTATT.toString())
+                                     behandlingStatus = Hendelse.PÅBEGYNT.name)
 
             }
             Hendelse.VEDTATT -> {
@@ -55,18 +55,18 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                                      vedtakTid = behandlingstatistikk.hendelseTidspunkt,
                                      tekniskTid = ZonedDateTime.now(),
                                      saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                     behandlingStatus = Hendelse.VEDTATT.toString())
+                                     behandlingStatus = Hendelse.VEDTATT.name,
+                                     behandlingResultat = behandlingstatistikk.behandlingResultat,
+                                     resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse)
 
 
             }
             Hendelse.BESLUTTET -> {
                 val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.VEDTATT)
                 behandlingDVH!!.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
-                                     vedtakTid = behandlingstatistikk.hendelseTidspunkt,
                                      tekniskTid = ZonedDateTime.now(),
-                                     saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
                                      ansvarligBeslutter = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                     behandlingStatus = Hendelse.BESLUTTET.toString(),
+                                     behandlingStatus = Hendelse.BESLUTTET.name,
                                      behandlingResultat = behandlingstatistikk.behandlingResultat,
                                      resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse)
             }
@@ -75,9 +75,7 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                 behandlingDVH!!.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
                                      tekniskTid = ZonedDateTime.now(),
                                      ferdigBehandletTid = behandlingstatistikk.hendelseTidspunkt,
-                                     saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                     ansvarligBeslutter = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                                     behandlingStatus = Hendelse.BESLUTTET.toString())
+                                     behandlingStatus = Hendelse.FERDIG.name)
             }
         }
     }
