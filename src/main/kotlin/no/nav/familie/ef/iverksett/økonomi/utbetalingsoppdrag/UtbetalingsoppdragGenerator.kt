@@ -16,7 +16,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.E
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 object UtbetalingsoppdragGenerator {
 
@@ -44,7 +44,7 @@ object UtbetalingsoppdragGenerator {
 
         val utbetalingsperioderSomOpprettes =
                 lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
-                                                     behandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
+                                                     eksternBehandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
                                                      tilkjentYtelse = nyTilkjentYtelseMedMetaData,
                                                      type = nyTilkjentYtelseMedMetaData.stønadstype)
 
@@ -102,23 +102,23 @@ object UtbetalingsoppdragGenerator {
     }
 
     private fun lagUtbetalingsperioderForOpprettelse(andeler: List<AndelTilkjentYtelse>,
-                                                     behandlingId: Long,
+                                                     eksternBehandlingId: Long,
                                                      type: StønadType,
                                                      tilkjentYtelse: TilkjentYtelseMedMetaData): List<Utbetalingsperiode> {
 
         val utbetalingsperiodeMal = UtbetalingsperiodeMal(tilkjentYtelse)
-        return andeler.map { utbetalingsperiodeMal.lagPeriodeFraAndel(it, type, behandlingId) }
+        return andeler.map { utbetalingsperiodeMal.lagPeriodeFraAndel(it, type, eksternBehandlingId) }
     }
 
     private fun lagAndelerMedPeriodeId(andeler: List<AndelTilkjentYtelse>,
                                        sisteOffsetIKjedeOversikt: PeriodeId?,
-                                       behandlingId: UUID): List<AndelTilkjentYtelse> {
+                                       kildeBehandlingId: UUID): List<AndelTilkjentYtelse> {
         val forrigePeriodeIdIKjede: Long? = sisteOffsetIKjedeOversikt?.gjeldende
         val nestePeriodeIdIKjede = forrigePeriodeIdIKjede?.plus(1) ?: 1
 
         return andeler.sortedBy { it.periodebeløp.fraOgMed }.mapIndexed { index, andel ->
             andel.copy(periodeId = nestePeriodeIdIKjede + index,
-                       kildeBehandlingId = behandlingId,
+                       kildeBehandlingId = kildeBehandlingId,
                        forrigePeriodeId = if (index == 0) forrigePeriodeIdIKjede else nestePeriodeIdIKjede + index - 1)
         }
     }

@@ -8,8 +8,6 @@ import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.time.LocalDate
 import java.util.UUID
 
-data class KjedeId(val klassifisering: String, val personIdent: String)
-
 data class PeriodeId(val gjeldende: Long?,
                      val forrige: Long? = null)
 
@@ -18,10 +16,10 @@ fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, th
 @Deprecated("Bør erstattes med å gjøre 'stønadFom' og  'stønadTom'  nullable")
 val NULL_DATO: LocalDate = LocalDate.MIN
 
-fun nullAndelTilkjentYtelse(behandlingId: UUID, periodeId: PeriodeId?): AndelTilkjentYtelse =
+fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): AndelTilkjentYtelse =
         AndelTilkjentYtelse(periodebeløp = Periodebeløp(0, Periodetype.MÅNED, NULL_DATO, NULL_DATO),
                             periodeId = periodeId?.gjeldende,
-                            kildeBehandlingId = behandlingId,
+                            kildeBehandlingId = kildeBehandlingId,
                             forrigePeriodeId = periodeId?.forrige)
 
 object ØkonomiUtils {
