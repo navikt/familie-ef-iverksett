@@ -9,6 +9,7 @@ import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -69,4 +70,27 @@ internal class HentTilstandRepositoryTest : ServerTest() {
         val iverksettResultat = tilstandRepository.hentIverksettResultat(behandlingId)
         assertThat(iverksettResultat).isEqualTo(resultat)
     }
+
+    @Test
+    internal fun `hent tilkjentytelser for flere oppdragIdn`() {
+        val behandlingId2 = UUID.randomUUID()
+        tilstandRepository.opprettTomtResultat(behandlingId2)
+
+        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
+        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId2, tilkjentYtelse)
+
+        val tilkjentYtelsePåBehandlingId = tilstandRepository.hentTilkjentYtelse(setOf(behandlingId, behandlingId2))
+
+        assertThat(tilkjentYtelsePåBehandlingId).containsKeys(behandlingId, behandlingId2)
+    }
+
+    @Test
+    internal fun `hent tilkjentytelser for flere oppdragIdn skal kaste feil hvis den ikke finner tilkjent ytelse for en behandling`() {
+        val behandlingId2 = UUID.randomUUID()
+        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
+
+        assertThat(catchThrowable { tilstandRepository.hentTilkjentYtelse (setOf(behandlingId, behandlingId2)) })
+                .hasMessageContaining("=[$behandlingId2]")
+    }
+
 }

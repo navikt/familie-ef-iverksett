@@ -127,7 +127,6 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     fraOgMed = LocalDate.of(2021, 1, 1),
                     tilOgMed = LocalDate.of(2021, 12, 31)
             ),
-            kildeBehandlingId = UUID.randomUUID(),
             periodeId = 1
     )
     val tilkjentYtelse = TilkjentYtelse(
@@ -200,8 +199,7 @@ fun opprettTilkjentYtelse(behandlingId: UUID): TilkjentYtelse {
                                     tilOgMed = LocalDate.now().plusMonths(1)
                             ),
                             periodeId = 1L,
-                            forrigePeriodeId = 1L,
-                            kildeBehandlingId = UUID.randomUUID()
+                            forrigePeriodeId = 1L
                     )
             )
     )

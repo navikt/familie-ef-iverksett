@@ -6,9 +6,11 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.util.getJson
+import no.nav.familie.ef.iverksett.util.getUUID
 import no.nav.familie.ef.iverksett.util.queryForJson
 import no.nav.familie.ef.iverksett.util.queryForNullableObject
 import no.nav.familie.kontrakter.felles.objectMapper
+import org.springframework.jdbc.core.ResultSetExtractor
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
@@ -80,6 +82,27 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
         val sql = "SELECT tilkjentytelseforutbetaling FROM iverksett_resultat WHERE behandling_id = :behandlingId"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+    }
+
+    fun hentTilkjentYtelse(behandlingId: Set<UUID>): Map<UUID, TilkjentYtelse> {
+        val sql =
+                "SELECT behandling_id, tilkjentytelseforutbetaling FROM iverksett_resultat WHERE behandling_id IN (:behandlingId)"
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+        val resultSetExtractor = ResultSetExtractor { rs ->
+            val result = mutableMapOf<UUID, TilkjentYtelse>()
+            while (rs.next()) {
+                result[rs.getUUID("behandling_id")] =
+                        rs.getJson("tilkjentytelseforutbetaling")!!
+            }
+            result.toMap()
+        }
+        val result = namedParameterJdbcTemplate.query(sql, mapSqlParameterSource, resultSetExtractor)!!
+        if (!result.keys.containsAll(behandlingId)) {
+            val behandlingIdnSomSavnerMatchIResult = behandlingId.toMutableSet()
+            behandlingIdnSomSavnerMatchIResult.removeAll(result.keys)
+            error("Finner ikke tilkjent ytelse til behandlingIdn=$behandlingIdnSomSavnerMatchIResult")
+        }
+        return result
     }
 
     fun hentJournalpostResultat(behandlingId: UUID): JournalpostResultat? {
