@@ -28,12 +28,15 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                               endretTid = behandlingstatistikk.hendelseTidspunkt,
                               tekniskTid = ZonedDateTime.now(),
                               behandlingStatus = Hendelse.MOTTATT.name,
-                              opprettetAv = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                              opprettetAv = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                  behandlingstatistikk.gjeldendeSaksbehandlerId),
                               saksnummer = behandlingstatistikk.saksnummer,
                               mottattTid = behandlingstatistikk.hendelseTidspunkt,
                               saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
-                              opprettetEnhet = "",
-                              ansvarligEnhet = "",
+                              opprettetEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                     behandlingstatistikk.opprettetEnhet),
+                              ansvarligEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                     behandlingstatistikk.ansvarligEnhet),
                               behandlingMetode = "MANUELL",
                               avsender = "NAV enslig forelder",
                               behandlingType = "Førstegangsbehandling",
@@ -45,7 +48,8 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                 val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.MOTTATT)
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
                                    tekniskTid = ZonedDateTime.now(),
-                                   saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                                   saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                         behandlingstatistikk.gjeldendeSaksbehandlerId),
                                    behandlingStatus = Hendelse.PÅBEGYNT.name)
 
             }
@@ -54,7 +58,8 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
                                    vedtakTid = behandlingstatistikk.hendelseTidspunkt,
                                    tekniskTid = ZonedDateTime.now(),
-                                   saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                                   saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                         behandlingstatistikk.gjeldendeSaksbehandlerId),
                                    behandlingStatus = Hendelse.VEDTATT.name,
                                    behandlingResultat = behandlingstatistikk.behandlingResultat,
                                    resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse)
@@ -78,6 +83,13 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                                    behandlingStatus = Hendelse.FERDIG.name)
             }
         }
+    }
+
+    private fun sjekkStrengtFortrolig(erStrengtFortrolig: Boolean, verdi: String): String {
+        if (erStrengtFortrolig) {
+            return "-5"
+        }
+        return verdi
     }
 
 }
