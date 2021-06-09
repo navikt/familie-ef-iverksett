@@ -16,3 +16,10 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/aapen-ensligforsorger-vedtak-test/topic-dev.yaml
           PRINT_PAYLOAD: true
+      - name: deploy to prod
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_API_KEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: kafka-aiven/aapen-ensligforsorger-vedtak/topic-prod.yaml
+          PRINT_PAYLOAD: true
