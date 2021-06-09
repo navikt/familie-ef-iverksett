@@ -34,8 +34,8 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
         val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
                 .map { it.personIdent }.toSet()
         val perioder = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.map {
-            Periode(startdato = it.periodebeløp.fraOgMed,
-                    sluttdato = it.periodebeløp.tilOgMed,
+            Periode(startdato = it.fraOgMed,
+                    sluttdato = it.tilOgMed,
                     fullOvergangsstønad = true) // TODO må settes ut fra hvor mye som er redusert/max
         }
 

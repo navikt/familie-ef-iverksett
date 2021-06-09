@@ -38,7 +38,7 @@ fun FagsakdetaljerDto.toDomain(): Fagsakdetaljer {
 
 fun SøkerDto.toDomain(): Søker {
     return Søker(personIdent = this.personIdent,
-                 barn = this.barn.map { it.toDomain() } ,
+                 barn = this.barn.map { it.toDomain() },
                  tilhørendeEnhet = this.tilhørendeEnhet,
                  adressebeskyttelse = this.adressebeskyttelse)
 }

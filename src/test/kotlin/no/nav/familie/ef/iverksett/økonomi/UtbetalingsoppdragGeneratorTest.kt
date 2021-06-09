@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
@@ -14,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
 import org.opentest4j.ValueWrapper
 import java.time.LocalDate
-import java.util.*
+import java.util.UUID
 
 internal class UtbetalingsoppdragGeneratorTest {
 
@@ -103,8 +102,7 @@ internal class UtbetalingsoppdragGeneratorTest {
 
         val nyePerioder = opprettTilkjentYtelseMedMetadata(behandlingB,
                                                            andel1,
-                                                           andel2.copy(periodebeløp = andel2.periodebeløp.copy(tilOgMed = andel2.periodebeløp.tilOgMed.minusMonths(
-                                                                   2))),
+                                                           andel2.copy(tilOgMed = andel2.tilOgMed.minusMonths(2)),
                                                            andel3)
         val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdrag(nyePerioder, førsteTilkjentYtelse)
 
@@ -164,10 +162,13 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     private fun opprettAndel(beløp: Int, stønadFom: LocalDate, stønadTom: LocalDate) =
-            AndelTilkjentYtelse(periodebeløp = Periodebeløp(beløp, Periodetype.MÅNED, stønadFom, stønadTom),
-                                periodeId = 100, // overskreves
-                                forrigePeriodeId = 100, // overskreves
-                                kildeBehandlingId = UUID.randomUUID()) // overskreves
+            lagAndelTilkjentYtelse(beløp = beløp,
+                                   periodetype = Periodetype.MÅNED,
+                                   fraOgMed = stønadFom,
+                                   tilOgMed = stønadTom,
+                                   periodeId = 100, // overskreves
+                                   forrigePeriodeId = 100, // overskreves
+                                   kildeBehandlingId = UUID.randomUUID()) // overskreves
 
     private fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID,
                                                  vararg andelTilkjentYtelse: AndelTilkjentYtelse) =

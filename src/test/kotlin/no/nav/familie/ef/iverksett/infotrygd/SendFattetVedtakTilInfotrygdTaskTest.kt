@@ -9,8 +9,8 @@ import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
@@ -61,7 +61,7 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
         val vedtak = iverksett.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
         val andelerTilkjentYtelse = perioder.map {
-            AndelTilkjentYtelse(Periodebeløp(1, Periodetype.MÅNED, it.first, it.second))
+            lagAndelTilkjentYtelse(1, Periodetype.MÅNED, it.first, it.second)
         }
 
         val nyTilkjentYtelse = tilkjentYtelse.copy(andelerTilkjentYtelse = andelerTilkjentYtelse)

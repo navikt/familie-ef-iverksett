@@ -1,20 +1,29 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
+import no.nav.familie.kontrakter.ef.iverksett.Periodetype
+import java.time.LocalDate
 import java.util.UUID
 
-data class AndelTilkjentYtelse(val periodebeløp: Periodebeløp,
+data class AndelTilkjentYtelse(val beløp: Int,
+                               val fraOgMed: LocalDate,
+                               val tilOgMed: LocalDate,
+                               val periodetype: Periodetype,
+
+                               val inntekt: Int,
+                               val samordningsfradrag: Int,
+                               val inntektsreduksjon: Int,
+
                                val periodeId: Long? = null,
                                val forrigePeriodeId: Long? = null,
                                val kildeBehandlingId: UUID? = null) {
 
     private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean {
-        return (this.periodebeløp.fraOgMed == other.periodebeløp.fraOgMed
-                && this.periodebeløp.tilOgMed == other.periodebeløp.tilOgMed
-                && this.periodebeløp.beløp == other.periodebeløp.beløp
-               )
+        return (this.fraOgMed == other.fraOgMed
+                && this.tilOgMed == other.tilOgMed
+                && this.beløp == other.beløp)
     }
 
-    fun erNull() = this.periodebeløp.beløp == 0
+    fun erNull() = this.beløp == 0
 
     companion object {
 
