@@ -3,13 +3,10 @@ package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.økonomi.PeriodeId
-import no.nav.familie.ef.iverksett.økonomi.nullAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
-import no.nav.familie.ef.iverksett.økonomi.tilPeriodeId
-import no.nav.familie.ef.iverksett.økonomi.ØkonomiUtils.andelTilOpphørMedDato
-import no.nav.familie.ef.iverksett.økonomi.ØkonomiUtils.andelerTilOpprettelse
-import no.nav.familie.ef.iverksett.økonomi.ØkonomiUtils.beståendeAndeler
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelTilOpphørMedDato
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerTilOpprettelse
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.ENDR
@@ -116,7 +113,7 @@ object UtbetalingsoppdragGenerator {
         val forrigePeriodeIdIKjede: Long? = sisteOffsetIKjedeOversikt?.gjeldende
         val nestePeriodeIdIKjede = forrigePeriodeIdIKjede?.plus(1) ?: 1
 
-        return andeler.sortedBy { it.periodebeløp.fraOgMed }.mapIndexed { index, andel ->
+        return andeler.sortedBy { it.fraOgMed }.mapIndexed { index, andel ->
             andel.copy(periodeId = nestePeriodeIdIKjede + index,
                        kildeBehandlingId = kildeBehandlingId,
                        forrigePeriodeId = if (index == 0) forrigePeriodeIdIKjede else nestePeriodeIdIKjede + index - 1)

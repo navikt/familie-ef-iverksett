@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.math.BigDecimal
@@ -52,9 +53,15 @@ fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                            periodeId = andel.periodeId!!,
                            datoForVedtak = vedtaksdato,
                            klassifisering = type.tilKlassifisering(),
-                           vedtakdatoFom = andel.periodebeløp.fraOgMed,
-                           vedtakdatoTom = andel.periodebeløp.tilOgMed,
-                           sats = BigDecimal(andel.periodebeløp.beløp),
-                           satsType = Utbetalingsperiode.SatsType.MND,
+                           vedtakdatoFom = andel.fraOgMed,
+                           vedtakdatoTom = andel.tilOgMed,
+                           sats = BigDecimal(andel.beløp),
+                           satsType = mapSatstype(andel.periodetype),
                            utbetalesTil = personIdent,
-                           behandlingId = eksternBehandlingId)
+                           behandlingId = eksternBehandlingId,
+                           utbetalingsgrad = andel.utbetalingsgrad())
+
+fun mapSatstype(periodetype: Periodetype) = when(periodetype) {
+    Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND
+    else -> error("Støtter ikke periodetype=$periodetype")
+}

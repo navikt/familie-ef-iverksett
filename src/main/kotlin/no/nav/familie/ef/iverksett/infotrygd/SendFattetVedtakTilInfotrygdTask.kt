@@ -29,7 +29,7 @@ class SendFattetVedtakTilInfotrygdTask(private val infotrygdFeedClient: Infotryg
         val stønadstype = iverksett.fagsak.stønadstype
         val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
                 .map { it.personIdent }.toSet()
-        val startDato = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.periodebeløp.fraOgMed }
+        val startDato = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
                         ?: error("Finner ikke noen andel med fraOgMed for behandling=$behandlingId")
 
         infotrygdFeedClient.opprettVedtakHendelse(OpprettVedtakHendelseDto(personIdenter, stønadstype, startDato))

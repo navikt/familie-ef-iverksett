@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi.konsistens
 
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
+import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
@@ -60,15 +61,16 @@ class KonsistensavstemmingService(
             error("Savner utbetalingsoppdrag i tilkjent ytelse fra tilstand for behandling=$behandlingId")
         }
 
-        val andelerPerPeriodebeløp =
-                konsistensavstemmingTilkjentYtelseDto.andelerTilkjentYtelse.associateBy { it.toDomain() }
+        val andelerFraRequest = konsistensavstemmingTilkjentYtelseDto.andelerTilkjentYtelse.map { it.toDomain() }
 
-        val andeler = tilkjentYtelse.andelerTilkjentYtelse.filter { andelerPerPeriodebeløp.contains(it.periodebeløp) }
+        val andeler = tilkjentYtelse.andelerTilkjentYtelse.filter {
+            andelerFraRequest.any { andel -> beløpOgPeriodeErLik(andel, it) }
+        }
 
-        if (andelerPerPeriodebeløp.keys.size != andeler.size) {
+        if (andelerFraRequest.size != andeler.size) {
             secureLogger.info("Forskjell i andeler for behandling=$behandlingId" +
-                              " request=${andelerPerPeriodebeløp.keys}" +
-                              " iverksettAndeler=${andeler.map { it.periodebeløp }}")
+                              " request=${andelerFraRequest}" +
+                              " iverksettAndeler=${tilkjentYtelse.andelerTilkjentYtelse}")
             error("Finner ikke riktige periodebeløp i det som er lagret for behandling=$behandlingId")
         }
 
@@ -88,6 +90,14 @@ class KonsistensavstemmingService(
                 }
         )
     }
+
+    /**
+     * Når vi skal finne finne frem andeler fra databasen som vi har sendt ivei er det tilsrekkelig å kun matche beløp og periode
+     */
+    private fun beløpOgPeriodeErLik(a: AndelTilkjentYtelse, b: AndelTilkjentYtelse) =
+            a.beløp == b.beløp &&
+            a.fraOgMed == b.fraOgMed &&
+            a.tilOgMed == b.tilOgMed
 
     private fun sendKonsistensavstemming(utbetalingsoppdrag: List<Utbetalingsoppdrag>,
                                          stønadType: StønadType) {

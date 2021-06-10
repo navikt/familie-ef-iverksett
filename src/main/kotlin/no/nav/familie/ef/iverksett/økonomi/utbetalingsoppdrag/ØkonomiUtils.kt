@@ -1,9 +1,8 @@
-package no.nav.familie.ef.iverksett.økonomi
+package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Companion.disjunkteAndeler
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Companion.snittAndeler
-import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.time.LocalDate
 import java.util.UUID
@@ -17,7 +16,15 @@ fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, th
 val NULL_DATO: LocalDate = LocalDate.MIN
 
 fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): AndelTilkjentYtelse =
-        AndelTilkjentYtelse(periodebeløp = Periodebeløp(0, Periodetype.MÅNED, NULL_DATO, NULL_DATO),
+        AndelTilkjentYtelse(beløp = 0,
+                            fraOgMed = NULL_DATO,
+                            tilOgMed = NULL_DATO,
+                            periodetype = Periodetype.MÅNED,
+
+                            inntekt = 0,
+                            samordningsfradrag = 0,
+                            inntektsreduksjon = 0,
+
                             periodeId = periodeId?.gjeldende,
                             kildeBehandlingId = kildeBehandlingId,
                             forrigePeriodeId = periodeId?.forrige)
@@ -41,7 +48,7 @@ object ØkonomiUtils {
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val består =
                 if (førsteEndring != null)
-                    forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.periodebeløp.fraOgMed.isBefore(førsteEndring) }
+                    forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.fraOgMed.isBefore(førsteEndring) }
                 else forrigeAndeler
         return består.sortedBy { it.periodeId }
     }
@@ -55,8 +62,8 @@ object ØkonomiUtils {
      */
     fun andelerTilOpprettelse(andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
                               beståendeAndeler: List<AndelTilkjentYtelse>): List<AndelTilkjentYtelse> {
-        return beståendeAndeler.maxByOrNull { it.periodebeløp.tilOgMed }?.let { sisteBeståendeAndel ->
-            andelerNyTilkjentYtelse.filter { it.periodebeløp.fraOgMed.isAfter(sisteBeståendeAndel.periodebeløp.fraOgMed) }
+        return beståendeAndeler.maxByOrNull { it.tilOgMed }?.let { sisteBeståendeAndel ->
+            andelerNyTilkjentYtelse.filter { it.fraOgMed.isAfter(sisteBeståendeAndel.fraOgMed) }
         } ?: andelerNyTilkjentYtelse
     }
 
@@ -70,7 +77,7 @@ object ØkonomiUtils {
     fun andelTilOpphørMedDato(andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
                               andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>): Pair<AndelTilkjentYtelse, LocalDate>? {
 
-        val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.periodebeløp.tilOgMed }.maxOrNull()
+        val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
@@ -86,7 +93,7 @@ object ØkonomiUtils {
     private fun finnDatoForFørsteEndredeAndel(andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
                                               andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>) =
             andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse)
-                    .minByOrNull { it.periodebeløp.fraOgMed }?.periodebeløp?.fraOgMed
+                    .minByOrNull { it.fraOgMed }?.fraOgMed
 
     /**
      * Sjekker om den nye endringen er etter maks datot for tidligere perioder

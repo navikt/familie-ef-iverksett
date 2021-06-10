@@ -43,7 +43,6 @@
         "resultat": "OPPFYLT",
         "vilkårType": "SAGT_OPP_ELLER_REDUSERT"
       }
-
     ]
   },
   "søker": {
@@ -68,12 +67,13 @@
       "andelerTilkjentYtelse": [
         {
           "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "periodebeløp": {
-            "fraOgMed": "2021-05-10",
-            "periodetype": "MÅNED",
-            "tilOgMed": "2021-05-10",
-            "beløp": 0
-          }
+          "fraOgMed": "2021-05-10",
+          "periodetype": "MÅNED",
+          "tilOgMed": "2021-05-10",
+          "beløp": 0,
+          "inntekt": 0,
+          "samordningsfradrag": 0,
+          "inntektsreduksjon": 0
         }
       ]
     }
