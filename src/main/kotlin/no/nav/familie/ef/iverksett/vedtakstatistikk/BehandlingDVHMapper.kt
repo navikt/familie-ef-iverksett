@@ -62,9 +62,9 @@ class BehandlingDVHMapper {
             return vedtaksdetaljer.tilkjentYtelse.andelerTilkjentYtelse.map {
                 Utbetaling(
                         beløp = it.beløp,
-                        samordningsfradrag = 0,//TODO iverksettDTO
-                        inntekt = 0,//
-                        inntektsreduksjon = 0,//
+                        samordningsfradrag = it.samordningsfradrag,
+                        inntekt = it.inntekt,
+                        inntektsreduksjon = it.inntektsreduksjon,
                         fraOgMed = it.fraOgMed,
                         tilOgMed = it.tilOgMed,
                         Utbetalingsdetalj(gjelderPerson = Person(),
