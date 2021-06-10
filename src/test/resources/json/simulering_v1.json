@@ -6,23 +6,25 @@
     "tilkjentYtelse": {
       "andelerTilkjentYtelse": [
         {
-          "periodebeløp": {
-            "utbetaltPerPeriode": 3800,
-            "periodetype": "MÅNED",
-            "fraOgMed": "2021-03-01",
-            "tilOgMed": "2022-08-31"
-          },
+          "utbetaltPerPeriode": 3800,
+          "periodetype": "MÅNED",
+          "fraOgMed": "2021-03-01",
+          "tilOgMed": "2022-08-31",
+          "inntekt": 0,
+          "samordningsfradrag": 0,
+          "inntektsreduksjon": 0,
           "personIdent": "01017012345",
           "stønadsType": "OVERGANGSSTØNAD",
           "kildeBehandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003"
         },
         {
-          "periodebeløp": {
-            "beløp": 3800,
-            "periodetype": "MÅNED",
-            "fraOgMed": "2022-09-01",
-            "tilOgMed": "2023-11-30"
-          },
+          "beløp": 3800,
+          "periodetype": "MÅNED",
+          "fraOgMed": "2022-09-01",
+          "tilOgMed": "2023-11-30",
+          "inntekt": 0,
+          "samordningsfradrag": 0,
+          "inntektsreduksjon": 0,
           "personIdent": "01017012345",
           "stønadsType": "OVERGANGSSTØNAD",
           "kildeBehandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003"
@@ -40,12 +42,13 @@
     "vedtaksdato": "2021-03-03",
     "andelerTilkjentYtelse": [
       {
-        "periodebeløp": {
-          "beløp": 3800,
-          "periodetype": "MÅNED",
-          "fraOgMed": "2021-04-01",
-          "tilOgMed": "2023-02-28"
-        },
+        "beløp": 3800,
+        "periodetype": "MÅNED",
+        "fraOgMed": "2021-04-01",
+        "tilOgMed": "2023-02-28",
+        "inntekt": 0,
+        "samordningsfradrag": 0,
+        "inntektsreduksjon": 0,
         "personIdent": "01017012345",
         "stønadsType": "OVERGANGSSTØNAD",
         "kildeBehandlingId": "234bed7c-b1d3-11eb-8529-0242ac130002"

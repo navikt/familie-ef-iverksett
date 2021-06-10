@@ -116,7 +116,7 @@ object UtbetalingsoppdragGenerator {
         val forrigePeriodeIdIKjede: Long? = sisteOffsetIKjedeOversikt?.gjeldende
         val nestePeriodeIdIKjede = forrigePeriodeIdIKjede?.plus(1) ?: 1
 
-        return andeler.sortedBy { it.periodebeløp.fraOgMed }.mapIndexed { index, andel ->
+        return andeler.sortedBy { it.fraOgMed }.mapIndexed { index, andel ->
             andel.copy(periodeId = nestePeriodeIdIKjede + index,
                        kildeBehandlingId = kildeBehandlingId,
                        forrigePeriodeId = if (index == 0) forrigePeriodeIdIKjede else nestePeriodeIdIKjede + index - 1)
