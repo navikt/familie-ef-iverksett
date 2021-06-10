@@ -40,7 +40,7 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                               behandlingMetode = "MANUELL",
                               avsender = "NAV enslig forelder",
                               behandlingType = behandlingstatistikk.behandlingstype.name,
-                              sakYtelse = behandlingstatistikk.sakYtelse.name
+                              sakYtelse = behandlingstatistikk.sakYtelse.tilKlassifisering()
                 )
 
             }
@@ -90,6 +90,12 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
             return "-5"
         }
         return verdi
+    }
+
+    private fun Stønadstype.tilKlassifisering() = when (this) {
+        Stønadstype.OVERGANGSSTØNAD -> "EFOG"
+        Stønadstype.BARNETILSYN -> "EFBT"
+        Stønadstype.SKOLEPENGER -> "EFSP"
     }
 
 }
