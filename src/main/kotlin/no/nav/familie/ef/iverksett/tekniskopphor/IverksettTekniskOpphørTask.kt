@@ -44,7 +44,6 @@ class IverksettTekniskOpphørTask(val iverksettingRepository: IverksettingReposi
     }
 
     companion object {
-
         const val TYPE = "utførIverksettingAvTekniskOpphør"
     }
 }
