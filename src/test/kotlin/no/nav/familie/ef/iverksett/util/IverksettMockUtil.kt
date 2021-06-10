@@ -13,10 +13,13 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
+import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
+import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
@@ -26,6 +29,7 @@ import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
+import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
@@ -92,7 +96,7 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                     personIdent = "12345678910",
                     barn = emptyList(),
                     tilhørendeEnhet = "4489",
-                    adressebeskyttelse = null
+                    adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
             ),
             vedtak = VedtaksdetaljerDto(
                     resultat = Vedtaksresultat.INNVILGET,
@@ -162,6 +166,7 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     personIdent = "12345678910",
                     barn = emptyList(),
                     tilhørendeEnhet = "4489",
+                    adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
             ),
             vedtak = Vedtaksdetaljer(
                     vedtaksresultat = Vedtaksresultat.INNVILGET,
@@ -170,7 +175,10 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     saksbehandlerId = "A12345",
                     beslutterId = "B23456",
                     tilkjentYtelse = tilkjentYtelse,
-                    vedtaksperioder = emptyList()
+                    vedtaksperioder = listOf(Vedtaksperiode(fraOgMed = LocalDate.now(),
+                                                            tilOgMed = LocalDate.now(),
+                                                            aktivitet = "aktivitet",
+                                                            periodeType = "periodetype"))
             )
     )
 }

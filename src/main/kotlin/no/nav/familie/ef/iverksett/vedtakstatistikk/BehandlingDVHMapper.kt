@@ -33,7 +33,8 @@ class BehandlingDVHMapper {
             return BehandlingDVH(fagsakId = iverksett.fagsak.fagsakId.toString(),
                                  behandlingId = iverksett.behandling.behandlingId.toString(),
                                  relatertBehandlingId = iverksett.behandling.relatertBehandlingId?.toString(),
-                                 adressebeskyttelse = Adressebeskyttelse.valueOf(iverksett.søker.adressebeskyttelse!!.name), //TODO nullable
+                                 adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let { Adressebeskyttelse.valueOf(it.name) }
+                                                      ?: null,
                                  tidspunktVedtak = iverksett.vedtak.vedtaksdato.atStartOfDay(ZoneId.of("Europe/Paris")),
                                  vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map { mapTilVilkårsvurderinger(it) },
                                  person = mapTilPerson(personIdent = iverksett.søker.personIdent),
@@ -41,12 +42,13 @@ class BehandlingDVHMapper {
                                  behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
                                  behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
                                  vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
-                                 vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak.vedtaksperioder), //TODO
+                                 vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak.vedtaksperioder),
                                  utbetalinger = mapTilUtbetaling(iverksett.vedtak,
                                                                  iverksett.fagsak.stønadstype,
-                                                                 iverksett.fagsak.eksternId), //TODO
+                                                                 iverksett.fagsak.eksternId),
                                  aktivitetskrav = Aktivitetskrav(
-                                         aktivitetspliktInntrefferDato = LocalDate.now(), //TODO time
+                                         //TODO : Pga at aktivitetspliktInntrefferDato er nullable i kontrakten, så settes denne til now() inntil videre
+                                         aktivitetspliktInntrefferDato = LocalDate.now(),
                                          harSagtOppArbeidsforhold = VilkårsvurderingUtil.hentHarSagtOppEllerRedusertFraVurderinger(
                                                  iverksett.behandling.vilkårsvurderinger)
                                  ),

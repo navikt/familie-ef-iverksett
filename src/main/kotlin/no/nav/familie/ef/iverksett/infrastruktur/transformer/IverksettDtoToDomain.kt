@@ -51,7 +51,8 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
                                eksternId = this.eksternId,
                                behandlingType = this.behandlingType,
                                behandlingÅrsak = this.behandlingÅrsak,
-                               vilkårsvurderinger = this.vilkårsvurderinger.map { it.toDomain() })
+                               vilkårsvurderinger = this.vilkårsvurderinger.map { it.toDomain() },
+                               aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato)
 }
 
 fun VedtaksperiodeDto.toDomain(): Vedtaksperiode {

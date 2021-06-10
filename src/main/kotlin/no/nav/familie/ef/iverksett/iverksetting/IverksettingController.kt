@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
@@ -41,6 +42,11 @@ class IverksettingController(
         return status?.let { ResponseEntity(status, HttpStatus.OK) } ?: ResponseEntity(null, HttpStatus.NOT_FOUND)
     }
 
+    @PostMapping("/hdsjhkdsa/{behandlingId}")
+    fun removeMe(@RequestBody json : IverksettDto,@PathVariable behandlingId: UUID): ResponseEntity<IverksettStatus> {
+            val status = iverksettingService.utledStatus(behandlingId)
+            return status?.let { ResponseEntity(status, HttpStatus.OK) } ?: ResponseEntity(null, HttpStatus.NOT_FOUND)
+    }
     private fun opprettBrev(iverksettDto: IverksettDto, fil: MultipartFile): Brev {
         return Brev(iverksettDto.behandling.behandlingId, fil.bytes)
     }

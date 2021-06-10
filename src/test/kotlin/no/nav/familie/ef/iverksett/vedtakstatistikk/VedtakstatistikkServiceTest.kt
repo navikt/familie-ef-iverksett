@@ -76,7 +76,7 @@ class VedtakstatistikkServiceTest {
                                      fagsakId: String,
                                      tidspunktVedtak: LocalDate): BehandlingDVH {
         return BehandlingDVH(fagsakId = fagsakId,
-                             behandlingId = UUID.randomUUID().toString(),
+                             behandlingId = behandlingId,
                              relatertBehandlingId = null,
                              adressebeskyttelse = Adressebeskyttelse.UGRADERT,
                              tidspunktVedtak = tidspunktVedtak.atStartOfDay(ZoneId.of("Europe/Paris")),

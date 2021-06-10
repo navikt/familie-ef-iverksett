@@ -59,13 +59,8 @@ data class Behandlingsdetaljer(
         val behandlingÅrsak: BehandlingÅrsak,
         val relatertBehandlingId: UUID? = null,
         val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
-
+        val aktivitetspliktInntrefferDato: LocalDate? = null
         )
-
-data class Aktivitetskrav(
-        val aktivitetspliktInntrefferDato: LocalDate,
-        val harSagtOppArbeidsforhold: Boolean
-)
 
 data class Vilkårsvurdering(
         val vilkårType: VilkårType,
