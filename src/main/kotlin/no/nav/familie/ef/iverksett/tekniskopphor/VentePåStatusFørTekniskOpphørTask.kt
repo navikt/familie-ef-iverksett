@@ -37,6 +37,6 @@ class VentePåStatusFørTekniskOpphørTask(
     }
 
     companion object {
-        const val TYPE = "sjekkStatusPåOppdrag"
+        const val TYPE = "sjekkStatusTekniskOpphør"
     }
 }

@@ -7,7 +7,6 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
 import java.util.UUID
 
@@ -19,13 +18,13 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun lagreTekniskOpphør(behandlingId: UUID, tekniskOpphør: TekniskOpphør) {
-        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON, :type)"
-        val iverksettString = objectMapper.writeValueAsString(tekniskOpphør)
+        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :tekniskOpphørJson::JSON, :type)"
+        val tekniskOpphørString = objectMapper.writeValueAsString(tekniskOpphør)
 
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
-                        "iverksettJson" to iverksettString,
+                        "tekniskOpphørJson" to tekniskOpphørString,
                         "type" to IverksettType.TEKNISK_OPPHØR
                 ))
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
@@ -73,7 +72,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
 
     private fun hentIverksettStringOgTransformer(behandlingId: UUID): Iverksett {
 
-        val sql = "select data from iverksett where behandling_id = :behandlingId"
+        val sql = "select data from iverksett where behandling_id = :behandlingId and type = :type"
 
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
@@ -86,7 +85,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun hentTekniskOpphør(behandlingId: UUID): TekniskOpphør {
-        val sql = "select data from iverksett where behandling_id = :behandlingId"
+        val sql = "select data from iverksett where behandling_id = :behandlingId and type= :type "
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
