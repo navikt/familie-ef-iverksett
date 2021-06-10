@@ -1,1 +1,1 @@
-alter table iverksett add column type varchar not null default 'vanlig'
+alter table iverksett add column type varchar not null default 'VANLIG'

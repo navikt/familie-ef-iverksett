@@ -25,7 +25,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
                 mapOf(
                         "behandlingId" to behandlingId,
                         "tekniskOpphørJson" to tekniskOpphørString,
-                        "type" to IverksettType.TEKNISK_OPPHØR
+                        "type" to IverksettType.TEKNISK_OPPHØR.name
                 ))
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
@@ -74,7 +74,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
-                        "type" to IverksettType.VANLIG
+                        "type" to IverksettType.VANLIG.name
                 )
         )
         return namedParameterJdbcTemplate.queryForJson(HENT_IVERKSETT_SQL, mapSqlParameterSource)
@@ -85,7 +85,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
-                        "type" to IverksettType.TEKNISK_OPPHØR
+                        "type" to IverksettType.TEKNISK_OPPHØR.name
                 )
         )
         return namedParameterJdbcTemplate.queryForJson(HENT_IVERKSETT_SQL, mapSqlParameterSource)
@@ -93,7 +93,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     companion object {
-        const val HENT_IVERKSETT_SQL = "select data from iverksett where behandling_id = :behandlingId and type = :type "
+        const val HENT_IVERKSETT_SQL = "select data from iverksett where behandling_id = :behandlingId AND type = :type "
     }
 
 }
