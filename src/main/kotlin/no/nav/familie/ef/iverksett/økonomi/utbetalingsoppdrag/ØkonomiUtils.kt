@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.økonomi
+package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Companion.disjunkteAndeler

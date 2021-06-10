@@ -9,7 +9,6 @@ import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -22,13 +21,9 @@ import java.util.UUID
 class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFeedClient,
                                    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
                                    private val iverksettingRepository: IverksettingRepository,
-                                   private val taskRepository: TaskRepository,
-                                   @Value("\${NAIS_CLUSTER_NAME:prod}") private val cluster: String) : AsyncTaskStep {
+                                   private val taskRepository: TaskRepository) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
-        if (!cluster.contains("dev")) {
-            error("Må håndtere fullOvergangsstønad før denne kjøres i prod")
-        }
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
         val stønadstype = iverksett.fagsak.stønadstype
         val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
@@ -36,7 +31,7 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
         val perioder = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.map {
             Periode(startdato = it.fraOgMed,
                     sluttdato = it.tilOgMed,
-                    fullOvergangsstønad = true) // TODO må settes ut fra hvor mye som er redusert/max
+                    fullOvergangsstønad = it.erFullOvergangsstønad())
         }
 
         infotrygdFeedClient.opprettPeriodeHendelse(OpprettPeriodeHendelseDto(personIdenter, stønadstype, perioder))

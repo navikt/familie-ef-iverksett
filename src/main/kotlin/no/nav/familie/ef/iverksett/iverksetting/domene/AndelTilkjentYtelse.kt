@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.iverksetting.domene
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.time.LocalDate
 import java.util.UUID
+import kotlin.math.roundToInt
 
 data class AndelTilkjentYtelse(val beløp: Int,
                                val fraOgMed: LocalDate,
@@ -24,6 +25,11 @@ data class AndelTilkjentYtelse(val beløp: Int,
     }
 
     fun erNull() = this.beløp == 0
+
+    fun erFullOvergangsstønad() = this.inntektsreduksjon == 0 && this.samordningsfradrag == 0
+
+    fun utbetalingsgrad(): Int =
+            (100 * (this.beløp.toDouble() / (this.beløp + this.inntektsreduksjon + this.samordningsfradrag))).roundToInt()
 
     companion object {
 
