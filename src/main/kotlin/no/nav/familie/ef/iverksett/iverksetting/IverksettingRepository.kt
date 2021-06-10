@@ -71,30 +71,29 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     private fun hentIverksettStringOgTransformer(behandlingId: UUID): Iverksett {
-
-        val sql = "select data from iverksett where behandling_id = :behandlingId and type = :type"
-
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
                         "type" to IverksettType.VANLIG
                 )
         )
-        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+        return namedParameterJdbcTemplate.queryForJson(HENT_IVERKSETT_SQL, mapSqlParameterSource)
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
     }
 
     fun hentTekniskOpphør(behandlingId: UUID): TekniskOpphør {
-        val sql = "select data from iverksett where behandling_id = :behandlingId and type= :type "
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
                         "type" to IverksettType.TEKNISK_OPPHØR
                 )
         )
-        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+        return namedParameterJdbcTemplate.queryForJson(HENT_IVERKSETT_SQL, mapSqlParameterSource)
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
     }
 
+    companion object {
+        const val HENT_IVERKSETT_SQL = "select data from iverksett where behandling_id = :behandlingId and type = :type "
+    }
 
 }
