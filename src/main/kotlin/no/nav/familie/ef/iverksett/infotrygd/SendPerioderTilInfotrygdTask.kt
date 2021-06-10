@@ -31,7 +31,7 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
         val perioder = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.map {
             Periode(startdato = it.fraOgMed,
                     sluttdato = it.tilOgMed,
-                    fullOvergangsstønad = it.inntektsreduksjon == 0 && it.samordningsfradrag == 0)
+                    fullOvergangsstønad = it.erFullOvergangsstønad())
         }
 
         infotrygdFeedClient.opprettPeriodeHendelse(OpprettPeriodeHendelseDto(personIdenter, stønadstype, perioder))

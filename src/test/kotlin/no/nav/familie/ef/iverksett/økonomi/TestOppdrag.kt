@@ -83,7 +83,8 @@ data class TestOppdrag(val type: TestOppdragType,
                                sats = beløp?.toBigDecimal() ?: BigDecimal.ZERO,
                                satsType = Utbetalingsperiode.SatsType.MND,
                                utbetalesTil = fnr,
-                               behandlingId = 1)
+                               behandlingId = 1,
+                               utbetalingsgrad = 100)
         else
             null
     }

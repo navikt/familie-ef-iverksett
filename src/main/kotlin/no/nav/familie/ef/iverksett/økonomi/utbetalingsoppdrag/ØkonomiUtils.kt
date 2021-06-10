@@ -6,7 +6,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Compa
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.time.LocalDate
 import java.util.UUID
-import kotlin.math.roundToInt
 
 data class PeriodeId(val gjeldende: Long?,
                      val forrige: Long? = null)
@@ -31,9 +30,6 @@ fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): And
                             forrigePeriodeId = periodeId?.forrige)
 
 object ØkonomiUtils {
-
-    fun kalkulerUtbetalingsgrad(andel: AndelTilkjentYtelse): Int =
-            (100 * (andel.beløp.toDouble() / (andel.beløp + andel.inntektsreduksjon + andel.samordningsfradrag))).roundToInt()
 
     /**
      * Lager oversikt over siste andel i hver kjede som finnes uten endring i oppdatert tilstand.
