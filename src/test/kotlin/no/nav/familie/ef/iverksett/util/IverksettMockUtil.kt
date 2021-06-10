@@ -101,7 +101,7 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                     saksbehandlerId = "A12345",
                     beslutterId = "B23456",
                     tilkjentYtelse = tilkjentYtelse,
-                    inntekter = listOf(inntekt)
+                    vedtaksperioder = emptyList()
             )
     )
 }
@@ -170,7 +170,7 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     saksbehandlerId = "A12345",
                     beslutterId = "B23456",
                     tilkjentYtelse = tilkjentYtelse,
-                    inntekter = listOf(inntekt)
+                    vedtaksperioder = emptyList()
             )
     )
 }

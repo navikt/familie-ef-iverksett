@@ -10,7 +10,6 @@ import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
-
 import java.time.LocalDate
 import java.util.ArrayList
 import java.util.UUID
@@ -35,6 +34,13 @@ data class Søker(
         val adressebeskyttelse: AdressebeskyttelseGradering? = null
 )
 
+data class Vedtaksperiode(
+        val aktivitet: String,
+        val fraOgMed: LocalDate,
+        val periodeType: String,
+        val tilOgMed: LocalDate
+)
+
 data class Vedtaksdetaljer(
         val vedtaksresultat: Vedtaksresultat,
         val vedtaksdato: LocalDate,
@@ -42,7 +48,7 @@ data class Vedtaksdetaljer(
         val saksbehandlerId: String,
         val beslutterId: String,
         val tilkjentYtelse: TilkjentYtelse,
-        val inntekter: List<Inntekt>
+        val vedtaksperioder: List<Vedtaksperiode>
 )
 
 data class Behandlingsdetaljer(
