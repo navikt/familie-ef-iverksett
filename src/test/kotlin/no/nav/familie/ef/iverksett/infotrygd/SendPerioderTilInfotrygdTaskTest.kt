@@ -9,8 +9,8 @@ import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
@@ -52,8 +52,8 @@ internal class SendPerioderTilInfotrygdTaskTest {
                                                 iverksettingRepository,
                                                 taskRepository,
                                                 "dev")
-        val iverksett = opprettData(AndelTilkjentYtelse(
-                Periodebeløp(2, Periodetype.MÅNED, LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31))))
+        val iverksett = opprettData(lagAndelTilkjentYtelse(
+                2, Periodetype.MÅNED, LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31)))
         every { iverksettingRepository.hent(behandlingId) } returns iverksett
 
 

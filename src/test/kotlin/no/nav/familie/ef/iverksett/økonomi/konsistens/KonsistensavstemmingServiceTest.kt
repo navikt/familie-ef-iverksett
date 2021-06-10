@@ -3,17 +3,16 @@ package no.nav.familie.ef.iverksett.økonomi.konsistens
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
+import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingTilkjentYtelseDto
-import no.nav.familie.kontrakter.ef.iverksett.PeriodebeløpDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingUtbetalingsoppdrag
 import org.assertj.core.api.Assertions.assertThat
@@ -38,26 +37,35 @@ internal class KonsistensavstemmingServiceTest {
     private val behandlingId = UUID.randomUUID()
     private val vedtaksdato = LocalDate.of(2021, 6, 1)
 
-    private val andel1 =
-            AndelTilkjentYtelse(Periodebeløp(1, Periodetype.MÅNED, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)))
+    private val andel1 = lagAndelTilkjentYtelse(beløp = 1,
+                                                periodetype = Periodetype.MÅNED,
+                                                fraOgMed = LocalDate.of(2021, 1, 1),
+                                                tilOgMed = LocalDate.of(2021, 1, 31),
+                                                kildeBehandlingId = behandlingId)
 
     private val andel2StartDato = LocalDate.of(2021, 3, 1)
     private val andel2Sluttdato = LocalDate.of(2021, 3, 31)
-    private val andel2 = AndelTilkjentYtelse(Periodebeløp(2, Periodetype.MÅNED, andel2StartDato, andel2Sluttdato))
+    private val andel2 = lagAndelTilkjentYtelse(beløp = 2,
+                                                periodetype = Periodetype.MÅNED,
+                                                fraOgMed = andel2StartDato,
+                                                tilOgMed = andel2Sluttdato, kildeBehandlingId = behandlingId)
 
     private val requestSlot = slot<KonsistensavstemmingUtbetalingsoppdrag>()
 
     @BeforeEach
     internal fun setUp() {
-        val tilkjentYtelseMedUtbetalingsoppdrag = lagTilkjentYtelseMedUtbetalingsoppdrag(lagTilkjentYtelseMedMetadata())
         every { tilstandRepository.hentTilkjentYtelse(setOf(behandlingId)) } returns
-                mapOf(behandlingId to tilkjentYtelseMedUtbetalingsoppdrag)
+                mapOf(behandlingId to lagTilkjentYtelseMedUtbetalingsoppdrag(lagTilkjentYtelseMedMetadata()))
         every { oppdragClient.konsistensavstemming(capture(requestSlot)) } returns ""
     }
 
     @Test
     internal fun `skal lage utbetalingsoppdrag med perioden som er med i requesten`() {
-        val andelerTilkjentYtelse = listOf(PeriodebeløpDto(2, Periodetype.MÅNED, andel2StartDato, andel2Sluttdato))
+        val andelerTilkjentYtelse = listOf(lagAndelTilkjentYtelseDto(beløp = 2,
+                                                                     periodetype = Periodetype.MÅNED,
+                                                                     fraOgMed = andel2StartDato,
+                                                                     tilOgMed = andel2Sluttdato,
+                                                                     kildeBehandlingId = behandlingId))
         val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(behandlingId = behandlingId,
                                                                       eksternBehandlingId = eksternBehandlingId,
                                                                       eksternFagsakId = eksternFagsakId,
@@ -80,7 +88,11 @@ internal class KonsistensavstemmingServiceTest {
 
     @Test
     internal fun `skal kaste feil hvis beløpet er annerledes`() {
-        val andelerTilkjentYtelse = listOf(PeriodebeløpDto(1, Periodetype.MÅNED, andel2StartDato, andel2Sluttdato))
+        val andelerTilkjentYtelse = listOf(lagAndelTilkjentYtelseDto(beløp = 1,
+                                                                     periodetype = Periodetype.MÅNED,
+                                                                     fraOgMed = andel2StartDato,
+                                                                     tilOgMed = andel2Sluttdato,
+                                                                     kildeBehandlingId = behandlingId))
         val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(behandlingId = behandlingId,
                                                                       eksternBehandlingId = eksternBehandlingId,
                                                                       eksternFagsakId = eksternFagsakId,
