@@ -21,7 +21,7 @@ class BehandlingstatistikkRepository(private val namedParameterJdbcTemplate: Nam
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         mapSqlParameterSource.addValue("hendelse", hendelse.toString())
         return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
-               ?: throw NullPointerException("Ingen treff på behandling_id=${behandlingId} med hendelse=${hendelse.name}")
+               ?: error("Ingen treff på behandling_id=${behandlingId} med hendelse=${hendelse.name}")
     }
 
     private fun lagreBehandlingstatistikk(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {

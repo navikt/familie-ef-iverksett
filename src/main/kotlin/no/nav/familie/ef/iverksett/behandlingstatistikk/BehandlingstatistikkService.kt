@@ -39,8 +39,8 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
                                                                      behandlingstatistikk.ansvarligEnhet),
                               behandlingMetode = "MANUELL",
                               avsender = "NAV enslig forelder",
-                              behandlingType = "Førstegangsbehandling",
-                              sakYtelse = "EFOG"
+                              behandlingType = behandlingstatistikk.behandlingstype.name,
+                              sakYtelse = behandlingstatistikk.sakYtelse.name
                 )
 
             }
