@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.*
 import no.nav.familie.ef.iverksett.util.getUUID
 import no.nav.familie.ef.iverksett.util.queryForJson
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -15,10 +14,23 @@ import java.util.UUID
 @Repository
 class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
-    @Transactional
     fun lagre(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {
         return lagreIverksett(behandlingId, iverksett, brev)
     }
+
+    fun lagreTekniskOpphør(behandlingId: UUID, tekniskOpphør: TekniskOpphør) {
+        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON, :type)"
+        val iverksettString = objectMapper.writeValueAsString(tekniskOpphør)
+
+        val mapSqlParameterSource = MapSqlParameterSource(
+                mapOf(
+                        "behandlingId" to behandlingId,
+                        "iverksettJson" to iverksettString,
+                        "type" to IverksettType.TEKNISK_OPPHØR
+                ))
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
+    }
+
 
     private fun lagreIverksett(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {
         val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON)"
@@ -62,7 +74,25 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     private fun hentIverksettStringOgTransformer(behandlingId: UUID): Iverksett {
 
         val sql = "select data from iverksett where behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+
+        val mapSqlParameterSource = MapSqlParameterSource(
+                mapOf(
+                        "behandlingId" to behandlingId,
+                        "type" to IverksettType.VANLIG
+                )
+        )
+        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+               ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
+    }
+
+    fun hentTekniskOpphør(behandlingId: UUID): TekniskOpphør {
+        val sql = "select data from iverksett where behandling_id = :behandlingId"
+        val mapSqlParameterSource = MapSqlParameterSource(
+                mapOf(
+                        "behandlingId" to behandlingId,
+                        "type" to IverksettType.TEKNISK_OPPHØR
+                )
+        )
         return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
     }
