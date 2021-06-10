@@ -42,11 +42,6 @@ class IverksettingController(
         return status?.let { ResponseEntity(status, HttpStatus.OK) } ?: ResponseEntity(null, HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping("/hdsjhkdsa/{behandlingId}")
-    fun removeMe(@RequestBody json : IverksettDto,@PathVariable behandlingId: UUID): ResponseEntity<IverksettStatus> {
-            val status = iverksettingService.utledStatus(behandlingId)
-            return status?.let { ResponseEntity(status, HttpStatus.OK) } ?: ResponseEntity(null, HttpStatus.NOT_FOUND)
-    }
     private fun opprettBrev(iverksettDto: IverksettDto, fil: MultipartFile): Brev {
         return Brev(iverksettDto.behandling.behandlingId, fil.bytes)
     }
