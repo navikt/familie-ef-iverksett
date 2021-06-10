@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.kalkulerUtbetalingsgrad
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
@@ -58,7 +59,8 @@ fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                            sats = BigDecimal(andel.beløp),
                            satsType = mapSatstype(andel.periodetype),
                            utbetalesTil = personIdent,
-                           behandlingId = eksternBehandlingId)
+                           behandlingId = eksternBehandlingId,
+                           utbetalingsgrad = kalkulerUtbetalingsgrad(andel))
 
 fun mapSatstype(periodetype: Periodetype) = when(periodetype) {
     Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND

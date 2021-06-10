@@ -18,7 +18,6 @@ import no.nav.familie.kontrakter.felles.personopplysning.PersonIdentMedHistorikk
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -39,6 +38,11 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     private val requestSlot = slot<OpprettPeriodeHendelseDto>()
 
+    val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient,
+                                            familieIntegrasjonerClient,
+                                            iverksettingRepository,
+                                            taskRepository)
+
     @BeforeEach
     internal fun setUp() {
         justRun { infotrygdFeedClient.opprettPeriodeHendelse(capture(requestSlot)) }
@@ -47,11 +51,6 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     @Test
     internal fun `skal sende perioder fra andeler til infotrygd`() {
-        val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient,
-                                                familieIntegrasjonerClient,
-                                                iverksettingRepository,
-                                                taskRepository,
-                                                "dev")
         val iverksett = opprettData(lagAndelTilkjentYtelse(
                 2, Periodetype.MÅNED, LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31)))
         every { iverksettingRepository.hent(behandlingId) } returns iverksett
@@ -66,12 +65,34 @@ internal class SendPerioderTilInfotrygdTaskTest {
     }
 
     @Test
+    internal fun `fullOvergangsstønad er false hvis samordningsfradrag eller inntektsreduksjon ikke er 0`() {
+        val andelTilkjentYtelse = lagAndelTilkjentYtelse(beløp = 1,
+                                                         periodetype = Periodetype.MÅNED,
+                                                         fraOgMed = LocalDate.of(1901, 1, 1),
+                                                         tilOgMed = LocalDate.of(1901, 1, 31),
+                                                         samordningsfradrag = 1,
+                                                         inntektsreduksjon = 0)
+        val andelTilkjentYtelse2 = lagAndelTilkjentYtelse(beløp = 3,
+                                                          periodetype = Periodetype.MÅNED,
+                                                          fraOgMed = LocalDate.of(1902, 1, 1),
+                                                          tilOgMed = LocalDate.of(1902, 1, 31),
+                                                          samordningsfradrag = 0,
+                                                          inntektsreduksjon = 1)
+        val iverksett = opprettData(andelTilkjentYtelse, andelTilkjentYtelse2)
+        every { iverksettingRepository.hent(behandlingId) } returns iverksett
+
+
+        task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
+
+        assertThat(requestSlot.captured.personIdenter).containsExactlyInAnyOrder("1", "2")
+        assertThat(requestSlot.captured.perioder).containsExactly(
+                Periode(LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31), false),
+                Periode(LocalDate.of(1902, 1, 1), LocalDate.of(1902, 1, 31), false))
+        verify(exactly = 1) { infotrygdFeedClient.opprettPeriodeHendelse(any()) }
+    }
+
+    @Test
     internal fun `skal sende tom liste med perioder til infotrygd hvis det ikke finnes noen andeler`() {
-        val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient,
-                                                familieIntegrasjonerClient,
-                                                iverksettingRepository,
-                                                taskRepository,
-                                                "dev")
         every { iverksettingRepository.hent(behandlingId) } returns opprettData()
 
         task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
@@ -79,17 +100,6 @@ internal class SendPerioderTilInfotrygdTaskTest {
         assertThat(requestSlot.captured.personIdenter).containsExactlyInAnyOrder("1", "2")
         assertThat(requestSlot.captured.perioder).isEmpty()
         verify(exactly = 1) { infotrygdFeedClient.opprettPeriodeHendelse(any()) }
-    }
-
-    @Test
-    internal fun `skal kaste feil hvis det er prod`() {
-        val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient,
-                                                familieIntegrasjonerClient,
-                                                iverksettingRepository,
-                                                taskRepository,
-                                                "prod")
-        assertThat(catchThrowable { task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString())) })
-                .hasMessageContaining("Må håndtere fullOvergangsstønad før denne kjøres i prod")
     }
 
     private fun opprettData(vararg andelTilkjentYtelse: AndelTilkjentYtelse): Iverksett {
