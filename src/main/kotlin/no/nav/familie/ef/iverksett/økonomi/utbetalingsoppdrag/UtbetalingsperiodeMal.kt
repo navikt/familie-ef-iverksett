@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.math.BigDecimal
@@ -30,17 +31,37 @@ data class UtbetalingsperiodeMal(val tilkjentYtelse: TilkjentYtelseMedMetaData,
                            type: StønadType,
                            behandlingId: Long,
                            opphørKjedeFom: LocalDate? = null): Utbetalingsperiode =
-            Utbetalingsperiode(erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode,
-                               opphør = if (erEndringPåEksisterendePeriode) Opphør(opphørKjedeFom!!) else null,
-                               forrigePeriodeId = andel.forrigePeriodeId,
-                               periodeId = andel.periodeId!!,
-                               datoForVedtak = tilkjentYtelse.vedtaksdato,
-                               klassifisering = type.tilKlassifisering(),
-                               vedtakdatoFom = andel.periodebeløp.fraOgMed,
-                               vedtakdatoTom = andel.periodebeløp.tilOgMed,
-                               sats = BigDecimal(andel.periodebeløp.beløp),
-                               satsType = Utbetalingsperiode.SatsType.MND,
-                               utbetalesTil = tilkjentYtelse.personIdent,
-                               behandlingId = behandlingId)
+            lagPeriodeFraAndel(andel = andel,
+                               type = type,
+                               eksternBehandlingId = behandlingId,
+                               vedtaksdato = tilkjentYtelse.vedtaksdato,
+                               personIdent = tilkjentYtelse.personIdent,
+                               opphørKjedeFom = opphørKjedeFom,
+                               erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode)
+}
 
+fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
+                       type: StønadType,
+                       eksternBehandlingId: Long,
+                       vedtaksdato: LocalDate,
+                       personIdent: String,
+                       opphørKjedeFom: LocalDate? = null,
+                       erEndringPåEksisterendePeriode: Boolean = false) =
+        Utbetalingsperiode(erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode,
+                           opphør = if (erEndringPåEksisterendePeriode) Opphør(opphørKjedeFom!!) else null,
+                           forrigePeriodeId = andel.forrigePeriodeId,
+                           periodeId = andel.periodeId!!,
+                           datoForVedtak = vedtaksdato,
+                           klassifisering = type.tilKlassifisering(),
+                           vedtakdatoFom = andel.fraOgMed,
+                           vedtakdatoTom = andel.tilOgMed,
+                           sats = BigDecimal(andel.beløp),
+                           satsType = mapSatstype(andel.periodetype),
+                           utbetalesTil = personIdent,
+                           behandlingId = eksternBehandlingId,
+                           utbetalingsgrad = andel.utbetalingsgrad())
+
+fun mapSatstype(periodetype: Periodetype) = when(periodetype) {
+    Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND
+    else -> error("Støtter ikke periodetype=$periodetype")
 }

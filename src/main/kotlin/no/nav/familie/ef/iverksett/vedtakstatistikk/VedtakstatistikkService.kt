@@ -67,9 +67,9 @@ class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: Vedtakstatistik
                                  eksternFagsakId: Long): List<Utbetaling> {
         return tilkjentYtelse.andelerTilkjentYtelse.map {
             Utbetaling(
-                    beløp = it.periodebeløp.beløp,
-                    fraOgMed = it.periodebeløp.fraOgMed,
-                    tilOgMed = it.periodebeløp.tilOgMed,
+                    beløp = it.beløp,
+                    fraOgMed = it.fraOgMed,
+                    tilOgMed = it.tilOgMed,
                     Utbetalingsdetalj(klassekode = stønadsType.tilKlassifisering(),
                                       delytelseId = eksternFagsakId.toString() + it.periodeId))
         }

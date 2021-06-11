@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.behandlingstatistikk
 
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingStatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.springframework.stereotype.Service
@@ -92,10 +93,10 @@ class BehandlingstatistikkService(private val behandlingstatistikkRepository: Be
         return verdi
     }
 
-    private fun Stønadstype.tilKlassifisering() = when (this) {
-        Stønadstype.OVERGANGSSTØNAD -> "EFOG"
-        Stønadstype.BARNETILSYN -> "EFBT"
-        Stønadstype.SKOLEPENGER -> "EFSP"
+    private fun StønadType.tilKlassifisering() = when (this) {
+        StønadType.OVERGANGSSTØNAD -> "EFOG"
+        StønadType.BARNETILSYN -> "EFBT"
+        StønadType.SKOLEPENGER -> "EFSP"
     }
 
 }

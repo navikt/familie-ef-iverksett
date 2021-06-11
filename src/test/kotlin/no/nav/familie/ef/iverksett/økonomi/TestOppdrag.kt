@@ -2,10 +2,11 @@ package no.nav.familie.ef.iverksett.økonomi
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.PeriodeId
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.nullAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -19,12 +20,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.UUID
 
 private const val behandlingEksternId = 0L
 private const val fagsakEksternId = 1L
 private const val saksbehandlerId = "VL"
-private val vedtaksdato = LocalDate.of(2021,5,12)
+private val vedtaksdato = LocalDate.of(2021, 5, 12)
 
 enum class TestOppdragType {
     Input,
@@ -54,12 +55,15 @@ data class TestOppdrag(val type: TestOppdragType,
     fun tilAndelTilkjentYtelse(): AndelTilkjentYtelse? {
 
         return if (beløp != null && startPeriode != null && sluttPeriode != null)
-            AndelTilkjentYtelse(periodebeløp = Periodebeløp(this.beløp, Periodetype.MÅNED, startPeriode, sluttPeriode),
-                                periodeId = linjeId,
-                                kildeBehandlingId = if (TestOppdragType.Output == type) oppdragId else null,
-                                forrigePeriodeId = forrigeLinjeId)
+            lagAndelTilkjentYtelse(beløp = this.beløp,
+                                   periodetype = Periodetype.MÅNED,
+                                   fraOgMed = startPeriode,
+                                   tilOgMed = sluttPeriode,
+                                   periodeId = linjeId,
+                                   kildeBehandlingId = if (TestOppdragType.Output == type) oppdragId else null,
+                                   forrigePeriodeId = forrigeLinjeId)
         else if (TestOppdragType.Output == type && beløp == null && startPeriode == null && sluttPeriode == null)
-            nullAndelTilkjentYtelse(behandlingId = oppdragId ?: error("Må ha satt OppdragId på Output"),
+            nullAndelTilkjentYtelse(kildeBehandlingId = oppdragId ?: error("Må ha satt OppdragId på Output"),
                                     periodeId = PeriodeId(linjeId!!, forrigeLinjeId))
         else
             null
@@ -79,7 +83,8 @@ data class TestOppdrag(val type: TestOppdragType,
                                sats = beløp?.toBigDecimal() ?: BigDecimal.ZERO,
                                satsType = Utbetalingsperiode.SatsType.MND,
                                utbetalesTil = fnr,
-                               behandlingId = 1)
+                               behandlingId = 1,
+                               utbetalingsgrad = 100)
         else
             null
     }
@@ -90,15 +95,16 @@ class TestOppdragGroup {
     private val andelerTilkjentYtelseInn: MutableList<AndelTilkjentYtelse> = mutableListOf()
     private val andelerTilkjentYtelseUt: MutableList<AndelTilkjentYtelse> = mutableListOf()
     private val utbetalingsperioder: MutableList<Utbetalingsperiode> = mutableListOf()
+
     //private val sporbar = Sporbar()
     private var oppdragKode110: Utbetalingsoppdrag.KodeEndring = Utbetalingsoppdrag.KodeEndring.NY
     private var personIdent: String? = null
     private var oppdragId: UUID? = null
 
     fun add(to: TestOppdrag) {
-        oppdragId = to.oppdragId
         when (to.type) {
             TestOppdragType.Input -> {
+                oppdragId = to.oppdragId
                 personIdent = to.fnr
                 to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseInn.add(it) }
             }
@@ -132,7 +138,9 @@ class TestOppdragGroup {
                                    aktoer = personIdent!!,
                                    saksbehandlerId = saksbehandlerId,
                                    avstemmingTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS),
-                                   utbetalingsperiode = utbetalingsperioder.map { it.copy(behandlingId = behandlingEksternId) })
+                                   utbetalingsperiode = utbetalingsperioder
+                                           .map { it.copy(behandlingId = behandlingEksternId) }
+                )
 
         TilkjentYtelse(id = input.tilkjentYtelse.id,
                        andelerTilkjentYtelse = andelerTilkjentYtelseUt,

@@ -43,7 +43,7 @@ internal class IverksettMotOppdragTaskTest {
         val oppdragSlot = slot<Utbetalingsoppdrag>()
         every { oppdragClient.iverksettOppdrag(capture(oppdragSlot)) } returns "abc"
         every { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
-        every { tilstandRepository.hentTilkjentYtelse(any()) } returns null
+        every { tilstandRepository.hentTilkjentYtelse(any<UUID>()) } returns null
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
         verify(exactly = 1) { oppdragClient.iverksettOppdrag(any()) }
         verify(exactly = 1) { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) }

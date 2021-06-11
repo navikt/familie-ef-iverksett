@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.util
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
@@ -11,12 +10,13 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.Periodebeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
+import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
@@ -26,13 +26,11 @@ import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
-import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.InntektDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
-import no.nav.familie.kontrakter.ef.iverksett.PeriodebeløpDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
@@ -53,13 +51,11 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
             tilOgMed = LocalDate.of(2021, 12, 31)
     )
 
-    val andelTilkjentYtelse = AndelTilkjentYtelseDto(
-            periodebeløp = PeriodebeløpDto(
-                    beløp = 5000,
-                    periodetype = Periodetype.MÅNED,
-                    fraOgMed = LocalDate.of(2021, 1, 1),
-                    tilOgMed = LocalDate.of(2021, 12, 31)
-            ),
+    val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
+            beløp = 5000,
+            periodetype = Periodetype.MÅNED,
+            fraOgMed = LocalDate.of(2021, 1, 1),
+            tilOgMed = LocalDate.of(2021, 12, 31),
             kildeBehandlingId = UUID.randomUUID()
     )
     val tilkjentYtelse = TilkjentYtelseDto(
@@ -120,14 +116,11 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
             tilOgMed = LocalDate.of(2021, 12, 31)
     )
 
-    val andelTilkjentYtelse = AndelTilkjentYtelse(
-            periodebeløp = Periodebeløp(
-                    beløp = 5000,
-                    periodetype = Periodetype.MÅNED,
-                    fraOgMed = LocalDate.of(2021, 1, 1),
-                    tilOgMed = LocalDate.of(2021, 12, 31)
-            ),
-            kildeBehandlingId = UUID.randomUUID(),
+    val andelTilkjentYtelse = lagAndelTilkjentYtelse(
+            beløp = 5000,
+            periodetype = Periodetype.MÅNED,
+            fraOgMed = LocalDate.of(2021, 1, 1),
+            tilOgMed = LocalDate.of(2021, 12, 31),
             periodeId = 1
     )
     val tilkjentYtelse = TilkjentYtelse(
@@ -192,16 +185,13 @@ fun opprettTilkjentYtelse(behandlingId: UUID): TilkjentYtelse {
             id = behandlingId,
             utbetalingsoppdrag = null,
             andelerTilkjentYtelse = listOf(
-                    AndelTilkjentYtelse(
-                            periodebeløp = Periodebeløp(
-                                    beløp = 100,
-                                    Periodetype.MÅNED,
-                                    fraOgMed = LocalDate.now(),
-                                    tilOgMed = LocalDate.now().plusMonths(1)
-                            ),
+                    lagAndelTilkjentYtelse(
+                            beløp = 100,
+                            Periodetype.MÅNED,
+                            fraOgMed = LocalDate.now(),
+                            tilOgMed = LocalDate.now().plusMonths(1),
                             periodeId = 1L,
-                            forrigePeriodeId = 1L,
-                            kildeBehandlingId = UUID.randomUUID()
+                            forrigePeriodeId = 1L
                     )
             )
     )
