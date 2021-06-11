@@ -65,9 +65,9 @@
     "vedtaksdato": "2021-05-10",
     "vedtaksperioder": [
       {
-        "aktivitet": "string",
+        "aktivitet": "BARNET_ER_SYKT",
         "fraOgMed": "2021-06-10",
-        "periodeType": "string",
+        "periodeType": "HOVEDPERIODE",
         "tilOgMed": "2021-06-10"
       }
     ],

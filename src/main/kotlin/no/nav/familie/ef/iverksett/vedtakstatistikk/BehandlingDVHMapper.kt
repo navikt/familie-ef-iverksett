@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.util.VilkårsvurderingUtil
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
+import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
@@ -17,6 +18,7 @@ import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeDto
+import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
@@ -89,7 +91,12 @@ class BehandlingDVHMapper {
         }
 
         private fun mapToVedtaksperioder(vedtaksperioder: List<Vedtaksperiode>): List<VedtaksperiodeDto> {
-            return vedtaksperioder.map { VedtaksperiodeDto(it.fraOgMed, it.tilOgMed, it.aktivitet, it.periodeType) }
+            return vedtaksperioder.map {
+                VedtaksperiodeDto(it.fraOgMed,
+                                  it.tilOgMed,
+                                  AktivitetType.valueOf(it.aktivitet.name),
+                                  VedtaksperiodeType.valueOf(it.periodeType.name))
+            }
         }
     }
 }

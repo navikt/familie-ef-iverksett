@@ -9,7 +9,9 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
+import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import java.time.LocalDate
 import java.util.ArrayList
 import java.util.UUID
@@ -35,9 +37,9 @@ data class Søker(
 )
 
 data class Vedtaksperiode(
-        val aktivitet: String,
+        val aktivitet: AktivitetType,
         val fraOgMed: LocalDate,
-        val periodeType: String,
+        val periodeType: VedtaksperiodeType,
         val tilOgMed: LocalDate
 )
 

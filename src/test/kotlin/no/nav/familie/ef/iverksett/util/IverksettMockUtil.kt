@@ -27,6 +27,7 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
+import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
@@ -36,6 +37,7 @@ import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
 import java.time.LocalDate
@@ -160,8 +162,8 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     tilkjentYtelse = tilkjentYtelse,
                     vedtaksperioder = listOf(Vedtaksperiode(fraOgMed = LocalDate.now(),
                                                             tilOgMed = LocalDate.now(),
-                                                            aktivitet = "aktivitet",
-                                                            periodeType = "periodetype"))
+                                                            aktivitet = AktivitetType.BARNET_ER_SYKT,
+                                                            periodeType = VedtaksperiodeType.HOVEDPERIODE))
             )
     )
 }

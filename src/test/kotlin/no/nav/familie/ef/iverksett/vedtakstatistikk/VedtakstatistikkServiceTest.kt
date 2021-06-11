@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
+import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
@@ -20,6 +21,7 @@ import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeDto
+import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
@@ -89,8 +91,8 @@ class VedtakstatistikkServiceTest {
                              vedtak = Vedtak.INNVILGET,
                              vedtaksperioder = listOf(VedtaksperiodeDto(fraOgMed = LocalDate.now(),
                                                                         tilOgMed = LocalDate.now(),
-                                                                        aktivitet = "aktivitet",
-                                                                        periodeType = "periodetype")),
+                                                                        aktivitet = AktivitetType.BARNET_ER_SYKT,
+                                                                        periodeType = VedtaksperiodeType.HOVEDPERIODE)),
                              utbetalinger = listOf(Utbetaling(
                                      beløp = 5000,
                                      fraOgMed = LocalDate.parse("2021-01-01"),
