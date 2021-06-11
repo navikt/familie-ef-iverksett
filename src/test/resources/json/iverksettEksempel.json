@@ -1,66 +1,68 @@
 {
+  "fagsak": {
+    "fagsakId": "234bed7c-b1d3-11eb-9999-0242ac130003",
+    "eksternId": 12,
+    "stønadstype": "BARNETILSYN"
+  },
   "behandling": {
-    "aktivitetspliktInntrefferDato": "2021-06-10",
-    "behandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "behandlingType": "BLANKETT",
+    "behandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003",
+    "forrigeBehandlingId": "999abcde-fabc-11eb-8529-0242ac130003",
+    "eksternId": 14,
+    "behandlingType": "FØRSTEGANGSBEHANDLING",
     "behandlingÅrsak": "DØDSFALL",
-    "eksternId": 0,
-    "forrigeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "vilkårsvurderinger": [
       {
+        "vilkårType":"AKTIVITET",
+        "resultat":"IKKE_AKTUELL",
         "delvilkårsvurderinger": [
           {
             "resultat": "IKKE_AKTUELL",
             "vurderinger": [
               {
-                "begrunnelse": "string",
                 "regelId": "BOR_OG_OPPHOLDER_SEG_I_NORGE",
-                "svar": "ANDRE_FORELDER_MEDLEM_MINST_5_ÅR_AVBRUDD_MINDRE_ENN_10_ÅR"
+                "svar": "ANDRE_FORELDER_MEDLEM_MINST_5_ÅR_AVBRUDD_MINDRE_ENN_10_ÅR",
+                "begrunnelse": "string"
               }
             ]
           }
         ],
         "resultat": "IKKE_AKTUELL",
         "vilkårType": "AKTIVITET"
-      }
-    ]
-  },
-  "fagsak": {
-    "eksternId": 0,
-    "fagsakId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "stønadstype": "BARNETILSYN"
-  },
-  "søker": {
-    "adressebeskyttelse": "FORTROLIG",
-    "barn": [
+      },
       {
-        "personIdent": "string",
-        "termindato": "2021-06-10"
+        "vilkårType": "SAGT_OPP_ELLER_REDUSERT",
+        "resultat": "OPPFYLT",
+        "delvilkårsvurderinger": [
+          {
+            "resultat": "OPPFYLT",
+            "vurderinger": [
+              {
+                "regelId": "SAGT_OPP_ELLER_REDUSERT",
+                "svar": "JA",
+                "begrunnelse": "string"
+              }
+            ]
+          }
+        ]
       }
     ],
-    "personIdent": "string",
-    "tilhørendeEnhet": "string"
+    "aktivitetspliktInntrefferDato":null
+  },
+  "søker": {
+    "barn": [
+      {
+        "personIdent": "1234567910",
+        "termindato": null
+      }
+    ],
+    "tilhørendeEnhet": "4489",
+    "adressebeskyttelse": "STRENGT_FORTROLIG",
+    "personIdent": "12345678901"
   },
   "vedtak": {
-    "beslutterId": "string",
-    "opphørÅrsak": "PERIODE_UTLØPT",
     "resultat": "AVSLÅTT",
-    "saksbehandlerId": "string",
-    "tilkjentYtelse": {
-      "andelerTilkjentYtelse": [
-        {
-          "beløp": 0,
-          "fraOgMed": "2021-06-10",
-          "inntekt": 0,
-          "inntektsreduksjon": 0,
-          "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "periodetype": "MÅNED",
-          "samordningsfradrag": 0,
-          "tilOgMed": "2021-06-10"
-        }
-      ]
-    },
-    "vedtaksdato": "2021-06-10",
+    "opphørÅrsak": "PERIODE_UTLØPT",
+    "vedtaksdato": "2021-05-10",
     "vedtaksperioder": [
       {
         "aktivitet": "string",
@@ -68,6 +70,25 @@
         "periodeType": "string",
         "tilOgMed": "2021-06-10"
       }
-    ]
+    ],
+    "saksbehandlerId": "A123456",
+    "beslutterId": "B123456",
+    "tilkjentYtelse": {
+      "andelerTilkjentYtelse": [
+        {
+          "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "fraOgMed": "2021-05-10",
+          "periodetype": "MÅNED",
+          "tilOgMed": "2021-05-10",
+          "beløp": 0,
+          "inntekt": 0,
+          "samordningsfradrag": 0,
+          "inntektsreduksjon": 0
+        }
+      ]
+    }
   }
 }
+
+
+

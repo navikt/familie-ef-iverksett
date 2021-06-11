@@ -5,7 +5,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Inntekt
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
@@ -18,8 +17,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
-import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
-import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
@@ -33,7 +30,6 @@ import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
-import no.nav.familie.kontrakter.ef.iverksett.InntektDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
@@ -46,14 +42,6 @@ import java.time.LocalDate
 import java.util.UUID
 
 fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
-
-    val inntekt = InntektDto(
-            beløp = 150000,
-            samordningsfradrag = 0,
-            periodetype = Periodetype.MÅNED,
-            fraOgMed = LocalDate.of(2021, 1, 1),
-            tilOgMed = LocalDate.of(2021, 12, 31)
-    )
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
             beløp = 5000,
@@ -112,20 +100,15 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
 
 fun opprettIverksett(behandlingId: UUID): Iverksett {
 
-    val inntekt = Inntekt(
-            beløp = 150000,
-            samordningsfradrag = 100,
-            periodetype = Periodetype.MÅNED,
-            fraOgMed = LocalDate.of(2021, 1, 1),
-            tilOgMed = LocalDate.of(2021, 12, 31)
-    )
-
     val andelTilkjentYtelse = lagAndelTilkjentYtelse(
             beløp = 5000,
             periodetype = Periodetype.MÅNED,
             fraOgMed = LocalDate.of(2021, 1, 1),
             tilOgMed = LocalDate.of(2021, 12, 31),
-            periodeId = 1
+            periodeId = 1,
+            inntekt = 100,
+            samordningsfradrag = 2,
+            inntektsreduksjon = 5
     )
     val tilkjentYtelse = TilkjentYtelse(
             id = UUID.randomUUID(),

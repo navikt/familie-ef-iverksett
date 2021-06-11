@@ -102,8 +102,8 @@ class VedtakstatistikkServiceTest {
                                                                            gjelderPerson = Person(personIdent = "12345678910"),
                                                                            delytelseId = "11"))),
 
-                             aktivitetskrav = Aktivitetskrav(aktivitetspliktInntrefferDato = LocalDate.now(),
-                                                             harSagtOppArbeidsforhold = false),
+                             aktivitetskrav = Aktivitetskrav(aktivitetspliktInntrefferDato = null,
+                                                             harSagtOppArbeidsforhold = true),
                              funksjonellId = "9")
     }
 }

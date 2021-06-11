@@ -47,8 +47,7 @@ class BehandlingDVHMapper {
                                                                  iverksett.fagsak.stønadstype,
                                                                  iverksett.fagsak.eksternId),
                                  aktivitetskrav = Aktivitetskrav(
-                                         //TODO : Pga at aktivitetspliktInntrefferDato er nullable i kontrakten, så settes denne til now() inntil videre
-                                         aktivitetspliktInntrefferDato = LocalDate.now(),
+                                         aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
                                          harSagtOppArbeidsforhold = VilkårsvurderingUtil.hentHarSagtOppEllerRedusertFraVurderinger(
                                                  iverksett.behandling.vilkårsvurderinger)
                                  ),
@@ -67,7 +66,7 @@ class BehandlingDVHMapper {
                         inntektsreduksjon = it.inntektsreduksjon,
                         fraOgMed = it.fraOgMed,
                         tilOgMed = it.tilOgMed,
-                        Utbetalingsdetalj(gjelderPerson = Person(),
+                        Utbetalingsdetalj(gjelderPerson = Person("12345678910"),
                                           klassekode = stønadsType.tilKlassifisering(),
                                           delytelseId = eksternFagsakId.toString() + it.periodeId))
             }
