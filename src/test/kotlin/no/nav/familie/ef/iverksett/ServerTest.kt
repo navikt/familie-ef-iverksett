@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import io.mockk.mockk
+import no.nav.familie.ef.iverksett.infrastruktur.configuration.ApplicationConfig
 import no.nav.familie.ef.iverksett.infrastruktur.database.DbContainerInitializer
 import no.nav.familie.ef.iverksett.util.onBehalfOfToken
 import org.junit.jupiter.api.AfterEach
@@ -29,7 +30,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ActiveProfiles("servertest", "mock-oppdrag")
 abstract class ServerTest {
 
-    protected val restTemplate = TestRestTemplate()
+    protected val restTemplate = TestRestTemplate(ApplicationConfig().restTemplateBuilder())
     protected val headers = HttpHeaders()
 
     @Autowired
