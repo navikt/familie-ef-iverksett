@@ -19,7 +19,7 @@ class VedtakhendelseController(
 
     @PostMapping("/vedtakhendelse", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendVedtakhendelse(@RequestBody data: IverksettDto) {
-        val vedtakHendelse = mapIverksettTilVedtakHendelser(data.toDomain())
+        val vedtakHendelse = mapIverkesttTilVedtakHendelser(data.toDomain())
         vedtakhendelseProducer.produce(vedtakHendelse)
     }
 

@@ -47,10 +47,6 @@
             <id>github</id>
             <url>https://maven.pkg.github.com/navikt/familie-felles</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -95,10 +91,6 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
 
         <!-- Swagger -->
@@ -196,16 +188,9 @@
             <artifactId>com.ibm.mq.allclient</artifactId>
             <version>${ibm-mq-client.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-        <!-- Genererte klasser fra Arenas vedtakhendelser XSD -->
-        <dependency>
-            <groupId>com.github.navikt.tjenestespesifikasjoner</groupId>
-            <artifactId>arena-vedtakhendelser</artifactId>
-            <version>${arena-vedtakhendelser.version}</version>
         </dependency>
 
         <!-- Test -->
