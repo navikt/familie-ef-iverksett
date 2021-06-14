@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.arena
 
 
-import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -19,16 +18,15 @@ import java.time.format.DateTimeFormatter
 @ProtectedWithClaims(issuer = "azuread")
 @Profile("dev", "local")
 class VedtakhendelseController(
-        private val vedtakhendelseProducer: VedtakhendelseProducer,
-        private val integrasjonerClient: FamilieIntegrasjonerClient,
+        private val vedtakhendelseProducer: VedtakhendelseProducer
 ) {
 
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
     @PostMapping("/vedtakhendelse", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun sendVedtakhendelse(@RequestBody personIdent: String) {
+    fun sendVedtakhendelse(@RequestBody aktørId: String) {
         vedtakhendelseProducer.produce(VedtakHendelser(
-                aktoerID = integrasjonerClient.hentAktørId(personIdent),
+                aktoerID = aktørId,
                 avslutningsstatus = "innvilget",
                 behandlingstema = Behandlingstema.valueOf(StønadType.OVERGANGSSTØNAD.name.toLowerCase().capitalize()).value,
                 hendelsesprodusentREF = "EF",
