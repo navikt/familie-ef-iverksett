@@ -10,14 +10,14 @@ class DatabaseChangesTest {
     companion object {
 
         //Oppdater kun når du er redo for å merge db-endringer
-        const val MERGED_VERSION = 5
+        const val MERGED_VERSION = 6
     }
 
     /**
      * Hvis du har en databaseoppdatering vil denne testen feile, slik at ikke branch blir deployet ved en feil
      */
     @Test
-    internal fun `valider migreringsscript`() {
+        internal fun `valider migreringsscript`() {
         val resourcesPath = Paths.get(Paths.get("").toAbsolutePath().toString(), "/src/main/resources/db/migration")
         if (Files.walk(resourcesPath).anyMatch { it.toFile().isDirectory && it.fileName.toString() != "migration" }) {
             throw RuntimeException("Fant directory med annet navn enn migration")

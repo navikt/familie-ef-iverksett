@@ -1,8 +1,11 @@
 package no.nav.familie.ef.iverksett.behandlingstatistikk
 
 import io.mockk.mockk
+import io.mockk.slot
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.util.opprettBehandlingStatistikkDto
+import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
+import no.nav.familie.kontrakter.ef.iverksett.BehandlingStatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,10 +26,12 @@ internal class BehandlingstatistikkServiceTest : ServerTest() {
     @Test
     fun `lagre BehandlingsstatistikkDto for alle hendelser i sekvens, forvent ingen unntak`() {
         val uuid = UUID.randomUUID()
-        enumValues<Hendelse>().forEach {
-            behandlingstatistikkService.lagreBehandlingstatistikk(opprettBehandlingStatistikkDto(uuid,
-                                                                                                 it))
-        }
+        val behandlingstatistikkDto = slot<BehandlingDVH>()
+
 
     }
+
+
+
+
 }
