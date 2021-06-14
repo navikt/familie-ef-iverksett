@@ -23,9 +23,9 @@ class VedtakhendelseProducerTest {
         every { jmsTemplate.convertAndSend(capture(vedtakHendelseXmlSlot)) } just Runs
 
         val iverksett = opprettIverksett(UUID.randomUUID())
-        val vedtakHendelser = mapIverkesttTilVedtakHendelser(iverksett)
+        val vedtakHendelser = mapIverkesttTilVedtakHendelser(iverksett, "a123")
         vedtakhendelseProducer.produce(vedtakHendelser)
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         val forventetXML = forventetXML(vedtakHendelser.hendelsesTidspunkt.format(formatter))
         assertThat(vedtakHendelseXmlSlot.captured).isEqualTo(forventetXML)
     }
@@ -34,7 +34,7 @@ class VedtakhendelseProducerTest {
 private fun forventetXML(hendelsesTidspunkt: String): String {
     return """
         <vedtakHendelser xmlns="http://nav.no/melding/virksomhet/vedtakHendelser/v1/vedtakHendelser">
-            <aktoerID xmlns="">12345678910</aktoerID>
+            <aktoerID xmlns="">a123</aktoerID>
             <avslutningsstatus xmlns="">innvilget</avslutningsstatus>
             <behandlingstema xmlns="">ab0071</behandlingstema>
             <hendelsesprodusentREF xmlns="">EF</hendelsesprodusentREF>
