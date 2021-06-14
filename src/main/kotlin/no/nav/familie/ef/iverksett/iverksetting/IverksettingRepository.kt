@@ -92,6 +92,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
     }
 
+    // language=PostgreSQL
     companion object {
         const val HENT_IVERKSETT_SQL = "select data from iverksett where behandling_id = :behandlingId AND type = :type "
     }

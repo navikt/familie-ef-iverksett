@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.tekniskopphor
 
-import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
@@ -37,6 +36,7 @@ class VentePåStatusFørTekniskOpphørTask(
     }
 
     companion object {
+
         const val TYPE = "sjekkStatusTekniskOpphør"
     }
 }

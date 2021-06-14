@@ -21,13 +21,13 @@ class TekniskOpphørController(val tekniskOpphørService: TekniskOpphørService)
                                           tilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
                                                   tilkjentYtelse = TilkjentYtelse(
                                                           andelerTilkjentYtelse = emptyList()),
-                                                  saksbehandlerId = tekniskOpphørDto.tilkjentYtelseMedMetaData.saksbehandlerId,
-                                                  eksternBehandlingId = tekniskOpphørDto.tilkjentYtelseMedMetaData.eksternBehandlingId,
-                                                  stønadstype = tekniskOpphørDto.tilkjentYtelseMedMetaData.stønadstype,
-                                                  eksternFagsakId = tekniskOpphørDto.tilkjentYtelseMedMetaData.eksternFagsakId,
-                                                  personIdent = tekniskOpphørDto.tilkjentYtelseMedMetaData.personIdent,
-                                                  behandlingId = tekniskOpphørDto.tilkjentYtelseMedMetaData.behandlingId,
-                                                  vedtaksdato = tekniskOpphørDto.tilkjentYtelseMedMetaData.vedtaksdato))
+                                                  saksbehandlerId = tekniskOpphørDto.saksbehandlerId,
+                                                  eksternBehandlingId = tekniskOpphørDto.eksternBehandlingId,
+                                                  stønadstype = tekniskOpphørDto.stønadstype,
+                                                  eksternFagsakId = tekniskOpphørDto.eksternFagsakId,
+                                                  personIdent = tekniskOpphørDto.personIdent,
+                                                  behandlingId = tekniskOpphørDto.behandlingId,
+                                                  vedtaksdato = tekniskOpphørDto.vedtaksdato))
         tekniskOpphørService.startIverksettingAvTekniskOpphor(tekniskOpphør)
     }
 }
