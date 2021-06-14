@@ -1,11 +1,14 @@
 package no.nav.familie.ef.iverksett.arena
 
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.jms.core.JmsTemplate
-import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
@@ -30,13 +33,16 @@ class VedtakhendelseProducerTest {
 
 private fun forventetXML(hendelsesTidspunkt: String): String {
     return """
-        <vedtakHendelser>
-            <aktoerID>12345678910</aktoerID>
-            <avslutningsstatus>innvilget</avslutningsstatus>
-            <behandlingstema>ab0071</behandlingstema>
-            <hendelsesprodusentREF>EF</hendelsesprodusentREF>
-            <applikasjonSakREF>1</applikasjonSakREF>
-            <hendelsesTidspunkt>${hendelsesTidspunkt}</hendelsesTidspunkt>
+        <vedtakHendelser xmlns="http://nav.no/melding/virksomhet/vedtakHendelser/v1/vedtakHendelser">
+            <aktoerID xmlns="">12345678910</aktoerID>
+            <avslutningsstatus xmlns="">innvilget</avslutningsstatus>
+            <behandlingstema xmlns="">ab0071</behandlingstema>
+            <hendelsesprodusentREF xmlns="">EF</hendelsesprodusentREF>
+            <applikasjonSakREF xmlns="">1</applikasjonSakREF>
+            <hendelsesTidspunkt xmlns="">${hendelsesTidspunkt}</hendelsesTidspunkt>
         </vedtakHendelser>
-    """.filter { !it.isWhitespace() }
+    """.trim()
+            .replace("\n", "")
+            .replace("""> *<""".toRegex(), "><")
+
 }
