@@ -30,13 +30,13 @@ class VedtakhendelseProducerTest {
 
 private fun forventetXML(hendelsesTidspunkt: String): String {
     return """
-        <VedtakHendelser>
+        <vedtakHendelser>
             <aktoerID>12345678910</aktoerID>
             <avslutningsstatus>innvilget</avslutningsstatus>
             <behandlingstema>ab0071</behandlingstema>
             <hendelsesprodusentREF>EF</hendelsesprodusentREF>
             <applikasjonSakREF>1</applikasjonSakREF>
             <hendelsesTidspunkt>${hendelsesTidspunkt}</hendelsesTidspunkt>
-        </VedtakHendelser>
+        </vedtakHendelser>
     """.filter { !it.isWhitespace() }
 }
