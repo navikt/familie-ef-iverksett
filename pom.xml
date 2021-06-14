@@ -32,6 +32,7 @@
         <token-validation-spring.version>1.3.5</token-validation-spring.version>
         <ibm-mq-client.version>9.2.2.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
+        <unleash.version>4.3.0</unleash.version>
     </properties>
 
     <repositories>
@@ -176,6 +177,13 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <!-- Feature toggles -->
+        <dependency>
+            <groupId>no.finn.unleash</groupId>
+            <artifactId>unleash-client-java</artifactId>
+            <version>${unleash.version}</version>
         </dependency>
 
         <!-- MQ / JMS -->
