@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter
 @RequestMapping(path = ["/api/iverksett"])
 @ProtectedWithClaims(issuer = "azuread")
 @Profile("dev", "local")
-class VedtakhendelseController(
+class VedtakhendelseTestController(
         private val vedtakhendelseProducer: VedtakhendelseProducer
 ) {
 
@@ -30,7 +30,7 @@ class VedtakhendelseController(
                 avslutningsstatus = "innvilget",
                 behandlingstema = Behandlingstema.valueOf(StønadType.OVERGANGSSTØNAD.name.toLowerCase().capitalize()).value,
                 hendelsesprodusentREF = "EF",
-                applikasjonSakREF = "2",
+                applikasjonSakREF = aktørId,
                 hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter)
         ))
     }
