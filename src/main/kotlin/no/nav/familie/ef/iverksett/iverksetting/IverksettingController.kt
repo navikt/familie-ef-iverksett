@@ -42,6 +42,12 @@ class IverksettingController(
         return status?.let { ResponseEntity(status, HttpStatus.OK) } ?: ResponseEntity(null, HttpStatus.NOT_FOUND)
     }
 
+    @PostMapping("/vedtakshendelse/{behandlingId}")
+    fun publiserVedtakshendelser(@PathVariable behandlingId: UUID): ResponseEntity<Any> {
+        iverksettingService.publiserVedtak(behandlingId)
+        return ResponseEntity.ok().build()
+    }
+
     private fun opprettBrev(iverksettDto: IverksettDto, fil: MultipartFile): Brev {
         return Brev(iverksettDto.behandling.behandlingId, fil.bytes)
     }

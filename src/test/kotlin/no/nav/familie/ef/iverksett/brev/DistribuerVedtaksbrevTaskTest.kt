@@ -18,7 +18,7 @@ internal class DistribuerVedtaksbrevTaskTest {
 
     val journalpostClient = mockk<JournalpostClient>()
     val tilstandRepository = mockk<TilstandRepository>()
-    val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository, mockk(relaxed = true))
+    val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository)
 
     @Test
     internal fun `skal distribuere brev`() {
@@ -42,4 +42,5 @@ internal class DistribuerVedtaksbrevTaskTest {
         assertThat(distribuerVedtaksbrevResultat.captured.bestillingId).isEqualTo(bestillingId)
         assertThat(distribuerVedtaksbrevResultat.captured.dato).isNotNull()
     }
+
 }
