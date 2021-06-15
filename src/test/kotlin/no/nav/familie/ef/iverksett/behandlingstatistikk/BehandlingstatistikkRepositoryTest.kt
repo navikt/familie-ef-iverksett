@@ -51,16 +51,16 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     }
 
     @Test
-    fun `hent behandlingstatistikk med ikke-eksisterende id, forvent nullverdi i retur og ingen unntak`() {
-        Assertions.assertThrows(NullPointerException::class.java) {
+    fun `hent behandlingstatistikk med ikke-eksisterende id, forvent IllegalStateException`() {
+        Assertions.assertThrows(IllegalStateException::class.java) {
             behandlingstatistikkRepository.hent(UUID.randomUUID(), Hendelse.PÅBEGYNT)
         }
 
     }
 
     @Test
-    fun `hent behandlingstatistikk med ikke-eksisterende hendelse, forvent nullverdi i retur og ingen unntak`() {
-        Assertions.assertThrows(NullPointerException::class.java) {
+    fun `hent behandlingstatistikk med ikke-eksisterende hendelse, forvent IllegalStateException`() {
+        Assertions.assertThrows(IllegalStateException::class.java) {
             behandlingstatistikkRepository.hent(UUID.randomUUID(), Hendelse.FERDIG)
         }
     }
