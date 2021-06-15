@@ -58,7 +58,8 @@ fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                            sats = BigDecimal(andel.beløp),
                            satsType = mapSatstype(andel.periodetype),
                            utbetalesTil = personIdent,
-                           behandlingId = eksternBehandlingId)
+                           behandlingId = eksternBehandlingId,
+                           utbetalingsgrad = andel.utbetalingsgrad())
 
 fun mapSatstype(periodetype: Periodetype) = when(periodetype) {
     Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND

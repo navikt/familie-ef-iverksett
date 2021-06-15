@@ -4,7 +4,9 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.PeriodeId
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.nullAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -81,7 +83,8 @@ data class TestOppdrag(val type: TestOppdragType,
                                sats = beløp?.toBigDecimal() ?: BigDecimal.ZERO,
                                satsType = Utbetalingsperiode.SatsType.MND,
                                utbetalesTil = fnr,
-                               behandlingId = 1)
+                               behandlingId = 1,
+                               utbetalingsgrad = 100)
         else
             null
     }

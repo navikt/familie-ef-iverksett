@@ -16,17 +16,21 @@ import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.FilterType
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.web.client.RestTemplate
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 
 @SpringBootConfiguration
-@ConfigurationPropertiesScan("no.nav.familie.ef.iverksett.arena")
-@ComponentScan("no.nav.familie.ef.iverksett", "no.nav.familie.prosessering", "no.nav.familie.sikkerhet")
+@ConfigurationPropertiesScan("no.nav.familie.ef.iverksett")
+@ComponentScan("no.nav.familie.ef.iverksett", "no.nav.familie.prosessering", "no.nav.familie.sikkerhet", excludeFilters=[
+    ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class])
+])
 @EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger"])
 @Import(RestTemplateAzure::class)
 @EnableOAuth2Client(cacheEnabled = true)
@@ -69,7 +73,7 @@ class ApplicationConfig {
         return RestTemplateBuilder()
                 .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
                 .setReadTimeout(Duration.of(30, ChronoUnit.SECONDS))
-                .additionalMessageConverters(listOf(jackson2HttpMessageConverter) + RestTemplate().messageConverters)
+                .messageConverters(listOf(jackson2HttpMessageConverter) + RestTemplate().messageConverters)
     }
 
     /**
