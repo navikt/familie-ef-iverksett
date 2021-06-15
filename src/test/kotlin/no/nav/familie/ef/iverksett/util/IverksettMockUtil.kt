@@ -181,10 +181,13 @@ fun opprettTilkjentYtelse(behandlingId: UUID): TilkjentYtelse {
                     lagAndelTilkjentYtelse(
                             beløp = 100,
                             Periodetype.MÅNED,
-                            fraOgMed = LocalDate.now(),
-                            tilOgMed = LocalDate.now().plusMonths(1),
+                            fraOgMed = LocalDate.parse("2021-01-01"),
+                            tilOgMed = LocalDate.parse("2021-12-31"),
                             periodeId = 1L,
-                            forrigePeriodeId = 1L
+                            forrigePeriodeId = 1L,
+                            inntektsreduksjon = 5,
+                            samordningsfradrag = 2,
+                            inntekt = 100
                     )
             )
     )
