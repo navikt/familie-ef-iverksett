@@ -1,6 +1,5 @@
-package no.nav.familie.ef.iverksett.økonomi
+package no.nav.familie.ef.iverksett.tekniskopphor
 
-import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
@@ -9,18 +8,18 @@ import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = VentePåStatusFraØkonomiTask.TYPE,
+        taskStepType = VentePåStatusFørTekniskOpphørTask.TYPE,
         maxAntallFeil = 50,
         settTilManuellOppfølgning = true,
         triggerTidVedFeilISekunder = 5 * 60L,
-        beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
+        beskrivelse = "Sjekker status på teknisk opphør mot økonomi."
 )
 
-class VentePåStatusFraØkonomiTask(
+class VentePåStatusFørTekniskOpphørTask(
         val iverksettingRepository: IverksettingRepository,
         val iverksettingService: IverksettingService,
         val taskRepository: TaskRepository,
@@ -29,19 +28,15 @@ class VentePåStatusFraØkonomiTask(
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
-        iverksettingService.sjekkStatusPåIverksettOgOppdaterTilstand(stønadstype = iverksett.fagsak.stønadstype,
-                                                                     personIdent = iverksett.søker.personIdent,
-                                                                     eksternBehandlingId = iverksett.behandling.eksternId,
-                                                                     behandlingId = behandlingId)
-    }
-
-    override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNesteTask())
+        val tekniskOpphør = iverksettingRepository.hentTekniskOpphør(behandlingId)
+        iverksettingService.sjekkStatusPåIverksettOgOppdaterTilstand(stønadstype = tekniskOpphør.tilkjentYtelseMedMetaData.stønadstype,
+                                                                     personIdent = tekniskOpphør.tilkjentYtelseMedMetaData.personIdent,
+                                                                     eksternBehandlingId = tekniskOpphør.tilkjentYtelseMedMetaData.eksternBehandlingId,
+                                                                     behandlingId = tekniskOpphør.tilkjentYtelseMedMetaData.behandlingId)
     }
 
     companion object {
 
-        const val TYPE = "sjekkStatusPåOppdrag"
+        const val TYPE = "sjekkStatusTekniskOpphør"
     }
 }

@@ -6,6 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
@@ -24,9 +25,13 @@ internal class VentePåStatusFraØkonomiTaskTest {
     val taskRepository = mockk<TaskRepository>()
     val tilstandRepository = mockk<TilstandRepository>()
     val behandlingId = UUID.randomUUID()
+    val iverksettingService = IverksettingService(taskRepository = taskRepository,
+                                                  oppdragClient = oppdragClient,
+                                                  iverksettingRepository = iverksettingRepository,
+                                                  tilstandRepository = tilstandRepository)
 
     val ventePåStatusFraØkonomiTask =
-            VentePåStatusFraØkonomiTask(iverksettingRepository, oppdragClient, taskRepository, tilstandRepository)
+            VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskRepository, tilstandRepository)
 
     @Test
     internal fun `kjør doTask for VentePåStatusFraØkonomiTaskhvis, forvent ingen unntak`() {

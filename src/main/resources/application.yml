@@ -83,6 +83,13 @@ arena-mq:
    servicebruker: ${SERVICEBRUKER}
    servicebrukerPassord: ${SERVICEBRUKER_PASSORD}
 
+funksjonsbrytere:
+   enabled: true
+   unleash:
+      uri: https://unleash.nais.io/api/
+      environment: ${NAIS_CLUSTER_NAME}
+      applicationName: ${NAIS_APP_NAME}
+
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.prod-fss-pub.nais.io
 ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-v1
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.prod-fss-pub.nais.io

@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
+import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.domene.TaskRepository
@@ -18,10 +19,12 @@ internal class IverksettServiceTest {
     val tilstandRepository = mockk<TilstandRepository>()
     val taskRepository = mockk<TaskRepository>()
     val iverksettingRepository = mockk<IverksettingRepository>()
+    val oppdragClient = mockk<OppdragClient>()
 
     private var iverksettStatusService: IverksettingService = IverksettingService(taskRepository = taskRepository,
                                                                                   tilstandRepository = tilstandRepository,
-                                                                                  iverksettingRepository = iverksettingRepository)
+                                                                                  iverksettingRepository = iverksettingRepository,
+                                                                                  oppdragClient = oppdragClient)
 
 
     @Test

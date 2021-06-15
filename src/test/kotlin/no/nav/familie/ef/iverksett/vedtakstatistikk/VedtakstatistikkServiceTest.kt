@@ -10,6 +10,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
@@ -47,7 +48,7 @@ class VedtakstatistikkServiceTest {
         every { vedtakstatistikkKafkaProducer.sendVedtak(capture(behandlingDvhSlot)) } just Runs
 
         val iverksett = opprettIverksett(behandlingId)
-        vedtakstatistikkService.sendTilKafka(iverksett = iverksett)
+        vedtakstatistikkService.sendTilKafka(iverksett = iverksett, opprettTilkjentYtelse(behandlingId))
         verify(exactly = 1) { vedtakstatistikkKafkaProducer.sendVedtak(any()) }
 
         val behandlingDVH = opprettBehandlingDVH(behandlingId = behandlingId.toString(),
@@ -65,7 +66,7 @@ class VedtakstatistikkServiceTest {
 
         val behandlingDvhSlot = slot<BehandlingDVH>()
         every { vedtakstatistikkKafkaProducer.sendVedtak(capture(behandlingDvhSlot)) } just Runs
-        vedtakstatistikkService.sendTilKafka(iverksett)
+        vedtakstatistikkService.sendTilKafka(iverksett, opprettTilkjentYtelse(iverksett.behandling.behandlingId))
 
         assertThat(behandlingDvhSlot.captured).isNotNull
         assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.size).isEqualTo(2)
@@ -94,7 +95,7 @@ class VedtakstatistikkServiceTest {
                                                                         aktivitet = AktivitetType.BARNET_ER_SYKT,
                                                                         periodeType = VedtaksperiodeType.HOVEDPERIODE)),
                              utbetalinger = listOf(Utbetaling(
-                                     beløp = 5000,
+                                     beløp = 100,
                                      fraOgMed = LocalDate.parse("2021-01-01"),
                                      tilOgMed = LocalDate.parse("2021-12-31"),
                                      inntekt = 100,
