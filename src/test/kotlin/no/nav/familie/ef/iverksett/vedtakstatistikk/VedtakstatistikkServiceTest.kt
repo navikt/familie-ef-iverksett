@@ -10,17 +10,21 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
+import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
-import no.nav.familie.eksterne.kontrakter.ef.Inntekt
 import no.nav.familie.eksterne.kontrakter.ef.Person
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
+import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeDto
+import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
-import no.nav.familie.eksterne.kontrakter.ef.Vilkårsvurdering
+import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
+import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -74,29 +78,34 @@ class VedtakstatistikkServiceTest {
                                      fagsakId: String,
                                      tidspunktVedtak: LocalDate): BehandlingDVH {
         return BehandlingDVH(fagsakId = fagsakId,
-                             saksnummer = "1",
                              behandlingId = behandlingId,
                              relatertBehandlingId = null,
-                             kode6eller7 = false,
+                             adressebeskyttelse = Adressebeskyttelse.UGRADERT,
                              tidspunktVedtak = tidspunktVedtak.atStartOfDay(ZoneId.of("Europe/Paris")),
-                             vilkårsvurderinger = listOf(Vilkårsvurdering(vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT,
-                                                                          oppfylt = true)),
+                             vilkårsvurderinger = listOf(VilkårsvurderingDto(vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT,
+                                                                             resultat = Vilkårsresultat.OPPFYLT)),
                              person = Person(personIdent = "12345678910"),
                              barn = emptyList(),
                              behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
                              behandlingÅrsak = BehandlingÅrsak.SØKNAD,
                              vedtak = Vedtak.INNVILGET,
+                             vedtaksperioder = listOf(VedtaksperiodeDto(fraOgMed = LocalDate.now(),
+                                                                        tilOgMed = LocalDate.now(),
+                                                                        aktivitet = AktivitetType.BARNET_ER_SYKT,
+                                                                        periodeType = VedtaksperiodeType.HOVEDPERIODE)),
                              utbetalinger = listOf(Utbetaling(
                                      beløp = 5000,
                                      fraOgMed = LocalDate.parse("2021-01-01"),
                                      tilOgMed = LocalDate.parse("2021-12-31"),
-                                     Utbetalingsdetalj(klassekode = "EFOG",
-                                                       delytelseId = "11"))),
-                             inntekt = listOf(Inntekt(beløp = 150000,
-                                                      samordningsfradrag = 100,
-                                                      fraOgMed = LocalDate.parse("2021-01-01"),
-                                                      tilOgMed = LocalDate.parse("2021-12-31"))),
-                             aktivitetskrav = Aktivitetskrav(true),
+                                     inntekt = 100,
+                                     inntektsreduksjon = 5,
+                                     samordningsfradrag = 2,
+                                     utbetalingsdetalj = Utbetalingsdetalj(klassekode = "EFOG",
+                                                                           gjelderPerson = Person(personIdent = "12345678910"),
+                                                                           delytelseId = "11"))),
+
+                             aktivitetskrav = Aktivitetskrav(aktivitetspliktInntrefferDato = null,
+                                                             harSagtOppArbeidsforhold = true),
                              funksjonellId = "9")
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
+import no.nav.familie.ef.iverksett.arena.SendFattetVedtakTilArenaTask
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
@@ -22,6 +23,7 @@ fun hovedflyt() = listOf(
         TaskType(DistribuerVedtaksbrevTask.TYPE),
         TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
         TaskType(SendPerioderTilInfotrygdTask.TYPE),
+        TaskType(SendFattetVedtakTilArenaTask.TYPE),
         TaskType(VedtakstatistikkTask.TYPE)
 )
 

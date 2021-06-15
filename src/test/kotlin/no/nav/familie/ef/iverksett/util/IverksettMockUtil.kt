@@ -5,7 +5,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Inntekt
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
@@ -13,6 +12,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
@@ -26,30 +26,24 @@ import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
+import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
+import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
-import no.nav.familie.kontrakter.ef.iverksett.InntektDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
 import java.time.LocalDate
 import java.util.UUID
 
 fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
-
-    val inntekt = InntektDto(
-            beløp = 150000,
-            samordningsfradrag = 0,
-            periodetype = Periodetype.MÅNED,
-            fraOgMed = LocalDate.of(2021, 1, 1),
-            tilOgMed = LocalDate.of(2021, 12, 31)
-    )
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
             beløp = 5000,
@@ -92,7 +86,7 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                     personIdent = "12345678910",
                     barn = emptyList(),
                     tilhørendeEnhet = "4489",
-                    adressebeskyttelse = null
+                    adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
             ),
             vedtak = VedtaksdetaljerDto(
                     resultat = Vedtaksresultat.INNVILGET,
@@ -101,27 +95,22 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
                     saksbehandlerId = "A12345",
                     beslutterId = "B23456",
                     tilkjentYtelse = tilkjentYtelse,
-                    inntekter = listOf(inntekt)
+                    vedtaksperioder = emptyList()
             )
     )
 }
 
 fun opprettIverksett(behandlingId: UUID): Iverksett {
 
-    val inntekt = Inntekt(
-            beløp = 150000,
-            samordningsfradrag = 100,
-            periodetype = Periodetype.MÅNED,
-            fraOgMed = LocalDate.of(2021, 1, 1),
-            tilOgMed = LocalDate.of(2021, 12, 31)
-    )
-
     val andelTilkjentYtelse = lagAndelTilkjentYtelse(
             beløp = 5000,
             periodetype = Periodetype.MÅNED,
             fraOgMed = LocalDate.of(2021, 1, 1),
             tilOgMed = LocalDate.of(2021, 12, 31),
-            periodeId = 1
+            periodeId = 1,
+            inntekt = 100,
+            samordningsfradrag = 2,
+            inntektsreduksjon = 5
     )
     val tilkjentYtelse = TilkjentYtelse(
             id = UUID.randomUUID(),
@@ -162,6 +151,7 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     personIdent = "12345678910",
                     barn = emptyList(),
                     tilhørendeEnhet = "4489",
+                    adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
             ),
             vedtak = Vedtaksdetaljer(
                     vedtaksresultat = Vedtaksresultat.INNVILGET,
@@ -170,7 +160,10 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
                     saksbehandlerId = "A12345",
                     beslutterId = "B23456",
                     tilkjentYtelse = tilkjentYtelse,
-                    inntekter = listOf(inntekt)
+                    vedtaksperioder = listOf(Vedtaksperiode(fraOgMed = LocalDate.now(),
+                                                            tilOgMed = LocalDate.now(),
+                                                            aktivitet = AktivitetType.BARNET_ER_SYKT,
+                                                            periodeType = VedtaksperiodeType.HOVEDPERIODE))
             )
     )
 }

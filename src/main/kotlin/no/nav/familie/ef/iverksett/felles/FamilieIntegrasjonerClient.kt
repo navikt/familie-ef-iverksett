@@ -5,6 +5,7 @@ import no.nav.familie.kontrakter.felles.PersonIdent
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.getDataOrThrow
 import no.nav.familie.kontrakter.felles.personopplysning.FinnPersonidenterResponse
+import no.nav.familie.kontrakter.felles.personopplysning.Ident
 import no.nav.familie.kontrakter.felles.personopplysning.PersonIdentMedHistorikk
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -25,6 +26,8 @@ class FamilieIntegrasjonerClient(
 
     private val hentIdenterURI =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_HENT_IDENTER).build().toUri()
+    private val aktørUri =
+            UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_AKTØR).build().toUri()
 
     fun hentIdenter(personident: String, medHistprikk: Boolean): List<PersonIdentMedHistorikk> {
         val uri = UriComponentsBuilder.fromUri(hentIdenterURI).queryParam("historikk", medHistprikk).build().toUri()
@@ -32,8 +35,14 @@ class FamilieIntegrasjonerClient(
         return response.getDataOrThrow().identer
     }
 
+    fun hentAktørId(personident: String): String {
+        val response = postForEntity<Ressurs<MutableMap<*, *>>>(aktørUri, Ident(personident))
+        return response.getDataOrThrow()["aktørId"].toString()
+    }
+
     companion object {
 
+        const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
     }
 
