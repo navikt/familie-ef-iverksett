@@ -2,9 +2,6 @@ package no.nav.familie.ef.iverksett.behandlingstatistikk
 
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.util.opprettBehandlingStatistikkDto
-import no.nav.familie.kontrakter.ef.felles.BehandlingType
-import no.nav.familie.kontrakter.ef.felles.StønadType
-import no.nav.familie.kontrakter.ef.iverksett.BehandlingStatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -14,7 +11,6 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import java.time.ZonedDateTime
 import java.util.UUID
 
 class BehandlingstatistikkControllerTest : ServerTest() {
@@ -26,7 +22,7 @@ class BehandlingstatistikkControllerTest : ServerTest() {
 
     @Test
     internal fun `Sende behandlingsstatistikk skal gi 200 OK`() {
-        val behandlingStatistikkDto = opprettBehandlingStatistikkDto(UUID.randomUUID(), Hendelse.MOTTATT)
+        val behandlingStatistikkDto = opprettBehandlingStatistikkDto(UUID.randomUUID(), Hendelse.MOTTATT, false)
         val response: ResponseEntity<HttpStatus> =
                 restTemplate.exchange(localhostUrl("/api/statistikk/behandlingstatistikk/"), HttpMethod.POST,
                                       HttpEntity(behandlingStatistikkDto, headers))
