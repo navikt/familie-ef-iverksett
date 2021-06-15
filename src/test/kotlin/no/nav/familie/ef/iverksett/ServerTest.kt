@@ -52,6 +52,7 @@ abstract class ServerTest {
     }
     private fun resetDatabase(){
         namedParameterJdbcTemplate.update("truncate table brev, iverksett, iverksett_resultat cascade", MapSqlParameterSource())
+        namedParameterJdbcTemplate.update("truncate table task, task_logg cascade", MapSqlParameterSource())
     }
 
     protected fun getPort(): String {
