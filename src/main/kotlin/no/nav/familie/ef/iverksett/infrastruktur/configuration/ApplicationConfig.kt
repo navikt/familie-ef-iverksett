@@ -27,7 +27,7 @@ import java.time.Duration
 import java.time.temporal.ChronoUnit
 
 @SpringBootConfiguration
-@ConfigurationPropertiesScan("no.nav.familie.ef.iverksett.arena")
+@ConfigurationPropertiesScan("no.nav.familie.ef.iverksett")
 @ComponentScan("no.nav.familie.ef.iverksett", "no.nav.familie.prosessering", "no.nav.familie.sikkerhet", excludeFilters=[
     ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class])
 ])
