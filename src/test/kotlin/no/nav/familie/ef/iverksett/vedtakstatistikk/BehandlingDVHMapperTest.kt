@@ -107,7 +107,28 @@ internal class BehandlingDVHMapperTest {
                                                                           tilOgMed = LocalDate.of(2021, 10, 31))
                                                    ))
 
-                )
+                ),
+                TilkjentYtelse(andelerTilkjentYtelse = listOf(AndelTilkjentYtelse(beløp = 8000,
+                                                                                  fraOgMed = LocalDate.of(2021, 1, 1),
+                                                                                  tilOgMed = LocalDate.of(2021, 5, 31),
+                                                                                  periodetype = Periodetype.MÅNED,
+                                                                                  inntekt = 400000,
+                                                                                  samordningsfradrag = 1000,
+                                                                                  inntektsreduksjon = 11000,
+                                                                                  periodeId = 1,
+                                                                                  forrigePeriodeId = null,
+                                                                                  kildeBehandlingId = behandlingId
+                ),
+                                                              AndelTilkjentYtelse(beløp = 30000,
+                                                                                  fraOgMed = LocalDate.of(2021, 6, 1),
+                                                                                  tilOgMed = LocalDate.of(2021, 10, 31),
+                                                                                  periodetype = Periodetype.MÅNED,
+                                                                                  inntekt = 400000,
+                                                                                  samordningsfradrag = 0,
+                                                                                  inntektsreduksjon = 11000,
+                                                                                  periodeId = 2,
+                                                                                  forrigePeriodeId = 1,
+                                                                                  kildeBehandlingId = behandlingId)))
         )
 
         assertThat(behandlingDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
@@ -117,7 +138,6 @@ internal class BehandlingDVHMapperTest {
         assertThat(behandlingDVH.vedtaksperioder).hasSize(2)
         assertThat(behandlingDVH.utbetalinger).hasSize(2)
         assertThat(behandlingDVH.aktivitetskrav.aktivitetspliktInntrefferDato).isNull()
-
     }
 
     private fun lagVilkårsvurderinger(): List<Vilkårsvurdering> = listOf(

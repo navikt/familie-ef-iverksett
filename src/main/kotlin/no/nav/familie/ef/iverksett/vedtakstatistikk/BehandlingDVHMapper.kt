@@ -2,7 +2,8 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.util.VilkårsvurderingUtil
@@ -23,7 +24,6 @@ import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.felles.StønadType
-import java.time.LocalDate
 import java.time.ZoneId
 import no.nav.familie.eksterne.kontrakter.ef.Barn as BarnEkstern
 
@@ -31,7 +31,7 @@ class BehandlingDVHMapper {
 
     companion object {
 
-        fun map(iverksett: Iverksett): BehandlingDVH {
+        fun map(iverksett: Iverksett, tilkjentYtelse: TilkjentYtelse): BehandlingDVH {
             return BehandlingDVH(fagsakId = iverksett.fagsak.fagsakId.toString(),
                                  behandlingId = iverksett.behandling.behandlingId.toString(),
                                  relatertBehandlingId = iverksett.behandling.relatertBehandlingId?.toString(),
@@ -45,9 +45,10 @@ class BehandlingDVHMapper {
                                  behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
                                  vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
                                  vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak.vedtaksperioder),
-                                 utbetalinger = mapTilUtbetaling(iverksett.vedtak,
+                                 utbetalinger = mapTilUtbetaling(tilkjentYtelse,
                                                                  iverksett.fagsak.stønadstype,
-                                                                 iverksett.fagsak.eksternId),
+                                                                 iverksett.fagsak.eksternId,
+                                                                 iverksett.søker),
                                  aktivitetskrav = Aktivitetskrav(
                                          aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
                                          harSagtOppArbeidsforhold = VilkårsvurderingUtil.hentHarSagtOppEllerRedusertFraVurderinger(
@@ -57,10 +58,11 @@ class BehandlingDVHMapper {
 
         }
 
-        private fun mapTilUtbetaling(vedtaksdetaljer: Vedtaksdetaljer,
+        private fun mapTilUtbetaling(tilkjentYtelse: TilkjentYtelse,
                                      stønadsType: StønadType,
-                                     eksternFagsakId: Long): List<Utbetaling> {
-            return vedtaksdetaljer.tilkjentYtelse.andelerTilkjentYtelse.map {
+                                     eksternFagsakId: Long,
+                                     søker: Søker): List<Utbetaling> {
+            return tilkjentYtelse.andelerTilkjentYtelse.map {
                 Utbetaling(
                         beløp = it.beløp,
                         samordningsfradrag = it.samordningsfradrag,
@@ -68,7 +70,7 @@ class BehandlingDVHMapper {
                         inntektsreduksjon = it.inntektsreduksjon,
                         fraOgMed = it.fraOgMed,
                         tilOgMed = it.tilOgMed,
-                        Utbetalingsdetalj(gjelderPerson = Person("12345678910"),
+                        Utbetalingsdetalj(gjelderPerson = mapTilPerson(personIdent = søker.personIdent),
                                           klassekode = stønadsType.tilKlassifisering(),
                                           delytelseId = eksternFagsakId.toString() + it.periodeId))
             }
