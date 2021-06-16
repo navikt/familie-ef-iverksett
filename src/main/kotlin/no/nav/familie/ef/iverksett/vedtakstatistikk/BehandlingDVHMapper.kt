@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
+import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
@@ -26,6 +27,7 @@ import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import java.time.ZoneId
 import no.nav.familie.eksterne.kontrakter.ef.Barn as BarnEkstern
+import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 
 class BehandlingDVHMapper {
 
@@ -54,7 +56,8 @@ class BehandlingDVHMapper {
                                          harSagtOppArbeidsforhold = VilkårsvurderingUtil.hentHarSagtOppEllerRedusertFraVurderinger(
                                                  iverksett.behandling.vilkårsvurderinger)
                                  ),
-                                 funksjonellId = iverksett.behandling.eksternId.toString())
+                                 funksjonellId = iverksett.behandling.eksternId.toString(),
+                                 stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name))
 
         }
 
