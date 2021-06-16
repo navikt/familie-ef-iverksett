@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
-import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
