@@ -9,12 +9,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: deploy to dev
+      - name: deploy vedtaksstatistikk to dev
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-vedtak/topic-dev.yaml
+          PRINT_PAYLOAD: true
+      - name: deploy behandlingsstatistikk to dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: kafka-aiven/statistikk-ensligforsorger-behandling/topic-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy to prod
         uses: nais/deploy/actions/deploy@v1
