@@ -42,6 +42,7 @@ class IverksettingService(val taskRepository: TaskRepository,
                                            this["personIdent"] = iverksett.søker.personIdent
                                            this["behandlingId"] = iverksett.behandling.behandlingId.toString()
                                            this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                                           this["beslutter"] = iverksett.vedtak.beslutterId
                                        })
 
         taskRepository.save(førsteHovedflytTask)
@@ -57,6 +58,7 @@ class IverksettingService(val taskRepository: TaskRepository,
                     this["personIdent"] = iverksett.søker.personIdent
                     this["behandlingId"] = behandlingId.toString()
                     this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                    this["beslutter"] = iverksett.vedtak.beslutterId
                 }
         ))
     }
