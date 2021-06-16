@@ -5,17 +5,20 @@ import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingStatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.ZonedDateTime
 
 @Service
-class BehandlingstatistikkService(private val behandlingstatistikkRepository: BehandlingstatistikkRepository) {
+class BehandlingstatistikkService(private val behandlingstatistikkProducer: BehandlingstatistikkProducer,
+                                  private val behandlingstatistikkRepository: BehandlingstatistikkRepository) {
 
+    @Transactional
     fun lagreBehandlingstatistikk(behandlingstatistikk: BehandlingStatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingstatistikk)
         behandlingstatistikkRepository.lagre(behandlingstatistikk.behandlingId,
                                              behandlingDVH,
                                              behandlingstatistikk.hendelse)
-
+        behandlingstatistikkProducer.sendBehandling(behandlingDVH)
     }
 
     private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingStatistikkDto): BehandlingDVH {
