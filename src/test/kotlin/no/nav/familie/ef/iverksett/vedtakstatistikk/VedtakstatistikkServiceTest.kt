@@ -18,6 +18,7 @@ import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
 import no.nav.familie.eksterne.kontrakter.ef.Person
+import no.nav.familie.eksterne.kontrakter.ef.StønadType
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
@@ -107,6 +108,7 @@ class VedtakstatistikkServiceTest {
 
                              aktivitetskrav = Aktivitetskrav(aktivitetspliktInntrefferDato = null,
                                                              harSagtOppArbeidsforhold = true),
-                             funksjonellId = "9")
+                             funksjonellId = "9",
+                             stønadstype = StønadType.OVERGANGSSTØNAD)
     }
 }

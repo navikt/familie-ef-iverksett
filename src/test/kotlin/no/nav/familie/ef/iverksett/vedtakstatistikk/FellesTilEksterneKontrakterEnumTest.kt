@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
@@ -15,6 +16,7 @@ import no.nav.familie.eksterne.kontrakter.ef.BehandlingType as BehandlingTypeEks
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak as BehandlingÅrsakEkstern
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType as VedtakPeriodeTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEkstern
+import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 
 class FellesTilEksterneKontrakterEnumTest {
 
@@ -27,6 +29,7 @@ class FellesTilEksterneKontrakterEnumTest {
         VedtaksperiodeType.values().forEach { VedtakPeriodeTypeEkstern.valueOf(it.name) }
         AktivitetType.values().forEach { AktivitetTypeEkstern.valueOf(it.name) }
         AdressebeskyttelseGradering.values().forEach { AdresseBeskyttelseEkstern.valueOf(it.name) }
+        StønadType.values().forEach { StønadTypeEkstern.valueOf(it.name) }
     }
 }
 
