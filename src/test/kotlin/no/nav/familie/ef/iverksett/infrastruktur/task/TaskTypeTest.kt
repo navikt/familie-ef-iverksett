@@ -1,14 +1,20 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
+import no.nav.familie.ef.iverksett.arena.SendFattetVedtakTilArenaTask
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
+import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
+import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
+import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.VentePåStatusFraØkonomiTask
 import no.nav.familie.prosessering.domene.Task
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.NoSuchElementException
 
 
 class TaskTypeTest {
@@ -28,5 +34,30 @@ class TaskTypeTest {
         val distribuerVedtaksbrevTask = journalførVedtaksbrevTask.opprettNesteTask()
         assertThat(distribuerVedtaksbrevTask.type).isEqualTo(DistribuerVedtaksbrevTask.TYPE)
         assertThat(distribuerVedtaksbrevTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+    }
+
+    @Test
+    fun `test publiseringTaskflyt`() {
+        val sendFattetVedtakTilInfotrygdTask = Task(SendFattetVedtakTilInfotrygdTask.TYPE, "", Properties())
+        val sendPerioderTilInfotrygdTask = sendFattetVedtakTilInfotrygdTask.opprettNestePubliseringTask()
+
+        assertThat(sendPerioderTilInfotrygdTask.type).isEqualTo(SendPerioderTilInfotrygdTask.TYPE)
+        assertThat(sendPerioderTilInfotrygdTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+
+        val sendFattetVedtakTilArenaTask = sendPerioderTilInfotrygdTask.opprettNestePubliseringTask()
+        assertThat(sendFattetVedtakTilArenaTask.type).isEqualTo(SendFattetVedtakTilArenaTask.TYPE)
+        assertThat(sendFattetVedtakTilArenaTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+
+        val vedtaksstatistikkTask = sendFattetVedtakTilArenaTask.opprettNestePubliseringTask()
+        assertThat(vedtaksstatistikkTask.type).isEqualTo(VedtakstatistikkTask.TYPE)
+        assertThat(vedtaksstatistikkTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+    }
+
+    @Test
+    internal fun `skal ikke opprette task etter distribuert vedtaksbrev`() {
+        val distribuerVedtaksbrevTask = Task(DistribuerVedtaksbrevTask.TYPE, "", Properties())
+        assertThrows<NoSuchElementException> {
+            distribuerVedtaksbrevTask.opprettNesteTask()
+        }
     }
 }

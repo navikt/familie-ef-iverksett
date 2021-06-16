@@ -48,7 +48,8 @@ private fun Task.lagTask(nesteTask: TaskType): Task {
     return if (nesteTask.triggerTidAntallMinutterFrem != null) {
         Task(type = nesteTask.type,
              payload = this.payload,
-             triggerTid = LocalDateTime.now().plusMinutes(nesteTask.triggerTidAntallMinutterFrem))
+             properties = this.metadata).copy(triggerTid = LocalDateTime.now().plusMinutes(nesteTask.triggerTidAntallMinutterFrem))
+
     } else {
         Task(type = nesteTask.type,
              payload = this.payload,
