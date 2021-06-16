@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.brev
 
-import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -19,9 +18,7 @@ import java.util.UUID
                      triggerTidVedFeilISekunder = 15 * 60L,
                      beskrivelse = "Distribuerer vedtaksbrev.")
 class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient,
-                                private val tilstandRepository: TilstandRepository,
-                                private val taskRepository: TaskRepository
-) : AsyncTaskStep {
+                                private val tilstandRepository: TilstandRepository) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -33,10 +30,6 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
                                                                  DistribuerVedtaksbrevResultat(bestillingId = bestillingId)
         )
         logger.info("Distribuer vedtaksbrev journalpost=[${journalpostId}] for behandling=[${behandlingId}] med bestillingId=[$bestillingId]")
-    }
-
-    override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNesteTask())
     }
 
     companion object {

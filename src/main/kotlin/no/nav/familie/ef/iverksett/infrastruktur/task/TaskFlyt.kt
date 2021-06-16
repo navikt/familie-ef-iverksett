@@ -21,6 +21,9 @@ fun hovedflyt() = listOf(
         TaskType(VentePåStatusFraØkonomiTask.TYPE, 3),
         TaskType(JournalførVedtaksbrevTask.TYPE),
         TaskType(DistribuerVedtaksbrevTask.TYPE),
+)
+
+fun publiseringsflyt() = listOf(
         TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
         TaskType(SendPerioderTilInfotrygdTask.TYPE),
         TaskType(SendFattetVedtakTilArenaTask.TYPE),
@@ -28,19 +31,28 @@ fun hovedflyt() = listOf(
 )
 
 fun TaskType.nesteHovedflytTask() = hovedflyt().zipWithNext().first { this.type == it.first.type }.second
+fun TaskType.nestePubliseringsflytTask() = publiseringsflyt().zipWithNext().first { this.type == it.first.type }.second
 
 
 fun Task.opprettNesteTask(): Task {
     val nesteTask = TaskType(this.type).nesteHovedflytTask()
+    return lagTask(nesteTask)
+}
 
+fun Task.opprettNestePubliseringTask(): Task {
+    val nesteTask = TaskType(this.type).nestePubliseringsflytTask()
+    return lagTask(nesteTask)
+}
+
+private fun Task.lagTask(nesteTask: TaskType): Task {
     return if (nesteTask.triggerTidAntallMinutterFrem != null) {
         Task(type = nesteTask.type,
              payload = this.payload,
-             triggerTid = LocalDateTime.now().plusMinutes(nesteTask.triggerTidAntallMinutterFrem))
+             properties = this.metadata).copy(triggerTid = LocalDateTime.now().plusMinutes(nesteTask.triggerTidAntallMinutterFrem))
+
     } else {
         Task(type = nesteTask.type,
              payload = this.payload,
              properties = this.metadata)
     }
-
 }

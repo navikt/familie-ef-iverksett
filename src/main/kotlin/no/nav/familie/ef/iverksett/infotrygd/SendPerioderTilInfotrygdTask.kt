@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.infotrygd
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
-import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
+import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
@@ -38,7 +38,7 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
     }
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNesteTask())
+        taskRepository.save(task.opprettNestePubliseringTask())
     }
 
     companion object {

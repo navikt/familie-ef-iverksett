@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.arena
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
-import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
+import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.sak.featuretoggle.FeatureToggleService
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -34,7 +34,7 @@ class SendFattetVedtakTilArenaTask(private val vedtakhendelseProducer: Vedtakhen
     }
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNesteTask())
+        taskRepository.save(task.opprettNestePubliseringTask())
     }
 
     companion object {
