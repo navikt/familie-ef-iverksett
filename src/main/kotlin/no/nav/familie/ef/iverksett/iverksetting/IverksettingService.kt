@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
+import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
@@ -41,9 +42,25 @@ class IverksettingService(val taskRepository: TaskRepository,
                                            this["personIdent"] = iverksett.søker.personIdent
                                            this["behandlingId"] = iverksett.behandling.behandlingId.toString()
                                            this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                                           this["beslutter"] = iverksett.vedtak.beslutterId
                                        })
 
         taskRepository.save(førsteHovedflytTask)
+    }
+
+    @Transactional
+    fun publiserVedtak(behandlingId: UUID) {
+        val iverksett = iverksettingRepository.hent(behandlingId)
+        taskRepository.save(Task(
+                type = SendFattetVedtakTilInfotrygdTask.TYPE,
+                payload = behandlingId.toString(),
+                properties = Properties().apply {
+                    this["personIdent"] = iverksett.søker.personIdent
+                    this["behandlingId"] = behandlingId.toString()
+                    this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                    this["beslutter"] = iverksett.vedtak.beslutterId
+                }
+        ))
     }
 
     fun utledStatus(behandlingId: UUID): IverksettStatus? {
