@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.behandlingstatistikk
 
+import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
-import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingStatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.springframework.stereotype.Service
@@ -12,7 +12,7 @@ import java.time.ZonedDateTime
 class BehandlingstatistikkService(private val behandlingstatistikkProducer: BehandlingstatistikkProducer,
                                   private val behandlingstatistikkRepository: BehandlingstatistikkRepository) {
 
-    @Transactional
+
     fun lagreBehandlingstatistikk(behandlingstatistikk: BehandlingStatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingstatistikk)
         behandlingstatistikkRepository.lagre(behandlingstatistikk.behandlingId,
@@ -94,12 +94,6 @@ class BehandlingstatistikkService(private val behandlingstatistikkProducer: Beha
             return "-5"
         }
         return verdi
-    }
-
-    private fun StønadType.tilKlassifisering() = when (this) {
-        StønadType.OVERGANGSSTØNAD -> "EFOG"
-        StønadType.BARNETILSYN -> "EFBT"
-        StønadType.SKOLEPENGER -> "EFSP"
     }
 
 }

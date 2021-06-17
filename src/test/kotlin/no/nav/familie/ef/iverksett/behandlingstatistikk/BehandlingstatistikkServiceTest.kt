@@ -18,7 +18,8 @@ import java.util.UUID
 internal class BehandlingstatistikkServiceTest {
 
     val behandlingstatistikkRepository = mockk<BehandlingstatistikkRepository>()
-    val behandlingstatistikkService = BehandlingstatistikkService(behandlingstatistikkRepository)
+    val behandlingstatistikkProducer = mockk<BehandlingstatistikkProducer>()
+    val behandlingstatistikkService = BehandlingstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository)
 
     @Test
     fun `lagre BehandlingsstatistikkDto med hendelsestype MOTTATT, forvent likhet for det som lagres`() {

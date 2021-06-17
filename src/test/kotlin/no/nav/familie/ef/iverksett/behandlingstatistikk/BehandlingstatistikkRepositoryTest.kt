@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DuplicateKeyException
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -62,6 +63,15 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     fun `hent behandlingstatistikk med ikke-eksisterende hendelse, forvent IllegalStateException`() {
         Assertions.assertThrows(IllegalStateException::class.java) {
             behandlingstatistikkRepository.hent(UUID.randomUUID(), Hendelse.FERDIG)
+        }
+    }
+
+    @Test
+    fun `lagre samme hendelse to ganger, forvent DuplicateKeyException`() {
+        Assertions.assertThrows(DuplicateKeyException::class.java) {
+            val behandlingstatistikkMottat = opprettBehandlingstatistikk(behandlingId)
+            behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
+            behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
         }
     }
 
