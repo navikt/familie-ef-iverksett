@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -20,6 +21,11 @@ internal class BehandlingstatistikkServiceTest {
     val behandlingstatistikkRepository = mockk<BehandlingstatistikkRepository>()
     val behandlingstatistikkProducer = mockk<BehandlingstatistikkProducer>()
     val behandlingstatistikkService = BehandlingstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository)
+
+    @BeforeEach
+    fun setUp() {
+        every { behandlingstatistikkProducer.sendBehandling(any()) } just Runs
+    }
 
     @Test
     fun `lagre BehandlingsstatistikkDto med hendelsestype MOTTATT, forvent likhet for det som lagres`() {
@@ -33,7 +39,7 @@ internal class BehandlingstatistikkServiceTest {
         behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikkDto)
 
         assertThat(behandlingDVHSlot.captured.behandlingId).isEqualTo(behandlingStatistikkDto.behandlingId.toString())
-        assertThat(behandlingDVHSlot.captured.aktorId).isEqualTo(behandlingStatistikkDto.personIdent)
+        assertThat(behandlingDVHSlot.captured.personIdent).isEqualTo(behandlingStatistikkDto.personIdent)
         assertThat(behandlingDVHSlot.captured.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
         assertThat(behandlingDVHSlot.captured.saksnummer).isEqualTo(behandlingStatistikkDto.saksnummer)
         assertThat(behandlingDVHSlot.captured.registrertTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)

@@ -27,7 +27,7 @@ fun opprettBehandlingStatistikkDto(behandlingId: UUID, hendelse: Hendelse, fortr
 fun opprettBehandlingDVH(uuid: UUID, hendelse: Hendelse): BehandlingDVH {
     return BehandlingDVH(behandlingId = uuid.toString(),
                          sakId = "saksnummer",
-                         aktorId = "12345678910",
+                         personIdent = "12345678910",
                          registrertTid = ZonedDateTime.now(),
                          endretTid = ZonedDateTime.now(),
                          tekniskTid = ZonedDateTime.now(),

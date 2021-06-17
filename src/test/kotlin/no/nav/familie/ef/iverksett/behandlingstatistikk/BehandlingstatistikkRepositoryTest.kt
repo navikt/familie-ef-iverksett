@@ -20,7 +20,7 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     val behandlingstatistikkPåbegynt = opprettBehandlingstatistikk(behandlingId)
 
     @BeforeEach
-    fun beforeEach() {
+    internal fun beforeEach() {
         behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkPåbegynt, Hendelse.PÅBEGYNT)
     }
 
@@ -28,13 +28,13 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     fun `hente behandlingstatistikk, forvent ingen unntak`() {
         val hentetBehandlingstatistikk = behandlingstatistikkRepository.hent(behandlingId, Hendelse.PÅBEGYNT)
 
-        assertThat(hentetBehandlingstatistikk?.behandlingId).isEqualTo(behandlingstatistikkPåbegynt.behandlingId)
-        assertThat(hentetBehandlingstatistikk?.aktorId).isEqualTo(behandlingstatistikkPåbegynt.aktorId)
-        assertThat(hentetBehandlingstatistikk?.registrertTid).isEqualTo(behandlingstatistikkPåbegynt.registrertTid)
-        assertThat(hentetBehandlingstatistikk?.endretTid).isEqualTo(behandlingstatistikkPåbegynt.endretTid)
-        assertThat(hentetBehandlingstatistikk?.tekniskTid).isEqualTo(behandlingstatistikkPåbegynt.tekniskTid)
-        assertThat(hentetBehandlingstatistikk?.mottattTid).isEqualTo(behandlingstatistikkPåbegynt.mottattTid)
-        assertThat(hentetBehandlingstatistikk?.saksbehandler).isEqualTo(behandlingstatistikkPåbegynt.saksbehandler)
+        assertThat(hentetBehandlingstatistikk.behandlingId).isEqualTo(behandlingstatistikkPåbegynt.behandlingId)
+        assertThat(hentetBehandlingstatistikk.personIdent).isEqualTo(behandlingstatistikkPåbegynt.personIdent)
+        assertThat(hentetBehandlingstatistikk.registrertTid).isEqualTo(behandlingstatistikkPåbegynt.registrertTid)
+        assertThat(hentetBehandlingstatistikk.endretTid).isEqualTo(behandlingstatistikkPåbegynt.endretTid)
+        assertThat(hentetBehandlingstatistikk.tekniskTid).isEqualTo(behandlingstatistikkPåbegynt.tekniskTid)
+        assertThat(hentetBehandlingstatistikk.mottattTid).isEqualTo(behandlingstatistikkPåbegynt.mottattTid)
+        assertThat(hentetBehandlingstatistikk.saksbehandler).isEqualTo(behandlingstatistikkPåbegynt.saksbehandler)
     }
 
     @Test
@@ -43,12 +43,12 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
         behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
         val hentetHendelseMottatt = behandlingstatistikkRepository.hent(behandlingId, Hendelse.MOTTATT)
 
-        assertThat(hentetHendelseMottatt?.behandlingId).isEqualTo(behandlingstatistikkMottat.behandlingId)
-        assertThat(hentetHendelseMottatt?.aktorId).isEqualTo(behandlingstatistikkMottat.aktorId)
-        assertThat(hentetHendelseMottatt?.registrertTid).isEqualTo(behandlingstatistikkMottat.registrertTid)
-        assertThat(hentetHendelseMottatt?.endretTid).isEqualTo(behandlingstatistikkMottat.endretTid)
-        assertThat(hentetHendelseMottatt?.tekniskTid).isEqualTo(behandlingstatistikkMottat.tekniskTid)
-        assertThat(hentetHendelseMottatt?.mottattTid).isEqualTo(behandlingstatistikkMottat.mottattTid)
+        assertThat(hentetHendelseMottatt.behandlingId).isEqualTo(behandlingstatistikkMottat.behandlingId)
+        assertThat(hentetHendelseMottatt.personIdent).isEqualTo(behandlingstatistikkMottat.personIdent)
+        assertThat(hentetHendelseMottatt.registrertTid).isEqualTo(behandlingstatistikkMottat.registrertTid)
+        assertThat(hentetHendelseMottatt.endretTid).isEqualTo(behandlingstatistikkMottat.endretTid)
+        assertThat(hentetHendelseMottatt.tekniskTid).isEqualTo(behandlingstatistikkMottat.tekniskTid)
+        assertThat(hentetHendelseMottatt.mottattTid).isEqualTo(behandlingstatistikkMottat.mottattTid)
     }
 
     @Test
@@ -77,7 +77,7 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
 
     private fun opprettBehandlingstatistikk(behandlingId: UUID): BehandlingDVH {
         return BehandlingDVH(behandlingId = behandlingId.toString(),
-                             aktorId = "persinIdent",
+                             personIdent = "persinIdent",
                              saksbehandler = "gjeldendeSaksbehandlerId",
                              registrertTid = ZonedDateTime.now(),
                              endretTid = ZonedDateTime.now(),

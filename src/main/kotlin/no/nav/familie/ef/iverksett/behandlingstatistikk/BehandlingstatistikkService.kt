@@ -12,7 +12,7 @@ import java.time.ZonedDateTime
 class BehandlingstatistikkService(private val behandlingstatistikkProducer: BehandlingstatistikkProducer,
                                   private val behandlingstatistikkRepository: BehandlingstatistikkRepository) {
 
-
+    @Transactional
     fun lagreBehandlingstatistikk(behandlingstatistikk: BehandlingStatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingstatistikk)
         behandlingstatistikkRepository.lagre(behandlingstatistikk.behandlingId,
@@ -27,7 +27,7 @@ class BehandlingstatistikkService(private val behandlingstatistikkProducer: Beha
             Hendelse.MOTTATT -> {
                 BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
                               sakId = behandlingstatistikk.saksnummer,
-                              aktorId = behandlingstatistikk.personIdent,
+                              personIdent = behandlingstatistikk.personIdent,
                               registrertTid = behandlingstatistikk.hendelseTidspunkt,
                               endretTid = behandlingstatistikk.hendelseTidspunkt,
                               tekniskTid = ZonedDateTime.now(),
