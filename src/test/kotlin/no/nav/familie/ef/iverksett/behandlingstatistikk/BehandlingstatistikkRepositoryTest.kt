@@ -38,7 +38,7 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     }
 
     @Test
-    fun `lagre og hente behandlingstatistikk med ny hendelse, forvent ingen unntak`() {
+    fun `lagre og hente behandlingstatistikk med ny hendelse, forvent ingen nullverdi`() {
         val behandlingstatistikkMottat = opprettBehandlingstatistikk(behandlingId)
         behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
         val behandlingDVH = behandlingstatistikkRepository.hent(behandlingId, Hendelse.MOTTATT)
