@@ -25,7 +25,7 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     }
 
     @Test
-    fun `hente behandlingstatistikk, forvent ingen unntak`() {
+    fun `hente behandlingstatistikk, forvent likhet for felter som ikke er nullable`() {
         val hentetBehandlingstatistikk = behandlingstatistikkRepository.hent(behandlingId, Hendelse.PÅBEGYNT)
 
         assertThat(hentetBehandlingstatistikk.behandlingId).isEqualTo(behandlingstatistikkPåbegynt.behandlingId)
@@ -41,14 +41,8 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     fun `lagre og hente behandlingstatistikk med ny hendelse, forvent ingen unntak`() {
         val behandlingstatistikkMottat = opprettBehandlingstatistikk(behandlingId)
         behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
-        val hentetHendelseMottatt = behandlingstatistikkRepository.hent(behandlingId, Hendelse.MOTTATT)
-
-        assertThat(hentetHendelseMottatt.behandlingId).isEqualTo(behandlingstatistikkMottat.behandlingId)
-        assertThat(hentetHendelseMottatt.personIdent).isEqualTo(behandlingstatistikkMottat.personIdent)
-        assertThat(hentetHendelseMottatt.registrertTid).isEqualTo(behandlingstatistikkMottat.registrertTid)
-        assertThat(hentetHendelseMottatt.endretTid).isEqualTo(behandlingstatistikkMottat.endretTid)
-        assertThat(hentetHendelseMottatt.tekniskTid).isEqualTo(behandlingstatistikkMottat.tekniskTid)
-        assertThat(hentetHendelseMottatt.mottattTid).isEqualTo(behandlingstatistikkMottat.mottattTid)
+        val behandlingDVH = behandlingstatistikkRepository.hent(behandlingId, Hendelse.MOTTATT)
+        assertThat(behandlingDVH).isNotNull
     }
 
     @Test
@@ -69,9 +63,8 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     @Test
     fun `lagre samme hendelse to ganger, forvent DuplicateKeyException`() {
         Assertions.assertThrows(DuplicateKeyException::class.java) {
-            val behandlingstatistikkMottat = opprettBehandlingstatistikk(behandlingId)
-            behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
-            behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
+            val behandlingDVH = opprettBehandlingstatistikk(behandlingId)
+            behandlingstatistikkRepository.lagre(behandlingId, behandlingDVH, Hendelse.PÅBEGYNT)
         }
     }
 
