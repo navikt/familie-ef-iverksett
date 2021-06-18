@@ -21,7 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(initializers = [DbContainerInitializer::class])
 @SpringBootTest(classes = [ApplicationLocal::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("servertest", "mock-oppdrag")
+@ActiveProfiles("servertest", "mock-oppdrag", "mock-kafkatemplate")
 abstract class ServerTest {
 
     protected val restTemplate = TestRestTemplate(ApplicationConfig().restTemplateBuilder())
@@ -47,7 +47,7 @@ abstract class ServerTest {
     }
 
     private fun resetDatabase() {
-        namedParameterJdbcTemplate.update("TRUNCATE TABLE brev, iverksett, iverksett_resultat CASCADE", MapSqlParameterSource())
+        namedParameterJdbcTemplate.update("TRUNCATE TABLE brev, iverksett, iverksett_resultat, behandling_statistikk CASCADE", MapSqlParameterSource())
         namedParameterJdbcTemplate.update("TRUNCATE TABLE task, task_logg CASCADE", MapSqlParameterSource())
     }
 
