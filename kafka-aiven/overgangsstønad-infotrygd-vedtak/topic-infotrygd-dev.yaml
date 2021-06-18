@@ -19,5 +19,5 @@ spec:
       application: familie-ef-iverksett
       access: read
     - team: infotrygd
-      application: infotrygd-hendelse-db
+      application: infotrygd-goldengate
       access: write
