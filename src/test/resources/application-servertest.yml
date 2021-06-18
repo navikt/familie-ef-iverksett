@@ -29,3 +29,4 @@ NAIS_CLUSTER_NAME: dev
 KAFKA_BROKERS: hostname:1234
 KAFKA_KEYSTORE_PATH: kafkaKeystorePath
 KAFKA_CREDSTORE_PASSWORD: kafkaCredstorePassword
+KAFKA_TRUSTSTORE_PATH: kafkaTruststorePath
