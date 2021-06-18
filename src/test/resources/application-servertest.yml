@@ -25,3 +25,8 @@ AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmic
 AZURE_APP_TENANT_ID: navq.onmicrosoft.com
 
 NAIS_CLUSTER_NAME: dev
+
+KAFKA_BROKERS: hostname:1234
+KAFKA_KEYSTORE_PATH: kafkaKeystorePath
+KAFKA_CREDSTORE_PASSWORD: kafkaCredstorePassword
+KAFKA_TRUSTSTORE_PATH: kafkaTruststorePath

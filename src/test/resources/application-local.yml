@@ -31,3 +31,8 @@ AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmic
 FAMILIE_INTEGRASJONER_API_URL: http://localhost:8085
 
 NAIS_CLUSTER_NAME: dev
+
+KAFKA_BROKERS: hostname:1234
+KAFKA_KEYSTORE_PATH: kafkaKeystorePath
+KAFKA_CREDSTORE_PASSWORD: kafkaCredstorePassword
+KAFKA_TRUSTSTORE_PATH: kafkaTruststorePath
