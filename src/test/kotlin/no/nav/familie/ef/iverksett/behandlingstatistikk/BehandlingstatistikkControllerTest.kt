@@ -1,9 +1,5 @@
 package no.nav.familie.ef.iverksett.behandlingstatistikk
 
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.util.opprettBehandlingStatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse

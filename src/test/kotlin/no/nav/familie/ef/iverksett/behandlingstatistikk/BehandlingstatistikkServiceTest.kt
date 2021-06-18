@@ -154,7 +154,7 @@ internal class BehandlingstatistikkServiceTest {
     }
 
     @Test
-    fun `oprettet behandlingDVH av behandlingDto med fortrolig lik true, forvent -5 konstant på graderte felter`() {
+    fun `opprettet behandlingDVH av behandlingDto med fortrolig lik true, forvent -5 konstant på graderte felter`() {
 
         val uuid = UUID.randomUUID()
         val behandlingDVHSlot = slot<BehandlingDVH>()
