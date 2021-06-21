@@ -46,7 +46,7 @@ internal class BehandlingstatistikkServiceTest {
         assertThat(behandlingDVHSlot.captured.behandlingType).isEqualTo(behandlingStatistikkDto.behandlingstype.name)
         assertThat(behandlingDVHSlot.captured.ansvarligEnhet).isEqualTo(behandlingStatistikkDto.ansvarligEnhet)
         assertThat(behandlingDVHSlot.captured.opprettetEnhet).isEqualTo(behandlingStatistikkDto.opprettetEnhet)
-        assertThat(behandlingDVHSlot.captured.sakYtelse).isEqualTo(behandlingStatistikkDto.sakYtelse.tilKlassifisering())
+        assertThat(behandlingDVHSlot.captured.sakYtelse).isEqualTo(behandlingStatistikkDto.stønadstype.tilKlassifisering())
     }
 
     @Test
