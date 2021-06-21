@@ -8,6 +8,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.prosessering.domene.Task
@@ -21,7 +22,8 @@ internal class VedtakstatistikkTaskTest {
     val iverksettingRepository = mockk<IverksettingRepository>()
     val vedtakstatistikkService = mockk<VedtakstatistikkService>()
     val tilstandRepository = mockk<TilstandRepository>()
-    val vedtakstatistikkTask = VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService, tilstandRepository)
+    val vedtakstatistikkTask =
+            VedtakstatistikkTask(iverksettingRepository, mockFeatureToggleService(), vedtakstatistikkService, tilstandRepository)
     val behandlingId = UUID.randomUUID()
 
     @Test
