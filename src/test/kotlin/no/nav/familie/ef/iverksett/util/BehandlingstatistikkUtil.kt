@@ -20,7 +20,7 @@ fun opprettBehandlingStatistikkDto(behandlingId: UUID, hendelse: Hendelse, fortr
                                    ansvarligEnhet = "ansvarligEnhet",
                                    opprettetEnhet = "opprettetEnhet",
                                    strengtFortroligAdresse = fortrolig,
-                                   sakYtelse = StønadType.OVERGANGSSTØNAD,
+                                   stønadstype = StønadType.OVERGANGSSTØNAD,
                                    behandlingstype = BehandlingType.FØRSTEGANGSBEHANDLING)
 }
 
