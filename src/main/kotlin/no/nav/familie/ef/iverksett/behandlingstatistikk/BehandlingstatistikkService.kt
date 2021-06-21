@@ -35,7 +35,7 @@ class BehandlingstatistikkService(private val behandlingstatistikkProducer: Beha
                               opprettetAv = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId),
                               saksnummer = behandlingstatistikk.saksnummer,
-                              mottattTid = behandlingstatistikk.hendelseTidspunkt,
+                              mottattTid = behandlingstatistikk.søknadstidspunkt,
                               saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
                               opprettetEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                      behandlingstatistikk.opprettetEnhet),
@@ -44,7 +44,7 @@ class BehandlingstatistikkService(private val behandlingstatistikkProducer: Beha
                               behandlingMetode = "MANUELL",
                               avsender = "NAV enslig forelder",
                               behandlingType = behandlingstatistikk.behandlingstype.name,
-                              sakYtelse = behandlingstatistikk.sakYtelse.tilKlassifisering()
+                              sakYtelse = behandlingstatistikk.stønadstype.tilKlassifisering()
                 )
 
             }
