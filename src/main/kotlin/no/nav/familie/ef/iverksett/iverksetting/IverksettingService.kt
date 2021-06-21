@@ -14,6 +14,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.Properties
@@ -99,13 +100,14 @@ class IverksettingService(val taskRepository: TaskRepository,
         )
 
         val oppdragstatus = oppdragClient.hentStatus(oppdragId)
+
+        if (oppdragstatus != OppdragStatus.KVITTERT_OK) {
+            throw TaskExceptionUtenStackTrace("Status fra oppdrag er ikke ok, status=$oppdragstatus")
+        }
+
         tilstandRepository.oppdaterOppdragResultat(
                 behandlingId = behandlingId,
                 OppdragResultat(oppdragStatus = oppdragstatus)
         )
-        when (oppdragstatus) {
-            OppdragStatus.KVITTERT_OK -> return
-            else -> error("Status fra oppdrag er ikke ok, status : ${oppdragstatus}")
-        }
     }
 }
