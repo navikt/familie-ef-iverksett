@@ -25,7 +25,7 @@ class BehandlingstatistikkControllerTest : ServerTest() {
 
         val behandlingStatistikkDto = opprettBehandlingStatistikkDto(UUID.randomUUID(), Hendelse.MOTTATT, false)
         val response: ResponseEntity<HttpStatus> =
-                restTemplate.exchange(localhostUrl("/api/statistikk/behandlingstatistikk/"), HttpMethod.POST,
+                restTemplate.exchange(localhostUrl("/api/statistikk/behandlingstatisstikk/"), HttpMethod.POST,
                                       HttpEntity(behandlingStatistikkDto, headers))
         Assertions.assertThat(response.statusCode.value()).isEqualTo(200)
 
