@@ -1,6 +1,6 @@
-package no.nav.familie.ef.iverksett.behandlingstatistikk
+package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
-import no.nav.familie.kontrakter.ef.iverksett.BehandlingStatistikkDto
+import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping(path = ["/api/statistikk/behandlingsstatistikk"])
 @ProtectedWithClaims(issuer = "azuread")
-class BehandlingstatistikkController(val behandlingstatistikkService: BehandlingstatistikkService) {
+class BehandlingsstatistikkController(val behandlingsstatistikkService: BehandlingsstatistikkService) {
 
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun sendBehandlingstatistikk(@RequestBody behandlingStatistikk: BehandlingStatistikkDto) {
-        behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikk)
+    fun sendBehandlingstatistikk(@RequestBody behandlingStatistikk: BehandlingsstatistikkDto) {
+        behandlingsstatistikkService.lagreBehandlingstatistikk(behandlingStatistikk)
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.behandlingstatistikk
+package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import io.mockk.Runs
 import io.mockk.every
@@ -6,7 +6,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import no.nav.familie.ef.iverksett.util.opprettBehandlingDVH
-import no.nav.familie.ef.iverksett.util.opprettBehandlingStatistikkDto
+import no.nav.familie.ef.iverksett.util.opprettBehandlingsstatistikkDto
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
@@ -16,11 +16,11 @@ import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 import java.util.UUID
 
-internal class BehandlingstatistikkServiceTest {
+internal class BehandlingsstatistikkServiceTest {
 
-    val behandlingstatistikkRepository = mockk<BehandlingstatistikkRepository>()
-    val behandlingstatistikkProducer = mockk<BehandlingstatistikkProducer>()
-    val behandlingstatistikkService = BehandlingstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository)
+    val behandlingstatistikkRepository = mockk<BehandlingsstatistikkRepository>()
+    val behandlingstatistikkProducer = mockk<BehandlingsstatistikkProducer>()
+    val behandlingstatistikkService = BehandlingsstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository)
 
     @BeforeEach
     fun setUp() {
@@ -32,7 +32,7 @@ internal class BehandlingstatistikkServiceTest {
 
         val uuid = UUID.randomUUID()
         val behandlingDVHSlot = slot<BehandlingDVH>()
-        val behandlingStatistikkDto = opprettBehandlingStatistikkDto(uuid, Hendelse.MOTTATT, fortrolig = false)
+        val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.MOTTATT, fortrolig = false)
 
         every { behandlingstatistikkRepository.lagre(any(), capture(behandlingDVHSlot), any()) } just Runs
 
@@ -41,7 +41,7 @@ internal class BehandlingstatistikkServiceTest {
         assertThat(behandlingDVHSlot.captured.behandlingId).isEqualTo(behandlingStatistikkDto.behandlingId.toString())
         assertThat(behandlingDVHSlot.captured.personIdent).isEqualTo(behandlingStatistikkDto.personIdent)
         assertThat(behandlingDVHSlot.captured.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
-        assertThat(behandlingDVHSlot.captured.saksnummer).isEqualTo(behandlingStatistikkDto.saksnummer)
+        assertThat(behandlingDVHSlot.captured.saksnummer).isEqualTo(behandlingStatistikkDto.eksternFagsakId)
         assertThat(behandlingDVHSlot.captured.registrertTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
         assertThat(behandlingDVHSlot.captured.behandlingType).isEqualTo(behandlingStatistikkDto.behandlingstype.name)
         assertThat(behandlingDVHSlot.captured.ansvarligEnhet).isEqualTo(behandlingStatistikkDto.ansvarligEnhet)
@@ -56,7 +56,7 @@ internal class BehandlingstatistikkServiceTest {
         val behandlingDVHSlot = slot<BehandlingDVH>()
         val endretTid = ZonedDateTime.now()
         val saksbehandler = "Saksbehandler påbegynt"
-        val behandlingStatistikkDto = opprettBehandlingStatistikkDto(uuid, Hendelse.PÅBEGYNT, fortrolig = false).copy(
+        val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.PÅBEGYNT, fortrolig = false).copy(
                 hendelseTidspunkt = endretTid,
                 gjeldendeSaksbehandlerId = saksbehandler)
         val behandlingDVH = opprettBehandlingDVH(uuid, Hendelse.MOTTATT)
@@ -80,7 +80,7 @@ internal class BehandlingstatistikkServiceTest {
         val saksbehandler = "Saksbehandler som vedtar"
         val behandlingResultat = "Behandlingsresultat fra vedtak"
         val resultatBegrunnelse = "Begrunnelse for vedtak"
-        val behandlingStatistikkDto = opprettBehandlingStatistikkDto(uuid, Hendelse.VEDTATT, fortrolig = false).copy(
+        val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.VEDTATT, fortrolig = false).copy(
                 hendelseTidspunkt = endretTid,
                 gjeldendeSaksbehandlerId = saksbehandler,
                 behandlingResultat = behandlingResultat,
@@ -111,7 +111,7 @@ internal class BehandlingstatistikkServiceTest {
         val ansvarligBeslutter = "Saksbehandler som beslutter"
         val behandlingResultat = "Behandlingsresultat fra beslutter"
         val resultatBegrunnelse = "Begrunnelse for vedtak"
-        val behandlingStatistikkDto = opprettBehandlingStatistikkDto(uuid, Hendelse.BESLUTTET, fortrolig = false).copy(
+        val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.BESLUTTET, fortrolig = false).copy(
                 hendelseTidspunkt = endretTid,
                 gjeldendeSaksbehandlerId = ansvarligBeslutter,
                 behandlingResultat = behandlingResultat,
@@ -139,7 +139,7 @@ internal class BehandlingstatistikkServiceTest {
         val behandlingDVHSlot = slot<BehandlingDVH>()
         val endretTid = ZonedDateTime.now()
         val behandlingStatistikkDto =
-                opprettBehandlingStatistikkDto(uuid, Hendelse.FERDIG, fortrolig = false).copy(hendelseTidspunkt = endretTid)
+                opprettBehandlingsstatistikkDto(uuid, Hendelse.FERDIG, fortrolig = false).copy(hendelseTidspunkt = endretTid)
         val behandlingDVH = opprettBehandlingDVH(uuid, Hendelse.VEDTATT)
 
         every { behandlingstatistikkRepository.lagre(any(), capture(behandlingDVHSlot), any()) } just Runs
@@ -158,7 +158,7 @@ internal class BehandlingstatistikkServiceTest {
 
         val uuid = UUID.randomUUID()
         val behandlingDVHSlot = slot<BehandlingDVH>()
-        val behandlingStatistikkDto = opprettBehandlingStatistikkDto(uuid, Hendelse.MOTTATT, fortrolig = true)
+        val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.MOTTATT, fortrolig = true)
 
         every { behandlingstatistikkRepository.lagre(any(), capture(behandlingDVHSlot), any()) } just Runs
 

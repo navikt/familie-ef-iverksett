@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.behandlingstatistikk
+package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
@@ -12,21 +12,21 @@ import org.springframework.dao.DuplicateKeyException
 import java.time.ZonedDateTime
 import java.util.UUID
 
-internal class BehandlingstatistikkRepositoryTest : ServerTest() {
+internal class BehandlingsstatistikkRepositoryTest : ServerTest() {
 
     @Autowired
-    private lateinit var behandlingstatistikkRepository: BehandlingstatistikkRepository
+    private lateinit var behandlingsstatistikkRepository: BehandlingsstatistikkRepository
     val behandlingId = UUID.randomUUID()
     val behandlingstatistikkPåbegynt = opprettBehandlingstatistikk(behandlingId)
 
     @BeforeEach
     internal fun beforeEach() {
-        behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkPåbegynt, Hendelse.PÅBEGYNT)
+        behandlingsstatistikkRepository.lagre(behandlingId, behandlingstatistikkPåbegynt, Hendelse.PÅBEGYNT)
     }
 
     @Test
     fun `hente behandlingstatistikk, forvent likhet for felter som ikke er nullable`() {
-        val hentetBehandlingstatistikk = behandlingstatistikkRepository.hent(behandlingId, Hendelse.PÅBEGYNT)
+        val hentetBehandlingstatistikk = behandlingsstatistikkRepository.hent(behandlingId, Hendelse.PÅBEGYNT)
 
         assertThat(hentetBehandlingstatistikk.behandlingId).isEqualTo(behandlingstatistikkPåbegynt.behandlingId)
         assertThat(hentetBehandlingstatistikk.personIdent).isEqualTo(behandlingstatistikkPåbegynt.personIdent)
@@ -40,15 +40,15 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     @Test
     fun `lagre og hente behandlingstatistikk med ny hendelse, forvent ingen nullverdi`() {
         val behandlingstatistikkMottat = opprettBehandlingstatistikk(behandlingId)
-        behandlingstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
-        val behandlingDVH = behandlingstatistikkRepository.hent(behandlingId, Hendelse.MOTTATT)
+        behandlingsstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
+        val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingId, Hendelse.MOTTATT)
         assertThat(behandlingDVH).isNotNull
     }
 
     @Test
     fun `hent behandlingstatistikk med ikke-eksisterende id, forvent IllegalStateException`() {
         Assertions.assertThrows(IllegalStateException::class.java) {
-            behandlingstatistikkRepository.hent(UUID.randomUUID(), Hendelse.PÅBEGYNT)
+            behandlingsstatistikkRepository.hent(UUID.randomUUID(), Hendelse.PÅBEGYNT)
         }
 
     }
@@ -56,7 +56,7 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     @Test
     fun `hent behandlingstatistikk med ikke-eksisterende hendelse, forvent IllegalStateException`() {
         Assertions.assertThrows(IllegalStateException::class.java) {
-            behandlingstatistikkRepository.hent(UUID.randomUUID(), Hendelse.FERDIG)
+            behandlingsstatistikkRepository.hent(UUID.randomUUID(), Hendelse.FERDIG)
         }
     }
 
@@ -64,7 +64,7 @@ internal class BehandlingstatistikkRepositoryTest : ServerTest() {
     fun `lagre samme hendelse to ganger, forvent DuplicateKeyException`() {
         Assertions.assertThrows(DuplicateKeyException::class.java) {
             val behandlingDVH = opprettBehandlingstatistikk(behandlingId)
-            behandlingstatistikkRepository.lagre(behandlingId, behandlingDVH, Hendelse.PÅBEGYNT)
+            behandlingsstatistikkRepository.lagre(behandlingId, behandlingDVH, Hendelse.PÅBEGYNT)
         }
     }
 

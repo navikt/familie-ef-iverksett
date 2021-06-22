@@ -1,32 +1,32 @@
-package no.nav.familie.ef.iverksett.behandlingstatistikk
+package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
-import no.nav.familie.kontrakter.ef.iverksett.BehandlingStatistikkDto
+import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.ZonedDateTime
 
 @Service
-class BehandlingstatistikkService(private val behandlingstatistikkProducer: BehandlingstatistikkProducer,
-                                  private val behandlingstatistikkRepository: BehandlingstatistikkRepository) {
+class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer,
+                                   private val behandlingsstatistikkRepository: BehandlingsstatistikkRepository) {
 
     @Transactional
-    fun lagreBehandlingstatistikk(behandlingstatistikk: BehandlingStatistikkDto) {
+    fun lagreBehandlingstatistikk(behandlingstatistikk: BehandlingsstatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingstatistikk)
-        behandlingstatistikkRepository.lagre(behandlingstatistikk.behandlingId,
-                                             behandlingDVH,
-                                             behandlingstatistikk.hendelse)
-        behandlingstatistikkProducer.sendBehandling(behandlingDVH)
+        behandlingsstatistikkRepository.lagre(behandlingstatistikk.behandlingId,
+                                              behandlingDVH,
+                                              behandlingstatistikk.hendelse)
+        behandlingsstatistikkProducer.sendBehandling(behandlingDVH)
     }
 
-    private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingStatistikkDto): BehandlingDVH {
+    private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingsstatistikkDto): BehandlingDVH {
 
         return when (behandlingstatistikk.hendelse) {
             Hendelse.MOTTATT -> {
                 BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
-                              sakId = behandlingstatistikk.saksnummer,
+                              sakId = behandlingstatistikk.eksternFagsakId,
                               personIdent = behandlingstatistikk.personIdent,
                               registrertTid = behandlingstatistikk.hendelseTidspunkt,
                               endretTid = behandlingstatistikk.hendelseTidspunkt,
@@ -34,9 +34,10 @@ class BehandlingstatistikkService(private val behandlingstatistikkProducer: Beha
                               behandlingStatus = Hendelse.MOTTATT.name,
                               opprettetAv = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId),
-                              saksnummer = behandlingstatistikk.saksnummer,
+                              saksnummer = behandlingstatistikk.eksternFagsakId,
                               mottattTid = behandlingstatistikk.søknadstidspunkt,
-                              saksbehandler = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                              saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                    behandlingstatistikk.gjeldendeSaksbehandlerId),
                               opprettetEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                      behandlingstatistikk.opprettetEnhet),
                               ansvarligEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
@@ -49,7 +50,7 @@ class BehandlingstatistikkService(private val behandlingstatistikkProducer: Beha
 
             }
             Hendelse.PÅBEGYNT -> {
-                val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.MOTTATT)
+                val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.MOTTATT)
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
                                    tekniskTid = ZonedDateTime.now(),
                                    saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
@@ -58,7 +59,7 @@ class BehandlingstatistikkService(private val behandlingstatistikkProducer: Beha
 
             }
             Hendelse.VEDTATT -> {
-                val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.PÅBEGYNT)
+                val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.PÅBEGYNT)
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
                                    vedtakTid = behandlingstatistikk.hendelseTidspunkt,
                                    tekniskTid = ZonedDateTime.now(),
@@ -71,16 +72,17 @@ class BehandlingstatistikkService(private val behandlingstatistikkProducer: Beha
 
             }
             Hendelse.BESLUTTET -> {
-                val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.VEDTATT)
+                val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.VEDTATT)
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
                                    tekniskTid = ZonedDateTime.now(),
-                                   ansvarligBeslutter = behandlingstatistikk.gjeldendeSaksbehandlerId,
+                                   ansvarligBeslutter = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                              behandlingstatistikk.gjeldendeSaksbehandlerId),
                                    behandlingStatus = Hendelse.BESLUTTET.name,
                                    behandlingResultat = behandlingstatistikk.behandlingResultat,
                                    resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse)
             }
             Hendelse.FERDIG -> {
-                val behandlingDVH = behandlingstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.VEDTATT)
+                val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.BESLUTTET)
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
                                    tekniskTid = ZonedDateTime.now(),
                                    ferdigBehandletTid = behandlingstatistikk.hendelseTidspunkt,

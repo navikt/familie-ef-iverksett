@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.behandlingstatistikk
+package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import no.nav.familie.ef.iverksett.util.queryForJson
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-class BehandlingstatistikkRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+class BehandlingsstatistikkRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun lagre(behandlingId: UUID, behandlingDVH: BehandlingDVH, hendelse: Hendelse) {
         return lagreBehandlingstatistikk(behandlingId, behandlingDVH, hendelse)

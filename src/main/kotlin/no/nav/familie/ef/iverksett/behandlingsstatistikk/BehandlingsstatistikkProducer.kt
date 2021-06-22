@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.behandlingstatistikk
+package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -8,7 +8,7 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 
 @Service
-class BehandlingstatistikkProducer(
+class BehandlingsstatistikkProducer(
         private val kafkaTemplate: KafkaTemplate<String, String>
 ) {
 

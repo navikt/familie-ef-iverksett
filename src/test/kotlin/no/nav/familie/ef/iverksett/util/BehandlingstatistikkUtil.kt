@@ -3,16 +3,16 @@ package no.nav.familie.ef.iverksett.util
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.StønadType
-import no.nav.familie.kontrakter.ef.iverksett.BehandlingStatistikkDto
+import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import java.time.ZonedDateTime
 import java.util.UUID
 
-fun opprettBehandlingStatistikkDto(behandlingId: UUID, hendelse: Hendelse, fortrolig: Boolean): BehandlingStatistikkDto {
-    return BehandlingStatistikkDto(behandlingId = UUID.randomUUID(),
+fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fortrolig: Boolean): BehandlingsstatistikkDto {
+    return BehandlingsstatistikkDto(behandlingId = UUID.randomUUID(),
                                    personIdent = "aktor",
                                    gjeldendeSaksbehandlerId = "saksbehandler",
-                                   saksnummer = "saksnummer",
+                                   eksternFagsakId = "eksternFagsakId",
                                    hendelseTidspunkt = ZonedDateTime.now(),
                                    hendelse = hendelse,
                                    behandlingResultat = "",
