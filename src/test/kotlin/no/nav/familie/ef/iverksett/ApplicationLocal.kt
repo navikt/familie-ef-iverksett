@@ -12,9 +12,10 @@ class ApplicationLocal
 fun main(args: Array<String>) {
 
     SpringApplicationBuilder(ApplicationConfig::class.java)
-        .initializers(DbContainerInitializer())
-        .profiles("local",
-                  "mock-integrasjoner",
-                  "mock-oppdrag")
-        .run(*args)
+            .initializers(DbContainerInitializer())
+            .profiles("local",
+                      "mock-integrasjoner",
+                      "mock-oppdrag",
+                      "mock-kafkatemplate")
+            .run(*args)
 }
