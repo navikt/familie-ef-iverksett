@@ -23,6 +23,20 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-behandling/topic-dev.yaml
           PRINT_PAYLOAD: true
+      - name: deploy infotrygd aivenapp to dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/aivenapp-infotrygd-goldengate-dev.yaml
+          PRINT_PAYLOAD: true
+      - name: deploy infotrygd kafka-topic to dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/topic-infotrygd-dev.yaml
+          PRINT_PAYLOAD: true
       - name: deploy to prod
         uses: nais/deploy/actions/deploy@v1
         env:

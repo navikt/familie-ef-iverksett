@@ -1,0 +1,10 @@
+apiVersion: aiven.nais.io/v1
+kind: AivenApplication
+metadata:
+  name: infotrygd-goldengate
+  namespace: teamfamilie
+spec:
+  kafka:
+    pool: nav-dev
+  secretName: kafka-infotrygd-goldengate-nav-dev
+  protected: true
