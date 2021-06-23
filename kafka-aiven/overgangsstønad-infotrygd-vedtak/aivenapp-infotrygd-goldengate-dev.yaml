@@ -3,6 +3,8 @@ kind: AivenApplication
 metadata:
   name: infotrygd-goldengate
   namespace: teamfamilie
+  labels:
+    team: teamfamilie
 spec:
   kafka:
     pool: nav-dev
