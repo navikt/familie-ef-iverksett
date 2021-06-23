@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.util
 
+import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
@@ -99,15 +100,23 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
             )
     )
 }
+fun opprettAndelTilkjentYtelse() = lagAndelTilkjentYtelse(
+        beløp = 5000,
+        periodetype = Periodetype.MÅNED,
+        fraOgMed = LocalDate.of(2021, 1, 1),
+        tilOgMed = LocalDate.of(2021, 12, 31),
+        inntekt = 100,
+        samordningsfradrag = 2,
+        inntektsreduksjon = 5
+)
 
-fun opprettIverksett(behandlingId: UUID): Iverksett {
+fun opprettIverksett(behandlingId: UUID, forrigeBehandlingId: UUID? = null, andeler : List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse())): Iverksett {
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelse(
             beløp = 5000,
             periodetype = Periodetype.MÅNED,
             fraOgMed = LocalDate.of(2021, 1, 1),
             tilOgMed = LocalDate.of(2021, 12, 31),
-            periodeId = 1,
             inntekt = 100,
             samordningsfradrag = 2,
             inntektsreduksjon = 5
@@ -116,14 +125,14 @@ fun opprettIverksett(behandlingId: UUID): Iverksett {
             id = UUID.randomUUID(),
             utbetalingsoppdrag = null,
             status = TilkjentYtelseStatus.AKTIV,
-            andelerTilkjentYtelse = listOf(andelTilkjentYtelse)
+            andelerTilkjentYtelse = andeler
     )
 
     return Iverksett(
             fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
             behandling = Behandlingsdetaljer(
                     behandlingId = behandlingId,
-                    forrigeBehandlingId = null,
+                    forrigeBehandlingId = forrigeBehandlingId,
                     eksternId = 9L,
                     behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
                     behandlingÅrsak = BehandlingÅrsak.SØKNAD,
