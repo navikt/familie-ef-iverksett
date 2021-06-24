@@ -22,7 +22,7 @@ class BehandlingsstatistikkProducer(
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nBehandlingstatistikk: {}", topic, behandlingDvh)
         runCatching {
-            kafkaTemplate.send(topic, behandlingDvh.toJson())
+            kafkaTemplate.send(topic, behandlingDvh.toJson()).get()
             logger.info("Behandlingstatistikk sent to Kafka")
             secureLogger.info("$behandlingDvh sent to Kafka.")
         }.onFailure {
