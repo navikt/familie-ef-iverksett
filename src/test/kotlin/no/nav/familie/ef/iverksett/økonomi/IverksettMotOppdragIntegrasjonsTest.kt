@@ -108,6 +108,23 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     }
 
     @Test
+    internal fun `iverksett med opphør, forventer beløp lik 0 og dato lik NULL_DATO`() {
+        val opphørBehandlingId = UUID.randomUUID()
+        val iverksettMedOpphør = opprettIverksett(opphørBehandlingId, behandlingid, emptyList())
+
+        taskRepository.deleteAll()
+        iverksettingService.startIverksetting(iverksettMedOpphør, opprettBrev())
+        iverksettMotOppdrag()
+
+        val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(opphørBehandlingId)!!
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().beløp).isEqualTo(0)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().fraOgMed).isEqualTo(NULL_DATO)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().tilOgMed).isEqualTo(NULL_DATO)
+    }
+
+    @Test
     internal fun `revurdering etter teknisk opphør, forventer en peker på forrige periode `() {
         val tekniskOpphørId = UUID.randomUUID()
         taskRepository.deleteAll()
