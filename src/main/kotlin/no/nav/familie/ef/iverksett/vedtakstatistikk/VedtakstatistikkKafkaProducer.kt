@@ -21,7 +21,7 @@ class VedtakstatistikkKafkaProducer(
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
         runCatching {
-            kafkaTemplate.send(topic, vedtakStatistikk.toJson())
+            kafkaTemplate.send(topic, vedtakStatistikk.toJson()).get()
             logger.info("Vedtakstatistikk sent to Kafka")
             secureLogger.info("$vedtakStatistikk sent to Kafka.")
         }.onFailure {

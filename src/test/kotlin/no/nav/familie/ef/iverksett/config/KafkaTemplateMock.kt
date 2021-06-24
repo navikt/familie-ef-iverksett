@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.config
 
+import io.mockk.Runs
 import io.mockk.every
 import io.mockk.mockk
 import org.springframework.context.annotation.Bean
@@ -19,7 +20,9 @@ class KafkaTemplateMock {
     fun kafkaTemplate(): KafkaTemplate<String, String> {
         val kafkaTemplate = mockk<KafkaTemplate<String, String>>(relaxed = true)
         val listenableFuture = mockk<ListenableFuture<SendResult<String, String>>>()
+        val sendResult = mockk<SendResult<String, String>>()
         every { kafkaTemplate.send(any(), any()) } returns listenableFuture
+        every { listenableFuture.get() } returns sendResult
         return kafkaTemplate
     }
 }
