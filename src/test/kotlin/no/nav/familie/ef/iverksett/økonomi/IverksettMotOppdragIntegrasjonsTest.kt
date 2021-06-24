@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.økonomi
 
-import io.mockk.every
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
@@ -16,9 +15,6 @@ import java.time.LocalDate
 import java.util.UUID
 
 class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
-
-    @Autowired
-    lateinit var oppdragClient: OppdragClient
 
     @Autowired
     lateinit var tilstandRepository: TilstandRepository
@@ -42,7 +38,6 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
 
     @BeforeEach
     internal fun setUp() {
-        every { oppdragClient.iverksettOppdrag(any()) } returns ""
         iverksettingService.startIverksetting(iverksett, opprettBrev())
         iverksettMotOppdrag()
     }
