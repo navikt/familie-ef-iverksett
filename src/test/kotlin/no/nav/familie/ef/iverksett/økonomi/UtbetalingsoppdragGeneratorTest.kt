@@ -48,6 +48,11 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
+    fun `Har en perioder, legger til en ny periode som er lik den forrige`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/1_periode_får_en_lik_periode.csv"))
+    }
+
+    @Test
     fun `Har en perioder, legger til en andre`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/1_periode_får_en_ny_perioden.csv"))
     }
