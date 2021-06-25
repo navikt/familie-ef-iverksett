@@ -1,0 +1,23 @@
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: aapen-ensligforsorger-behandling-v1
+  namespace: teamfamilie
+  labels:
+    team: teamfamilie
+spec:
+  pool: nav-prod
+  config:
+    cleanupPolicy: compact
+    minimumInSyncReplicas: 1
+    partitions: 1
+    replication: 3
+    retentionBytes: -1
+    retentionHours: 2016
+  acl:
+    - team: teamfamilie
+      application: familie-ef-iverksett
+      access: readwrite
+    - team: ptsak
+      application: pt-sak-ensligforsorger
+      access: read
