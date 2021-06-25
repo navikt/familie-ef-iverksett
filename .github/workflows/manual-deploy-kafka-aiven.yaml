@@ -44,3 +44,10 @@ jobs:
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-vedtak/topic-prod.yaml
           PRINT_PAYLOAD: true
+      - name: deploy behandlingsstatistikk to prod
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: kafka-aiven/statistikk-ensligforsorger-behandling/topic-prod.yaml
+          PRINT_PAYLOAD: true
