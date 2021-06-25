@@ -8,6 +8,7 @@ import io.mockk.slot
 import no.nav.familie.ef.iverksett.util.opprettBehandlingDVH
 import no.nav.familie.ef.iverksett.util.opprettBehandlingsstatistikkDto
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
+import no.nav.familie.ef.sak.featuretoggle.FeatureToggleService
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.assertj.core.api.Assertions.assertThat
@@ -20,11 +21,13 @@ internal class BehandlingsstatistikkServiceTest {
 
     val behandlingstatistikkRepository = mockk<BehandlingsstatistikkRepository>()
     val behandlingstatistikkProducer = mockk<BehandlingsstatistikkProducer>()
-    val behandlingstatistikkService = BehandlingsstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository)
+    val featureToggleService = mockk<FeatureToggleService>()
+    val behandlingstatistikkService = BehandlingsstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository, featureToggleService)
 
     @BeforeEach
     fun setUp() {
         every { behandlingstatistikkProducer.sendBehandling(any()) } just Runs
+        every { featureToggleService.isEnabled(any()) } returns true
     }
 
     @Test
