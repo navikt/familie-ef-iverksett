@@ -112,15 +112,6 @@ fun opprettAndelTilkjentYtelse() = lagAndelTilkjentYtelse(
 
 fun opprettIverksett(behandlingId: UUID, forrigeBehandlingId: UUID? = null, andeler : List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse())): Iverksett {
 
-    val andelTilkjentYtelse = lagAndelTilkjentYtelse(
-            beløp = 5000,
-            periodetype = Periodetype.MÅNED,
-            fraOgMed = LocalDate.of(2021, 1, 1),
-            tilOgMed = LocalDate.of(2021, 12, 31),
-            inntekt = 100,
-            samordningsfradrag = 2,
-            inntektsreduksjon = 5
-    )
     val tilkjentYtelse = TilkjentYtelse(
             id = UUID.randomUUID(),
             utbetalingsoppdrag = null,
