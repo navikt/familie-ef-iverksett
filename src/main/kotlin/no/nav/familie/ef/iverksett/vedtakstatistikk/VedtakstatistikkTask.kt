@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-@TaskStepBeskrivelse(taskStepType = VedtakstatistikkTask.TYPE, beskrivelse = "Sender vedtaksstatistikk til DVH.")
+@TaskStepBeskrivelse(taskStepType = VedtakstatistikkTask.TYPE,
+                     beskrivelse = "Sender vedtaksstatistikk til DVH.",
+                     settTilManuellOppfølgning = true)
 class VedtakstatistikkTask(val iverksettingRepository: IverksettingRepository,
                            val featureToggleService: FeatureToggleService,
                            val vedtakstatistikkService: VedtakstatistikkService,
