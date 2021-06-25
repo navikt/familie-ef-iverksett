@@ -1,19 +1,25 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
+import no.nav.familie.ef.sak.featuretoggle.FeatureToggleService
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.lang.IllegalStateException
 import java.time.ZonedDateTime
 
 @Service
 class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer,
-                                   private val behandlingsstatistikkRepository: BehandlingsstatistikkRepository) {
+                                   private val behandlingsstatistikkRepository: BehandlingsstatistikkRepository,
+                                   private val featureToggleService: FeatureToggleService) {
 
     @Transactional
     fun lagreBehandlingstatistikk(behandlingstatistikk: BehandlingsstatistikkDto) {
+        if (!featureToggleService.isEnabled("familie.ef.iverksett.send-behandlingsstatistikk")) {
+            throw IllegalStateException("Sender ikke behandlingsstatistikk pga avskrudd feature toggle")
+        }
         val behandlingDVH = mapTilBehandlingDVH(behandlingstatistikk)
         behandlingsstatistikkRepository.lagre(behandlingstatistikk.behandlingId,
                                               behandlingDVH,
