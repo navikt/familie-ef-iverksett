@@ -42,6 +42,8 @@ spring:
                type: PKCS12
                location: ${KAFKA_TRUSTSTORE_PATH}
                password: ${KAFKA_CREDSTORE_PASSWORD}
+      producer:
+         acks: all
 logging:
    config: "classpath:logback-spring.xml"
 
