@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
@@ -7,14 +8,18 @@ import org.springframework.stereotype.Service
 
 @Service
 class SimuleringService(
-        private val oppdragKlient: OppdragClient
+        private val oppdragKlient: OppdragClient,
+        private val tilstandRepository: TilstandRepository
 ) {
 
     fun hentSimulering(simuleringDto: SimuleringDto): DetaljertSimuleringResultat {
         try {
+
+            val forrigeTilkjentYtelse = tilstandRepository.hentTilkjentYtelse(simuleringDto.forrigeBehandlingId)
+
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simuleringDto.nyTilkjentYtelseMedMetaData,
-                    simuleringDto.forrigeTilkjentYtelse
+                    forrigeTilkjentYtelse
             )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
