@@ -15,11 +15,13 @@ class SimuleringService(
     fun hentSimulering(simuleringDto: SimuleringDto): DetaljertSimuleringResultat {
         try {
 
-            val forrigeTilkjentYtelse = tilstandRepository.hentTilkjentYtelse(simuleringDto.forrigeBehandlingId)
+            val forrigeTilkjentYtelse = simuleringDto.forrigeBehandlingId?.let {
+                tilstandRepository.hentTilkjentYtelse(simuleringDto.forrigeBehandlingId)
+            }
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simuleringDto.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse
+                    forrigeTilkjentYtelse?.let { it } ?: null
             )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag

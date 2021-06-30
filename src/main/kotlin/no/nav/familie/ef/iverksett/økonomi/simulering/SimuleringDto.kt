@@ -5,5 +5,5 @@ import java.util.UUID
 
 data class SimuleringDto(
         val nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
-        val forrigeBehandlingId: UUID
+        val forrigeBehandlingId: UUID?
 )
