@@ -15,8 +15,7 @@ class SimuleringFormatTest {
         val v1: String = ResourceLoaderTestUtil.readResource("json/simulering_v1.json")
         val simuleringDtoV1 = objectMapper.readValue<SimuleringDto>(v1)
 
-        assertNotNull(simuleringDtoV1.forrigeTilkjentYtelse)
+        assertNotNull(simuleringDtoV1.forrigeBehandlingId)
         assertEquals(2, simuleringDtoV1.nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.size)
-        assertEquals(1, simuleringDtoV1.forrigeTilkjentYtelse!!.andelerTilkjentYtelse.size)
     }
 }
