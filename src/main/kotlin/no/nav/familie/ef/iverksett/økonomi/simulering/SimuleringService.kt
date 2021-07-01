@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
+import no.nav.familie.ef.iverksett.iverksetting.domene.Simulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
@@ -12,15 +13,15 @@ class SimuleringService(
         private val tilstandRepository: TilstandRepository
 ) {
 
-    fun hentSimulering(simuleringDto: SimuleringDto): DetaljertSimuleringResultat {
+    fun hentSimulering(simulering: Simulering): DetaljertSimuleringResultat {
         try {
 
-            val forrigeTilkjentYtelse = simuleringDto.forrigeBehandlingId?.let {
-                tilstandRepository.hentTilkjentYtelse(simuleringDto.forrigeBehandlingId)
+            val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
+                tilstandRepository.hentTilkjentYtelse(simulering.forrigeBehandlingId)
             }
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-                    simuleringDto.nyTilkjentYtelseMedMetaData,
+                    simulering.nyTilkjentYtelseMedMetaData,
                     forrigeTilkjentYtelse?.let { it } ?: null
             )
 
