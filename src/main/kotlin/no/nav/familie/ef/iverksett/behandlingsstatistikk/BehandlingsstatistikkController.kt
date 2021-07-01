@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = "azuread")
 class BehandlingsstatistikkController(val behandlingsstatistikkService: BehandlingsstatistikkService) {
 
-    @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendBehandlingstatistikk(@RequestBody behandlingStatistikk: BehandlingsstatistikkDto) {
         behandlingsstatistikkService.lagreBehandlingstatistikk(behandlingStatistikk)
     }
