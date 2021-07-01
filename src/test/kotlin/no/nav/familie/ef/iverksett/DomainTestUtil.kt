@@ -19,7 +19,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 fun simuleringDto(): SimuleringDto {
-    val behandlingId = UUID.randomUUID()
+    val behandlingId = UUID.fromString("4b657902-d994-11eb-b8bc-0242ac130003")
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
             tilkjentYtelse = TilkjentYtelse(
                     id = UUID.randomUUID(),
@@ -47,24 +47,7 @@ fun simuleringDto(): SimuleringDto {
 
             )
 
-    val tilkjentYtelse = TilkjentYtelse(
-            id = UUID.randomUUID(),
-            utbetalingsoppdrag = null,
-            status = TilkjentYtelseStatus.IKKE_KLAR,
-            andelerTilkjentYtelse = listOf(
-                    lagAndelTilkjentYtelse(
-                            beløp = 15000,
-                            periodetype = Periodetype.MÅNED,
-                            fraOgMed = LocalDate.of(2021, 1, 1),
-                            tilOgMed = LocalDate.of(2023, 12, 31),
-                            periodeId = 1,
-                            forrigePeriodeId = null,
-                            kildeBehandlingId = UUID.randomUUID()
-                    )
-            )
-    )
-
-    return SimuleringDto(tilkjentYtelseMedMetaData, tilkjentYtelse)
+    return SimuleringDto(tilkjentYtelseMedMetaData, UUID.randomUUID())
 }
 
 fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
