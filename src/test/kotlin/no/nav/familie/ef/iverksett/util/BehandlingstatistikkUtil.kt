@@ -5,23 +5,25 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
 
 fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fortrolig: Boolean): BehandlingsstatistikkDto {
-    return BehandlingsstatistikkDto(behandlingId = UUID.randomUUID(),
-                                   personIdent = "aktor",
-                                   gjeldendeSaksbehandlerId = "saksbehandler",
-                                   eksternFagsakId = "eksternFagsakId",
-                                   hendelseTidspunkt = ZonedDateTime.now(),
-                                   hendelse = hendelse,
-                                   behandlingResultat = "",
-                                   resultatBegrunnelse = "",
-                                   ansvarligEnhet = "ansvarligEnhet",
-                                   opprettetEnhet = "opprettetEnhet",
-                                   strengtFortroligAdresse = fortrolig,
-                                   stønadstype = StønadType.OVERGANGSSTØNAD,
-                                   behandlingstype = BehandlingType.FØRSTEGANGSBEHANDLING)
+    return BehandlingsstatistikkDto(behandlingId = behandlingId,
+                                    personIdent = "aktor",
+                                    gjeldendeSaksbehandlerId = "saksbehandler",
+                                    eksternFagsakId = "eksternFagsakId",
+                                    hendelseTidspunkt = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/Oslo")),
+                                    hendelse = hendelse,
+                                    behandlingResultat = "",
+                                    resultatBegrunnelse = "",
+                                    ansvarligEnhet = "ansvarligEnhet",
+                                    opprettetEnhet = "opprettetEnhet",
+                                    strengtFortroligAdresse = fortrolig,
+                                    stønadstype = StønadType.OVERGANGSSTØNAD,
+                                    behandlingstype = BehandlingType.FØRSTEGANGSBEHANDLING)
 }
 
 fun opprettBehandlingDVH(uuid: UUID, hendelse: Hendelse): BehandlingDVH {
