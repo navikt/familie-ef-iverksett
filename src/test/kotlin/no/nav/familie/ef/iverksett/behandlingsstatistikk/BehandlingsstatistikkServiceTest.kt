@@ -10,6 +10,7 @@ import no.nav.familie.ef.iverksett.util.opprettBehandlingsstatistikkDto
 import no.nav.familie.ef.sak.featuretoggle.FeatureToggleService
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
+import no.nav.familie.kontrakter.felles.objectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -39,7 +40,7 @@ internal class BehandlingsstatistikkServiceTest {
         every { behandlingstatistikkRepository.lagre(any(), capture(behandlingDVHSlot), any()) } just Runs
 
         behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikkDto)
-
+        println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(behandlingDVHSlot))
         assertThat(behandlingDVHSlot.captured.behandlingId).isEqualTo(behandlingStatistikkDto.behandlingId.toString())
         assertThat(behandlingDVHSlot.captured.personIdent).isEqualTo(behandlingStatistikkDto.personIdent)
         assertThat(behandlingDVHSlot.captured.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
