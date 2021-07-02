@@ -41,6 +41,7 @@ fun opprettBehandlingDVH(uuid: UUID, hendelse: Hendelse): BehandlingDVH {
                          behandlingMetode = "MANUELL",
                          avsender = "NAV enslig forelder",
                          behandlingType = "behandlingtype",
-                         sakYtelse = "sakYtelse"
+                         sakYtelse = "sakYtelse",
+                         totrinnsbehandling = true
     )
 }

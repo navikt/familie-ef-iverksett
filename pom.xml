@@ -29,7 +29,7 @@
         <start-class>no.nav.familie.ef.iverksett.WebApplicationKt</start-class>
         <felles-kontrakter.version>2.0_20210622110330_1c8c15b</felles-kontrakter.version>
         <familie.kontrakter.stonadsstatistikk-ef>2.0_20210628105406_337660a</familie.kontrakter.stonadsstatistikk-ef>
-        <familie.kontrakter.saksstatistikk-ef>2.0_20210628105406_337660a</familie.kontrakter.saksstatistikk-ef>
+        <familie.kontrakter.saksstatistikk-ef>2.0_20210702102219_a4737a7</familie.kontrakter.saksstatistikk-ef>
         <token-validation-spring.version>1.3.5</token-validation-spring.version>
         <ibm-mq-client.version>9.2.2.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
