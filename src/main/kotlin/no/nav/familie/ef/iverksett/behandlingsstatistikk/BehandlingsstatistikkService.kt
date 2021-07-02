@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
-import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.ef.sak.featuretoggle.FeatureToggleService
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
@@ -8,6 +7,7 @@ import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalStateException
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
@@ -29,6 +29,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
 
     private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingsstatistikkDto): BehandlingDVH {
 
+        val tekniskTid = ZonedDateTime.now(ZoneId.of("Europe/Oslo"))
         return when (behandlingstatistikk.hendelse) {
             Hendelse.MOTTATT -> {
                 BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
@@ -36,7 +37,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                               personIdent = behandlingstatistikk.personIdent,
                               registrertTid = behandlingstatistikk.hendelseTidspunkt,
                               endretTid = behandlingstatistikk.hendelseTidspunkt,
-                              tekniskTid = ZonedDateTime.now(),
+                              tekniskTid = tekniskTid,
                               behandlingStatus = Hendelse.MOTTATT.name,
                               opprettetAv = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId),
@@ -51,14 +52,17 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                               behandlingMetode = "MANUELL",
                               avsender = "NAV enslig forelder",
                               behandlingType = behandlingstatistikk.behandlingstype.name,
-                              sakYtelse = behandlingstatistikk.stønadstype.tilKlassifisering()
+                              sakYtelse = behandlingstatistikk.stønadstype.name,
+                              totrinnsbehandling = true,
+                              sakUtland = "Nasjonal"
+
                 )
 
             }
             Hendelse.PÅBEGYNT -> {
                 val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.MOTTATT)
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
-                                   tekniskTid = ZonedDateTime.now(),
+                                   tekniskTid = tekniskTid,
                                    saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                          behandlingstatistikk.gjeldendeSaksbehandlerId),
                                    behandlingStatus = Hendelse.PÅBEGYNT.name)
@@ -68,7 +72,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                 val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.PÅBEGYNT)
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
                                    vedtakTid = behandlingstatistikk.hendelseTidspunkt,
-                                   tekniskTid = ZonedDateTime.now(),
+                                   tekniskTid = tekniskTid,
                                    saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                          behandlingstatistikk.gjeldendeSaksbehandlerId),
                                    behandlingStatus = Hendelse.VEDTATT.name,
@@ -80,7 +84,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             Hendelse.BESLUTTET -> {
                 val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.VEDTATT)
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
-                                   tekniskTid = ZonedDateTime.now(),
+                                   tekniskTid = tekniskTid,
                                    ansvarligBeslutter = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                               behandlingstatistikk.gjeldendeSaksbehandlerId),
                                    behandlingStatus = Hendelse.BESLUTTET.name,
@@ -90,7 +94,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             Hendelse.FERDIG -> {
                 val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingstatistikk.behandlingId, Hendelse.BESLUTTET)
                 behandlingDVH.copy(endretTid = behandlingstatistikk.hendelseTidspunkt,
-                                   tekniskTid = ZonedDateTime.now(),
+                                   tekniskTid = tekniskTid,
                                    ferdigBehandletTid = behandlingstatistikk.hendelseTidspunkt,
                                    behandlingStatus = Hendelse.FERDIG.name)
             }

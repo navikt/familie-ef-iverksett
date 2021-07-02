@@ -7,7 +7,6 @@ import io.mockk.mockk
 import io.mockk.slot
 import no.nav.familie.ef.iverksett.util.opprettBehandlingDVH
 import no.nav.familie.ef.iverksett.util.opprettBehandlingsstatistikkDto
-import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.ef.sak.featuretoggle.FeatureToggleService
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
@@ -49,7 +48,7 @@ internal class BehandlingsstatistikkServiceTest {
         assertThat(behandlingDVHSlot.captured.behandlingType).isEqualTo(behandlingStatistikkDto.behandlingstype.name)
         assertThat(behandlingDVHSlot.captured.ansvarligEnhet).isEqualTo(behandlingStatistikkDto.ansvarligEnhet)
         assertThat(behandlingDVHSlot.captured.opprettetEnhet).isEqualTo(behandlingStatistikkDto.opprettetEnhet)
-        assertThat(behandlingDVHSlot.captured.sakYtelse).isEqualTo(behandlingStatistikkDto.stønadstype.tilKlassifisering())
+        assertThat(behandlingDVHSlot.captured.sakYtelse).isEqualTo(behandlingStatistikkDto.stønadstype.name)
     }
 
     @Test

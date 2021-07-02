@@ -84,6 +84,8 @@ internal class BehandlingsstatistikkRepositoryTest : ServerTest() {
                              saksnummer = "saksnummer",
                              mottattTid = ZonedDateTime.now(),
                              behandlingMetode = "MANUELL",
-                             avsender = "NAV Enslig forelder")
+                             avsender = "NAV Enslig forelder",
+                             totrinnsbehandling = true,
+                             sakUtland = "Nasjonal")
     }
 }

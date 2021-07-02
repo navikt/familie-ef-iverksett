@@ -37,7 +37,7 @@ class BehandlingDVHMapper {
                                  behandlingId = iverksett.behandling.behandlingId.toString(),
                                  relatertBehandlingId = iverksett.behandling.relatertBehandlingId?.toString(),
                                  adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let { Adressebeskyttelse.valueOf(it.name) },
-                                 tidspunktVedtak = iverksett.vedtak.vedtaksdato.atStartOfDay(ZoneId.of("Europe/Paris")),
+                                 tidspunktVedtak = iverksett.vedtak.vedtaksdato.atStartOfDay(ZoneId.of("Europe/Oslo")),
                                  vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map { mapTilVilkårsvurderinger(it) },
                                  person = mapTilPerson(personIdent = iverksett.søker.personIdent),
                                  barn = iverksett.søker.barn.map { mapTilBarn(it) },

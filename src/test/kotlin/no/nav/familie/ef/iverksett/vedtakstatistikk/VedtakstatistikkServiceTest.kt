@@ -83,7 +83,7 @@ class VedtakstatistikkServiceTest {
                              behandlingId = behandlingId,
                              relatertBehandlingId = null,
                              adressebeskyttelse = Adressebeskyttelse.UGRADERT,
-                             tidspunktVedtak = tidspunktVedtak.atStartOfDay(ZoneId.of("Europe/Paris")),
+                             tidspunktVedtak = tidspunktVedtak.atStartOfDay(ZoneId.of("Europe/Oslo")),
                              vilkårsvurderinger = listOf(VilkårsvurderingDto(vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT,
                                                                              resultat = Vilkårsresultat.OPPFYLT)),
                              person = Person(personIdent = "12345678910"),
