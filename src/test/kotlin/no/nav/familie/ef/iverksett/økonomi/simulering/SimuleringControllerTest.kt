@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi.simulering
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
 import no.nav.familie.ef.iverksett.simuleringDto
+import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import org.assertj.core.api.Assertions.assertThat

@@ -1,5 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
+import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController
 class SimuleringController(
         private val simuleringService: SimuleringService,
 ) {
+
     @PostMapping
     fun hentSimulering(@RequestBody simuleringDto: SimuleringDto): Ressurs<DetaljertSimuleringResultat> {
-        val detaljertSimuleringResultat = simuleringService.hentSimulering(simuleringDto)
+        val detaljertSimuleringResultat =
+                simuleringService.hentSimulering(simuleringDto.toDomain())
         return Ressurs.success(detaljertSimuleringResultat)
     }
 }

@@ -1,12 +1,10 @@
 package no.nav.familie.ef.iverksett
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringDto
+import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.felles.StønadType
-import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
+import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
+import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.simulering.BetalingType
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.FagOmrådeKode
@@ -17,22 +15,18 @@ import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
+import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
 
 fun simuleringDto(): SimuleringDto {
     val behandlingId = UUID.fromString("4b657902-d994-11eb-b8bc-0242ac130003")
-    val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
-            tilkjentYtelse = TilkjentYtelse(
-                    id = UUID.randomUUID(),
-                    utbetalingsoppdrag = null,
-                    status = TilkjentYtelseStatus.IKKE_KLAR,
+    val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetadataDto(
+            tilkjentYtelse = TilkjentYtelseDto(
                     andelerTilkjentYtelse = listOf(
-                            lagAndelTilkjentYtelse(
+                            lagAndelTilkjentYtelseDto(
                                     beløp = 15000,
                                     periodetype = Periodetype.MÅNED,
                                     fraOgMed = LocalDate.of(2021, 1, 1),
                                     tilOgMed = LocalDate.of(2023, 12, 31),
-                                    periodeId = 2,
-                                    forrigePeriodeId = 1,
                                     kildeBehandlingId = UUID.randomUUID()
                             )
                     )
