@@ -10,7 +10,7 @@ import no.nav.familie.kontrakter.felles.objectMapper as objectMapperFelles
 
 object JdbcObjectMapper {
 
-    var objectMapper = objectMapperFelles.registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java,
+    val objectMapper = objectMapperFelles.registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java,
                                                                                         ZonedDateTimeDeserializer()))
 
 }
