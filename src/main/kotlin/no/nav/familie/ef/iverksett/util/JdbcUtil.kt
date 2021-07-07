@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.util
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.familie.kontrakter.felles.objectMapper
+
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -12,13 +12,13 @@ import java.util.UUID
 fun ResultSet.getUUID(columnLabel: String): UUID = UUID.fromString(this.getString(columnLabel))
 
 inline fun <reified T> ResultSet.getJson(columnLabel: String): T? {
-    return this.getBytes(columnLabel)?.let { objectMapper.readValue<T>(it) }
+    return this.getBytes(columnLabel)?.let { JdbcObjectMapper.objectMapper.readValue<T>(it) }
 }
 
 inline fun <reified T> NamedParameterJdbcTemplate.queryForJson(sql: String, paramSource: SqlParameterSource): T? {
     try {
         val json = this.queryForObject(sql, paramSource, ByteArray::class.java) ?: return null
-        return objectMapper.readValue<T>(json)
+        return JdbcObjectMapper.objectMapper.readValue<T>(json)
     } catch (emptyResultDataAccess: EmptyResultDataAccessException) {
         return null
     }
@@ -33,3 +33,4 @@ inline fun <reified T> NamedParameterJdbcTemplate.queryForNullableObject(sql: St
         return null
     }
 }
+
