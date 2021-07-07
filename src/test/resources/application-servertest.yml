@@ -9,9 +9,6 @@ no.nav.security.jwt:
     cookie_name: localhost-idtoken
     proxy_url: #Default satt, skal være null i integrasjonstest
 
-funksjonsbrytere:
-  enabled: false
-
 arena-mq:
   queueManager: queuemanager
   channel: channel
