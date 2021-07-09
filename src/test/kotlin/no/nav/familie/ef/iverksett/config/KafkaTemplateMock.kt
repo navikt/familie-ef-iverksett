@@ -16,7 +16,7 @@ class KafkaTemplateMock {
     @Primary
     fun kafkaProducerService(): KafkaProducerService {
         val kafkaProducer = mockk<KafkaProducerService>(relaxed = true)
-        justRun { kafkaProducer.send(any(), any()) }
+        justRun { kafkaProducer.send(any(), any(), any()) }
         return kafkaProducer
     }
 }

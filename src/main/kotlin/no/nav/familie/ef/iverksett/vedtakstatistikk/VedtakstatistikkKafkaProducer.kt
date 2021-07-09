@@ -6,6 +6,7 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProducerService) {
@@ -20,7 +21,7 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
         runCatching {
-            kafkaProducerService.send(topic, vedtakStatistikk.toJson())
+            kafkaProducerService.send(topic, vedtakStatistikk.behandlingId, vedtakStatistikk.toJson())
             logger.info("Vedtakstatistikk sent to Kafka")
             secureLogger.info("$vedtakStatistikk sent to Kafka.")
         }.onFailure {
