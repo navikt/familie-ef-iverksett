@@ -13,7 +13,7 @@ spec:
     partitions: 1
     replication: 3
     retentionBytes: -1
-    retentionHours: -1
+    retentionHours: 2016
   acl:
     - team: teamfamilie
       application: familie-ef-iverksett
