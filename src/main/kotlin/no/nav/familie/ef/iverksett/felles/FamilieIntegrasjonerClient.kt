@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.felles
 import no.nav.familie.http.client.AbstractRestClient
 import no.nav.familie.kontrakter.felles.PersonIdent
 import no.nav.familie.kontrakter.felles.Ressurs
+import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.getDataOrThrow
 import no.nav.familie.kontrakter.felles.personopplysning.FinnPersonidenterResponse
 import no.nav.familie.kontrakter.felles.personopplysning.Ident
@@ -28,6 +29,8 @@ class FamilieIntegrasjonerClient(
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_HENT_IDENTER).build().toUri()
     private val aktørUri =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_AKTØR).build().toUri()
+    private val arbeidsfordelingUri =
+        UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING).build().toUri()
 
     fun hentIdenter(personident: String, medHistprikk: Boolean): List<PersonIdentMedHistorikk> {
         val uri = UriComponentsBuilder.fromUri(hentIdenterURI).queryParam("historikk", medHistprikk).build().toUri()
@@ -40,8 +43,13 @@ class FamilieIntegrasjonerClient(
         return response.getDataOrThrow()["aktørId"].toString()
     }
 
-    companion object {
+    fun hentNavEnhet(personident: String): Enhet? {
+        val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUri, Ident(personident))
+        return response.getDataOrThrow().firstOrNull()
+    }
 
+    companion object {
+        const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet/ENF"
         const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
     }
