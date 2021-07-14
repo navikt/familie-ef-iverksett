@@ -9,14 +9,18 @@ import no.nav.familie.kontrakter.felles.oppgave.OppgaveIdentV2
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
 import no.nav.familie.prosessering.AsyncTaskStep
+import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
-@Component
+@Service
+@TaskStepBeskrivelse(taskStepType = OpprettOppgaveTask.TYPE,
+    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad")
 class OpprettOppgaveTask(val oppgaveClient: OppgaveClient,
                          val iverksettingRepository: IverksettingRepository,
                          val familieIntegrasjonerClient: FamilieIntegrasjonerClient): AsyncTaskStep {
