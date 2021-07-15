@@ -49,7 +49,8 @@ class FamilieIntegrasjonerClient(
     }
 
     companion object {
-        const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet/ENF"
+        const val arbeidsfordelingTema = "OPP"
+        const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet/$arbeidsfordelingTema"
         const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
     }
