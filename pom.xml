@@ -33,7 +33,7 @@
         <token-validation-spring.version>1.3.5</token-validation-spring.version>
         <ibm-mq-client.version>9.2.2.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
-        <unleash.version>4.3.0</unleash.version>
+        <unleash.version>4.4.0</unleash.version>
     </properties>
 
     <repositories>
