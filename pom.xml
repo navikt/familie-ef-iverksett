@@ -22,7 +22,7 @@
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <mockk.version>1.11.0</mockk.version>
         <revision>1.0</revision>
-        <dotenv.version>6.2.1</dotenv.version>
+        <dotenv.version>6.2.2</dotenv.version>
         <logback.spring.starter>2.7.1</logback.spring.starter>
         <prosessering.version>1.20210621084119_fd91328</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
