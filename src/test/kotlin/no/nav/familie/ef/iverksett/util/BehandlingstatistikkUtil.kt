@@ -15,7 +15,7 @@ fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fort
                                     personIdent = "aktor",
                                     gjeldendeSaksbehandlerId = "saksbehandler",
                                     eksternFagsakId = "eksternFagsakId",
-                                    hendelseTidspunkt = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/Oslo")),
+                                    hendelseTidspunkt = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC")),
                                     hendelse = hendelse,
                                     behandlingResultat = "",
                                     resultatBegrunnelse = "",
