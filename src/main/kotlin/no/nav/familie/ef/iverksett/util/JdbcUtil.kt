@@ -12,13 +12,13 @@ import java.util.UUID
 fun ResultSet.getUUID(columnLabel: String): UUID = UUID.fromString(this.getString(columnLabel))
 
 inline fun <reified T> ResultSet.getJson(columnLabel: String): T? {
-    return this.getBytes(columnLabel)?.let { JdbcObjectMapper.objectMapper.readValue<T>(it) }
+    return this.getBytes(columnLabel)?.let { ObjectMapperProvider.objectMapper.readValue<T>(it) }
 }
 
 inline fun <reified T> NamedParameterJdbcTemplate.queryForJson(sql: String, paramSource: SqlParameterSource): T? {
     try {
         val json = this.queryForObject(sql, paramSource, ByteArray::class.java) ?: return null
-        return JdbcObjectMapper.objectMapper.readValue<T>(json)
+        return ObjectMapperProvider.objectMapper.readValue<T>(json)
     } catch (emptyResultDataAccess: EmptyResultDataAccessException) {
         return null
     }

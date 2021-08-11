@@ -29,7 +29,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
 
     private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingsstatistikkDto): BehandlingDVH {
 
-        val tekniskTid = ZonedDateTime.now(ZoneId.of("UTC")) // De andre datoene blir på UTC-format når de kommer fra ef-sak - så da gjør vi det samme for disse
+        val tekniskTid = ZonedDateTime.now(ZoneId.of("Europe/Oslo"))
         return when (behandlingstatistikk.hendelse) {
             Hendelse.MOTTATT -> {
                 BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
