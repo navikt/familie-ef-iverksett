@@ -75,7 +75,6 @@ class KonsistensavstemmingService(
         }
 
         return Utbetalingsoppdrag(
-                kodeEndring = Utbetalingsoppdrag.KodeEndring.NY, // er ikke i bruk ved konsistensavstemming
                 fagSystem = stønadType.tilKlassifisering(),
                 saksnummer = konsistensavstemmingTilkjentYtelseDto.eksternFagsakId.toString(),
                 aktoer = personIdent,
@@ -85,7 +84,6 @@ class KonsistensavstemmingService(
                     lagPeriodeFraAndel(andel = it,
                                        type = stønadType,
                                        eksternBehandlingId = eksternBehandlingId,
-                                       vedtaksdato = LocalDate.now(), // er ikke i bruk ved konsistensavstemming
                                        personIdent = personIdent)
                 }
         )

@@ -13,7 +13,7 @@ import java.time.LocalDate
 /**
  * Lager mal for generering av utbetalingsperioder med tilpasset setting av verdier basert på parametre
  *
- * @param[vedtak] for vedtakdato og opphørsdato hvis satt
+ * @param[tilkjentYtelse] for vedtakdato og opphørsdato hvis satt
  * @param[erEndringPåEksisterendePeriode] ved true vil oppdrag sette asksjonskode ENDR på linje og ikke referere bakover
  * @return mal med tilpasset lagPeriodeFraAndel
  */
@@ -43,7 +43,7 @@ data class UtbetalingsperiodeMal(val tilkjentYtelse: TilkjentYtelseMedMetaData,
 fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                        type: StønadType,
                        eksternBehandlingId: Long,
-                       vedtaksdato: LocalDate,
+                       vedtaksdato: LocalDate?,
                        personIdent: String,
                        opphørKjedeFom: LocalDate? = null,
                        erEndringPåEksisterendePeriode: Boolean = false) =
