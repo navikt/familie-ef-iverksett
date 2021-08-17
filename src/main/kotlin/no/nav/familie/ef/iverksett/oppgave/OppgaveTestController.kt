@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import no.nav.familie.kontrakter.felles.Tema
@@ -50,9 +51,14 @@ class OppgaveTestController(
 
     private fun oppgaveBeskrivelse(iverksettDto: IverksettDto): String {
         val gjeldendeVedtak = iverksettDto.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.first()
-        return "${iverksettDto.fagsak.stønadstype.toString().toLowerCase().capitalize()} er innvilget fra " +
+        return "${iverksettDto.fagsak.stønadstype.name.enumToReadable()} er innvilget fra " +
                 "${gjeldendeVedtak.fraOgMed} - ${gjeldendeVedtak.tilOgMed}. " +
                 "Vedtaket er registrert med følgende aktivitetsplikt: " +
-                gjeldendeVedtak.aktivitet.name.replace("_", " ").toLowerCase().capitalize() + ". Saken ligger i ny løsning."
+                gjeldendeVedtak.aktivitet.name.enumToReadable() +
+                ". Med periodetype ${gjeldendeVedtak.periodeType.name.enumToReadable()} Saken ligger i ny løsning."
+    }
+
+    fun String.enumToReadable(): String {
+        return this.replace("_", " ").toLowerCase().capitalize()
     }
 }

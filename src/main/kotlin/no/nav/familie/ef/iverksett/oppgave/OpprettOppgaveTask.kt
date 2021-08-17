@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
+import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.felles.Behandlingstema
@@ -12,6 +13,7 @@ import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -19,11 +21,16 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-@TaskStepBeskrivelse(taskStepType = OpprettOppgaveTask.TYPE,
-    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad")
-class OpprettOppgaveTask(val oppgaveClient: OppgaveClient,
-                         val iverksettingRepository: IverksettingRepository,
-                         val familieIntegrasjonerClient: FamilieIntegrasjonerClient): AsyncTaskStep {
+@TaskStepBeskrivelse(
+    taskStepType = OpprettOppgaveTask.TYPE,
+    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
+)
+class OpprettOppgaveTask(
+    val oppgaveClient: OppgaveClient,
+    val iverksettingRepository: IverksettingRepository,
+    val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+    val taskRepository: TaskRepository
+) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
@@ -46,7 +53,7 @@ class OpprettOppgaveTask(val oppgaveClient: OppgaveClient,
     }
 
     override fun onCompletion(task: Task) {
-        //taskRepository.save(task.opprettNestePubliseringTask())
+        taskRepository.save(task.opprettNestePubliseringTask())
     }
 
     private fun lagFristForOppgave(): LocalDate {
@@ -75,14 +82,18 @@ class OpprettOppgaveTask(val oppgaveClient: OppgaveClient,
 
     private fun oppgaveBeskrivelse(iverksett: Iverksett): String {
         val gjeldendeVedtak = iverksett.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.first()
-        return "${iverksett.fagsak.stønadstype.toString().toLowerCase().capitalize()} er innvilget fra " +
+        return "${iverksett.fagsak.stønadstype.name.enumToReadable()} er innvilget fra " +
                 "${gjeldendeVedtak.fraOgMed} - ${gjeldendeVedtak.tilOgMed}. " +
                 "Vedtaket er registrert med følgende aktivitetsplikt: " +
-                gjeldendeVedtak.aktivitet.name.replace("_", " ").toLowerCase().capitalize() + ". Saken ligger i ny løsning."
+                gjeldendeVedtak.aktivitet.name.enumToReadable() +
+                ". Med periodetype ${gjeldendeVedtak.periodeType.name.enumToReadable()} Saken ligger i ny løsning."
     }
 
     companion object {
         const val TYPE = "sendPerioderTilInfotrygd"
     }
 
+    fun String.enumToReadable(): String {
+        return this.replace("_", " ").toLowerCase().capitalize()
+    }
 }
