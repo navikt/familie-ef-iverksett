@@ -28,9 +28,10 @@ class OppgaveTestController(
 ) {
 
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun oppreettOppgave(@RequestBody data: IverksettDto) {
+    fun opprettOppgave(@RequestBody data: IverksettDto) {
         val iverksett = data.toDomain()
         val enhetsnummer = familieIntegrasjonerClient.hentNavEnhet(iverksett.søker.personIdent)
+
         val opprettOppgaveRequest =
             OpprettOppgaveRequest(
                 ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
@@ -38,12 +39,20 @@ class OppgaveTestController(
                 tema = Tema.ENF,
                 oppgavetype = Oppgavetype.VurderHenvendelse,
                 fristFerdigstillelse = LocalDate.now(),
-                beskrivelse = "Saken ligger i ny løsning",
+                beskrivelse = oppgaveBeskrivelse(data),
                 enhetsnummer = enhetsnummer?.enhetId,
                 behandlingstema = Behandlingstema.fromValue(iverksett.fagsak.stønadstype.name.toLowerCase().capitalize()).value,
                 tilordnetRessurs = null,
                 behandlesAvApplikasjon = "familie-ef-sak"
             )
         oppgaveClient.opprettOppgave(opprettOppgaveRequest)
+    }
+
+    private fun oppgaveBeskrivelse(iverksettDto: IverksettDto): String {
+        val gjeldendeVedtak = iverksettDto.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.first()
+        return "${iverksettDto.fagsak.stønadstype} er innvilget fra ${gjeldendeVedtak.fraOgMed} - ${gjeldendeVedtak.tilOgMed}. " +
+                "vedtaket er registrert med følgende aktivitetsplikt: " +
+                gjeldendeVedtak.aktivitet.name.replace("_", " ").toLowerCase().capitalize() +
+                ". Saken ligger i ny løsning."
     }
 }
