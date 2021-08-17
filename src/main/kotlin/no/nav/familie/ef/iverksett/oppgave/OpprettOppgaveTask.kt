@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.oppgave.IdentGruppe
@@ -11,7 +12,6 @@ import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -35,7 +35,7 @@ class OpprettOppgaveTask(val oppgaveClient: OppgaveClient,
                 tema = Tema.ENF,
                 oppgavetype = Oppgavetype.VurderHenvendelse,
                 fristFerdigstillelse = lagFristForOppgave(),
-                beskrivelse = "Saken ligger i ny løsning",
+                beskrivelse = oppgaveBeskrivelse(iverksett),
                 enhetsnummer = enhetsnummer?.enhetId,
                 behandlingstema = Behandlingstema.fromValue(iverksett.fagsak.stønadstype.name.toLowerCase().capitalize()).value,
                 tilordnetRessurs = null,
@@ -71,6 +71,14 @@ class OpprettOppgaveTask(val oppgaveClient: OppgaveClient,
         } else {
             gjeldendeTid.plusDays(1).toLocalDate()
         }
+    }
+
+    private fun oppgaveBeskrivelse(iverksett: Iverksett): String {
+        val gjeldendeVedtak = iverksett.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.first()
+        return "${iverksett.fagsak.stønadstype.toString().toLowerCase().capitalize()} er innvilget fra " +
+                "${gjeldendeVedtak.fraOgMed} - ${gjeldendeVedtak.tilOgMed}. " +
+                "Vedtaket er registrert med følgende aktivitetsplikt: " +
+                gjeldendeVedtak.aktivitet.name.replace("_", " ").toLowerCase().capitalize() + ". Saken ligger i ny løsning."
     }
 
     companion object {

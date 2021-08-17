@@ -50,9 +50,9 @@ class OppgaveTestController(
 
     private fun oppgaveBeskrivelse(iverksettDto: IverksettDto): String {
         val gjeldendeVedtak = iverksettDto.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.first()
-        return "${iverksettDto.fagsak.stønadstype} er innvilget fra ${gjeldendeVedtak.fraOgMed} - ${gjeldendeVedtak.tilOgMed}. " +
-                "vedtaket er registrert med følgende aktivitetsplikt: " +
-                gjeldendeVedtak.aktivitet.name.replace("_", " ").toLowerCase().capitalize() +
-                ". Saken ligger i ny løsning."
+        return "${iverksettDto.fagsak.stønadstype.toString().toLowerCase().capitalize()} er innvilget fra " +
+                "${gjeldendeVedtak.fraOgMed} - ${gjeldendeVedtak.tilOgMed}. " +
+                "Vedtaket er registrert med følgende aktivitetsplikt: " +
+                gjeldendeVedtak.aktivitet.name.replace("_", " ").toLowerCase().capitalize() + ". Saken ligger i ny løsning."
     }
 }
