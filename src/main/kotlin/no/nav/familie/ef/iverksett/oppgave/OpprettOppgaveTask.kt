@@ -90,7 +90,7 @@ class OpprettOppgaveTask(
     }
 
     companion object {
-        const val TYPE = "sendPerioderTilInfotrygd"
+        const val TYPE = "opprettOppgave"
     }
 
     fun String.enumToReadable(): String {
