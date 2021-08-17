@@ -55,7 +55,7 @@ class OppgaveTestController(
                 "${gjeldendeVedtak.fraOgMed} - ${gjeldendeVedtak.tilOgMed}. " +
                 "Vedtaket er registrert med følgende aktivitetsplikt: " +
                 gjeldendeVedtak.aktivitet.name.enumToReadable() +
-                ". Med periodetype ${gjeldendeVedtak.periodeType.name.enumToReadable()} Saken ligger i ny løsning."
+                ". Med periodetype ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
     }
 
     fun String.enumToReadable(): String {
