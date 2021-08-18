@@ -23,7 +23,7 @@ internal class VedtakstatistikkTaskTest {
     val vedtakstatistikkService = mockk<VedtakstatistikkService>()
     val tilstandRepository = mockk<TilstandRepository>()
     val vedtakstatistikkTask =
-            VedtakstatistikkTask(iverksettingRepository, mockFeatureToggleService(), vedtakstatistikkService, tilstandRepository)
+            VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService, tilstandRepository)
     val behandlingId = UUID.randomUUID()
 
     @Test
