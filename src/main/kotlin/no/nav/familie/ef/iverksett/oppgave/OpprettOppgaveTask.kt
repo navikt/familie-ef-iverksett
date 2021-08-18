@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Service
@@ -81,12 +82,11 @@ class OpprettOppgaveTask(
     }
 
     private fun oppgaveBeskrivelse(iverksett: Iverksett): String {
-        val gjeldendeVedtak = iverksett.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.first()
+        val gjeldendeVedtak = iverksett.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.last()
         return "${iverksett.fagsak.stønadstype.name.enumToReadable()} er innvilget fra " +
-                "${gjeldendeVedtak.fraOgMed} - ${gjeldendeVedtak.tilOgMed}. " +
-                "Vedtaket er registrert med følgende aktivitetsplikt: " +
-                gjeldendeVedtak.aktivitet.name.enumToReadable() +
-                ". Med periodetype ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
+                "${gjeldendeVedtak.fraOgMed.toReadable()} - ${gjeldendeVedtak.tilOgMed.toReadable()}. " +
+                "Aktivitetsplikt: ${gjeldendeVedtak.aktivitet.name.enumToReadable()}" +
+                ". Periodetype: ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
     }
 
     companion object {
@@ -96,4 +96,9 @@ class OpprettOppgaveTask(
     fun String.enumToReadable(): String {
         return this.replace("_", " ").toLowerCase().capitalize()
     }
+
+    fun LocalDate.toReadable(): String {
+        return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+    }
+
 }
