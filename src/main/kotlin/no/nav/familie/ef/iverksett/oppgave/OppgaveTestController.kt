@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @RestController
 @RequestMapping(path = ["/api/oppgave/opprett"])
@@ -50,15 +51,17 @@ class OppgaveTestController(
     }
 
     private fun oppgaveBeskrivelse(iverksettDto: IverksettDto): String {
-        val gjeldendeVedtak = iverksettDto.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.first()
+        val gjeldendeVedtak = iverksettDto.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.last()
         return "${iverksettDto.fagsak.stønadstype.name.enumToReadable()} er innvilget fra " +
-                "${gjeldendeVedtak.fraOgMed} - ${gjeldendeVedtak.tilOgMed}. " +
-                "Vedtaket er registrert med følgende aktivitetsplikt: " +
-                gjeldendeVedtak.aktivitet.name.enumToReadable() +
-                ". Med periodetype ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
+                "${gjeldendeVedtak.fraOgMed.toReadable()} - ${gjeldendeVedtak.tilOgMed.toReadable()}. " +
+                "Aktivitetsplikt: ${gjeldendeVedtak.aktivitet.name.enumToReadable()}" +
+                ". Periodetype: ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
     }
 
     fun String.enumToReadable(): String {
         return this.replace("_", " ").toLowerCase().capitalize()
+    }
+    fun LocalDate.toReadable(): String {
+        return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
     }
 }
