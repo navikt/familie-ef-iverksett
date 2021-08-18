@@ -23,10 +23,10 @@ import java.util.*
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = OpprettOppgaveTask.TYPE,
+    taskStepType = OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE,
     beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
 )
-class OpprettOppgaveTask(
+class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
     val oppgaveClient: OppgaveClient,
     val iverksettingRepository: IverksettingRepository,
     val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
@@ -90,7 +90,7 @@ class OpprettOppgaveTask(
     }
 
     companion object {
-        const val TYPE = "opprettOppgave"
+        const val TYPE = "opprettOppfølgingOppgaveForInnvilgetOvergangsstønad"
     }
 
     fun String.enumToReadable(): String {
