@@ -30,12 +30,26 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/aivenapp-infotrygd-goldengate-dev.yaml
           PRINT_PAYLOAD: true
+      - name: deploy infotrygd aivenapp to prod
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/aivenapp-infotrygd-goldengate-prod.yaml
+          PRINT_PAYLOAD: true
       - name: deploy infotrygd kafka-topic to dev
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/topic-infotrygd-dev.yaml
+          PRINT_PAYLOAD: true
+      - name: deploy infotrygd kafka-topic to prod
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/topic-infotrygd-prod.yaml
           PRINT_PAYLOAD: true
       - name: deploy to prod
         uses: nais/deploy/actions/deploy@v1
