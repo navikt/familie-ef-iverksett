@@ -6,14 +6,14 @@ metadata:
   labels:
     team: teamfamilie
 spec:
-  pool: nav-dev
+  pool: nav-prod
   config:
     cleanupPolicy: delete
     minimumInSyncReplicas: 1
     partitions: 1
     replication: 3
     retentionBytes: -1
-    retentionHours: 720
+    retentionHours: -1
   acl:
     - team: teamfamilie
       application: familie-ef-iverksett
