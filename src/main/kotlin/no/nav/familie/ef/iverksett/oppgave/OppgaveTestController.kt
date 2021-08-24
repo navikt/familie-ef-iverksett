@@ -2,7 +2,6 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import no.nav.familie.kontrakter.felles.Tema
@@ -32,7 +31,7 @@ class OppgaveTestController(
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun opprettOppgave(@RequestBody data: IverksettDto) {
         val iverksett = data.toDomain()
-        val enhetsnummer = familieIntegrasjonerClient.hentNavEnhet(iverksett.søker.personIdent)
+        val enhetsnummer = familieIntegrasjonerClient.hentNavEnhetForOppfølging(iverksett.søker.personIdent)
 
         val opprettOppgaveRequest =
             OpprettOppgaveRequest(

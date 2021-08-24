@@ -35,14 +35,14 @@ class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
 
     override fun doTask(task: Task) {
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
-        val enhetsnummer = familieIntegrasjonerClient.hentNavEnhet(iverksett.søker.personIdent)
+        val enhetsnummer = familieIntegrasjonerClient.hentNavEnhetForOppfølging(iverksett.søker.personIdent)
         val opprettOppgaveRequest =
             OpprettOppgaveRequest(
                 ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
                 saksId = iverksett.fagsak.eksternId.toString(),
                 tema = Tema.ENF,
                 oppgavetype = Oppgavetype.VurderHenvendelse,
-                fristFerdigstillelse = lagFristForOppgave(),
+                fristFerdigstillelse = LocalDate.now(),
                 beskrivelse = oppgaveBeskrivelse(iverksett),
                 enhetsnummer = enhetsnummer?.enhetId,
                 behandlingstema = Behandlingstema.fromValue(iverksett.fagsak.stønadstype.name.toLowerCase().capitalize()).value,
@@ -55,30 +55,6 @@ class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
 
     override fun onCompletion(task: Task) {
         taskRepository.save(task.opprettNestePubliseringTask())
-    }
-
-    private fun lagFristForOppgave(): LocalDate {
-        val gjeldendeTid = LocalDateTime.now()
-        val frist = when (gjeldendeTid.dayOfWeek) {
-            DayOfWeek.FRIDAY -> fristBasertPåKlokkeslett(gjeldendeTid.plusDays(2))
-            DayOfWeek.SATURDAY -> fristBasertPåKlokkeslett(gjeldendeTid.plusDays(2).withHour(8))
-            DayOfWeek.SUNDAY -> fristBasertPåKlokkeslett(gjeldendeTid.plusDays(1).withHour(8))
-            else -> fristBasertPåKlokkeslett(gjeldendeTid)
-        }
-
-        return when (frist.dayOfWeek) {
-            DayOfWeek.SATURDAY -> frist.plusDays(2)
-            DayOfWeek.SUNDAY -> frist.plusDays(1)
-            else -> frist
-        }
-    }
-
-    private fun fristBasertPåKlokkeslett(gjeldendeTid: LocalDateTime): LocalDate {
-        return if (gjeldendeTid.hour >= 12) {
-            return gjeldendeTid.plusDays(2).toLocalDate()
-        } else {
-            gjeldendeTid.plusDays(1).toLocalDate()
-        }
     }
 
     private fun oppgaveBeskrivelse(iverksett: Iverksett): String {

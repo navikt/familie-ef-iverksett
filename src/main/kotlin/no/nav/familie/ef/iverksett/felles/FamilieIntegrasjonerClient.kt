@@ -43,13 +43,13 @@ class FamilieIntegrasjonerClient(
         return response.getDataOrThrow()["aktørId"].toString()
     }
 
-    fun hentNavEnhet(personident: String): Enhet? {
+    fun hentNavEnhetForOppfølging(personident: String): Enhet? {
         val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUri, Ident(personident))
         return response.getDataOrThrow().firstOrNull()
     }
 
     companion object {
-        const val arbeidsfordelingTema = "OPP"
+        const val arbeidsfordelingTema = "OPP" //Oppfølging - lokalenhet
         const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet/$arbeidsfordelingTema"
         const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
