@@ -39,7 +39,7 @@ class OppgaveTestController(
                 saksId = iverksett.fagsak.eksternId.toString(),
                 tema = Tema.ENF,
                 oppgavetype = Oppgavetype.VurderHenvendelse,
-                fristFerdigstillelse = LocalDate.now(),
+                fristFerdigstillelse = fristFerdigstillelse(),
                 beskrivelse = oppgaveBeskrivelse(data),
                 enhetsnummer = enhetsnummer?.enhetId,
                 behandlingstema = Behandlingstema.fromValue(iverksett.fagsak.stønadstype.name.toLowerCase().capitalize()).value,
