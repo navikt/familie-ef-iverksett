@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
+import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.VentePåStatusFraØkonomiTask
@@ -48,7 +49,11 @@ class TaskTypeTest {
         assertThat(sendFattetVedtakTilArenaTask.type).isEqualTo(SendFattetVedtakTilArenaTask.TYPE)
         assertThat(sendFattetVedtakTilArenaTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
-        val vedtaksstatistikkTask = sendFattetVedtakTilArenaTask.opprettNestePubliseringTask()
+        val opprettOppgaveTask = sendFattetVedtakTilArenaTask.opprettNestePubliseringTask()
+        assertThat(opprettOppgaveTask.type).isEqualTo(OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE)
+        assertThat(opprettOppgaveTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+
+        val vedtaksstatistikkTask = opprettOppgaveTask.opprettNestePubliseringTask()
         assertThat(vedtaksstatistikkTask.type).isEqualTo(VedtakstatistikkTask.TYPE)
         assertThat(vedtaksstatistikkTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
     }
