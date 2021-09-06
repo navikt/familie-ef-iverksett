@@ -23,7 +23,8 @@ fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fort
                                     opprettetEnhet = "opprettetEnhet",
                                     strengtFortroligAdresse = fortrolig,
                                     stønadstype = StønadType.OVERGANGSSTØNAD,
-                                    behandlingstype = BehandlingType.FØRSTEGANGSBEHANDLING)
+                                    behandlingstype = BehandlingType.FØRSTEGANGSBEHANDLING,
+                                    relatertBehandlingId = UUID.randomUUID())
 }
 
 fun opprettBehandlingDVH(uuid: UUID, hendelse: Hendelse): BehandlingDVH {
