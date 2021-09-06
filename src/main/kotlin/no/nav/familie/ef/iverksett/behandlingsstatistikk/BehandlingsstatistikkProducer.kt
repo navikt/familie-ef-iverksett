@@ -21,7 +21,7 @@ class BehandlingsstatistikkProducer(private val kafkaProducerService: KafkaProdu
         secureLogger.debug("Sending to Kafka topic: {}\nBehandlingstatistikk: {}", topic, behandlingDvh)
         runCatching {
             kafkaProducerService.send(topic, behandlingDvh.behandlingId, behandlingDvh.toJson())
-            logger.info("Behandlingstatistikk av type ".plus(behandlingDvh.behandlingType).plus(" sent to Kafka"))
+            logger.info("Behandlingstatistikk av type ".plus(behandlingDvh.behandlingStatus).plus(" sent to Kafka"))
             secureLogger.info("$behandlingDvh sent to Kafka.")
         }.onFailure {
             val errorMessage = "Could not send behandling to Kafka. Check secure logs for more information."
