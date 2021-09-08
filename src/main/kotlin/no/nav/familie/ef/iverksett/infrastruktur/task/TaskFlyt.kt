@@ -14,12 +14,12 @@ import java.time.LocalDateTime
 
 class TaskType(
         val type: String,
-        val triggerTidAntallMinutterFrem: Long? = null
+        val triggerTidAntallSekunderFrem: Long? = null
 )
 
 fun hovedflyt() = listOf(
         TaskType(IverksettMotOppdragTask.TYPE),
-        TaskType(VentePåStatusFraØkonomiTask.TYPE, 3),
+        TaskType(VentePåStatusFraØkonomiTask.TYPE, 20),
         TaskType(JournalførVedtaksbrevTask.TYPE),
         TaskType(DistribuerVedtaksbrevTask.TYPE),
 )
@@ -47,10 +47,10 @@ fun Task.opprettNestePubliseringTask(): Task {
 }
 
 private fun Task.lagTask(nesteTask: TaskType): Task {
-    return if (nesteTask.triggerTidAntallMinutterFrem != null) {
+    return if (nesteTask.triggerTidAntallSekunderFrem != null) {
         Task(type = nesteTask.type,
              payload = this.payload,
-             properties = this.metadata).copy(triggerTid = LocalDateTime.now().plusMinutes(nesteTask.triggerTidAntallMinutterFrem))
+             properties = this.metadata).copy(triggerTid = LocalDateTime.now().plusSeconds(nesteTask.triggerTidAntallSekunderFrem))
 
     } else {
         Task(type = nesteTask.type,
