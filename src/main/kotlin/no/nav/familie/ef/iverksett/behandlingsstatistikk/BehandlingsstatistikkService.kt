@@ -42,7 +42,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                               opprettetAv = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId),
                               saksnummer = behandlingstatistikk.eksternFagsakId,
-                              mottattTid = behandlingstatistikk.søknadstidspunkt,
+                              mottattTid = behandlingstatistikk.henvendelseTidspunkt,
                               saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
                                                                     behandlingstatistikk.gjeldendeSaksbehandlerId),
                               opprettetEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
@@ -54,7 +54,8 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                               behandlingType = behandlingstatistikk.behandlingstype.name,
                               sakYtelse = behandlingstatistikk.stønadstype.name,
                               totrinnsbehandling = true,
-                              sakUtland = "Nasjonal"
+                              sakUtland = "Nasjonal",
+                              relatertBehandlingId = behandlingstatistikk.relatertBehandlingId.toString()
 
                 )
 
