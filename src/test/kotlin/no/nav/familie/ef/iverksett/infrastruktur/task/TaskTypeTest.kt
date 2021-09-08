@@ -26,15 +26,15 @@ class TaskTypeTest {
         val ventePåStatusFraØkonomiTask = iverksettMotOppdragTask.opprettNesteTask()
 
         assertThat(ventePåStatusFraØkonomiTask.type).isEqualTo(VentePåStatusFraØkonomiTask.TYPE)
-        assertThat(ventePåStatusFraØkonomiTask.triggerTid).isAfter(LocalDateTime.now().plusMinutes(2))
+        assertThat(ventePåStatusFraØkonomiTask.triggerTid).isAfter(LocalDateTime.now().plusSeconds(2))
 
         val journalførVedtaksbrevTask = ventePåStatusFraØkonomiTask.opprettNesteTask()
         assertThat(journalførVedtaksbrevTask.type).isEqualTo(JournalførVedtaksbrevTask.TYPE)
-        assertThat(journalførVedtaksbrevTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+        assertThat(journalførVedtaksbrevTask.triggerTid).isBefore(LocalDateTime.now().plusSeconds(1))
 
         val distribuerVedtaksbrevTask = journalførVedtaksbrevTask.opprettNesteTask()
         assertThat(distribuerVedtaksbrevTask.type).isEqualTo(DistribuerVedtaksbrevTask.TYPE)
-        assertThat(distribuerVedtaksbrevTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+        assertThat(distribuerVedtaksbrevTask.triggerTid).isBefore(LocalDateTime.now().plusSeconds(1))
     }
 
     @Test

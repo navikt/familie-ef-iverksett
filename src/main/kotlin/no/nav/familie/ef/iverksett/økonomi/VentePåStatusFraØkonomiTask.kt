@@ -16,7 +16,7 @@ import java.util.UUID
         taskStepType = VentePåStatusFraØkonomiTask.TYPE,
         maxAntallFeil = 50,
         settTilManuellOppfølgning = true,
-        triggerTidVedFeilISekunder = 5 * 60L,
+        triggerTidVedFeilISekunder = 30L,
         beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
 )
 
