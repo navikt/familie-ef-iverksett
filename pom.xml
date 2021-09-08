@@ -18,7 +18,7 @@
         <kotlin.version>1.4.31</kotlin.version>
         <springfox.version>3.0.0</springfox.version>
         <swagger.version>2.9.2</swagger.version>
-        <felles.version>1.20210805123618_da92f98</felles.version>
+        <felles.version>1.20210908141943_5f1405d</felles.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <mockk.version>1.11.0</mockk.version>
         <revision>1.0</revision>
