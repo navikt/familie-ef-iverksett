@@ -3,7 +3,11 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.http.client.AbstractPingableRestClient
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.getDataOrThrow
-import no.nav.familie.kontrakter.felles.oppdrag.*
+import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
+import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingUtbetalingsoppdrag
+import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
+import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -28,14 +32,16 @@ class OppdragClient(@Value("\${FAMILIE_OPPDRAG_API_URL}")
     private val konsistensavstemmingUri: URI =
             UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/konsistensavstemming").build().toUri()
 
-    private val postSimuleringUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/simulering/v1").build().toUri()
+    private val postSimuleringUri: URI =
+            UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/simulering/v1").build().toUri()
 
     fun iverksettOppdrag(utbetalingsoppdrag: Utbetalingsoppdrag): String {
         return postForEntity<Ressurs<String>>(postOppdragUri, utbetalingsoppdrag).getDataOrThrow()
     }
 
-    fun hentStatus(oppdragId: OppdragId): OppdragStatus {
-        return postForEntity<Ressurs<OppdragStatus>>(getStatusUri, oppdragId).getDataOrThrow()
+    fun hentStatus(oppdragId: OppdragId): OppdragStatusMedMelding {
+        val ressurs = postForEntity<Ressurs<OppdragStatus>>(getStatusUri, oppdragId)
+        return OppdragStatusMedMelding(ressurs.getDataOrThrow(), ressurs.melding)
     }
 
     fun grensesnittavstemming(grensesnittavstemmingRequest: GrensesnittavstemmingRequest): String {

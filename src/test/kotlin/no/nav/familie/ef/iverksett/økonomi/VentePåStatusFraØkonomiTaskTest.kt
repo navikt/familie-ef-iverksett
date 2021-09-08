@@ -37,7 +37,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
     internal fun `kjør doTask for VentePåStatusFraØkonomiTaskhvis, forvent ingen unntak`() {
         val oppdragResultatSlot = slot<OppdragResultat>()
 
-        every { oppdragClient.hentStatus(any()) } returns OppdragStatus.KVITTERT_OK
+        every { oppdragClient.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
         every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId).toDomain()
         every { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) } returns Unit
 

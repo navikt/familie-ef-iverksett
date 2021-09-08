@@ -99,15 +99,15 @@ class IverksettingService(val taskRepository: TaskRepository,
                 behandlingsId = eksternBehandlingId.toString()
         )
 
-        val oppdragstatus = oppdragClient.hentStatus(oppdragId)
+        val (status, melding) = oppdragClient.hentStatus(oppdragId)
 
-        if (oppdragstatus != OppdragStatus.KVITTERT_OK) {
-            throw TaskExceptionUtenStackTrace("Status fra oppdrag er ikke ok, status=$oppdragstatus")
+        if (status != OppdragStatus.KVITTERT_OK) {
+            throw TaskExceptionUtenStackTrace("Status fra oppdrag er ikke ok, status=$status melding=$melding")
         }
 
         tilstandRepository.oppdaterOppdragResultat(
                 behandlingId = behandlingId,
-                OppdragResultat(oppdragStatus = oppdragstatus)
+                OppdragResultat(oppdragStatus = status)
         )
     }
 }
