@@ -80,14 +80,32 @@ object ØkonomiUtils {
         val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
-        val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
+        val opphørsdato = finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
 
         val sisteForrigeAndel = andelerForrigeTilkjentYtelse.lastOrNull()
-        return if (sisteForrigeAndel == null || førsteEndring == null || erNyPeriode(forrigeMaksDato, førsteEndring)) {
+        return if (sisteForrigeAndel == null || opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
             null
         } else {
-            Pair(sisteForrigeAndel, førsteEndring)
+            Pair(sisteForrigeAndel, opphørsdato)
         }
+    }
+
+    /**
+     * Skal finne opphørsdato til utbetalingsoppdraget
+     *
+     * Hvis første andelen i nye andeler er før første andelen i forrige andeler så skal første datoet i forrige andeler returneres
+     *
+     * Hvis forrige kjede inneholder 2 andeler og den nye kjeden endrer i den andre andelen,
+     * så skal opphørsdatoet settes til startdato for andre andelen i forrige kjede
+     */
+    private fun finnOpphørsdato(forrigeAndeler: Set<AndelTilkjentYtelse>,
+                                oppdaterteAndeler: Set<AndelTilkjentYtelse>): LocalDate? {
+        val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
+        val førsteDatoIForrigePeriode = forrigeAndeler.minByOrNull { it.fraOgMed }?.fraOgMed
+        if (førsteEndring != null && førsteDatoIForrigePeriode != null && førsteEndring.isBefore(førsteDatoIForrigePeriode)) {
+            return førsteDatoIForrigePeriode
+        }
+        return førsteEndring
     }
 
     private fun finnDatoForFørsteEndredeAndel(andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
