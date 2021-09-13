@@ -33,6 +33,11 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
+    fun `Har to perioder og får en endring som har startdato før første perioden`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_perioder_får_ny_periode_før_første_periode.csv"))
+    }
+
+    @Test
     fun `Har to perioder og får en endring for start og sluttdatot i andre perioden`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_perioder_får_en_endring_i_andre_perioden.csv"))
     }
