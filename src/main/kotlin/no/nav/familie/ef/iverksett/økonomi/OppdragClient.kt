@@ -52,8 +52,8 @@ class OppdragClient(@Value("\${FAMILIE_OPPDRAG_API_URL}")
         return postForEntity<Ressurs<String>>(konsistensavstemmingUri, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
     }
 
-    fun hentSimulering(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat {
-        return postForEntity<Ressurs<DetaljertSimuleringResultat>>(postSimuleringUri, utbetalingsoppdrag).getDataOrThrow()
+    fun hentSimulering(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat? {
+        return postForEntity<Ressurs<DetaljertSimuleringResultat?>>(postSimuleringUri, utbetalingsoppdrag).getDataOrThrow()
     }
 
     override val pingUri = postOppdragUri

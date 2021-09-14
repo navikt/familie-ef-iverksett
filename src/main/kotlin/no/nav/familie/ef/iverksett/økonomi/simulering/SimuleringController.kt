@@ -21,8 +21,6 @@ class SimuleringController(
 
     @PostMapping
     fun hentSimulering(@RequestBody simuleringDto: SimuleringDto): Ressurs<DetaljertSimuleringResultat> {
-        val detaljertSimuleringResultat =
-                simuleringService.hentSimulering(simuleringDto.toDomain())
-        return Ressurs.success(detaljertSimuleringResultat)
+        return Ressurs.success(simuleringService.hentSimulering(simuleringDto.toDomain()))
     }
 }

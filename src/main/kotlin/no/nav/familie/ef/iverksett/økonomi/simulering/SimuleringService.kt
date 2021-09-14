@@ -17,18 +17,18 @@ class SimuleringService(
         try {
 
             val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
-                tilstandRepository.hentTilkjentYtelse(simulering.forrigeBehandlingId)
+                tilstandRepository.hentTilkjentYtelse(it)
             }
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse?.let { it } ?: null
+                    forrigeTilkjentYtelse
             )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
                                      ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
 
-            return oppdragKlient.hentSimulering(utbetalingsoppdrag)
+            return oppdragKlient.hentSimulering(utbetalingsoppdrag) ?: DetaljertSimuleringResultat(emptyList())
         } catch (feil: Throwable) {
             throw Exception("Henting av simuleringsresultat feilet", feil)
         }
