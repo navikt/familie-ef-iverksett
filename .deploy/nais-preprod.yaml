@@ -8,8 +8,8 @@ metadata:
 spec:
   image: {{ image }}
   ingresses:
-      - https://familie-ef-iverksett.dev.intern.nav.no
-  livenstatusess:
+    - https://familie-ef-iverksett.dev.intern.nav.no
+  liveness:
     path: /internal/isAlive
     initialDelay: 30
     failureThreshold: 10
