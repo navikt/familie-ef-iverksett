@@ -9,6 +9,7 @@ import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokdist.DistribuerJournalpostRequest
 import no.nav.familie.kontrakter.felles.getDataOrThrow
+import no.nav.familie.log.NavHttpHeaders
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -32,10 +33,11 @@ class JournalpostClient(
     private val distribuerDokumentUri: URI =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/dist/v1").build().toUri()
 
-    fun arkiverDokument(arkiverDokumentRequest: ArkiverDokumentRequest): ArkiverDokumentResponse {
+    fun arkiverDokument(arkiverDokumentRequest: ArkiverDokumentRequest, saksbehandler: String?): ArkiverDokumentResponse {
         return postForEntity<Ressurs<ArkiverDokumentResponse>>(
                 URI.create("${dokarkivUri}/v4/"),
-                arkiverDokumentRequest
+                arkiverDokumentRequest,
+                headerMedSaksbehandler(saksbehandler)
         ).data
                ?: error("Kunne ikke arkivere dokument med fagsakid ${arkiverDokumentRequest.fagsakId}")
     }
@@ -50,6 +52,14 @@ class JournalpostClient(
         return postForEntity<Ressurs<String>>(distribuerDokumentUri,
                                               journalpostRequest,
                                               HttpHeaders().medContentTypeJsonUTF8()).getDataOrThrow()
+    }
+
+    private fun headerMedSaksbehandler(saksbehandler: String?): HttpHeaders {
+        val httpHeaders = HttpHeaders()
+        if (saksbehandler != null) {
+            httpHeaders.set(NavHttpHeaders.NAV_USER_ID.asString(), saksbehandler)
+        }
+        return httpHeaders
     }
 
 

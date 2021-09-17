@@ -40,7 +40,7 @@ internal class JournalførVedtaksbrevTaskTest {
         val journalpostResultatSlot = slot<JournalpostResultat>()
 
 
-        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot)) } returns ArkiverDokumentResponse(
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
                 journalpostId,
                 true)
         every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
@@ -49,7 +49,7 @@ internal class JournalførVedtaksbrevTaskTest {
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
-        verify(exactly = 1) { journalpostClient.arkiverDokument(any()) }
+        verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
         verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any()) }
         assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
