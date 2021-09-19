@@ -15,7 +15,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <kotlin.version>1.5.30</kotlin.version>
+        <kotlin.version>1.5.31</kotlin.version>
         <springfox.version>3.0.0</springfox.version>
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20210910085431_c48d7a9</felles.version>
