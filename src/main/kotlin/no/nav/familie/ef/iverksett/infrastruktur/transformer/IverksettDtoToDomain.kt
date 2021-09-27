@@ -68,7 +68,7 @@ fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
                            opphørÅrsak = this.opphørÅrsak,
                            saksbehandlerId = this.saksbehandlerId,
                            beslutterId = this.beslutterId,
-                           tilkjentYtelse = this.tilkjentYtelse.toDomain(),
+                           tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
                            vedtaksperioder = this.vedtaksperioder.map { it.toDomain() })
 }
 

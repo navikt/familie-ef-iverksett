@@ -21,7 +21,6 @@ class VedtakstatistikkTask(val iverksettingRepository: IverksettingRepository,
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
         val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingId)
-                             ?: error("Kunne ikke finne tilkjent ytelse for behandlingId = ${behandlingId}")
         vedtakstatistikkService.sendTilKafka(iverksett, tilkjentYtelse)
     }
 

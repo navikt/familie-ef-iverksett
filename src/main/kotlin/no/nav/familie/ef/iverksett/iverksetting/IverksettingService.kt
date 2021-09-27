@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
+import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
@@ -9,6 +10,7 @@ import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
@@ -37,17 +39,24 @@ class IverksettingService(val taskRepository: TaskRepository,
 
         tilstandRepository.opprettTomtResultat(iverksett.behandling.behandlingId)
 
-        val førsteHovedflytTask = Task(type = IverksettMotOppdragTask.TYPE,
-                                       payload = iverksett.behandling.behandlingId.toString(),
-                                       properties = Properties().apply {
-                                           this["personIdent"] = iverksett.søker.personIdent
-                                           this["behandlingId"] = iverksett.behandling.behandlingId.toString()
-                                           this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
-                                           this["beslutter"] = iverksett.vedtak.beslutterId
-                                       })
-
-        taskRepository.save(førsteHovedflytTask)
+        taskRepository.save(Task(type = førsteHovedflytTask(iverksett),
+                                 payload = iverksett.behandling.behandlingId.toString(),
+                                 properties = Properties().apply {
+                                     this["personIdent"] = iverksett.søker.personIdent
+                                     this["behandlingId"] = iverksett.behandling.behandlingId.toString()
+                                     this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                                     this["beslutter"] = iverksett.vedtak.beslutterId
+                                 })
+        )
     }
+
+    private fun førsteHovedflytTask(iverksett: Iverksett) = when {
+        erIverksettingUtenVedtaksperioder(iverksett) -> JournalførVedtaksbrevTask.TYPE
+        else -> IverksettMotOppdragTask.TYPE
+    }
+
+    private fun erIverksettingUtenVedtaksperioder(iverksett: Iverksett) =
+            iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT
 
     @Transactional
     fun publiserVedtak(behandlingId: UUID) {
