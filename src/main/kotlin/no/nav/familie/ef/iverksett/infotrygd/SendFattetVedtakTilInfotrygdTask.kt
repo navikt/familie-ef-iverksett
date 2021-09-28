@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.infotrygd
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -29,7 +30,9 @@ class SendFattetVedtakTilInfotrygdTask(private val infotrygdFeedClient: Infotryg
         val stønadstype = iverksett.fagsak.stønadstype
         val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
                 .map { it.personIdent }.toSet()
-        val startDato = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
+        val tilkjentYtelse: TilkjentYtelse = iverksett.vedtak.tilkjentYtelse
+                                             ?: error("Finner ikke tilkjent ytelse for behandling med id=${iverksett.behandling.behandlingId}")
+        val startDato = tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
                         ?: error("Finner ikke noen andel med fraOgMed for behandling=$behandlingId")
 
         infotrygdFeedClient.opprettVedtakHendelse(OpprettVedtakHendelseDto(personIdenter, stønadstype, startDato))

@@ -64,7 +64,7 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
             lagAndelTilkjentYtelse(1, Periodetype.MÅNED, it.first, it.second)
         }
 
-        val nyTilkjentYtelse = tilkjentYtelse.copy(andelerTilkjentYtelse = andelerTilkjentYtelse)
+        val nyTilkjentYtelse = tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelerTilkjentYtelse)
         return iverksett.copy(vedtak = vedtak.copy(tilkjentYtelse = nyTilkjentYtelse))
     }
 }

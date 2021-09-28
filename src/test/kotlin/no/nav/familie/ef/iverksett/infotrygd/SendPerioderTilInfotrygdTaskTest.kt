@@ -107,6 +107,6 @@ internal class SendPerioderTilInfotrygdTaskTest {
         val vedtak = iverksett.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
         return iverksett.copy(vedtak = vedtak.copy(tilkjentYtelse =
-                                                   tilkjentYtelse.copy(andelerTilkjentYtelse = andelTilkjentYtelse.toList())))
+                                                   tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelTilkjentYtelse.toList())))
     }
 }
