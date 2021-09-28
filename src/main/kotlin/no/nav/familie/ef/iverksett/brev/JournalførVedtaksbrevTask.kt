@@ -42,8 +42,9 @@ class JournalførVedtaksbrevTask(val iverksettingRepository: IverksettingReposit
                         forsøkFerdigstill = true,
                         hoveddokumentvarianter = listOf(dokument),
                         fagsakId = iverksett.fagsak.eksternId.toString(),
-                        journalførendeEnhet = iverksett.søker.tilhørendeEnhet
-                )
+                        journalførendeEnhet = iverksett.søker.tilhørendeEnhet,
+                ),
+                iverksett.vedtak.beslutterId
         ).journalpostId
 
         tilstandRepository.oppdaterJournalpostResultat(behandlingId = behandlingId,
