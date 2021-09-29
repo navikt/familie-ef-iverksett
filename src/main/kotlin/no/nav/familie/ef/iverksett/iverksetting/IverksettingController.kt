@@ -1,7 +1,10 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
+import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -11,7 +14,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
@@ -33,7 +35,9 @@ class IverksettingController(
             @RequestPart("data") iverksettDto: IverksettDto,
             @RequestPart("fil") fil: MultipartFile
     ) {
-        iverksettingService.startIverksetting(iverksettDto.toDomain(), opprettBrev(iverksettDto, fil))
+        val iverksett = iverksettDto.toDomain()
+        valider(iverksett)
+        iverksettingService.startIverksetting(iverksett, opprettBrev(iverksettDto, fil))
     }
 
     @GetMapping("/status/{behandlingId}")
@@ -50,6 +54,17 @@ class IverksettingController(
 
     private fun opprettBrev(iverksettDto: IverksettDto, fil: MultipartFile): Brev {
         return Brev(iverksettDto.behandling.behandlingId, fil.bytes)
+    }
+
+    private fun valider(iverksett: Iverksett) {
+        if (iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat != Vedtaksresultat.AVSLÅTT) {
+            throw ApiFeil("Kan ikke ha iverksetting uten tilkjentYtelse for vedtak med resultat=${iverksett.vedtak.vedtaksresultat}",
+                          HttpStatus.BAD_REQUEST)
+        }
+        if (iverksett.vedtak.tilkjentYtelse != null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT) {
+            throw ApiFeil("Kan ikke ha iverksetting med tilkjentYtelse for vedtak med resultat=${iverksett.vedtak.vedtaksresultat}",
+                          HttpStatus.BAD_REQUEST)
+        }
     }
 
 

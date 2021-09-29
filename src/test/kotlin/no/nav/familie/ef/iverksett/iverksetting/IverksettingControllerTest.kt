@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.http.client.MultipartBuilder
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Condition
@@ -71,6 +72,21 @@ class IverksettingControllerTest : ServerTest() {
         val tasker = taskRepository.findAll()
         assertThat(tasker.map { it.type }).doesNotContain(IverksettMotOppdragTask.TYPE)
         assertThat(tasker.map { it.type }).contains(JournalførVedtaksbrevTask.TYPE)
+    }
+
+    @Test
+    internal fun `Innvilget vedtak uten tilkjent ytelse gir 400 feil`() {
+        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
+        val iverksettJsonUtenTilkjentYtelse = iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null))
+        val request = MultipartBuilder()
+                .withJson("data", iverksettJsonUtenTilkjentYtelse)
+                .withByteArray("fil", "1", byteArrayOf(12))
+                .build()
+
+        val respons: ResponseEntity<Ressurs<Nothing>> = restTemplate.exchange(localhostUrl("/api/iverksett"),
+                                                                 HttpMethod.POST,
+                                                                 HttpEntity(request, headers))
+        assertThat(respons.statusCode.value()).isEqualTo(400)
     }
 
     @Test
