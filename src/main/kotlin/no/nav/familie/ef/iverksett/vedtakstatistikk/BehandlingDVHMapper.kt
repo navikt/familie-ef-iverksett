@@ -32,7 +32,7 @@ class BehandlingDVHMapper {
 
     companion object {
 
-        fun map(iverksett: Iverksett, tilkjentYtelse: TilkjentYtelse): BehandlingDVH {
+        fun map(iverksett: Iverksett, tilkjentYtelse: TilkjentYtelse?): BehandlingDVH {
             return BehandlingDVH(fagsakId = iverksett.fagsak.fagsakId.toString(),
                                  behandlingId = iverksett.behandling.behandlingId.toString(),
                                  relatertBehandlingId = iverksett.behandling.forrigeBehandlingId?.toString(),
@@ -45,10 +45,12 @@ class BehandlingDVHMapper {
                                  behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
                                  vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
                                  vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak.vedtaksperioder),
-                                 utbetalinger = mapTilUtbetaling(tilkjentYtelse,
-                                                                 iverksett.fagsak.stønadstype,
-                                                                 iverksett.fagsak.eksternId,
-                                                                 iverksett.søker),
+                                 utbetalinger = tilkjentYtelse?.let {
+                                     mapTilUtbetaling(it,
+                                                      iverksett.fagsak.stønadstype,
+                                                      iverksett.fagsak.eksternId,
+                                                      iverksett.søker)
+                                 } ?: emptyList(),
                                  aktivitetskrav = Aktivitetskrav(
                                          aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
                                          harSagtOppArbeidsforhold = VilkårsvurderingUtil.hentHarSagtOppEllerRedusertFraVurderinger(

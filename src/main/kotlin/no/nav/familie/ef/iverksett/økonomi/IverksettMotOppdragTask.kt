@@ -4,7 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.toMedMetadata
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -30,18 +30,18 @@ class IverksettMotOppdragTask(val iverksettingRepository: IverksettingRepository
         val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
             tilstandRepository.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=${it}")
         }
-        val utbetaling = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-                iverksett.vedtak.tilkjentYtelse.toMedMetadata(saksbehandlerId = iverksett.vedtak.saksbehandlerId,
-                                                              eksternBehandlingId = iverksett.behandling.eksternId,
-                                                              stønadType = iverksett.fagsak.stønadstype,
-                                                              eksternFagsakId = iverksett.fagsak.eksternId,
-                                                              personIdent = iverksett.søker.personIdent,
-                                                              behandlingId = iverksett.behandling.behandlingId,
-                                                              vedtaksdato = iverksett.vedtak.vedtaksdato
+        val nyTilkjentYtelseMedMetaData =
+                iverksett.vedtak.tilkjentYtelse?.toMedMetadata(saksbehandlerId = iverksett.vedtak.saksbehandlerId,
+                                                               eksternBehandlingId = iverksett.behandling.eksternId,
+                                                               stønadType = iverksett.fagsak.stønadstype,
+                                                               eksternFagsakId = iverksett.fagsak.eksternId,
+                                                               personIdent = iverksett.søker.personIdent,
+                                                               behandlingId = iverksett.behandling.behandlingId,
+                                                               vedtaksdato = iverksett.vedtak.vedtaksdato)
+                ?: error("Mangler tilkjent ytelse på vedtaket")
 
-                ),
-                forrigeTilkjentYtelse
-        )
+        val utbetaling = lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelseMedMetaData,
+                                                                forrigeTilkjentYtelse)
 
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let { oppdragClient.iverksettOppdrag(it) }

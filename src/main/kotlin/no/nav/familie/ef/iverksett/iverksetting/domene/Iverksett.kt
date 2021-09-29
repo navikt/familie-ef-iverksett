@@ -49,7 +49,7 @@ data class Vedtaksdetaljer(
         val opphørÅrsak: OpphørÅrsak?,
         val saksbehandlerId: String,
         val beslutterId: String,
-        val tilkjentYtelse: TilkjentYtelse,
+        val tilkjentYtelse: TilkjentYtelse?,
         val vedtaksperioder: List<Vedtaksperiode>
 )
 

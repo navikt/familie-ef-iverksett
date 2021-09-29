@@ -28,11 +28,11 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
         val stønadstype = iverksett.fagsak.stønadstype
         val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
                 .map { it.personIdent }.toSet()
-        val perioder = iverksett.vedtak.tilkjentYtelse.andelerTilkjentYtelse.map {
+        val perioder = iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.map {
             Periode(startdato = it.fraOgMed,
                     sluttdato = it.tilOgMed,
                     fullOvergangsstønad = it.erFullOvergangsstønad())
-        }
+        } ?: error("Kan ikke finne tilkjentYtelse for behandling med id=${iverksett.behandling.behandlingId}")
 
         infotrygdFeedClient.opprettPeriodeHendelse(OpprettPeriodeHendelseDto(personIdenter, stønadstype, perioder))
     }

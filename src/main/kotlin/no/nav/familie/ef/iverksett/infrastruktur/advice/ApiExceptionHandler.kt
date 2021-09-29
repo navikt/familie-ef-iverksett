@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur.advice
 
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import org.slf4j.LoggerFactory
 import org.springframework.core.NestedExceptionUtils
@@ -36,7 +37,7 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(Throwable::class)
-    fun handleThrowable(throwable: Throwable): ResponseEntity<String> {
+    fun handleThrowable(throwable: Throwable): ResponseEntity<Ressurs<Nothing>> {
         val responseStatus = throwable::class.annotations.find { it is ResponseStatus }?.let { it as ResponseStatus }
         if (responseStatus != null) {
             return håndtertResponseStatusFeil(throwable, responseStatus)
@@ -47,7 +48,7 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
     private fun håndtertResponseStatusFeil(
         throwable: Throwable,
         responseStatus: ResponseStatus
-    ): ResponseEntity<String> {
+    ): ResponseEntity<Ressurs<Nothing>> {
         val status = if (responseStatus.value != HttpStatus.INTERNAL_SERVER_ERROR) responseStatus.value else responseStatus.code
         val loggMelding = "En håndtert feil har oppstått" +
                 " throwable=${rootCause(throwable)}" +
@@ -55,24 +56,24 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
                 " status=$status"
 
         loggFeil(throwable, loggMelding)
-        return ResponseEntity.status(status).body("Håndtert feil")
+        return ResponseEntity.status(status).body(Ressurs.failure("Håndtert feil"))
     }
 
     @ExceptionHandler(ApiFeil::class)
-    fun handleApiFeil(feil: ApiFeil): ResponseEntity<String> {
-        return ResponseEntity.status(feil.httpStatus).body(feil.feil)
+    fun handleApiFeil(feil: ApiFeil): ResponseEntity<Ressurs<Nothing>> {
+        return ResponseEntity.status(feil.httpStatus).body(Ressurs.failure(feil.feil))
     }
 
     private fun resolveStatus(status: Int): HttpStatus {
         return HttpStatus.resolve(status) ?: HttpStatus.INTERNAL_SERVER_ERROR
     }
 
-    private fun uventetFeil(throwable: Throwable): ResponseEntity<String> {
+    private fun uventetFeil(throwable: Throwable): ResponseEntity<Ressurs<Nothing>> {
         secureLogger.error("En feil har oppstått", throwable)
         logger.error("En feil har oppstått - throwable=${rootCause(throwable)} ")
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("Uventet feil")
+            .body(Ressurs.failure("Uventet feil"))
     }
 
     private fun loggFeil(throwable: Throwable, loggMelding: String) {
