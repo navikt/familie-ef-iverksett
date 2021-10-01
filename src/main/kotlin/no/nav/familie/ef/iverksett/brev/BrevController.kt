@@ -30,7 +30,7 @@ class BrevController(
                 fnr = data.personIdent,
                 forsøkFerdigstill = true,
                 //Tittel og filnavn blir satt av integrasjoner
-                hoveddokumentvarianter = listOf(Dokument(data.fil, Filtype.PDFA, dokumenttype = Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV)),
+                hoveddokumentvarianter = listOf(Dokument(data.fil, Filtype.PDFA, dokumenttype = Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV, tittel = data.brevtype.tittel)),
                 fagsakId = data.eksternFagsakId.toString(),
                 journalførendeEnhet = data.journalførendeEnhet,
             ),
