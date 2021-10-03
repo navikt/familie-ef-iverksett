@@ -27,9 +27,9 @@
         <prosessering.version>1.20210928154334_90dc4ba</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.WebApplicationKt</start-class>
-        <felles-kontrakter.version>2.0_20211001123018_c2f76f2</felles-kontrakter.version>
-        <familie.kontrakter.stonadsstatistikk-ef>2.0_20210629135427_6a6361b</familie.kontrakter.stonadsstatistikk-ef>
-        <familie.kontrakter.saksstatistikk-ef>2.0_20210702102219_a4737a7</familie.kontrakter.saksstatistikk-ef>
+        <familie.kontrakter.version>2.0-SNAPSHOT</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20210629135427_6a6361b</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20210702102219_a4737a7</familie.eksterne-kontrakter.saksstatistikk-ef>
         <token-validation-spring.version>1.3.8</token-validation-spring.version>
         <ibm-mq-client.version>9.2.3.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
@@ -139,22 +139,22 @@
         <dependency>
             <groupId>no.nav.familie.kontrakter</groupId>
             <artifactId>felles</artifactId>
-            <version>${felles-kontrakter.version}</version>
+            <version>${familie.kontrakter.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.familie.kontrakter</groupId>
             <artifactId>enslig-forsorger</artifactId>
-            <version>${felles-kontrakter.version}</version>
+            <version>${familie.kontrakter.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.familie.eksterne.kontrakter</groupId>
             <artifactId>stonadsstatistikk-ef</artifactId>
-            <version>${familie.kontrakter.stonadsstatistikk-ef}</version>
+            <version>${familie.eksterne-kontrakter.stonadsstatistikk-ef}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.familie.eksterne.kontrakter</groupId>
             <artifactId>saksstatistikk-ef</artifactId>
-            <version>${familie.kontrakter.saksstatistikk-ef}</version>
+            <version>${familie.eksterne-kontrakter.saksstatistikk-ef}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
