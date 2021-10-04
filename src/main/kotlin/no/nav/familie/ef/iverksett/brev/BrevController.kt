@@ -30,7 +30,7 @@ class BrevController(
                 fagsakId = data.eksternFagsakId.toString(),
                 journalførendeEnhet = data.journalførendeEnhet,
             ),
-            "beslutterId/saksbehandler"
+            data.saksbehandlerIdent
         ).journalpostId
 
         journalpostClient.distribuerBrev(journalpostId)
