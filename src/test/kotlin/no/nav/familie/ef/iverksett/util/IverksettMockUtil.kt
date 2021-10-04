@@ -203,7 +203,7 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
             brevtype = FrittståendeBrevType.INFOBREV_OVERGANGSSTØNAD,
             fil = "fil.pdf".toByteArray(),
             journalførendeEnhet = "4489",
-
+            saksbehandlerIdent = "saksbehandlerIdent"
         )
 }
 
