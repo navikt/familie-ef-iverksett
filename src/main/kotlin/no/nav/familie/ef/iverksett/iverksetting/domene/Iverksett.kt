@@ -54,7 +54,7 @@ data class Vedtaksdetaljer(
         val beslutterId: String,
         val tilkjentYtelse: TilkjentYtelse?,
         val vedtaksperioder: List<Vedtaksperiode>,
-        val feilutbetaling: Feilutbetalingssdetaljer? = null
+        val tilbakekreving: Tilbakekrevingsdetaljer? = null
 )
 
 data class Behandlingsdetaljer(
@@ -91,9 +91,13 @@ enum class IverksettType {
     TEKNISK_OPPHØR
 }
 
-data class Feilutbetalingssdetaljer(
+data class Tilbakekrevingsdetaljer(
         val tilbakekrevingsvalg: Tilbakekrevingsvalg,
-        val varseltekst: String?,
+        val tilbakekrevingMedVarsel: TilbakekrevingMedVarsel?
+)
+
+data class TilbakekrevingMedVarsel(
+        val varseltekst: String,
         val sumFeilutbetaling: BigDecimal?,
         val perioder: List<Periode>?
 )

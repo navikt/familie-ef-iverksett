@@ -54,12 +54,18 @@ fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
                            beslutterId = this.beslutterId,
                            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
                            vedtaksperioder = this.vedtaksperioder.map { it.toDomain()},
-                           feilutbetaling = this.feilutbetaling?.toDomain())
+                           tilbakekreving = this.tilbakekreving?.toDomain())
 }
 
-fun FeilutbetalingDto.toDomain(): Feilutbetalingssdetaljer {
-    return Feilutbetalingssdetaljer(
+fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
+    return Tilbakekrevingsdetaljer(
             tilbakekrevingsvalg = this.tilbakekrevingsvalg,
+            this.tilbakekrevingMedVarsel?.toDomain()
+    )
+}
+
+fun TilbakekrevingMedVarselDto.toDomain() : TilbakekrevingMedVarsel {
+    return TilbakekrevingMedVarsel(
             varseltekst = this.varseltekst,
             sumFeilutbetaling = this.sumFeilutbetaling,
             perioder = this.perioder,

@@ -1,13 +1,11 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Feilutbetalingssdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.tilbakekreving.*
-import java.lang.IllegalStateException
-import java.math.BigDecimal
 
 class TilbakekrevingMapper {
 
@@ -24,7 +22,7 @@ class TilbakekrevingMapper {
                 enhetId = enhet.enhetId,
                 enhetsnavn = enhet.enhetNavn,
                 saksbehandlerIdent = iverksett.vedtak.saksbehandlerId,
-                varsel = lagVarsel(iverksett.vedtak.feilutbetaling ?:
+                varsel = lagVarsel(iverksett.vedtak.tilbakekreving ?:
                                    error("Iverksett.vedtak.feilutbetaling er påkrevd for å map'e Iverksett til OpprettTilbakekrevingRequest")),
                 revurderingsvedtaksdato = iverksett.vedtak.vedtaksdato,
                 verge = null,
@@ -36,19 +34,19 @@ class TilbakekrevingMapper {
         return Faktainfo(
                 revurderingsårsak = iverksett.behandling.behandlingÅrsak.toString(),
                 revurderingsresultat = iverksett.vedtak.vedtaksresultat.toString(),  // Er dette korrekt?
-                tilbakekrevingsvalg = iverksett.vedtak.feilutbetaling?.tilbakekrevingsvalg
+                tilbakekrevingsvalg = iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg
         )
     }
 
-    private fun lagVarsel(feilutbetaling: Feilutbetalingssdetaljer): Varsel? {
-        return when(feilutbetaling.tilbakekrevingsvalg) {
+    private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel? {
+        return when(tilbakekrevingsdetaljer.tilbakekrevingsvalg) {
             Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL ->
                 Varsel(
-                        varseltekst = feilutbetaling.varseltekst ?:
+                        varseltekst = tilbakekrevingsdetaljer.tilbakekrevingMedVarsel?.varseltekst ?:
                                       error("varseltekst er påkrevd for å map'e Feilutbetalingsdetaljer til Varsel"),
-                        sumFeilutbetaling = feilutbetaling.sumFeilutbetaling ?:
+                        sumFeilutbetaling = tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.sumFeilutbetaling ?:
                                             error("sumFeilutbetaling er påkrevd for å map'e Feilutbetalingsdetaljer til Varsel"),
-                        perioder = feilutbetaling.perioder ?:
+                        perioder = tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder ?:
                                    error("perioder er påkrevd for å map'e Feilutbetalingsdetaljer til Varsel"),
                 )
             else -> null
