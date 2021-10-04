@@ -20,6 +20,8 @@ import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
+import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
+import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
 import no.nav.familie.kontrakter.ef.felles.RegelId
 import no.nav.familie.kontrakter.ef.felles.StønadType
@@ -191,6 +193,18 @@ fun opprettTilkjentYtelse(behandlingId: UUID): TilkjentYtelse {
                     )
             )
     )
+}
+
+fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
+        return FrittståendeBrevDto(
+            personIdent = "12345678910",
+            eksternFagsakId = 1,
+            stønadType = StønadType.OVERGANGSSTØNAD,
+            brevtype = FrittståendeBrevType.INFOBREV_OVERGANGSSTØNAD,
+            fil = "fil.pdf".toByteArray(),
+            journalførendeEnhet = "4489",
+
+        )
 }
 
 class IverksettResultatMockBuilder private constructor(
