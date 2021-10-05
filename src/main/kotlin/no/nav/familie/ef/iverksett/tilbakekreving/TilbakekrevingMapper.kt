@@ -43,11 +43,11 @@ class TilbakekrevingMapper {
             Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL ->
                 Varsel(
                         varseltekst = tilbakekrevingsdetaljer.tilbakekrevingMedVarsel?.varseltekst ?:
-                                      error("varseltekst er påkrevd for å map'e Feilutbetalingsdetaljer til Varsel"),
+                                      error("varseltekst er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
                         sumFeilutbetaling = tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.sumFeilutbetaling ?:
-                                            error("sumFeilutbetaling er påkrevd for å map'e Feilutbetalingsdetaljer til Varsel"),
+                                            error("sumFeilutbetaling er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
                         perioder = tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder ?:
-                                   error("perioder er påkrevd for å map'e Feilutbetalingsdetaljer til Varsel"),
+                                   error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
                 )
             else -> null
         }
