@@ -2,7 +2,9 @@ package no.nav.familie.ef.iverksett.vedtak
 
 import io.mockk.CapturingSlot
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
@@ -35,6 +37,7 @@ internal class PubliserVedtakTilKafkaTaskTest {
 
     @Test
     internal fun `doTask - ska publisere vedtak til kafka`() {
+        every { vedtakKafkaProducer.sendVedtak(any()) } just runs
         task.doTask(lagTask())
 
         verify(exactly = 1) { vedtakKafkaProducer.sendVedtak(any()) }
@@ -50,7 +53,7 @@ internal class PubliserVedtakTilKafkaTaskTest {
 
     @Test
     internal fun `skal mappe stønadstyper`() {
-        assertThat(EksternStønadType.values()).isEqualTo(StønadType.values())
+        assertThat(EksternStønadType.values().map { it.name }).isEqualTo(StønadType.values().map { it.name })
     }
 
     private fun lagTask() = Task(PubliserVedtakTilKafkaTask.TYPE, UUID.randomUUID().toString())

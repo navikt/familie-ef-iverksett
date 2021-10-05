@@ -86,6 +86,20 @@
           "inntektsreduksjon": 0
         }
       ]
+    },
+    "tilbakekreving": {
+      "tilbakekrevingsvalg": "OPPRETT_TILBAKEKREVING_MED_VARSEL",
+      "tilbakekrevingMedVarsel": {
+        "varseltekst": "varsel",
+        "sumFeilutbetaling": 1,
+        "perioder": [
+          {
+            "fom": "2021-01-01",
+            "tom": "2021-01-01"
+          }
+        ]
+
+      }
     }
   }
 }
