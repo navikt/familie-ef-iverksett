@@ -19,5 +19,5 @@ spec:
       application: familie-ef-iverksett
       access: readwrite
     - team: teamfamilie
-      application: ba-mottak
+      application: familie-ba-mottak
       access: read
