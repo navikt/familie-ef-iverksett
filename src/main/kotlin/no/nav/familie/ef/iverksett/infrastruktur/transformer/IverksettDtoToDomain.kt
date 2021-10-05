@@ -1,23 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.transformer
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
-import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
-import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
-import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
-import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
-import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
-import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
-import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
-import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeDto
-import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
-import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
+import no.nav.familie.ef.iverksett.iverksetting.domene.*
+import no.nav.familie.kontrakter.ef.iverksett.*
 
 
 fun VurderingDto.toDomain(): Vurdering {
@@ -69,7 +53,23 @@ fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
                            saksbehandlerId = this.saksbehandlerId,
                            beslutterId = this.beslutterId,
                            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
-                           vedtaksperioder = this.vedtaksperioder.map { it.toDomain() })
+                           vedtaksperioder = this.vedtaksperioder.map { it.toDomain()},
+                           tilbakekreving = this.tilbakekreving?.toDomain())
+}
+
+fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
+    return Tilbakekrevingsdetaljer(
+            tilbakekrevingsvalg = this.tilbakekrevingsvalg,
+            this.tilbakekrevingMedVarsel?.toDomain()
+    )
+}
+
+fun TilbakekrevingMedVarselDto.toDomain() : TilbakekrevingMedVarsel {
+    return TilbakekrevingMedVarsel(
+            varseltekst = this.varseltekst,
+            sumFeilutbetaling = this.sumFeilutbetaling,
+            perioder = this.perioder,
+    )
 }
 
 fun IverksettDto.toDomain(): Iverksett {
