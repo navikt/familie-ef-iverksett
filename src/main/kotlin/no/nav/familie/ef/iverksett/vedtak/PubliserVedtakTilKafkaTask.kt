@@ -9,6 +9,7 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
+import no.nav.familie.kontrakter.felles.ef.StønadType as EksternStønadType
 
 @Service
 @TaskStepBeskrivelse(taskStepType = PubliserVedtakTilKafkaTask.TYPE,
@@ -22,11 +23,9 @@ class PubliserVedtakTilKafkaTask(private val taskRepository: TaskRepository,
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
         vedtakKafkaProducer.sendVedtak(EnsligForsørgerVedtakhendelse(
-                fagsakId = iverksett.fagsak.eksternId,
                 behandlingId = iverksett.behandling.eksternId,
                 personIdent = iverksett.søker.personIdent,
-                vedtaksdato = iverksett.vedtak.vedtaksdato,
-                stønadType = iverksett.fagsak.stønadstype
+                stønadType = EksternStønadType.valueOf(iverksett.fagsak.stønadstype.name)
         ))
     }
 

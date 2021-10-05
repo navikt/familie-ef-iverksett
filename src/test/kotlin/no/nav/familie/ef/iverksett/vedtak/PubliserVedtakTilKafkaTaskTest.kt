@@ -8,12 +8,14 @@ import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
+import no.nav.familie.kontrakter.felles.ef.StønadType as EksternStønadType
 
 internal class PubliserVedtakTilKafkaTaskTest {
 
@@ -44,6 +46,11 @@ internal class PubliserVedtakTilKafkaTaskTest {
 
         verify(exactly = 1) { taskRepository.save(any()) }
         assertThat(taskSlot.captured.type).isEqualTo(OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE)
+    }
+
+    @Test
+    internal fun `skal mappe stønadstyper`() {
+        assertThat(EksternStønadType.values()).isEqualTo(StønadType.values())
     }
 
     private fun lagTask() = Task(PubliserVedtakTilKafkaTask.TYPE, UUID.randomUUID().toString())
