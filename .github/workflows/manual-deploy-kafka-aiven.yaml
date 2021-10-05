@@ -65,3 +65,17 @@ jobs:
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-behandling/topic-prod.yaml
           PRINT_PAYLOAD: true
+      - name: deploy vedtak kafka-topic to dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: kafka-aiven/vedtak/topic-vedtak-dev.yaml
+          PRINT_PAYLOAD: true
+      - name: deploy vedtak to prod
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: kafka-aiven/vedtak/topic-vedtak-prod.yaml
+          PRINT_PAYLOAD: true

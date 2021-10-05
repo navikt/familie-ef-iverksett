@@ -111,6 +111,7 @@ ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-v1
 ENSLIG_FORSORGER_BEHANDLING_TOPIC: teamfamilie.aapen-ensligforsorger-behandling-v1
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.prod-fss-pub.nais.io
 INFOTRYGD_FEED_API_URL: https://familie-ef-infotrygd-feed.prod-fss-pub.nais.io
+VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-iverksatt-vedtak
 
 prosessering:
    fixedDelayString:

@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad
+import no.nav.familie.ef.iverksett.vedtak.PubliserVedtakTilKafkaTask
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.VentePåStatusFraØkonomiTask
@@ -14,8 +15,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
-import java.util.*
-import kotlin.NoSuchElementException
+import java.util.Properties
 
 
 class TaskTypeTest {
@@ -49,7 +49,11 @@ class TaskTypeTest {
         assertThat(sendFattetVedtakTilArenaTask.type).isEqualTo(SendFattetVedtakTilArenaTask.TYPE)
         assertThat(sendFattetVedtakTilArenaTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
-        val opprettOppgaveTask = sendFattetVedtakTilArenaTask.opprettNestePubliseringTask()
+        val publiserVedtakTilKafkaTask = sendFattetVedtakTilArenaTask.opprettNestePubliseringTask()
+        assertThat(publiserVedtakTilKafkaTask.type).isEqualTo(PubliserVedtakTilKafkaTask.TYPE)
+        assertThat(publiserVedtakTilKafkaTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+
+        val opprettOppgaveTask = publiserVedtakTilKafkaTask.opprettNestePubliseringTask()
         assertThat(opprettOppgaveTask.type).isEqualTo(OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE)
         assertThat(opprettOppgaveTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
