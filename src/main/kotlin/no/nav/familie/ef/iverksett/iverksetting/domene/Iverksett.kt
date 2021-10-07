@@ -12,6 +12,9 @@ import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
+import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.ArrayList
 import java.util.UUID
@@ -50,7 +53,8 @@ data class Vedtaksdetaljer(
         val saksbehandlerId: String,
         val beslutterId: String,
         val tilkjentYtelse: TilkjentYtelse?,
-        val vedtaksperioder: List<Vedtaksperiode>
+        val vedtaksperioder: List<Vedtaksperiode>,
+        val tilbakekreving: Tilbakekrevingsdetaljer? = null
 )
 
 data class Behandlingsdetaljer(
@@ -87,4 +91,13 @@ enum class IverksettType {
     TEKNISK_OPPHØR
 }
 
+data class Tilbakekrevingsdetaljer(
+        val tilbakekrevingsvalg: Tilbakekrevingsvalg,
+        val tilbakekrevingMedVarsel: TilbakekrevingMedVarsel?
+)
 
+data class TilbakekrevingMedVarsel(
+        val varseltekst: String,
+        val sumFeilutbetaling: BigDecimal?,
+        val perioder: List<Periode>?
+)
