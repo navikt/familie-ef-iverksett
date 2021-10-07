@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @RestController
 @RequestMapping(path = ["/api/iverksett"])
@@ -26,12 +27,13 @@ class VedtakhendelseTestController(
     @PostMapping("/vedtakhendelse", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendVedtakhendelse(@RequestBody aktørId: String) {
         vedtakhendelseProducer.produce(VedtakHendelser(
-                aktoerID = aktørId,
-                avslutningsstatus = "innvilget",
-                behandlingstema = Behandlingstema.valueOf(StønadType.OVERGANGSSTØNAD.name.toLowerCase().capitalize()).value,
-                hendelsesprodusentREF = "EF",
-                applikasjonSakREF = aktørId,
-                hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter)
+            aktoerID = aktørId,
+            avslutningsstatus = "innvilget",
+            behandlingstema = Behandlingstema.valueOf(StønadType.OVERGANGSSTØNAD.name.lowercase(Locale.getDefault())
+                                                          .replaceFirstChar { it.uppercase() }).value,
+            hendelsesprodusentREF = "EF",
+            applikasjonSakREF = aktørId,
+            hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter)
         ))
     }
 

@@ -8,6 +8,7 @@ import no.nav.familie.kontrakter.felles.getDataOrThrow
 import no.nav.familie.kontrakter.felles.personopplysning.FinnPersonidenterResponse
 import no.nav.familie.kontrakter.felles.personopplysning.Ident
 import no.nav.familie.kontrakter.felles.personopplysning.PersonIdentMedHistorikk
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -23,7 +24,7 @@ class FamilieIntegrasjonerClient(
         private val integrasjonUri: URI
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
 
-    val logger = LoggerFactory.getLogger(this::class.java)
+    val logger: Logger? = LoggerFactory.getLogger(this::class.java)
 
     private val hentIdenterURI =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_HENT_IDENTER).build().toUri()
@@ -49,7 +50,7 @@ class FamilieIntegrasjonerClient(
     }
 
     companion object {
-        const val arbeidsfordelingTema = "OPP" //Oppfølging - lokalenhet
+        private const val arbeidsfordelingTema = "OPP" //Oppfølging - lokalenhet
         const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet/$arbeidsfordelingTema"
         const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"

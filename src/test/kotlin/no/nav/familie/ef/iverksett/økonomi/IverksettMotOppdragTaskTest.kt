@@ -20,12 +20,12 @@ import java.util.UUID
 internal class IverksettMotOppdragTaskTest {
 
 
-    val oppdragClient = mockk<OppdragClient>()
+    private val oppdragClient = mockk<OppdragClient>()
     val taskRepository = mockk<TaskRepository>()
     val iverksettingRepository = mockk<IverksettingRepository>()
     val tilstandRepository = mockk<TilstandRepository>()
-    val behandlingId = UUID.randomUUID()
-    val iverksettMotOppdragTask =
+    val behandlingId: UUID = UUID.randomUUID()
+    private val iverksettMotOppdragTask =
             IverksettMotOppdragTask(
                     iverksettingRepository = iverksettingRepository,
                     oppdragClient = oppdragClient,

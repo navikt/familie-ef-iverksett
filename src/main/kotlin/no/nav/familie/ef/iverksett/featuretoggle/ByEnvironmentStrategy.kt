@@ -1,4 +1,4 @@
-package no.nav.familie.ef.sak.featuretoggle
+package no.nav.familie.ef.iverksett.featuretoggle
 
 import no.finn.unleash.UnleashContext
 import no.finn.unleash.strategy.Strategy
@@ -21,7 +21,7 @@ class ByEnvironmentStrategy : Strategy {
     override fun isEnabled(map: Map<String, String>, unleashContext: UnleashContext): Boolean {
 
         return unleashContext.environment
-                .map { env -> map.get(miljøKey)?.split(',')?.contains(env) ?: false }
+                .map { env -> map[miljøKey]?.split(',')?.contains(env) ?: false }
                 .orElse(false)
     }
 

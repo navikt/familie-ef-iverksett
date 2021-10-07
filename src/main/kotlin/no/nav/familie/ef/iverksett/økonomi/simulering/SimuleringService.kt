@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class SimuleringService(
-        private val oppdragKlient: OppdragClient,
-        private val tilstandRepository: TilstandRepository
+    private val oppdragKlient: OppdragClient,
+    private val tilstandRepository: TilstandRepository
 ) {
 
     fun hentSimulering(simulering: Simulering): DetaljertSimuleringResultat {
@@ -21,12 +21,12 @@ class SimuleringService(
             }
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-                    simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse?.let { it } ?: null
+                simulering.nyTilkjentYtelseMedMetaData,
+                forrigeTilkjentYtelse
             )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
-                                     ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
+                ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
 
             return oppdragKlient.hentSimulering(utbetalingsoppdrag)
         } catch (feil: Throwable) {

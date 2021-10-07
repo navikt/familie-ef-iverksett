@@ -18,10 +18,10 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     @Autowired
     private lateinit var tilstandServiceRepository: TilstandRepository
 
-    val behandlingsId = UUID.randomUUID()
-    val journalpostId = UUID.randomUUID()
+    private val behandlingsId: UUID = UUID.randomUUID()
+    private val journalpostId: UUID = UUID.randomUUID()
 
-    val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
+    private val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
 
     @BeforeEach
     fun beforeEach() {

@@ -15,7 +15,7 @@ import java.net.URI
 @Component
 class OppgaveClient(
     @Qualifier("azure") restOperations: RestOperations,
-    @Value("\${FAMILIE_INTEGRASJONER_API_URL}") val integrasjonUrl: String,
+    @Value("\${FAMILIE_INTEGRASJONER_API_URL}") private val integrasjonUrl: String,
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
 
     val oppgaveUrl = "$integrasjonUrl/api/oppgave"

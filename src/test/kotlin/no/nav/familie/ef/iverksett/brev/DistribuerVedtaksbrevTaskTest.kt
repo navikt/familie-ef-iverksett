@@ -16,9 +16,9 @@ import java.util.UUID
 
 internal class DistribuerVedtaksbrevTaskTest {
 
-    val journalpostClient = mockk<JournalpostClient>()
+    private val journalpostClient = mockk<JournalpostClient>()
     val tilstandRepository = mockk<TilstandRepository>()
-    val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository)
+    private val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository)
 
     @Test
     internal fun `skal distribuere brev`() {

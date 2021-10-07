@@ -7,14 +7,13 @@ import java.time.LocalDate
 import java.util.UUID
 
 data class TilkjentYtelse(
-        val id: UUID = UUID.randomUUID(),
-        val utbetalingsoppdrag: Utbetalingsoppdrag? = null,
-        val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
-        val andelerTilkjentYtelse: List<AndelTilkjentYtelse>) {
+    val id: UUID = UUID.randomUUID(),
+    val utbetalingsoppdrag: Utbetalingsoppdrag? = null,
+    val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
+    val andelerTilkjentYtelse: List<AndelTilkjentYtelse>) {
 
-}
 
-fun TilkjentYtelse.toMedMetadata(
+    fun toMedMetadata(
         saksbehandlerId: String,
         eksternBehandlingId: Long,
         stønadType: StønadType,
@@ -22,15 +21,15 @@ fun TilkjentYtelse.toMedMetadata(
         personIdent: String,
         behandlingId: UUID,
         vedtaksdato: LocalDate
-        ): TilkjentYtelseMedMetaData {
-    return TilkjentYtelseMedMetaData(tilkjentYtelse = this,
-                                     saksbehandlerId = saksbehandlerId,
-                                     eksternBehandlingId = eksternBehandlingId,
-                                     stønadstype = stønadType,
-                                     eksternFagsakId = eksternFagsakId,
-                                     personIdent = personIdent,
-                                     behandlingId = behandlingId,
-                                     vedtaksdato = vedtaksdato
-    )
+    ): TilkjentYtelseMedMetaData {
+        return TilkjentYtelseMedMetaData(tilkjentYtelse = this,
+                                         saksbehandlerId = saksbehandlerId,
+                                         eksternBehandlingId = eksternBehandlingId,
+                                         stønadstype = stønadType,
+                                         eksternFagsakId = eksternFagsakId,
+                                         personIdent = personIdent,
+                                         behandlingId = behandlingId,
+                                         vedtaksdato = vedtaksdato
+        )
+    }
 }
-

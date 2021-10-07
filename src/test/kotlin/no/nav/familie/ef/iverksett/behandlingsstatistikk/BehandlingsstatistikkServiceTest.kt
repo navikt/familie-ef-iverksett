@@ -7,7 +7,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import no.nav.familie.ef.iverksett.util.opprettBehandlingDVH
 import no.nav.familie.ef.iverksett.util.opprettBehandlingsstatistikkDto
-import no.nav.familie.ef.sak.featuretoggle.FeatureToggleService
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -19,10 +19,10 @@ import java.util.UUID
 
 internal class BehandlingsstatistikkServiceTest {
 
-    val behandlingstatistikkRepository = mockk<BehandlingsstatistikkRepository>()
-    val behandlingstatistikkProducer = mockk<BehandlingsstatistikkProducer>()
-    val featureToggleService = mockk<FeatureToggleService>()
-    val behandlingstatistikkService = BehandlingsstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository, featureToggleService)
+    private val behandlingstatistikkRepository = mockk<BehandlingsstatistikkRepository>()
+    private val behandlingstatistikkProducer = mockk<BehandlingsstatistikkProducer>()
+    private val featureToggleService = mockk<FeatureToggleService>()
+    private val behandlingstatistikkService = BehandlingsstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository, featureToggleService)
 
     @BeforeEach
     fun setUp() {

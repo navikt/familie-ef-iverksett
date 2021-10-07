@@ -32,13 +32,13 @@ import java.util.UUID
 
 internal class BehandlingDVHMapperTest {
 
-    val fagsakId = UUID.randomUUID()
-    val behandlingId = UUID.randomUUID()
+    val fagsakId: UUID = UUID.randomUUID()
+    val behandlingId: UUID = UUID.randomUUID()
     val eksternFagsakId = 1L
-    val eksternBehandlingId = 13L
-    val søker = "01010172272"
-    val barnFnr = "24101576627"
-    val termindato = LocalDate.now().plusDays(40)
+    private val eksternBehandlingId = 13L
+    private val søker = "01010172272"
+    private val barnFnr = "24101576627"
+    private val termindato: LocalDate? = LocalDate.now().plusDays(40)
 
 
     @Test

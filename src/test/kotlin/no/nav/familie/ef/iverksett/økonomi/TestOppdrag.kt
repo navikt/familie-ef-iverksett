@@ -243,7 +243,7 @@ object TestOppdragParser {
     }
 
     private fun emptyAsNull(s: String): String? =
-            if (s.isEmpty()) null else s
+        s.ifEmpty { null }
 
 
 }
@@ -267,10 +267,7 @@ object TestOppdragRunner {
     }
 
     private fun truncateAvstemmingDato(tilkjentYtelse: TilkjentYtelse): TilkjentYtelse {
-        val utbetalingsoppdrag = tilkjentYtelse.utbetalingsoppdrag
-        if (utbetalingsoppdrag == null) {
-            return tilkjentYtelse
-        }
+        val utbetalingsoppdrag = tilkjentYtelse.utbetalingsoppdrag ?: return tilkjentYtelse
         val nyAvstemmingsitdspunkt = utbetalingsoppdrag.avstemmingTidspunkt.truncatedTo(ChronoUnit.HOURS)
         return tilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag.copy(avstemmingTidspunkt = nyAvstemmingsitdspunkt))
     }

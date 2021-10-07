@@ -6,7 +6,6 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProducerService) {

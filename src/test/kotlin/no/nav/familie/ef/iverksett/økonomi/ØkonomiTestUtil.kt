@@ -32,7 +32,7 @@ fun lagAndelTilkjentYtelseDto(beløp: Int,
                               periodetype: Periodetype,
                               fraOgMed: LocalDate,
                               tilOgMed: LocalDate,
-                              kildeBehandlingId: UUID? = UUID.randomUUID(),
+                              kildeBehandlingId: UUID = UUID.randomUUID(),
                               inntekt: Int = 0,
                               samordningsfradrag: Int = 0,
                               inntektsreduksjon: Int = 0) =

@@ -15,7 +15,7 @@ import java.util.UUID
 class VedtakhendelseProducerTest {
 
     private var jmsTemplate: JmsTemplate = mockk(relaxed = true)
-    val vedtakhendelseProducer = VedtakhendelseProducer(jmsTemplate)
+    private val vedtakhendelseProducer = VedtakhendelseProducer(jmsTemplate)
 
     @Test
     fun testVedtakhendelseProducer() {
@@ -42,7 +42,7 @@ private fun forventetXML(hendelsesTidspunkt: String): String {
             <hendelsesTidspunkt xmlns="">${hendelsesTidspunkt}</hendelsesTidspunkt>
         </vedtakHendelser>
     """.trim()
-            .replace("\n", "")
-            .replace("""> *<""".toRegex(), "><")
+        .replace("\n", "")
+        .replace("""> *<""".toRegex(), "><")
 
 }

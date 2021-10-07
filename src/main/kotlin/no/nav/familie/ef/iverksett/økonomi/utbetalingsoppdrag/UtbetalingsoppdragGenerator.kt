@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
+import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelTilOpphørMedDato
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerTilOpprettelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
@@ -37,13 +37,13 @@ object UtbetalingsoppdragGenerator {
         val andelerTilOpprettelse = andelerTilOpprettelse(andelerNyTilkjentYtelse, beståendeAndeler)
 
         val andelerTilOpprettelseMedPeriodeId =
-                lagAndelerMedPeriodeId(andelerTilOpprettelse, sistePeriodeIdIForrigeKjede, nyTilkjentYtelseMedMetaData.behandlingId)
+            lagAndelerMedPeriodeId(andelerTilOpprettelse, sistePeriodeIdIForrigeKjede, nyTilkjentYtelseMedMetaData.behandlingId)
 
         val utbetalingsperioderSomOpprettes =
-                lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
-                                                     eksternBehandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
-                                                     tilkjentYtelse = nyTilkjentYtelseMedMetaData,
-                                                     type = nyTilkjentYtelseMedMetaData.stønadstype)
+            lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
+                                                 eksternBehandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
+                                                 tilkjentYtelse = nyTilkjentYtelseMedMetaData,
+                                                 type = nyTilkjentYtelseMedMetaData.stønadstype)
 
         val utbetalingsperioderSomOpphøres = andelTilOpphørMedDato?.let {
             lagUtbetalingsperioderForOpphør(andeler = andelTilOpphørMedDato,
@@ -53,19 +53,19 @@ object UtbetalingsoppdragGenerator {
         } ?: emptyList()
 
         val utbetalingsoppdrag =
-                Utbetalingsoppdrag(saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
-                                   kodeEndring = if (forrigeTilkjentYtelse == null) NY else ENDR,
-                                   fagSystem = nyTilkjentYtelseMedMetaData.stønadstype.tilKlassifisering(),
-                                   saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),
-                                   aktoer = nyTilkjentYtelseMedMetaData.personIdent,
-                                   utbetalingsperiode = listOf(utbetalingsperioderSomOpprettes,
-                                                               utbetalingsperioderSomOpphøres)
-                                           .flatten()
-                                           .sortedBy { it.periodeId }
-                )
+            Utbetalingsoppdrag(saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
+                               kodeEndring = if (forrigeTilkjentYtelse == null) NY else ENDR,
+                               fagSystem = nyTilkjentYtelseMedMetaData.stønadstype.tilKlassifisering(),
+                               saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),
+                               aktoer = nyTilkjentYtelseMedMetaData.personIdent,
+                               utbetalingsperiode = listOf(utbetalingsperioderSomOpprettes,
+                                                           utbetalingsperioderSomOpphøres)
+                                   .flatten()
+                                   .sortedBy { it.periodeId }
+            )
 
         val gjeldendeAndeler = (beståendeAndeler + andelerTilOpprettelseMedPeriodeId)
-                .ellerNullAndel(nyTilkjentYtelseMedMetaData, sistePeriodeIdIForrigeKjede)
+            .ellerNullAndel(nyTilkjentYtelseMedMetaData, sistePeriodeIdIForrigeKjede)
 
         return nyTilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag,
                                      andelerTilkjentYtelse = gjeldendeAndeler)
@@ -77,12 +77,8 @@ object UtbetalingsoppdragGenerator {
      */
     private fun List<AndelTilkjentYtelse>.ellerNullAndel(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
                                                          sistePeriodeIdIForrigeKjede: PeriodeId?): List<AndelTilkjentYtelse> {
-        return if (this.isEmpty()) {
-            listOf(nullAndelTilkjentYtelse(nyTilkjentYtelseMedMetaData.behandlingId,
-                                           sistePeriodeIdIForrigeKjede))
-
-        } else {
-            this
+        return this.ifEmpty {
+            listOf(nullAndelTilkjentYtelse(nyTilkjentYtelseMedMetaData.behandlingId, sistePeriodeIdIForrigeKjede))
         }
     }
 
@@ -127,5 +123,5 @@ object UtbetalingsoppdragGenerator {
     }
 
     private fun andelerUtenNullVerdier(tilkjentYtelse: TilkjentYtelse?): List<AndelTilkjentYtelse> =
-            tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.erNull() } ?: emptyList()
+        tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.erNull() } ?: emptyList()
 }

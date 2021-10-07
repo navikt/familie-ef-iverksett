@@ -6,10 +6,10 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
-import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
@@ -33,9 +33,9 @@ class IverksettingService(val taskRepository: TaskRepository,
     fun startIverksetting(iverksett: Iverksett, brev: Brev) {
 
         iverksettingRepository.lagre(
-                iverksett.behandling.behandlingId,
-                iverksett,
-                brev
+            iverksett.behandling.behandlingId,
+            iverksett,
+            brev
         )
 
         tilstandRepository.opprettTomtResultat(iverksett.behandling.behandlingId)
@@ -56,14 +56,14 @@ class IverksettingService(val taskRepository: TaskRepository,
         val iverksett = iverksettingRepository.hent(behandlingId)
 
         taskRepository.save(Task(
-                type = førstePubliseringsflytTask(iverksett),
-                payload = behandlingId.toString(),
-                properties = Properties().apply {
-                    this["personIdent"] = iverksett.søker.personIdent
-                    this["behandlingId"] = behandlingId.toString()
-                    this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
-                    this["beslutter"] = iverksett.vedtak.beslutterId
-                }
+            type = førstePubliseringsflytTask(iverksett),
+            payload = behandlingId.toString(),
+            properties = Properties().apply {
+                this["personIdent"] = iverksett.søker.personIdent
+                this["behandlingId"] = behandlingId.toString()
+                this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                this["beslutter"] = iverksett.vedtak.beslutterId
+            }
         ))
     }
 
@@ -78,31 +78,29 @@ class IverksettingService(val taskRepository: TaskRepository,
     }
 
     private fun erIverksettingUtenVedtaksperioder(iverksett: Iverksett) =
-            iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT
+        iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT
 
     fun utledStatus(behandlingId: UUID): IverksettStatus? {
         val iverksettResultat = tilstandRepository.hentIverksettResultat(behandlingId)
-        iverksettResultat?.let {
+        return iverksettResultat?.let {
             it.vedtaksbrevResultat?.let {
                 return IverksettStatus.OK
             }
             it.journalpostResultat?.let {
                 return IverksettStatus.JOURNALFØRT
             }
-            it.oppdragResultat?.let {
-                if (it.oppdragStatus == OppdragStatus.KVITTERT_OK) {
-                    return IverksettStatus.OK_MOT_OPPDRAG
+            it.oppdragResultat?.let { oppdragResultat ->
+                return when (oppdragResultat.oppdragStatus) {
+                    OppdragStatus.KVITTERT_OK -> IverksettStatus.OK_MOT_OPPDRAG
+                    OppdragStatus.LAGT_PÅ_KØ -> IverksettStatus.SENDT_TIL_OPPDRAG
+                    else -> IverksettStatus.FEILET_MOT_OPPDRAG
                 }
-                if (it.oppdragStatus == OppdragStatus.LAGT_PÅ_KØ) {
-                    return IverksettStatus.SENDT_TIL_OPPDRAG
-                }
-                return IverksettStatus.FEILET_MOT_OPPDRAG
             }
             it.tilkjentYtelseForUtbetaling?.let {
                 return IverksettStatus.SENDT_TIL_OPPDRAG
             }
             return IverksettStatus.IKKE_PÅBEGYNT
-        } ?: return null
+        }
     }
 
     fun sjekkStatusPåIverksettOgOppdaterTilstand(stønadstype: StønadType,
@@ -110,9 +108,9 @@ class IverksettingService(val taskRepository: TaskRepository,
                                                  eksternBehandlingId: Long,
                                                  behandlingId: UUID) {
         val oppdragId = OppdragId(
-                fagsystem = stønadstype.tilKlassifisering(),
-                personIdent = personIdent,
-                behandlingsId = eksternBehandlingId.toString()
+            fagsystem = stønadstype.tilKlassifisering(),
+            personIdent = personIdent,
+            behandlingsId = eksternBehandlingId.toString()
         )
 
         val (status, melding) = oppdragClient.hentStatus(oppdragId)
@@ -122,8 +120,8 @@ class IverksettingService(val taskRepository: TaskRepository,
         }
 
         tilstandRepository.oppdaterOppdragResultat(
-                behandlingId = behandlingId,
-                OppdragResultat(oppdragStatus = status)
+            behandlingId = behandlingId,
+            OppdragResultat(oppdragStatus = status)
         )
     }
 }

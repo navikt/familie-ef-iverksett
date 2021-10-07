@@ -37,7 +37,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                 .addValue("tilkjentYtelseForUtbetaling", tilkjentYtelseForUtbetalingJson)
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}")
+        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = $behandlingId")
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -49,7 +49,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                 .addValue("oppdragResultat", oppdragResultatJson)
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, oppdragResultatJson : ${oppdragResultatJson}")
+        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, oppdragResultatJson : $oppdragResultatJson")
     }
 
 
@@ -61,7 +61,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                 .addValue("journalpostResultat", journalPostResultatJson)
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId},journalPostResultatJson : ${journalPostResultatJson}")
+        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId},journalPostResultatJson : $journalPostResultatJson")
     }
 
     fun oppdaterDistribuerVedtaksbrevResultat(behandlingId: UUID,
@@ -74,7 +74,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
         ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, " +
-                 "distribuerVedtaksbrevResultatJson : ${distribuerVedtaksbrevResultatJson}")
+                 "distribuerVedtaksbrevResultatJson : $distribuerVedtaksbrevResultatJson")
     }
 
 

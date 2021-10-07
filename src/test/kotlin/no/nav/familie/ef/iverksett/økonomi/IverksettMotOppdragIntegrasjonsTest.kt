@@ -38,13 +38,13 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     @Autowired
     lateinit var tekniskOpphørTask: IverksettTekniskOpphørTask
 
-    val behandlingid = UUID.randomUUID()
-    val forsteAndel = lagAndelTilkjentYtelse(
-            beløp = 1000,
-            fraOgMed = LocalDate.of(2021, 1, 1),
-            tilOgMed = LocalDate.of(2021, 1, 31),
-            periodetype = Periodetype.MÅNED)
-    val iverksett = opprettIverksett(behandlingid, andeler = listOf(forsteAndel))
+    private val behandlingid: UUID = UUID.randomUUID()
+    private val forsteAndel = lagAndelTilkjentYtelse(
+        beløp = 1000,
+        fraOgMed = LocalDate.of(2021, 1, 1),
+        tilOgMed = LocalDate.of(2021, 1, 31),
+        periodetype = Periodetype.MÅNED)
+    private val iverksett = opprettIverksett(behandlingid, andeler = listOf(forsteAndel))
 
     @BeforeEach
     internal fun setUp() {
@@ -66,10 +66,10 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                                                     behandlingid,
                                                     listOf(forsteAndel,
                                                            lagAndelTilkjentYtelse(
-                                                                   beløp = 1000,
-                                                                   fraOgMed = LocalDate.now(),
-                                                                   tilOgMed = LocalDate.now().plusDays(15),
-                                                                   periodetype = Periodetype.MÅNED)))
+                                                               beløp = 1000,
+                                                               fraOgMed = LocalDate.now(),
+                                                               tilOgMed = LocalDate.now().plusDays(15),
+                                                               periodetype = Periodetype.MÅNED)))
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
@@ -90,10 +90,10 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                                                     behandlingid,
                                                     listOf(forsteAndel.copy(beløp = 299),
                                                            lagAndelTilkjentYtelse(
-                                                                   beløp = 1000,
-                                                                   fraOgMed = LocalDate.now(),
-                                                                   tilOgMed = LocalDate.now().plusDays(15),
-                                                                   periodetype = Periodetype.MÅNED)))
+                                                               beløp = 1000,
+                                                               fraOgMed = LocalDate.now(),
+                                                               tilOgMed = LocalDate.now().plusDays(15),
+                                                               periodetype = Periodetype.MÅNED)))
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
@@ -135,10 +135,10 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         val iverksettRevurdering = opprettIverksett(behandlingIdRevurdering,
                                                     tekniskOpphørId,
                                                     listOf(lagAndelTilkjentYtelse(
-                                                            beløp = 1000,
-                                                            fraOgMed = LocalDate.now(),
-                                                            tilOgMed = LocalDate.now().plusDays(15),
-                                                            periodetype = Periodetype.MÅNED)))
+                                                        beløp = 1000,
+                                                        fraOgMed = LocalDate.now(),
+                                                        tilOgMed = LocalDate.now().plusDays(15),
+                                                        periodetype = Periodetype.MÅNED)))
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())

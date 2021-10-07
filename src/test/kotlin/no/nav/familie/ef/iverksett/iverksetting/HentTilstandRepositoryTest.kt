@@ -21,8 +21,8 @@ internal class HentTilstandRepositoryTest : ServerTest() {
     @Autowired
     private lateinit var tilstandRepository: TilstandRepository
 
-    val behandlingId = UUID.randomUUID()
-    val tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId)
+    private val behandlingId: UUID = UUID.randomUUID()
+    private val tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId)
 
     @BeforeEach
     fun beforeEach() {

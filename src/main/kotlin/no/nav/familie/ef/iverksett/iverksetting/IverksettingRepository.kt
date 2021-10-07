@@ -67,7 +67,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
             val behandlingIdForBrev = resultSet.getUUID("behandling_id")
             val pdf = resultSet.getBytes("pdf")
             Brev(behandlingIdForBrev, pdf)
-        } ?: error("Fant ikke brev for behandlingId : ${behandlingId}")
+        } ?: error("Fant ikke brev for behandlingId : $behandlingId")
     }
 
     private fun hentIverksettStringOgTransformer(behandlingId: UUID): Iverksett {

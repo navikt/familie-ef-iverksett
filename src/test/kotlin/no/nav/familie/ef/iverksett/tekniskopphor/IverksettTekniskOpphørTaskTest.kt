@@ -37,11 +37,11 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
     var iverksettTekniskOpphørTask: IverksettTekniskOpphørTask? = null
 
 
-    val forrigeBehandlingId = UUID.randomUUID()
-    val tekniskOpphørBehandlingId = UUID.randomUUID()
+    private val forrigeBehandlingId: UUID = UUID.randomUUID()
+    private val tekniskOpphørBehandlingId: UUID = UUID.randomUUID()
 
-    val oppdragClient = mockk<OppdragClient>()
-    val tilkjentYtelse = opprettTilkjentYtelse(forrigeBehandlingId)
+    private val oppdragClient = mockk<OppdragClient>()
+    private val tilkjentYtelse = opprettTilkjentYtelse(forrigeBehandlingId)
 
     @PostConstruct
     fun init() {

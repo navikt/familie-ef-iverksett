@@ -19,7 +19,7 @@ internal class IverksettServiceTest {
     val tilstandRepository = mockk<TilstandRepository>()
     val taskRepository = mockk<TaskRepository>()
     val iverksettingRepository = mockk<IverksettingRepository>()
-    val oppdragClient = mockk<OppdragClient>()
+    private val oppdragClient = mockk<OppdragClient>()
 
     private var iverksettStatusService: IverksettingService = IverksettingService(taskRepository = taskRepository,
                                                                                   tilstandRepository = tilstandRepository,

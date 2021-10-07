@@ -20,17 +20,17 @@ import java.util.UUID
 
 internal class VentePåStatusFraØkonomiTaskTest {
 
-    val oppdragClient = mockk<OppdragClient>()
+    private val oppdragClient = mockk<OppdragClient>()
     val iverksettingRepository = mockk<IverksettingRepository>()
     val taskRepository = mockk<TaskRepository>()
     val tilstandRepository = mockk<TilstandRepository>()
-    val behandlingId = UUID.randomUUID()
-    val iverksettingService = IverksettingService(taskRepository = taskRepository,
-                                                  oppdragClient = oppdragClient,
-                                                  iverksettingRepository = iverksettingRepository,
-                                                  tilstandRepository = tilstandRepository)
+    val behandlingId: UUID = UUID.randomUUID()
+    private val iverksettingService = IverksettingService(taskRepository = taskRepository,
+                                                          oppdragClient = oppdragClient,
+                                                          iverksettingRepository = iverksettingRepository,
+                                                          tilstandRepository = tilstandRepository)
 
-    val ventePåStatusFraØkonomiTask =
+    private val ventePåStatusFraØkonomiTask =
             VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskRepository, tilstandRepository)
 
     @Test

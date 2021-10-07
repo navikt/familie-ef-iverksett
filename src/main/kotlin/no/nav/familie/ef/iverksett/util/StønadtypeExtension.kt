@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.økonomi
+package no.nav.familie.ef.iverksett.util
 
 import no.nav.familie.kontrakter.ef.felles.StønadType
 
