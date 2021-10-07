@@ -24,7 +24,7 @@ class FamilieIntegrasjonerClient(
         private val integrasjonUri: URI
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
 
-    val logger: Logger? = LoggerFactory.getLogger(this::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private val hentIdenterURI =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_HENT_IDENTER).build().toUri()
