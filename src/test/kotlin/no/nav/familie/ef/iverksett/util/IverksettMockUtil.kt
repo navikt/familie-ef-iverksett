@@ -11,6 +11,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
+import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
@@ -43,6 +45,9 @@ import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
+import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
+import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
 
@@ -112,7 +117,10 @@ fun opprettAndelTilkjentYtelse() = lagAndelTilkjentYtelse(
         inntektsreduksjon = 5
 )
 
-fun opprettIverksett(behandlingId: UUID, forrigeBehandlingId: UUID? = null, andeler : List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse())): Iverksett {
+fun opprettIverksett(behandlingId: UUID,
+                     forrigeBehandlingId: UUID? = null,
+                     andeler : List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
+                     tilbakekreving: Tilbakekrevingsdetaljer? = null): Iverksett {
 
     val tilkjentYtelse = TilkjentYtelse(
             id = UUID.randomUUID(),
@@ -165,7 +173,8 @@ fun opprettIverksett(behandlingId: UUID, forrigeBehandlingId: UUID? = null, ande
                     vedtaksperioder = listOf(Vedtaksperiode(fraOgMed = LocalDate.now(),
                                                             tilOgMed = LocalDate.now(),
                                                             aktivitet = AktivitetType.BARNET_ER_SYKT,
-                                                            periodeType = VedtaksperiodeType.HOVEDPERIODE))
+                                                            periodeType = VedtaksperiodeType.HOVEDPERIODE)),
+                    tilbakekreving = tilbakekreving
             )
     )
 }
@@ -206,6 +215,20 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
             saksbehandlerIdent = "saksbehandlerIdent"
         )
 }
+
+fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
+        Tilbakekrevingsdetaljer(
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+                tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
+                        varseltekst = "varseltekst",
+                        sumFeilutbetaling = BigDecimal.valueOf(100),
+                        perioder = listOf(
+                                Periode(
+                                        fom = LocalDate.of(2021, 5, 1),
+                                        tom = LocalDate.of(2021,6,30)
+                        ))
+                )
+        )
 
 class IverksettResultatMockBuilder private constructor(
 
