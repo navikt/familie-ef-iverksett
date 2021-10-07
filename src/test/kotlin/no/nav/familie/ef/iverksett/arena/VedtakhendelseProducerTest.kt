@@ -42,7 +42,7 @@ private fun forventetXML(hendelsesTidspunkt: String): String {
             <hendelsesTidspunkt xmlns="">${hendelsesTidspunkt}</hendelsesTidspunkt>
         </vedtakHendelser>
     """.trim()
-        .replace("\n", "")
-        .replace("""> *<""".toRegex(), "><")
+            .replace("\n", "")
+            .replace("""> *<""".toRegex(), "><")
 
 }

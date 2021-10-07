@@ -6,7 +6,6 @@ import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.lang.IllegalStateException
 import java.time.ZoneId
 import java.time.ZonedDateTime
 

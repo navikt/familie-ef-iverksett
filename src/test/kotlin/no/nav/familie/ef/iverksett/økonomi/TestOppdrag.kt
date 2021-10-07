@@ -243,7 +243,7 @@ object TestOppdragParser {
     }
 
     private fun emptyAsNull(s: String): String? =
-        s.ifEmpty { null }
+            s.ifEmpty { null }
 
 
 }

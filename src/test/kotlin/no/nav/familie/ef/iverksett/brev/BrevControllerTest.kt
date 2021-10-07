@@ -23,8 +23,8 @@ class BrevControllerTest {
         val journalpostId = "123456789"
 
         every { journalpostClient.arkiverDokument(any(), any()) } returns ArkiverDokumentResponse(
-            journalpostId,
-            true)
+                journalpostId,
+                true)
 
         every { journalpostClient.distribuerBrev(journalpostId) } returns "distribuerBrevResponse"
 

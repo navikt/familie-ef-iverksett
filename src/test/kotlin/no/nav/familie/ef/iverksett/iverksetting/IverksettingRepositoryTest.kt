@@ -10,7 +10,7 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.objectMapper
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.util.*
+import java.util.UUID
 
 class IverksettingRepositoryTest : ServerTest() {
 
@@ -22,9 +22,9 @@ class IverksettingRepositoryTest : ServerTest() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
         val iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagre(
-            UUID.randomUUID(),
-            iverksett,
-            opprettBrev()
+                UUID.randomUUID(),
+                iverksett,
+                opprettBrev()
         )
     }
 

@@ -36,9 +36,11 @@ class BehandlingDVHMapper {
             return BehandlingDVH(fagsakId = iverksett.fagsak.fagsakId.toString(),
                                  behandlingId = iverksett.behandling.behandlingId.toString(),
                                  relatertBehandlingId = iverksett.behandling.forrigeBehandlingId?.toString(),
-                                 adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let { Adressebeskyttelse.valueOf(it.name) },
+                                 adressebeskyttelse = iverksett.søker.adressebeskyttelse
+                                         ?.let { Adressebeskyttelse.valueOf(it.name) },
                                  tidspunktVedtak = iverksett.vedtak.vedtaksdato.atStartOfDay(ZoneId.of("Europe/Oslo")),
-                                 vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map { mapTilVilkårsvurderinger(it) },
+                                 vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger
+                                         .map { mapTilVilkårsvurderinger(it) },
                                  person = mapTilPerson(personIdent = iverksett.søker.personIdent),
                                  barn = iverksett.søker.barn.map { mapTilBarn(it) },
                                  behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
@@ -52,9 +54,10 @@ class BehandlingDVHMapper {
                                                       iverksett.søker)
                                  } ?: emptyList(),
                                  aktivitetskrav = Aktivitetskrav(
-                                     aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
-                                     harSagtOppArbeidsforhold = VilkårsvurderingUtil.hentHarSagtOppEllerRedusertFraVurderinger(
-                                         iverksett.behandling.vilkårsvurderinger)
+                                         aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
+                                         harSagtOppArbeidsforhold = VilkårsvurderingUtil
+                                                 .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling
+                                                                                                    .vilkårsvurderinger)
                                  ),
                                  funksjonellId = iverksett.behandling.eksternId.toString(),
                                  stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name))
@@ -67,15 +70,15 @@ class BehandlingDVHMapper {
                                      søker: Søker): List<Utbetaling> {
             return tilkjentYtelse.andelerTilkjentYtelse.map {
                 Utbetaling(
-                    beløp = it.beløp,
-                    samordningsfradrag = it.samordningsfradrag,
-                    inntekt = it.inntekt,
-                    inntektsreduksjon = it.inntektsreduksjon,
-                    fraOgMed = it.fraOgMed,
-                    tilOgMed = it.tilOgMed,
-                    Utbetalingsdetalj(gjelderPerson = mapTilPerson(personIdent = søker.personIdent),
-                                      klassekode = stønadsType.tilKlassifisering(),
-                                      delytelseId = eksternFagsakId.toString() + it.periodeId))
+                        beløp = it.beløp,
+                        samordningsfradrag = it.samordningsfradrag,
+                        inntekt = it.inntekt,
+                        inntektsreduksjon = it.inntektsreduksjon,
+                        fraOgMed = it.fraOgMed,
+                        tilOgMed = it.tilOgMed,
+                        Utbetalingsdetalj(gjelderPerson = mapTilPerson(personIdent = søker.personIdent),
+                                          klassekode = stønadsType.tilKlassifisering(),
+                                          delytelseId = eksternFagsakId.toString() + it.periodeId))
             }
         }
 
@@ -90,8 +93,8 @@ class BehandlingDVHMapper {
 
         private fun mapTilVilkårsvurderinger(vilkårsvurdering: Vilkårsvurdering): VilkårsvurderingDto {
             return VilkårsvurderingDto(
-                vilkår = Vilkår.valueOf(vilkårsvurdering.vilkårType.name),
-                resultat = Vilkårsresultat.valueOf(vilkårsvurdering.resultat.name),
+                    vilkår = Vilkår.valueOf(vilkårsvurdering.vilkårType.name),
+                    resultat = Vilkårsresultat.valueOf(vilkårsvurdering.resultat.name),
             )
         }
 

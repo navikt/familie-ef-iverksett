@@ -20,7 +20,7 @@ import java.util.UUID
 @ProtectedWithClaims(issuer = "azuread")
 @Profile("dev", "local")
 class VedtakstatistikkTestController(
-        val vedtakstatistikkService: VedtakstatistikkService,
+        private val vedtakstatistikkService: VedtakstatistikkService,
 ) {
 
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])

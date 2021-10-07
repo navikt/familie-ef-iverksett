@@ -40,10 +40,10 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
 
     private val behandlingid: UUID = UUID.randomUUID()
     private val forsteAndel = lagAndelTilkjentYtelse(
-        beløp = 1000,
-        fraOgMed = LocalDate.of(2021, 1, 1),
-        tilOgMed = LocalDate.of(2021, 1, 31),
-        periodetype = Periodetype.MÅNED)
+            beløp = 1000,
+            fraOgMed = LocalDate.of(2021, 1, 1),
+            tilOgMed = LocalDate.of(2021, 1, 31),
+            periodetype = Periodetype.MÅNED)
     private val iverksett = opprettIverksett(behandlingid, andeler = listOf(forsteAndel))
 
     @BeforeEach
@@ -66,10 +66,10 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                                                     behandlingid,
                                                     listOf(forsteAndel,
                                                            lagAndelTilkjentYtelse(
-                                                               beløp = 1000,
-                                                               fraOgMed = LocalDate.now(),
-                                                               tilOgMed = LocalDate.now().plusDays(15),
-                                                               periodetype = Periodetype.MÅNED)))
+                                                                   beløp = 1000,
+                                                                   fraOgMed = LocalDate.now(),
+                                                                   tilOgMed = LocalDate.now().plusDays(15),
+                                                                   periodetype = Periodetype.MÅNED)))
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
@@ -84,16 +84,16 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     }
 
     @Test
-    internal fun `revurdering med der beløpet på den første endres, samt en ny legges til, forvent at den første perioden erstattes`() {
+    internal fun `revurdering der beløpet på den første endres, og en ny legges til, forvent at den første perioden erstattes`() {
         val behandlingIdRevurdering = UUID.randomUUID()
         val iverksettRevurdering = opprettIverksett(behandlingIdRevurdering,
                                                     behandlingid,
                                                     listOf(forsteAndel.copy(beløp = 299),
                                                            lagAndelTilkjentYtelse(
-                                                               beløp = 1000,
-                                                               fraOgMed = LocalDate.now(),
-                                                               tilOgMed = LocalDate.now().plusDays(15),
-                                                               periodetype = Periodetype.MÅNED)))
+                                                                   beløp = 1000,
+                                                                   fraOgMed = LocalDate.now(),
+                                                                   tilOgMed = LocalDate.now().plusDays(15),
+                                                                   periodetype = Periodetype.MÅNED)))
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
@@ -135,10 +135,10 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         val iverksettRevurdering = opprettIverksett(behandlingIdRevurdering,
                                                     tekniskOpphørId,
                                                     listOf(lagAndelTilkjentYtelse(
-                                                        beløp = 1000,
-                                                        fraOgMed = LocalDate.now(),
-                                                        tilOgMed = LocalDate.now().plusDays(15),
-                                                        periodetype = Periodetype.MÅNED)))
+                                                            beløp = 1000,
+                                                            fraOgMed = LocalDate.now(),
+                                                            tilOgMed = LocalDate.now().plusDays(15),
+                                                            periodetype = Periodetype.MÅNED)))
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())

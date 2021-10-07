@@ -30,8 +30,9 @@ class SendFattetVedtakTilInfotrygdTask(private val infotrygdFeedClient: Infotryg
         val stønadstype = iverksett.fagsak.stønadstype
         val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
                 .map { it.personIdent }.toSet()
-        val tilkjentYtelse: TilkjentYtelse = iverksett.vedtak.tilkjentYtelse
-                                             ?: error("Finner ikke tilkjent ytelse for behandling med id=${iverksett.behandling.behandlingId}")
+        val tilkjentYtelse: TilkjentYtelse =
+                iverksett.vedtak.tilkjentYtelse
+                ?: error("Finner ikke tilkjent ytelse for behandling med id=${iverksett.behandling.behandlingId}")
         val startDato = tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
                         ?: error("Finner ikke noen andel med fraOgMed for behandling=$behandlingId")
 

@@ -6,7 +6,7 @@ import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
 import org.springframework.stereotype.Service
 
 @Service
-class VedtakstatistikkService(val vedtakstatistikkKafkaProducer: VedtakstatistikkKafkaProducer) {
+class VedtakstatistikkService(private val vedtakstatistikkKafkaProducer: VedtakstatistikkKafkaProducer) {
 
     fun sendTilKafka(iverksett: Iverksett, tilkjentYtelse: TilkjentYtelse?) {
         val vedtakstatistikk = hentBehandlingDVH(iverksett, tilkjentYtelse)

@@ -11,13 +11,13 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE,
-    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
+        taskStepType = OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE,
+        beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
 )
 class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
-    private val oppgaveService: OppgaveService,
-    val iverksettingRepository: IverksettingRepository,
-    val taskRepository: TaskRepository
+        private val oppgaveService: OppgaveService,
+        private val iverksettingRepository: IverksettingRepository,
+        private val taskRepository: TaskRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {

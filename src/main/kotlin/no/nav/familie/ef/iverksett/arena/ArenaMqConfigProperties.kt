@@ -6,11 +6,11 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConfigurationProperties("arena-mq")
 @ConstructorBinding
 class ArenaMqConfigProperties(
-    val queueManager: String,
-    val channel: String,
-    val hostName: String,
-    val port: String,
-    val queueName: String,
-    val servicebruker: String,
-    val servicebrukerPassord: String
+        val queueManager: String,
+        val channel: String,
+        val hostName: String,
+        val port: String,
+        val queueName: String,
+        val servicebruker: String,
+        val servicebrukerPassord: String
 )

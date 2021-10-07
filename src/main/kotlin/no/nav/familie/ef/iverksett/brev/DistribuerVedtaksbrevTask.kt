@@ -28,7 +28,8 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
         tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId = behandlingId,
                                                                  DistribuerVedtaksbrevResultat(bestillingId = bestillingId)
         )
-        logger.info("Distribuer vedtaksbrev journalpost=[${journalpostId}] for behandling=[${behandlingId}] med bestillingId=[$bestillingId]")
+        logger.info("Distribuer vedtaksbrev journalpost=[${journalpostId}] " +
+                    "for behandling=[${behandlingId}] med bestillingId=[$bestillingId]")
     }
 
     companion object {

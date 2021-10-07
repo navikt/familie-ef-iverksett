@@ -50,15 +50,15 @@ internal class GrensesnittavstemmingTaskTest {
                                                     payload = payload,
                                                     triggerTid = triggeTid))
         val forventetPayload =
-            objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 19),
-                                                                         stønadstype = StønadType.OVERGANGSSTØNAD))
+                objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 19),
+                                                                             stønadstype = StønadType.OVERGANGSSTØNAD))
         assertThat(slot.captured.payload).isEqualTo(forventetPayload)
     }
 
     companion object {
 
         val payload: String =
-            objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 18),
-                                                                         stønadstype = StønadType.OVERGANGSSTØNAD))
+                objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 18),
+                                                                             stønadstype = StønadType.OVERGANGSSTØNAD))
     }
 }

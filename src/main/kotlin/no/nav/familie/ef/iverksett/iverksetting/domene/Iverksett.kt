@@ -16,7 +16,6 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.util.ArrayList
 import java.util.UUID
 
 data class Iverksett(
@@ -66,7 +65,7 @@ data class Behandlingsdetaljer(
         val relatertBehandlingId: UUID? = null,
         val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
         val aktivitetspliktInntrefferDato: LocalDate? = null
-        )
+)
 
 data class Vilkårsvurdering(
         val vilkårType: VilkårType,

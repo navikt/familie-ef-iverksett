@@ -31,7 +31,7 @@ class FamilieIntegrasjonerClient(
     private val aktørUri =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_AKTØR).build().toUri()
     private val arbeidsfordelingUri =
-        UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING).build().toUri()
+            UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING).build().toUri()
 
     fun hentIdenter(personident: String, medHistprikk: Boolean): List<PersonIdentMedHistorikk> {
         val uri = UriComponentsBuilder.fromUri(hentIdenterURI).queryParam("historikk", medHistprikk).build().toUri()
@@ -50,8 +50,9 @@ class FamilieIntegrasjonerClient(
     }
 
     companion object {
-        private const val arbeidsfordelingTema = "OPP" //Oppfølging - lokalenhet
-        const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet/$arbeidsfordelingTema"
+
+        private const val ARBEIDSFORDELING_TEMA = "OPP" //Oppfølging - lokalenhet
+        const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet/$ARBEIDSFORDELING_TEMA"
         const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
     }

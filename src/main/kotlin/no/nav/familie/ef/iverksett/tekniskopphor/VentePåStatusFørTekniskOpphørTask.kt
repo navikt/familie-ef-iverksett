@@ -8,7 +8,7 @@ import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
@@ -20,19 +20,19 @@ import java.util.*
 )
 
 class VentePåStatusFørTekniskOpphørTask(
-        val iverksettingRepository: IverksettingRepository,
-        val iverksettingService: IverksettingService,
-        val taskRepository: TaskRepository,
-        val tilstandRepository: TilstandRepository
+        private val iverksettingRepository: IverksettingRepository,
+        private val iverksettingService: IverksettingService,
+        private val taskRepository: TaskRepository,
+        private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val tekniskOpphør = iverksettingRepository.hentTekniskOpphør(behandlingId)
-        iverksettingService.sjekkStatusPåIverksettOgOppdaterTilstand(stønadstype = tekniskOpphør.tilkjentYtelseMedMetaData.stønadstype,
-                                                                     personIdent = tekniskOpphør.tilkjentYtelseMedMetaData.personIdent,
-                                                                     eksternBehandlingId = tekniskOpphør.tilkjentYtelseMedMetaData.eksternBehandlingId,
-                                                                     behandlingId = tekniskOpphør.tilkjentYtelseMedMetaData.behandlingId)
+        iverksettingService.sjekkStatusPåIverksettOgOppdaterTilstand(tekniskOpphør.tilkjentYtelseMedMetaData.stønadstype,
+                                                                     tekniskOpphør.tilkjentYtelseMedMetaData.personIdent,
+                                                                     tekniskOpphør.tilkjentYtelseMedMetaData.eksternBehandlingId,
+                                                                     tekniskOpphør.tilkjentYtelseMedMetaData.behandlingId)
     }
 
     companion object {

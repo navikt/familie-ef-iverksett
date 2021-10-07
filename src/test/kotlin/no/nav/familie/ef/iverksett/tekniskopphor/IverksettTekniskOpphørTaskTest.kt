@@ -84,7 +84,6 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
         assertThat(opphør!!.opphørDatoFom).isEqualTo(tilkjentYtelse.andelerTilkjentYtelse.minByOrNull { it.fraOgMed }!!.fraOgMed)
 
 
-
     }
 
 }

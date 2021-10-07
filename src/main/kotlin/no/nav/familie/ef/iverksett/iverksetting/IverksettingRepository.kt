@@ -1,6 +1,9 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.*
+import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettType
+import no.nav.familie.ef.iverksett.iverksetting.domene.TekniskOpphør
 import no.nav.familie.ef.iverksett.util.getUUID
 import no.nav.familie.ef.iverksett.util.queryForJson
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -94,7 +97,8 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
 
     // language=PostgreSQL
     companion object {
-        const val HENT_IVERKSETT_SQL = "select data from iverksett where behandling_id = :behandlingId AND type = :type "
+
+        const val HENT_IVERKSETT_SQL = "SELECT data FROM iverksett WHERE behandling_id = :behandlingId AND type = :type "
     }
 
 }

@@ -61,7 +61,7 @@ fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                            behandlingId = eksternBehandlingId,
                            utbetalingsgrad = andel.utbetalingsgrad())
 
-fun mapSatstype(periodetype: Periodetype) = when(periodetype) {
+fun mapSatstype(periodetype: Periodetype) = when (periodetype) {
     Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND
     else -> error("Støtter ikke periodetype=$periodetype")
 }

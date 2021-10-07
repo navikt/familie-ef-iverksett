@@ -7,12 +7,12 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
+import java.util.Properties
 
 @Service
-class TekniskOpphørService(val iverksettingRepository: IverksettingRepository,
-                           val tilstandRepository: TilstandRepository,
-                           val taskRepository: TaskRepository) {
+class TekniskOpphørService(private val iverksettingRepository: IverksettingRepository,
+                           private val tilstandRepository: TilstandRepository,
+                           private val taskRepository: TaskRepository) {
 
     @Transactional
     fun startIverksettingAvTekniskOpphor(tekniskOpphør: TekniskOpphør) {

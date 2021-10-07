@@ -33,9 +33,9 @@ class IverksettingService(val taskRepository: TaskRepository,
     fun startIverksetting(iverksett: Iverksett, brev: Brev) {
 
         iverksettingRepository.lagre(
-            iverksett.behandling.behandlingId,
-            iverksett,
-            brev
+                iverksett.behandling.behandlingId,
+                iverksett,
+                brev
         )
 
         tilstandRepository.opprettTomtResultat(iverksett.behandling.behandlingId)
@@ -56,14 +56,14 @@ class IverksettingService(val taskRepository: TaskRepository,
         val iverksett = iverksettingRepository.hent(behandlingId)
 
         taskRepository.save(Task(
-            type = førstePubliseringsflytTask(iverksett),
-            payload = behandlingId.toString(),
-            properties = Properties().apply {
-                this["personIdent"] = iverksett.søker.personIdent
-                this["behandlingId"] = behandlingId.toString()
-                this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
-                this["beslutter"] = iverksett.vedtak.beslutterId
-            }
+                type = førstePubliseringsflytTask(iverksett),
+                payload = behandlingId.toString(),
+                properties = Properties().apply {
+                    this["personIdent"] = iverksett.søker.personIdent
+                    this["behandlingId"] = behandlingId.toString()
+                    this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                    this["beslutter"] = iverksett.vedtak.beslutterId
+                }
         ))
     }
 
@@ -78,7 +78,7 @@ class IverksettingService(val taskRepository: TaskRepository,
     }
 
     private fun erIverksettingUtenVedtaksperioder(iverksett: Iverksett) =
-        iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT
+            iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT
 
     fun utledStatus(behandlingId: UUID): IverksettStatus? {
         val iverksettResultat = tilstandRepository.hentIverksettResultat(behandlingId)
@@ -108,9 +108,9 @@ class IverksettingService(val taskRepository: TaskRepository,
                                                  eksternBehandlingId: Long,
                                                  behandlingId: UUID) {
         val oppdragId = OppdragId(
-            fagsystem = stønadstype.tilKlassifisering(),
-            personIdent = personIdent,
-            behandlingsId = eksternBehandlingId.toString()
+                fagsystem = stønadstype.tilKlassifisering(),
+                personIdent = personIdent,
+                behandlingsId = eksternBehandlingId.toString()
         )
 
         val (status, melding) = oppdragClient.hentStatus(oppdragId)
@@ -120,8 +120,8 @@ class IverksettingService(val taskRepository: TaskRepository,
         }
 
         tilstandRepository.oppdaterOppdragResultat(
-            behandlingId = behandlingId,
-            OppdragResultat(oppdragStatus = status)
+                behandlingId = behandlingId,
+                OppdragResultat(oppdragStatus = status)
         )
     }
 }

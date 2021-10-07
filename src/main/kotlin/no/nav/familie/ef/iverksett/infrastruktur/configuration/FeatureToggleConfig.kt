@@ -30,8 +30,7 @@ class FeatureToggleConfig(private val enabled: Boolean,
             if (enabled) {
                 log.info("Funksjonsbryter-funksjonalitet er skrudd PÅ")
                 lagUnleashFeatureToggleService()
-            }
-            else {
+            } else {
                 log.warn("Funksjonsbryter-funksjonalitet er skrudd AV. " +
                          "Gir standardoppførsel for alle funksjonsbrytere, dvs 'false'")
                 lagDummyFeatureToggleService()

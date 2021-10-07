@@ -23,10 +23,10 @@ import java.util.UUID
         beskrivelse = "Journalfører vedtaksbrev."
 )
 
-class JournalførVedtaksbrevTask(val iverksettingRepository: IverksettingRepository,
-                                val journalpostClient: JournalpostClient,
-                                val taskRepository: TaskRepository,
-                                val tilstandRepository: TilstandRepository
+class JournalførVedtaksbrevTask(private val iverksettingRepository: IverksettingRepository,
+                                private val journalpostClient: JournalpostClient,
+                                private val taskRepository: TaskRepository,
+                                private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {

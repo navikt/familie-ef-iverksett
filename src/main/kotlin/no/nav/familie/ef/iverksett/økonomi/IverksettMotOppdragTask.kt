@@ -17,10 +17,10 @@ import java.util.UUID
         taskStepType = IverksettMotOppdragTask.TYPE,
         beskrivelse = "Utfører iverksetting av utbetalning mot økonomi."
 )
-class IverksettMotOppdragTask(val iverksettingRepository: IverksettingRepository,
-                              val oppdragClient: OppdragClient,
-                              val taskRepository: TaskRepository,
-                              val tilstandRepository: TilstandRepository
+class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRepository,
+                              private val oppdragClient: OppdragClient,
+                              private val taskRepository: TaskRepository,
+                              private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {

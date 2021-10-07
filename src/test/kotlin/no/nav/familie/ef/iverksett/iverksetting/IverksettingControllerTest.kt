@@ -57,7 +57,8 @@ class IverksettingControllerTest : ServerTest() {
     @Test
     internal fun `starte iverksetting for avslag ytelse gir 200 OK`() {
         val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        val iverksettJsonMedAvslag = iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null, resultat = Vedtaksresultat.AVSLÅTT))
+        val iverksettJsonMedAvslag =
+                iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null, resultat = Vedtaksresultat.AVSLÅTT))
         val request = MultipartBuilder()
                 .withJson("data", iverksettJsonMedAvslag)
                 .withByteArray("fil", "1", byteArrayOf(12))
@@ -82,8 +83,8 @@ class IverksettingControllerTest : ServerTest() {
                 .build()
 
         val respons: ResponseEntity<Ressurs<Nothing>> = restTemplate.exchange(localhostUrl("/api/iverksett"),
-                                                                 HttpMethod.POST,
-                                                                 HttpEntity(request, headers))
+                                                                              HttpMethod.POST,
+                                                                              HttpEntity(request, headers))
         assertThat(respons.statusCode.value()).isEqualTo(400)
     }
 

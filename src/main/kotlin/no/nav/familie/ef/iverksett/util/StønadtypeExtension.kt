@@ -8,7 +8,7 @@ fun StønadType.tilKlassifisering() = when (this) {
     StønadType.SKOLEPENGER -> "EFSP"
 }
 
-fun String.tilStønadstype() = when(this) {
+fun String.tilStønadstype() = when (this) {
     "EFOG" -> StønadType.OVERGANGSSTØNAD
     "EFBT" -> StønadType.BARNETILSYN
     "EFSP" -> StønadType.SKOLEPENGER

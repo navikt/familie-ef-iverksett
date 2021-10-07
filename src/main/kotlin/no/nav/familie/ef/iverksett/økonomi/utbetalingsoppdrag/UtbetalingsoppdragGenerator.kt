@@ -37,13 +37,15 @@ object UtbetalingsoppdragGenerator {
         val andelerTilOpprettelse = andelerTilOpprettelse(andelerNyTilkjentYtelse, beståendeAndeler)
 
         val andelerTilOpprettelseMedPeriodeId =
-            lagAndelerMedPeriodeId(andelerTilOpprettelse, sistePeriodeIdIForrigeKjede, nyTilkjentYtelseMedMetaData.behandlingId)
+                lagAndelerMedPeriodeId(andelerTilOpprettelse,
+                                       sistePeriodeIdIForrigeKjede,
+                                       nyTilkjentYtelseMedMetaData.behandlingId)
 
         val utbetalingsperioderSomOpprettes =
-            lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
-                                                 eksternBehandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
-                                                 tilkjentYtelse = nyTilkjentYtelseMedMetaData,
-                                                 type = nyTilkjentYtelseMedMetaData.stønadstype)
+                lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
+                                                     eksternBehandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
+                                                     tilkjentYtelse = nyTilkjentYtelseMedMetaData,
+                                                     type = nyTilkjentYtelseMedMetaData.stønadstype)
 
         val utbetalingsperioderSomOpphøres = andelTilOpphørMedDato?.let {
             lagUtbetalingsperioderForOpphør(andeler = andelTilOpphørMedDato,
@@ -53,19 +55,19 @@ object UtbetalingsoppdragGenerator {
         } ?: emptyList()
 
         val utbetalingsoppdrag =
-            Utbetalingsoppdrag(saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
-                               kodeEndring = if (forrigeTilkjentYtelse == null) NY else ENDR,
-                               fagSystem = nyTilkjentYtelseMedMetaData.stønadstype.tilKlassifisering(),
-                               saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),
-                               aktoer = nyTilkjentYtelseMedMetaData.personIdent,
-                               utbetalingsperiode = listOf(utbetalingsperioderSomOpprettes,
-                                                           utbetalingsperioderSomOpphøres)
-                                   .flatten()
-                                   .sortedBy { it.periodeId }
-            )
+                Utbetalingsoppdrag(saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
+                                   kodeEndring = if (forrigeTilkjentYtelse == null) NY else ENDR,
+                                   fagSystem = nyTilkjentYtelseMedMetaData.stønadstype.tilKlassifisering(),
+                                   saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),
+                                   aktoer = nyTilkjentYtelseMedMetaData.personIdent,
+                                   utbetalingsperiode = listOf(utbetalingsperioderSomOpprettes,
+                                                               utbetalingsperioderSomOpphøres)
+                                           .flatten()
+                                           .sortedBy { it.periodeId }
+                )
 
         val gjeldendeAndeler = (beståendeAndeler + andelerTilOpprettelseMedPeriodeId)
-            .ellerNullAndel(nyTilkjentYtelseMedMetaData, sistePeriodeIdIForrigeKjede)
+                .ellerNullAndel(nyTilkjentYtelseMedMetaData, sistePeriodeIdIForrigeKjede)
 
         return nyTilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag,
                                      andelerTilkjentYtelse = gjeldendeAndeler)
@@ -123,5 +125,5 @@ object UtbetalingsoppdragGenerator {
     }
 
     private fun andelerUtenNullVerdier(tilkjentYtelse: TilkjentYtelse?): List<AndelTilkjentYtelse> =
-        tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.erNull() } ?: emptyList()
+            tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.erNull() } ?: emptyList()
 }

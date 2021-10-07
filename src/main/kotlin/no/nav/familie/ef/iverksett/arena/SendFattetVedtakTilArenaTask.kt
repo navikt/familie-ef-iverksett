@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.arena
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task

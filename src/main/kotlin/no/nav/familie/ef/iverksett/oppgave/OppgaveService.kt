@@ -24,28 +24,29 @@ class OppgaveService(private val oppgaveClient: OppgaveClient,
         val enhetsnummer = familieIntegrasjonerClient.hentNavEnhetForOppfølging(iverksett.søker.personIdent)
 
         val opprettOppgaveRequest =
-            OpprettOppgaveRequest(
-                ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
-                saksId = iverksett.fagsak.eksternId.toString(),
-                tema = Tema.ENF,
-                oppgavetype = Oppgavetype.VurderHenvendelse,
-                fristFerdigstillelse = fristFerdigstillelse(),
-                beskrivelse = oppgaveBeskrivelse(iverksett),
-                enhetsnummer = enhetsnummer?.enhetId,
-                behandlingstema = Behandlingstema.fromValue(iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
-                                                                .replaceFirstChar { it.uppercase() }).value,
-                tilordnetRessurs = null,
-                behandlesAvApplikasjon = "familie-ef-sak"
-            )
+                OpprettOppgaveRequest(
+                        ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
+                        saksId = iverksett.fagsak.eksternId.toString(),
+                        tema = Tema.ENF,
+                        oppgavetype = Oppgavetype.VurderHenvendelse,
+                        fristFerdigstillelse = fristFerdigstillelse(),
+                        beskrivelse = oppgaveBeskrivelse(iverksett),
+                        enhetsnummer = enhetsnummer?.enhetId,
+                        behandlingstema = Behandlingstema
+                                .fromValue(iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
+                                                   .replaceFirstChar { it.uppercase() }).value,
+                        tilordnetRessurs = null,
+                        behandlesAvApplikasjon = "familie-ef-sak"
+                )
         oppgaveClient.opprettOppgave(opprettOppgaveRequest)
     }
 
     private fun oppgaveBeskrivelse(iverksett: Iverksett): String {
         val gjeldendeVedtak = iverksett.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed }!!
         return "${iverksett.fagsak.stønadstype.name.enumToReadable()} er innvilget fra " +
-                "${gjeldendeVedtak.fraOgMed.toReadable()} - ${gjeldendeVedtak.tilOgMed.toReadable()}. " +
-                "Aktivitetsplikt: ${gjeldendeVedtak.aktivitet.name.enumToReadable()}" +
-                ". Periodetype: ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
+               "${gjeldendeVedtak.fraOgMed.toReadable()} - ${gjeldendeVedtak.tilOgMed.toReadable()}. " +
+               "Aktivitetsplikt: ${gjeldendeVedtak.aktivitet.name.enumToReadable()}" +
+               ". Periodetype: ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
     }
 
     fun String.enumToReadable(): String {

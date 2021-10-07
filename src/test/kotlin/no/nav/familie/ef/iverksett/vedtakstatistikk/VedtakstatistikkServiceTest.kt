@@ -73,7 +73,8 @@ class VedtakstatistikkServiceTest {
         assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.size).isEqualTo(2)
         //Egen test på vilkårtype, da det er mismatch mellom ekstern kontrakt og ef. F.eks. finnes ikke aktivitet i kontrakt.
         assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.first().vilkår.name).isEqualTo(VilkårType.AKTIVITET.name)
-        assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.last().vilkår.name).isEqualTo(VilkårType.SAGT_OPP_ELLER_REDUSERT.name)
+        assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.last().vilkår.name)
+                .isEqualTo(VilkårType.SAGT_OPP_ELLER_REDUSERT.name)
     }
 
     private fun opprettBehandlingDVH(behandlingId: String,
