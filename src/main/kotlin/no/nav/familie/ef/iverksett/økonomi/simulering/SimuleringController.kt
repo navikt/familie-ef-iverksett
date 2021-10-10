@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/simulering")
@@ -24,5 +25,12 @@ class SimuleringController(
         val detaljertSimuleringResultat =
                 simuleringService.hentSimulering(simuleringDto.toDomain())
         return Ressurs.success(detaljertSimuleringResultat)
+    }
+
+    @PostMapping("v2")
+    fun hentSimuleringV2(@RequestBody simuleringDto: SimuleringDto): Ressurs<BeriketSimuleringsresultat> {
+        val beriketSimuleringResultat =
+                simuleringService.hentBeriketSimulering(simuleringDto.toDomain(), LocalDate.now())
+        return Ressurs.success(beriketSimuleringResultat)
     }
 }

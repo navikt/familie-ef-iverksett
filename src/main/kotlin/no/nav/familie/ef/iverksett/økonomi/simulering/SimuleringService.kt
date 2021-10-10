@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class SimuleringService(
@@ -32,5 +33,15 @@ class SimuleringService(
         } catch (feil: Throwable) {
             throw Exception("Henting av simuleringsresultat feilet", feil)
         }
+    }
+
+    fun hentBeriketSimulering(simulering: Simulering, tidSimuleringHentet: LocalDate): BeriketSimuleringsresultat {
+        val detaljertSimuleringResultat = hentSimulering(simulering)
+        val simuleringsresultatDto = lagSimmuleringsoppsummering(detaljertSimuleringResultat, tidSimuleringHentet)
+
+        return BeriketSimuleringsresultat(
+                detaljer = detaljertSimuleringResultat,
+                oppsummering = simuleringsresultatDto
+        )
     }
 }
