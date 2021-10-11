@@ -1,12 +1,9 @@
-package no.nav.familie.ef.iverksett.journalføring
+package no.nav.familie.ef.iverksett.brev
 
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
-import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
-import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
@@ -25,12 +22,12 @@ import java.util.UUID
 internal class JournalførVedtaksbrevTaskTest {
 
     val iverksettingRepository = mockk<IverksettingRepository>()
-    val journalpostClient = mockk<JournalpostClient>()
+    private val journalpostClient = mockk<JournalpostClient>()
     val taskRepository = mockk<TaskRepository>()
     val tilstandRepository = mockk<TilstandRepository>()
-    val journalførVedtaksbrevTask =
+    private val journalførVedtaksbrevTask =
             JournalførVedtaksbrevTask(iverksettingRepository, journalpostClient, taskRepository, tilstandRepository)
-    val behandlingId = UUID.randomUUID()
+    val behandlingId: UUID = UUID.randomUUID()
 
     @Test
     internal fun `skal journalføre brev og opprette ny task`() {

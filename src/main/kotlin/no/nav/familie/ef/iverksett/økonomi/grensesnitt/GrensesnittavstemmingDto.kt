@@ -1,4 +1,5 @@
 package no.nav.familie.ef.iverksett.økonomi.grensesnitt
+
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.domene.Task

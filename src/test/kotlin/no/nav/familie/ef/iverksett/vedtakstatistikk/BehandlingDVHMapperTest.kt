@@ -32,13 +32,13 @@ import java.util.UUID
 
 internal class BehandlingDVHMapperTest {
 
-    val fagsakId = UUID.randomUUID()
-    val behandlingId = UUID.randomUUID()
+    val fagsakId: UUID = UUID.randomUUID()
+    val behandlingId: UUID = UUID.randomUUID()
     val eksternFagsakId = 1L
-    val eksternBehandlingId = 13L
-    val søker = "01010172272"
-    val barnFnr = "24101576627"
-    val termindato = LocalDate.now().plusDays(40)
+    private val eksternBehandlingId = 13L
+    private val søker = "01010172272"
+    private val barnFnr = "24101576627"
+    private val termindato: LocalDate? = LocalDate.now().plusDays(40)
 
 
     @Test
@@ -145,66 +145,66 @@ internal class BehandlingDVHMapperTest {
                              resultat = Vilkårsresultat.OPPFYLT,
                              delvilkårsvurderinger = listOf(
                                      Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.SØKER_MEDLEM_I_FOLKETRYGDEN,
-                                                                                        svar = SvarId.JA,
-                                                                                        begrunnelse = null))),
+                                                         vurderinger = listOf(Vurdering(RegelId.SØKER_MEDLEM_I_FOLKETRYGDEN,
+                                                                                        SvarId.JA,
+                                                                                        null))),
                                      Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.MEDLEMSKAP_UNNTAK,
-                                                                                        svar = SvarId.NEI,
-                                                                                        begrunnelse = null)))
+                                                         vurderinger = listOf(Vurdering(RegelId.MEDLEMSKAP_UNNTAK,
+                                                                                        SvarId.NEI,
+                                                                                        null)))
                              )),
 
             Vilkårsvurdering(vilkårType = VilkårType.LOVLIG_OPPHOLD,
                              resultat = Vilkårsresultat.OPPFYLT,
                              delvilkårsvurderinger = listOf(
                                      Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.BOR_OG_OPPHOLDER_SEG_I_NORGE,
-                                                                                        svar = SvarId.JA,
-                                                                                        begrunnelse = null))),
+                                                         vurderinger = listOf(Vurdering(RegelId.BOR_OG_OPPHOLDER_SEG_I_NORGE,
+                                                                                        SvarId.JA,
+                                                                                        null))),
                                      Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.OPPHOLD_UNNTAK,
-                                                                                        svar = SvarId.NEI,
-                                                                                        begrunnelse = null)))
+                                                         vurderinger = listOf(Vurdering(RegelId.OPPHOLD_UNNTAK,
+                                                                                        SvarId.NEI,
+                                                                                        null)))
                              )),
 
             Vilkårsvurdering(vilkårType = VilkårType.MOR_ELLER_FAR,
                              resultat = Vilkårsresultat.OPPFYLT,
                              delvilkårsvurderinger = listOf(
-                                     Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.OMSORG_FOR_EGNE_ELLER_ADOPTERTE_BARN,
-                                                                                        svar = SvarId.JA,
-                                                                                        begrunnelse = null)))
+                                     Delvilkårsvurdering(Vilkårsresultat.OPPFYLT,
+                                                         listOf(Vurdering(RegelId.OMSORG_FOR_EGNE_ELLER_ADOPTERTE_BARN,
+                                                                          SvarId.JA,
+                                                                          null)))
                              )),
 
             Vilkårsvurdering(vilkårType = VilkårType.SIVILSTAND,
                              resultat = Vilkårsresultat.OPPFYLT,
                              delvilkårsvurderinger = listOf(
-                                     Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.KRAV_SIVILSTAND_UTEN_PÅKREVD_BEGRUNNELSE,
-                                                                                        svar = SvarId.JA,
-                                                                                        begrunnelse = null)))
+                                     Delvilkårsvurdering(Vilkårsresultat.OPPFYLT,
+                                                         listOf(Vurdering(RegelId.KRAV_SIVILSTAND_UTEN_PÅKREVD_BEGRUNNELSE,
+                                                                          SvarId.JA,
+                                                                          null)))
                              )),
 
             Vilkårsvurdering(vilkårType = VilkårType.SAMLIV,
                              resultat = Vilkårsresultat.OPPFYLT,
                              delvilkårsvurderinger = listOf(
                                      Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.LEVER_IKKE_I_EKTESKAPLIGNENDE_FORHOLD,
-                                                                                        svar = SvarId.JA,
-                                                                                        begrunnelse = null))),
+                                                         listOf(Vurdering(RegelId.LEVER_IKKE_I_EKTESKAPLIGNENDE_FORHOLD,
+                                                                          SvarId.JA,
+                                                                          null))),
                                      Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.LEVER_IKKE_MED_ANNEN_FORELDER,
-                                                                                        svar = SvarId.JA,
-                                                                                        begrunnelse = null)))
+                                                         listOf(Vurdering(RegelId.LEVER_IKKE_MED_ANNEN_FORELDER,
+                                                                          SvarId.JA,
+                                                                          null)))
                              )),
 
             Vilkårsvurdering(vilkårType = VilkårType.ALENEOMSORG,
                              resultat = Vilkårsresultat.OPPFYLT,
                              delvilkårsvurderinger = listOf(
                                      Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.SKRIFTLIG_AVTALE_OM_DELT_BOSTED,
-                                                                                        svar = SvarId.NEI,
-                                                                                        begrunnelse = null))),
+                                                         vurderinger = listOf(Vurdering(RegelId.SKRIFTLIG_AVTALE_OM_DELT_BOSTED,
+                                                                                        SvarId.NEI,
+                                                                                        null))),
                                      Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
                                                          vurderinger = listOf(Vurdering(regelId = RegelId.NÆRE_BOFORHOLD,
                                                                                         svar = SvarId.NEI,
@@ -223,10 +223,11 @@ internal class BehandlingDVHMapperTest {
             Vilkårsvurdering(vilkårType = VilkårType.NYTT_BARN_SAMME_PARTNER,
                              resultat = Vilkårsresultat.OPPFYLT,
                              delvilkårsvurderinger = listOf(
-                                     Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.HAR_FÅTT_ELLER_VENTER_NYTT_BARN_MED_SAMME_PARTNER,
-                                                                                        svar = SvarId.NEI,
-                                                                                        begrunnelse = null)))
+                                     Delvilkårsvurdering(Vilkårsresultat.OPPFYLT,
+                                                         listOf(Vurdering(
+                                                                 RegelId.HAR_FÅTT_ELLER_VENTER_NYTT_BARN_MED_SAMME_PARTNER,
+                                                                 SvarId.NEI,
+                                                                 null)))
                              )),
 
             Vilkårsvurdering(vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
@@ -242,21 +243,21 @@ internal class BehandlingDVHMapperTest {
                              resultat = Vilkårsresultat.OPPFYLT,
                              delvilkårsvurderinger = listOf(
                                      Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.FYLLER_BRUKER_AKTIVITETSPLIKT,
-                                                                                        svar = SvarId.JA,
-                                                                                        begrunnelse = null)))
+                                                         vurderinger = listOf(Vurdering(RegelId.FYLLER_BRUKER_AKTIVITETSPLIKT,
+                                                                                        SvarId.JA,
+                                                                                        null)))
                              )),
             Vilkårsvurdering(vilkårType = VilkårType.TIDLIGERE_VEDTAKSPERIODER,
                              resultat = Vilkårsresultat.OPPFYLT,
                              delvilkårsvurderinger = listOf(
-                                     Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.HAR_TIDLIGERE_ANDRE_STØNADER_SOM_HAR_BETYDNING,
-                                                                                        svar = SvarId.NEI,
-                                                                                        begrunnelse = null))),
-                                     Delvilkårsvurdering(resultat = Vilkårsresultat.OPPFYLT,
-                                                         vurderinger = listOf(Vurdering(regelId = RegelId.HAR_TIDLIGERE_MOTTATT_OVERGANSSTØNAD,
-                                                                                        svar = SvarId.NEI,
-                                                                                        begrunnelse = null)))
+                                     Delvilkårsvurdering(Vilkårsresultat.OPPFYLT,
+                                                         listOf(Vurdering(RegelId.HAR_TIDLIGERE_ANDRE_STØNADER_SOM_HAR_BETYDNING,
+                                                                          SvarId.NEI,
+                                                                          null))),
+                                     Delvilkårsvurdering(Vilkårsresultat.OPPFYLT,
+                                                         listOf(Vurdering(RegelId.HAR_TIDLIGERE_MOTTATT_OVERGANSSTØNAD,
+                                                                          SvarId.NEI,
+                                                                          null)))
                              )),
 
             )

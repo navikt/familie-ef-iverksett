@@ -22,8 +22,8 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
     @Bean
     override fun jdbcCustomConversions(): JdbcCustomConversions {
         return JdbcCustomConversions(listOf(
-            PropertiesWrapperTilStringConverter(),
-            StringTilPropertiesWrapperConverter()
+                PropertiesWrapperTilStringConverter(),
+                StringTilPropertiesWrapperConverter()
         ))
     }
 }

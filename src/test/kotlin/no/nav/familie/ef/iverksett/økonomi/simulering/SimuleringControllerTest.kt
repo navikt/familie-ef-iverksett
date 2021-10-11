@@ -32,8 +32,8 @@ class SimuleringControllerTest : ServerTest() {
 
     private fun hentSimulering(simuleringDto: SimuleringDto): ResponseEntity<Ressurs<DetaljertSimuleringResultat>> {
         return restTemplate.exchange(localhostUrl("/api/simulering/"),
-            HttpMethod.POST,
-            HttpEntity(simuleringDto, headers)
+                                     HttpMethod.POST,
+                                     HttpEntity(simuleringDto, headers)
         )
     }
 }

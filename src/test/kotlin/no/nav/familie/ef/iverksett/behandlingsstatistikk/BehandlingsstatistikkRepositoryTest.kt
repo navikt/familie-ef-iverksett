@@ -16,8 +16,8 @@ internal class BehandlingsstatistikkRepositoryTest : ServerTest() {
 
     @Autowired
     private lateinit var behandlingsstatistikkRepository: BehandlingsstatistikkRepository
-    val behandlingId = UUID.randomUUID()
-    val behandlingstatistikkPåbegynt = opprettBehandlingstatistikk(behandlingId)
+    private val behandlingId: UUID = UUID.randomUUID()
+    private val behandlingstatistikkPåbegynt = opprettBehandlingstatistikk(behandlingId)
 
     @BeforeEach
     internal fun beforeEach() {

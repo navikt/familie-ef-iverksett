@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
+import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelTilOpphørMedDato
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerTilOpprettelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
@@ -37,7 +37,9 @@ object UtbetalingsoppdragGenerator {
         val andelerTilOpprettelse = andelerTilOpprettelse(andelerNyTilkjentYtelse, beståendeAndeler)
 
         val andelerTilOpprettelseMedPeriodeId =
-                lagAndelerMedPeriodeId(andelerTilOpprettelse, sistePeriodeIdIForrigeKjede, nyTilkjentYtelseMedMetaData.behandlingId)
+                lagAndelerMedPeriodeId(andelerTilOpprettelse,
+                                       sistePeriodeIdIForrigeKjede,
+                                       nyTilkjentYtelseMedMetaData.behandlingId)
 
         val utbetalingsperioderSomOpprettes =
                 lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
@@ -77,12 +79,8 @@ object UtbetalingsoppdragGenerator {
      */
     private fun List<AndelTilkjentYtelse>.ellerNullAndel(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
                                                          sistePeriodeIdIForrigeKjede: PeriodeId?): List<AndelTilkjentYtelse> {
-        return if (this.isEmpty()) {
-            listOf(nullAndelTilkjentYtelse(nyTilkjentYtelseMedMetaData.behandlingId,
-                                           sistePeriodeIdIForrigeKjede))
-
-        } else {
-            this
+        return this.ifEmpty {
+            listOf(nullAndelTilkjentYtelse(nyTilkjentYtelseMedMetaData.behandlingId, sistePeriodeIdIForrigeKjede))
         }
     }
 

@@ -21,8 +21,8 @@ internal class HentTilstandRepositoryTest : ServerTest() {
     @Autowired
     private lateinit var tilstandRepository: TilstandRepository
 
-    val behandlingId = UUID.randomUUID()
-    val tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId)
+    private val behandlingId: UUID = UUID.randomUUID()
+    private val tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId)
 
     @BeforeEach
     fun beforeEach() {
@@ -85,11 +85,11 @@ internal class HentTilstandRepositoryTest : ServerTest() {
     }
 
     @Test
-    internal fun `hent tilkjentytelser for flere oppdragIdn skal kaste feil hvis den ikke finner tilkjent ytelse for en behandling`() {
+    internal fun `hentTilkjentYtelse for flere oppdragIdn kaster feil hvis den ikke finner tilkjent ytelse for en behandling`() {
         val behandlingId2 = UUID.randomUUID()
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
 
-        assertThat(catchThrowable { tilstandRepository.hentTilkjentYtelse (setOf(behandlingId, behandlingId2)) })
+        assertThat(catchThrowable { tilstandRepository.hentTilkjentYtelse(setOf(behandlingId, behandlingId2)) })
                 .hasMessageContaining("=[$behandlingId2]")
     }
 

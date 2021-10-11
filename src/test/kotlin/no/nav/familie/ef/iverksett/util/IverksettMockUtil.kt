@@ -107,6 +107,7 @@ fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
             )
     )
 }
+
 fun opprettAndelTilkjentYtelse() = lagAndelTilkjentYtelse(
         beløp = 5000,
         periodetype = Periodetype.MÅNED,
@@ -119,7 +120,7 @@ fun opprettAndelTilkjentYtelse() = lagAndelTilkjentYtelse(
 
 fun opprettIverksett(behandlingId: UUID,
                      forrigeBehandlingId: UUID? = null,
-                     andeler : List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
+                     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
                      tilbakekreving: Tilbakekrevingsdetaljer? = null): Iverksett {
 
     val tilkjentYtelse = TilkjentYtelse(
@@ -205,7 +206,7 @@ fun opprettTilkjentYtelse(behandlingId: UUID): TilkjentYtelse {
 }
 
 fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
-        return FrittståendeBrevDto(
+    return FrittståendeBrevDto(
             personIdent = "12345678910",
             eksternFagsakId = 1,
             stønadType = StønadType.OVERGANGSSTØNAD,
@@ -213,7 +214,7 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
             fil = "fil.pdf".toByteArray(),
             journalførendeEnhet = "4489",
             saksbehandlerIdent = "saksbehandlerIdent"
-        )
+    )
 }
 
 fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
@@ -225,8 +226,8 @@ fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
                         perioder = listOf(
                                 Periode(
                                         fom = LocalDate.of(2021, 5, 1),
-                                        tom = LocalDate.of(2021,6,30)
-                        ))
+                                        tom = LocalDate.of(2021, 6, 30)
+                                ))
                 )
         )
 

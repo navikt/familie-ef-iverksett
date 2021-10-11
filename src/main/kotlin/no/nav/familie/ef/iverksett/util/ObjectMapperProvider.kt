@@ -12,8 +12,9 @@ class ObjectMapperProvider {
     companion object {
 
         val objectMapper: ObjectMapper =
-                no.nav.familie.kontrakter.felles.objectMapper.registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java,
-                                                                                                            ZonedDateTimeDeserializer()))
+                no.nav.familie.kontrakter.felles.objectMapper
+                        .registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java,
+                                                                       ZonedDateTimeDeserializer()))
     }
 
 }

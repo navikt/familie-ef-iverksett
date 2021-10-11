@@ -19,8 +19,6 @@ import javax.jms.JMSException
 @EnableConfigurationProperties(ArenaMqConfigProperties::class)
 class ArenaMqConfig(val arenaMqConfigProperties: ArenaMqConfigProperties) {
 
-    private val UTF_8_WITH_PUA = 1208
-
     @Bean
     fun jmsTemplate(connectionFactory: ConnectionFactory): JmsTemplate {
         val jmsTemplate = JmsTemplate(connectionFactory)
@@ -50,4 +48,11 @@ class ArenaMqConfig(val arenaMqConfigProperties: ArenaMqConfigProperties) {
         cachingConnectionFactory.sessionCacheSize = 10
         return cachingConnectionFactory
     }
+
+    companion object {
+
+        private const val UTF_8_WITH_PUA = 1208
+
+    }
+
 }

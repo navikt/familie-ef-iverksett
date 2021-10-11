@@ -21,10 +21,10 @@ import java.util.UUID
 )
 
 class VentePåStatusFraØkonomiTask(
-        val iverksettingRepository: IverksettingRepository,
-        val iverksettingService: IverksettingService,
-        val taskRepository: TaskRepository,
-        val tilstandRepository: TilstandRepository
+        private val iverksettingRepository: IverksettingRepository,
+        private val iverksettingService: IverksettingService,
+        private val taskRepository: TaskRepository,
+        private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {

@@ -1,12 +1,17 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
-import no.nav.familie.kontrakter.felles.tilbakekreving.*
+import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
+import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
+import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
+import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
+import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
+import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 
 class TilbakekrevingMapper {
 
@@ -32,24 +37,22 @@ class TilbakekrevingMapper {
             )
         }
 
-        private fun mapYtelsestype(stønadType: StønadType) : Ytelsestype =
-                when(stønadType) {
-                    StønadType.BARNETILSYN->Ytelsestype.BARNETILSYN
-                    StønadType.OVERGANGSSTØNAD->Ytelsestype.OVERGANGSSTØNAD
-                    StønadType.SKOLEPENGER->Ytelsestype.SKOLEPENGER
+        private fun mapYtelsestype(stønadType: StønadType): Ytelsestype =
+                when (stønadType) {
+                    StønadType.BARNETILSYN -> Ytelsestype.BARNETILSYN
+                    StønadType.OVERGANGSSTØNAD -> Ytelsestype.OVERGANGSSTØNAD
+                    StønadType.SKOLEPENGER -> Ytelsestype.SKOLEPENGER
                 }
 
         private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel? {
-            return when(tilbakekrevingsdetaljer.tilbakekrevingsvalg) {
+            return when (tilbakekrevingsdetaljer.tilbakekrevingsvalg) {
                 Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL ->
-                    Varsel(
-                            varseltekst = tilbakekrevingsdetaljer.tilbakekrevingMedVarsel?.varseltekst ?:
-                                          error("varseltekst er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
-                            sumFeilutbetaling = tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.sumFeilutbetaling ?:
-                                                error("sumFeilutbetaling er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
-                            perioder = tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder ?:
-                                       error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
-                    )
+                    Varsel(tilbakekrevingsdetaljer.tilbakekrevingMedVarsel?.varseltekst
+                           ?: error("varseltekst er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
+                           tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.sumFeilutbetaling
+                           ?: error("sumFeilutbetaling er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
+                           tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder
+                           ?: error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"))
                 else -> null
             }
         }

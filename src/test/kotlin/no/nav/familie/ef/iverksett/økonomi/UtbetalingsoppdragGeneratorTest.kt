@@ -75,7 +75,8 @@ internal class UtbetalingsoppdragGeneratorTest {
     @Test
     fun `Har 2 perioder og får en endring på andre perioden men har feil behandlingId i testen`() {
         val catchThrowable = catchThrowable {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_periode_får_en_endring_i_andre_perioden_feiler_pga_feil_behandling_id.csv"))
+            TestOppdragRunner.run(javaClass.getResource(
+                    "/oppdrag/2_periode_får_en_endring_i_andre_perioden_feiler_pga_feil_behandling_id.csv"))
         }
         assertThat(catchThrowable)
                 .hasMessageContaining("Feiler for gruppe med indeks 1 ==> ")
@@ -87,7 +88,8 @@ internal class UtbetalingsoppdragGeneratorTest {
     @Test
     fun `Har 2 perioder og får en endring på andre perioden men har feil periodeId i testen`() {
         val catchThrowable = catchThrowable {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_periode_får_en_endring_i_andre_perioden_feiler_pga_feil_periode_id.csv"))
+            TestOppdragRunner.run(javaClass.getResource(
+                    "/oppdrag/2_periode_får_en_endring_i_andre_perioden_feiler_pga_feil_periode_id.csv"))
         }
         assertThat(catchThrowable)
                 .hasMessageContaining("Feiler for gruppe med indeks 1 ==> ")
@@ -97,7 +99,7 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
-    internal fun `Andeler med behandlingId, periodeId og forrigePeriodeId blir oppdaterte i lagTilkjentYtelseMedUtbetalingsoppdrag`() {
+    fun `Andeler med behandlingId, periodeId og forrigePeriodeId blir oppdaterte i lagTilkjentYtelseMedUtbetalingsoppdrag`() {
         val behandlingA = UUID.randomUUID()
         val behandlingB = UUID.randomUUID()
         val andel1 = opprettAndel(2,

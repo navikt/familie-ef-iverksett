@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.økonomi.grensesnitt
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
-import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
@@ -19,8 +19,8 @@ data class GrensesnittavstemmingPayload(val fraDato: LocalDate, val stønadstype
 
 @Service
 @TaskStepBeskrivelse(taskStepType = GrensesnittavstemmingTask.TYPE, beskrivelse = "Utfører grensesnittavstemming mot økonomi.")
-class GrensesnittavstemmingTask(val oppdragClient: OppdragClient,
-                                val taskRepository: TaskRepository) : AsyncTaskStep {
+class GrensesnittavstemmingTask(private val oppdragClient: OppdragClient,
+                                private val taskRepository: TaskRepository) : AsyncTaskStep {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -44,8 +44,7 @@ class GrensesnittavstemmingTask(val oppdragClient: OppdragClient,
     }
 
     fun opprettGrensesnittavstemmingTask(grensesnittavstemmingDto: GrensesnittavstemmingDto) =
-            grensesnittavstemmingDto
-                    .let { it.tilTask() }
+            grensesnittavstemmingDto.tilTask()
                     .let { taskRepository.save(it) }
 
     companion object {

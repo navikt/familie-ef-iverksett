@@ -4,8 +4,8 @@ import no.finn.unleash.DefaultUnleash
 import no.finn.unleash.UnleashContext
 import no.finn.unleash.UnleashContextProvider
 import no.finn.unleash.util.UnleashConfig
-import no.nav.familie.ef.sak.featuretoggle.ByEnvironmentStrategy
-import no.nav.familie.ef.sak.featuretoggle.FeatureToggleService
+import no.nav.familie.ef.iverksett.featuretoggle.ByEnvironmentStrategy
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -30,8 +30,7 @@ class FeatureToggleConfig(private val enabled: Boolean,
             if (enabled) {
                 log.info("Funksjonsbryter-funksjonalitet er skrudd PÅ")
                 lagUnleashFeatureToggleService()
-            }
-            else {
+            } else {
                 log.warn("Funksjonsbryter-funksjonalitet er skrudd AV. " +
                          "Gir standardoppførsel for alle funksjonsbrytere, dvs 'false'")
                 lagDummyFeatureToggleService()

@@ -11,21 +11,21 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import java.util.*
+import java.util.UUID
 
 internal class LagreTilstandRepositoryTest : ServerTest() {
 
     @Autowired
     private lateinit var tilstandServiceRepository: TilstandRepository
 
-    val behandlingsId = UUID.randomUUID()
-    val journalpostId = UUID.randomUUID()
+    private val behandlingsId: UUID = UUID.randomUUID()
+    private val journalpostId: UUID = UUID.randomUUID()
 
-    val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
+    private val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
 
     @BeforeEach
     fun beforeEach() {
-       tilstandServiceRepository.opprettTomtResultat(behandlingsId)
+        tilstandServiceRepository.opprettTomtResultat(behandlingsId)
     }
 
     @Test
@@ -43,18 +43,18 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     @Test
     fun `oppdater journalpost, forvent ingen unntak`() {
         tilstandServiceRepository.oppdaterJournalpostResultat(
-            behandlingsId,
-            JournalpostResultat(
-                journalpostId = journalpostId.toString()
-            )
+                behandlingsId,
+                JournalpostResultat(
+                        journalpostId = journalpostId.toString()
+                )
         )
     }
 
     @Test
     fun `oppdater distribuerVedtaksbrev, forvent ingen unntak`() {
         tilstandServiceRepository.oppdaterDistribuerVedtaksbrevResultat(
-            behandlingsId,
-            DistribuerVedtaksbrevResultat(bestillingId = "12345")
+                behandlingsId,
+                DistribuerVedtaksbrevResultat(bestillingId = "12345")
         )
     }
 
@@ -62,8 +62,9 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     fun `oppdater distribuerVedtaksbrev med feil behandlingId, forvent IllegalStateException`() {
         assertThrows<IllegalStateException> {
             tilstandServiceRepository.oppdaterDistribuerVedtaksbrevResultat(
-            UUID.randomUUID(),
-            DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
-        )}
+                    UUID.randomUUID(),
+                    DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
+            )
+        }
     }
 }

@@ -12,25 +12,24 @@ data class TilkjentYtelse(
         val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
         val andelerTilkjentYtelse: List<AndelTilkjentYtelse>) {
 
-}
 
-fun TilkjentYtelse.toMedMetadata(
-        saksbehandlerId: String,
-        eksternBehandlingId: Long,
-        stønadType: StønadType,
-        eksternFagsakId: Long,
-        personIdent: String,
-        behandlingId: UUID,
-        vedtaksdato: LocalDate
-        ): TilkjentYtelseMedMetaData {
-    return TilkjentYtelseMedMetaData(tilkjentYtelse = this,
-                                     saksbehandlerId = saksbehandlerId,
-                                     eksternBehandlingId = eksternBehandlingId,
-                                     stønadstype = stønadType,
-                                     eksternFagsakId = eksternFagsakId,
-                                     personIdent = personIdent,
-                                     behandlingId = behandlingId,
-                                     vedtaksdato = vedtaksdato
-    )
+    fun toMedMetadata(
+            saksbehandlerId: String,
+            eksternBehandlingId: Long,
+            stønadType: StønadType,
+            eksternFagsakId: Long,
+            personIdent: String,
+            behandlingId: UUID,
+            vedtaksdato: LocalDate
+    ): TilkjentYtelseMedMetaData {
+        return TilkjentYtelseMedMetaData(tilkjentYtelse = this,
+                                         saksbehandlerId = saksbehandlerId,
+                                         eksternBehandlingId = eksternBehandlingId,
+                                         stønadstype = stønadType,
+                                         eksternFagsakId = eksternFagsakId,
+                                         personIdent = personIdent,
+                                         behandlingId = behandlingId,
+                                         vedtaksdato = vedtaksdato
+        )
+    }
 }
-

@@ -9,7 +9,6 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Condition
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +19,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import java.util.UUID
-import java.util.function.Predicate
 
 
 class IverksettingControllerTest : ServerTest() {
@@ -59,7 +57,8 @@ class IverksettingControllerTest : ServerTest() {
     @Test
     internal fun `starte iverksetting for avslag ytelse gir 200 OK`() {
         val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        val iverksettJsonMedAvslag = iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null, resultat = Vedtaksresultat.AVSLÅTT))
+        val iverksettJsonMedAvslag =
+                iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null, resultat = Vedtaksresultat.AVSLÅTT))
         val request = MultipartBuilder()
                 .withJson("data", iverksettJsonMedAvslag)
                 .withByteArray("fil", "1", byteArrayOf(12))
@@ -84,8 +83,8 @@ class IverksettingControllerTest : ServerTest() {
                 .build()
 
         val respons: ResponseEntity<Ressurs<Nothing>> = restTemplate.exchange(localhostUrl("/api/iverksett"),
-                                                                 HttpMethod.POST,
-                                                                 HttpEntity(request, headers))
+                                                                              HttpMethod.POST,
+                                                                              HttpEntity(request, headers))
         assertThat(respons.statusCode.value()).isEqualTo(400)
     }
 

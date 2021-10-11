@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
+import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
@@ -61,7 +61,7 @@ fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                            behandlingId = eksternBehandlingId,
                            utbetalingsgrad = andel.utbetalingsgrad())
 
-fun mapSatstype(periodetype: Periodetype) = when(periodetype) {
+fun mapSatstype(periodetype: Periodetype) = when (periodetype) {
     Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND
     else -> error("Støtter ikke periodetype=$periodetype")
 }

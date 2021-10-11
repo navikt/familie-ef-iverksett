@@ -14,8 +14,8 @@ class BrevControllerTest {
     @Autowired
     lateinit var taskRepository: TaskRepository
 
-    val journalpostClient = mockk<JournalpostClient>()
-    val brevController = BrevController(journalpostClient)
+    private val journalpostClient = mockk<JournalpostClient>()
+    private val brevController = BrevController(journalpostClient)
 
     @Test
     internal fun `opprett frittstående brev (brev uten behandling) gir 200 OK`() {
@@ -23,8 +23,8 @@ class BrevControllerTest {
         val journalpostId = "123456789"
 
         every { journalpostClient.arkiverDokument(any(), any()) } returns ArkiverDokumentResponse(
-            journalpostId,
-            true)
+                journalpostId,
+                true)
 
         every { journalpostClient.distribuerBrev(journalpostId) } returns "distribuerBrevResponse"
 

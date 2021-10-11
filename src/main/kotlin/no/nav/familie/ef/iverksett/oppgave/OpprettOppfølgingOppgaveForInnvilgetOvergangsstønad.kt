@@ -20,36 +20,37 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE,
-    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
+        taskStepType = OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE,
+        beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
 )
 class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
-    val oppgaveClient: OppgaveClient,
-    val iverksettingRepository: IverksettingRepository,
-    val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-    val taskRepository: TaskRepository
+        private val oppgaveClient: OppgaveClient,
+        private val iverksettingRepository: IverksettingRepository,
+        private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+        private val taskRepository: TaskRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
         val enhetsnummer = familieIntegrasjonerClient.hentNavEnhetForOppfølging(iverksett.søker.personIdent)
         val opprettOppgaveRequest =
-            OpprettOppgaveRequest(
-                ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
-                saksId = iverksett.fagsak.eksternId.toString(),
-                tema = Tema.ENF,
-                oppgavetype = Oppgavetype.VurderHenvendelse,
-                fristFerdigstillelse = fristFerdigstillelse(),
-                beskrivelse = oppgaveBeskrivelse(iverksett),
-                enhetsnummer = enhetsnummer?.enhetId,
-                behandlingstema = Behandlingstema.fromValue(iverksett.fagsak.stønadstype.name.toLowerCase().capitalize()).value,
-                tilordnetRessurs = null,
-                behandlesAvApplikasjon = "familie-ef-sak"
-            )
+                OpprettOppgaveRequest(
+                        ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
+                        saksId = iverksett.fagsak.eksternId.toString(),
+                        tema = Tema.ENF,
+                        oppgavetype = Oppgavetype.VurderHenvendelse,
+                        fristFerdigstillelse = fristFerdigstillelse(),
+                        beskrivelse = oppgaveBeskrivelse(iverksett),
+                        enhetsnummer = enhetsnummer?.enhetId,
+                        behandlingstema = Behandlingstema.fromValue(iverksett.fagsak.stønadstype.name.toLowerCase()
+                                                                            .capitalize()).value,
+                        tilordnetRessurs = null,
+                        behandlesAvApplikasjon = "familie-ef-sak"
+                )
 
         oppgaveClient.opprettOppgave(opprettOppgaveRequest)
     }
@@ -61,13 +62,14 @@ class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
     private fun oppgaveBeskrivelse(iverksett: Iverksett): String {
         val gjeldendeVedtak = iverksett.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.last()
         return "${iverksett.fagsak.stønadstype.name.enumToReadable()} er innvilget fra " +
-                "${gjeldendeVedtak.fraOgMed.toReadable()} - ${gjeldendeVedtak.tilOgMed.toReadable()}. " +
-                "Aktivitetsplikt: ${gjeldendeVedtak.aktivitet.name.enumToReadable()}" +
-                ". Periodetype: ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
+               "${gjeldendeVedtak.fraOgMed.toReadable()} - ${gjeldendeVedtak.tilOgMed.toReadable()}. " +
+               "Aktivitetsplikt: ${gjeldendeVedtak.aktivitet.name.enumToReadable()}" +
+               ". Periodetype: ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
     }
 
 
     companion object {
+
         const val TYPE = "opprettOppfølgingOppgaveForInnvilgetOvergangsstønad"
     }
 

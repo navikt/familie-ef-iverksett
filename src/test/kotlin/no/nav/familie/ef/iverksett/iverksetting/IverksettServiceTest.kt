@@ -19,7 +19,7 @@ internal class IverksettServiceTest {
     val tilstandRepository = mockk<TilstandRepository>()
     val taskRepository = mockk<TaskRepository>()
     val iverksettingRepository = mockk<IverksettingRepository>()
-    val oppdragClient = mockk<OppdragClient>()
+    private val oppdragClient = mockk<OppdragClient>()
 
     private var iverksettStatusService: IverksettingService = IverksettingService(taskRepository = taskRepository,
                                                                                   tilstandRepository = tilstandRepository,
@@ -39,7 +39,7 @@ internal class IverksettServiceTest {
     }
 
     @Test
-    fun `la IverksettResultat ha felt satt for tilkjent ytelse, oppdrag, og oppdragsresultat, forvent status FEILET_MOT_OPPDRAG`() {
+    fun `la IverksettResultat ha tilkjent ytelse, oppdrag, og oppdragsresultat satt, forvent status FEILET_MOT_OPPDRAG`() {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { tilstandRepository.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()

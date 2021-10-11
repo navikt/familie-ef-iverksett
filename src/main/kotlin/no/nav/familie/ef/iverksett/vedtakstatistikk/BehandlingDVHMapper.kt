@@ -7,7 +7,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.util.VilkårsvurderingUtil
-import no.nav.familie.ef.iverksett.økonomi.tilKlassifisering
+import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
@@ -36,9 +36,11 @@ class BehandlingDVHMapper {
             return BehandlingDVH(fagsakId = iverksett.fagsak.fagsakId.toString(),
                                  behandlingId = iverksett.behandling.behandlingId.toString(),
                                  relatertBehandlingId = iverksett.behandling.forrigeBehandlingId?.toString(),
-                                 adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let { Adressebeskyttelse.valueOf(it.name) },
+                                 adressebeskyttelse = iverksett.søker.adressebeskyttelse
+                                         ?.let { Adressebeskyttelse.valueOf(it.name) },
                                  tidspunktVedtak = iverksett.vedtak.vedtaksdato.atStartOfDay(ZoneId.of("Europe/Oslo")),
-                                 vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map { mapTilVilkårsvurderinger(it) },
+                                 vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger
+                                         .map { mapTilVilkårsvurderinger(it) },
                                  person = mapTilPerson(personIdent = iverksett.søker.personIdent),
                                  barn = iverksett.søker.barn.map { mapTilBarn(it) },
                                  behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
@@ -53,8 +55,9 @@ class BehandlingDVHMapper {
                                  } ?: emptyList(),
                                  aktivitetskrav = Aktivitetskrav(
                                          aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
-                                         harSagtOppArbeidsforhold = VilkårsvurderingUtil.hentHarSagtOppEllerRedusertFraVurderinger(
-                                                 iverksett.behandling.vilkårsvurderinger)
+                                         harSagtOppArbeidsforhold = VilkårsvurderingUtil
+                                                 .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling
+                                                                                                    .vilkårsvurderinger)
                                  ),
                                  funksjonellId = iverksett.behandling.eksternId.toString(),
                                  stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name))

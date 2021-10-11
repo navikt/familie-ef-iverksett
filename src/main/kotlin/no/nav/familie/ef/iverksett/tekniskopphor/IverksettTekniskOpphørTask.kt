@@ -16,10 +16,10 @@ import java.util.UUID
         taskStepType = IverksettTekniskOpphørTask.TYPE,
         beskrivelse = "Utfører iverksetting av teknisk opphør mot økonomi."
 )
-class IverksettTekniskOpphørTask(val iverksettingRepository: IverksettingRepository,
-                                 val oppdragClient: OppdragClient,
-                                 val taskRepository: TaskRepository,
-                                 val tilstandRepository: TilstandRepository
+class IverksettTekniskOpphørTask(private val iverksettingRepository: IverksettingRepository,
+                                 private val oppdragClient: OppdragClient,
+                                 private val taskRepository: TaskRepository,
+                                 private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
@@ -42,6 +42,7 @@ class IverksettTekniskOpphørTask(val iverksettingRepository: IverksettingReposi
     }
 
     companion object {
+
         const val TYPE = "utførIverksettingAvTekniskOpphør"
     }
 }

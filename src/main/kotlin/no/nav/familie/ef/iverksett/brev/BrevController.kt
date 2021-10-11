@@ -6,7 +6,6 @@ import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,20 +16,23 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping(path = ["/api/brev"])
 @ProtectedWithClaims(issuer = "azuread")
 class BrevController(
-    val journalpostClient: JournalpostClient
+        private val journalpostClient: JournalpostClient
 ) {
 
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(@RequestBody data: FrittståendeBrevDto): ResponseEntity<Any> {
         val journalpostId = journalpostClient.arkiverDokument(
-            ArkiverDokumentRequest(
-                fnr = data.personIdent,
-                forsøkFerdigstill = true,
-                hoveddokumentvarianter = listOf(Dokument(data.fil, Filtype.PDFA, dokumenttype = Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV, tittel = data.brevtype.tittel)),
-                fagsakId = data.eksternFagsakId.toString(),
-                journalførendeEnhet = data.journalførendeEnhet,
-            ),
-            data.saksbehandlerIdent
+                ArkiverDokumentRequest(
+                        fnr = data.personIdent,
+                        forsøkFerdigstill = true,
+                        hoveddokumentvarianter = listOf(Dokument(data.fil,
+                                                                 Filtype.PDFA,
+                                                                 dokumenttype = Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV,
+                                                                 tittel = data.brevtype.tittel)),
+                        fagsakId = data.eksternFagsakId.toString(),
+                        journalførendeEnhet = data.journalførendeEnhet,
+                ),
+                data.saksbehandlerIdent
         ).journalpostId
 
         journalpostClient.distribuerBrev(journalpostId)

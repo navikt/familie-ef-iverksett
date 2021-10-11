@@ -13,8 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
 @Component
-class JournalpostClientMock(
-        @Value("\${FAMILIE_INTEGRASJONER_API_URL}") private val integrasjonUri: URI) {
+class JournalpostClientMock(@Value("\${FAMILIE_INTEGRASJONER_API_URL}") private val integrasjonUri: URI) {
 
     private val dokarkivUri: URI = UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/arkiv").build().toUri()
     private val pingUri: URI = URI("/ping")

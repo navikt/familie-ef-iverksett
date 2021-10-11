@@ -8,7 +8,6 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
-import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.prosessering.domene.Task
@@ -20,11 +19,11 @@ import java.util.UUID
 internal class VedtakstatistikkTaskTest {
 
     val iverksettingRepository = mockk<IverksettingRepository>()
-    val vedtakstatistikkService = mockk<VedtakstatistikkService>()
+    private val vedtakstatistikkService = mockk<VedtakstatistikkService>()
     val tilstandRepository = mockk<TilstandRepository>()
-    val vedtakstatistikkTask =
+    private val vedtakstatistikkTask =
             VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService, tilstandRepository)
-    val behandlingId = UUID.randomUUID()
+    val behandlingId: UUID = UUID.randomUUID()
 
     @Test
     fun `skal sende vedtaksstatistikk til DVH`() {

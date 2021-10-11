@@ -1,4 +1,4 @@
-package no.nav.familie.ef.sak.featuretoggle
+package no.nav.familie.ef.iverksett.featuretoggle
 
 interface FeatureToggleService {
 

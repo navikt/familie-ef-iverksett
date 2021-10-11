@@ -93,7 +93,8 @@ object ØkonomiUtils {
     /**
      * Skal finne opphørsdato til utbetalingsoppdraget
      *
-     * Hvis første andelen i nye andeler er før første andelen i forrige andeler så skal første datoet i forrige andeler returneres
+     * Hvis første andelen i nye andeler er før første andelen i forrige andeler så skal første datoet i
+     * forrige andeler returneres
      *
      * Hvis forrige kjede inneholder 2 andeler og den nye kjeden endrer i den andre andelen,
      * så skal opphørsdatoet settes til startdato for andre andelen i forrige kjede

@@ -30,14 +30,14 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
 
     fun oppdaterTilkjentYtelseForUtbetaling(behandlingId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
 
-        val sql =
-                "UPDATE iverksett_resultat SET tilkjentytelseforutbetaling = :tilkjentYtelseForUtbetaling::JSON WHERE behandling_id = :behandlingId"
+        val sql = "UPDATE iverksett_resultat SET tilkjentytelseforutbetaling = :tilkjentYtelseForUtbetaling::JSON " +
+                  "WHERE behandling_id = :behandlingId"
         val tilkjentYtelseForUtbetalingJson = objectMapper.writeValueAsString(tilkjentYtelseForUtbetaling)
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
                 .addValue("tilkjentYtelseForUtbetaling", tilkjentYtelseForUtbetalingJson)
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}")
+        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = $behandlingId")
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -49,32 +49,34 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                 .addValue("oppdragResultat", oppdragResultatJson)
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, oppdragResultatJson : ${oppdragResultatJson}")
+        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, " +
+                 "oppdragResultatJson : $oppdragResultatJson")
     }
 
 
     fun oppdaterJournalpostResultat(behandlingId: UUID, journalPostResultat: JournalpostResultat) {
-        val sql =
-                "UPDATE iverksett_resultat SET journalpostresultat = :journalpostResultat::JSON WHERE behandling_id = :behandlingId"
+        val sql = "UPDATE iverksett_resultat SET journalpostresultat = :journalpostResultat::JSON " +
+                  "WHERE behandling_id = :behandlingId"
         val journalPostResultatJson = objectMapper.writeValueAsString(journalPostResultat)
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
                 .addValue("journalpostResultat", journalPostResultatJson)
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId},journalPostResultatJson : ${journalPostResultatJson}")
+        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}," +
+                 "journalPostResultatJson : $journalPostResultatJson")
     }
 
     fun oppdaterDistribuerVedtaksbrevResultat(behandlingId: UUID,
                                               distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat) {
-        val sql =
-                "UPDATE iverksett_resultat SET vedtaksbrevresultat = :distribuerVedtaksbrevResultatJson::JSON WHERE behandling_id = :behandlingId"
+        val sql = "UPDATE iverksett_resultat SET vedtaksbrevresultat = :distribuerVedtaksbrevResultatJson::JSON " +
+                  "WHERE behandling_id = :behandlingId"
         val distribuerVedtaksbrevResultatJson = objectMapper.writeValueAsString(distribuerVedtaksbrevResultat)
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
                 .addValue("distribuerVedtaksbrevResultatJson", distribuerVedtaksbrevResultatJson)
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
         ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, " +
-                 "distribuerVedtaksbrevResultatJson : ${distribuerVedtaksbrevResultatJson}")
+                 "distribuerVedtaksbrevResultatJson : $distribuerVedtaksbrevResultatJson")
     }
 
 

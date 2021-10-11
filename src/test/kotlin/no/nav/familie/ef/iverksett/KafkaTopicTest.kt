@@ -13,7 +13,7 @@ class KafkaTopicTest {
     internal fun `sjekk att navn på topic ikke finnes flere ganger`() {
         val topicsSomFinnesFlereGanger = getTopics().groupBy { it.isDev }
                 .entries
-                .map { it.value.groupBy(Topic::topic).filter { it.value.size > 1 } }
+                .map { it.value.groupBy(Topic::topic).filter { entry -> entry.value.size > 1 } }
                 .flatMap { it.entries }
         if (topicsSomFinnesFlereGanger.isNotEmpty()) {
             error(lagFeilmelding(topicsSomFinnesFlereGanger))

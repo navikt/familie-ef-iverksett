@@ -37,11 +37,11 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
     var iverksettTekniskOpphørTask: IverksettTekniskOpphørTask? = null
 
 
-    val forrigeBehandlingId = UUID.randomUUID()
-    val tekniskOpphørBehandlingId = UUID.randomUUID()
+    private val forrigeBehandlingId: UUID = UUID.randomUUID()
+    private val tekniskOpphørBehandlingId: UUID = UUID.randomUUID()
 
-    val oppdragClient = mockk<OppdragClient>()
-    val tilkjentYtelse = opprettTilkjentYtelse(forrigeBehandlingId)
+    private val oppdragClient = mockk<OppdragClient>()
+    private val tilkjentYtelse = opprettTilkjentYtelse(forrigeBehandlingId)
 
     @PostConstruct
     fun init() {
@@ -82,7 +82,6 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
         val opphør = utbetalingsoppdrag.captured.utbetalingsperiode.first().opphør
         assertThat(opphør).isNotNull
         assertThat(opphør!!.opphørDatoFom).isEqualTo(tilkjentYtelse.andelerTilkjentYtelse.minByOrNull { it.fraOgMed }!!.fraOgMed)
-
 
 
     }

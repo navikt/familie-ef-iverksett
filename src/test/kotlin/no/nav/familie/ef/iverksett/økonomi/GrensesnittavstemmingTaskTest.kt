@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.grensesnitt.GrensesnittavstemmingPayload
 import no.nav.familie.ef.iverksett.økonomi.grensesnitt.GrensesnittavstemmingTask
 import no.nav.familie.kontrakter.ef.felles.StønadType
@@ -18,9 +19,9 @@ import java.time.LocalDateTime
 
 internal class GrensesnittavstemmingTaskTest {
 
-    val oppdragClient = mockk<OppdragClient>()
+    private val oppdragClient = mockk<OppdragClient>()
     val taskRepository = mockk<TaskRepository>()
-    val grensesnittavstemmingTask = GrensesnittavstemmingTask(oppdragClient, taskRepository)
+    private val grensesnittavstemmingTask = GrensesnittavstemmingTask(oppdragClient, taskRepository)
 
 
     @Test
@@ -48,14 +49,16 @@ internal class GrensesnittavstemmingTaskTest {
         grensesnittavstemmingTask.onCompletion(Task(type = GrensesnittavstemmingTask.TYPE,
                                                     payload = payload,
                                                     triggerTid = triggeTid))
-        val forventetPayload = objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 19),
-                                                                                            stønadstype = StønadType.OVERGANGSSTØNAD))
+        val forventetPayload =
+                objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 19),
+                                                                             stønadstype = StønadType.OVERGANGSSTØNAD))
         assertThat(slot.captured.payload).isEqualTo(forventetPayload)
     }
 
     companion object {
 
-        val payload = objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 18),
-                                                                                   stønadstype = StønadType.OVERGANGSSTØNAD))
+        val payload: String =
+                objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 18),
+                                                                             stønadstype = StønadType.OVERGANGSSTØNAD))
     }
 }

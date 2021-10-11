@@ -15,7 +15,7 @@ import java.util.UUID
 class VedtakhendelseProducerTest {
 
     private var jmsTemplate: JmsTemplate = mockk(relaxed = true)
-    val vedtakhendelseProducer = VedtakhendelseProducer(jmsTemplate)
+    private val vedtakhendelseProducer = VedtakhendelseProducer(jmsTemplate)
 
     @Test
     fun testVedtakhendelseProducer() {

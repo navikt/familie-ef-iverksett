@@ -7,6 +7,7 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.testcontainers.containers.PostgreSQLContainer
 
 class DbContainerInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
+
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun initialize(applicationContext: ConfigurableApplicationContext) {

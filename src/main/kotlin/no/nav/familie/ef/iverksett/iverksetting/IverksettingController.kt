@@ -27,7 +27,7 @@ import java.util.UUID
 )
 @ProtectedWithClaims(issuer = "azuread")
 class IverksettingController(
-        val iverksettingService: IverksettingService
+        private val iverksettingService: IverksettingService
 ) {
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -58,11 +58,13 @@ class IverksettingController(
 
     private fun valider(iverksett: Iverksett) {
         if (iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat != Vedtaksresultat.AVSLÅTT) {
-            throw ApiFeil("Kan ikke ha iverksetting uten tilkjentYtelse for vedtak med resultat=${iverksett.vedtak.vedtaksresultat}",
+            throw ApiFeil("Kan ikke ha iverksetting uten tilkjentYtelse " +
+                          "for vedtak med resultat=${iverksett.vedtak.vedtaksresultat}",
                           HttpStatus.BAD_REQUEST)
         }
         if (iverksett.vedtak.tilkjentYtelse != null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT) {
-            throw ApiFeil("Kan ikke ha iverksetting med tilkjentYtelse for vedtak med resultat=${iverksett.vedtak.vedtaksresultat}",
+            throw ApiFeil("Kan ikke ha iverksetting med tilkjentYtelse " +
+                          "for vedtak med resultat=${iverksett.vedtak.vedtaksresultat}",
                           HttpStatus.BAD_REQUEST)
         }
     }

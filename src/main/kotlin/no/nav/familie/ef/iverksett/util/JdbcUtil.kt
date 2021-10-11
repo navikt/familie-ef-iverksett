@@ -27,10 +27,10 @@ inline fun <reified T> NamedParameterJdbcTemplate.queryForJson(sql: String, para
 inline fun <reified T> NamedParameterJdbcTemplate.queryForNullableObject(sql: String,
                                                                          paramSource: SqlParameterSource,
                                                                          rowMapper: RowMapper<T>): T? {
-    try {
-        return this.queryForObject(sql, paramSource, rowMapper)
+    return try {
+        this.queryForObject(sql, paramSource, rowMapper)
     } catch (emptyResultDataAccess: EmptyResultDataAccessException) {
-        return null
+        null
     }
 }
 

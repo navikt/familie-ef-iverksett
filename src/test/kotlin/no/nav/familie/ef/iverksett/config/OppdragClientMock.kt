@@ -6,7 +6,6 @@ import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.OppdragStatusMedMelding
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
-import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary

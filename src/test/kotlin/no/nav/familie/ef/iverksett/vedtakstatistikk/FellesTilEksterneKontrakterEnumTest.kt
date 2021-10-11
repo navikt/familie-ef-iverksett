@@ -14,9 +14,9 @@ import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse as AdresseBeskyt
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType as AktivitetTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType as BehandlingTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak as BehandlingÅrsakEkstern
+import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType as VedtakPeriodeTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEkstern
-import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 
 class FellesTilEksterneKontrakterEnumTest {
 
