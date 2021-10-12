@@ -7,7 +7,7 @@ import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import java.math.BigDecimal
 import java.time.LocalDate
 
-fun lagSimmuleringsoppsummering(detaljertSimuleringResultat: DetaljertSimuleringResultat, tidSimuleringHentet: LocalDate): Simuleringsoppsummering {
+fun lagSimuleringsoppsummering(detaljertSimuleringResultat: DetaljertSimuleringResultat, tidSimuleringHentet: LocalDate): Simuleringsoppsummering {
     val perioder = grupperPosteringerEtterDato(detaljertSimuleringResultat.simuleringMottaker)
 
     val framtidigePerioder =
