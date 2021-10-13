@@ -9,7 +9,7 @@ import java.util.Locale
 
 private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
-fun mapIverkesttTilVedtakHendelser(iverksett: Iverksett, aktørId: String): VedtakHendelser {
+fun mapIverksettTilVedtakHendelser(iverksett: Iverksett, aktørId: String): VedtakHendelser {
     return VedtakHendelser(
             aktoerID = aktørId,
             avslutningsstatus = mapAvslutningsstatus(iverksett.vedtak.vedtaksresultat),

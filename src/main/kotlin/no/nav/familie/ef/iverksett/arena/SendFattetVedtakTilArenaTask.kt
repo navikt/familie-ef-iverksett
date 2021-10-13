@@ -30,7 +30,7 @@ class SendFattetVedtakTilArenaTask(private val vedtakhendelseProducer: Vedtakhen
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
         val aktørId = integrasjonerClient.hentAktørId(iverksett.søker.personIdent)
-        vedtakhendelseProducer.produce(mapIverkesttTilVedtakHendelser(iverksett, aktørId))
+        vedtakhendelseProducer.produce(mapIverksettTilVedtakHendelser(iverksett, aktørId))
     }
 
     override fun onCompletion(task: Task) {

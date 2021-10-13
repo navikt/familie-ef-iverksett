@@ -8,24 +8,22 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class ObjectMapperProvider {
-    companion object {
+object ObjectMapperProvider {
 
-        val objectMapper: ObjectMapper =
-                no.nav.familie.kontrakter.felles.objectMapper
-                        .registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java,
-                                                                       ZonedDateTimeDeserializer()))
-    }
+    val objectMapper: ObjectMapper =
+            no.nav.familie.kontrakter.felles.objectMapper
+                    .registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java,
+                                                                   ZonedDateTimeDeserializer()))
 
-}
 
-/**
- * Vi ønsker å defaulte til Europe/Oslo ved deserialisering, i stedet for automatisk ZoneID-justering til UTC
- */
-private class ZonedDateTimeDeserializer : JsonDeserializer<ZonedDateTime>() {
+    /**
+     * Vi ønsker å defaulte til Europe/Oslo ved deserialisering, i stedet for automatisk ZoneID-justering til UTC
+     */
+    private class ZonedDateTimeDeserializer : JsonDeserializer<ZonedDateTime>() {
 
-    override fun deserialize(jsonParser: JsonParser, deserializationContext: DeserializationContext): ZonedDateTime {
-        val string = jsonParser.text
-        return ZonedDateTime.parse(string).withZoneSameInstant(ZoneId.of("Europe/Oslo"))
+        override fun deserialize(jsonParser: JsonParser, deserializationContext: DeserializationContext): ZonedDateTime {
+            val string = jsonParser.text
+            return ZonedDateTime.parse(string).withZoneSameInstant(ZoneId.of("Europe/Oslo"))
+        }
     }
 }
