@@ -32,7 +32,7 @@ internal class TilbakekrevingMapperTest {
 
         assertThat(request.manueltOpprettet).isFalse()
         assertThat(request.personIdent).isEqualTo(iverksett.søker.personIdent)
-        assertThat(request.behandlingstype).isEqualTo(Behandlingstype.REVURDERING_TILBAKEKREVING)
+        assertThat(request.behandlingstype).isEqualTo(Behandlingstype.TILBAKEKREVING)
 
         assertThat(request.faktainfo.tilbakekrevingsvalg).isEqualTo(iverksett.vedtak.tilbakekreving!!.tilbakekrevingsvalg)
         assertThat(request.faktainfo.revurderingsresultat).isEqualTo(iverksett.vedtak.vedtaksresultat.toString())

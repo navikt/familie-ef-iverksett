@@ -22,15 +22,15 @@ object TilbakekrevingMapper {
                 eksternFagsakId = iverksett.fagsak.eksternId.toString(),
                 personIdent = iverksett.søker.personIdent,
                 eksternId = iverksett.behandling.eksternId.toString(),
-                behandlingstype = Behandlingstype.REVURDERING_TILBAKEKREVING,
-                manueltOpprettet = false,
-                språkkode = Språkkode.NB,
-                enhetId = enhet.enhetId,
-                enhetsnavn = enhet.enhetNavn,
+                behandlingstype = Behandlingstype.TILBAKEKREVING, // samme som BAKS gjør
+                manueltOpprettet = false, // manuelt opprettet ennå ikke støttet i familie-tilbake?
+                språkkode = Språkkode.NB, // Bør følge med iverksett.søker
+                enhetId = enhet.enhetId, // iverksett.søker.tilhørendeEnhet?
+                enhetsnavn = enhet.enhetNavn, // iverksett.søker.tilhørendeEnhet?
                 saksbehandlerIdent = iverksett.vedtak.saksbehandlerId,
                 varsel = iverksett.vedtak.tilbakekreving?.let { lagVarsel(it) },
                 revurderingsvedtaksdato = iverksett.vedtak.vedtaksdato,
-                verge = null,
+                verge = null, // Verge er per nå ikke støttet i familie-ef-sak.
                 faktainfo = lagFaktainfo(iverksett)
         )
     }
@@ -59,7 +59,8 @@ object TilbakekrevingMapper {
         return Faktainfo(
                 revurderingsårsak = iverksett.behandling.behandlingÅrsak.toString(),
                 revurderingsresultat = iverksett.vedtak.vedtaksresultat.toString(),  // Er dette korrekt?
-                tilbakekrevingsvalg = iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg
+                tilbakekrevingsvalg = iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg,
+                konsekvensForYtelser = emptySet() // Settes også empty av ba-sak
         )
     }
 
