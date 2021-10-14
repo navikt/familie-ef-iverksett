@@ -9,7 +9,7 @@
     "forrigeBehandlingId": "999abcde-fabc-11eb-8529-0242ac130003",
     "eksternId": 14,
     "behandlingType": "FØRSTEGANGSBEHANDLING",
-    "behandlingÅrsak": "DØDSFALL",
+    "behandlingÅrsak": "NYE_OPPLYSNINGER",
     "vilkårsvurderinger": [
       {
         "vilkårType":"AKTIVITET",
@@ -44,7 +44,8 @@
         ]
       }
     ],
-    "aktivitetspliktInntrefferDato":null
+    "aktivitetspliktInntrefferDato":null,
+    "kravMottatt": null
   },
   "søker": {
     "barn": [
