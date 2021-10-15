@@ -23,7 +23,7 @@ class VedtakhendelseProducerTest {
         every { jmsTemplate.convertAndSend(capture(vedtakHendelseXmlSlot)) } just Runs
 
         val iverksett = opprettIverksett(UUID.randomUUID())
-        val vedtakHendelser = mapIverkesttTilVedtakHendelser(iverksett, "a123")
+        val vedtakHendelser = mapIverksettTilVedtakHendelser(iverksett, "a123")
         vedtakhendelseProducer.produce(vedtakHendelser)
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         val forventetXML = forventetXML(vedtakHendelser.hendelsesTidspunkt.format(formatter))
