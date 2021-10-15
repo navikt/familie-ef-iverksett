@@ -15,7 +15,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
-import java.util.UUID
 
 internal class TilbakekrevingClientTest : ServerTest() {
 
@@ -44,9 +43,9 @@ internal class TilbakekrevingClientTest : ServerTest() {
         val opprettTilbakekrevingRequest =
                 OpprettTilbakekrevingRequest(fagsystem = Fagsystem.EF,
                                              ytelsestype = Ytelsestype.OVERGANGSSTØNAD,
-                                             eksternFagsakId = UUID.randomUUID().toString(),
+                                             eksternFagsakId = 1L.toString(),
                                              personIdent = "65465465421",
-                                             eksternId = UUID.randomUUID().toString(),
+                                             eksternId = 1L.toString(),
                                              manueltOpprettet = false,
                                              enhetId = "1147",
                                              enhetsnavn = "Oslo",
@@ -63,9 +62,9 @@ internal class TilbakekrevingClientTest : ServerTest() {
 
     @Test
     fun `opprettBehandlingManuelt kaster ingen feil ved korrekt opprettelse` () {
-        val request = OpprettManueltTilbakekrevingRequest(UUID.randomUUID().toString(),
+        val request = OpprettManueltTilbakekrevingRequest(1L.toString(),
                                                           Ytelsestype.OVERGANGSSTØNAD,
-                                                          UUID.randomUUID().toString())
+                                                          1L.toString())
 
         tilbakekrevingClient.opprettBehandlingManuelt(request)
 
@@ -73,14 +72,14 @@ internal class TilbakekrevingClientTest : ServerTest() {
 
     @Test
     fun `finnesÅpenBehandling returnerer true hvis server retrurnerer transportobjekt med true` () {
-        val finnesÅpenBehandling = tilbakekrevingClient.finnesÅpenBehandling(UUID.randomUUID())
+        val finnesÅpenBehandling = tilbakekrevingClient.finnesÅpenBehandling(1L)
 
         assertThat(finnesÅpenBehandling).isEqualTo(true)
     }
 
     @Test
     fun `finnBehandlinger returnerer enn liste med behandlinger` () {
-        val finnBehandlinger = tilbakekrevingClient.finnBehandlinger(UUID.randomUUID())
+        val finnBehandlinger = tilbakekrevingClient.finnBehandlinger(1L)
 
         assertThat(finnBehandlinger).hasSize(1)
         assertThat(finnBehandlinger.first()).isInstanceOf(Behandling::class.java)
@@ -89,7 +88,7 @@ internal class TilbakekrevingClientTest : ServerTest() {
     @Test
     fun `kanBehandlingOpprettesManuelt returnere transportobjekt far server` () {
         val kanBehandlingOpprettesManuelt =
-                tilbakekrevingClient.kanBehandlingOpprettesManuelt(UUID.randomUUID(), Ytelsestype.OVERGANGSSTØNAD)
+                tilbakekrevingClient.kanBehandlingOpprettesManuelt(1L, Ytelsestype.OVERGANGSSTØNAD)
 
         assertThat(kanBehandlingOpprettesManuelt.kanBehandlingOpprettes).isEqualTo(true)
     }

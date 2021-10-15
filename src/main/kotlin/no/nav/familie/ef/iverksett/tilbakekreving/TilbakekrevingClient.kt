@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
-import java.util.UUID
 
 @Component
 class TilbakekrevingClient(@Qualifier("azure") restOperations: RestOperations,
@@ -39,17 +38,17 @@ class TilbakekrevingClient(@Qualifier("azure") restOperations: RestOperations,
             .build()
             .toUri()
 
-    private fun finnesÅpenBehandlingUri(fagsakId: UUID) = UriComponentsBuilder.fromUri(familieTilbakeUri)
+    private fun finnesÅpenBehandlingUri(fagsakId: Long) = UriComponentsBuilder.fromUri(familieTilbakeUri)
             .pathSegment("api/fagsystem/${Fagsystem.EF}/fagsak/$fagsakId/finnesApenBehandling/v1")
             .build()
             .toUri()
 
-    private fun finnBehandlingerUri(fagsakId: UUID) = UriComponentsBuilder.fromUri(familieTilbakeUri)
+    private fun finnBehandlingerUri(fagsakId: Long) = UriComponentsBuilder.fromUri(familieTilbakeUri)
             .pathSegment("api/fagsystem/${Fagsystem.EF}/fagsak/$fagsakId/behandlinger/v1")
             .build()
             .toUri()
 
-    private fun kanBehandlingOpprettesManueltUri(fagsakId: UUID, ytelsestype: Ytelsestype) = UriComponentsBuilder.fromUri(
+    private fun kanBehandlingOpprettesManueltUri(fagsakId: Long, ytelsestype: Ytelsestype) = UriComponentsBuilder.fromUri(
             familieTilbakeUri)
             .pathSegment("api/ytelsestype/$ytelsestype/fagsak/$fagsakId/kanBehandlingOpprettesManuelt/v1")
             .build()
@@ -70,17 +69,17 @@ class TilbakekrevingClient(@Qualifier("azure") restOperations: RestOperations,
         postForEntity<Ressurs<String>>(opprettBehandlingManueltUri, request)
     }
 
-    fun finnesÅpenBehandling(fagsakId: UUID): Boolean {
+    fun finnesÅpenBehandling(fagsakId: Long): Boolean {
         val response: Ressurs<FinnesBehandlingResponse> = getForEntity(finnesÅpenBehandlingUri(fagsakId))
         return response.getDataOrThrow().finnesÅpenBehandling
     }
 
-    fun finnBehandlinger(fagsakId: UUID): List<Behandling> {
+    fun finnBehandlinger(fagsakId: Long): List<Behandling> {
         val response: Ressurs<List<Behandling>> = getForEntity(finnBehandlingerUri(fagsakId))
         return response.getDataOrThrow()
     }
 
-    fun kanBehandlingOpprettesManuelt(fagsakId: UUID, ytelsestype: Ytelsestype): KanBehandlingOpprettesManueltRespons {
+    fun kanBehandlingOpprettesManuelt(fagsakId: Long, ytelsestype: Ytelsestype): KanBehandlingOpprettesManueltRespons {
         val response: Ressurs<KanBehandlingOpprettesManueltRespons> =
                 getForEntity(kanBehandlingOpprettesManueltUri(fagsakId, ytelsestype))
         return response.getDataOrThrow()
