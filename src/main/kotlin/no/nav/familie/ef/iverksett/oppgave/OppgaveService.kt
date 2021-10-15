@@ -49,15 +49,15 @@ class OppgaveService(private val oppgaveClient: OppgaveClient,
                ". Periodetype: ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
     }
 
-    fun String.enumToReadable(): String {
+    private fun String.enumToReadable(): String {
         return this.replace("_", " ").lowercase(Locale.getDefault()).replaceFirstChar { it.uppercase() }
     }
 
-    fun LocalDate.toReadable(): String {
+    private fun LocalDate.toReadable(): String {
         return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
     }
 
-    fun fristFerdigstillelse(daysToAdd: Long = 0): LocalDate {
+    private fun fristFerdigstillelse(daysToAdd: Long = 0): LocalDate {
         var dateTime = LocalDateTime.now().plusDays(daysToAdd)
 
         if (dateTime.hour >= 14) {
