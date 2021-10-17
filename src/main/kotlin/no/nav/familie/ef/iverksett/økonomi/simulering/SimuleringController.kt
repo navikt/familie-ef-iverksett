@@ -31,7 +31,7 @@ class SimuleringController(
     @PostMapping("v2")
     fun hentSimuleringV2(@RequestBody simuleringDto: SimuleringDto): Ressurs<BeriketSimuleringsresultat> {
         val beriketSimuleringResultat =
-                simuleringService.hentBeriketSimulering(simuleringDto.toDomain(), LocalDate.now())
+                simuleringService.hentBeriketSimulering(simuleringDto.toDomain())
         return Ressurs.success(beriketSimuleringResultat)
     }
 }

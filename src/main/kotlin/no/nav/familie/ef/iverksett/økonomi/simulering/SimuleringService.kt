@@ -36,9 +36,9 @@ class SimuleringService(
         }
     }
 
-    fun hentBeriketSimulering(simulering: Simulering, tidSimuleringHentet: LocalDate): BeriketSimuleringsresultat {
+    fun hentBeriketSimulering(simulering: Simulering): BeriketSimuleringsresultat {
         val detaljertSimuleringResultat = hentSimulering(simulering)
-        val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, tidSimuleringHentet)
+        val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
 
         return BeriketSimuleringsresultat(
                 detaljer = detaljertSimuleringResultat,

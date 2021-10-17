@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
-import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringsposteringTestUtil.lagPosteringer
+import no.nav.familie.ef.iverksett.posteringer
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.MottakerType
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
@@ -17,10 +17,10 @@ internal class SimuleringUtilTest {
     internal fun `skal ikke mappe simuleringsdata for forskuddskatt, motp, justering og trekk `() {
         val fraDato = LocalDate.of(2020, 1, 1)
         val simuleringsmottakere = listOf(SimuleringMottaker(
-                simulertPostering = lagPosteringer(fraDato, posteringstype = PosteringType.MOTP)
-                                    + lagPosteringer(fraDato, posteringstype = PosteringType.FORSKUDSSKATT)
-                                    + lagPosteringer(fraDato, posteringstype = PosteringType.JUSTERING)
-                                    + lagPosteringer(fraDato, posteringstype = PosteringType.TREKK),
+                simulertPostering = posteringer(fraDato, posteringstype = PosteringType.MOTP)
+                                    + posteringer(fraDato, posteringstype = PosteringType.FORSKUDSSKATT)
+                                    + posteringer(fraDato, posteringstype = PosteringType.JUSTERING)
+                                    + posteringer(fraDato, posteringstype = PosteringType.TREKK),
                 mottakerNummer = "12345678901",
                 mottakerType = MottakerType.BRUKER
         ))
@@ -39,10 +39,10 @@ internal class SimuleringUtilTest {
         val beløp = BigDecimal(5000)
         val antallMåneder = 36
         val simuleringsmottakere = listOf(SimuleringMottaker(
-                simulertPostering = lagPosteringer(fraDato,
-                                                   posteringstype = PosteringType.YTELSE,
-                                                   antallMåneder = antallMåneder,
-                                                   beløp = beløp),
+                simulertPostering = posteringer(fraDato,
+                                                posteringstype = PosteringType.YTELSE,
+                                                antallMåneder = antallMåneder,
+                                                beløp = beløp),
                 mottakerNummer = "12345678901",
                 mottakerType = MottakerType.BRUKER
         ))
@@ -76,26 +76,26 @@ internal class SimuleringUtilTest {
         val beløp = BigDecimal(5000)
         val nyttBeløp = BigDecimal(3000)
         val simuleringsmottakere = listOf(SimuleringMottaker(
-                simulertPostering = lagPosteringer(fraDato,
-                                                   posteringstype = PosteringType.YTELSE,
-                                                   antallMåneder = antallMåneder - antallMånederFeilutbetalt,
-                                                   beløp = beløp)
-                                    + lagPosteringer(fraDatoFeilutbetalt,
-                                                     posteringstype = PosteringType.FEILUTBETALING,
-                                                     antallMåneder = antallMånederFeilutbetalt,
-                                                     beløp = beløp.minus(nyttBeløp))
-                                    + lagPosteringer(fraDatoFeilutbetalt,
-                                                     posteringstype = PosteringType.YTELSE,
-                                                     antallMåneder = antallMånederFeilutbetalt,
-                                                     beløp = beløp.negate())
-                                    + lagPosteringer(fraDatoFeilutbetalt,
-                                                     posteringstype = PosteringType.YTELSE,
-                                                     antallMåneder = antallMånederFeilutbetalt + 1,
-                                                     beløp = nyttBeløp)
-                                    + lagPosteringer(fraDatoFeilutbetalt,
-                                                     posteringstype = PosteringType.YTELSE,
-                                                     antallMåneder = antallMånederFeilutbetalt,
-                                                     beløp = beløp.minus(nyttBeløp)),
+                simulertPostering = posteringer(fraDato,
+                                                posteringstype = PosteringType.YTELSE,
+                                                antallMåneder = antallMåneder - antallMånederFeilutbetalt,
+                                                beløp = beløp)
+                                    + posteringer(fraDatoFeilutbetalt,
+                                                  posteringstype = PosteringType.FEILUTBETALING,
+                                                  antallMåneder = antallMånederFeilutbetalt,
+                                                  beløp = beløp.minus(nyttBeløp))
+                                    + posteringer(fraDatoFeilutbetalt,
+                                                  posteringstype = PosteringType.YTELSE,
+                                                  antallMåneder = antallMånederFeilutbetalt,
+                                                  beløp = beløp.negate())
+                                    + posteringer(fraDatoFeilutbetalt,
+                                                  posteringstype = PosteringType.YTELSE,
+                                                  antallMåneder = antallMånederFeilutbetalt + 1,
+                                                  beløp = nyttBeløp)
+                                    + posteringer(fraDatoFeilutbetalt,
+                                                  posteringstype = PosteringType.YTELSE,
+                                                  antallMåneder = antallMånederFeilutbetalt,
+                                                  beløp = beløp.minus(nyttBeløp)),
                 mottakerNummer = "12345678901",
                 mottakerType = MottakerType.BRUKER
         ))
