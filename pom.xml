@@ -23,7 +23,7 @@
         <mockk.version>1.12.0</mockk.version>
         <revision>1.0</revision>
         <dotenv.version>6.2.2</dotenv.version>
-        <logback.spring.starter>2.9.0</logback.spring.starter>
+        <logback.spring.starter>2.11.0</logback.spring.starter>
         <prosessering.version>1.20211008151232_caa2dc4</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.WebApplicationKt</start-class>
