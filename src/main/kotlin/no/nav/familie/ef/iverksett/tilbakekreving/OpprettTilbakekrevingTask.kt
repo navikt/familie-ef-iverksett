@@ -38,7 +38,7 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
         val nyIverksett = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat)
 
         if (!nyIverksett.skalTilbakekreves())
-            logger.debug("Det behandling=[${behandlingId}] skal ikke tilbakekreves")
+            logger.debug("Behandling=[${behandlingId}] skal ikke tilbakekreves")
         else if (finnesÅpenTilbakekrevingsbehandling(nyIverksett)) {
             logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=[${behandlingId}]")
         } else {
@@ -48,13 +48,15 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
                     behandlingId = behandlingId,
                     TilbakekrevingResultat(opprettTilbakekrevingRequest))
 
+            // Burde iverksett oppdateres i DBen, siden tilbakekreving potensielt er endret?
+            // iverksettingRepository.lagreIverksett(behandlingId,nyIverksett)
             logger.info("Opprettet tilbakekrevingsbehandling for behandling=[${behandlingId}]")
         }
     }
 
     private fun hentBeriketSimulering(originalIverksett: Iverksett): BeriketSimuleringsresultat {
-        val simulering = originalIverksett.tilSimulering()
-        return simuleringService.hentBeriketSimulering(simulering)
+        val simuleringRequest = originalIverksett.tilSimulering()
+        return simuleringService.hentBeriketSimulering(simuleringRequest)
     }
 
     private fun lagTilbakekrevingRequest(iverksett: Iverksett): OpprettTilbakekrevingRequest {
