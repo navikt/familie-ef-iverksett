@@ -7,6 +7,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.tilSimulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
+import no.nav.familie.ef.iverksett.økonomi.simulering.harFeilutbetaling
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -15,7 +16,9 @@ import no.nav.familie.prosessering.domene.Task
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.util.*
+
 
 @Service
 @TaskStepBeskrivelse(taskStepType = OpprettTilbakekrevingTask.TYPE,
@@ -37,11 +40,14 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
         val beriketSimuleringsresultat = hentBeriketSimulering(iverksett)
         val nyIverksett = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat)
 
-        if (!nyIverksett.skalTilbakekreves())
+        if (!nyIverksett.vedtak.tilbakekreving.skalTilbakekreves()) {
             logger.debug("Behandling=[${behandlingId}] skal ikke tilbakekreves")
-        else if (finnesÅpenTilbakekrevingsbehandling(nyIverksett)) {
+        } else if(!beriketSimuleringsresultat.harFeilutbetaling()) {
+            logger.info("Behandling=[${behandlingId}] har ikke (lenger) positiv feilutbetaling i simuleringen")
+        } else if (finnesÅpenTilbakekrevingsbehandling(nyIverksett)) {
             logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=[${behandlingId}]")
         } else {
+            logger.info("Det kreves tilbakekrevingsbehandling for behandling=[${behandlingId}]")
             val opprettTilbakekrevingRequest = lagTilbakekrevingRequest(nyIverksett)
             tilbakekrevingClient.opprettBehandling(opprettTilbakekrevingRequest)
             tilstandRepository.oppdaterTilbakekrevingResultat(
