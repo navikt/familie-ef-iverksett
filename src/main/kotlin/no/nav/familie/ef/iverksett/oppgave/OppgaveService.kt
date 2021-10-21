@@ -1,36 +1,26 @@
 package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
-import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
-import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.oppgave.IdentGruppe
 import no.nav.familie.kontrakter.felles.oppgave.OppgaveIdentV2
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
-import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.context.annotation.Profile
-import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import no.nav.familie.util.VirkedagerProvider
+import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
-@RestController
-@RequestMapping(path = ["/api/oppgave/opprett"])
-@ProtectedWithClaims(issuer = "azuread")
-@Profile("dev", "local")
-class OppgaveTestController(
-        private val oppgaveClient: OppgaveClient,
-        private val familieIntegrasjonerClient: FamilieIntegrasjonerClient
-) {
+@Service
+class OppgaveService(private val oppgaveClient: OppgaveClient,
+                     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient) {
 
-    @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun opprettOppgave(@RequestBody data: IverksettDto) {
-        val iverksett = data.toDomain()
+    fun opprettVurderHendelseOppgave(iverksett: Iverksett) {
+
         val enhetsnummer = familieIntegrasjonerClient.hentNavEnhetForOppfølging(iverksett.søker.personIdent)
 
         val opprettOppgaveRequest =
@@ -40,29 +30,41 @@ class OppgaveTestController(
                         tema = Tema.ENF,
                         oppgavetype = Oppgavetype.VurderHenvendelse,
                         fristFerdigstillelse = fristFerdigstillelse(),
-                        beskrivelse = oppgaveBeskrivelse(data),
+                        beskrivelse = oppgaveBeskrivelse(iverksett),
                         enhetsnummer = enhetsnummer?.enhetId,
-                        behandlingstema = Behandlingstema.fromValue(iverksett.fagsak.stønadstype.name.toLowerCase()
-                                                                            .capitalize()).value,
+                        behandlingstema = Behandlingstema
+                                .fromValue(iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
+                                                   .replaceFirstChar { it.uppercase() }).value,
                         tilordnetRessurs = null,
                         behandlesAvApplikasjon = "familie-ef-sak"
                 )
         oppgaveClient.opprettOppgave(opprettOppgaveRequest)
     }
 
-    private fun oppgaveBeskrivelse(iverksettDto: IverksettDto): String {
-        val gjeldendeVedtak = iverksettDto.vedtak.vedtaksperioder.sortedBy { it.fraOgMed }.last()
-        return "${iverksettDto.fagsak.stønadstype.name.enumToReadable()} er innvilget fra " +
+    private fun oppgaveBeskrivelse(iverksett: Iverksett): String {
+        val gjeldendeVedtak = iverksett.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed }!!
+        return "${iverksett.fagsak.stønadstype.name.enumToReadable()} er innvilget fra " +
                "${gjeldendeVedtak.fraOgMed.toReadable()} - ${gjeldendeVedtak.tilOgMed.toReadable()}. " +
                "Aktivitetsplikt: ${gjeldendeVedtak.aktivitet.name.enumToReadable()}" +
                ". Periodetype: ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
     }
 
-    fun String.enumToReadable(): String {
-        return this.replace("_", " ").toLowerCase().capitalize()
+    private fun String.enumToReadable(): String {
+        return this.replace("_", " ").lowercase(Locale.getDefault()).replaceFirstChar { it.uppercase() }
     }
 
-    fun LocalDate.toReadable(): String {
+    private fun LocalDate.toReadable(): String {
         return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
     }
+
+    private fun fristFerdigstillelse(daysToAdd: Long = 0): LocalDate {
+        var dateTime = LocalDateTime.now().plusDays(daysToAdd)
+
+        if (dateTime.hour >= 14) {
+            dateTime = dateTime.plusDays(1)
+        }
+
+        return VirkedagerProvider.nesteVirkedag(dateTime.toLocalDate())
+    }
+
 }
