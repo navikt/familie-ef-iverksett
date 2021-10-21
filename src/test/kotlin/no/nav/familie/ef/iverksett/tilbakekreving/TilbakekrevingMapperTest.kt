@@ -20,7 +20,7 @@ internal class TilbakekrevingMapperTest {
         val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
         val enhet = Enhet("123", "enhet")
 
-        val request = TilbakekrevingMapper.map(iverksett, enhet)
+        val request = iverksett.tilOpprettTilbakekrevingRequest(enhet)
 
         assertThat(request.fagsystem).isEqualTo(Fagsystem.EF)
         assertThat(request.eksternFagsakId).isEqualTo(iverksett.fagsak.eksternId.toString())
