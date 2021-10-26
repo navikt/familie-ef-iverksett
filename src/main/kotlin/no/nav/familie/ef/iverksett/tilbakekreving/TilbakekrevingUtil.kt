@@ -19,9 +19,9 @@ fun Iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleri
     val simuleringsoppsummering = beriketSimuleringsresultat.oppsummering
 
     val nyTilbakekreving: Tilbakekrevingsdetaljer?
-    if (tilbakekreving == null && simuleringsoppsummering.feilutbetaling > BigDecimal.ZERO)
+    if (tilbakekreving == null && simuleringsoppsummering.harFeilutbetaling)
         nyTilbakekreving = TILBAKEKREVING_UTEN_VARSEL
-    else if (tilbakekreving != null && simuleringsoppsummering.feilutbetaling <= BigDecimal.ZERO)
+    else if (tilbakekreving != null && !simuleringsoppsummering.harFeilutbetaling)
         nyTilbakekreving = null
     else if (harAvvikIVarsel(tilbakekreving, simuleringsoppsummering))
         nyTilbakekreving = tilbakekreving?.oppdaterVarsel(simuleringsoppsummering)
@@ -40,10 +40,11 @@ private fun harAvvikIVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer?,
     return varsel != null && simuleringsoppsummering.feilutbetaling != varsel.sumFeilutbetaling
 }
 
-fun Tilbakekrevingsdetaljer?.skalTilbakekreves(): Boolean {
-    return this != null
-           && this.tilbakekrevingsvalg != Tilbakekrevingsvalg.IGNORER_TILBAKEKREVING
-}
+val Tilbakekrevingsdetaljer?.skalTilbakekreves: Boolean
+    get() = this != null && this.tilbakekrevingsvalg != Tilbakekrevingsvalg.IGNORER_TILBAKEKREVING
+
+val Simuleringsoppsummering.harFeilutbetaling: Boolean
+    get() = this.feilutbetaling > BigDecimal.ZERO
 
 fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringsoppsummering): Tilbakekrevingsdetaljer? {
 

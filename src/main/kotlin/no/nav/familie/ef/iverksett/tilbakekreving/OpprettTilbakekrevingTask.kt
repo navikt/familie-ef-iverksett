@@ -16,9 +16,7 @@ import no.nav.familie.prosessering.domene.Task
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
-import java.util.*
-
+import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(taskStepType = OpprettTilbakekrevingTask.TYPE,
@@ -40,14 +38,14 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
         val beriketSimuleringsresultat = hentBeriketSimulering(iverksett)
         val nyIverksett = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat)
 
-        if (!nyIverksett.vedtak.tilbakekreving.skalTilbakekreves()) {
-            logger.debug("Behandling=[${behandlingId}] skal ikke tilbakekreves")
-        } else if(!beriketSimuleringsresultat.harFeilutbetaling()) {
-            logger.info("Behandling=[${behandlingId}] har ikke (lenger) positiv feilutbetaling i simuleringen")
+        if (!nyIverksett.vedtak.tilbakekreving.skalTilbakekreves) {
+            logger.debug("Behandling=${behandlingId} skal ikke tilbakekreves")
+        } else if (!beriketSimuleringsresultat.harFeilutbetaling()) {
+            logger.info("Behandling=${behandlingId} har ikke (lenger) positiv feilutbetaling i simuleringen")
         } else if (finnesÅpenTilbakekrevingsbehandling(nyIverksett)) {
-            logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=[${behandlingId}]")
+            logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=${behandlingId}")
         } else {
-            logger.info("Det kreves tilbakekrevingsbehandling for behandling=[${behandlingId}]")
+            logger.info("Det kreves tilbakekrevingsbehandling for behandling=${behandlingId}")
             val opprettTilbakekrevingRequest = lagTilbakekrevingRequest(nyIverksett)
             tilbakekrevingClient.opprettBehandling(opprettTilbakekrevingRequest)
             tilstandRepository.oppdaterTilbakekrevingResultat(
@@ -56,7 +54,7 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
 
             // Burde iverksett oppdateres i DBen, siden tilbakekreving potensielt er endret?
             // iverksettingRepository.lagreIverksett(behandlingId,nyIverksett)
-            logger.info("Opprettet tilbakekrevingsbehandling for behandling=[${behandlingId}]")
+            logger.info("Opprettet tilbakekrevingsbehandling for behandling=${behandlingId}")
         }
     }
 

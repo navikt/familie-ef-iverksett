@@ -6,7 +6,21 @@ import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
-import no.nav.familie.kontrakter.felles.tilbakekreving.*
+import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
+import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
+import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
+import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
+import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
+import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
+
+fun Tilbakekrevingsdetaljer?.validerTilbakekreving(): Boolean {
+    try {
+        this?.also { lagVarsel(it) }
+    } catch (e: IllegalStateException) {
+        return false
+    }
+    return true
+}
 
 fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
         OpprettTilbakekrevingRequest(

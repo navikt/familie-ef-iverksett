@@ -220,16 +220,19 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
 fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
         Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-                tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
-                        varseltekst = "varseltekst",
-                        sumFeilutbetaling = BigDecimal.valueOf(100),
-                        perioder = listOf(
-                                Periode(
-                                        fom = LocalDate.of(2021, 5, 1),
-                                        tom = LocalDate.of(2021, 6, 30)
-                                ))
-                )
+                tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel()
         )
+
+fun opprettTilbakekrevingMedVarsel(
+        sumFeilutbetaling: BigDecimal = BigDecimal.valueOf(100),
+        perioder: List<Periode> = listOf(Periode(
+                fom = LocalDate.of(2021, 5, 1),
+                tom = LocalDate.of(2021, 6, 30)
+        ))) = TilbakekrevingMedVarsel(
+        varseltekst = "varseltekst",
+        sumFeilutbetaling = sumFeilutbetaling,
+        perioder = perioder
+)
 
 class IverksettResultatMockBuilder private constructor(
 

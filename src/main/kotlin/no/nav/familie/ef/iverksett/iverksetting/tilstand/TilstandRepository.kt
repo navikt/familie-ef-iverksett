@@ -1,6 +1,11 @@
 package no.nav.familie.ef.iverksett.iverksetting.tilstand
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.*
+import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.util.getJson
 import no.nav.familie.ef.iverksett.util.getUUID
 import no.nav.familie.ef.iverksett.util.queryForJson
@@ -76,7 +81,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
     }
 
     fun oppdaterTilbakekrevingResultat(behandlingId: UUID,
-                                              tilbakekrevingResultat: TilbakekrevingResultat) {
+                                       tilbakekrevingResultat: TilbakekrevingResultat) {
         val sql = "UPDATE iverksett_resultat SET tilbakekrevingresultat = :tilbakekrevingResultatJson::JSON " +
                   "WHERE behandling_id = :behandlingId"
         val tilbakekrevingResultatJson = objectMapper.writeValueAsString(tilbakekrevingResultat)

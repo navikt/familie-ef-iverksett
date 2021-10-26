@@ -1,15 +1,26 @@
 package no.nav.familie.ef.iverksett
 
+import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
-import no.nav.familie.kontrakter.felles.simulering.*
+import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
+import no.nav.familie.kontrakter.felles.simulering.BetalingType
+import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
+import no.nav.familie.kontrakter.felles.simulering.FagOmrådeKode
+import no.nav.familie.kontrakter.felles.simulering.MottakerType
+import no.nav.familie.kontrakter.felles.simulering.PosteringType
+import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
+import no.nav.familie.kontrakter.felles.simulering.Simuleringsoppsummering
+import no.nav.familie.kontrakter.felles.simulering.Simuleringsperiode
+import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
+import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
-import java.util.*
+import java.util.UUID
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
 
 fun simuleringDto(): SimuleringDto {
@@ -60,29 +71,35 @@ fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
     )
 }
 
-fun beriketSimuleringsresultat() = BeriketSimuleringsresultat(
+fun beriketSimuleringsresultat(feilutbetaling: BigDecimal = BigDecimal.ZERO,
+                               fom: LocalDate = LocalDate.of(2021, 1, 1),
+                               tom: LocalDate = LocalDate.of(2021, 12, 31)) = BeriketSimuleringsresultat(
         detaljer = detaljertSimuleringResultat(),
-        oppsummering = simuleringsoppsummering())
+        oppsummering = simuleringsoppsummering(feilutbetaling,fom,tom))
 
-fun simuleringsoppsummering() = Simuleringsoppsummering(
-        perioder = listOf(Simuleringsperiode(
-                fom = LocalDate.of(2021,1,1),
-                tom = LocalDate.of(2021,12,31),
-                forfallsdato = LocalDate.of(2021,10,1),
-                nyttBeløp = BigDecimal.valueOf(15000),
-                tidligereUtbetalt = BigDecimal.ZERO,
-                resultat = BigDecimal.valueOf(15000),
-                feilutbetaling = BigDecimal.ZERO
-        )),
-        etterbetaling = BigDecimal.valueOf(15000),
-        feilutbetaling = BigDecimal.ZERO,
-        fom = LocalDate.of(2021,1,1),
-        fomDatoNestePeriode = null,
-        tomDatoNestePeriode = null,
-        forfallsdatoNestePeriode = null,
-        tidSimuleringHentet = LocalDate.now(),
-        tomSisteUtbetaling = LocalDate.of(2021,12,31)
-)
+fun simuleringsoppsummering(
+        feilutbetaling: BigDecimal = BigDecimal.ZERO,
+        fom: LocalDate = LocalDate.of(2021, 1, 1),
+        tom: LocalDate = LocalDate.of(2021, 12, 31)) =
+        Simuleringsoppsummering(
+                perioder = listOf(Simuleringsperiode(
+                        fom = fom,
+                        tom = tom,
+                        forfallsdato = LocalDate.of(2021, 10, 1),
+                        nyttBeløp = BigDecimal.valueOf(15000),
+                        tidligereUtbetalt = BigDecimal.ZERO,
+                        resultat = BigDecimal.valueOf(15000),
+                        feilutbetaling = feilutbetaling
+                )),
+                etterbetaling = BigDecimal.valueOf(15000),
+                feilutbetaling = feilutbetaling,
+                fom = fom,
+                fomDatoNestePeriode = null,
+                tomDatoNestePeriode = null,
+                forfallsdatoNestePeriode = null,
+                tidSimuleringHentet = LocalDate.now(),
+                tomSisteUtbetaling = tom
+        )
 
 fun posteringer(fraDato: LocalDate,
                 antallMåneder: Int = 1,
@@ -99,3 +116,11 @@ fun posteringer(fraDato: LocalDate,
                       forfallsdato = fraDato.plusMonths(index.toLong()).with(TemporalAdjusters.lastDayOfMonth()),
                       utenInntrekk = false)
 }
+
+fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, periode: Periode) =
+        this.copy(tilbakekrevingMedVarsel =
+                  this.tilbakekrevingMedVarsel?.copy(
+                          sumFeilutbetaling = feilutbetaling,
+                          perioder = listOf(periode)
+                  )
+        )
