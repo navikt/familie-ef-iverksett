@@ -38,7 +38,7 @@ internal class OpprettTilbakekrevingTaskTest {
     @BeforeEach
     protected fun init() {
         every { tilbakekrevingClient.finnesÅpenBehandling(any()) } returns false
-        every { familieIntegrasjonerClient.hentNavEnhetForOppfølging(any()) } returns
+        every { familieIntegrasjonerClient.hentBehandlendeEnhet(any()) } returns
                 Enhet("1","Oslo")
         every { tilbakekrevingClient.opprettBehandling(any()) } returns ""
     }

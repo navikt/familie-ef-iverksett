@@ -38,6 +38,10 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
         val beriketSimuleringsresultat = hentBeriketSimulering(iverksett)
         val nyIverksett = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat)
 
+        if (nyIverksett != iverksett) {
+            logger.info("Grunnlaget for tilbakekreving for behandling=${behandlingId} har endret seg siden saksbehandlingen")
+        }
+
         if (!nyIverksett.vedtak.tilbakekreving.skalTilbakekreves) {
             logger.debug("Behandling=${behandlingId} skal ikke tilbakekreves")
         } else if (!beriketSimuleringsresultat.harFeilutbetaling()) {
@@ -64,12 +68,12 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
     }
 
     private fun lagTilbakekrevingRequest(iverksett: Iverksett): OpprettTilbakekrevingRequest {
-        // Denne burde komme fra ef-sak i DTO'en. Se Tea-6884
-        val enhet = familieIntegrasjonerClient.hentNavEnhetForOppfølging(iverksett.søker.personIdent)!!
+        // Henter ut på nytt, selv om noe finnes i iverksett-dto'en
+        val enhet = familieIntegrasjonerClient.hentBehandlendeEnhet(iverksett.søker.personIdent)!!
         return iverksett.tilOpprettTilbakekrevingRequest(enhet)
     }
 
-    private fun finnesÅpenTilbakekrevingsbehandling(nyIverksett: Iverksett) =
+    private fun finnesÅpenTilbakekrevingsbehandling(nyIverksett: Iverksett): Boolean =
             tilbakekrevingClient.finnesÅpenBehandling(nyIverksett.fagsak.eksternId)
 
     companion object {

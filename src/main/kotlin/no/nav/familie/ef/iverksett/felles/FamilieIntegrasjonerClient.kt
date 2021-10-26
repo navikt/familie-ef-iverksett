@@ -44,7 +44,7 @@ class FamilieIntegrasjonerClient(
         return response.getDataOrThrow()["aktørId"].toString()
     }
 
-    fun hentNavEnhetForOppfølging(personident: String): Enhet? {
+    fun hentBehandlendeEnhet(personident: String): Enhet? {
         val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUri, Ident(personident))
         return response.getDataOrThrow().firstOrNull()
     }
