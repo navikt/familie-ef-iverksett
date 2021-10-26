@@ -12,6 +12,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
@@ -245,7 +246,8 @@ class IverksettResultatMockBuilder private constructor(
     data class Builder(
             var oppdragResultat: OppdragResultat? = null,
             var journalpostResultat: JournalpostResultat? = null,
-            var vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null
+            var vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null,
+            var tilbakekrevingResultat: TilbakekrevingResultat? = null
     ) {
 
         fun oppdragResultat(oppdragResultat: OppdragResultat) = apply { this.oppdragResultat = oppdragResultat }
@@ -253,8 +255,16 @@ class IverksettResultatMockBuilder private constructor(
         fun vedtaksbrevResultat(behandlingId: UUID) =
                 apply { this.vedtaksbrevResultat = DistribuerVedtaksbrevResultat(bestillingId = behandlingId.toString()) }
 
+        fun tilbakekrevingResultat(tilbakekrevingResultat: TilbakekrevingResultat?) =
+                apply { this.tilbakekrevingResultat = tilbakekrevingResultat }
+
         fun build(behandlingId: UUID, tilkjentYtelse: TilkjentYtelse?) =
-                IverksettResultat(behandlingId, tilkjentYtelse, oppdragResultat, journalpostResultat, vedtaksbrevResultat)
+                IverksettResultat(behandlingId,
+                                  tilkjentYtelse,
+                                  oppdragResultat,
+                                  journalpostResultat,
+                                  vedtaksbrevResultat,
+                                  tilbakekrevingResultat)
     }
 }
 

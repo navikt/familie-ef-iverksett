@@ -24,7 +24,7 @@ import java.util.UUID
 class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun opprettTomtResultat(behandlingId: UUID) {
-        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL)"
+        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL, NULL)"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
@@ -90,7 +90,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
 
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
         ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, " +
-                 "distribuerVedtaksbrevResultatJson : $tilbakekrevingResultatJson")
+                 "tilbakekrevingResultatJson : $tilbakekrevingResultatJson")
     }
 
 
@@ -136,7 +136,14 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                     rs.getJson("tilkjentYtelseForUtbetaling"),
                     rs.getJson("oppdragResultat"),
                     rs.getJson("journalpostResultat"),
-                    rs.getJson("vedtaksBrevResultat"))
+                    rs.getJson("vedtaksBrevResultat"),
+                    rs.getJson("tilbakekrevingResultat"))
         }
+    }
+
+    fun hentTilbakekrevingResultat(behandlingId: UUID): TilbakekrevingResultat? {
+        val sql = "SELECT tilbakekrevingresultat FROM iverksett_resultat WHERE behandling_id = :behandlingId"
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
     }
 }
