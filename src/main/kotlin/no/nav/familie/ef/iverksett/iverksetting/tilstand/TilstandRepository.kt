@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResu
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.util.getJson
 import no.nav.familie.ef.iverksett.util.getUUID
@@ -23,7 +24,7 @@ import java.util.UUID
 class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun opprettTomtResultat(behandlingId: UUID) {
-        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL)"
+        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL, NULL)"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
@@ -79,6 +80,19 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                  "distribuerVedtaksbrevResultatJson : $distribuerVedtaksbrevResultatJson")
     }
 
+    fun oppdaterTilbakekrevingResultat(behandlingId: UUID,
+                                       tilbakekrevingResultat: TilbakekrevingResultat) {
+        val sql = "UPDATE iverksett_resultat SET tilbakekrevingresultat = :tilbakekrevingResultatJson::JSON " +
+                  "WHERE behandling_id = :behandlingId"
+        val tilbakekrevingResultatJson = objectMapper.writeValueAsString(tilbakekrevingResultat)
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+                .addValue("tilbakekrevingResultatJson", tilbakekrevingResultatJson)
+
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
+        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, " +
+                 "tilbakekrevingResultatJson : $tilbakekrevingResultatJson")
+    }
+
 
     fun hentTilkjentYtelse(behandlingId: UUID): TilkjentYtelse? {
         val sql = "SELECT tilkjentytelseforutbetaling FROM iverksett_resultat WHERE behandling_id = :behandlingId"
@@ -122,7 +136,14 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                     rs.getJson("tilkjentYtelseForUtbetaling"),
                     rs.getJson("oppdragResultat"),
                     rs.getJson("journalpostResultat"),
-                    rs.getJson("vedtaksBrevResultat"))
+                    rs.getJson("vedtaksBrevResultat"),
+                    rs.getJson("tilbakekrevingResultat"))
         }
+    }
+
+    fun hentTilbakekrevingResultat(behandlingId: UUID): TilbakekrevingResultat? {
+        val sql = "SELECT tilbakekrevingresultat FROM iverksett_resultat WHERE behandling_id = :behandlingId"
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
     }
 }

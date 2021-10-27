@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.tilbakekreving.validerTilbakekreving
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
@@ -67,7 +68,8 @@ class IverksettingController(
                           "for vedtak med resultat=${iverksett.vedtak.vedtaksresultat}",
                           HttpStatus.BAD_REQUEST)
         }
+
+        if (!iverksett.vedtak.tilbakekreving.validerTilbakekreving())
+            throw ApiFeil("Tilbakekreving er ikke gyldig", HttpStatus.BAD_REQUEST)
     }
-
-
 }

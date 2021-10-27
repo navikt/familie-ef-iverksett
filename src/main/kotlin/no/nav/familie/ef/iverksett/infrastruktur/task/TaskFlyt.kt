@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad
+import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.vedtak.PubliserVedtakTilKafkaTask
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
@@ -23,6 +24,7 @@ fun hovedflyt() = listOf(
         TaskType(VentePåStatusFraØkonomiTask.TYPE, 20),
         TaskType(JournalførVedtaksbrevTask.TYPE),
         TaskType(DistribuerVedtaksbrevTask.TYPE),
+        TaskType(OpprettTilbakekrevingTask.TYPE)
 )
 
 fun publiseringsflyt() = listOf(

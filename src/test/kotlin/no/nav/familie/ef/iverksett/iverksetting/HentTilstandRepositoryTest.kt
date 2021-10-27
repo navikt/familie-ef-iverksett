@@ -3,10 +3,14 @@ package no.nav.familie.ef.iverksett.iverksetting
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.tilbakekreving.tilOpprettTilbakekrevingRequest
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
+import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
+import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
@@ -91,6 +95,45 @@ internal class HentTilstandRepositoryTest : ServerTest() {
 
         assertThat(catchThrowable { tilstandRepository.hentTilkjentYtelse(setOf(behandlingId, behandlingId2)) })
                 .hasMessageContaining("=[$behandlingId2]")
+    }
+
+    @Test
+    fun `lagre tilbakekrevingsresultat, hent IverksettResultat med tilbakekrevingsresultat`() {
+
+        val iverksett = opprettIverksett(behandlingId)
+        val opprettTilbakekrevingRequest = iverksett
+                .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
+
+        val tilbakekrevingResultat = TilbakekrevingResultat(opprettTilbakekrevingRequest)
+
+        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, iverksett.vedtak.tilkjentYtelse!!)
+        tilstandRepository.oppdaterTilbakekrevingResultat(behandlingId, tilbakekrevingResultat)
+
+        val hentetTilbakekrevingResultat = tilstandRepository.hentTilbakekrevingResultat(behandlingId)
+        assertThat(hentetTilbakekrevingResultat!!).isEqualTo(tilbakekrevingResultat)
+
+        val iverksettResultat = tilstandRepository.hentIverksettResultat(behandlingId)
+        assertThat(iverksettResultat!!.tilkjentYtelseForUtbetaling).isNotNull
+        assertThat(iverksettResultat.tilbakekrevingResultat).isEqualTo(tilbakekrevingResultat)
+    }
+
+    @Test
+    fun `overskriv tomt (null) tilbakekrevingsresultat`() {
+
+        val id = UUID.randomUUID()
+        val iverksett = opprettIverksett(id)
+        val opprettTilbakekrevingRequest = iverksett
+                .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
+
+        val tilbakekrevingResultat = TilbakekrevingResultat(opprettTilbakekrevingRequest)
+
+        assertThat(tilstandRepository.hentIverksettResultat(id)).isNull()
+        tilstandRepository.opprettTomtResultat(id)
+        assertThat(tilstandRepository.hentIverksettResultat(id)!!.tilbakekrevingResultat).isNull()
+
+        tilstandRepository.oppdaterTilbakekrevingResultat(id, tilbakekrevingResultat)
+        assertThat(tilstandRepository.hentTilbakekrevingResultat(id)!!)
+                .isEqualTo(tilbakekrevingResultat)
     }
 
 }

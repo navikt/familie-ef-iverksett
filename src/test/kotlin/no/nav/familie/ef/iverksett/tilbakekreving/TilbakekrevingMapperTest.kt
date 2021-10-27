@@ -1,14 +1,18 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
+import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
+import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.util.UUID
 
 internal class TilbakekrevingMapperTest {
@@ -20,7 +24,7 @@ internal class TilbakekrevingMapperTest {
         val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
         val enhet = Enhet("123", "enhet")
 
-        val request = TilbakekrevingMapper.map(iverksett, enhet)
+        val request = iverksett.tilOpprettTilbakekrevingRequest(enhet)
 
         assertThat(request.fagsystem).isEqualTo(Fagsystem.EF)
         assertThat(request.eksternFagsakId).isEqualTo(iverksett.fagsak.eksternId.toString())
@@ -30,7 +34,7 @@ internal class TilbakekrevingMapperTest {
         assertThat(request.enhetId).isEqualTo(enhet.enhetId)
         assertThat(request.enhetsnavn).isEqualTo(enhet.enhetNavn)
 
-        assertThat(request.manueltOpprettet).isFalse()
+        assertThat(request.manueltOpprettet).isFalse
         assertThat(request.personIdent).isEqualTo(iverksett.søker.personIdent)
         assertThat(request.behandlingstype).isEqualTo(Behandlingstype.TILBAKEKREVING)
 
@@ -47,6 +51,67 @@ internal class TilbakekrevingMapperTest {
         assertThat(request.varsel?.sumFeilutbetaling)
                 .isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.sumFeilutbetaling)
         assertThat(request.varsel?.perioder).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.perioder)
+    }
+
+    @Test
+    fun `skal validere at tilbakekreving med varsel ikker gyldig uten varseltekst`() {
+        val tilbakekreving = Tilbakekrevingsdetaljer(
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+                tilbakekrevingMedVarsel = null)
+        assertThat(tilbakekreving.validerTilbakekreving()).isFalse
+    }
+
+    @Test
+    fun `skal validere at tilbakekreving med varsel ikke er gyldig uten sumFeilutbetaling`() {
+        val tilbakekreving = Tilbakekrevingsdetaljer(
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+                tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
+                        varseltekst = "",
+                        perioder = emptyList(),
+                        sumFeilutbetaling = null
+                ))
+        assertThat(tilbakekreving.validerTilbakekreving()).isFalse
+    }
+
+    @Test
+    fun `skal validere at tilbakekreving med varsel ikke er gyldig uten perioder`() {
+        val tilbakekreving = Tilbakekrevingsdetaljer(
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+                tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
+                        varseltekst = "",
+                        perioder = null,
+                        sumFeilutbetaling = BigDecimal.ZERO
+                ))
+        assertThat(tilbakekreving.validerTilbakekreving()).isFalse
+    }
+
+    @Test
+    fun `skal validere at tilbakekreving uten varsel ignorerer manglende varsel-data`() {
+        assertThat(Tilbakekrevingsdetaljer(
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
+                tilbakekrevingMedVarsel = null).validerTilbakekreving()).isTrue
+        assertThat(Tilbakekrevingsdetaljer(
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.IGNORER_TILBAKEKREVING,
+                tilbakekrevingMedVarsel = null).validerTilbakekreving()).isTrue
+    }
+
+    @Test
+    fun `skal validere at tilbakekreving uten varsel ignorerer feil i varsel-data`() {
+        val tilbakekrevingsdetaljer = Tilbakekrevingsdetaljer(
+                tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
+                        varseltekst = "",
+                        sumFeilutbetaling = null,
+                        perioder = null
+                ),
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL
+        )
+
+        assertThat(tilbakekrevingsdetaljer
+                           .copy(tilbakekrevingsvalg = Tilbakekrevingsvalg.IGNORER_TILBAKEKREVING)
+                           .validerTilbakekreving()).isTrue
+        assertThat(tilbakekrevingsdetaljer
+                           .copy(tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL)
+                           .validerTilbakekreving()).isTrue
     }
 
 }

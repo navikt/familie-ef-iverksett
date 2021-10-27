@@ -1,11 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
-import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
-import no.nav.familie.kontrakter.felles.simulering.PosteringType
-import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
-import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
-import no.nav.familie.kontrakter.felles.simulering.Simuleringsoppsummering
-import no.nav.familie.kontrakter.felles.simulering.Simuleringsperiode
+import no.nav.familie.kontrakter.felles.simulering.*
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -97,4 +92,6 @@ private fun hentTotalEtterbetaling(simuleringPerioder: List<Simuleringsperiode>,
 private fun hentTotalFeilutbetaling(simuleringPerioder: List<Simuleringsperiode>, fomDatoNestePeriode: LocalDate?) =
         simuleringPerioder.filter { fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode }.sumOf { it.feilutbetaling }
 
-
+fun BeriketSimuleringsresultat.harFeilutbetaling(): Boolean {
+        return this.oppsummering.feilutbetaling > BigDecimal.ZERO
+}

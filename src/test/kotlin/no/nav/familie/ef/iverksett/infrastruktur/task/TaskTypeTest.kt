@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad
+import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.vedtak.PubliserVedtakTilKafkaTask
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
@@ -35,6 +36,11 @@ class TaskTypeTest {
         val distribuerVedtaksbrevTask = journalførVedtaksbrevTask.opprettNesteTask()
         assertThat(distribuerVedtaksbrevTask.type).isEqualTo(DistribuerVedtaksbrevTask.TYPE)
         assertThat(distribuerVedtaksbrevTask.triggerTid).isBefore(LocalDateTime.now().plusSeconds(1))
+
+        val opprettTilbakekrevingTask = distribuerVedtaksbrevTask.opprettNesteTask()
+        assertThat(opprettTilbakekrevingTask.type).isEqualTo(OpprettTilbakekrevingTask.TYPE)
+        assertThat(opprettTilbakekrevingTask.triggerTid).isBefore(LocalDateTime.now().plusSeconds(1))
+
     }
 
     @Test
@@ -63,10 +69,10 @@ class TaskTypeTest {
     }
 
     @Test
-    internal fun `skal ikke opprette task etter distribuert vedtaksbrev`() {
-        val distribuerVedtaksbrevTask = Task(DistribuerVedtaksbrevTask.TYPE, "", Properties())
+    internal fun `skal ikke opprette task etter opprettet tilbakekrevingsbehandling`() {
+        val opprettTilbakekrevingTask = Task(OpprettTilbakekrevingTask.TYPE, "", Properties())
         assertThrows<NoSuchElementException> {
-            distribuerVedtaksbrevTask.opprettNesteTask()
+            opprettTilbakekrevingTask.opprettNesteTask()
         }
     }
 }

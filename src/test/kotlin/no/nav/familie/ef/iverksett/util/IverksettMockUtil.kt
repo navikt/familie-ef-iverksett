@@ -12,6 +12,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
@@ -220,16 +221,19 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
 fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
         Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-                tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
-                        varseltekst = "varseltekst",
-                        sumFeilutbetaling = BigDecimal.valueOf(100),
-                        perioder = listOf(
-                                Periode(
-                                        fom = LocalDate.of(2021, 5, 1),
-                                        tom = LocalDate.of(2021, 6, 30)
-                                ))
-                )
+                tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel()
         )
+
+fun opprettTilbakekrevingMedVarsel(
+        sumFeilutbetaling: BigDecimal = BigDecimal.valueOf(100),
+        perioder: List<Periode> = listOf(Periode(
+                fom = LocalDate.of(2021, 5, 1),
+                tom = LocalDate.of(2021, 6, 30)
+        ))) = TilbakekrevingMedVarsel(
+        varseltekst = "varseltekst",
+        sumFeilutbetaling = sumFeilutbetaling,
+        perioder = perioder
+)
 
 class IverksettResultatMockBuilder private constructor(
 
@@ -242,7 +246,8 @@ class IverksettResultatMockBuilder private constructor(
     data class Builder(
             var oppdragResultat: OppdragResultat? = null,
             var journalpostResultat: JournalpostResultat? = null,
-            var vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null
+            var vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null,
+            var tilbakekrevingResultat: TilbakekrevingResultat? = null
     ) {
 
         fun oppdragResultat(oppdragResultat: OppdragResultat) = apply { this.oppdragResultat = oppdragResultat }
@@ -250,8 +255,16 @@ class IverksettResultatMockBuilder private constructor(
         fun vedtaksbrevResultat(behandlingId: UUID) =
                 apply { this.vedtaksbrevResultat = DistribuerVedtaksbrevResultat(bestillingId = behandlingId.toString()) }
 
+        fun tilbakekrevingResultat(tilbakekrevingResultat: TilbakekrevingResultat?) =
+                apply { this.tilbakekrevingResultat = tilbakekrevingResultat }
+
         fun build(behandlingId: UUID, tilkjentYtelse: TilkjentYtelse?) =
-                IverksettResultat(behandlingId, tilkjentYtelse, oppdragResultat, journalpostResultat, vedtaksbrevResultat)
+                IverksettResultat(behandlingId,
+                                  tilkjentYtelse,
+                                  oppdragResultat,
+                                  journalpostResultat,
+                                  vedtaksbrevResultat,
+                                  tilbakekrevingResultat)
     }
 }
 

@@ -4,8 +4,12 @@ import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.tilbakekreving.tilOpprettTilbakekrevingRequest
+import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
+import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -67,4 +71,17 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
             )
         }
     }
+
+    @Test
+    fun `oppdater tilbakekrevingsresultat, forvent ingen unntak`() {
+
+        val opprettTilbakekrevingRequest = opprettIverksett(behandlingsId)
+                .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
+
+        tilstandServiceRepository.oppdaterTilbakekrevingResultat(
+                behandlingsId,
+                TilbakekrevingResultat(opprettTilbakekrevingRequest)
+        )
+    }
+
 }
