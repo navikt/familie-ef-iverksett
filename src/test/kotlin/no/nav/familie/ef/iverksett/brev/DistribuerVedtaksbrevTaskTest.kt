@@ -7,7 +7,9 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -18,7 +20,8 @@ internal class DistribuerVedtaksbrevTaskTest {
 
     private val journalpostClient = mockk<JournalpostClient>()
     val tilstandRepository = mockk<TilstandRepository>()
-    private val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository)
+    val taskRepository = mockk<TaskRepository>()
+    private val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository, taskRepository)
 
     @Test
     internal fun `skal distribuere brev`() {
@@ -27,12 +30,16 @@ internal class DistribuerVedtaksbrevTaskTest {
         val bestillingId = "111"
         val distribuerVedtaksbrevResultat = slot<DistribuerVedtaksbrevResultat>()
 
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns JournalpostResultat(journalpostId,
-                                                                                                       LocalDateTime.now())
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns JournalpostResultat(
+                journalpostId,
+                LocalDateTime.now()
+        )
         every { journalpostClient.distribuerBrev(journalpostId) } returns bestillingId
         every {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId,
-                                                                     capture(distribuerVedtaksbrevResultat))
+            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
+                    behandlingId,
+                    capture(distribuerVedtaksbrevResultat)
+            )
         } returns Unit
 
         distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
@@ -41,6 +48,17 @@ internal class DistribuerVedtaksbrevTaskTest {
         verify(exactly = 1) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId, any()) }
         assertThat(distribuerVedtaksbrevResultat.captured.bestillingId).isEqualTo(bestillingId)
         assertThat(distribuerVedtaksbrevResultat.captured.dato).isNotNull()
+    }
+
+    @Test
+    internal fun `skal opprette OpprettTilbakekrevingTask når DistribuerVedtaksbrevTask er ferdig`() {
+        val taskSlot = slot<Task>()
+        val behandlingId = UUID.randomUUID().toString()
+        val task = Task(DistribuerVedtaksbrevTask.TYPE, behandlingId, Properties())
+        every { taskRepository.save(capture(taskSlot)) } returns task
+        distribuerVedtaksbrevTask.onCompletion(task)
+        assertThat(taskSlot.captured.payload).isEqualTo(behandlingId)
+        assertThat(taskSlot.captured.type).isEqualTo(OpprettTilbakekrevingTask.TYPE)
     }
 
 }

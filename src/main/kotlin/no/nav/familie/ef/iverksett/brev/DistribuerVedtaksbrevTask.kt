@@ -1,10 +1,12 @@
 package no.nav.familie.ef.iverksett.brev
 
+import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -17,7 +19,8 @@ import java.util.UUID
                      triggerTidVedFeilISekunder = 15 * 60L,
                      beskrivelse = "Distribuerer vedtaksbrev.")
 class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient,
-                                private val tilstandRepository: TilstandRepository) : AsyncTaskStep {
+                                private val tilstandRepository: TilstandRepository,
+                                private val taskRepository: TaskRepository) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -32,8 +35,11 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
                     "for behandling=[${behandlingId}] med bestillingId=[$bestillingId]")
     }
 
-    companion object {
+    override fun onCompletion(task: Task) {
+        taskRepository.save(task.opprettNesteTask())
+    }
 
+    companion object {
         const val TYPE = "distribuerVedtaksbrev"
     }
 }
