@@ -81,7 +81,7 @@ internal class OpprettTilbakekrevingTaskTest {
         assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
         assertThat(request.varsel?.sumFeilutbetaling).isEqualTo(tilbakekreving.tilbakekrevingMedVarsel?.sumFeilutbetaling)
     }
-
+/*
     @Test
     protected fun `oppdager feilutbetaling på iverksett`() {
 
@@ -141,7 +141,7 @@ internal class OpprettTilbakekrevingTaskTest {
         assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
         assertThat(request.varsel?.sumFeilutbetaling).isEqualTo(beriketSimuleringsresultat.oppsummering.feilutbetaling)
     }
-
+*/
 
     private fun doTask(behandlingsId: UUID) {
         val task = Task(OpprettTilbakekrevingTask.TYPE, payload = behandlingsId.toString())
