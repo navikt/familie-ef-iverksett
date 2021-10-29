@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.brev
 
-import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
@@ -11,21 +10,17 @@ import no.nav.familie.prosessering.domene.TaskRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
-@TaskStepBeskrivelse(
-    taskStepType = DistribuerVedtaksbrevTask.TYPE,
-    maxAntallFeil = 50,
-    settTilManuellOppfølgning = true,
-    triggerTidVedFeilISekunder = 15 * 60L,
-    beskrivelse = "Distribuerer vedtaksbrev."
-)
-class DistribuerVedtaksbrevTask(
-    private val journalpostClient: JournalpostClient,
-    private val tilstandRepository: TilstandRepository,
-    private val taskRepository: TaskRepository
-) : AsyncTaskStep {
+@TaskStepBeskrivelse(taskStepType = DistribuerVedtaksbrevTask.TYPE,
+                     maxAntallFeil = 50,
+                     settTilManuellOppfølgning = true,
+                     triggerTidVedFeilISekunder = 15 * 60L,
+                     beskrivelse = "Distribuerer vedtaksbrev.")
+class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient,
+                                private val tilstandRepository: TilstandRepository,
+                                private val taskRepository: TaskRepository) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -33,14 +28,11 @@ class DistribuerVedtaksbrevTask(
         val behandlingId = UUID.fromString(task.payload)
         val journalpostId = tilstandRepository.hentJournalpostResultat(behandlingId)?.journalpostId
         val bestillingId = journalpostId?.let { journalpostClient.distribuerBrev(it) }
-        tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
-            behandlingId = behandlingId,
-            DistribuerVedtaksbrevResultat(bestillingId = bestillingId)
+        tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId = behandlingId,
+                                                                 DistribuerVedtaksbrevResultat(bestillingId = bestillingId)
         )
-        logger.info(
-            "Distribuer vedtaksbrev journalpost=[${journalpostId}] " +
-                    "for behandling=[${behandlingId}] med bestillingId=[$bestillingId]"
-        )
+        logger.info("Distribuer vedtaksbrev journalpost=[${journalpostId}] " +
+                    "for behandling=[${behandlingId}] med bestillingId=[$bestillingId]")
     }
 
     override fun onCompletion(task: Task) {
@@ -48,7 +40,6 @@ class DistribuerVedtaksbrevTask(
     }
 
     companion object {
-
         const val TYPE = "distribuerVedtaksbrev"
     }
 }

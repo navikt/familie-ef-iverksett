@@ -13,7 +13,8 @@ import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.*
+import java.util.Properties
+import java.util.UUID
 
 internal class DistribuerVedtaksbrevTaskTest {
 
@@ -30,14 +31,14 @@ internal class DistribuerVedtaksbrevTaskTest {
         val distribuerVedtaksbrevResultat = slot<DistribuerVedtaksbrevResultat>()
 
         every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns JournalpostResultat(
-            journalpostId,
-            LocalDateTime.now()
+                journalpostId,
+                LocalDateTime.now()
         )
         every { journalpostClient.distribuerBrev(journalpostId) } returns bestillingId
         every {
             tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
-                behandlingId,
-                capture(distribuerVedtaksbrevResultat)
+                    behandlingId,
+                    capture(distribuerVedtaksbrevResultat)
             )
         } returns Unit
 
@@ -59,6 +60,5 @@ internal class DistribuerVedtaksbrevTaskTest {
         assertThat(taskSlot.captured.payload).isEqualTo(behandlingId)
         assertThat(taskSlot.captured.type).isEqualTo(OpprettTilbakekrevingTask.TYPE)
     }
-
 
 }
