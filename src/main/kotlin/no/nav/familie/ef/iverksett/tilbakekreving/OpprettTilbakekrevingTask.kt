@@ -35,6 +35,10 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
+        if (iverksett.vedtak.tilkjentYtelse == null) {
+            logger.warn("OpprettTilbakekrevingTask ikke utført - tilkjentYtelse er null, Behandling: $behandlingId")
+            return
+        }
         val beriketSimuleringsresultat = hentBeriketSimulering(iverksett)
         val nyIverksett = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat)
 
