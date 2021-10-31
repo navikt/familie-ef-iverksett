@@ -6,7 +6,8 @@ data class Simulering(val nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData
 
 fun Iverksett.tilSimulering() = Simulering(
         nyTilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
-                tilkjentYtelse = this.vedtak.tilkjentYtelse!!,
+                tilkjentYtelse = this.vedtak.tilkjentYtelse
+                                 ?: throw IllegalStateException("Kan ikke lage simulering når tiljentYtelse er <null>"),
                 saksbehandlerId = this.vedtak.saksbehandlerId,
                 eksternBehandlingId = this.behandling.eksternId,
                 stønadstype = this.fagsak.stønadstype,

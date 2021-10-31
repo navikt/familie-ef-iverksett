@@ -92,6 +92,6 @@ private fun hentTotalEtterbetaling(simuleringPerioder: List<Simuleringsperiode>,
 private fun hentTotalFeilutbetaling(simuleringPerioder: List<Simuleringsperiode>, fomDatoNestePeriode: LocalDate?) =
         simuleringPerioder.filter { fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode }.sumOf { it.feilutbetaling }
 
-fun BeriketSimuleringsresultat.harFeilutbetaling(): Boolean {
-        return this.oppsummering.feilutbetaling > BigDecimal.ZERO
-}
+fun Result<BeriketSimuleringsresultat>.harResultatUtenFeilutbetaling() = this.fold(
+        onSuccess = { it.oppsummering.feilutbetaling <= BigDecimal.ZERO },
+        onFailure = { false }) // har ikke resultat

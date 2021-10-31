@@ -7,7 +7,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.tilSimulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
-import no.nav.familie.ef.iverksett.økonomi.simulering.harFeilutbetaling
+import no.nav.familie.ef.iverksett.økonomi.simulering.harResultatUtenFeilutbetaling
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -40,8 +40,12 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
             logger.warn("OpprettTilbakekrevingTask ikke utført - tilkjentYtelse er null, Behandling: $behandlingId")
             return
         }
+
         val beriketSimuleringsresultat = hentBeriketSimulering(iverksett)
-        val nyIverksett = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat)
+        val nyIverksett = beriketSimuleringsresultat.fold(
+                { iverksett.oppfriskTilbakekreving(it) },
+                { iverksett }, // bruk eksisterende
+        )
 
         if (nyIverksett != iverksett) {
             logger.info("Grunnlaget for tilbakekreving for behandling=${behandlingId} har endret seg siden saksbehandlingen")
@@ -49,7 +53,7 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
 
         if (!nyIverksett.vedtak.tilbakekreving.skalTilbakekreves) {
             logger.debug("Behandling=${behandlingId} skal ikke tilbakekreves")
-        } else if (!beriketSimuleringsresultat.harFeilutbetaling()) {
+        } else if (beriketSimuleringsresultat.harResultatUtenFeilutbetaling()) {
             logger.info("Behandling=${behandlingId} har ikke (lenger) positiv feilutbetaling i simuleringen")
         } else if (finnesÅpenTilbakekrevingsbehandling(nyIverksett)) {
             logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=${behandlingId}")
@@ -61,19 +65,20 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
                     behandlingId = behandlingId,
                     TilbakekrevingResultat(opprettTilbakekrevingRequest))
 
-            // Burde iverksett oppdateres i DBen, siden tilbakekreving potensielt er endret?
-            // iverksettingRepository.lagreIverksett(behandlingId,nyIverksett)
             logger.info("Opprettet tilbakekrevingsbehandling for behandling=${behandlingId}")
         }
     }
 
-    private fun hentBeriketSimulering(originalIverksett: Iverksett): BeriketSimuleringsresultat {
-        val simuleringRequest = originalIverksett.tilSimulering()
-        return simuleringService.hentBeriketSimulering(simuleringRequest)
+    private fun hentBeriketSimulering(iverksett: Iverksett): Result<BeriketSimuleringsresultat> {
+        return runCatching {
+            val simuleringRequest = iverksett.tilSimulering()
+            simuleringService.hentBeriketSimulering(simuleringRequest)
+        }.onFailure {
+            logger.warn("Henting av simulering feilet for behandling=${iverksett.behandling.behandlingId}",it)
+        }
     }
 
     private fun lagTilbakekrevingRequest(iverksett: Iverksett): OpprettTilbakekrevingRequest {
-        // Henter ut på nytt, selv om noe finnes i iverksett-dto'en
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhet(iverksett.søker.personIdent)!!
         return iverksett.tilOpprettTilbakekrevingRequest(enhet)
     }
