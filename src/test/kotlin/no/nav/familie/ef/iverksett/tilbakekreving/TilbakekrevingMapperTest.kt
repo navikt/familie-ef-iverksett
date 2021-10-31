@@ -54,6 +54,25 @@ internal class TilbakekrevingMapperTest {
     }
 
     @Test
+    fun `konverter Iverksetting til Hentfagsystembehandling`() {
+        val behandlingsId = UUID.randomUUID()
+        val iverksett = opprettIverksett(behandlingsId)
+        val enhet = Enhet(enhetId = "enhetId", enhetNavn = "enhetNavn")
+        val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
+
+        assertThat(fagsystemsbehandling.eksternId).isEqualTo(iverksett.behandling.eksternId.toString())
+        assertThat(fagsystemsbehandling.eksternFagsakId).isEqualTo(iverksett.fagsak.eksternId.toString())
+        assertThat(fagsystemsbehandling.ytelsestype.name).isEqualTo(iverksett.fagsak.stønadstype.name)
+        assertThat(fagsystemsbehandling.revurderingsvedtaksdato).isEqualTo(iverksett.vedtak.vedtaksdato)
+        assertThat(fagsystemsbehandling.personIdent).isEqualTo(iverksett.søker.personIdent)
+        assertThat(fagsystemsbehandling.språkkode).isEqualTo(Språkkode.NB)
+        assertThat(fagsystemsbehandling.verge).isEqualTo(null)
+
+        assertThat(fagsystemsbehandling.enhetId).isEqualTo(enhet.enhetId)
+        assertThat(fagsystemsbehandling.enhetsnavn).isEqualTo(enhet.enhetNavn)
+    }
+
+    @Test
     fun `skal validere at tilbakekreving med varsel ikker gyldig uten varseltekst`() {
         val tilbakekreving = Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
