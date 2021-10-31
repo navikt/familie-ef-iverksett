@@ -44,6 +44,13 @@ spring:
           password: ${KAFKA_CREDSTORE_PASSWORD}
     producer:
       acks: all
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: srvfamilie-ef-iverks
+      max-poll-records: 1
+      auto-offset-reset: latest
+      enable-auto-commit: false
 logging:
   config: "classpath:logback-spring.xml"
 
@@ -133,6 +140,7 @@ INFOTRYGD_FEED_API_URL: https://familie-ef-infotrygd-feed.${DEPLOY_ENV}-fss-pub.
 FAMILIE_TILBAKE_URL: http://familie-tilbake
 FAMILIE_TILBAKE_SCOPE: api://${DEPLOY_ENV}-gcp.teamfamilie.familie-tilbake/.default
 VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-iverksatt-vedtak
+FAGSYSTEMBEHANDLING_RESPONS_TOPIC: teamfamilie.privat-tbk-hentfagsystemsbehandling-respons-topic
 
 prosessering:
   fixedDelayString:
