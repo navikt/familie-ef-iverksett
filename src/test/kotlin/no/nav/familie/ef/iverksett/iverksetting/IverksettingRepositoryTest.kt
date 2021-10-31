@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.objectMapper
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
@@ -29,7 +30,7 @@ class IverksettingRepositoryTest : ServerTest() {
     }
 
     @Test
-    fun `lagre og hent iverksett, forvent ingen unntak`() {
+    fun `lagre og hent iverksett, forvent likhet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagre(
@@ -37,7 +38,20 @@ class IverksettingRepositoryTest : ServerTest() {
                 iverksett,
                 opprettBrev()
         )
-        val ret = iverksettingRepository.hent(iverksett.behandling.behandlingId)
-        // TODO: Sjekk innholdet?
+        val iverksettResultat = iverksettingRepository.hent(iverksett.behandling.behandlingId)
+        assertThat(iverksett).isEqualTo(iverksettResultat)
+    }
+
+    @Test
+    fun `lagre og hent iverksett av eksternId, forvent likhet`() {
+        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
+        val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
+        iverksettingRepository.lagre(
+                iverksett.behandling.behandlingId,
+                iverksett,
+                opprettBrev()
+        )
+        val iverksettResultat = iverksettingRepository.hentAvEksternId(iverksett.behandling.eksternId)
+        assertThat(iverksett).isEqualTo(iverksettResultat)
     }
 }

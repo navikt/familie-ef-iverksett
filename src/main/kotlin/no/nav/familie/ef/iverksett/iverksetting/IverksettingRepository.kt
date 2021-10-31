@@ -21,27 +21,30 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun lagreTekniskOpphør(behandlingId: UUID, tekniskOpphør: TekniskOpphør) {
-        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :tekniskOpphørJson::JSON, :type)"
+        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :tekniskOpphørJson::JSON, :type, :eksternId)"
         val tekniskOpphørString = objectMapper.writeValueAsString(tekniskOpphør)
 
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
                         "tekniskOpphørJson" to tekniskOpphørString,
-                        "type" to IverksettType.TEKNISK_OPPHØR.name
+                        "type" to IverksettType.TEKNISK_OPPHØR.name,
+                        "eksternId" to tekniskOpphør.tilkjentYtelseMedMetaData.eksternBehandlingId
                 ))
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
 
 
     private fun lagreIverksett(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {
-        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON)"
+        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON, :type, :eksternId)"
         val iverksettString = objectMapper.writeValueAsString(iverksett)
 
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
-                        "iverksettJson" to iverksettString
+                        "iverksettJson" to iverksettString,
+                        "type" to IverksettType.VANLIG.name,
+                        "eksternId" to iverksett.behandling.eksternId
                 )
         )
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
@@ -61,6 +64,10 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
 
     fun hent(behandlingId: UUID): Iverksett {
         return hentIverksettStringOgTransformer(behandlingId)
+    }
+
+    fun hentAvEksternId(eksternId: Long): Iverksett {
+        return hentIverksettStringOgTransformer(eksternId)
     }
 
     fun hentBrev(behandlingId: UUID): Brev {
@@ -84,6 +91,12 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
     }
 
+    private fun hentIverksettStringOgTransformer(eksternId: Long): Iverksett {
+        val mapSqlParameterSource = MapSqlParameterSource("eksternId", eksternId)
+        return namedParameterJdbcTemplate.queryForJson(HENT_IVERKSETT_EKSTERN_ID_SQL, mapSqlParameterSource)
+               ?: error("Finner ikke iverksett med eksternId=${eksternId}")
+    }
+
     fun hentTekniskOpphør(behandlingId: UUID): TekniskOpphør {
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
@@ -99,6 +112,8 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     companion object {
 
         const val HENT_IVERKSETT_SQL = "SELECT data FROM iverksett WHERE behandling_id = :behandlingId AND type = :type "
+        const val HENT_IVERKSETT_EKSTERN_ID_SQL = "SELECT data FROM iverksett WHERE ekstern_id = :eksternId "
+
     }
 
 }
