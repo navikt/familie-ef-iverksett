@@ -63,24 +63,6 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun hent(behandlingId: UUID): Iverksett {
-        return hentIverksettStringOgTransformer(behandlingId)
-    }
-
-    fun hentAvEksternId(eksternId: Long): Iverksett {
-        return hentIverksettStringOgTransformer(eksternId)
-    }
-
-    fun hentBrev(behandlingId: UUID): Brev {
-        val sql = "SELECT * FROM brev WHERE behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        return namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource) { resultSet: ResultSet, _: Int ->
-            val behandlingIdForBrev = resultSet.getUUID("behandling_id")
-            val pdf = resultSet.getBytes("pdf")
-            Brev(behandlingIdForBrev, pdf)
-        } ?: error("Fant ikke brev for behandlingId : $behandlingId")
-    }
-
-    private fun hentIverksettStringOgTransformer(behandlingId: UUID): Iverksett {
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
@@ -91,10 +73,20 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
     }
 
-    private fun hentIverksettStringOgTransformer(eksternId: Long): Iverksett {
+    fun hentAvEksternId(eksternId: Long): Iverksett {
         val mapSqlParameterSource = MapSqlParameterSource("eksternId", eksternId)
         return namedParameterJdbcTemplate.queryForJson(HENT_IVERKSETT_EKSTERN_ID_SQL, mapSqlParameterSource)
                ?: error("Finner ikke iverksett med eksternId=${eksternId}")
+    }
+
+    fun hentBrev(behandlingId: UUID): Brev {
+        val sql = "SELECT * FROM brev WHERE behandling_id = :behandlingId"
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+        return namedParameterJdbcTemplate.queryForObject(sql, mapSqlParameterSource) { resultSet: ResultSet, _: Int ->
+            val behandlingIdForBrev = resultSet.getUUID("behandling_id")
+            val pdf = resultSet.getBytes("pdf")
+            Brev(behandlingIdForBrev, pdf)
+        } ?: error("Fant ikke brev for behandlingId : $behandlingId")
     }
 
     fun hentTekniskOpphør(behandlingId: UUID): TekniskOpphør {
