@@ -17,13 +17,12 @@ class TilbakekrevingProducer(private val kafkaProducerService: KafkaProducerServ
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     fun send(behandling: HentFagsystemsbehandling) {
-        logger.info("Sender til Kafka topic: $topic")
-        secureLogger.debug("Sender til Kafka topic: $topic, Fagsystembehandling: $behandling")
-        runCatching {
+        secureLogger.debug("Sender til Kafka topic: $topic, Fagsystembehandling=$behandling")
+        try {
             kafkaProducerService.send(topic, behandling.eksternId, behandling.toJson())
-            logger.info("Fagsystembehandling ifm tilbakekreving er sent til Kafka. EksternId:${behandling.eksternId}")
-            secureLogger.info("Fagsystembehandling er sent til Kafka. Behandling: $behandling")
-        }.onFailure {
+            logger.info("Fagsystembehandling ifm tilbakekreving er sent til Kafka. EksternId=${behandling.eksternId}")
+            secureLogger.info("Fagsystembehandling er sent til Kafka. Behandling=$behandling")
+        } catch (ex : Exception) {
             val errorMessage = "Kunne ikke sende behandling til Kafka. Se securelogs for mere informasjon. "
             logger.error(errorMessage)
             throw RuntimeException(errorMessage)
