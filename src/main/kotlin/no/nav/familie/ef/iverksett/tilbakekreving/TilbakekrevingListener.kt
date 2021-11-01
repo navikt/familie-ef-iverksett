@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
@@ -28,24 +29,27 @@ class TilbakekrevingListener(
                    topics = ["teamfamilie.privat-tbk-hentfagsystemsbehandling-request-topic"],
                    containerFactory = "concurrentTilbakekrevingListenerContainerFactory")
     fun listen(consumerRecord: ConsumerRecord<String, String>) {
-        secureLogger.info("HentFagsystemsbehandlingRequest er mottatt: $consumerRecord")
+        secureLogger.info("HentFagsystemsbehandlingRequest er mottatt, consumerRecord=$consumerRecord")
         val key: String = consumerRecord.key()
         val data: String = consumerRecord.value()
         try {
             MDC.put(MDCConstants.MDC_CALL_ID, UUID.randomUUID().toString())
-            val request: HentFagsystemsbehandlingRequest =
-                    objectMapper.readValue(data, HentFagsystemsbehandlingRequest::class.java)
-            val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
-            val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhet(iverksett.søker.personIdent)!!
-            val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
-            tilbakekrevingProducer.send(fagsystemsbehandling)
+            transformerOgSend(data)
         } catch (e: Exception) {
-            logger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest: ${key}")
-            secureLogger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest: ${consumerRecord}")
+            logger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med eksternId=$key")
+            secureLogger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med consumerRecord=$consumerRecord")
             throw e
         } finally {
             MDC.remove(MDCConstants.MDC_CALL_ID)
         }
     }
 
+    private fun transformerOgSend(data: String) {
+        val request: HentFagsystemsbehandlingRequest =
+                objectMapper.readValue(data)
+        val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
+        val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhet(iverksett.søker.personIdent)!!
+        val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
+        tilbakekrevingProducer.send(fagsystemsbehandling)
+    }
 }
