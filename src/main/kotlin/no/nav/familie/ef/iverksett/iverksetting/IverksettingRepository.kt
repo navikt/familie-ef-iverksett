@@ -74,7 +74,12 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun hentAvEksternId(eksternId: Long): Iverksett {
-        val mapSqlParameterSource = MapSqlParameterSource("eksternId", eksternId)
+        val mapSqlParameterSource = MapSqlParameterSource(
+                mapOf(
+                        "eksternId" to eksternId,
+                        "type" to IverksettType.VANLIG.name
+                )
+        )
         return namedParameterJdbcTemplate.queryForJson(HENT_IVERKSETT_EKSTERN_ID_SQL, mapSqlParameterSource)
                ?: error("Finner ikke iverksett med eksternId=${eksternId}")
     }
@@ -104,7 +109,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     companion object {
 
         const val HENT_IVERKSETT_SQL = "SELECT data FROM iverksett WHERE behandling_id = :behandlingId AND type = :type "
-        const val HENT_IVERKSETT_EKSTERN_ID_SQL = "SELECT data FROM iverksett WHERE ekstern_id = :eksternId "
+        const val HENT_IVERKSETT_EKSTERN_ID_SQL = "SELECT data FROM iverksett WHERE ekstern_id = :eksternId AND type = :type"
 
     }
 
