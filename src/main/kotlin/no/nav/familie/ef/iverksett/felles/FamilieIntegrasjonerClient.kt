@@ -30,8 +30,8 @@ class FamilieIntegrasjonerClient(
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_HENT_IDENTER).build().toUri()
     private val aktørUri =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_AKTØR).build().toUri()
-    private val arbeidsfordelingUri =
-            UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING).build().toUri()
+    private fun arbeidsfordelingUri(tema: String) =
+            UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING, tema).build().toUri()
 
     fun hentIdenter(personident: String, medHistprikk: Boolean): List<PersonIdentMedHistorikk> {
         val uri = UriComponentsBuilder.fromUri(hentIdenterURI).queryParam("historikk", medHistprikk).build().toUri()
@@ -44,15 +44,21 @@ class FamilieIntegrasjonerClient(
         return response.getDataOrThrow()["aktørId"].toString()
     }
 
-    fun hentBehandlendeEnhet(personident: String): Enhet? {
-        val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUri, Ident(personident))
+    fun hentBehandlendeEnhetForOppfølging(personident: String): Enhet? {
+        val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUri(TEMA_OPPFØLGING), Ident(personident))
+        return response.getDataOrThrow().firstOrNull()
+    }
+
+    fun hentBehandlendeEnhetForBehandling(personident: String): Enhet? {
+        val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))
         return response.getDataOrThrow().firstOrNull()
     }
 
     companion object {
 
-        private const val ARBEIDSFORDELING_TEMA = "OPP" //Oppfølging - lokalenhet
-        const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet/$ARBEIDSFORDELING_TEMA"
+        private const val TEMA_OPPFØLGING = "OPP" //Oppfølging - lokalenhet
+        private const val TEMA_ENSLIG_FORSØRGER = "ENF" //NAY - 4489
+        const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet"
         const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
     }

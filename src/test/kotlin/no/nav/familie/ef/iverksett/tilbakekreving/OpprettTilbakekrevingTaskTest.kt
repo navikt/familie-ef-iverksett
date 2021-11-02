@@ -1,6 +1,11 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
@@ -17,7 +22,7 @@ import no.nav.familie.prosessering.domene.Task
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 
 internal class OpprettTilbakekrevingTaskTest {
 
@@ -38,8 +43,8 @@ internal class OpprettTilbakekrevingTaskTest {
     @BeforeEach
     protected fun init() {
         every { tilbakekrevingClient.finnesÅpenBehandling(any()) } returns false
-        every { familieIntegrasjonerClient.hentBehandlendeEnhet(any()) } returns
-                Enhet("1","Oslo")
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) } returns
+                Enhet("1", "Oslo")
         every { tilbakekrevingClient.opprettBehandling(any()) } returns ""
     }
 
