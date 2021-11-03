@@ -57,36 +57,23 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
         )
     }
 
-    private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat): String {
-        return when (stønadstype) {
-            StønadType.OVERGANGSSTØNAD ->
-                lagVedtakstekstForOvergangsstønad(vedtaksresultat)
-            StønadType.BARNETILSYN -> lagVedtakstekstForBarnetilsyn(vedtaksresultat)
-            StønadType.SKOLEPENGER -> lagVedtakstekstForSkolepenger(vedtaksresultat)
+    private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat): String =
+            lagVedtakstekst(vedtaksresultat) + lagStønadtypeTekst(stønadstype)
 
-        }
 
-    }
-
-    private fun lagVedtakstekstForSkolepenger(vedtaksresultat: Vedtaksresultat) =
-            when (vedtaksresultat) {
-                Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av stønad til skolepenger"
-                Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av stønad til skolepenger"
-                Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av stønad til skolepenger"
+    private fun lagStønadtypeTekst(stønadstype: StønadType): String =
+            when (stønadstype) {
+                StønadType.OVERGANGSSTØNAD -> "overgangstønad"
+                StønadType.BARNETILSYN -> "stønad til barnetilsyn"
+                StønadType.SKOLEPENGER -> "stønad til skolepenger"
             }
 
-    private fun lagVedtakstekstForBarnetilsyn(vedtaksresultat: Vedtaksresultat) =
-            when (vedtaksresultat) {
-                Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av stønad til barnetilsyn"
-                Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av stønad til barnetilsyn"
-                Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av stønad til barnetilsyn"
-            }
 
-    private fun lagVedtakstekstForOvergangsstønad(vedtaksresultat: Vedtaksresultat) =
+    private fun lagVedtakstekst(vedtaksresultat: Vedtaksresultat): String =
             when (vedtaksresultat) {
-                Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av overgangsstønad"
-                Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av overgangsstønad"
-                Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av overgangsstønad"
+                Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av "
+                Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av "
+                Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av "
             }
 
     override fun onCompletion(task: Task) {
