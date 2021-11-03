@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
+import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
@@ -13,6 +14,7 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequ
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -25,6 +27,7 @@ import java.util.UUID
                      triggerTidVedFeilISekunder = 15 * 60L,
                      beskrivelse = "Opprett tilbakekrevingsbehandling")
 class OpprettTilbakekrevingTask(private val iverksettingRepository: IverksettingRepository,
+                                private val taskRepository: TaskRepository,
                                 private val tilbakekrevingClient: TilbakekrevingClient,
                                 private val tilstandRepository: TilstandRepository,
                                 private val simuleringService: SimuleringService,
@@ -65,6 +68,10 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
             // iverksettingRepository.lagreIverksett(behandlingId,nyIverksett)
             logger.info("Opprettet tilbakekrevingsbehandling for behandling=${behandlingId}")
         }
+    }
+
+    override fun onCompletion(task: Task) {
+        taskRepository.save(task.opprettNesteTask())
     }
 
     private fun hentBeriketSimulering(originalIverksett: Iverksett): BeriketSimuleringsresultat {
