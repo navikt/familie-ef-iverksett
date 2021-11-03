@@ -4,6 +4,8 @@ import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
@@ -34,7 +36,10 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
         val iverksett = iverksettingRepository.hent(behandlingId)
 
         val vedtaksbrev = iverksettingRepository.hentBrev(behandlingId)
-        val dokument = Dokument(vedtaksbrev.pdf, Filtype.PDFA, dokumenttype = Dokumenttype.VEDTAKSBREV_OVERGANGSSTØNAD)
+        val dokument = Dokument(vedtaksbrev.pdf,
+                                Filtype.PDFA,
+                                dokumenttype = Dokumenttype.VEDTAKSBREV_OVERGANGSSTØNAD,
+                                tittel = lagDokumentTittel(iverksett.fagsak.stønadstype, iverksett.vedtak.vedtaksresultat))
 
         val journalpostId = journalpostClient.arkiverDokument(
                 ArkiverDokumentRequest(
@@ -51,6 +56,38 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
                                                        JournalpostResultat(journalpostId = journalpostId)
         )
     }
+
+    private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat): String {
+        return when (stønadstype) {
+            StønadType.OVERGANGSSTØNAD ->
+                lagVedtakstekstForOvergangsstønad(vedtaksresultat)
+            StønadType.BARNETILSYN -> lagVedtakstekstForBarnetilsyn(vedtaksresultat)
+            StønadType.SKOLEPENGER -> lagVedtakstekstForSkolepenger(vedtaksresultat)
+
+        }
+
+    }
+
+    private fun lagVedtakstekstForSkolepenger(vedtaksresultat: Vedtaksresultat) =
+            when (vedtaksresultat) {
+                Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av stønad til skolepenger"
+                Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av stønad til skolepenger"
+                Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av stønad til skolepenger"
+            }
+
+    private fun lagVedtakstekstForBarnetilsyn(vedtaksresultat: Vedtaksresultat) =
+            when (vedtaksresultat) {
+                Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av stønad til barnetilsyn"
+                Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av stønad til barnetilsyn"
+                Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av stønad til barnetilsyn"
+            }
+
+    private fun lagVedtakstekstForOvergangsstønad(vedtaksresultat: Vedtaksresultat) =
+            when (vedtaksresultat) {
+                Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av overgangsstønad"
+                Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av overgangsstønad"
+                Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av overgangsstønad"
+            }
 
     override fun onCompletion(task: Task) {
         taskRepository.save(task.opprettNesteTask())
