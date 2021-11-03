@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.dao.DuplicateKeyException
+import org.springframework.dao.EmptyResultDataAccessException
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -21,50 +21,47 @@ internal class BehandlingsstatistikkRepositoryTest : ServerTest() {
 
     @BeforeEach
     internal fun beforeEach() {
-        behandlingsstatistikkRepository.lagre(behandlingId, behandlingstatistikkPåbegynt, Hendelse.PÅBEGYNT)
+        behandlingsstatistikkRepository.insert(Behandlingsstatistikk(behandlingId = behandlingId,
+                                                                     behandlingDvh = behandlingstatistikkPåbegynt,
+                                                                     hendelse = Hendelse.PÅBEGYNT))
     }
 
     @Test
     fun `hente behandlingstatistikk, forvent likhet for felter som ikke er nullable`() {
-        val hentetBehandlingstatistikk = behandlingsstatistikkRepository.hent(behandlingId, Hendelse.PÅBEGYNT)
+        val hentetBehandlingstatistikk =
+                behandlingsstatistikkRepository.findByBehandlingIdAndHendelse(behandlingId, Hendelse.PÅBEGYNT)
 
-        assertThat(hentetBehandlingstatistikk.behandlingId).isEqualTo(behandlingstatistikkPåbegynt.behandlingId)
-        assertThat(hentetBehandlingstatistikk.personIdent).isEqualTo(behandlingstatistikkPåbegynt.personIdent)
-        assertThat(hentetBehandlingstatistikk.registrertTid).isEqualTo(behandlingstatistikkPåbegynt.registrertTid)
-        assertThat(hentetBehandlingstatistikk.endretTid).isEqualTo(behandlingstatistikkPåbegynt.endretTid)
-        assertThat(hentetBehandlingstatistikk.tekniskTid).isEqualTo(behandlingstatistikkPåbegynt.tekniskTid)
-        assertThat(hentetBehandlingstatistikk.mottattTid).isEqualTo(behandlingstatistikkPåbegynt.mottattTid)
-        assertThat(hentetBehandlingstatistikk.saksbehandler).isEqualTo(behandlingstatistikkPåbegynt.saksbehandler)
+        assertThat(hentetBehandlingstatistikk.behandlingDvh.behandlingId).isEqualTo(behandlingstatistikkPåbegynt.behandlingId)
+        assertThat(hentetBehandlingstatistikk.behandlingDvh.personIdent).isEqualTo(behandlingstatistikkPåbegynt.personIdent)
+        assertThat(hentetBehandlingstatistikk.behandlingDvh.registrertTid).isEqualTo(behandlingstatistikkPåbegynt.registrertTid)
+        assertThat(hentetBehandlingstatistikk.behandlingDvh.endretTid).isEqualTo(behandlingstatistikkPåbegynt.endretTid)
+        assertThat(hentetBehandlingstatistikk.behandlingDvh.tekniskTid).isEqualTo(behandlingstatistikkPåbegynt.tekniskTid)
+        assertThat(hentetBehandlingstatistikk.behandlingDvh.mottattTid).isEqualTo(behandlingstatistikkPåbegynt.mottattTid)
+        assertThat(hentetBehandlingstatistikk.behandlingDvh.saksbehandler).isEqualTo(behandlingstatistikkPåbegynt.saksbehandler)
     }
 
     @Test
     fun `lagre og hente behandlingstatistikk med ny hendelse, forvent ingen nullverdi`() {
-        val behandlingstatistikkMottat = opprettBehandlingstatistikk(behandlingId)
-        behandlingsstatistikkRepository.lagre(behandlingId, behandlingstatistikkMottat, Hendelse.MOTTATT)
-        val behandlingDVH = behandlingsstatistikkRepository.hent(behandlingId, Hendelse.MOTTATT)
-        assertThat(behandlingDVH).isNotNull
+        behandlingsstatistikkRepository.insert(Behandlingsstatistikk(behandlingId = behandlingId,
+                                                                     behandlingDvh = behandlingstatistikkPåbegynt,
+                                                                     hendelse = Hendelse.MOTTATT))
+        val lagretBehandlingsstatistikk =
+                behandlingsstatistikkRepository.findByBehandlingIdAndHendelse(behandlingId, Hendelse.MOTTATT)
+        assertThat(lagretBehandlingsstatistikk).isNotNull
     }
 
     @Test
     fun `hent behandlingstatistikk med ikke-eksisterende id, forvent IllegalStateException`() {
-        Assertions.assertThrows(IllegalStateException::class.java) {
-            behandlingsstatistikkRepository.hent(UUID.randomUUID(), Hendelse.PÅBEGYNT)
+        Assertions.assertThrows(EmptyResultDataAccessException::class.java) {
+            behandlingsstatistikkRepository.findByBehandlingIdAndHendelse(UUID.randomUUID(), Hendelse.PÅBEGYNT)
         }
 
     }
 
     @Test
     fun `hent behandlingstatistikk med ikke-eksisterende hendelse, forvent IllegalStateException`() {
-        Assertions.assertThrows(IllegalStateException::class.java) {
-            behandlingsstatistikkRepository.hent(UUID.randomUUID(), Hendelse.FERDIG)
-        }
-    }
-
-    @Test
-    fun `lagre samme hendelse to ganger, forvent DuplicateKeyException`() {
-        Assertions.assertThrows(DuplicateKeyException::class.java) {
-            val behandlingDVH = opprettBehandlingstatistikk(behandlingId)
-            behandlingsstatistikkRepository.lagre(behandlingId, behandlingDVH, Hendelse.PÅBEGYNT)
+        Assertions.assertThrows(EmptyResultDataAccessException::class.java) {
+            behandlingsstatistikkRepository.findByBehandlingIdAndHendelse(UUID.randomUUID(), Hendelse.FERDIG)
         }
     }
 
