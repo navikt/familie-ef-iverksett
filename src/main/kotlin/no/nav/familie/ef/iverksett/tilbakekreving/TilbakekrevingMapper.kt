@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.tilbakekreving
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
@@ -63,11 +64,19 @@ private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel?
 
 private fun lagFaktainfo(iverksett: Iverksett): Faktainfo {
     return Faktainfo(
-            revurderingsårsak = iverksett.behandling.behandlingÅrsak.toString(),
+            revurderingsårsak = iverksett.behandling.behandlingÅrsak.visningsTekst(),
             revurderingsresultat = iverksett.vedtak.vedtaksresultat.toString(),  // Er dette korrekt?
             tilbakekrevingsvalg = iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg,
             konsekvensForYtelser = emptySet() // Settes også empty av ba-sak
     )
+}
+
+private fun BehandlingÅrsak.visningsTekst(): String {
+    return when(this){
+        BehandlingÅrsak.SØKNAD -> "Søknad"
+        BehandlingÅrsak.KLAGE -> "Klage"
+        BehandlingÅrsak.NYE_OPPLYSNINGER -> "Nye opplysninger"
+    }
 }
 
 
