@@ -39,14 +39,20 @@ internal class TilbakekrevingListenerTest {
 
     @Test
     internal fun `send kafkamelding til listener, forvent kall til kafkaproducer`() {
-        listener.listen(record())
+        listener.listen(record(Ytelsestype.OVERGANGSSTØNAD))
         verify(exactly = 1) { tilbakekrevingProducer.send(any()) }
     }
 
-    private fun record(): ConsumerRecord<String, String> {
+    @Test
+    internal fun `send kafkamelding til listener med annen type enn overgangsstønad, forvent ingen kall til kafkaproducer`() {
+        listener.listen(record(Ytelsestype.BARNETILSYN))
+        verify(exactly = 0) { tilbakekrevingProducer.send(any()) }
+    }
+
+    private fun record(ytelsestype: Ytelsestype): ConsumerRecord<String, String> {
         val behandling = objectMapper.writeValueAsString(HentFagsystemsbehandling(eksternFagsakId = "0",
                                                                                   eksternId = "1",
-                                                                                  ytelsestype = Ytelsestype.OVERGANGSSTØNAD,
+                                                                                  ytelsestype = ytelsestype,
                                                                                   personIdent = "12345678910",
                                                                                   språkkode = Språkkode.NB,
                                                                                   enhetId = "enhet",

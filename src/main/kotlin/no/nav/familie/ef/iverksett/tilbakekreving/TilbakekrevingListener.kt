@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRequest
+import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import no.nav.familie.log.mdc.MDCConstants
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -47,6 +48,9 @@ class TilbakekrevingListener(
     private fun transformerOgSend(data: String) {
         val request: HentFagsystemsbehandlingRequest =
                 objectMapper.readValue(data)
+        if (request.ytelsestype != Ytelsestype.OVERGANGSSTØNAD) {
+            return
+        }
         val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
         val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhet(iverksett.søker.personIdent)!!
         val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
