@@ -19,9 +19,8 @@ import java.util.UUID
 internal class DistribuerVedtaksbrevTaskTest {
 
     private val journalpostClient = mockk<JournalpostClient>()
-    val tilstandRepository = mockk<TilstandRepository>()
-    val taskRepository = mockk<TaskRepository>()
-    private val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository, taskRepository)
+    private val tilstandRepository = mockk<TilstandRepository>()
+    private val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository)
 
     @Test
     internal fun `skal distribuere brev`() {
@@ -48,17 +47,6 @@ internal class DistribuerVedtaksbrevTaskTest {
         verify(exactly = 1) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId, any()) }
         assertThat(distribuerVedtaksbrevResultat.captured.bestillingId).isEqualTo(bestillingId)
         assertThat(distribuerVedtaksbrevResultat.captured.dato).isNotNull()
-    }
-
-    @Test
-    internal fun `skal opprette OpprettTilbakekrevingTask når DistribuerVedtaksbrevTask er ferdig`() {
-        val taskSlot = slot<Task>()
-        val behandlingId = UUID.randomUUID().toString()
-        val task = Task(DistribuerVedtaksbrevTask.TYPE, behandlingId, Properties())
-        every { taskRepository.save(capture(taskSlot)) } returns task
-        distribuerVedtaksbrevTask.onCompletion(task)
-        assertThat(taskSlot.captured.payload).isEqualTo(behandlingId)
-        assertThat(taskSlot.captured.type).isEqualTo(OpprettTilbakekrevingTask.TYPE)
     }
 
 }

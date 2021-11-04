@@ -7,6 +7,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
+import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
@@ -14,14 +15,17 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingsdetaljer
+import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.Properties
 import java.util.UUID
 
 internal class OpprettTilbakekrevingTaskTest {
@@ -31,9 +35,12 @@ internal class OpprettTilbakekrevingTaskTest {
     private val tilbakekrevingClient = mockk<TilbakekrevingClient>()
     private val simuleringService = mockk<SimuleringService>()
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
+    private val taskRepository = mockk<TaskRepository>()
+
 
     private val opprettTilbakekrevingTask = OpprettTilbakekrevingTask(
             tilstandRepository = tilstandRepository,
+            taskRepository = taskRepository,
             iverksettingRepository = iverksettingRepository,
             tilbakekrevingClient = tilbakekrevingClient,
             simuleringService = simuleringService,
@@ -145,6 +152,17 @@ internal class OpprettTilbakekrevingTaskTest {
         assertThat(request.faktainfo.tilbakekrevingsvalg).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg)
         assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
         assertThat(request.varsel?.sumFeilutbetaling).isEqualTo(beriketSimuleringsresultat.oppsummering.feilutbetaling)
+    }
+
+    @Test
+    internal fun `skal opprette IverksettMotOppdragTask når OpprettTilbakekrevingTask er ferdig`() {
+        val taskSlot = slot<Task>()
+        val behandlingId = UUID.randomUUID().toString()
+        val task = Task(OpprettTilbakekrevingTask.TYPE, payload = behandlingId)
+        every { taskRepository.save(capture(taskSlot)) } returns task
+        opprettTilbakekrevingTask.onCompletion(task)
+        assertThat(taskSlot.captured.payload).isEqualTo(behandlingId)
+        assertThat(taskSlot.captured.type).isEqualTo(IverksettMotOppdragTask.TYPE)
     }
 
     private fun doTask(behandlingsId: UUID) {

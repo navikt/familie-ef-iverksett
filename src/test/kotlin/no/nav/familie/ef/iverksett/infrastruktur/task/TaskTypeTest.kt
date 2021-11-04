@@ -23,9 +23,15 @@ class TaskTypeTest {
 
     @Test
     fun `test taskflyt`() {
-        val iverksettMotOppdragTask = Task(IverksettMotOppdragTask.TYPE, "", Properties())
-        val ventePåStatusFraØkonomiTask = iverksettMotOppdragTask.opprettNesteTask()
+        val opprettTilbakekrevingTask = Task(OpprettTilbakekrevingTask.TYPE, "", Properties())
+        assertThat(opprettTilbakekrevingTask.type).isEqualTo(OpprettTilbakekrevingTask.TYPE)
+        assertThat(opprettTilbakekrevingTask.triggerTid).isBefore(LocalDateTime.now().plusSeconds(1))
 
+        val iverksettMotOppdragTask = opprettTilbakekrevingTask.opprettNesteTask()
+        assertThat(iverksettMotOppdragTask.type).isEqualTo(IverksettMotOppdragTask.TYPE)
+        assertThat(iverksettMotOppdragTask.triggerTid).isBefore(LocalDateTime.now().plusSeconds(1))
+
+        val ventePåStatusFraØkonomiTask = iverksettMotOppdragTask.opprettNesteTask()
         assertThat(ventePåStatusFraØkonomiTask.type).isEqualTo(VentePåStatusFraØkonomiTask.TYPE)
         assertThat(ventePåStatusFraØkonomiTask.triggerTid).isAfter(LocalDateTime.now().plusSeconds(2))
 
@@ -36,11 +42,6 @@ class TaskTypeTest {
         val distribuerVedtaksbrevTask = journalførVedtaksbrevTask.opprettNesteTask()
         assertThat(distribuerVedtaksbrevTask.type).isEqualTo(DistribuerVedtaksbrevTask.TYPE)
         assertThat(distribuerVedtaksbrevTask.triggerTid).isBefore(LocalDateTime.now().plusSeconds(1))
-
-        val opprettTilbakekrevingTask = distribuerVedtaksbrevTask.opprettNesteTask()
-        assertThat(opprettTilbakekrevingTask.type).isEqualTo(OpprettTilbakekrevingTask.TYPE)
-        assertThat(opprettTilbakekrevingTask.triggerTid).isBefore(LocalDateTime.now().plusSeconds(1))
-
     }
 
     @Test
@@ -69,10 +70,10 @@ class TaskTypeTest {
     }
 
     @Test
-    internal fun `skal ikke opprette task etter opprettet tilbakekrevingsbehandling`() {
-        val opprettTilbakekrevingTask = Task(OpprettTilbakekrevingTask.TYPE, "", Properties())
+    internal fun `skal ikke opprette task etter opprettet DistribuerVedtaksbrevTask`() {
+        val task = Task(DistribuerVedtaksbrevTask.TYPE, "", Properties())
         assertThrows<NoSuchElementException> {
-            opprettTilbakekrevingTask.opprettNesteTask()
+            task.opprettNesteTask()
         }
     }
 }
