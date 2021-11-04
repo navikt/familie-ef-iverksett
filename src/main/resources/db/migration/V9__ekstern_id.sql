@@ -6,3 +6,5 @@ SET ekstern_id = (data -> 'behandling' ->> 'eksternId')::BIGINT;
 
 ALTER TABLE iverksett
     ALTER COLUMN ekstern_id SET NOT NULL;
+
+CREATE INDEX ON iverksett (ekstern_id);
