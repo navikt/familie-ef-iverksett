@@ -30,7 +30,6 @@ class TilbakekrevingListener(
                    topics = ["teamfamilie.privat-tbk-hentfagsystemsbehandling-request-topic"],
                    containerFactory = "concurrentTilbakekrevingListenerContainerFactory")
     fun listen(consumerRecord: ConsumerRecord<String, String>) {
-        secureLogger.info("HentFagsystemsbehandlingRequest er mottatt, consumerRecord=$consumerRecord")
         val key: String = consumerRecord.key()
         val data: String = consumerRecord.value()
         try {
