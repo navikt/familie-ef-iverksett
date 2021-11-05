@@ -49,8 +49,6 @@ internal class TilbakekrevingListenerTest {
 
     @Test
     internal fun `send kafkamelding til listener med annen type enn overgangsstønad, forvent ingen kall til kafkaproducer`() {
-        listener.listen(record(Ytelsestype.BARNETILSYN))
-        verify(exactly = 0) { tilbakekrevingProducer.send(any()) }
         listener.listen(record(Ytelsestype.KONTANTSTØTTE))
         verify(exactly = 0) { tilbakekrevingProducer.send(any()) }
         listener.listen(record(Ytelsestype.BARNETRYGD))
