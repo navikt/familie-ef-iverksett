@@ -52,6 +52,16 @@ internal class IverksettMotOppdragTaskTest {
     }
 
     @Test
+    internal fun `skal ikke iverksette utbetaling til oppdrag når det ikke er noen utbetalinger`() {
+        every { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
+        every { tilstandRepository.hentTilkjentYtelse(any<UUID>()) } returns null
+        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId, andelsbeløp = 0).toDomain()
+        iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
+        verify(exactly = 1) { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) }
+        verify(exactly = 0) { oppdragClient.iverksettOppdrag(any()) }
+    }
+
+    @Test
     internal fun `skal opprette ny task når den er ferdig`() {
         val taskSlot = slot<Task>()
         val task = Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties())
@@ -60,4 +70,7 @@ internal class IverksettMotOppdragTaskTest {
         assertThat(taskSlot.captured.payload).isEqualTo(behandlingId.toString())
         assertThat(taskSlot.captured.type).isEqualTo(VentePåStatusFraØkonomiTask.TYPE)
     }
+
+
+
 }

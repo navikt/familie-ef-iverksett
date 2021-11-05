@@ -8,6 +8,8 @@ import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -22,6 +24,8 @@ class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRe
                               private val taskRepository: TaskRepository,
                               private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
+
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
@@ -43,7 +47,13 @@ class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRe
                                                                 forrigeTilkjentYtelse)
 
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
-        utbetaling.utbetalingsoppdrag?.let { oppdragClient.iverksettOppdrag(it) }
+        utbetaling.utbetalingsoppdrag?.let {
+            if (it.utbetalingsperiode.isNotEmpty()) {
+                oppdragClient.iverksettOppdrag(it)
+            } else {
+                log.warn("IverksettMotOppdragTask - iverksetter ikke noe mot oppdrag. Ingen utbetalingsperioder. behandlingId=$behandlingId")
+            }
+        }
         ?: error("Utbetalingsoppdrag mangler for iverksetting")
     }
 

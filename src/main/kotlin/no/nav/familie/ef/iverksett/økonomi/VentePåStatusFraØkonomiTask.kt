@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -30,6 +31,13 @@ class VentePåStatusFraØkonomiTask(
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
+        val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingId)
+                             ?: error("Kunne ikke finne tilkjent ytelse for behandling=$behandlingId")
+
+        if (tilkjentYtelse.harIngenUtbetalingsperioder()) {
+            return
+        }
+
         iverksettingService.sjekkStatusPåIverksettOgOppdaterTilstand(stønadstype = iverksett.fagsak.stønadstype,
                                                                      personIdent = iverksett.søker.personIdent,
                                                                      eksternBehandlingId = iverksett.behandling.eksternId,
@@ -44,4 +52,10 @@ class VentePåStatusFraØkonomiTask(
 
         const val TYPE = "sjekkStatusPåOppdrag"
     }
+
+    fun TilkjentYtelse.harIngenUtbetalingsperioder() :Boolean {
+        return this.utbetalingsoppdrag?.utbetalingsperiode?.isEmpty()
+        ?: error("Kunne ikke finne utbetalingsoppdrag ytelse for tilkjentYtelse=${this.id}")
+    }
+
 }

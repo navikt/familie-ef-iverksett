@@ -52,10 +52,10 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
 
-fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
+fun opprettIverksettDto(behandlingId: UUID, andelsbeløp :Int = 5000): IverksettDto {
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
-            beløp = 5000,
+            beløp = andelsbeløp,
             periodetype = Periodetype.MÅNED,
             fraOgMed = LocalDate.of(2021, 1, 1),
             tilOgMed = LocalDate.of(2021, 12, 31),
