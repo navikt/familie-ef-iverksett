@@ -38,14 +38,22 @@ internal class TilbakekrevingListenerTest {
     }
 
     @Test
-    internal fun `send kafkamelding til listener, forvent kall til kafkaproducer`() {
+    internal fun `send kafkamelding til listener med ef-type, forvent kall til kafkaproducer`() {
         listener.listen(record(Ytelsestype.OVERGANGSSTØNAD))
+        verify(exactly = 1) { tilbakekrevingProducer.send(any()) }
+        listener.listen(record(Ytelsestype.SKOLEPENGER))
+        verify(exactly = 1) { tilbakekrevingProducer.send(any()) }
+        listener.listen(record(Ytelsestype.BARNETILSYN))
         verify(exactly = 1) { tilbakekrevingProducer.send(any()) }
     }
 
     @Test
     internal fun `send kafkamelding til listener med annen type enn overgangsstønad, forvent ingen kall til kafkaproducer`() {
         listener.listen(record(Ytelsestype.BARNETILSYN))
+        verify(exactly = 0) { tilbakekrevingProducer.send(any()) }
+        listener.listen(record(Ytelsestype.KONTANTSTØTTE))
+        verify(exactly = 0) { tilbakekrevingProducer.send(any()) }
+        listener.listen(record(Ytelsestype.BARNETRYGD))
         verify(exactly = 0) { tilbakekrevingProducer.send(any()) }
     }
 
