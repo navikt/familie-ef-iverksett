@@ -32,7 +32,7 @@ internal class TilbakekrevingListenerTest {
     @BeforeEach
     internal fun setUp() {
         every { iverksettingRepository.hentAvEksternId(any()) } returns opprettIverksett(behandlingId = UUID.randomUUID())
-        every { familieIntegrasjonerClient.hentBehandlendeEnhet(any()) } returns Enhet(enhetId = "0", enhetNavn = "navn")
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) } returns Enhet(enhetId = "0", enhetNavn = "navn")
         every { tilbakekrevingProducer.send(any()) } just runs
         listener = TilbakekrevingListener(iverksettingRepository, familieIntegrasjonerClient, tilbakekrevingProducer)
     }

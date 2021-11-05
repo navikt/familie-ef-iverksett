@@ -20,11 +20,11 @@ class TaskType(
 )
 
 fun hovedflyt() = listOf(
+        TaskType(OpprettTilbakekrevingTask.TYPE),
         TaskType(IverksettMotOppdragTask.TYPE),
         TaskType(VentePåStatusFraØkonomiTask.TYPE, 20),
         TaskType(JournalførVedtaksbrevTask.TYPE),
         TaskType(DistribuerVedtaksbrevTask.TYPE),
-        TaskType(OpprettTilbakekrevingTask.TYPE)
 )
 
 fun publiseringsflyt() = listOf(

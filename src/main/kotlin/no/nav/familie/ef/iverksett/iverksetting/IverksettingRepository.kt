@@ -10,14 +10,17 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.sql.ResultSet
 import java.util.UUID
 
 @Repository
 class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
+    @Transactional
     fun lagre(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {
-        return lagreIverksett(behandlingId, iverksett, brev)
+        lagreIverksett(behandlingId, iverksett)
+        lagreBrev(behandlingId, brev)
     }
 
     fun lagreTekniskOpphør(behandlingId: UUID, tekniskOpphør: TekniskOpphør) {
@@ -35,10 +38,9 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
 
-    private fun lagreIverksett(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {
+    private fun lagreIverksett(behandlingId: UUID, iverksett: Iverksett) {
         val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON, :type, :eksternId)"
         val iverksettString = objectMapper.writeValueAsString(iverksett)
-
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
                         "behandlingId" to behandlingId,
@@ -48,7 +50,6 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
                 )
         )
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
-        lagreBrev(behandlingId, brev)
     }
 
     private fun lagreBrev(behandlingId: UUID, brev: Brev) {

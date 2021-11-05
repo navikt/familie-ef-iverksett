@@ -1,11 +1,13 @@
 package no.nav.familie.ef.iverksett.oppgave
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -17,10 +19,17 @@ import java.util.UUID
 class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
         private val oppgaveService: OppgaveService,
         private val iverksettingRepository: IverksettingRepository,
-        private val taskRepository: TaskRepository
+        private val taskRepository: TaskRepository,
+        private val featureToggleService: FeatureToggleService
 ) : AsyncTaskStep {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     override fun doTask(task: Task) {
+        if (featureToggleService.isEnabled("familie.ef.iverksett.skip-opprett-oppfoelgningsoppgave")) {
+            logger.warn("Oppretter ikke oppfølgningsoppgave for ${task.payload} pga feature toggle")
+            return
+        }
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)

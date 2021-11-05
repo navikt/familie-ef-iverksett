@@ -1,6 +1,11 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
@@ -9,15 +14,17 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingsdetaljer
+import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 
 internal class OpprettTilbakekrevingTaskTest {
 
@@ -26,9 +33,12 @@ internal class OpprettTilbakekrevingTaskTest {
     private val tilbakekrevingClient = mockk<TilbakekrevingClient>()
     private val simuleringService = mockk<SimuleringService>()
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
+    private val taskRepository = mockk<TaskRepository>()
+
 
     private val opprettTilbakekrevingTask = OpprettTilbakekrevingTask(
             tilstandRepository = tilstandRepository,
+            taskRepository = taskRepository,
             iverksettingRepository = iverksettingRepository,
             tilbakekrevingClient = tilbakekrevingClient,
             simuleringService = simuleringService,
@@ -36,18 +46,18 @@ internal class OpprettTilbakekrevingTaskTest {
     )
 
     @BeforeEach
-    protected fun init() {
+    fun init() {
         every { tilbakekrevingClient.finnesÅpenBehandling(any()) } returns false
-        every { familieIntegrasjonerClient.hentBehandlendeEnhet(any()) } returns
-                Enhet("1","Oslo")
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) } returns
+                Enhet("1", "Oslo")
         every { tilbakekrevingClient.opprettBehandling(any()) } returns ""
     }
 
     @Test
-    protected fun `uendret og ingen feilutbetaling`() {
+    fun `uendret og ingen feilutbetaling`() {
 
         val behandlingsId = UUID.randomUUID()
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null, forrigeBehandlingId = UUID.randomUUID())
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(0)
 
         every { iverksettingRepository.hent(behandlingsId) } returns iverksett
@@ -56,15 +66,30 @@ internal class OpprettTilbakekrevingTaskTest {
 
         doTask(behandlingsId)
 
+        verify(exactly = 1) { simuleringService.hentBeriketSimulering(any()) }
         verify(exactly = 0) { tilbakekrevingClient.opprettBehandling(any()) }
     }
 
     @Test
-    protected fun `uendret, postiv feilutbetaling`() {
+    fun `førstegangsbehandling skal ikke opprette tilbakekreving`() {
+        val behandlingsId = UUID.randomUUID()
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null, forrigeBehandlingId = null)
+
+        every { iverksettingRepository.hent(behandlingsId) } returns iverksett
+
+        doTask(behandlingsId)
+
+        verify(exactly = 0) { simuleringService.hentBeriketSimulering(any()) }
+        verify(exactly = 0) { tilstandRepository.oppdaterTilbakekrevingResultat(any(), any()) }
+        verify(exactly = 0) { tilbakekrevingClient.opprettBehandling(any()) }
+    }
+
+    @Test
+    fun `uendret, postiv feilutbetaling`() {
 
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving, forrigeBehandlingId = UUID.randomUUID())
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(100)
 
@@ -81,12 +106,12 @@ internal class OpprettTilbakekrevingTaskTest {
         assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
         assertThat(request.varsel?.sumFeilutbetaling).isEqualTo(tilbakekreving.tilbakekrevingMedVarsel?.sumFeilutbetaling)
     }
-/*
+
     @Test
-    protected fun `oppdager feilutbetaling på iverksett`() {
+    fun `oppdager feilutbetaling på iverksett`() {
 
         val behandlingsId = UUID.randomUUID()
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null, forrigeBehandlingId = UUID.randomUUID())
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(100)
 
@@ -104,11 +129,11 @@ internal class OpprettTilbakekrevingTaskTest {
     }
 
     @Test
-    protected fun `feilutbetaling forsvinner på iverksett`() {
+    fun `feilutbetaling forsvinner på iverksett`() {
 
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving, forrigeBehandlingId = UUID.randomUUID())
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(0)
 
         every { iverksettingRepository.hent(behandlingsId) } returns iverksett
@@ -120,11 +145,11 @@ internal class OpprettTilbakekrevingTaskTest {
     }
 
     @Test
-    protected fun `feilutbetaling endres`() {
+    fun `feilutbetaling endres`() {
 
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving, forrigeBehandlingId = UUID.randomUUID())
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(200)
 
@@ -141,7 +166,17 @@ internal class OpprettTilbakekrevingTaskTest {
         assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
         assertThat(request.varsel?.sumFeilutbetaling).isEqualTo(beriketSimuleringsresultat.oppsummering.feilutbetaling)
     }
-*/
+
+    @Test
+    internal fun `skal opprette IverksettMotOppdragTask når OpprettTilbakekrevingTask er ferdig`() {
+        val taskSlot = slot<Task>()
+        val behandlingId = UUID.randomUUID().toString()
+        val task = Task(OpprettTilbakekrevingTask.TYPE, payload = behandlingId)
+        every { taskRepository.save(capture(taskSlot)) } returns task
+        opprettTilbakekrevingTask.onCompletion(task)
+        assertThat(taskSlot.captured.payload).isEqualTo(behandlingId)
+        assertThat(taskSlot.captured.type).isEqualTo(IverksettMotOppdragTask.TYPE)
+    }
 
     private fun doTask(behandlingsId: UUID) {
         val task = Task(OpprettTilbakekrevingTask.TYPE, payload = behandlingsId.toString())

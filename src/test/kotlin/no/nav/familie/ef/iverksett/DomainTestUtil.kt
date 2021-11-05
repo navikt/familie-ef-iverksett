@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
@@ -23,32 +24,30 @@ import java.time.temporal.TemporalAdjusters
 import java.util.UUID
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
 
-fun simuleringDto(): SimuleringDto {
+fun simuleringDto(andeler: List<AndelTilkjentYtelseDto> = listOf(lagDefaultAndeler()), forrigeBehandlingId: UUID? = UUID.randomUUID()): SimuleringDto {
     val behandlingId = UUID.fromString("4b657902-d994-11eb-b8bc-0242ac130003")
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetadataDto(
-            tilkjentYtelse = TilkjentYtelseDto(
-                    andelerTilkjentYtelse = listOf(
-                            lagAndelTilkjentYtelseDto(
-                                    beløp = 15000,
-                                    periodetype = Periodetype.MÅNED,
-                                    fraOgMed = LocalDate.of(2021, 1, 1),
-                                    tilOgMed = LocalDate.of(2023, 12, 31),
-                                    kildeBehandlingId = UUID.randomUUID()
-                            )
-                    )
-            ),
+            tilkjentYtelse = TilkjentYtelseDto(andelerTilkjentYtelse = andeler),
             saksbehandlerId = "saksbehandlerId",
             eksternBehandlingId = 1,
             stønadstype = StønadType.OVERGANGSSTØNAD,
             eksternFagsakId = 1,
             behandlingId = behandlingId,
             personIdent = "12345611111",
-            vedtaksdato = LocalDate.of(2021, 5, 1),
+            vedtaksdato = LocalDate.of(2021, 5, 1)
+    )
 
-            )
-
-    return SimuleringDto(tilkjentYtelseMedMetaData, UUID.randomUUID())
+    return SimuleringDto(tilkjentYtelseMedMetaData, forrigeBehandlingId)
 }
+
+private fun lagDefaultAndeler() =
+        lagAndelTilkjentYtelseDto(
+                beløp = 15000,
+                periodetype = Periodetype.MÅNED,
+                fraOgMed = LocalDate.of(2021, 1, 1),
+                tilOgMed = LocalDate.of(2023, 12, 31),
+                kildeBehandlingId = UUID.randomUUID()
+        )
 
 fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
     return DetaljertSimuleringResultat(

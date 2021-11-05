@@ -98,6 +98,9 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                                    ferdigBehandletTid = behandlingstatistikk.hendelseTidspunkt,
                                    behandlingStatus = Hendelse.FERDIG.name)
             }
+            else -> {
+                throw IllegalStateException("Hendelse ikke håndtert.") //TODO: Må håndtere Hendelse.VENTER
+            }
         }
     }
 

@@ -23,6 +23,7 @@ internal class TilbakekrevingMapperTest {
         val tilbakekreving = opprettTilbakekrevingsdetaljer()
         val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
         val enhet = Enhet("123", "enhet")
+        val forventetRevurderingssårsak = "Søknad"
 
         val request = iverksett.tilOpprettTilbakekrevingRequest(enhet)
 
@@ -40,7 +41,7 @@ internal class TilbakekrevingMapperTest {
 
         assertThat(request.faktainfo.tilbakekrevingsvalg).isEqualTo(iverksett.vedtak.tilbakekreving!!.tilbakekrevingsvalg)
         assertThat(request.faktainfo.revurderingsresultat).isEqualTo(iverksett.vedtak.vedtaksresultat.toString())
-        assertThat(request.faktainfo.revurderingsårsak).isEqualTo(iverksett.behandling.behandlingÅrsak.toString())
+        assertThat(request.faktainfo.revurderingsårsak).isEqualTo(forventetRevurderingssårsak)
         assertThat(request.faktainfo.konsekvensForYtelser).isEmpty()
 
         assertThat(request.revurderingsvedtaksdato).isEqualTo(iverksett.vedtak.vedtaksdato)

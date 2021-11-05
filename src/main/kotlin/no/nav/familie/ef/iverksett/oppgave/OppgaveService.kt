@@ -21,7 +21,7 @@ class OppgaveService(private val oppgaveClient: OppgaveClient,
 
     fun opprettVurderHendelseOppgave(iverksett: Iverksett) {
 
-        val enhetsnummer = familieIntegrasjonerClient.hentBehandlendeEnhet(iverksett.søker.personIdent)
+        val enhetsnummer = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
 
         val opprettOppgaveRequest =
                 OpprettOppgaveRequest(

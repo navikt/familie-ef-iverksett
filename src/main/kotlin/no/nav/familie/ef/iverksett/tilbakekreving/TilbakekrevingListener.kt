@@ -47,12 +47,16 @@ class TilbakekrevingListener(
     private fun transformerOgSend(data: String) {
         val request: HentFagsystemsbehandlingRequest =
                 objectMapper.readValue(data)
-        if (request.ytelsestype != Ytelsestype.OVERGANGSSTØNAD) {
+        if (!request.erEfYtelse()) {
             return
         }
         val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
-        val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhet(iverksett.søker.personIdent)!!
+        val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)!!
         val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
         tilbakekrevingProducer.send(fagsystemsbehandling)
+    }
+
+    private fun HentFagsystemsbehandlingRequest.erEfYtelse() : Boolean {
+        return listOf(Ytelsestype.OVERGANGSSTØNAD, Ytelsestype.SKOLEPENGER, Ytelsestype.BARNETILSYN).contains(this.ytelsestype)
     }
 }
