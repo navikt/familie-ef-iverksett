@@ -7,7 +7,6 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
-import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
@@ -25,7 +24,6 @@ import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.Properties
 import java.util.UUID
 
 internal class OpprettTilbakekrevingTaskTest {
@@ -48,7 +46,7 @@ internal class OpprettTilbakekrevingTaskTest {
     )
 
     @BeforeEach
-    protected fun init() {
+    fun init() {
         every { tilbakekrevingClient.finnesÅpenBehandling(any()) } returns false
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) } returns
                 Enhet("1", "Oslo")
@@ -56,10 +54,10 @@ internal class OpprettTilbakekrevingTaskTest {
     }
 
     @Test
-    protected fun `uendret og ingen feilutbetaling`() {
+    fun `uendret og ingen feilutbetaling`() {
 
         val behandlingsId = UUID.randomUUID()
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null, forrigeBehandlingId = UUID.randomUUID())
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(0)
 
         every { iverksettingRepository.hent(behandlingsId) } returns iverksett
@@ -68,15 +66,30 @@ internal class OpprettTilbakekrevingTaskTest {
 
         doTask(behandlingsId)
 
+        verify(exactly = 1) { simuleringService.hentBeriketSimulering(any()) }
         verify(exactly = 0) { tilbakekrevingClient.opprettBehandling(any()) }
     }
 
     @Test
-    protected fun `uendret, postiv feilutbetaling`() {
+    fun `førstegangsbehandling skal ikke opprette tilbakekreving`() {
+        val behandlingsId = UUID.randomUUID()
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null, forrigeBehandlingId = null)
+
+        every { iverksettingRepository.hent(behandlingsId) } returns iverksett
+
+        doTask(behandlingsId)
+
+        verify(exactly = 0) { simuleringService.hentBeriketSimulering(any()) }
+        verify(exactly = 0) { tilstandRepository.oppdaterTilbakekrevingResultat(any(), any()) }
+        verify(exactly = 0) { tilbakekrevingClient.opprettBehandling(any()) }
+    }
+
+    @Test
+    fun `uendret, postiv feilutbetaling`() {
 
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving, forrigeBehandlingId = UUID.randomUUID())
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(100)
 
@@ -95,10 +108,10 @@ internal class OpprettTilbakekrevingTaskTest {
     }
 
     @Test
-    protected fun `oppdager feilutbetaling på iverksett`() {
+    fun `oppdager feilutbetaling på iverksett`() {
 
         val behandlingsId = UUID.randomUUID()
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = null, forrigeBehandlingId = UUID.randomUUID())
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(100)
 
@@ -116,11 +129,11 @@ internal class OpprettTilbakekrevingTaskTest {
     }
 
     @Test
-    protected fun `feilutbetaling forsvinner på iverksett`() {
+    fun `feilutbetaling forsvinner på iverksett`() {
 
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving, forrigeBehandlingId = UUID.randomUUID())
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(0)
 
         every { iverksettingRepository.hent(behandlingsId) } returns iverksett
@@ -132,11 +145,11 @@ internal class OpprettTilbakekrevingTaskTest {
     }
 
     @Test
-    protected fun `feilutbetaling endres`() {
+    fun `feilutbetaling endres`() {
 
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
+        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving, forrigeBehandlingId = UUID.randomUUID())
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(200)
 
