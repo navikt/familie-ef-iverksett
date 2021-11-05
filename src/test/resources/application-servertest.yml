@@ -8,7 +8,20 @@ no.nav.security.jwt:
     accepted_audience: aud-localhost
     cookie_name: localhost-idtoken
     proxy_url: #Default satt, skal være null i integrasjonstest
-
+spring:
+  kafka:
+    bootstrap-servers: http://localhost:9092
+    properties:
+      schema.registry.url: http://localhost:8081
+      security:
+        protocol: PLAINTEXT
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: srvc01
+      max-poll-records: 1
+      auto-offset-reset: latest
+      enable-auto-commit: false
 arena-mq:
   queueManager: queuemanager
   channel: channel

@@ -11,10 +11,12 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
+import no.nav.familie.ef.iverksett.iverksetting.domene.TekniskOpphør
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
@@ -42,6 +44,7 @@ import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
+import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
@@ -118,6 +121,23 @@ fun opprettAndelTilkjentYtelse() = lagAndelTilkjentYtelse(
         samordningsfradrag = 2,
         inntektsreduksjon = 5
 )
+
+fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID, eksternId: Long) : TilkjentYtelseMedMetaData {
+    return TilkjentYtelseMedMetaData(
+            tilkjentYtelse = opprettTilkjentYtelse(behandlingId),
+            saksbehandlerId = "saksbehandlerId",
+            eksternBehandlingId = eksternId,
+            stønadstype = StønadType.OVERGANGSSTØNAD,
+            eksternFagsakId = 0,
+            personIdent = "12345678910",
+            behandlingId = behandlingId,
+            vedtaksdato = LocalDate.of(2021, 1, 1))
+
+}
+
+fun opprettTekniskOpphør(behandlingId: UUID, eksternId: Long) : TekniskOpphør {
+    return TekniskOpphør(behandlingId, opprettTilkjentYtelseMedMetadata(behandlingId, eksternId))
+}
 
 fun opprettIverksett(behandlingId: UUID,
                      forrigeBehandlingId: UUID? = null,

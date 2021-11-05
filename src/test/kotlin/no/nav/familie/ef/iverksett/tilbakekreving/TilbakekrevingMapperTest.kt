@@ -40,7 +40,7 @@ internal class TilbakekrevingMapperTest {
         assertThat(request.behandlingstype).isEqualTo(Behandlingstype.TILBAKEKREVING)
 
         assertThat(request.faktainfo.tilbakekrevingsvalg).isEqualTo(iverksett.vedtak.tilbakekreving!!.tilbakekrevingsvalg)
-        assertThat(request.faktainfo.revurderingsresultat).isEqualTo(iverksett.vedtak.vedtaksresultat.toString())
+        assertThat(request.faktainfo.revurderingsresultat).isEqualTo(iverksett.vedtak.vedtaksresultat.visningsnavn)
         assertThat(request.faktainfo.revurderingsårsak).isEqualTo(forventetRevurderingssårsak)
         assertThat(request.faktainfo.konsekvensForYtelser).isEmpty()
 
@@ -52,6 +52,25 @@ internal class TilbakekrevingMapperTest {
         assertThat(request.varsel?.sumFeilutbetaling)
                 .isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.sumFeilutbetaling)
         assertThat(request.varsel?.perioder).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.perioder)
+    }
+
+    @Test
+    fun `konverter Iverksetting til Hentfagsystembehandling`() {
+        val behandlingsId = UUID.randomUUID()
+        val iverksett = opprettIverksett(behandlingsId)
+        val enhet = Enhet(enhetId = "enhetId", enhetNavn = "enhetNavn")
+        val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
+
+        assertThat(fagsystemsbehandling.eksternId).isEqualTo(iverksett.behandling.eksternId.toString())
+        assertThat(fagsystemsbehandling.eksternFagsakId).isEqualTo(iverksett.fagsak.eksternId.toString())
+        assertThat(fagsystemsbehandling.ytelsestype.name).isEqualTo(iverksett.fagsak.stønadstype.name)
+        assertThat(fagsystemsbehandling.revurderingsvedtaksdato).isEqualTo(iverksett.vedtak.vedtaksdato)
+        assertThat(fagsystemsbehandling.personIdent).isEqualTo(iverksett.søker.personIdent)
+        assertThat(fagsystemsbehandling.språkkode).isEqualTo(Språkkode.NB)
+        assertThat(fagsystemsbehandling.verge).isEqualTo(null)
+
+        assertThat(fagsystemsbehandling.enhetId).isEqualTo(enhet.enhetId)
+        assertThat(fagsystemsbehandling.enhetsnavn).isEqualTo(enhet.enhetNavn)
     }
 
     @Test
