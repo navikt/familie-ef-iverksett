@@ -9,6 +9,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.tilSimulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
 import no.nav.familie.ef.iverksett.økonomi.simulering.harFeilutbetaling
+import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -42,7 +43,11 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
         if (iverksett.vedtak.tilkjentYtelse == null) {
             logger.warn("OpprettTilbakekrevingTask ikke utført - tilkjentYtelse er null, Behandling: $behandlingId")
             return
+        } else if (iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
+            logger.info("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
+            return
         }
+
         val beriketSimuleringsresultat = hentBeriketSimulering(iverksett)
         val nyIverksett = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat)
 

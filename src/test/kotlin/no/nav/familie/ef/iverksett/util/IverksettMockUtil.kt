@@ -131,13 +131,14 @@ fun opprettIverksett(behandlingId: UUID,
             andelerTilkjentYtelse = andeler
     )
 
+    val behandlingType = forrigeBehandlingId?.let { BehandlingType.REVURDERING } ?: BehandlingType.FØRSTEGANGSBEHANDLING
     return Iverksett(
             fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
             behandling = Behandlingsdetaljer(
                     behandlingId = behandlingId,
                     forrigeBehandlingId = forrigeBehandlingId,
                     eksternId = 9L,
-                    behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+                    behandlingType = behandlingType,
                     behandlingÅrsak = BehandlingÅrsak.SØKNAD,
                     relatertBehandlingId = null,
                     vilkårsvurderinger = listOf(
