@@ -55,7 +55,7 @@ class VentePåStatusFraØkonomiTask(
 
     fun TilkjentYtelse.harIngenUtbetalingsperioder() :Boolean {
         return this.utbetalingsoppdrag?.utbetalingsperiode?.isEmpty()
-        ?: error("Kunne ikke finne utbetalingsoppdrag ytelse for tilkjentYtelse=${this.id}")
+        ?: error("Kunne ikke finne utbetalingsoppdrag for TilkjentYtelse")
     }
 
 }

@@ -1,7 +1,9 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
@@ -53,7 +55,7 @@ internal class IverksettMotOppdragTaskTest {
 
     @Test
     internal fun `skal ikke iverksette utbetaling til oppdrag når det ikke er noen utbetalinger`() {
-        every { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
+        every { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } just runs
         every { tilstandRepository.hentTilkjentYtelse(any<UUID>()) } returns null
         every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId, andelsbeløp = 0).toDomain()
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))

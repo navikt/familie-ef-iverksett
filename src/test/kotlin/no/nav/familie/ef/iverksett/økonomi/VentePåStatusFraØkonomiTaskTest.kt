@@ -1,7 +1,9 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
@@ -44,13 +46,13 @@ internal class VentePåStatusFraØkonomiTaskTest {
     @Test
     internal fun `kjør doTask for VentePåStatusFraØkonomiTaskhvis, forvent ingen unntak`() {
         val oppdragResultatSlot = slot<OppdragResultat>()
-
         every { oppdragClient.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
         every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId).toDomain()
         every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse(listOf(utbetalingsperiode))
-        every { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) } returns Unit
+        every { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) } just runs
 
         ventePåStatusFraØkonomiTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
+
         verify(exactly = 1) { tilstandRepository.oppdaterOppdragResultat(behandlingId, capture(oppdragResultatSlot)) }
         assertThat(oppdragResultatSlot.captured.oppdragStatus).isEqualTo(OppdragStatus.KVITTERT_OK)
     }
@@ -62,8 +64,8 @@ internal class VentePåStatusFraØkonomiTaskTest {
         every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse()
 
         ventePåStatusFraØkonomiTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
-        verify(exactly = 0) { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) }
 
+        verify(exactly = 0) { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) }
     }
 
     private val utbetalingsperiode = Utbetalingsperiode(
