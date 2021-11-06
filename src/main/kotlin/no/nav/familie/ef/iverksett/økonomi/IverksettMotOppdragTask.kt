@@ -51,7 +51,7 @@ class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRe
             if (it.utbetalingsperiode.isNotEmpty()) {
                 oppdragClient.iverksettOppdrag(it)
             } else {
-                log.warn("IverksettMotOppdragTask - iverksetter ikke noe mot oppdrag. Ingen utbetalingsperioder. behandlingId=$behandlingId")
+                log.warn("Iverksetter ikke noe mot oppdrag. Ingen utbetalingsperioder. behandlingId=$behandlingId")
             }
         }
         ?: error("Utbetalingsoppdrag mangler for iverksetting")
