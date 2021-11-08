@@ -8,7 +8,7 @@ import java.util.UUID
 
 
 fun lagAndelTilkjentYtelse(beløp: Int,
-                           periodetype: Periodetype,
+                           periodetype: Periodetype = Periodetype.MÅNED,
                            fraOgMed: LocalDate,
                            tilOgMed: LocalDate,
                            periodeId: Long? = null,

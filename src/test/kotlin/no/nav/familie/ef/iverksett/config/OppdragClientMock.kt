@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.config
 
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
@@ -20,12 +21,24 @@ class OppdragClientMock {
     fun oppdragClient(): OppdragClient {
         val oppdragClientMock = mockk<OppdragClient>()
 
-        every { oppdragClientMock.konsistensavstemming(any()) } returns "OK"
-        every { oppdragClientMock.grensesnittavstemming(any()) } returns "OK"
-        every { oppdragClientMock.iverksettOppdrag(any()) } returns "OK"
-        every { oppdragClientMock.hentSimulering(any()) } returns detaljertSimuleringResultat()
-        every { oppdragClientMock.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
+        clearOppdragClientMock(oppdragClientMock)
 
         return oppdragClientMock
+    }
+
+    companion object {
+
+        /**
+         * Då mocken gjennbrukes mellom tester må man bruke clear og sette den opp på nytt når man ønsker å bruke verify{}
+         * Hvis ikke akkumuleres antallet kall mot mocken
+         */
+        fun clearOppdragClientMock(oppdragClientMock: OppdragClient) {
+            clearMocks(oppdragClientMock)
+            every { oppdragClientMock.konsistensavstemming(any()) } returns "OK"
+            every { oppdragClientMock.grensesnittavstemming(any()) } returns "OK"
+            every { oppdragClientMock.iverksettOppdrag(any()) } returns "OK"
+            every { oppdragClientMock.hentSimulering(any()) } returns detaljertSimuleringResultat()
+            every { oppdragClientMock.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
+        }
     }
 }

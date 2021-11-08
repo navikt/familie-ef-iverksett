@@ -56,7 +56,7 @@ object UtbetalingsoppdragGenerator {
 
         val utbetalingsoppdrag =
                 Utbetalingsoppdrag(saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
-                                   kodeEndring = if (forrigeTilkjentYtelse == null) NY else ENDR,
+                                   kodeEndring = if (erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse)) NY else ENDR,
                                    fagSystem = nyTilkjentYtelseMedMetaData.stønadstype.tilKlassifisering(),
                                    saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),
                                    aktoer = nyTilkjentYtelseMedMetaData.personIdent,
@@ -72,6 +72,15 @@ object UtbetalingsoppdragGenerator {
         return nyTilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag,
                                      andelerTilkjentYtelse = gjeldendeAndeler)
         //TODO legge til startperiode, sluttperiode, opphørsdato. Se i BA-sak - legges på i konsistensavstemming?
+    }
+
+    private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
+            forrigeTilkjentYtelse == null || (forrigeTilkjentYtelseManglerPeriodeOgErNy(forrigeTilkjentYtelse))
+
+    private fun forrigeTilkjentYtelseManglerPeriodeOgErNy(forrigeTilkjentYtelse: TilkjentYtelse): Boolean {
+        val utbetalingsoppdrag = forrigeTilkjentYtelse.utbetalingsoppdrag
+                                 ?: error("Mangler utbetalingsoppdrag for tilkjentYtelse=${forrigeTilkjentYtelse.id}")
+        return utbetalingsoppdrag.utbetalingsperiode.isEmpty() && utbetalingsoppdrag.kodeEndring == NY
     }
 
     /**

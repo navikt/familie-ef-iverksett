@@ -17,11 +17,6 @@ class SimuleringService(
 
     fun hentSimulering(simulering: Simulering): DetaljertSimuleringResultat {
         try {
-
-            if (erFørstegangsbehandlingUtenBeløp(simulering)) {
-                return DetaljertSimuleringResultat(emptyList())
-            }
-
             val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
                 tilstandRepository.hentTilkjentYtelse(simulering.forrigeBehandlingId)
             }
@@ -33,6 +28,10 @@ class SimuleringService(
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
                                      ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
+
+            if (utbetalingsoppdrag.utbetalingsperiode.isEmpty()) {
+                return DetaljertSimuleringResultat(emptyList())
+            }
 
             return oppdragKlient.hentSimulering(utbetalingsoppdrag)
         } catch (feil: Throwable) {

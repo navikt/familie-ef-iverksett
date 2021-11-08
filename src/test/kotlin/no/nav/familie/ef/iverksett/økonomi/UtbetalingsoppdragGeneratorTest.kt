@@ -23,6 +23,16 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
+    fun `Revurdering med 0 beløp beholder periodId til neste behandling med periode med beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp.csv"))
+    }
+
+    @Test
+    fun `Førstegangsbehandling med 0 i beløp, med revurderinger med 0 i beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/førstegangsbehandling_med_0beløp_revurderinger_med_0beløp.csv"))
+    }
+
+    @Test
     fun `Har en periode og får en endring mitt i perioden`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/1_periode_får_en_endring_i_perioden.csv"))
     }
