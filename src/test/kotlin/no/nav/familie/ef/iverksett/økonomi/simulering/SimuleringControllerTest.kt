@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
+import io.mockk.clearMocks
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
-import no.nav.familie.ef.iverksett.config.OppdragClientMock.Companion.clearOppdragClientMock
 import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.simuleringDto
@@ -42,7 +42,7 @@ class SimuleringControllerTest : ServerTest() {
 
     @AfterEach
     internal fun tearDown() {
-        clearOppdragClientMock(oppdragClient)
+        clearMocks(oppdragClient, answers = false)
     }
 
     @Test
