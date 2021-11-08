@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
+import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.http.client.MultipartBuilder
@@ -49,7 +50,7 @@ class IverksettingControllerTest : ServerTest() {
                                                                  HttpEntity(request, headers))
         assertThat(respons.statusCode.value()).isEqualTo(200)
         val tasker = taskRepository.findAll()
-        assertThat(tasker.map { it.type }).contains(IverksettMotOppdragTask.TYPE)
+        assertThat(tasker.map { it.type }).contains(OpprettTilbakekrevingTask.TYPE)
         assertThat(tasker.map { it.type }).doesNotContain(JournalførVedtaksbrevTask.TYPE)
     }
 

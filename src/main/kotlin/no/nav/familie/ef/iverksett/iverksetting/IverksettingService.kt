@@ -1,14 +1,14 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
-import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
+import no.nav.familie.ef.iverksett.infrastruktur.task.hovedflyt
+import no.nav.familie.ef.iverksett.infrastruktur.task.publiseringsflyt
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
-import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
@@ -69,12 +69,12 @@ class IverksettingService(val taskRepository: TaskRepository,
 
     private fun førstePubliseringsflytTask(iverksett: Iverksett) = when {
         erIverksettingUtenVedtaksperioder(iverksett) -> VedtakstatistikkTask.TYPE
-        else -> SendFattetVedtakTilInfotrygdTask.TYPE
+        else -> publiseringsflyt().first().type
     }
 
     private fun førsteHovedflytTask(iverksett: Iverksett) = when {
         erIverksettingUtenVedtaksperioder(iverksett) -> JournalførVedtaksbrevTask.TYPE
-        else -> IverksettMotOppdragTask.TYPE
+        else -> hovedflyt().first().type
     }
 
     private fun erIverksettingUtenVedtaksperioder(iverksett: Iverksett) =
