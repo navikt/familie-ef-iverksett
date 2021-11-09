@@ -233,7 +233,6 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
     return FrittståendeBrevDto(
             personIdent = "12345678910",
             eksternFagsakId = 1,
-            stønadType = StønadType.OVERGANGSSTØNAD,
             brevtype = FrittståendeBrevType.INFOBREV_OVERGANGSSTØNAD,
             fil = "fil.pdf".toByteArray(),
             journalførendeEnhet = "4489",
