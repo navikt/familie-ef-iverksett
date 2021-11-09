@@ -47,7 +47,7 @@ abstract class ServerTest {
     }
 
     private fun resetDatabase() {
-        namedParameterJdbcTemplate.update("TRUNCATE TABLE brev, iverksett, iverksett_resultat, behandling_statistikk CASCADE",
+        namedParameterJdbcTemplate.update("TRUNCATE TABLE brev, iverksett, iverksett_resultat, behandlingsstatistikk CASCADE",
                                           MapSqlParameterSource())
         namedParameterJdbcTemplate.update("TRUNCATE TABLE task, task_logg CASCADE", MapSqlParameterSource())
     }
