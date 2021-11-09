@@ -11,10 +11,12 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
+import no.nav.familie.ef.iverksett.iverksetting.domene.TekniskOpphør
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
@@ -52,10 +54,10 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
 
-fun opprettIverksettDto(behandlingId: UUID): IverksettDto {
+fun opprettIverksettDto(behandlingId: UUID, andelsbeløp: Int = 5000): IverksettDto {
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
-            beløp = 5000,
+            beløp = andelsbeløp,
             periodetype = Periodetype.MÅNED,
             fraOgMed = LocalDate.of(2021, 1, 1),
             tilOgMed = LocalDate.of(2021, 12, 31),
@@ -119,6 +121,26 @@ fun opprettAndelTilkjentYtelse() = lagAndelTilkjentYtelse(
         inntektsreduksjon = 5
 )
 
+fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID,
+                                     eksternId: Long,
+                                     tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId))
+        : TilkjentYtelseMedMetaData {
+    return TilkjentYtelseMedMetaData(
+            tilkjentYtelse = tilkjentYtelse,
+            saksbehandlerId = "saksbehandlerId",
+            eksternBehandlingId = eksternId,
+            stønadstype = StønadType.OVERGANGSSTØNAD,
+            eksternFagsakId = 0,
+            personIdent = "12345678910",
+            behandlingId = behandlingId,
+            vedtaksdato = LocalDate.of(2021, 1, 1))
+
+}
+
+fun opprettTekniskOpphør(behandlingId: UUID, eksternId: Long): TekniskOpphør {
+    return TekniskOpphør(behandlingId, opprettTilkjentYtelseMedMetadata(behandlingId, eksternId))
+}
+
 fun opprettIverksett(behandlingId: UUID,
                      forrigeBehandlingId: UUID? = null,
                      andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
@@ -131,13 +153,14 @@ fun opprettIverksett(behandlingId: UUID,
             andelerTilkjentYtelse = andeler
     )
 
+    val behandlingType = forrigeBehandlingId?.let { BehandlingType.REVURDERING } ?: BehandlingType.FØRSTEGANGSBEHANDLING
     return Iverksett(
             fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
             behandling = Behandlingsdetaljer(
                     behandlingId = behandlingId,
                     forrigeBehandlingId = forrigeBehandlingId,
                     eksternId = 9L,
-                    behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+                    behandlingType = behandlingType,
                     behandlingÅrsak = BehandlingÅrsak.SØKNAD,
                     relatertBehandlingId = null,
                     vilkårsvurderinger = listOf(
@@ -185,26 +208,26 @@ fun opprettBrev(): Brev {
     return Brev(UUID.fromString("234bed7c-b1d3-11eb-8529-0242ac130003"), ByteArray(256))
 }
 
-fun opprettTilkjentYtelse(behandlingId: UUID): TilkjentYtelse {
-
+fun opprettTilkjentYtelse(behandlingId: UUID,
+                          andeler: List<AndelTilkjentYtelse> = listOf(opprettTilkjentYtelse())): TilkjentYtelse {
     return TilkjentYtelse(
             id = behandlingId,
             utbetalingsoppdrag = null,
-            andelerTilkjentYtelse = listOf(
-                    lagAndelTilkjentYtelse(
-                            beløp = 100,
-                            Periodetype.MÅNED,
-                            fraOgMed = LocalDate.parse("2021-01-01"),
-                            tilOgMed = LocalDate.parse("2021-12-31"),
-                            periodeId = 1L,
-                            forrigePeriodeId = 1L,
-                            inntektsreduksjon = 5,
-                            samordningsfradrag = 2,
-                            inntekt = 100
-                    )
-            )
+            andelerTilkjentYtelse = andeler
     )
 }
+
+private fun opprettTilkjentYtelse() = lagAndelTilkjentYtelse(
+        beløp = 100,
+        Periodetype.MÅNED,
+        fraOgMed = LocalDate.parse("2021-01-01"),
+        tilOgMed = LocalDate.parse("2021-12-31"),
+        periodeId = 1L,
+        forrigePeriodeId = 1L,
+        inntektsreduksjon = 5,
+        samordningsfradrag = 2,
+        inntekt = 100
+)
 
 fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
     return FrittståendeBrevDto(

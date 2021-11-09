@@ -9,6 +9,7 @@ import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
 import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
+import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
@@ -42,6 +43,17 @@ fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
                 faktainfo = lagFaktainfo(this)
         )
 
+fun Iverksett.tilFagsystembehandling(enhet: Enhet) =
+        HentFagsystemsbehandling(eksternFagsakId = this.fagsak.eksternId.toString(),
+                                 eksternId = this.behandling.eksternId.toString(),
+                                 ytelsestype = mapYtelsestype(this.fagsak.stønadstype),
+                                 personIdent = this.søker.personIdent,
+                                 språkkode = Språkkode.NB,
+                                 enhetId = enhet.enhetId,
+                                 enhetsnavn = enhet.enhetNavn,
+                                 revurderingsvedtaksdato = this.vedtak.vedtaksdato,
+                                 faktainfo = lagFaktainfo(this))
+
 private fun mapYtelsestype(stønadType: StønadType): Ytelsestype =
         when (stønadType) {
             StønadType.BARNETILSYN -> Ytelsestype.BARNETILSYN
@@ -65,7 +77,7 @@ private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel?
 private fun lagFaktainfo(iverksett: Iverksett): Faktainfo {
     return Faktainfo(
             revurderingsårsak = iverksett.behandling.behandlingÅrsak.visningsTekst(),
-            revurderingsresultat = iverksett.vedtak.vedtaksresultat.toString(),  // Er dette korrekt?
+            revurderingsresultat = iverksett.vedtak.vedtaksresultat.visningsnavn,
             tilbakekrevingsvalg = iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg,
             konsekvensForYtelser = emptySet() // Settes også empty av ba-sak
     )

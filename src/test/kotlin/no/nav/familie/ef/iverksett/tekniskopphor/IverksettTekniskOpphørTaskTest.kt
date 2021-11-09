@@ -6,8 +6,9 @@ import io.mockk.slot
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
-import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
+import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.TekniskOpphørDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
@@ -41,7 +42,8 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
     private val tekniskOpphørBehandlingId: UUID = UUID.randomUUID()
 
     private val oppdragClient = mockk<OppdragClient>()
-    private val tilkjentYtelse = opprettTilkjentYtelse(forrigeBehandlingId)
+    private val tilkjentYtelse =
+            lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(forrigeBehandlingId, 1L))
 
     @PostConstruct
     fun init() {
@@ -50,7 +52,6 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
                                                                 taskRepository = taskRepository,
                                                                 tilstandRepository = tilstandRepository)
     }
-
 
     @Test
     fun skaIverksetteTekniskOpphør() {

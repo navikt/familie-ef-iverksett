@@ -8,7 +8,7 @@ import java.util.UUID
 
 
 fun lagAndelTilkjentYtelse(beløp: Int,
-                           periodetype: Periodetype,
+                           periodetype: Periodetype = Periodetype.MÅNED,
                            fraOgMed: LocalDate,
                            tilOgMed: LocalDate,
                            periodeId: Long? = null,
@@ -29,9 +29,9 @@ fun lagAndelTilkjentYtelse(beløp: Int,
                             kildeBehandlingId = kildeBehandlingId)
 
 fun lagAndelTilkjentYtelseDto(beløp: Int,
-                              periodetype: Periodetype,
-                              fraOgMed: LocalDate,
-                              tilOgMed: LocalDate,
+                              periodetype: Periodetype = Periodetype.MÅNED,
+                              fraOgMed: LocalDate = LocalDate.of(2021, 1, 1),
+                              tilOgMed: LocalDate = LocalDate.of(2021, 1, 31),
                               kildeBehandlingId: UUID = UUID.randomUUID(),
                               inntekt: Int = 0,
                               samordningsfradrag: Int = 0,
