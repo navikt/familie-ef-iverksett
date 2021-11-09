@@ -44,7 +44,6 @@ import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
-import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
@@ -55,7 +54,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
 
-fun opprettIverksettDto(behandlingId: UUID, andelsbeløp :Int = 5000): IverksettDto {
+fun opprettIverksettDto(behandlingId: UUID, andelsbeløp: Int = 5000): IverksettDto {
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
             beløp = andelsbeløp,
@@ -122,9 +121,12 @@ fun opprettAndelTilkjentYtelse() = lagAndelTilkjentYtelse(
         inntektsreduksjon = 5
 )
 
-fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID, eksternId: Long) : TilkjentYtelseMedMetaData {
+fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID,
+                                     eksternId: Long,
+                                     tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId))
+        : TilkjentYtelseMedMetaData {
     return TilkjentYtelseMedMetaData(
-            tilkjentYtelse = opprettTilkjentYtelse(behandlingId),
+            tilkjentYtelse = tilkjentYtelse,
             saksbehandlerId = "saksbehandlerId",
             eksternBehandlingId = eksternId,
             stønadstype = StønadType.OVERGANGSSTØNAD,
@@ -135,7 +137,7 @@ fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID, eksternId: Long) : Tilk
 
 }
 
-fun opprettTekniskOpphør(behandlingId: UUID, eksternId: Long) : TekniskOpphør {
+fun opprettTekniskOpphør(behandlingId: UUID, eksternId: Long): TekniskOpphør {
     return TekniskOpphør(behandlingId, opprettTilkjentYtelseMedMetadata(behandlingId, eksternId))
 }
 
@@ -206,26 +208,26 @@ fun opprettBrev(): Brev {
     return Brev(UUID.fromString("234bed7c-b1d3-11eb-8529-0242ac130003"), ByteArray(256))
 }
 
-fun opprettTilkjentYtelse(behandlingId: UUID): TilkjentYtelse {
-
+fun opprettTilkjentYtelse(behandlingId: UUID,
+                          andeler: List<AndelTilkjentYtelse> = listOf(opprettTilkjentYtelse())): TilkjentYtelse {
     return TilkjentYtelse(
             id = behandlingId,
             utbetalingsoppdrag = null,
-            andelerTilkjentYtelse = listOf(
-                    lagAndelTilkjentYtelse(
-                            beløp = 100,
-                            Periodetype.MÅNED,
-                            fraOgMed = LocalDate.parse("2021-01-01"),
-                            tilOgMed = LocalDate.parse("2021-12-31"),
-                            periodeId = 1L,
-                            forrigePeriodeId = 1L,
-                            inntektsreduksjon = 5,
-                            samordningsfradrag = 2,
-                            inntekt = 100
-                    )
-            )
+            andelerTilkjentYtelse = andeler
     )
 }
+
+private fun opprettTilkjentYtelse() = lagAndelTilkjentYtelse(
+        beløp = 100,
+        Periodetype.MÅNED,
+        fraOgMed = LocalDate.parse("2021-01-01"),
+        tilOgMed = LocalDate.parse("2021-12-31"),
+        periodeId = 1L,
+        forrigePeriodeId = 1L,
+        inntektsreduksjon = 5,
+        samordningsfradrag = 2,
+        inntekt = 100
+)
 
 fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
     return FrittståendeBrevDto(
