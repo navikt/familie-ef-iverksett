@@ -33,7 +33,7 @@ internal class TilbakekrevingListenerTest {
     internal fun setUp() {
         every { iverksettingRepository.hentAvEksternId(any()) } returns opprettIverksett(behandlingId = UUID.randomUUID())
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) } returns Enhet(enhetId = "0", enhetNavn = "navn")
-        every { tilbakekrevingProducer.send(any()) } just runs
+        every { tilbakekrevingProducer.send(any(), any()) } just runs
         listener = TilbakekrevingListener(iverksettingRepository, familieIntegrasjonerClient, tilbakekrevingProducer)
     }
 
@@ -42,14 +42,14 @@ internal class TilbakekrevingListenerTest {
         listener.listen(record(Ytelsestype.OVERGANGSSTØNAD))
         listener.listen(record(Ytelsestype.SKOLEPENGER))
         listener.listen(record(Ytelsestype.BARNETILSYN))
-        verify(exactly = 3) { tilbakekrevingProducer.send(any()) }
+        verify(exactly = 3) { tilbakekrevingProducer.send(any(), any()) }
     }
 
     @Test
     internal fun `send kafkamelding til listener med annen type enn overgangsstønad, forvent ingen kall til kafkaproducer`() {
         listener.listen(record(Ytelsestype.KONTANTSTØTTE))
         listener.listen(record(Ytelsestype.BARNETRYGD))
-        verify(exactly = 0) { tilbakekrevingProducer.send(any()) }
+        verify(exactly = 0) { tilbakekrevingProducer.send(any(), any()) }
     }
 
     private fun record(ytelsestype: Ytelsestype): ConsumerRecord<String, String> {
