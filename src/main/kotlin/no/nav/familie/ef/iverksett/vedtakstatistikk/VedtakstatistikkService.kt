@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service
 @Service
 class VedtakstatistikkService(private val vedtakstatistikkKafkaProducer: VedtakstatistikkKafkaProducer) {
 
-    fun sendTilKafka(iverksett: Iverksett, tilkjentYtelse: TilkjentYtelse?) {
-        val vedtakstatistikk = hentBehandlingDVH(iverksett, tilkjentYtelse)
+    fun sendTilKafka(iverksett: Iverksett) {
+        val vedtakstatistikk = hentBehandlingDVH(iverksett)
         vedtakstatistikkKafkaProducer.sendVedtak(vedtakstatistikk)
     }
 
-    private fun hentBehandlingDVH(iverksett: Iverksett, tilkjentYtelse: TilkjentYtelse?): BehandlingDVH {
-        return BehandlingDVHMapper.map(iverksett, tilkjentYtelse)
+    private fun hentBehandlingDVH(iverksett: Iverksett): BehandlingDVH {
+        return BehandlingDVHMapper.map(iverksett)
 
     }
 }

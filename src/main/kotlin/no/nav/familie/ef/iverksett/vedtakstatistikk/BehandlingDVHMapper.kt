@@ -30,7 +30,7 @@ import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 
 object BehandlingDVHMapper {
 
-    fun map(iverksett: Iverksett, tilkjentYtelse: TilkjentYtelse?): BehandlingDVH {
+    fun map(iverksett: Iverksett): BehandlingDVH {
         return BehandlingDVH(fagsakId = iverksett.fagsak.fagsakId.toString(),
                              behandlingId = iverksett.behandling.behandlingId.toString(),
                              relatertBehandlingId = iverksett.behandling.forrigeBehandlingId?.toString(),
@@ -45,7 +45,7 @@ object BehandlingDVHMapper {
                              behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
                              vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
                              vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak.vedtaksperioder),
-                             utbetalinger = tilkjentYtelse?.let {
+                             utbetalinger = iverksett.vedtak.tilkjentYtelse?.let {
                                  mapTilUtbetaling(it,
                                                   iverksett.fagsak.stønadstype,
                                                   iverksett.fagsak.eksternId,
@@ -76,7 +76,7 @@ object BehandlingDVHMapper {
                     tilOgMed = it.tilOgMed,
                     Utbetalingsdetalj(gjelderPerson = mapTilPerson(personIdent = søker.personIdent),
                                       klassekode = stønadsType.tilKlassifisering(),
-                                      delytelseId = eksternFagsakId.toString() + it.periodeId))
+                                      delytelseId = eksternFagsakId.toString() + (it.periodeId ?: "")))
         }
     }
 

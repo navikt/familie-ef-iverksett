@@ -19,8 +19,7 @@ class VedtakstatistikkTask(private val iverksettingRepository: IverksettingRepos
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
-        val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingId)
-        vedtakstatistikkService.sendTilKafka(iverksett, tilkjentYtelse)
+        vedtakstatistikkService.sendTilKafka(iverksett)
     }
 
     companion object {
