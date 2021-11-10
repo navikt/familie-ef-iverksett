@@ -24,7 +24,7 @@ internal class TilbakekrevingProducerTest {
     @Test
     internal fun `kast unntak ved sending av melding, forvent at unntak viderekastes`() {
         every { kafkaProducerService.send(any(), any(), any()) } throws RuntimeException()
-        assertThrows(RuntimeException::class.java) { tilbakekrevingProducer.send(behandling) }
+        assertThrows(RuntimeException::class.java) { tilbakekrevingProducer.send(behandling, "0") }
     }
 
 }
