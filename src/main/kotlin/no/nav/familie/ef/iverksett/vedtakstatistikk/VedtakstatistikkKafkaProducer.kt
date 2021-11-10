@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
 import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -20,10 +21,11 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
     fun sendVedtak(vedtakStatistikk: BehandlingDVH) {
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
+        if (!featureToggleService.isEnabled("familie.ef.iverksett.send-vedtaksstatistikk")) {
+            throw TaskExceptionUtenStackTrace("featureToggle=familie.ef.iverksett.send-vedtaksstatistikk er disabled")
+        }
         runCatching {
-            if (featureToggleService.isEnabled("familie.ef.iverksett.send-vedtaksstatistikk")) {
-                kafkaProducerService.send(topic, vedtakStatistikk.behandlingId, vedtakStatistikk.toJson())
-            }
+            kafkaProducerService.send(topic, vedtakStatistikk.behandlingId, vedtakStatistikk.toJson())
             logger.info("Vedtakstatistikk sent to Kafka")
             secureLogger.info("$vedtakStatistikk sent to Kafka.")
         }.onFailure {
