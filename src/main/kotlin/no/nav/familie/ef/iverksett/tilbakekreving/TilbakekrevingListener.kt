@@ -34,7 +34,7 @@ class TilbakekrevingListener(
         val data: String = consumerRecord.value()
         try {
             MDC.put(MDCConstants.MDC_CALL_ID, UUID.randomUUID().toString())
-            transformerOgSend(data)
+            transformerOgSend(data, key)
         } catch (e: Exception) {
             logger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med eksternId=$key")
             secureLogger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med consumerRecord=$consumerRecord")
@@ -44,7 +44,7 @@ class TilbakekrevingListener(
         }
     }
 
-    private fun transformerOgSend(data: String) {
+    private fun transformerOgSend(data: String, key : String) {
         val request: HentFagsystemsbehandlingRequest =
                 objectMapper.readValue(data)
         if (!request.erEfYtelse()) {
@@ -53,7 +53,7 @@ class TilbakekrevingListener(
         val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
         val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)!!
         val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
-        tilbakekrevingProducer.send(fagsystemsbehandling)
+        tilbakekrevingProducer.send(fagsystemsbehandling, key)
     }
 
     private fun HentFagsystemsbehandlingRequest.erEfYtelse() : Boolean {
