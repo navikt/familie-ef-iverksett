@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -8,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProducerService) {
+class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProducerService, val featureToggleService: FeatureToggleService) {
 
     @Value("\${ENSLIG_FORSORGER_VEDTAK_TOPIC}")
     lateinit var topic: String
@@ -20,7 +21,9 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
         runCatching {
-            kafkaProducerService.send(topic, vedtakStatistikk.behandlingId, vedtakStatistikk.toJson())
+            if (featureToggleService.isEnabled("familie.ef.iverksett.send-vedtaksstatistikk")) {
+                kafkaProducerService.send(topic, vedtakStatistikk.behandlingId, vedtakStatistikk.toJson())
+            }
             logger.info("Vedtakstatistikk sent to Kafka")
             secureLogger.info("$vedtakStatistikk sent to Kafka.")
         }.onFailure {
