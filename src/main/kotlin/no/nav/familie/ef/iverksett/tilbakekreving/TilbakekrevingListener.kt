@@ -52,7 +52,7 @@ class TilbakekrevingListener(
         }
         val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
         val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)!!
-        val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
+        val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet = enhet)
         tilbakekrevingProducer.send(fagsystemsbehandling, key)
     }
 

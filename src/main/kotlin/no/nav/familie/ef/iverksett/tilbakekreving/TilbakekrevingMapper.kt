@@ -10,6 +10,7 @@ import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
 import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
+import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
@@ -43,16 +44,18 @@ fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
                 faktainfo = lagFaktainfo(this)
         )
 
-fun Iverksett.tilFagsystembehandling(enhet: Enhet) =
-        HentFagsystemsbehandling(eksternFagsakId = this.fagsak.eksternId.toString(),
-                                 eksternId = this.behandling.eksternId.toString(),
-                                 ytelsestype = mapYtelsestype(this.fagsak.stønadstype),
-                                 personIdent = this.søker.personIdent,
-                                 språkkode = Språkkode.NB,
-                                 enhetId = enhet.enhetId,
-                                 enhetsnavn = enhet.enhetNavn,
-                                 revurderingsvedtaksdato = this.vedtak.vedtaksdato,
-                                 faktainfo = lagFaktainfo(this))
+fun Iverksett.tilFagsystembehandling(feilmelding: String? = null, enhet: Enhet) =
+        HentFagsystemsbehandlingRespons(
+                feilMelding = feilmelding,
+                hentFagsystemsbehandling = HentFagsystemsbehandling(eksternFagsakId = this.fagsak.eksternId.toString(),
+                                                                    eksternId = this.behandling.eksternId.toString(),
+                                                                    ytelsestype = mapYtelsestype(this.fagsak.stønadstype),
+                                                                    personIdent = this.søker.personIdent,
+                                                                    språkkode = Språkkode.NB,
+                                                                    enhetId = enhet.enhetId,
+                                                                    enhetsnavn = enhet.enhetNavn,
+                                                                    revurderingsvedtaksdato = this.vedtak.vedtaksdato,
+                                                                    faktainfo = lagFaktainfo(this)))
 
 private fun mapYtelsestype(stønadType: StønadType): Ytelsestype =
         when (stønadType) {
@@ -84,7 +87,7 @@ private fun lagFaktainfo(iverksett: Iverksett): Faktainfo {
 }
 
 private fun BehandlingÅrsak.visningsTekst(): String {
-    return when(this){
+    return when (this) {
         BehandlingÅrsak.SØKNAD -> "Søknad"
         BehandlingÅrsak.KLAGE -> "Klage"
         BehandlingÅrsak.NYE_OPPLYSNINGER -> "Nye opplysninger"
