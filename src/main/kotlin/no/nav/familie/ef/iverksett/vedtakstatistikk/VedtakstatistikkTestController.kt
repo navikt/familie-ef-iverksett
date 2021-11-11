@@ -25,7 +25,7 @@ class VedtakstatistikkTestController(
 
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendStatistikk(@RequestBody data: IverksettDto) {
-        vedtakstatistikkService.sendTilKafka(data.toDomain(), opprettTilkjentYtelse())
+        vedtakstatistikkService.sendTilKafka(data.toDomain())
     }
 
     private fun opprettTilkjentYtelse(): TilkjentYtelse {

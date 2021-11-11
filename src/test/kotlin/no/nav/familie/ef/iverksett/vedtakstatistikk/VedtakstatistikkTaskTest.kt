@@ -28,10 +28,10 @@ internal class VedtakstatistikkTaskTest {
     @Test
     fun `skal sende vedtaksstatistikk til DVH`() {
         val behandlingIdString = behandlingId.toString()
-        every { vedtakstatistikkService.sendTilKafka(any(), any()) } just Runs
+        every { vedtakstatistikkService.sendTilKafka(any()) } just Runs
         every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns opprettTilkjentYtelse(behandlingId)
         every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
         vedtakstatistikkTask.doTask(Task(VedtakstatistikkTask.TYPE, behandlingIdString, Properties()))
-        verify(exactly = 1) { vedtakstatistikkService.sendTilKafka(any(), any()) }
+        verify(exactly = 1) { vedtakstatistikkService.sendTilKafka(any()) }
     }
 }
