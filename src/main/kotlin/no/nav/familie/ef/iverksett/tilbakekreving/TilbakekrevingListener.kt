@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRequest
+import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import no.nav.familie.log.mdc.MDCConstants
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -44,19 +45,23 @@ class TilbakekrevingListener(
         }
     }
 
-    private fun transformerOgSend(data: String, key : String) {
-        val request: HentFagsystemsbehandlingRequest =
-                objectMapper.readValue(data)
-        if (!request.erEfYtelse()) {
-            return
+    private fun transformerOgSend(data: String, key: String) {
+        try {
+            val request: HentFagsystemsbehandlingRequest =
+                    objectMapper.readValue(data)
+            if (!request.erEfYtelse()) {
+                return
+            }
+            val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
+            val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)!!
+            val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet = enhet)
+            tilbakekrevingProducer.send(fagsystemsbehandling, key)
+        } catch (ex: Exception) {
+            tilbakekrevingProducer.send(HentFagsystemsbehandlingRespons(feilMelding = ex.message), key)
         }
-        val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
-        val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)!!
-        val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet = enhet)
-        tilbakekrevingProducer.send(fagsystemsbehandling, key)
     }
 
-    private fun HentFagsystemsbehandlingRequest.erEfYtelse() : Boolean {
+    private fun HentFagsystemsbehandlingRequest.erEfYtelse(): Boolean {
         return listOf(Ytelsestype.OVERGANGSSTØNAD, Ytelsestype.SKOLEPENGER, Ytelsestype.BARNETILSYN).contains(this.ytelsestype)
     }
 }
