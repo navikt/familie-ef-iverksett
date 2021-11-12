@@ -53,17 +53,17 @@ gruppe av input/output representeres av typene `input`+`oppdrag`+`output`
 | 6   | Output  | 2      |
 
 ## Kjeder
-Når vi sender perioder til økonomi så slår vi de sammen til en kjede, dvs en periode har ett forhold til forrige periode - litt som en `LinkedList`.
+Når vi sender perioder til økonomi så slår vi de sammen til en kjede, dvs en periode har ett forhold til forrige periode - litt som en `LinkedList`. <br />
 Hver periode har en `periodeId`. En periode refererer alltid til forrige periode med `forrigePeriodeId`, hvis det ikke er den første perioden som sendes for personen.
 
 ### Opphør
 Når vi sender opphør så sender vi med siste perioden i kjeden i utbetalingsoppdraget, samtidig som vi sender med fra hvilket dato vi skal opphøre.
 
 #### 2 perioder der vi opphør/endrer den siste
-Input
-2001-01 - 2001-01 100kr
-2001-02 - 2001-02 100kr
-Hvis vi endrer denne i en ny tilkjent ytelse til å kun inneholde første perioden, så kommer vi opprette ett utbetalingsoppdrag med siste perioden.
+Input <br />
+2001-01 - 2001-01 100kr <br />
+2001-02 - 2001-02 100kr <br />
+Hvis vi endrer denne i en ny tilkjent ytelse til å kun inneholde første perioden, så kommer vi opprette ett utbetalingsoppdrag med siste perioden. <br />
 Hvis vi opphør begge perioder sender vi siste perioden, men med opphør fra 2001-01, som er fra-dato i første perioden.
 
 #### Feilistuasjoner
