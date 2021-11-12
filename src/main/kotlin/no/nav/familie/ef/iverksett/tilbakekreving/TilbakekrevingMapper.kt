@@ -44,9 +44,8 @@ fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
                 faktainfo = lagFaktainfo(this)
         )
 
-fun Iverksett.tilFagsystembehandling(feilmelding: String? = null, enhet: Enhet) =
+fun Iverksett.tilFagsystembehandling(enhet: Enhet) =
         HentFagsystemsbehandlingRespons(
-                feilMelding = feilmelding,
                 hentFagsystemsbehandling = HentFagsystemsbehandling(eksternFagsakId = this.fagsak.eksternId.toString(),
                                                                     eksternId = this.behandling.eksternId.toString(),
                                                                     ytelsestype = mapYtelsestype(this.fagsak.stønadstype),
