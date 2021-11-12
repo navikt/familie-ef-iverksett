@@ -59,7 +59,7 @@ internal class TilbakekrevingMapperTest {
         val behandlingsId = UUID.randomUUID()
         val iverksett = opprettIverksett(behandlingsId)
         val enhet = Enhet(enhetId = "enhetId", enhetNavn = "enhetNavn")
-        val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
+        val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet = enhet).hentFagsystemsbehandling!!
 
         assertThat(fagsystemsbehandling.eksternId).isEqualTo(iverksett.behandling.eksternId.toString())
         assertThat(fagsystemsbehandling.eksternFagsakId).isEqualTo(iverksett.fagsak.eksternId.toString())

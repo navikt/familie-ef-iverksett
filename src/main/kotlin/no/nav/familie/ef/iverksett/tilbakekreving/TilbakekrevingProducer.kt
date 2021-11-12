@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.tilbakekreving
 
 import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
 import no.nav.familie.kontrakter.felles.objectMapper
-import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
+import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -16,13 +16,11 @@ class TilbakekrevingProducer(private val kafkaProducerService: KafkaProducerServ
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    fun send(behandling: HentFagsystemsbehandling, key : String) {
-        secureLogger.debug("Sender til Kafka topic: $topic, Fagsystembehandling=$behandling")
+    fun send(behandling: HentFagsystemsbehandlingRespons, key: String) {
         try {
             kafkaProducerService.send(topic, key, behandling.toJson())
-            logger.info("Fagsystembehandling ifm tilbakekreving er sent til Kafka. EksternId=${behandling.eksternId}")
             secureLogger.info("Fagsystembehandling er sent til Kafka. Behandling=$behandling")
-        } catch (ex : Exception) {
+        } catch (ex: Exception) {
             val errorMessage = "Kunne ikke sende behandling til Kafka. Se securelogs for mere informasjon. "
             logger.error(errorMessage)
             throw RuntimeException(errorMessage)

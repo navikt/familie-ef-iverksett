@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.tilbakekreving
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
-import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
+import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -12,7 +12,7 @@ internal class TilbakekrevingProducerTest {
 
     private val tilbakekrevingProducer = mockk<TilbakekrevingProducer>()
     private val kafkaProducerService = mockk<KafkaProducerService>()
-    private val behandling = mockk<HentFagsystemsbehandling>()
+    private val behandling = mockk<HentFagsystemsbehandlingRespons>()
 
     private lateinit var producer: TilbakekrevingProducer
 
