@@ -54,7 +54,7 @@ class TilbakekrevingListener(
             }
             val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
             val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)!!
-            val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet = enhet)
+            val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
             tilbakekrevingProducer.send(fagsystemsbehandling, key)
         } catch (ex: Exception) {
             tilbakekrevingProducer.send(HentFagsystemsbehandlingRespons(feilMelding = ex.message), key)
