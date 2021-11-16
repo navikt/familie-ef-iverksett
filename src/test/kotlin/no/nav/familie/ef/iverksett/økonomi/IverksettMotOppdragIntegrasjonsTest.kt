@@ -165,7 +165,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                                 eksternFagsakId = iverksett.fagsak.eksternId,
                                 personIdent = iverksett.søker.personIdent,
                                 behandlingId = tekniskOpphørId,
-                                vedtaksdato = iverksett.vedtak.vedtaksdato)
+                                vedtaksdato = iverksett.vedtak.vedtakstidspunkt!!.toLocalDate())
     }
 
     private fun iverksettMotOppdrag() {

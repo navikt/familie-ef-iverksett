@@ -5,15 +5,16 @@
     "stønadstype": "BARNETILSYN"
   },
   "behandling": {
-    "behandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003",
     "forrigeBehandlingId": "999abcde-fabc-11eb-8529-0242ac130003",
+    "behandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003",
     "eksternId": 14,
     "behandlingType": "FØRSTEGANGSBEHANDLING",
     "behandlingÅrsak": "NYE_OPPLYSNINGER",
+    "relatertBehandlingId": null,
     "vilkårsvurderinger": [
       {
-        "vilkårType":"AKTIVITET",
-        "resultat":"IKKE_AKTUELL",
+        "vilkårType": "AKTIVITET",
+        "resultat": "IKKE_AKTUELL",
         "delvilkårsvurderinger": [
           {
             "resultat": "IKKE_AKTUELL",
@@ -44,10 +45,10 @@
         ]
       }
     ],
-    "aktivitetspliktInntrefferDato":null,
-    "kravMottatt": null
+    "aktivitetspliktInntrefferDato": null
   },
   "søker": {
+    "personIdent": "12345678901",
     "barn": [
       {
         "personIdent": "1234567910",
@@ -55,13 +56,34 @@
       }
     ],
     "tilhørendeEnhet": "4489",
-    "adressebeskyttelse": "STRENGT_FORTROLIG",
-    "personIdent": "12345678901"
+    "adressebeskyttelse": "STRENGT_FORTROLIG"
   },
   "vedtak": {
-    "resultat": "AVSLÅTT",
+    "vedtaksresultat": "AVSLÅTT",
+    "vedtaksdato": "2021-05-10T00:00:00",
+    "vedtakstidspunkt": "2021-05-10T01:00:00",
     "opphørÅrsak": "PERIODE_UTLØPT",
-    "vedtaksdato": "2021-05-10",
+    "saksbehandlerId": "A123456",
+    "beslutterId": "B123456",
+    "tilkjentYtelse": {
+      "id": "996d4770-3d03-4b16-b78b-227338219b72",
+      "utbetalingsoppdrag": null,
+      "status": "IKKE_KLAR",
+      "andelerTilkjentYtelse": [
+        {
+          "beløp": 0,
+          "fraOgMed": "2021-05-10",
+          "tilOgMed": "2021-05-10",
+          "periodetype": "MÅNED",
+          "inntekt": 0,
+          "samordningsfradrag": 0,
+          "inntektsreduksjon": 0,
+          "periodeId": null,
+          "forrigePeriodeId": null,
+          "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        }
+      ]
+    },
     "vedtaksperioder": [
       {
         "aktivitet": "BARNET_ER_SYKT",
@@ -70,22 +92,6 @@
         "tilOgMed": "2021-06-10"
       }
     ],
-    "saksbehandlerId": "A123456",
-    "beslutterId": "B123456",
-    "tilkjentYtelse": {
-      "andelerTilkjentYtelse": [
-        {
-          "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "fraOgMed": "2021-05-10",
-          "periodetype": "MÅNED",
-          "tilOgMed": "2021-05-10",
-          "beløp": 0,
-          "inntekt": 0,
-          "samordningsfradrag": 0,
-          "inntektsreduksjon": 0
-        }
-      ]
-    },
     "tilbakekreving": {
       "tilbakekrevingsvalg": "OPPRETT_TILBAKEKREVING_MED_VARSEL",
       "tilbakekrevingMedVarsel": {
@@ -101,6 +107,3 @@
     }
   }
 }
-
-
-
