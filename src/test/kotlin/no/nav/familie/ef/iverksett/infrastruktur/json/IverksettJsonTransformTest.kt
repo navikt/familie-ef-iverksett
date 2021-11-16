@@ -24,7 +24,7 @@ class IverksettJsonTransformTest {
 
     @Test
     fun `deserialiser JSON til Iverksett, kall toDomain, forvent ingen unntak`() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
+        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettEksempel.json")
         val iverksett = objectMapper.readValue<Iverksett>(json)
         assertThat(iverksett).isNotNull
     }
