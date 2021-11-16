@@ -82,18 +82,6 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
 
-    fun hentAlle(): Iverksett? {
-        val sql = "select * from iverksett"
-        return namedParameterJdbcTemplate.queryForObject(sql, MapSqlParameterSource()) { rs: ResultSet, _: Int ->
-
-                rs.getJson("data")
-                //rs.getJson("oppdragResultat"),
-                //rs.getJson("journalpostResultat"),
-                //rs.getJson("vedtaksBrevResultat"),
-                //rs.getJson("tilbakekrevingResultat"))
-        }
-    }
-
     fun hent(behandlingId: UUID): Iverksett {
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
