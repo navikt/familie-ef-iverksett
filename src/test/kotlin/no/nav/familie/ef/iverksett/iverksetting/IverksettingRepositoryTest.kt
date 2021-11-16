@@ -22,7 +22,6 @@ class IverksettingRepositoryTest : ServerTest() {
     private lateinit var iverksettingRepository: IverksettingRepository
 
 
-    /*
     @Test
     fun `Kjør script som endrer data til å inneholde vedtakstidspunkt - og sjekk at mapping fortsatt fungerer`() {
         val gammelJsonVersjonIverksett: String = ResourceLoaderTestUtil.readResource("json/iverksettVedtaksdatoEksempel.json")
@@ -35,7 +34,6 @@ class IverksettingRepositoryTest : ServerTest() {
         assertThat(iverksettMedVedtakstidspunkt).isNotNull
         assertThat(iverksettMedVedtakstidspunkt.vedtak.vedtakstidspunkt).isEqualTo(LocalDateTime.of(2021, 5, 10, 0, 0))
     }
-    */
 
     @Test
     fun `deserialiser og lagre iverksett, forvent ingen unntak`() {
