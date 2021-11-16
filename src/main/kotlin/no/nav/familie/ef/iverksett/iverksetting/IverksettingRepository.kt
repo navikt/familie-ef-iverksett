@@ -42,21 +42,6 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
 
-    @Transactional
-    fun manueltLagreIverksett(behandlingId: UUID, iverksettJson: String) {
-        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON, :type, :eksternId)"
-
-        val mapSqlParameterSource = MapSqlParameterSource(
-            mapOf(
-                "behandlingId" to behandlingId,
-                "iverksettJson" to iverksettJson,
-                "type" to IverksettType.VANLIG.name,
-                "eksternId" to 1L
-            )
-        )
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
-    }
-
     private fun lagreIverksett(behandlingId: UUID, iverksett: Iverksett) {
         val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON, :type, :eksternId)"
         val iverksettString = objectMapper.writeValueAsString(iverksett)

@@ -19,16 +19,18 @@ import java.util.UUID
 class IverksettingRepositoryTest : ServerTest() {
 
     @Autowired
-    private lateinit var iverksettingRepository: IverksettingRepository
+    private lateinit var iverksettingTestUtilRepository: IverksettingTestUtilRepository
 
+    @Autowired
+    private lateinit var iverksettingRepository: IverksettingRepository
 
     @Test
     fun `Kjør script som endrer data til å inneholde vedtakstidspunkt - og sjekk at mapping fortsatt fungerer`() {
         val gammelJsonVersjonIverksett: String = ResourceLoaderTestUtil.readResource("json/IverksettVedtaksdatoEksempel.json")
 
         val behandlingId = UUID.randomUUID()
-        iverksettingRepository.manueltLagreIverksett(behandlingId, gammelJsonVersjonIverksett)
-        iverksettingRepository.oppdaterData()
+        iverksettingTestUtilRepository.manueltLagreIverksett(behandlingId, gammelJsonVersjonIverksett)
+        iverksettingTestUtilRepository.oppdaterData()
 
         val iverksettMedVedtakstidspunkt = iverksettingRepository.hent(behandlingId)
         assertThat(iverksettMedVedtakstidspunkt).isNotNull
