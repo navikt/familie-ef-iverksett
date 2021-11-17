@@ -67,7 +67,7 @@ fun VedtaksperiodeDto.toDomain(): Vedtaksperiode {
 
 fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
     return Vedtaksdetaljer(vedtaksresultat = this.resultat,
-                           vedtakstidspunkt = this.vedtakstidspunkt ?: throw Exception("Vedtakstidspunkt mangler"),
+                           vedtakstidspunkt = this.vedtakstidspunkt,
                            opphørÅrsak = this.opphørÅrsak,
                            saksbehandlerId = this.saksbehandlerId,
                            beslutterId = this.beslutterId,
