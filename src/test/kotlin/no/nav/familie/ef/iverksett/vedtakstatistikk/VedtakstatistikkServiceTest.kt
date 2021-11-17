@@ -53,15 +53,15 @@ class VedtakstatistikkServiceTest {
 
         val behandlingDVH = opprettBehandlingDVH(behandlingId = behandlingId.toString(),
                                                  fagsakId = iverksett.fagsak.fagsakId.toString(),
-                                                 tidspunktVedtak = iverksett.vedtak.vedtaksdato)
+                                                 tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.toLocalDate())
         assertThat(behandlingDVH).isEqualTo(behandlingDvhSlot.captured)
     }
 
     @Test
     internal fun `map fra iverksettDtoEksempel til behandlingDVH`() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettEksempel.json")
+        val iverksettDtoJson: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
 
-        val iverksettDto = objectMapper.readValue<IverksettDto>(json)
+        val iverksettDto = objectMapper.readValue<IverksettDto>(iverksettDtoJson)
         val iverksett = iverksettDto.toDomain()
 
         val behandlingDvhSlot = slot<BehandlingDVH>()

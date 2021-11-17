@@ -2,11 +2,16 @@ package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettType
 import no.nav.familie.ef.iverksett.iverksetting.domene.TekniskOpphør
+import no.nav.familie.ef.iverksett.util.getJson
 import no.nav.familie.ef.iverksett.util.getUUID
 import no.nav.familie.ef.iverksett.util.queryForJson
+import no.nav.familie.ef.iverksett.util.queryForNullableObject
 import no.nav.familie.kontrakter.felles.objectMapper
+import org.springframework.data.jdbc.repository.query.Modifying
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
@@ -36,7 +41,6 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
                 ))
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
-
 
     private fun lagreIverksett(behandlingId: UUID, iverksett: Iverksett) {
         val sql = "INSERT INTO iverksett VALUES(:behandlingId, :iverksettJson::JSON, :type, :eksternId)"
@@ -106,10 +110,19 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
     }
 
+    @Transactional
+    fun oppdaterData(): Int {
+        val sql = """
+            UPDATE iverksett SET data =
+            (select regexp_replace(data::text, '(.*)(vedtaksdato":")(\d+-\d+-\d+)(.*)','\1vedtakstidspunkt":"\3T00:00:00\4')::json from iverksett)
+                """
+        return namedParameterJdbcTemplate.update(sql, MapSqlParameterSource())
+    }
+
     // language=PostgreSQL
     companion object {
 
-        const val HENT_IVERKSETT_SQL = "SELECT data FROM iverksett WHERE behandling_id = :behandlingId AND type = :type "
+        const val HENT_IVERKSETT_SQL = "SELECT data FROM iverksett WHERE behandling_id = :behandlingId AND type = :type"
         const val HENT_IVERKSETT_EKSTERN_ID_SQL = "SELECT data FROM iverksett WHERE ekstern_id = :eksternId AND type = :type"
 
     }

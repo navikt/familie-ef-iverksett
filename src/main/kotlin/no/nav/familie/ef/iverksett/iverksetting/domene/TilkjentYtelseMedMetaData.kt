@@ -13,5 +13,3 @@ data class TilkjentYtelseMedMetaData(val tilkjentYtelse: TilkjentYtelse,
                                      val behandlingId: UUID,
                                      val vedtaksdato: LocalDate
 )
-
-

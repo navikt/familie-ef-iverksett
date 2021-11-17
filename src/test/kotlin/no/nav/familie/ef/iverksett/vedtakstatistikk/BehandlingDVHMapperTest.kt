@@ -28,6 +28,7 @@ import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 internal class BehandlingDVHMapperTest {
@@ -64,7 +65,7 @@ internal class BehandlingDVHMapperTest {
                                         tilhørendeEnhet = "4489",
                                         adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG),
                           vedtak = Vedtaksdetaljer(vedtaksresultat = Vedtaksresultat.INNVILGET,
-                                                   vedtaksdato = LocalDate.now(),
+                                                   vedtakstidspunkt = LocalDateTime.now(),
                                                    opphørÅrsak = null,
                                                    saksbehandlerId = "A123456",
                                                    beslutterId = "B123456",

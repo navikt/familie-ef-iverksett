@@ -52,6 +52,7 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 fun opprettIverksettDto(behandlingId: UUID, andelsbeløp: Int = 5000): IverksettDto {
@@ -102,6 +103,7 @@ fun opprettIverksettDto(behandlingId: UUID, andelsbeløp: Int = 5000): Iverksett
             vedtak = VedtaksdetaljerDto(
                     resultat = Vedtaksresultat.INNVILGET,
                     vedtaksdato = LocalDate.of(2021, 5, 12),
+                    vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",
                     beslutterId = "B23456",
@@ -190,7 +192,7 @@ fun opprettIverksett(behandlingId: UUID,
             ),
             vedtak = Vedtaksdetaljer(
                     vedtaksresultat = Vedtaksresultat.INNVILGET,
-                    vedtaksdato = LocalDate.of(2021, 5, 12),
+                    vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",
                     beslutterId = "B23456",

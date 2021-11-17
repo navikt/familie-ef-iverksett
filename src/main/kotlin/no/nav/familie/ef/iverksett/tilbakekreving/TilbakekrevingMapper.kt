@@ -39,7 +39,7 @@ fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
                 enhetsnavn = enhet.enhetNavn, // iverksett.søker.tilhørendeEnhet?
                 saksbehandlerIdent = this.vedtak.saksbehandlerId,
                 varsel = this.vedtak.tilbakekreving?.let { lagVarsel(it) },
-                revurderingsvedtaksdato = this.vedtak.vedtaksdato,
+                revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
                 verge = null, // Verge er per nå ikke støttet i familie-ef-sak.
                 faktainfo = lagFaktainfo(this)
         )
@@ -53,7 +53,7 @@ fun Iverksett.tilFagsystembehandling(enhet: Enhet) =
                                                                     språkkode = Språkkode.NB,
                                                                     enhetId = enhet.enhetId,
                                                                     enhetsnavn = enhet.enhetNavn,
-                                                                    revurderingsvedtaksdato = this.vedtak.vedtaksdato,
+                                                                    revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
                                                                     faktainfo = lagFaktainfo(this)))
 
 private fun mapYtelsestype(stønadType: StønadType): Ytelsestype =

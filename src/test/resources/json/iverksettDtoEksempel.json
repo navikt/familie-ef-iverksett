@@ -62,6 +62,7 @@
     "resultat": "AVSLÅTT",
     "opphørÅrsak": "PERIODE_UTLØPT",
     "vedtaksdato": "2021-05-10",
+    "vedtakstidspunkt": "2021-05-10T01:00:00",
     "vedtaksperioder": [
       {
         "aktivitet": "BARNET_ER_SYKT",
