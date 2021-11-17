@@ -30,6 +30,9 @@ class IverksettingRepositoryTest : ServerTest() {
 
         val behandlingId = UUID.randomUUID()
         iverksettingTestUtilRepository.manueltLagreIverksett(behandlingId, gammelJsonVersjonIverksett)
+        Thread.sleep(1000) //For å få annen UUID
+        val behandlingId2 = UUID.randomUUID()
+        iverksettingTestUtilRepository.manueltLagreIverksett(behandlingId2, gammelJsonVersjonIverksett)
         iverksettingTestUtilRepository.oppdaterData()
 
         val iverksettMedVedtakstidspunkt = iverksettingRepository.hent(behandlingId)
