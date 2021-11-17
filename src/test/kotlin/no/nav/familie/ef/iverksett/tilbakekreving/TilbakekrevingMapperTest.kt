@@ -44,7 +44,7 @@ internal class TilbakekrevingMapperTest {
         assertThat(request.faktainfo.revurderingsårsak).isEqualTo(forventetRevurderingssårsak)
         assertThat(request.faktainfo.konsekvensForYtelser).isEmpty()
 
-        assertThat(request.revurderingsvedtaksdato).isEqualTo(iverksett.vedtak.vedtakstidspunkt!!.toLocalDate())
+        assertThat(request.revurderingsvedtaksdato).isEqualTo(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
         assertThat(request.saksbehandlerIdent).isEqualTo(iverksett.vedtak.saksbehandlerId)
 
         assertThat(request.språkkode).isEqualTo(Språkkode.NB)
@@ -64,7 +64,7 @@ internal class TilbakekrevingMapperTest {
         assertThat(fagsystemsbehandling.eksternId).isEqualTo(iverksett.behandling.eksternId.toString())
         assertThat(fagsystemsbehandling.eksternFagsakId).isEqualTo(iverksett.fagsak.eksternId.toString())
         assertThat(fagsystemsbehandling.ytelsestype.name).isEqualTo(iverksett.fagsak.stønadstype.name)
-        assertThat(fagsystemsbehandling.revurderingsvedtaksdato).isEqualTo(iverksett.vedtak.vedtakstidspunkt!!.toLocalDate())
+        assertThat(fagsystemsbehandling.revurderingsvedtaksdato).isEqualTo(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
         assertThat(fagsystemsbehandling.personIdent).isEqualTo(iverksett.søker.personIdent)
         assertThat(fagsystemsbehandling.språkkode).isEqualTo(Språkkode.NB)
         assertThat(fagsystemsbehandling.verge).isEqualTo(null)

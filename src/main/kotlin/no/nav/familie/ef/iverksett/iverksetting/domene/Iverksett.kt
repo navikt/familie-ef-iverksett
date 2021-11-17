@@ -48,7 +48,7 @@ data class Vedtaksperiode(
 
 data class Vedtaksdetaljer(
         val vedtaksresultat: Vedtaksresultat,
-        val vedtakstidspunkt: LocalDateTime?,
+        val vedtakstidspunkt: LocalDateTime,
         val opphørÅrsak: OpphørÅrsak?,
         val saksbehandlerId: String,
         val beslutterId: String,

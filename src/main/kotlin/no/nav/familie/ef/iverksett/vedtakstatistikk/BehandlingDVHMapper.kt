@@ -36,7 +36,7 @@ object BehandlingDVHMapper {
                              relatertBehandlingId = iverksett.behandling.forrigeBehandlingId?.toString(),
                              adressebeskyttelse = iverksett.søker.adressebeskyttelse
                                      ?.let { Adressebeskyttelse.valueOf(it.name) },
-                             tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt!!.atZone(ZoneId.of("Europe/Oslo")),
+                             tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")),
                              vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger
                                      .map { mapTilVilkårsvurderinger(it) },
                              person = mapTilPerson(personIdent = iverksett.søker.personIdent),

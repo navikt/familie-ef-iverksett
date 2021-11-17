@@ -53,7 +53,7 @@ class VedtakstatistikkServiceTest {
 
         val behandlingDVH = opprettBehandlingDVH(behandlingId = behandlingId.toString(),
                                                  fagsakId = iverksett.fagsak.fagsakId.toString(),
-                                                 tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt!!.toLocalDate())
+                                                 tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.toLocalDate())
         assertThat(behandlingDVH).isEqualTo(behandlingDvhSlot.captured)
     }
 

@@ -40,7 +40,7 @@ class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRe
                                                                eksternFagsakId = iverksett.fagsak.eksternId,
                                                                personIdent = iverksett.søker.personIdent,
                                                                behandlingId = iverksett.behandling.behandlingId,
-                                                               vedtaksdato = iverksett.vedtak.vedtakstidspunkt!!.toLocalDate())
+                                                               vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate())
                 ?: error("Mangler tilkjent ytelse på vedtaket")
 
         val utbetaling = lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelseMedMetaData,
