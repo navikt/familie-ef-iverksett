@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingsdetaljer
+import no.nav.familie.kontrakter.ef.iverksett.Vergetype
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
@@ -11,9 +12,12 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import java.math.BigDecimal
 import java.util.UUID
+import no.nav.familie.kontrakter.felles.tilbakekreving.Vergetype as VergetypeTilbakekreving
 
 internal class TilbakekrevingMapperTest {
 
@@ -134,4 +138,10 @@ internal class TilbakekrevingMapperTest {
                            .validerTilbakekreving()).isTrue
     }
 
+    @TestFactory
+    fun `alle vergetyper skal mappes til en av tilbakekrevings vergetyper`() = Vergetype.values().map {
+        DynamicTest.dynamicTest("Skal mappe vergetype ${it} til gyldig type for tilbakekreving") {
+            assertThat(it.tilTilbakekrevingType()).isInstanceOf(VergetypeTilbakekreving::class.java)
+        }
+    }
 }

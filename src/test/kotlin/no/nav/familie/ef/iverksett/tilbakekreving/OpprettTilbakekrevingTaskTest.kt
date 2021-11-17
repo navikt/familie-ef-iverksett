@@ -8,6 +8,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
@@ -16,6 +17,8 @@ import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
+import no.nav.familie.kontrakter.ef.iverksett.VergeDto
+import no.nav.familie.kontrakter.ef.iverksett.Vergetype
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
@@ -176,6 +179,32 @@ internal class OpprettTilbakekrevingTaskTest {
         opprettTilbakekrevingTask.onCompletion(task)
         assertThat(taskSlot.captured.payload).isEqualTo(behandlingId)
         assertThat(taskSlot.captured.type).isEqualTo(IverksettMotOppdragTask.TYPE)
+    }
+
+    @Test
+    internal fun `verge sendes med til tilbakekreving`() {
+        val behandlingsId = UUID.randomUUID()
+        val verge = VergeDto(ident = "11111111", navn = "Verge Vergesen", vergetype = Vergetype.VOKSEN)
+        val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
+        val iverksettMedVergeOgTilbakekreving = opprettIverksett(behandlingsId,
+                                                                 tilbakekreving = tilbakekreving,
+                                                                 forrigeBehandlingId = UUID.randomUUID()).let {
+            it.copy(vedtak = it.vedtak.copy(verge = verge.toDomain()))
+        }
+        val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
+        val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(100)
+
+        every { iverksettingRepository.hent(behandlingsId) } returns iverksettMedVergeOgTilbakekreving
+        every { simuleringService.hentBeriketSimulering(any()) } returns beriketSimuleringsresultat
+        every { tilstandRepository.oppdaterTilbakekrevingResultat(behandlingsId, capture(tilbakekrevingResultatSlot)) } just Runs
+
+        doTask(behandlingsId)
+
+        verify(exactly = 1) { tilbakekrevingClient.opprettBehandling(any()) }
+
+        val request = tilbakekrevingResultatSlot.captured.opprettTilbakekrevingRequest
+        assertThat(request.verge).isNotNull
+        assertThat(request.verge?.personIdent).isEqualTo(verge.ident)
     }
 
     private fun doTask(behandlingsId: UUID) {

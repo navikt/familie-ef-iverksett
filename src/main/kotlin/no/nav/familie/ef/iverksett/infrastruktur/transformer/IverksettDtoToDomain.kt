@@ -9,6 +9,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
+import no.nav.familie.ef.iverksett.iverksetting.domene.Verge
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
@@ -20,6 +21,7 @@ import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingMedVarselDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeDto
+import no.nav.familie.kontrakter.ef.iverksett.VergeDto
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
 
@@ -73,7 +75,8 @@ fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
                            beslutterId = this.beslutterId,
                            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
                            vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
-                           tilbakekreving = this.tilbakekreving?.toDomain())
+                           tilbakekreving = this.tilbakekreving?.toDomain(),
+                           verge = this.verge?.toDomain())
 }
 
 fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
@@ -99,3 +102,5 @@ fun IverksettDto.toDomain(): Iverksett {
             vedtak = this.vedtak.toDomain()
     )
 }
+
+fun VergeDto.toDomain(): Verge = Verge(ident = this.ident, navn = this.navn, vergetype = this.vergetype)

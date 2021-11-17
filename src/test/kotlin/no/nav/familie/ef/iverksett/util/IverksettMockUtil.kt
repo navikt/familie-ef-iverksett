@@ -46,6 +46,8 @@ import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.ef.iverksett.VergeDto
+import no.nav.familie.kontrakter.ef.iverksett.Vergetype
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
@@ -257,6 +259,13 @@ fun opprettTilbakekrevingMedVarsel(
         sumFeilutbetaling = sumFeilutbetaling,
         perioder = perioder
 )
+
+fun opprettIverksettDtoMedVerge(behandlingId: UUID, vergeDto: VergeDto? = null): IverksettDto {
+    val verge = vergeDto ?: VergeDto(ident = "11111111", navn = "Verge Vergesen", vergetype = Vergetype.VOKSEN)
+    return opprettIverksettDto(behandlingId = behandlingId).let {
+        it.copy(vedtak = it.vedtak.copy(verge = verge))
+    }
+}
 
 class IverksettResultatMockBuilder private constructor(
 

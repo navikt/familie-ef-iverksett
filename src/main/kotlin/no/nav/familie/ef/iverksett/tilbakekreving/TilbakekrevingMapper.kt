@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.iverksett.Vergetype
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
@@ -14,7 +15,9 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingR
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
+import no.nav.familie.kontrakter.felles.tilbakekreving.Verge
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
+import no.nav.familie.kontrakter.felles.tilbakekreving.Vergetype as VergetypeTilbakekreving
 
 fun Tilbakekrevingsdetaljer?.validerTilbakekreving(): Boolean {
     try {
@@ -25,24 +28,31 @@ fun Tilbakekrevingsdetaljer?.validerTilbakekreving(): Boolean {
     return true
 }
 
-fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
-        OpprettTilbakekrevingRequest(
-                fagsystem = Fagsystem.EF,
-                ytelsestype = mapYtelsestype(this.fagsak.stønadstype),
-                eksternFagsakId = this.fagsak.eksternId.toString(),
-                personIdent = this.søker.personIdent,
-                eksternId = this.behandling.eksternId.toString(),
-                behandlingstype = Behandlingstype.TILBAKEKREVING, // samme som BAKS gjør
-                manueltOpprettet = false, // manuelt opprettet ennå ikke støttet i familie-tilbake?
-                språkkode = Språkkode.NB, // Bør følge med iverksett.søker
-                enhetId = enhet.enhetId, // iverksett.søker.tilhørendeEnhet?
-                enhetsnavn = enhet.enhetNavn, // iverksett.søker.tilhørendeEnhet?
-                saksbehandlerIdent = this.vedtak.saksbehandlerId,
-                varsel = this.vedtak.tilbakekreving?.let { lagVarsel(it) },
-                revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
-                verge = null, // Verge er per nå ikke støttet i familie-ef-sak.
-                faktainfo = lagFaktainfo(this)
-        )
+fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet): OpprettTilbakekrevingRequest {
+    val verge = this.vedtak.verge?.let {
+        Verge(vergetype = it.vergetype.tilTilbakekrevingType(),
+              navn = it.navn,
+              personIdent = it.ident,
+              organisasjonsnummer = null) // Må sende organisasjonenummer hvis verge er advokat
+    }
+    return OpprettTilbakekrevingRequest(
+            fagsystem = Fagsystem.EF,
+            ytelsestype = mapYtelsestype(this.fagsak.stønadstype),
+            eksternFagsakId = this.fagsak.eksternId.toString(),
+            personIdent = this.søker.personIdent,
+            eksternId = this.behandling.eksternId.toString(),
+            behandlingstype = Behandlingstype.TILBAKEKREVING, // samme som BAKS gjør
+            manueltOpprettet = false, // manuelt opprettet ennå ikke støttet i familie-tilbake?
+            språkkode = Språkkode.NB, // Bør følge med iverksett.søker
+            enhetId = enhet.enhetId, // iverksett.søker.tilhørendeEnhet?
+            enhetsnavn = enhet.enhetNavn, // iverksett.søker.tilhørendeEnhet?
+            saksbehandlerIdent = this.vedtak.saksbehandlerId,
+            varsel = this.vedtak.tilbakekreving?.let { lagVarsel(it) },
+            revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
+            verge = verge,
+            faktainfo = lagFaktainfo(this)
+    )
+}
 
 fun Iverksett.tilFagsystembehandling(enhet: Enhet) =
         HentFagsystemsbehandlingRespons(
@@ -92,6 +102,12 @@ private fun BehandlingÅrsak.visningsTekst(): String {
         BehandlingÅrsak.NYE_OPPLYSNINGER -> "Nye opplysninger"
     }
 }
+
+fun Vergetype.tilTilbakekrevingType(): VergetypeTilbakekreving =
+        when (this) {
+            Vergetype.VOKSEN -> VergetypeTilbakekreving.VERGE_FOR_VOKSEN
+            else -> throw java.lang.IllegalStateException("Finnes ingen mapping for vergetype ${this} til tilbakekreving-vergetype")
+        }
 
 
 

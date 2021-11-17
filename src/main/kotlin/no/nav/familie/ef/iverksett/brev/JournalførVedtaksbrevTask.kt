@@ -6,6 +6,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.felles.BrukerIdType
+import no.nav.familie.kontrakter.felles.dokarkiv.AvsenderMottaker
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
@@ -41,6 +43,11 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
                                 dokumenttype = Dokumenttype.VEDTAKSBREV_OVERGANGSSTØNAD,
                                 tittel = lagDokumentTittel(iverksett.fagsak.stønadstype, iverksett.vedtak.vedtaksresultat))
 
+        val mottakerHvisVerge = iverksett.vedtak.verge?.let {
+            AvsenderMottaker(id = it.ident,
+                             idType = BrukerIdType.FNR,
+                             navn = it.navn)
+        }
         val journalpostId = journalpostClient.arkiverDokument(
                 ArkiverDokumentRequest(
                         fnr = iverksett.søker.personIdent,
@@ -48,6 +55,7 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
                         hoveddokumentvarianter = listOf(dokument),
                         fagsakId = iverksett.fagsak.eksternId.toString(),
                         journalførendeEnhet = iverksett.søker.tilhørendeEnhet,
+                        avsenderMottaker = mottakerHvisVerge
                 ),
                 iverksett.vedtak.beslutterId
         ).journalpostId

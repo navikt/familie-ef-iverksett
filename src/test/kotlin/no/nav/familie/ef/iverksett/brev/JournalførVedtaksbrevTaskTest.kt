@@ -10,6 +10,9 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
+import no.nav.familie.ef.iverksett.util.opprettIverksettDtoMedVerge
+import no.nav.familie.kontrakter.ef.iverksett.VergeDto
+import no.nav.familie.kontrakter.ef.iverksett.Vergetype
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.prosessering.domene.Task
@@ -63,4 +66,26 @@ internal class JournalførVedtaksbrevTaskTest {
         assertThat(taskSlot.captured.payload).isEqualTo(behandlingId.toString())
         assertThat(taskSlot.captured.type).isEqualTo(DistribuerVedtaksbrevTask.TYPE)
     }
+
+    @Test
+    internal fun `når verge finnes i vedtak skal denne settes som mottaker av vedtaksbrev`() {
+        val arkiverDokumentRequestSlot = slot<ArkiverDokumentRequest>()
+        val journalpostResultatSlot = slot<JournalpostResultat>()
+        val verge = VergeDto(ident = "11111111", navn = "Verge Vergesen", vergetype = Vergetype.VOKSEN)
+
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
+                "123456789",
+                true)
+        every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDtoMedVerge(behandlingId, verge).toDomain())
+        every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
+        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, capture(journalpostResultatSlot)) } returns Unit
+
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
+
+        assertThat(arkiverDokumentRequestSlot.captured.avsenderMottaker).isNotNull
+        assertThat(arkiverDokumentRequestSlot.captured.avsenderMottaker?.id).isEqualTo(verge.ident)
+    }
+
 }

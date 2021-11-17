@@ -12,6 +12,7 @@ import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.ef.iverksett.Vergetype
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
@@ -54,7 +55,8 @@ data class Vedtaksdetaljer(
         val beslutterId: String,
         val tilkjentYtelse: TilkjentYtelse?,
         val vedtaksperioder: List<Vedtaksperiode>,
-        val tilbakekreving: Tilbakekrevingsdetaljer? = null
+        val tilbakekreving: Tilbakekrevingsdetaljer? = null,
+        val verge: Verge? = null
 )
 
 data class Behandlingsdetaljer(
@@ -101,3 +103,5 @@ data class TilbakekrevingMedVarsel(
         val sumFeilutbetaling: BigDecimal?,
         val perioder: List<Periode>?
 )
+
+data class Verge(val ident: String, val navn: String, val vergetype: Vergetype)
