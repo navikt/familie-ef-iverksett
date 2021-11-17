@@ -102,7 +102,6 @@ fun opprettIverksettDto(behandlingId: UUID, andelsbeløp: Int = 5000): Iverksett
             ),
             vedtak = VedtaksdetaljerDto(
                     resultat = Vedtaksresultat.INNVILGET,
-                    vedtaksdato = LocalDate.of(2021, 5, 12),
                     vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                     saksbehandlerId = "A12345",
