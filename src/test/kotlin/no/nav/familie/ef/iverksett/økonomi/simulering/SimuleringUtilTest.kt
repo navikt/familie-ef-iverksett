@@ -1,19 +1,21 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
+import no.nav.familie.ef.iverksett.august
+import no.nav.familie.ef.iverksett.februar
+import no.nav.familie.ef.iverksett.januar
+import no.nav.familie.ef.iverksett.juli
 import no.nav.familie.ef.iverksett.posteringer
-import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
-import no.nav.familie.kontrakter.felles.simulering.MottakerType
+import no.nav.familie.ef.iverksett.tilDetaljertSimuleringsresultat
+import no.nav.familie.ef.iverksett.tilSimuleringMottakere
+import no.nav.familie.ef.iverksett.tilSimuleringsperioder
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.FEILUTBETALING
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.YTELSE
-import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
 import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.YearMonth
 
 internal class SimuleringUtilTest {
 
@@ -26,13 +28,13 @@ internal class SimuleringUtilTest {
                 posteringer(januar(2020), posteringstype = PosteringType.JUSTERING)+
                 posteringer(januar(2020), posteringstype = PosteringType.TREKK)
 
-        val simuleringsresultatDto = lagSimuleringsoppsummering(
+        val simuleringsoppsummering = lagSimuleringsoppsummering(
                 posteringer.tilDetaljertSimuleringsresultat(),
                 1.januar(2021))
 
-        assertThat(simuleringsresultatDto.perioder).isEmpty()
-        assertThat(simuleringsresultatDto.etterbetaling).isZero
-        assertThat(simuleringsresultatDto.feilutbetaling).isZero
+        assertThat(simuleringsoppsummering.perioder).isEmpty()
+        assertThat(simuleringsoppsummering.etterbetaling).isZero
+        assertThat(simuleringsoppsummering.feilutbetaling).isZero
     }
 
     @Test
@@ -40,12 +42,12 @@ internal class SimuleringUtilTest {
         val posteringer =
                 posteringer(januar(2020), posteringstype = YTELSE, antallMåneder = 36, beløp = 5_000)
 
-        val simuleringsresultatDto =
+        val simuleringsoppsummering =
                 lagSimuleringsoppsummering(
                         posteringer.tilDetaljertSimuleringsresultat(),
                         1.januar(2021))
 
-        val posteringerGruppert = simuleringsresultatDto.perioder
+        val posteringerGruppert = simuleringsoppsummering.perioder
         assertThat(posteringerGruppert).hasSize(36)
         assertThat(posteringerGruppert.sumOf { it.feilutbetaling }).isZero
         assertThat(posteringerGruppert.sumOf { it.resultat.toInt() }).isEqualTo(5000 * 36)
@@ -53,10 +55,10 @@ internal class SimuleringUtilTest {
         assertThat(posteringerGruppert.last().nyttBeløp.toInt()).isEqualTo(5000)
         assertThat(posteringerGruppert.first().fom).isEqualTo(1.januar(2020))
         assertThat(posteringerGruppert.last().fom).isEqualTo(1.januar(2020).plusMonths(35))
-        assertThat(simuleringsresultatDto.etterbetaling.toInt()).isEqualTo(5000 * 12)
-        assertThat(simuleringsresultatDto.feilutbetaling).isZero
-        assertThat(simuleringsresultatDto.fom).isEqualTo(1.januar(2020))
-        assertThat(simuleringsresultatDto.forfallsdatoNestePeriode).isEqualTo(januar(2021).atEndOfMonth())
+        assertThat(simuleringsoppsummering.etterbetaling.toInt()).isEqualTo(5000 * 12)
+        assertThat(simuleringsoppsummering.feilutbetaling).isZero
+        assertThat(simuleringsoppsummering.fom).isEqualTo(1.januar(2020))
+        assertThat(simuleringsoppsummering.forfallsdatoNestePeriode).isEqualTo(januar(2021).atEndOfMonth())
     }
 
     @Test
@@ -68,12 +70,12 @@ internal class SimuleringUtilTest {
                 posteringer(juli(2020), posteringstype = YTELSE, antallMåneder = 7, beløp = 3000) +
                 posteringer(juli(2020), posteringstype = YTELSE, antallMåneder = 6, beløp = 2000)
 
-        val simuleringsresultatDto =
+        val simuleringsoppsummering =
                 lagSimuleringsoppsummering(
                        posteringer.tilDetaljertSimuleringsresultat(),
                        1.januar(2021))
 
-        val posteringerGruppert = simuleringsresultatDto.perioder
+        val posteringerGruppert = simuleringsoppsummering.perioder
 
         assertThat(posteringerGruppert.size).isEqualTo(13)
         assertThat(posteringerGruppert.sumOf { it.feilutbetaling.toInt() }).isEqualTo(2_000 * 6)
@@ -83,10 +85,10 @@ internal class SimuleringUtilTest {
         assertThat(posteringerGruppert.last().nyttBeløp.toInt()).isEqualTo(3_000)
         assertThat(posteringerGruppert.first().fom).isEqualTo(1.januar(2020))
         assertThat(posteringerGruppert.last().fom).isEqualTo(1.januar(2021))
-        assertThat(simuleringsresultatDto.etterbetaling.toInt()).isEqualTo(5_000 * 6)
-        assertThat(simuleringsresultatDto.feilutbetaling.toInt()).isEqualTo(2_000 * 6)
-        assertThat(simuleringsresultatDto.fom).isEqualTo(1.januar(2020))
-        assertThat(simuleringsresultatDto.forfallsdatoNestePeriode).isEqualTo(januar(2021).atEndOfMonth())
+        assertThat(simuleringsoppsummering.etterbetaling.toInt()).isEqualTo(5_000 * 6)
+        assertThat(simuleringsoppsummering.feilutbetaling.toInt()).isEqualTo(2_000 * 6)
+        assertThat(simuleringsoppsummering.fom).isEqualTo(1.januar(2020))
+        assertThat(simuleringsoppsummering.forfallsdatoNestePeriode).isEqualTo(januar(2021).atEndOfMonth())
     }
 
     @Test
@@ -209,22 +211,5 @@ internal class SimuleringUtilTest {
         Assertions.assertEquals(BigDecimal.valueOf(0), restSimulering.etterbetaling)
         Assertions.assertEquals(BigDecimal.valueOf(500), restSimulering.feilutbetaling)
     }
-
-    fun Int.januar(år: Int) = LocalDate.of(år, 1, this)
-    fun Int.august(år: Int) = LocalDate.of(år, 8, this)
-    fun januar(år: Int) = YearMonth.of(år, 1)
-    fun februar(år: Int) = YearMonth.of(år, 2)
-    fun juli(år: Int) = YearMonth.of(år, 7)
-
-    fun List<SimulertPostering>.tilSimuleringsperioder() =
-            grupperPosteringerEtterDato(this.tilSimuleringMottakere())
-
-    fun List<SimulertPostering>.tilSimuleringMottakere() =
-            listOf(SimuleringMottaker(this, randomFnr(), MottakerType.BRUKER))
-
-    fun List<SimulertPostering>.tilDetaljertSimuleringsresultat() =
-            DetaljertSimuleringResultat(this.tilSimuleringMottakere())
-
-    fun randomFnr(): String = "12345678901"
 
 }

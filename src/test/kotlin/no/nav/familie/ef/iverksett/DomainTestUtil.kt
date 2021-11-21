@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
+import no.nav.familie.ef.iverksett.økonomi.simulering.grupperPosteringerEtterDato
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
@@ -125,3 +126,18 @@ fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, period
                           perioder = listOf(periode)
                   )
         )
+
+fun Int.januar(år: Int) = LocalDate.of(år, 1, this)
+fun Int.august(år: Int) = LocalDate.of(år, 8, this)
+fun januar(år: Int) = YearMonth.of(år, 1)
+fun februar(år: Int) = YearMonth.of(år, 2)
+fun juli(år: Int) = YearMonth.of(år, 7)
+
+fun List<SimulertPostering>.tilSimuleringsperioder() =
+        grupperPosteringerEtterDato(this.tilSimuleringMottakere())
+
+fun List<SimulertPostering>.tilSimuleringMottakere() =
+        listOf(SimuleringMottaker(this, "12345678901", MottakerType.BRUKER))
+
+fun List<SimulertPostering>.tilDetaljertSimuleringsresultat() =
+        DetaljertSimuleringResultat(this.tilSimuleringMottakere())

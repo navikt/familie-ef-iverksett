@@ -6,7 +6,12 @@ import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
 import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.januar
+import no.nav.familie.ef.iverksett.juli
+import no.nav.familie.ef.iverksett.posteringer
 import no.nav.familie.ef.iverksett.simuleringDto
+import no.nav.familie.ef.iverksett.simuleringsoppsummering
+import no.nav.familie.ef.iverksett.tilDetaljertSimuleringsresultat
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
@@ -16,6 +21,7 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.Utbetalingsoppdra
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
+import no.nav.familie.kontrakter.felles.simulering.PosteringType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -24,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.exchange
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
 
@@ -129,6 +136,39 @@ class SimuleringControllerTest : ServerTest() {
 
         assertThat(respons.body?.data).isEqualTo(lagSimuleringsresultatMedTomListe())
         verify(exactly = 0) { oppdragClient.hentSimulering(any()) }
+    }
+
+    @Test
+    internal fun `skal fikse feilaktig etterbetaling fra første v2-implementasjon`() {
+        val posteringer =
+                posteringer(januar(2020), posteringstype = PosteringType.YTELSE, antallMåneder = 6, beløp = 5_000) +
+                posteringer(juli(2020), posteringstype = PosteringType.FEILUTBETALING, antallMåneder = 6, beløp = 2_000) +
+                posteringer(juli(2020), posteringstype = PosteringType.YTELSE, antallMåneder = 6, beløp = -5000) +
+                posteringer(juli(2020), posteringstype = PosteringType.YTELSE, antallMåneder = 7, beløp = 3000) +
+                posteringer(juli(2020), posteringstype = PosteringType.YTELSE, antallMåneder = 6, beløp = 2000)
+
+        val detaljertSimuleringResultat = posteringer.tilDetaljertSimuleringsresultat()
+        val simuleringsoppsummering = lagSimuleringsoppsummering(detaljertSimuleringResultat, 1.januar(2021))
+
+        val simuleringsoppsummeringUtenEtterbetaling = simuleringsoppsummering.copy(
+                etterbetaling = BigDecimal.ZERO,
+                perioder = simuleringsoppsummering.perioder.map { it.copy(etterbetaling = null) }
+        )
+
+        val beriketSimuleringsresultatRequest = BeriketSimuleringsresultat(
+                detaljertSimuleringResultat,
+                simuleringsoppsummeringUtenEtterbetaling
+        )
+
+        val respons = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
+                localhostUrl("/api/simulering/v2/korrigering"),
+                HttpMethod.POST,
+                HttpEntity(beriketSimuleringsresultatRequest, headers))
+
+        val beriketSimuleringsresultatRespons = respons.body?.data
+
+        assertThat(beriketSimuleringsresultatRespons?.oppsummering?.etterbetaling?.toInt()).isEqualTo(5_000 * 6)
+        assertThat(beriketSimuleringsresultatRespons?.oppsummering?.perioder?.all { it.etterbetaling!=null }).isTrue()
     }
 
     private fun lagFørstegangsbehandlingUtenBeløp(behandlingId: UUID) {
