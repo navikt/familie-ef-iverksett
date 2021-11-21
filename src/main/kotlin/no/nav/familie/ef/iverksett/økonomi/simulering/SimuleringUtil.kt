@@ -62,9 +62,9 @@ private fun hentNyttBeløp(posteringer: List<SimulertPostering>): BigDecimal {
             .filter { it.posteringType == YTELSE && it.beløp > ZERO }
             .sumOf { it.beløp }
 
-    val feilutbetaling =  hentFeilutbetaling(posteringer)
+    val positivFeilutbetaling =  maxOf(hentFeilutbetaling(posteringer), ZERO)
 
-    return if (feilutbetaling > ZERO) sumPositiveYtelser - feilutbetaling else sumPositiveYtelser
+    return sumPositiveYtelser - positivFeilutbetaling
 }
 
 private fun hentFeilutbetaling(posteringer: List<SimulertPostering>) =
@@ -77,8 +77,8 @@ private fun hentTidligereUtbetalt(posteringer: List<SimulertPostering>): BigDeci
             .filter { it.posteringType === YTELSE && it.beløp < ZERO }
             .sumOf { it.beløp }
 
-    val feilutbetaling = hentFeilutbetaling(posteringer)
-    return if (feilutbetaling < ZERO) -(sumNegativeYtelser - feilutbetaling) else -sumNegativeYtelser
+    val negativFeilutbetaling = minOf(hentFeilutbetaling(posteringer), ZERO)
+    return -(sumNegativeYtelser - negativFeilutbetaling)
 }
 
 private fun hentResultat(posteringer: List<SimulertPostering>): BigDecimal {
@@ -107,7 +107,7 @@ private fun hentEtterbetaling(posteringer: List<SimulertPostering>): BigDecimal 
 
 private fun hentTotalEtterbetaling(simuleringsperioder: List<Simuleringsperiode>, fomDatoNestePeriode: LocalDate?) =
         simuleringsperioder
-                .filter { (fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode) }
+                .filter { fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode }
                 .sumOf { it.etterbetaling ?: ZERO }
                 .let { maxOf(it, ZERO) }
 
