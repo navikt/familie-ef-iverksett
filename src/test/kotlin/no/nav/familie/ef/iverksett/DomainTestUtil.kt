@@ -20,6 +20,7 @@ import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.temporal.TemporalAdjusters
 import java.util.UUID
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
@@ -88,7 +89,8 @@ fun simuleringsoppsummering(
                         nyttBeløp = BigDecimal.valueOf(15000),
                         tidligereUtbetalt = BigDecimal.ZERO,
                         resultat = BigDecimal.valueOf(15000),
-                        feilutbetaling = feilutbetaling
+                        feilutbetaling = feilutbetaling,
+                        etterbetaling = BigDecimal.valueOf(15000)
                 )),
                 etterbetaling = BigDecimal.valueOf(15000),
                 feilutbetaling = feilutbetaling,
@@ -100,19 +102,19 @@ fun simuleringsoppsummering(
                 tomSisteUtbetaling = tom
         )
 
-fun posteringer(fraDato: LocalDate,
+fun posteringer(fraDato: YearMonth,
                 antallMåneder: Int = 1,
-                beløp: BigDecimal = BigDecimal(5000),
+                beløp: Int = 5000,
                 posteringstype: PosteringType = PosteringType.YTELSE
 
 ): List<SimulertPostering> = MutableList(antallMåneder) { index ->
     SimulertPostering(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
-                      fom = fraDato.plusMonths(index.toLong()),
-                      tom = fraDato.plusMonths(index.toLong()).with(TemporalAdjusters.lastDayOfMonth()),
+                      fom = fraDato.plusMonths(index.toLong()).atDay(1),
+                      tom = fraDato.plusMonths(index.toLong()).atEndOfMonth(),
                       betalingType = BetalingType.DEBIT,
-                      beløp = beløp,
+                      beløp = beløp.toBigDecimal(),
                       posteringType = posteringstype,
-                      forfallsdato = fraDato.plusMonths(index.toLong()).with(TemporalAdjusters.lastDayOfMonth()),
+                      forfallsdato = fraDato.plusMonths(index.toLong()).atEndOfMonth(),
                       utenInntrekk = false)
 }
 
