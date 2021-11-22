@@ -26,7 +26,7 @@
         <logback.spring.starter>2.11.0</logback.spring.starter>
         <prosessering.version>1.20211008151232_caa2dc4</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
-        <start-class>no.nav.familie.ef.iverksett.WebApplicationKt</start-class>
+        <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <familie.kontrakter.version>2.0_20211117104454_ff89d3c</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20211103122110_0f4a54b</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20210702102219_a4737a7</familie.eksterne-kontrakter.saksstatistikk-ef>
@@ -270,10 +270,6 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <configuration>
-                    <jvmTarget>17</jvmTarget>
-                    <sourceDirs>
-                        <source>${project.basedir}/src/main/kotlin</source>
-                    </sourceDirs>
                     <args>
                         <arg>-Xjsr305=strict</arg>
                     </args>
@@ -281,30 +277,6 @@
                         <plugin>spring</plugin>
                     </compilerPlugins>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
-                            </sourceDirs>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
-                            </sourceDirs>
-                        </configuration>
-                    </execution>
-                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>
