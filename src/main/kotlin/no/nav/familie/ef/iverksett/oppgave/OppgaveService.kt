@@ -1,70 +1,63 @@
 package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
+import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.kontrakter.felles.Behandlingstema
-import no.nav.familie.kontrakter.felles.Tema
-import no.nav.familie.kontrakter.felles.oppgave.IdentGruppe
-import no.nav.familie.kontrakter.felles.oppgave.OppgaveIdentV2
-import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
-import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
-import no.nav.familie.util.VirkedagerProvider
+import no.nav.familie.kontrakter.ef.felles.BehandlingType
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import org.springframework.stereotype.Service
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Service
 class OppgaveService(private val oppgaveClient: OppgaveClient,
-                     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient) {
+                     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+                     private val iverksettingRepository: IverksettingRepository) {
+
+    fun skalOppretteVurderHendelsOppgave(iverksett: Iverksett): Boolean {
+        return when (iverksett.behandling.behandlingType) {
+            BehandlingType.FØRSTEGANGSBEHANDLING -> true
+            BehandlingType.TEKNISK_OPPHØR -> true
+            BehandlingType.REVURDERING -> {
+                if (iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT) {
+                    aktivitetEndretPeriodeUendret(iverksett)
+                }
+                true
+            }
+            else -> false
+        }
+    }
 
     fun opprettVurderHendelseOppgave(iverksett: Iverksett) {
-
         val enhetsnummer = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
-
-        val opprettOppgaveRequest =
-                OpprettOppgaveRequest(
-                        ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
-                        saksId = iverksett.fagsak.eksternId.toString(),
-                        tema = Tema.ENF,
-                        oppgavetype = Oppgavetype.VurderHenvendelse,
-                        fristFerdigstillelse = fristFerdigstillelse(),
-                        beskrivelse = oppgaveBeskrivelse(iverksett),
-                        enhetsnummer = enhetsnummer?.enhetId,
-                        behandlingstema = Behandlingstema
-                                .fromValue(iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
-                                                   .replaceFirstChar { it.uppercase() }).value,
-                        tilordnetRessurs = null,
-                        behandlesAvApplikasjon = "familie-ef-sak"
-                )
+        val beskrivelse = when (iverksett.behandling.behandlingType) {
+            BehandlingType.FØRSTEGANGSBEHANDLING -> {
+                OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandling(iverksett)
+            }
+            BehandlingType.REVURDERING -> {
+                OppfølgingsoppgaveBeskrivelse.beskrivelseRevurdering(iverksett)
+            }
+            else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
+        }
+        val opprettOppgaveRequest = OppgaveUtil.opprettOppgaveRequest(iverksett, enhetsnummer, beskrivelse)
         oppgaveClient.opprettOppgave(opprettOppgaveRequest)
     }
 
-    private fun oppgaveBeskrivelse(iverksett: Iverksett): String {
-        val gjeldendeVedtak = iverksett.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed }!!
-        return "${iverksett.fagsak.stønadstype.name.enumToReadable()} er innvilget fra " +
-               "${gjeldendeVedtak.fraOgMed.toReadable()} - ${gjeldendeVedtak.tilOgMed.toReadable()}. " +
-               "Aktivitetsplikt: ${gjeldendeVedtak.aktivitet.name.enumToReadable()}" +
-               ". Periodetype: ${gjeldendeVedtak.periodeType.name.enumToReadable()}. Saken ligger i ny løsning."
+    private fun hentForrigeBehandling(iverksett: Iverksett): Iverksett {
+        return iverksett.behandling.forrigeBehandlingId?.let {
+            iverksettingRepository.hent(it)
+        } ?: error("Mangler forrigeBehandlingId på revurdering for behandling=${iverksett.behandling.behandlingId}")
     }
 
-    private fun String.enumToReadable(): String {
-        return this.replace("_", " ").lowercase(Locale.getDefault()).replaceFirstChar { it.uppercase() }
+    private fun aktivitetEndretPeriodeUendret(iverksett: Iverksett): Boolean {
+        return aktivitetEndret(iverksett) && !perioderEndret(iverksett)
     }
 
-    private fun LocalDate.toReadable(): String {
-        return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+    private fun aktivitetEndret(iverksett: Iverksett): Boolean {
+        val forrigeBehandling = hentForrigeBehandling(iverksett)
+        return iverksett.gjeldendeVedtak().aktivitet.equals(forrigeBehandling)
     }
 
-    private fun fristFerdigstillelse(daysToAdd: Long = 0): LocalDate {
-        var dateTime = LocalDateTime.now().plusDays(daysToAdd)
-
-        if (dateTime.hour >= 14) {
-            dateTime = dateTime.plusDays(1)
-        }
-
-        return VirkedagerProvider.nesteVirkedag(dateTime.toLocalDate())
+    private fun perioderEndret(iverksett: Iverksett): Boolean {
+        val forrigeBehandling = hentForrigeBehandling(iverksett)
+        return iverksett.vedtaksPeriode().equals(forrigeBehandling.vedtaksPeriode())
     }
-
 }

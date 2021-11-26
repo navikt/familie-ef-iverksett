@@ -32,7 +32,9 @@ class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
         }
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        if (oppgaveService.skalOppretteVurderHendelsOppgave(iverksett)) {
+            oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        }
     }
 
     override fun onCompletion(task: Task) {
