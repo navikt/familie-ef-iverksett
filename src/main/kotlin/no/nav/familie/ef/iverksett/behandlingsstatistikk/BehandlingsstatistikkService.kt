@@ -32,7 +32,8 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
         return BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
                              sakId = behandlingstatistikk.eksternFagsakId,
                              personIdent = behandlingstatistikk.personIdent,
-                             registrertTid = behandlingstatistikk.hendelseTidspunkt,
+                             registrertTid = behandlingstatistikk.behandlingOpprettetTidspunkt
+                                             ?: behandlingstatistikk.hendelseTidspunkt,
                              endretTid = behandlingstatistikk.hendelseTidspunkt,
                              tekniskTid = tekniskTid,
                              behandlingStatus = behandlingstatistikk.hendelse.name,
