@@ -3,42 +3,69 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
+import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget
+import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget
+import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
-class OppgaveService(private val oppgaveClient: OppgaveClient,
-                     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-                     private val iverksettingRepository: IverksettingRepository) {
+class OppgaveService(
+    private val oppgaveClient: OppgaveClient,
+    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+    private val iverksettingRepository: IverksettingRepository
+) {
 
-    fun skalOppretteVurderHendelsOppgave(iverksett: Iverksett): Boolean {
+    fun skalOppretteVurderHendelseOppgave(iverksett: Iverksett): Boolean {
         return when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> true
-            BehandlingType.TEKNISK_OPPHØR -> true
             BehandlingType.REVURDERING -> {
-                if (iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT) {
-                    aktivitetEndretPeriodeUendret(iverksett)
+                when (iverksett.vedtak.vedtaksresultat) {
+                    Vedtaksresultat.INNVILGET -> aktivitetEndretPeriodeUendret(iverksett)
+                    Vedtaksresultat.OPPHØRT -> true
+                    else -> false
                 }
-                true
             }
             else -> false
         }
     }
 
-    fun opprettVurderHendelseOppgave(iverksett: Iverksett) {
-        val enhetsnummer = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
+    fun opprettVurderHendelseOppgave(iverksett: Iverksett): Long {
+        val enhetsnummer = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
+            ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = when (iverksett.behandling.behandlingType) {
-            BehandlingType.FØRSTEGANGSBEHANDLING -> {
-                OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandling(iverksett)
-            }
-            BehandlingType.REVURDERING -> {
-                OppfølgingsoppgaveBeskrivelse.beskrivelseRevurdering(iverksett)
-            }
+            BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
+            BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
         val opprettOppgaveRequest = OppgaveUtil.opprettOppgaveRequest(iverksett, enhetsnummer, beskrivelse)
-        oppgaveClient.opprettOppgave(opprettOppgaveRequest)
+        return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
+            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+    }
+
+    private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: Iverksett): String {
+        return when (iverksett.vedtak.vedtaksresultat) {
+            Vedtaksresultat.INNVILGET -> beskrivelseFørstegangsbehandlingInnvilget(
+                iverksett.totalVedtaksperiode(),
+                iverksett.gjeldendeVedtak()
+            )
+            Vedtaksresultat.AVSLÅTT -> beskrivelseFørstegangsbehandlingAvslått(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
+            else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
+        }
+    }
+
+    private fun finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett: Iverksett): String {
+        return when (iverksett.vedtak.vedtaksresultat) {
+            Vedtaksresultat.INNVILGET -> beskrivelseRevurderingInnvilget(
+                iverksett.totalVedtaksperiode(),
+                iverksett.gjeldendeVedtak()
+            )
+            Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(iverksett.vedtak.vedtakstidspunkt)
+            else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
+        }
     }
 
     private fun hentForrigeBehandling(iverksett: Iverksett): Iverksett {
@@ -48,16 +75,22 @@ class OppgaveService(private val oppgaveClient: OppgaveClient,
     }
 
     private fun aktivitetEndretPeriodeUendret(iverksett: Iverksett): Boolean {
-        return aktivitetEndret(iverksett) && !perioderEndret(iverksett)
+        return aktivitetEndretFraForrige(iverksett) && !perioderEndretFraForrige(iverksett)
     }
 
-    private fun aktivitetEndret(iverksett: Iverksett): Boolean {
+    private fun aktivitetEndretFraForrige(iverksett: Iverksett): Boolean {
         val forrigeBehandling = hentForrigeBehandling(iverksett)
-        return iverksett.gjeldendeVedtak().aktivitet.equals(forrigeBehandling)
+        return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
     }
 
-    private fun perioderEndret(iverksett: Iverksett): Boolean {
+    private fun perioderEndretFraForrige(iverksett: Iverksett): Boolean {
         val forrigeBehandling = hentForrigeBehandling(iverksett)
-        return iverksett.vedtaksPeriode().equals(forrigeBehandling.vedtaksPeriode())
+        return iverksett.totalVedtaksperiode() != forrigeBehandling.totalVedtaksperiode()
     }
+
+    private fun Iverksett.gjeldendeVedtak() = this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed }?.let { it }
+        ?: error("Kunne ikke finne vedtaksperioder")
+
+    private fun Iverksett.totalVedtaksperiode(): Pair<LocalDate, LocalDate> = Pair(this.vedtak.vedtaksperioder.minOf { it.fraOgMed },
+                                                                                   this.vedtak.vedtaksperioder.maxOf { it.tilOgMed })
 }
