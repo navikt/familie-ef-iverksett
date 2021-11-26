@@ -32,8 +32,9 @@ class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
         }
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
 
-        if (oppgaveService.skalOppretteVurderHendelsOppgave(iverksett)) {
-            oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        if (oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)) {
+            val oppgaveId = oppgaveService.opprettVurderHendelseOppgave(iverksett)
+            logger.info("Opprettet oppgave for oppgaveID=${oppgaveId}")
         }
     }
 
