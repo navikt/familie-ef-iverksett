@@ -138,39 +138,6 @@ class SimuleringControllerTest : ServerTest() {
         verify(exactly = 0) { oppdragClient.hentSimulering(any()) }
     }
 
-    @Test
-    internal fun `skal fikse feilaktig etterbetaling fra første v2-implementasjon`() {
-        val posteringer =
-                posteringer(januar(2020), posteringstype = PosteringType.YTELSE, antallMåneder = 6, beløp = 5_000) +
-                posteringer(juli(2020), posteringstype = PosteringType.FEILUTBETALING, antallMåneder = 6, beløp = 2_000) +
-                posteringer(juli(2020), posteringstype = PosteringType.YTELSE, antallMåneder = 6, beløp = -5000) +
-                posteringer(juli(2020), posteringstype = PosteringType.YTELSE, antallMåneder = 7, beløp = 3000) +
-                posteringer(juli(2020), posteringstype = PosteringType.YTELSE, antallMåneder = 6, beløp = 2000)
-
-        val detaljertSimuleringResultat = posteringer.tilDetaljertSimuleringsresultat()
-        val simuleringsoppsummering = lagSimuleringsoppsummering(detaljertSimuleringResultat, 1.januar(2021))
-
-        val simuleringsoppsummeringUtenEtterbetaling = simuleringsoppsummering.copy(
-                etterbetaling = BigDecimal.ZERO,
-                perioder = simuleringsoppsummering.perioder.map { it.copy(etterbetaling = null) }
-        )
-
-        val beriketSimuleringsresultatRequest = BeriketSimuleringsresultat(
-                detaljertSimuleringResultat,
-                simuleringsoppsummeringUtenEtterbetaling
-        )
-
-        val respons = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
-                localhostUrl("/api/simulering/v2/korrigering"),
-                HttpMethod.POST,
-                HttpEntity(beriketSimuleringsresultatRequest, headers))
-
-        val beriketSimuleringsresultatRespons = respons.body?.data
-
-        assertThat(beriketSimuleringsresultatRespons?.oppsummering?.etterbetaling?.toInt()).isEqualTo(5_000 * 6)
-        assertThat(beriketSimuleringsresultatRespons?.oppsummering?.perioder?.all { it.etterbetaling!=null }).isTrue()
-    }
-
     private fun lagFørstegangsbehandlingUtenBeløp(behandlingId: UUID) {
         val andelTilkjentYtelse =
                 lagAndelTilkjentYtelse(0, fraOgMed = LocalDate.of(2021, 1, 1), tilOgMed = LocalDate.of(2021, 1, 31))

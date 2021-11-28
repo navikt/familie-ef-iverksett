@@ -1,5 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
+import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringsperiodeEtterbetaling.etterbetaling
+import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringsperiodeEtterbetaling.medEtterbetaling
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.FEILUTBETALING
@@ -11,6 +13,7 @@ import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 import java.time.LocalDate
+import java.util.WeakHashMap
 
 fun lagSimuleringsoppsummering(detaljertSimuleringResultat: DetaljertSimuleringResultat,
                                tidSimuleringHentet: LocalDate): Simuleringsoppsummering {
@@ -51,9 +54,8 @@ fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simul
                         nyttBeløp = hentNyttBeløp(posteringListe),
                         tidligereUtbetalt = hentTidligereUtbetalt(posteringListe),
                         resultat = hentResultat(posteringListe),
-                        feilutbetaling = hentFeilutbetaling(posteringListe),
-                        etterbetaling = hentEtterbetaling(posteringListe)
-                )
+                        feilutbetaling = hentFeilutbetaling(posteringListe)
+                ).medEtterbetaling(hentEtterbetaling(posteringListe))
             }
 }
 
@@ -62,7 +64,7 @@ private fun hentNyttBeløp(posteringer: List<SimulertPostering>): BigDecimal {
             .filter { it.posteringType == YTELSE && it.beløp > ZERO }
             .sumOf { it.beløp }
 
-    val positivFeilutbetaling =  maxOf(hentFeilutbetaling(posteringer), ZERO)
+    val positivFeilutbetaling = maxOf(hentFeilutbetaling(posteringer), ZERO)
 
     return sumPositiveYtelser - positivFeilutbetaling
 }
@@ -122,6 +124,20 @@ private data class PeriodeMedForfall(
         val forfallsdato: LocalDate
 )
 
+private object SimuleringsperiodeEtterbetaling {
+    // Simuleringsperiode mangler etterbetaling. Dette er et lite påbygg for å emulere at det finnes.
+    fun Simuleringsperiode.medEtterbetaling(etterbetaling: BigDecimal?): Simuleringsperiode {
+        simuleringsperiodeEtterbetalingMap[this] = etterbetaling
+        return this
+    }
+
+    val Simuleringsperiode.etterbetaling: BigDecimal?
+        get() = simuleringsperiodeEtterbetalingMap[this]
+
+    private val simuleringsperiodeEtterbetalingMap = WeakHashMap<Simuleringsperiode,BigDecimal?>()
+}
+
 fun BeriketSimuleringsresultat.harFeilutbetaling(): Boolean {
     return this.oppsummering.feilutbetaling > ZERO
 }
+

@@ -91,7 +91,7 @@ fun simuleringsoppsummering(
                         tidligereUtbetalt = BigDecimal.ZERO,
                         resultat = BigDecimal.valueOf(15000),
                         feilutbetaling = feilutbetaling,
-                        etterbetaling = BigDecimal.valueOf(15000)
+                        //etterbetaling = BigDecimal.valueOf(15000)
                 )),
                 etterbetaling = BigDecimal.valueOf(15000),
                 feilutbetaling = feilutbetaling,

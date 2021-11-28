@@ -38,18 +38,4 @@ class SimuleringController(
                 simuleringService.hentBeriketSimulering(simuleringDto.toDomain())
         return Ressurs.success(beriketSimuleringResultat)
     }
-
-    @PostMapping("v2/korrigering")
-    fun fiksSimuleringV2(@RequestBody beriketSimuleringsresultat: BeriketSimuleringsresultat): Ressurs<BeriketSimuleringsresultat> {
-
-        if (beriketSimuleringsresultat.oppsummering.tidSimuleringHentet==null) {
-            throw ApiFeil("Kan ikke korrigere når simuleringsoppsummeringen mangler tidSimuleringHentet", HttpStatus.BAD_REQUEST)
-        }
-
-        val oppsummering = lagSimuleringsoppsummering(
-                beriketSimuleringsresultat.detaljer,
-                beriketSimuleringsresultat.oppsummering.tidSimuleringHentet!!)
-        
-        return Ressurs.success(beriketSimuleringsresultat.copy(oppsummering = oppsummering))
-    }
 }
