@@ -15,8 +15,7 @@ import java.math.BigDecimal.ZERO
 import java.time.LocalDate
 import java.util.WeakHashMap
 
-fun lagSimuleringsoppsummering(detaljertSimuleringResultat: DetaljertSimuleringResultat,
-                               tidSimuleringHentet: LocalDate): Simuleringsoppsummering {
+fun lagSimuleringsoppsummering(detaljertSimuleringResultat: DetaljertSimuleringResultat, tidSimuleringHentet: LocalDate): Simuleringsoppsummering {
     val perioder = grupperPosteringerEtterDato(detaljertSimuleringResultat.simuleringMottaker)
 
     val framtidigePerioder =
@@ -80,7 +79,7 @@ private fun hentTidligereUtbetalt(posteringer: List<SimulertPostering>): BigDeci
             .sumOf { it.beløp }
 
     val negativFeilutbetaling = minOf(hentFeilutbetaling(posteringer), ZERO)
-    return -(sumNegativeYtelser - negativFeilutbetaling)
+    return negativFeilutbetaling - sumNegativeYtelser
 }
 
 private fun hentResultat(posteringer: List<SimulertPostering>): BigDecimal {
@@ -125,6 +124,7 @@ private data class PeriodeMedForfall(
 )
 
 private object SimuleringsperiodeEtterbetaling {
+
     // Simuleringsperiode mangler etterbetaling. Dette er et lite påbygg for å emulere at det finnes.
     fun Simuleringsperiode.medEtterbetaling(etterbetaling: BigDecimal?): Simuleringsperiode {
         simuleringsperiodeEtterbetalingMap[this] = etterbetaling
@@ -134,7 +134,7 @@ private object SimuleringsperiodeEtterbetaling {
     val Simuleringsperiode.etterbetaling: BigDecimal?
         get() = simuleringsperiodeEtterbetalingMap[this]
 
-    private val simuleringsperiodeEtterbetalingMap = WeakHashMap<Simuleringsperiode,BigDecimal?>()
+    private val simuleringsperiodeEtterbetalingMap = WeakHashMap<Simuleringsperiode, BigDecimal?>()
 }
 
 fun BeriketSimuleringsresultat.harFeilutbetaling(): Boolean {
