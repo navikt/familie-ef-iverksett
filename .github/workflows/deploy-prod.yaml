@@ -45,7 +45,7 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   deploy:
-    name: Deploy to GCP
+    name: Deploy to prod GCP
     needs: build
     runs-on: ubuntu-latest
     steps:

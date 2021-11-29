@@ -1,6 +1,5 @@
 name: Build-Deploy dev
-on:
-  workflow_dispatch:
+on: [pull_request]
 
 env:
   IMAGE: ghcr.io/navikt/familie-ef-iverksett:${{ github.sha }}
@@ -48,3 +47,24 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: .deploy/nais-preprod.yaml
+  smoketest:
+    name: Run smoketest
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          repository: navikt/familie-ef-e2e
+      - id: get-sha
+        run: |
+          echo ::set-output name=sha::$( curl -u "u:${{secrets.GITHUB_TOKEN}}" https://api.github.com/repos/navikt/familie-ef-e2e/git/origin/master | jq .object.sha | tr -d '"' )
+      - uses: nais/deploy/actions/deploy@v1
+        name: Run tests
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_API_KEY }}
+          IMAGE: ghcr.io/navikt/familie-ef-e2e:${{ steps.get-sha.outputs.sha }}
+          CLUSTER: dev-gcp
+          VAR: app=familie-ef-iverksett
+          RESOURCE: nais/tests.yml
+        timeout-minutes: 5
