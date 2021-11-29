@@ -50,6 +50,7 @@ spec:
         - application: familie-ef-sak
         - application: familie-ef-sak-lokal
         - application: familie-prosessering
+        - application: familie-ef-e2e
     outbound:
       rules:
         - application: familie-tilbake
