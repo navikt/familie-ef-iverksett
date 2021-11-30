@@ -23,7 +23,7 @@ object OppfølgingsoppgaveBeskrivelse {
     }
 
     fun beskrivelseRevurderingOpphørt(vedtaksTidspunkt: LocalDateTime): String {
-        return "Overgangsstønad er stanset fra ${vedtaksTidspunkt}"
+        return "Overgangsstønad er stanset fra ${vedtaksTidspunkt.toLocalDate().toReadable()}"
     }
 
     private fun String.enumToReadable(): String {
