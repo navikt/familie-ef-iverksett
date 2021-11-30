@@ -62,7 +62,7 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         name: Run tests
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_API_KEY }}
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           IMAGE: ghcr.io/navikt/familie-ef-e2e:${{ steps.get-sha.outputs.sha }}
           CLUSTER: dev-gcp
           VAR: app=familie-ef-iverksett
