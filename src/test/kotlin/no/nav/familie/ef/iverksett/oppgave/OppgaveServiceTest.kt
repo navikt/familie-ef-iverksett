@@ -151,7 +151,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    internal fun `innvilget revurdering, forvent kall til beskrivelseFørstegangsbehandlingAvslått`() {
+    internal fun `innvilget revurdering, forvent kall til beskrivelseRevurderingInnvilget`() {
         val iverksett = mockk<Iverksett>()
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
