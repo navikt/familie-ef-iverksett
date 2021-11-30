@@ -41,7 +41,7 @@ class OppgaveService(
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
-        val opprettOppgaveRequest = OppgaveUtil.opprettOppgaveRequest(iverksett, enhetsnummer, beskrivelse)
+        val opprettOppgaveRequest = OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(iverksett, enhetsnummer, beskrivelse)
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
             ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }

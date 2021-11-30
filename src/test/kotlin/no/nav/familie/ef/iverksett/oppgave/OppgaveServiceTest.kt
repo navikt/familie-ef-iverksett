@@ -115,7 +115,7 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `innvilget førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingInnvilget`() {
         val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
             iverksett,
             BehandlingType.FØRSTEGANGSBEHANDLING,
@@ -134,7 +134,7 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `avslått førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingAvslått`() {
         val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
             iverksett,
             BehandlingType.FØRSTEGANGSBEHANDLING,
@@ -153,7 +153,7 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `innvilget revurdering, forvent kall til beskrivelseFørstegangsbehandlingAvslått`() {
         val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
             iverksett,
             BehandlingType.REVURDERING,
@@ -172,7 +172,7 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `opphørt revurdering, forvent kall til beskrivelseRevurderingOpphørt`() {
         val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
             iverksett,
             BehandlingType.REVURDERING,

@@ -17,7 +17,7 @@ import java.util.Locale
 
 object OppgaveUtil {
 
-    fun opprettOppgaveRequest(iverksett: Iverksett, enhetsnummer: Enhet, beskrivelse: String): OpprettOppgaveRequest {
+    fun opprettVurderHenvendelseOppgaveRequest(iverksett: Iverksett, enhetsnummer: Enhet, beskrivelse: String): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
             ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
             saksId = iverksett.fagsak.eksternId.toString(),
