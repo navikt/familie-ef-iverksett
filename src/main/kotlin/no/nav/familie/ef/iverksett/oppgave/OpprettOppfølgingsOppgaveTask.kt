@@ -13,10 +13,10 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE,
+    taskStepType = OpprettOppfølgingsOppgaveTask.TYPE,
     beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
 )
-class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
+class OpprettOppfølgingsOppgaveTask(
     private val oppgaveService: OppgaveService,
     private val iverksettingRepository: IverksettingRepository,
     private val taskRepository: TaskRepository,
