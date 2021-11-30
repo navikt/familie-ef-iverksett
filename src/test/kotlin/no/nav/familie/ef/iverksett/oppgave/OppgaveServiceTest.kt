@@ -36,36 +36,21 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `innvilget førstegangsbehandling, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
-        setupIverksettMock(
-            iverksettMock = iverksett,
-            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-            vedtaksresultat = Vedtaksresultat.INNVILGET,
-            vedtaksperioder = listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
-        )
+        setupIverksettMock(iverksett, BehandlingType.FØRSTEGANGSBEHANDLING, Vedtaksresultat.INNVILGET, emptyList())
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering opphørt, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
-        setupIverksettMock(
-            iverksett,
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.OPPHØRT,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
-        )
+        setupIverksettMock(iverksett, BehandlingType.REVURDERING, Vedtaksresultat.OPPHØRT, emptyList())
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering avslått, forvent skalOpprette false`() {
         val iverksett = mockk<Iverksett>()
-        setupIverksettMock(
-            iverksett,
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.AVSLÅTT,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
-        )
+        setupIverksettMock(iverksett, BehandlingType.REVURDERING, Vedtaksresultat.AVSLÅTT, emptyList())
         every { iverksettRepository.hent(any()) } returns iverksett
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
     }
