@@ -91,6 +91,7 @@ class OppgaveService(
     private fun Iverksett.gjeldendeVedtak() = this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed }?.let { it }
         ?: error("Kunne ikke finne vedtaksperioder")
 
-    private fun Iverksett.totalVedtaksperiode(): Pair<LocalDate, LocalDate> = Pair(this.vedtak.vedtaksperioder.minOf { it.fraOgMed },
-                                                                                   this.vedtak.vedtaksperioder.maxOf { it.tilOgMed })
+    private fun Iverksett.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
+        Pair(this.vedtak.vedtaksperioder.minOf { it.fraOgMed },
+             this.vedtak.vedtaksperioder.maxOf { it.tilOgMed })
 }
