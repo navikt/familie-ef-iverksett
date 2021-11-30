@@ -2,6 +2,8 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
@@ -10,9 +12,12 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 internal class OppgaveServiceTest {
@@ -20,12 +25,16 @@ internal class OppgaveServiceTest {
     val iverksettRepository = mockk<IverksettingRepository>()
     val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
     val oppgaveClient = mockk<OppgaveClient>()
-    val oppfølgingsoppgaveBeskrivelse = mockk<OppfølgingsoppgaveBeskrivelse>()
-    val oppgaveUtil = mockk<OppgaveUtil>()
     val oppgaveService = OppgaveService(oppgaveClient, familieIntegrasjonerClient, iverksettRepository)
 
+    @BeforeEach
+    internal fun init() {
+        mockkObject(OppgaveUtil)
+        mockkObject(OppfølgingsoppgaveBeskrivelse)
+    }
+
     @Test
-    fun `skalopprette for innvilget førstegangsbehandling, forvent true`() {
+    internal fun `skalopprette for innvilget førstegangsbehandling, forvent true`() {
         val iverksett = mockk<Iverksett>()
         setupIverksettMock(
             iverksettMock = iverksett,
@@ -36,7 +45,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    fun `skalopprette for revurdering opphørt, forvent true`() {
+    internal fun `skalopprette for revurdering opphørt, forvent true`() {
         val iverksett = mockk<Iverksett>()
         every { iverksett.behandling.behandlingType } returns BehandlingType.REVURDERING
         every { iverksett.vedtak.vedtaksresultat } returns Vedtaksresultat.OPPHØRT
@@ -44,7 +53,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    fun `skal opprette for revurdering avslått og ingen endring, forvent false`() {
+    internal fun `skal opprette for revurdering avslått og ingen endring, forvent false`() {
         val iverksett = mockk<Iverksett>()
         setupIverksettMock(
             iverksett,
@@ -57,7 +66,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    fun `skalOpprette for revurdering INNVILGET med kun aktivitetsendring, forvent true`() {
+    internal fun `skalOpprette for revurdering INNVILGET med kun aktivitetsendring, forvent true`() {
         val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
@@ -77,7 +86,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    fun `skalOpprette for revurdering INNVILGET med aktivitetsendring og periodeendring, forvent false`() {
+    internal fun `skalOpprette for revurdering INNVILGET med aktivitetsendring og periodeendring, forvent false`() {
         val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
@@ -102,6 +111,83 @@ internal class OppgaveServiceTest {
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
     }
 
+
+    @Test
+    internal fun `innvilget førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingInnvilget`() {
+        val iverksett = mockk<Iverksett>()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any()) } returns mockk()
+        setupIverksettMock(
+            iverksett,
+            BehandlingType.FØRSTEGANGSBEHANDLING,
+            Vedtaksresultat.INNVILGET,
+            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
+        every { oppgaveClient.opprettOppgave(any()) } returns 0L
+        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) } returns ""
+
+        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
+    }
+
+    @Test
+    internal fun `avslått førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingAvslått`() {
+        val iverksett = mockk<Iverksett>()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any()) } returns mockk()
+        setupIverksettMock(
+            iverksett,
+            BehandlingType.FØRSTEGANGSBEHANDLING,
+            Vedtaksresultat.AVSLÅTT,
+            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
+        every { oppgaveClient.opprettOppgave(any()) } returns 0L
+        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) } returns ""
+
+        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
+    }
+
+    @Test
+    internal fun `innvilget revurdering, forvent kall til beskrivelseFørstegangsbehandlingAvslått`() {
+        val iverksett = mockk<Iverksett>()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any()) } returns mockk()
+        setupIverksettMock(
+            iverksett,
+            BehandlingType.REVURDERING,
+            Vedtaksresultat.INNVILGET,
+            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
+        every { oppgaveClient.opprettOppgave(any()) } returns 0L
+        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
+
+        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
+    }
+
+    @Test
+    internal fun `opphørt revurdering, forvent kall til beskrivelseRevurderingOpphørt`() {
+        val iverksett = mockk<Iverksett>()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any()) } returns mockk()
+        setupIverksettMock(
+            iverksett,
+            BehandlingType.REVURDERING,
+            Vedtaksresultat.OPPHØRT,
+            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
+        every { oppgaveClient.opprettOppgave(any()) } returns 0L
+        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) } returns ""
+
+        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
+    }
+
     private fun setupIverksettMock(
         iverksettMock: Iverksett,
         behandlingType: BehandlingType,
@@ -112,6 +198,8 @@ internal class OppgaveServiceTest {
         every { iverksettMock.behandling.behandlingType } returns behandlingType
         every { iverksettMock.vedtak.vedtaksresultat } returns vedtaksresultat
         every { iverksettMock.vedtak.vedtaksperioder } returns vedtaksperioder
+        every { iverksettMock.søker.personIdent } returns "12345678910"
+        every { iverksettMock.vedtak.vedtakstidspunkt } returns LocalDateTime.MIN
     }
 
     private fun vedtaksPeriode(
