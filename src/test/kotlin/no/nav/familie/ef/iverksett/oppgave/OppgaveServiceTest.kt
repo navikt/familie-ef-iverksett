@@ -39,6 +39,7 @@ internal class OppgaveServiceTest {
         setupIverksettMock(
             iverksettMock = iverksett,
             behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+            vedtaksresultat = Vedtaksresultat.INNVILGET,
             vedtaksperioder = listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
@@ -54,6 +55,19 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+    }
+
+    @Test
+    internal fun `revurdering avslått, forvent skalOpprette false`() {
+        val iverksett = mockk<Iverksett>()
+        setupIverksettMock(
+            iverksett,
+            BehandlingType.REVURDERING,
+            Vedtaksresultat.AVSLÅTT,
+            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+        every { iverksettRepository.hent(any()) } returns iverksett
+        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
     }
 
     @Test
@@ -182,7 +196,7 @@ internal class OppgaveServiceTest {
     private fun setupIverksettMock(
         iverksettMock: Iverksett,
         behandlingType: BehandlingType,
-        vedtaksresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
+        vedtaksresultat: Vedtaksresultat,
         vedtaksperioder: List<Vedtaksperiode>
     ) {
         every { iverksettMock.behandling.forrigeBehandlingId } returns UUID.randomUUID()
