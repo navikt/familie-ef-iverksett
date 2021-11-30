@@ -24,7 +24,7 @@ class OppgaveService(
             BehandlingType.FØRSTEGANGSBEHANDLING -> true
             BehandlingType.REVURDERING -> {
                 when (iverksett.vedtak.vedtaksresultat) {
-                    Vedtaksresultat.INNVILGET -> aktivitetEndretPeriodeUendret(iverksett)
+                    Vedtaksresultat.INNVILGET -> aktivitetEndretOgPeriodeUendret(iverksett)
                     Vedtaksresultat.OPPHØRT -> true
                     else -> false
                 }
@@ -74,7 +74,7 @@ class OppgaveService(
         } ?: error("Mangler forrigeBehandlingId på revurdering for behandling=${iverksett.behandling.behandlingId}")
     }
 
-    private fun aktivitetEndretPeriodeUendret(iverksett: Iverksett): Boolean {
+    private fun aktivitetEndretOgPeriodeUendret(iverksett: Iverksett): Boolean {
         return aktivitetEndretFraForrige(iverksett) && !perioderEndretFraForrige(iverksett)
     }
 
