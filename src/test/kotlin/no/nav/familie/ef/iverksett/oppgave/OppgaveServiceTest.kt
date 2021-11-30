@@ -34,7 +34,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    internal fun `skalopprette for innvilget førstegangsbehandling, forvent true`() {
+    internal fun `innvilget førstegangsbehandling, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
         setupIverksettMock(
             iverksettMock = iverksett,
@@ -45,7 +45,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    internal fun `skalopprette for revurdering opphørt, forvent true`() {
+    internal fun `revurdering opphørt, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
         every { iverksett.behandling.behandlingType } returns BehandlingType.REVURDERING
         every { iverksett.vedtak.vedtaksresultat } returns Vedtaksresultat.OPPHØRT
@@ -53,7 +53,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    internal fun `skal opprette for revurdering avslått og ingen endring, forvent false`() {
+    internal fun `revurdering avslått og ingen endring, forvent skalOpprette false`() {
         val iverksett = mockk<Iverksett>()
         setupIverksettMock(
             iverksett,
@@ -66,7 +66,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    internal fun `skalOpprette for revurdering INNVILGET med kun aktivitetsendring, forvent true`() {
+    internal fun `revurdering innvilget med kun aktivitetsendring, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
@@ -86,7 +86,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    internal fun `skalOpprette for revurdering INNVILGET med aktivitetsendring og periodeendring, forvent false`() {
+    internal fun `revurdering innvilget med aktivitetsendring og periodeendring, forvent skalOpprette false`() {
         val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
