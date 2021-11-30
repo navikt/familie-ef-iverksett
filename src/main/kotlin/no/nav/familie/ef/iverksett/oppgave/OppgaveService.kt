@@ -75,7 +75,7 @@ class OppgaveService(
     }
 
     private fun aktivitetEndretOgPeriodeUendret(iverksett: Iverksett): Boolean {
-        return harEndretAktivitet(iverksett) && !perioderEndretFraForrige(iverksett)
+        return harEndretAktivitet(iverksett) && !harEndretPeriode(iverksett)
     }
 
     private fun harEndretAktivitet(iverksett: Iverksett): Boolean {
@@ -83,7 +83,7 @@ class OppgaveService(
         return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
     }
 
-    private fun perioderEndretFraForrige(iverksett: Iverksett): Boolean {
+    private fun harEndretPeriode(iverksett: Iverksett): Boolean {
         val forrigeBehandling = hentForrigeBehandling(iverksett)
         return iverksett.totalVedtaksperiode() != forrigeBehandling.totalVedtaksperiode()
     }
