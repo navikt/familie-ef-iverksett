@@ -47,22 +47,13 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `revurdering opphørt, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
-        every { iverksett.behandling.behandlingType } returns BehandlingType.REVURDERING
-        every { iverksett.vedtak.vedtaksresultat } returns Vedtaksresultat.OPPHØRT
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
-    }
-
-    @Test
-    internal fun `revurdering avslått og ingen endring, forvent skalOpprette false`() {
-        val iverksett = mockk<Iverksett>()
         setupIverksettMock(
             iverksett,
             BehandlingType.REVURDERING,
-            Vedtaksresultat.AVSLÅTT,
+            Vedtaksresultat.OPPHØRT,
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
-        every { iverksettRepository.hent(any()) } returns iverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
