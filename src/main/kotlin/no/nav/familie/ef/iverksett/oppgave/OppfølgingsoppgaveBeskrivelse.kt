@@ -9,16 +9,16 @@ import java.util.Locale
 object OppfølgingsoppgaveBeskrivelse {
 
     fun beskrivelseFørstegangsbehandlingInnvilget(periode: Pair<LocalDate, LocalDate>, vedtak: Vedtaksperiode): String {
-        return "Overgangsstønad er innvilget fra ${vedtaksPeriodeToString(periode)} " +
+        return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()} " +
                 "Aktivitet: ${vedtak.aktivitet.name.enumToReadable()}"
     }
 
     fun beskrivelseFørstegangsbehandlingAvslått(vedtaksdato: LocalDate): String {
-        return "Søknad om overgangsstønad er avslått i vedtak datert $vedtaksdato"
+        return "Søknad om overgangsstønad er avslått i vedtak datert ${vedtaksdato.toReadable()}"
     }
 
     fun beskrivelseRevurderingInnvilget(vedtaksPeriode: Pair<LocalDate, LocalDate>, gjeldendeVedtak: Vedtaksperiode): String {
-        return "Overgangsstønad revurdert pga endring i aktivitet i perioden ${vedtaksPeriodeToString(vedtaksPeriode)}" +
+        return "Overgangsstønad revurdert pga endring i aktivitet i perioden ${vedtaksPeriode.vedtaksPeriodeToString()}" +
                 "Aktivitet: ${gjeldendeVedtak.aktivitet.name.enumToReadable()}"
     }
 
@@ -34,8 +34,8 @@ object OppfølgingsoppgaveBeskrivelse {
         return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
     }
 
-    private fun vedtaksPeriodeToString(vedtaksPeriode: Pair<LocalDate, LocalDate>): String {
-        return vedtaksPeriode.first.toReadable() + " - " + vedtaksPeriode.second.toReadable()
+    private fun Pair<LocalDate, LocalDate>.vedtaksPeriodeToString(): String {
+        return this.first.toReadable() + " - " + this.second.toReadable()
     }
 
 }
