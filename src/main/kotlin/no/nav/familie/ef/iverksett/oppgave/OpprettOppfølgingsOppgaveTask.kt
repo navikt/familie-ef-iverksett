@@ -13,26 +13,29 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE,
-        beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
+    taskStepType = OpprettOppfølgingsOppgaveTask.TYPE,
+    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
 )
-class OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad(
-        private val oppgaveService: OppgaveService,
-        private val iverksettingRepository: IverksettingRepository,
-        private val taskRepository: TaskRepository,
-        private val featureToggleService: FeatureToggleService
+class OpprettOppfølgingsOppgaveTask(
+    private val oppgaveService: OppgaveService,
+    private val iverksettingRepository: IverksettingRepository,
+    private val taskRepository: TaskRepository,
+    private val featureToggleService: FeatureToggleService
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
-        if (featureToggleService.isEnabled("familie.ef.iverksett.skip-opprett-oppfoelgningsoppgave")) {
-            logger.warn("Oppretter ikke oppfølgningsoppgave for ${task.payload} pga feature toggle")
+        if (!featureToggleService.isEnabled("familie.ef.iverksett.skip-opprett-oppfoelgningsoppgave")) {
+            logger.warn("Oppretter ikke oppfølgningsoppgave for ${task.payload} pga disablet feature toggle")
             return
         }
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        if (oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)) {
+            val oppgaveId = oppgaveService.opprettVurderHendelseOppgave(iverksett)
+            logger.info("Opprettet oppgave for oppgaveID=${oppgaveId}")
+        }
     }
 
     override fun onCompletion(task: Task) {

@@ -5,7 +5,7 @@ import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
-import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad
+import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveTask
 import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.vedtak.PubliserVedtakTilKafkaTask
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
@@ -28,12 +28,12 @@ fun hovedflyt() = listOf(
 )
 
 fun publiseringsflyt() = listOf(
-        TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
-        TaskType(SendPerioderTilInfotrygdTask.TYPE),
-        TaskType(SendFattetVedtakTilArenaTask.TYPE),
-        TaskType(PubliserVedtakTilKafkaTask.TYPE),
-        TaskType(OpprettOppfølgingOppgaveForInnvilgetOvergangsstønad.TYPE),
-        TaskType(VedtakstatistikkTask.TYPE)
+    TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
+    TaskType(SendPerioderTilInfotrygdTask.TYPE),
+    TaskType(SendFattetVedtakTilArenaTask.TYPE),
+    TaskType(PubliserVedtakTilKafkaTask.TYPE),
+    TaskType(OpprettOppfølgingsOppgaveTask.TYPE),
+    TaskType(VedtakstatistikkTask.TYPE)
 )
 
 fun TaskType.nesteHovedflytTask() = hovedflyt().zipWithNext().first { this.type == it.first.type }.second
