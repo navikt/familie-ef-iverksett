@@ -26,15 +26,14 @@ class OpprettOppfølgingsOppgaveTask(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
-        if (!featureToggleService.isEnabled("familie.ef.iverksett.skip-opprett-oppfoelgningsoppgave")) {
+        if (featureToggleService.isEnabled("familie.ef.iverksett.opprett-oppfoelgingsoppgave")) {
+            val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
+            if (oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)) {
+                val oppgaveId = oppgaveService.opprettVurderHendelseOppgave(iverksett)
+                logger.info("Opprettet oppgave for oppgaveID=${oppgaveId}")
+            }
+        } else {
             logger.warn("Oppretter ikke oppfølgningsoppgave for ${task.payload} pga disablet feature toggle")
-            return
-        }
-        val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
-
-        if (oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)) {
-            val oppgaveId = oppgaveService.opprettVurderHendelseOppgave(iverksett)
-            logger.info("Opprettet oppgave for oppgaveID=${oppgaveId}")
         }
     }
 
