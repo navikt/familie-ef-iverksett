@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProducerService, val featureToggleService: FeatureToggleService) {
+class VedtakstatistikkKafkaProducer(
+    private val kafkaProducerService: KafkaProducerService,
+    val featureToggleService: FeatureToggleService
+) {
 
     @Value("\${ENSLIG_FORSORGER_VEDTAK_TOPIC}")
     lateinit var topic: String
@@ -21,18 +24,19 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
     fun sendVedtak(vedtakStatistikk: BehandlingDVH) {
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
-        if (!featureToggleService.isEnabled("familie.ef.iverksett.send-vedtaksstatistikk")) {
+        if (featureToggleService.isEnabled("familie.ef.iverksett.send-vedtaksstatistikk")) {
+            runCatching {
+                kafkaProducerService.send(topic, vedtakStatistikk.behandlingId, vedtakStatistikk.toJson())
+                logger.info("Vedtakstatistikk sent to Kafka")
+                secureLogger.info("$vedtakStatistikk sent to Kafka.")
+            }.onFailure {
+                val errorMessage = "Could not send vedtak to Kafka. Check secure logs for more information."
+                logger.error(errorMessage)
+                secureLogger.error("Could not send vedtak to Kafka", it)
+                throw RuntimeException(errorMessage)
+            }
+        } else {
             throw TaskExceptionUtenStackTrace("featureToggle=familie.ef.iverksett.send-vedtaksstatistikk er disabled")
-        }
-        runCatching {
-            kafkaProducerService.send(topic, vedtakStatistikk.behandlingId, vedtakStatistikk.toJson())
-            logger.info("Vedtakstatistikk sent to Kafka")
-            secureLogger.info("$vedtakStatistikk sent to Kafka.")
-        }.onFailure {
-            val errorMessage = "Could not send vedtak to Kafka. Check secure logs for more information."
-            logger.error(errorMessage)
-            secureLogger.error("Could not send vedtak to Kafka", it)
-            throw RuntimeException(errorMessage)
         }
     }
 }

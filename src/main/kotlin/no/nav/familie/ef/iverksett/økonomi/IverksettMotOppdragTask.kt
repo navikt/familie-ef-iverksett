@@ -16,13 +16,14 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = IverksettMotOppdragTask.TYPE,
-        beskrivelse = "Utfører iverksetting av utbetalning mot økonomi."
+    taskStepType = IverksettMotOppdragTask.TYPE,
+    beskrivelse = "Utfører iverksetting av utbetalning mot økonomi."
 )
-class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRepository,
-                              private val oppdragClient: OppdragClient,
-                              private val taskRepository: TaskRepository,
-                              private val tilstandRepository: TilstandRepository
+class IverksettMotOppdragTask(
+    private val iverksettingRepository: IverksettingRepository,
+    private val oppdragClient: OppdragClient,
+    private val taskRepository: TaskRepository,
+    private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -34,17 +35,21 @@ class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRe
             tilstandRepository.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=${it}")
         }
         val nyTilkjentYtelseMedMetaData =
-                iverksett.vedtak.tilkjentYtelse?.toMedMetadata(saksbehandlerId = iverksett.vedtak.saksbehandlerId,
-                                                               eksternBehandlingId = iverksett.behandling.eksternId,
-                                                               stønadType = iverksett.fagsak.stønadstype,
-                                                               eksternFagsakId = iverksett.fagsak.eksternId,
-                                                               personIdent = iverksett.søker.personIdent,
-                                                               behandlingId = iverksett.behandling.behandlingId,
-                                                               vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate())
+            iverksett.vedtak.tilkjentYtelse?.toMedMetadata(
+                saksbehandlerId = iverksett.vedtak.saksbehandlerId,
+                eksternBehandlingId = iverksett.behandling.eksternId,
+                stønadType = iverksett.fagsak.stønadstype,
+                eksternFagsakId = iverksett.fagsak.eksternId,
+                personIdent = iverksett.søker.personIdent,
+                behandlingId = iverksett.behandling.behandlingId,
+                vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate()
+            )
                 ?: error("Mangler tilkjent ytelse på vedtaket")
 
-        val utbetaling = lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelseMedMetaData,
-                                                                forrigeTilkjentYtelse)
+        val utbetaling = lagTilkjentYtelseMedUtbetalingsoppdrag(
+            nyTilkjentYtelseMedMetaData,
+            forrigeTilkjentYtelse
+        )
 
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let {
@@ -54,7 +59,7 @@ class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRe
                 log.warn("Iverksetter ikke noe mot oppdrag. Ingen utbetalingsperioder. behandlingId=$behandlingId")
             }
         }
-        ?: error("Utbetalingsoppdrag mangler for iverksetting")
+            ?: error("Utbetalingsoppdrag mangler for iverksetting")
     }
 
     override fun onCompletion(task: Task) {
