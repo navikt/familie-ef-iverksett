@@ -18,7 +18,7 @@ internal class BehandlingsstatistikkServiceTest {
     private val behandlingstatistikkProducer = mockk<BehandlingsstatistikkProducer>(relaxed = true)
     private val featureToggleService = mockk<FeatureToggleService>()
     private val behandlingstatistikkService =
-            BehandlingsstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository, featureToggleService)
+            BehandlingsstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository)
     private val captureSlot = slot<Behandlingsstatistikk>()
 
     @BeforeEach
