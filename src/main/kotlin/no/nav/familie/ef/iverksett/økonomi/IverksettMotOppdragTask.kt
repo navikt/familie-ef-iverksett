@@ -19,11 +19,10 @@ import java.util.UUID
         taskStepType = IverksettMotOppdragTask.TYPE,
         beskrivelse = "Utfører iverksetting av utbetalning mot økonomi."
 )
-class IverksettMotOppdragTask(
-        private val iverksettingRepository: IverksettingRepository,
-        private val oppdragClient: OppdragClient,
-        private val taskRepository: TaskRepository,
-        private val tilstandRepository: TilstandRepository
+class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRepository,
+                              private val oppdragClient: OppdragClient,
+                              private val taskRepository: TaskRepository,
+                              private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)

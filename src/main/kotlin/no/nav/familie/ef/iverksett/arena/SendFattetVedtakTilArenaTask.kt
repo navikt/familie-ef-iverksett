@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.arena
 
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
@@ -17,12 +16,10 @@ import java.util.UUID
         taskStepType = SendFattetVedtakTilArenaTask.TYPE,
         beskrivelse = "Sender hendelse om fattet vedtak til arena"
 )
-class SendFattetVedtakTilArenaTask(
-        private val vedtakhendelseProducer: VedtakhendelseProducer,
-        private val integrasjonerClient: FamilieIntegrasjonerClient,
-        private val iverksettingRepository: IverksettingRepository,
-        private val featureToggleService: FeatureToggleService,
-        private val taskRepository: TaskRepository
+class SendFattetVedtakTilArenaTask(private val vedtakhendelseProducer: VedtakhendelseProducer,
+                                   private val integrasjonerClient: FamilieIntegrasjonerClient,
+                                   private val iverksettingRepository: IverksettingRepository,
+                                   private val taskRepository: TaskRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {

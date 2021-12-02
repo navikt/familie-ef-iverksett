@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
@@ -10,10 +9,8 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
-class BehandlingsstatistikkService(
-        private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer,
-        private val behandlingsstatistikkRepository: BehandlingsstatistikkRepository,
-        private val featureToggleService: FeatureToggleService
+class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer,
+                                   private val behandlingsstatistikkRepository: BehandlingsstatistikkRepository
 ) {
 
     @Transactional
