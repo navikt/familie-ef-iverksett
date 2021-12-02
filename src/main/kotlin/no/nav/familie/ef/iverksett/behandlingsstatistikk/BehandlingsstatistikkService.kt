@@ -36,23 +36,19 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                              endretTid = behandlingstatistikk.hendelseTidspunkt,
                              tekniskTid = tekniskTid,
                              behandlingStatus = behandlingstatistikk.hendelse.name,
-                             opprettetAv = sjekkStrengtFortrolig(
-                                     behandlingstatistikk.strengtFortroligAdresse,
-                                     behandlingstatistikk.gjeldendeSaksbehandlerId
+                             opprettetAv = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                 behandlingstatistikk.gjeldendeSaksbehandlerId
                              ),
                              saksnummer = behandlingstatistikk.eksternFagsakId,
                              mottattTid = behandlingstatistikk.henvendelseTidspunkt,
-                             saksbehandler = sjekkStrengtFortrolig(
-                                     behandlingstatistikk.strengtFortroligAdresse,
-                                     behandlingstatistikk.gjeldendeSaksbehandlerId
+                             saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId
                              ),
-                             opprettetEnhet = sjekkStrengtFortrolig(
-                                     behandlingstatistikk.strengtFortroligAdresse,
-                                     behandlingstatistikk.opprettetEnhet
+                             opprettetEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                    behandlingstatistikk.opprettetEnhet
                              ),
-                             ansvarligEnhet = sjekkStrengtFortrolig(
-                                     behandlingstatistikk.strengtFortroligAdresse,
-                                     behandlingstatistikk.ansvarligEnhet
+                             ansvarligEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                    behandlingstatistikk.ansvarligEnhet
                              ),
                              behandlingMetode = "MANUELL",
                              avsender = "NAV enslig forelder",
@@ -61,9 +57,8 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                              behandlingResultat = behandlingstatistikk.behandlingResultat,
                              resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
                              ansvarligBeslutter = if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse)
-                                 sjekkStrengtFortrolig(
-                                         behandlingstatistikk.strengtFortroligAdresse,
-                                         behandlingstatistikk.gjeldendeSaksbehandlerId
+                                 sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                       behandlingstatistikk.gjeldendeSaksbehandlerId
                                  ) else null,
                              vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse)
                                  behandlingstatistikk.hendelseTidspunkt else null,
