@@ -17,10 +17,9 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
     fun lagreBehandlingstatistikk(behandlingsstatistikkDto: BehandlingsstatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingsstatistikkDto)
         behandlingsstatistikkRepository.insert(
-                Behandlingsstatistikk(
-                        behandlingId = behandlingsstatistikkDto.behandlingId,
-                        behandlingDvh = behandlingDVH,
-                        hendelse = behandlingsstatistikkDto.hendelse
+                Behandlingsstatistikk(behandlingId = behandlingsstatistikkDto.behandlingId,
+                                      behandlingDvh = behandlingDVH,
+                                      hendelse = behandlingsstatistikkDto.hendelse
                 )
         )
         behandlingsstatistikkProducer.sendBehandling(behandlingDVH)
@@ -77,10 +76,8 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
 
     }
 
-    private fun sjekkStrengtFortrolig(
-            erStrengtFortrolig: Boolean,
-            verdi: String
-    ): String {
+    private fun sjekkStrengtFortrolig(erStrengtFortrolig: Boolean,
+                                      verdi: String): String {
         if (erStrengtFortrolig) {
             return "-5"
         }
