@@ -6,5 +6,10 @@ interface FeatureToggleService {
         return isEnabled(toggleId, false)
     }
 
+    fun isDisabled(toggleId: String): Boolean {
+        return !isEnabled(toggleId, false)
+    }
+
     fun isEnabled(toggleId: String, defaultValue: Boolean): Boolean
+    fun isDisabled(toggleId: String, defaultValue: Boolean): Boolean
 }
