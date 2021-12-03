@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.arena
 
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
@@ -20,13 +19,10 @@ import java.util.UUID
 class SendFattetVedtakTilArenaTask(private val vedtakhendelseProducer: VedtakhendelseProducer,
                                    private val integrasjonerClient: FamilieIntegrasjonerClient,
                                    private val iverksettingRepository: IverksettingRepository,
-                                   private val featureToggleService: FeatureToggleService,
-                                   private val taskRepository: TaskRepository) : AsyncTaskStep {
+                                   private val taskRepository: TaskRepository
+) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
-        if (!featureToggleService.isEnabled("familie.ef.iverksett.send-til-arena")) {
-            throw IllegalStateException("Sender ikke til arena ettersom feature toggle er skrudd av. Feiler inntil videre")
-        }
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
         val aktørId = integrasjonerClient.hentAktørId(iverksett.søker.personIdent)

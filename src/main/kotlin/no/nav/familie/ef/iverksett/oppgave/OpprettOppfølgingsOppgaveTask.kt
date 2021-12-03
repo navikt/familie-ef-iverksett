@@ -13,14 +13,13 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = OpprettOppfølgingsOppgaveTask.TYPE,
-    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
+        taskStepType = OpprettOppfølgingsOppgaveTask.TYPE,
+        beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
 )
-class OpprettOppfølgingsOppgaveTask(
-    private val oppgaveService: OppgaveService,
-    private val iverksettingRepository: IverksettingRepository,
-    private val taskRepository: TaskRepository,
-    private val featureToggleService: FeatureToggleService
+class OpprettOppfølgingsOppgaveTask(private val oppgaveService: OppgaveService,
+                                    private val iverksettingRepository: IverksettingRepository,
+                                    private val taskRepository: TaskRepository,
+                                    private val featureToggleService: FeatureToggleService
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)

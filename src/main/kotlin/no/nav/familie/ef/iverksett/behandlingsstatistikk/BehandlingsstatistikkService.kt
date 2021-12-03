@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
@@ -11,18 +10,18 @@ import java.time.ZonedDateTime
 
 @Service
 class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer,
-                                   private val behandlingsstatistikkRepository: BehandlingsstatistikkRepository,
-                                   private val featureToggleService: FeatureToggleService) {
+                                   private val behandlingsstatistikkRepository: BehandlingsstatistikkRepository
+) {
 
     @Transactional
     fun lagreBehandlingstatistikk(behandlingsstatistikkDto: BehandlingsstatistikkDto) {
-        if (!featureToggleService.isEnabled("familie.ef.iverksett.send-behandlingsstatistikk")) {
-            throw IllegalStateException("Sender ikke behandlingsstatistikk pga avskrudd feature toggle")
-        }
         val behandlingDVH = mapTilBehandlingDVH(behandlingsstatistikkDto)
-        behandlingsstatistikkRepository.insert(Behandlingsstatistikk(behandlingId = behandlingsstatistikkDto.behandlingId,
-                                                                     behandlingDvh = behandlingDVH,
-                                                                     hendelse = behandlingsstatistikkDto.hendelse))
+        behandlingsstatistikkRepository.insert(
+                Behandlingsstatistikk(behandlingId = behandlingsstatistikkDto.behandlingId,
+                                      behandlingDvh = behandlingDVH,
+                                      hendelse = behandlingsstatistikkDto.hendelse
+                )
+        )
         behandlingsstatistikkProducer.sendBehandling(behandlingDVH)
     }
 
@@ -38,15 +37,19 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                              tekniskTid = tekniskTid,
                              behandlingStatus = behandlingstatistikk.hendelse.name,
                              opprettetAv = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                 behandlingstatistikk.gjeldendeSaksbehandlerId),
+                                                                 behandlingstatistikk.gjeldendeSaksbehandlerId
+                             ),
                              saksnummer = behandlingstatistikk.eksternFagsakId,
                              mottattTid = behandlingstatistikk.henvendelseTidspunkt,
                              saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId),
+                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId
+                             ),
                              opprettetEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                    behandlingstatistikk.opprettetEnhet),
+                                                                    behandlingstatistikk.opprettetEnhet
+                             ),
                              ansvarligEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                    behandlingstatistikk.ansvarligEnhet),
+                                                                    behandlingstatistikk.ansvarligEnhet
+                             ),
                              behandlingMetode = "MANUELL",
                              avsender = "NAV enslig forelder",
                              behandlingType = behandlingstatistikk.behandlingstype.name,
@@ -55,14 +58,16 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                              resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
                              ansvarligBeslutter = if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse)
                                  sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                       behandlingstatistikk.gjeldendeSaksbehandlerId) else null,
+                                                       behandlingstatistikk.gjeldendeSaksbehandlerId
+                                 ) else null,
                              vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse)
                                  behandlingstatistikk.hendelseTidspunkt else null,
                              ferdigBehandletTid = if (Hendelse.FERDIG == behandlingstatistikk.hendelse)
                                  behandlingstatistikk.hendelseTidspunkt else null,
                              totrinnsbehandling = true,
                              sakUtland = "Nasjonal",
-                             relatertBehandlingId = behandlingstatistikk.relatertBehandlingId.toString())
+                             relatertBehandlingId = behandlingstatistikk.relatertBehandlingId.toString()
+        )
 
     }
 
