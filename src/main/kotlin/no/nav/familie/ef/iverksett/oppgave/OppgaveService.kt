@@ -75,7 +75,7 @@ class OppgaveService(
     }
 
     private fun aktivitetEndretOgPeriodeUendret(iverksett: Iverksett): Boolean {
-        return harEndretAktivitet(iverksett) && !harEndretPeriode(iverksett)
+        return harEndretAktivitet(iverksett) || harEndretPeriode(iverksett)
     }
 
     private fun harEndretAktivitet(iverksett: Iverksett): Boolean {

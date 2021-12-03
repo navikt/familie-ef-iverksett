@@ -76,7 +76,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    internal fun `revurdering innvilget med aktivitetsendring og periodeendring, forvent skalOpprette false`() {
+    internal fun `revurdering innvilget med aktivitetsendring og periodeendring, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
@@ -98,9 +98,33 @@ internal class OppgaveServiceTest {
             )
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
-
+    @Test
+    internal fun `revurdering innvilget med kun periodeendring, forvent skalOpprette true`() {
+        val iverksett = mockk<Iverksett>()
+        val forrigeBehandlingIverksett = mockk<Iverksett>()
+        setupIverksettMock(
+                iverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+        setupIverksettMock(
+                forrigeBehandlingIverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(
+                        vedtaksPeriode(
+                                aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
+                                fraOgMed = LocalDate.now().plusMonths(2),
+                                tilOgMed = LocalDate.now().plusMonths(3)
+                        )
+                )
+        )
+        every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
+        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+    }
 
     @Test
     internal fun `innvilget førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingInnvilget`() {
