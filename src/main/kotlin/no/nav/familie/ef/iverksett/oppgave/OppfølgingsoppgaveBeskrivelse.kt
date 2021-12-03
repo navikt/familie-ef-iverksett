@@ -18,7 +18,7 @@ object OppfølgingsoppgaveBeskrivelse {
     }
 
     fun beskrivelseRevurderingInnvilget(vedtaksPeriode: Pair<LocalDate, LocalDate>, gjeldendeVedtak: Vedtaksperiode): String {
-        return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}." +
+        return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
                "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
     }
 
