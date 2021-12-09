@@ -60,16 +60,16 @@ internal class OppgaveServiceTest {
         val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
-            iverksett,
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.INNVILGET,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+                iverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         setupIverksettMock(
-            forrigeBehandlingIverksett,
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.INNVILGET,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
+                forrigeBehandlingIverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
@@ -80,26 +80,27 @@ internal class OppgaveServiceTest {
         val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
-            iverksett,
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.INNVILGET,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+                iverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         setupIverksettMock(
-            forrigeBehandlingIverksett,
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.INNVILGET,
-            listOf(
-                vedtaksPeriode(
-                    aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
-                    fraOgMed = LocalDate.now().plusMonths(2),
-                    tilOgMed = LocalDate.now().plusMonths(3)
+                forrigeBehandlingIverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(
+                        vedtaksPeriode(
+                                aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
+                                fraOgMed = LocalDate.now().plusMonths(2),
+                                tilOgMed = LocalDate.now().plusMonths(3)
+                        )
                 )
-            )
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
+
     @Test
     internal fun `revurdering innvilget med kun periodeendring, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
@@ -127,14 +128,39 @@ internal class OppgaveServiceTest {
     }
 
     @Test
+    internal fun `revurdering innvilget med kun endring i fom dato, forvent skalOpprette false`() {
+        val iverksett = mockk<Iverksett>()
+        val forrigeBehandlingIverksett = mockk<Iverksett>()
+        setupIverksettMock(
+                iverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+        setupIverksettMock(
+                forrigeBehandlingIverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(
+                        vedtaksPeriode(
+                                aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
+                                fraOgMed = LocalDate.now().plusMonths(3)
+                        )
+                )
+        )
+        every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
+        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+    }
+
+    @Test
     internal fun `innvilget førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingInnvilget`() {
         val iverksett = mockk<Iverksett>()
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
-            iverksett,
-            BehandlingType.FØRSTEGANGSBEHANDLING,
-            Vedtaksresultat.INNVILGET,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+                iverksett,
+                BehandlingType.FØRSTEGANGSBEHANDLING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
@@ -150,10 +176,10 @@ internal class OppgaveServiceTest {
         val iverksett = mockk<Iverksett>()
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
-            iverksett,
-            BehandlingType.FØRSTEGANGSBEHANDLING,
-            Vedtaksresultat.AVSLÅTT,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+                iverksett,
+                BehandlingType.FØRSTEGANGSBEHANDLING,
+                Vedtaksresultat.AVSLÅTT,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
@@ -169,10 +195,10 @@ internal class OppgaveServiceTest {
         val iverksett = mockk<Iverksett>()
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
-            iverksett,
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.INNVILGET,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+                iverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
@@ -188,10 +214,10 @@ internal class OppgaveServiceTest {
         val iverksett = mockk<Iverksett>()
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
-            iverksett,
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.OPPHØRT,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+                iverksett,
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.OPPHØRT,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
@@ -203,10 +229,10 @@ internal class OppgaveServiceTest {
     }
 
     private fun setupIverksettMock(
-        iverksettMock: Iverksett,
-        behandlingType: BehandlingType,
-        vedtaksresultat: Vedtaksresultat,
-        vedtaksperioder: List<Vedtaksperiode>
+            iverksettMock: Iverksett,
+            behandlingType: BehandlingType,
+            vedtaksresultat: Vedtaksresultat,
+            vedtaksperioder: List<Vedtaksperiode>
     ) {
         every { iverksettMock.behandling.forrigeBehandlingId } returns UUID.randomUUID()
         every { iverksettMock.behandling.behandlingType } returns behandlingType
@@ -217,15 +243,15 @@ internal class OppgaveServiceTest {
     }
 
     private fun vedtaksPeriode(
-        aktivitet: AktivitetType,
-        fraOgMed: LocalDate = LocalDate.now(),
-        tilOgMed: LocalDate = LocalDate.now()
+            aktivitet: AktivitetType,
+            fraOgMed: LocalDate = LocalDate.now(),
+            tilOgMed: LocalDate = LocalDate.now()
     ): Vedtaksperiode {
         return Vedtaksperiode(
-            fraOgMed = fraOgMed,
-            tilOgMed = tilOgMed,
-            aktivitet = aktivitet,
-            periodeType = VedtaksperiodeType.HOVEDPERIODE
+                fraOgMed = fraOgMed,
+                tilOgMed = tilOgMed,
+                aktivitet = aktivitet,
+                periodeType = VedtaksperiodeType.HOVEDPERIODE
         )
     }
 }

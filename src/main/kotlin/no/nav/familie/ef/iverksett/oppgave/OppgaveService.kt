@@ -14,9 +14,9 @@ import java.time.LocalDate
 
 @Service
 class OppgaveService(
-    private val oppgaveClient: OppgaveClient,
-    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-    private val iverksettingRepository: IverksettingRepository
+        private val oppgaveClient: OppgaveClient,
+        private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+        private val iverksettingRepository: IverksettingRepository
 ) {
 
     fun skalOppretteVurderHendelseOppgave(iverksett: Iverksett): Boolean {
@@ -35,7 +35,7 @@ class OppgaveService(
 
     fun opprettVurderHendelseOppgave(iverksett: Iverksett): Long {
         val enhetsnummer = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
-            ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
+                           ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
@@ -43,14 +43,14 @@ class OppgaveService(
         }
         val opprettOppgaveRequest = OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(iverksett, enhetsnummer, beskrivelse)
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
-            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+               ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: Iverksett): String {
         return when (iverksett.vedtak.vedtaksresultat) {
             Vedtaksresultat.INNVILGET -> beskrivelseFørstegangsbehandlingInnvilget(
-                iverksett.totalVedtaksperiode(),
-                iverksett.gjeldendeVedtak()
+                    iverksett.totalVedtaksperiode(),
+                    iverksett.gjeldendeVedtak()
             )
             Vedtaksresultat.AVSLÅTT -> beskrivelseFørstegangsbehandlingAvslått(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
@@ -60,8 +60,8 @@ class OppgaveService(
     private fun finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett: Iverksett): String {
         return when (iverksett.vedtak.vedtaksresultat) {
             Vedtaksresultat.INNVILGET -> beskrivelseRevurderingInnvilget(
-                iverksett.totalVedtaksperiode(),
-                iverksett.gjeldendeVedtak()
+                    iverksett.totalVedtaksperiode(),
+                    iverksett.gjeldendeVedtak()
             )
             Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(iverksett.vedtak.vedtakstidspunkt)
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
@@ -85,13 +85,17 @@ class OppgaveService(
 
     private fun harEndretPeriode(iverksett: Iverksett): Boolean {
         val forrigeBehandling = hentForrigeBehandling(iverksett)
-        return iverksett.totalVedtaksperiode() != forrigeBehandling.totalVedtaksperiode()
+        return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
     }
 
     private fun Iverksett.gjeldendeVedtak() = this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed }?.let { it }
-        ?: error("Kunne ikke finne vedtaksperioder")
+                                              ?: error("Kunne ikke finne vedtaksperioder")
+
+    private fun Iverksett.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate {
+        return this.vedtak.vedtaksperioder.maxOf { it.tilOgMed }
+    }
 
     private fun Iverksett.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
-        Pair(this.vedtak.vedtaksperioder.minOf { it.fraOgMed },
-             this.vedtak.vedtaksperioder.maxOf { it.tilOgMed })
+            Pair(this.vedtak.vedtaksperioder.minOf { it.fraOgMed },
+                 this.vedtak.vedtaksperioder.maxOf { it.tilOgMed })
 }
