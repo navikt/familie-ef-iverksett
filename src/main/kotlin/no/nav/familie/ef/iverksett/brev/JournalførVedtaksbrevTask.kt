@@ -48,6 +48,7 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
                         hoveddokumentvarianter = listOf(dokument),
                         fagsakId = iverksett.fagsak.eksternId.toString(),
                         journalførendeEnhet = iverksett.søker.tilhørendeEnhet,
+                        eksternReferanseId = "$behandlingId-vedtaksbrev"
                 ),
                 iverksett.vedtak.beslutterId
         ).journalpostId
