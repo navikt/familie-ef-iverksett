@@ -74,8 +74,18 @@ class OppgaveService(
         } ?: null
     }
 
-    private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
-        return harEndretAktivitet(iverksett) || harEndretPeriode(iverksett)
+private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
+        if (iverksett.behandling.forrigeBehandlingId == null) return false
+        val forrigeBehandling = hentForrigeBehandling(iverksett)
+        return harEndretAktivitet(iverksett, forrigeBehandling) || harEndretPeriode(iverksett, forrigeBehandling)
+    }
+
+    private fun harEndretAktivitet(iverksett: Iverksett, forrigeBehandling: Iverksett): Boolean {
+        return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
+    }
+
+    private fun harEndretPeriode(iverksett: Iverksett, forrigeBehandling: Iverksett): Boolean {
+        return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
     }
 
     private fun harEndretAktivitet(iverksett: Iverksett): Boolean {
