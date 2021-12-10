@@ -79,12 +79,12 @@ class OppgaveService(
     }
 
     private fun harEndretAktivitet(iverksett: Iverksett): Boolean {
-        val forrigeBehandling = hentForrigeBehandling(iverksett) ?: return false
+        val forrigeBehandling = hentForrigeBehandling(iverksett) ?: return true
         return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
     }
 
     private fun harEndretPeriode(iverksett: Iverksett): Boolean {
-        val forrigeBehandling = hentForrigeBehandling(iverksett) ?: return false
+        val forrigeBehandling = hentForrigeBehandling(iverksett) ?: return true
         return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
     }
 

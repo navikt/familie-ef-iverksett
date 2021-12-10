@@ -81,7 +81,7 @@ internal class OppgaveServiceTest {
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
     @Test
-    internal fun `revurdering innvilget med kun aktivitetsendring, men avslått fbh, forvent skalOpprette true`() {
+    internal fun `revurdering innvilget med kun aktivitetsendring, men avslått f-behandling, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
@@ -99,7 +99,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
     @Test
     internal fun `revurdering innvilget med aktivitetsendring og periodeendring, forvent skalOpprette true`() {
