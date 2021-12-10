@@ -272,6 +272,7 @@ internal class OppgaveServiceTest {
             vedtaksperioder: List<Vedtaksperiode>
     ) {
         every { iverksettMock.behandling.forrigeBehandlingId } returns forrigeBehandlingId
+        every { iverksettMock.behandling.behandlingId } returns UUID.randomUUID()
         every { iverksettMock.behandling.behandlingType } returns behandlingType
         every { iverksettMock.vedtak.vedtaksresultat } returns vedtaksresultat
         every { iverksettMock.vedtak.vedtaksperioder } returns vedtaksperioder

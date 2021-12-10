@@ -68,14 +68,12 @@ class OppgaveService(
         }
     }
 
-    private fun hentForrigeBehandling(iverksett: Iverksett): Iverksett? {
-        return iverksett.behandling.forrigeBehandlingId?.let {
-            iverksettingRepository.hent(it)
-        } ?: null
+    private fun hentForrigeBehandling(iverksett: Iverksett): Iverksett {
+        return iverksettingRepository.hent(iverksett.behandling.behandlingId)
     }
 
-private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
-        if (iverksett.behandling.forrigeBehandlingId == null) return false
+    private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
+        if (iverksett.behandling.forrigeBehandlingId == null) return true
         val forrigeBehandling = hentForrigeBehandling(iverksett)
         return harEndretAktivitet(iverksett, forrigeBehandling) || harEndretPeriode(iverksett, forrigeBehandling)
     }
@@ -86,18 +84,6 @@ private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
 
     private fun harEndretPeriode(iverksett: Iverksett, forrigeBehandling: Iverksett): Boolean {
         return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
-    }
-
-    private fun harEndretAktivitet(iverksett: Iverksett): Boolean {
-        return hentForrigeBehandling(iverksett)?.let { forrigeBehandling ->
-            iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
-        } ?: true
-    }
-
-    private fun harEndretPeriode(iverksett: Iverksett): Boolean {
-        return hentForrigeBehandling(iverksett)?.let { forrigeBehandling ->
-            iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
-        } ?: true
     }
 
     private fun Iverksett.gjeldendeVedtak() = this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed }?.let { it }
