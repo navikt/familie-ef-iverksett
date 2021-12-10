@@ -68,10 +68,10 @@ class OppgaveService(
         }
     }
 
-    private fun hentForrigeBehandling(iverksett: Iverksett): Iverksett {
+    private fun hentForrigeBehandling(iverksett: Iverksett): Iverksett? {
         return iverksett.behandling.forrigeBehandlingId?.let {
             iverksettingRepository.hent(it)
-        } ?: error("Mangler forrigeBehandlingId på revurdering for behandling=${iverksett.behandling.behandlingId}")
+        } ?: null
     }
 
     private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
@@ -79,12 +79,12 @@ class OppgaveService(
     }
 
     private fun harEndretAktivitet(iverksett: Iverksett): Boolean {
-        val forrigeBehandling = hentForrigeBehandling(iverksett)
+        val forrigeBehandling = hentForrigeBehandling(iverksett) ?: return false
         return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
     }
 
     private fun harEndretPeriode(iverksett: Iverksett): Boolean {
-        val forrigeBehandling = hentForrigeBehandling(iverksett)
+        val forrigeBehandling = hentForrigeBehandling(iverksett) ?: return false
         return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
     }
 
