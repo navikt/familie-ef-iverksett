@@ -36,21 +36,25 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `innvilget førstegangsbehandling, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
-        setupIverksettMock(iverksett, BehandlingType.FØRSTEGANGSBEHANDLING, Vedtaksresultat.INNVILGET, emptyList())
+        setupIverksettMock(iverksett,
+                           UUID.randomUUID(),
+                           BehandlingType.FØRSTEGANGSBEHANDLING,
+                           Vedtaksresultat.INNVILGET,
+                           emptyList())
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering opphørt, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
-        setupIverksettMock(iverksett, BehandlingType.REVURDERING, Vedtaksresultat.OPPHØRT, emptyList())
+        setupIverksettMock(iverksett, UUID.randomUUID(), BehandlingType.REVURDERING, Vedtaksresultat.OPPHØRT, emptyList())
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering avslått, forvent skalOpprette false`() {
         val iverksett = mockk<Iverksett>()
-        setupIverksettMock(iverksett, BehandlingType.REVURDERING, Vedtaksresultat.AVSLÅTT, emptyList())
+        setupIverksettMock(iverksett, UUID.randomUUID(), BehandlingType.REVURDERING, Vedtaksresultat.AVSLÅTT, emptyList())
         every { iverksettRepository.hent(any()) } returns iverksett
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
     }
@@ -61,12 +65,14 @@ internal class OppgaveServiceTest {
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
                 iverksett,
+                UUID.randomUUID(),
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.INNVILGET,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         setupIverksettMock(
                 forrigeBehandlingIverksett,
+                UUID.randomUUID(),
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.INNVILGET,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
@@ -74,19 +80,41 @@ internal class OppgaveServiceTest {
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
-
     @Test
-    internal fun `revurdering innvilget med aktivitetsendring og periodeendring, forvent skalOpprette true`() {
+    internal fun `revurdering innvilget med kun aktivitetsendring, men avslått f-behandling, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
                 iverksett,
+                null,
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.INNVILGET,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         setupIverksettMock(
                 forrigeBehandlingIverksett,
+                UUID.randomUUID(),
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
+        )
+        every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
+        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+    }
+    @Test
+    internal fun `revurdering innvilget med aktivitetsendring og periodeendring, forvent skalOpprette true`() {
+        val iverksett = mockk<Iverksett>()
+        val forrigeBehandlingIverksett = mockk<Iverksett>()
+        setupIverksettMock(
+                iverksett,
+                UUID.randomUUID(),
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+        setupIverksettMock(
+                forrigeBehandlingIverksett,
+                UUID.randomUUID(),
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.INNVILGET,
                 listOf(
@@ -107,12 +135,14 @@ internal class OppgaveServiceTest {
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
                 iverksett,
+                UUID.randomUUID(),
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.INNVILGET,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         setupIverksettMock(
                 forrigeBehandlingIverksett,
+                UUID.randomUUID(),
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.INNVILGET,
                 listOf(
@@ -133,12 +163,14 @@ internal class OppgaveServiceTest {
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
                 iverksett,
+                UUID.randomUUID(),
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.INNVILGET,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         setupIverksettMock(
                 forrigeBehandlingIverksett,
+                UUID.randomUUID(),
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.INNVILGET,
                 listOf(
@@ -158,6 +190,7 @@ internal class OppgaveServiceTest {
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
+                UUID.randomUUID(),
                 BehandlingType.FØRSTEGANGSBEHANDLING,
                 Vedtaksresultat.INNVILGET,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
@@ -177,6 +210,7 @@ internal class OppgaveServiceTest {
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
+                UUID.randomUUID(),
                 BehandlingType.FØRSTEGANGSBEHANDLING,
                 Vedtaksresultat.AVSLÅTT,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
@@ -196,6 +230,7 @@ internal class OppgaveServiceTest {
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
+                UUID.randomUUID(),
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.INNVILGET,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
@@ -215,6 +250,7 @@ internal class OppgaveServiceTest {
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
+                UUID.randomUUID(),
                 BehandlingType.REVURDERING,
                 Vedtaksresultat.OPPHØRT,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
@@ -230,11 +266,13 @@ internal class OppgaveServiceTest {
 
     private fun setupIverksettMock(
             iverksettMock: Iverksett,
+            forrigeBehandlingId: UUID?,
             behandlingType: BehandlingType,
             vedtaksresultat: Vedtaksresultat,
             vedtaksperioder: List<Vedtaksperiode>
     ) {
-        every { iverksettMock.behandling.forrigeBehandlingId } returns UUID.randomUUID()
+        every { iverksettMock.behandling.forrigeBehandlingId } returns forrigeBehandlingId
+        every { iverksettMock.behandling.behandlingId } returns UUID.randomUUID()
         every { iverksettMock.behandling.behandlingType } returns behandlingType
         every { iverksettMock.vedtak.vedtaksresultat } returns vedtaksresultat
         every { iverksettMock.vedtak.vedtaksperioder } returns vedtaksperioder
