@@ -31,6 +31,12 @@ internal class OppgaveServiceTest {
     internal fun init() {
         mockkObject(OppgaveUtil)
         mockkObject(OppfølgingsoppgaveBeskrivelse)
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
+        every { oppgaveClient.opprettOppgave(any()) } returns 0L
+        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) } returns ""
+        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
+        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) } returns ""
+        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) } returns ""
     }
 
     @Test
@@ -214,10 +220,6 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
-        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
-        every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) } returns ""
-
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
         verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
     }
@@ -233,10 +235,6 @@ internal class OppgaveServiceTest {
                 Vedtaksresultat.AVSLÅTT,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
-
-        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
-        every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) } returns ""
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
         verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
@@ -254,10 +252,6 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
-        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
-        every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
-
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
         verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
@@ -273,10 +267,6 @@ internal class OppgaveServiceTest {
                 Vedtaksresultat.OPPHØRT,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
-
-        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
-        every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) } returns ""
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
         verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
@@ -294,7 +284,6 @@ internal class OppgaveServiceTest {
         every { iverksettMock.behandling.behandlingType } returns behandlingType
         every { iverksettMock.vedtak.vedtaksresultat } returns vedtaksresultat
         every { iverksettMock.vedtak.vedtaksperioder } returns vedtaksperioder
-        every { iverksettMock.søker } returns mockk()
         every { iverksettMock.søker.personIdent } returns "12345678910"
         every { iverksettMock.vedtak.vedtakstidspunkt } returns LocalDateTime.MIN
     }
