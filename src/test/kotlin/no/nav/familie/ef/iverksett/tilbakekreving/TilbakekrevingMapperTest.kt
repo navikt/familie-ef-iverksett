@@ -33,7 +33,7 @@ internal class TilbakekrevingMapperTest {
         assertThat(request.ytelsestype).isEqualTo(Ytelsestype.OVERGANGSSTØNAD)
 
         assertThat(request.enhetId).isEqualTo(enhet.enhetId)
-        assertThat(request.enhetsnavn).isEqualTo(enhet.enhetNavn)
+        assertThat(request.enhetsnavn).isEqualTo(ENHETSNAVN_BREV)
 
         assertThat(request.manueltOpprettet).isFalse
         assertThat(request.personIdent).isEqualTo(iverksett.søker.personIdent)
