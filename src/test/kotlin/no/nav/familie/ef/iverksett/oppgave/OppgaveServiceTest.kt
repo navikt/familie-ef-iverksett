@@ -31,7 +31,7 @@ internal class OppgaveServiceTest {
     internal fun init() {
         mockkObject(OppgaveUtil)
         mockkObject(OppfølgingsoppgaveBeskrivelse)
-        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns mockk()
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
         every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) } returns ""
         every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
