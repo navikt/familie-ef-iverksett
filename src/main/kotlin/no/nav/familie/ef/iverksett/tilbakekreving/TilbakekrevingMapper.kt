@@ -16,6 +16,8 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 
+const val ENHETSNAVN_BREV = "NAV Arbeid og ytelser"
+
 fun Tilbakekrevingsdetaljer?.validerTilbakekreving(): Boolean {
     try {
         this?.also { lagVarsel(it) }
@@ -36,7 +38,7 @@ fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
                 manueltOpprettet = false, // manuelt opprettet ennå ikke støttet i familie-tilbake?
                 språkkode = Språkkode.NB, // Bør følge med iverksett.søker
                 enhetId = enhet.enhetId, // iverksett.søker.tilhørendeEnhet?
-                enhetsnavn = enhet.enhetNavn, // iverksett.søker.tilhørendeEnhet?
+                enhetsnavn = ENHETSNAVN_BREV, // Det som kommer etter "Med vennlig hilsen" i tilbakekrevingsbrev.
                 saksbehandlerIdent = this.vedtak.saksbehandlerId,
                 varsel = this.vedtak.tilbakekreving?.let { lagVarsel(it) },
                 revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
@@ -46,15 +48,16 @@ fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
 
 fun Iverksett.tilFagsystembehandling(enhet: Enhet) =
         HentFagsystemsbehandlingRespons(
-                hentFagsystemsbehandling = HentFagsystemsbehandling(eksternFagsakId = this.fagsak.eksternId.toString(),
-                                                                    eksternId = this.behandling.eksternId.toString(),
-                                                                    ytelsestype = mapYtelsestype(this.fagsak.stønadstype),
-                                                                    personIdent = this.søker.personIdent,
-                                                                    språkkode = Språkkode.NB,
-                                                                    enhetId = enhet.enhetId,
-                                                                    enhetsnavn = enhet.enhetNavn,
-                                                                    revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
-                                                                    faktainfo = lagFaktainfo(this)))
+                hentFagsystemsbehandling =
+                HentFagsystemsbehandling(eksternFagsakId = this.fagsak.eksternId.toString(),
+                                         eksternId = this.behandling.eksternId.toString(),
+                                         ytelsestype = mapYtelsestype(this.fagsak.stønadstype),
+                                         personIdent = this.søker.personIdent,
+                                         språkkode = Språkkode.NB,
+                                         enhetId = enhet.enhetId,
+                                         enhetsnavn = enhet.enhetNavn,
+                                         revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
+                                         faktainfo = lagFaktainfo(this)))
 
 private fun mapYtelsestype(stønadType: StønadType): Ytelsestype =
         when (stønadType) {
