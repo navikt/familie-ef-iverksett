@@ -37,6 +37,7 @@ internal class OppgaveServiceTest {
         every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
         every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) } returns ""
         every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) } returns ""
+        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
     }
 
     @Test
@@ -113,12 +114,6 @@ internal class OppgaveServiceTest {
                 Vedtaksresultat.INNVILGET,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
         )
-
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) } returns ""
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
-        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("id", "navn")
-        every { oppgaveClient.opprettOppgave(any()) } returns 0L
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
         verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
