@@ -59,10 +59,13 @@ class OppgaveService(
 
     private fun finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett: Iverksett): String {
         return when (iverksett.vedtak.vedtaksresultat) {
-            Vedtaksresultat.INNVILGET -> beskrivelseRevurderingInnvilget(
-                    iverksett.totalVedtaksperiode(),
-                    iverksett.gjeldendeVedtak()
-            )
+            Vedtaksresultat.INNVILGET -> {
+                iverksett.behandling.forrigeBehandlingId?.let {
+                    beskrivelseRevurderingInnvilget(
+                            iverksett.totalVedtaksperiode(),
+                            iverksett.gjeldendeVedtak())
+                } ?: finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
+            }
             Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(iverksett.vedtak.vedtakstidspunkt)
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
         }
