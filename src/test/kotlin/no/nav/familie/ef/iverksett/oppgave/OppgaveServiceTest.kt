@@ -12,7 +12,6 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
-import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -144,8 +143,11 @@ internal class OppgaveServiceTest {
                         )
                 )
         )
-        every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
+        val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId!!
+        every { iverksettRepository.hent(forrigeBehandlingId) } returns forrigeBehandlingIverksett
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+
+        verify(exactly = 1) { iverksettRepository.hent(forrigeBehandlingId) }
     }
 
     @Test
