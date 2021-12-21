@@ -22,8 +22,10 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
                     kanOppretteOppgaveForBarnSomFyllerÅr(it)?.let {
                         if (barnBlirEttÅr(innenAntallUker, it)) {
                             opprettOppgaveForBarn(iverksett, OppgaveBeskrivelse.beskrivelseBarnFyllerEttÅr())
+                            secureLogger.info("Opprettet innhentDokumentasjon-oppgave for barn med personident=$it")
                         } else if (barnBlirSeksMnd(innenAntallUker, it)) {
                             opprettOppgaveForBarn(iverksett, OppgaveBeskrivelse.beskrivelseBarnBlirSeksMnd())
+                            secureLogger.info("Opprettet innhentDokumentasjons-oppgave for barn med personident=$it")
                         }
                     }
                 }
@@ -48,16 +50,20 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
 
     private fun barnBlirEttÅr(innenAntallUker: Long, fødselsnummer: Fødselsnummer): Boolean {
         return barnErUnder(12L, fødselsnummer)
-               && LocalDate.now().plusWeeks(innenAntallUker).isAfter(fødselsnummer.fødselsdato.plusYears(1))
+               && LocalDate.now().plusWeeks(innenAntallUker).isAfterOrEqual(fødselsnummer.fødselsdato.plusYears(1))
     }
 
     private fun barnBlirSeksMnd(innenAntallUker: Long, fødselsnummer: Fødselsnummer): Boolean {
         return barnErUnder(6L, fødselsnummer)
-               && LocalDate.now().plusWeeks(innenAntallUker).isAfter(fødselsnummer.fødselsdato.plusMonths(6L))
+               && LocalDate.now().plusWeeks(innenAntallUker).isAfterOrEqual(fødselsnummer.fødselsdato.plusMonths(6L))
     }
 
     private fun barnErUnder(antallMnd: Long, fødselsnummer: Fødselsnummer): Boolean {
         return LocalDate.now().isBefore(fødselsnummer.fødselsdato.plusMonths(antallMnd))
+    }
+
+    private fun LocalDate.isAfterOrEqual(date : LocalDate) : Boolean {
+        return this.isEqual(date) || this.isAfter(date)
     }
 
 }

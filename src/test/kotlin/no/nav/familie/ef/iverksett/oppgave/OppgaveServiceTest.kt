@@ -1,18 +1,22 @@
 package no.nav.familie.ef.iverksett.oppgave
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
+import no.nav.familie.ef.iverksett.util.ObjectMapperProvider
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
-import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,16 +34,22 @@ internal class OppgaveServiceTest {
     @BeforeEach
     internal fun init() {
         mockkObject(OppgaveUtil)
-        mockkObject(OppfølgingsoppgaveBeskrivelse)
+        mockkObject(OppgaveBeskrivelse)
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns mockk()
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) } returns ""
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) } returns ""
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) } returns ""
+        every { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) } returns ""
+        every { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
+        every { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) } returns ""
+        every { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) } returns ""
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
     }
 
+    @Test
+    internal fun removeMe() {
+        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettRemoveMe.json")
+        val iverksett = ObjectMapperProvider.objectMapper.readValue<IverksettDto>(json).toDomain()
+        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+    }
     @Test
     internal fun `innvilget førstegangsbehandling, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
@@ -116,8 +126,8 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
-        verify(exactly = 0) { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
+        verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
+        verify(exactly = 0) { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
 
     @Test
@@ -216,7 +226,7 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
+        verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
     }
 
     @Test
@@ -232,7 +242,7 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
+        verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
     }
 
     @Test
@@ -248,7 +258,7 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
+        verify { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
 
     @Test
@@ -264,7 +274,7 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
+        verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
     }
 
     private fun setupIverksettMock(

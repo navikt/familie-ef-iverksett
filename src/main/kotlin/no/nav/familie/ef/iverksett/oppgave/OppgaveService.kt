@@ -3,10 +3,10 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
-import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget
-import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget
-import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt
+import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
+import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget
+import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingInnvilget
+import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingOpphørt
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import org.springframework.stereotype.Service

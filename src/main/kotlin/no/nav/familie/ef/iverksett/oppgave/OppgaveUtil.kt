@@ -17,20 +17,41 @@ import java.util.Locale
 
 object OppgaveUtil {
 
-    fun opprettVurderHenvendelseOppgaveRequest(iverksett: Iverksett, enhetsnummer: Enhet, beskrivelse: String): OpprettOppgaveRequest {
+    fun opprettVurderHenvendelseOppgaveRequest(iverksett: Iverksett,
+                                               enhetsnummer: Enhet,
+                                               beskrivelse: String): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
-            ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
-            saksId = iverksett.fagsak.eksternId.toString(),
-            tema = Tema.ENF,
-            oppgavetype = Oppgavetype.VurderHenvendelse,
-            fristFerdigstillelse = fristFerdigstillelse(),
-            beskrivelse = beskrivelse,
-            enhetsnummer = enhetsnummer.enhetId,
-            behandlingstema = Behandlingstema
-                .fromValue(iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
-                               .replaceFirstChar { it.uppercase() }).value,
-            tilordnetRessurs = null,
-            behandlesAvApplikasjon = "familie-ef-sak"
+                ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
+                saksId = iverksett.fagsak.eksternId.toString(),
+                tema = Tema.ENF,
+                oppgavetype = Oppgavetype.VurderHenvendelse,
+                fristFerdigstillelse = fristFerdigstillelse(),
+                beskrivelse = beskrivelse,
+                enhetsnummer = enhetsnummer.enhetId,
+                behandlingstema = Behandlingstema
+                        .fromValue(iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
+                                           .replaceFirstChar { it.uppercase() }).value,
+                tilordnetRessurs = null,
+                behandlesAvApplikasjon = "familie-ef-sak"
+        )
+    }
+
+    fun opprettOppgaveRequest(iverksett: Iverksett,
+                              oppgavetype: Oppgavetype,
+                              beskrivelse: String): OpprettOppgaveRequest {
+        return OpprettOppgaveRequest(
+                ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
+                saksId = iverksett.fagsak.eksternId.toString(),
+                tema = Tema.ENF,
+                oppgavetype = oppgavetype,
+                fristFerdigstillelse = fristFerdigstillelse(),
+                beskrivelse = beskrivelse,
+                enhetsnummer = "4489",
+                behandlingstema = Behandlingstema
+                        .fromValue(iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
+                                           .replaceFirstChar { it.uppercase() }).value,
+                tilordnetRessurs = null,
+                behandlesAvApplikasjon = "familie-ef-sak"
         )
     }
 
