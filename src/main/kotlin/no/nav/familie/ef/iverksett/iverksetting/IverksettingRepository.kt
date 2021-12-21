@@ -1,17 +1,15 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettType
 import no.nav.familie.ef.iverksett.iverksetting.domene.TekniskOpphør
 import no.nav.familie.ef.iverksett.util.getJson
 import no.nav.familie.ef.iverksett.util.getUUID
 import no.nav.familie.ef.iverksett.util.queryForJson
-import no.nav.familie.ef.iverksett.util.queryForNullableObject
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.objectMapper
-import org.springframework.data.jdbc.repository.query.Modifying
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
@@ -29,7 +27,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun lagreTekniskOpphør(behandlingId: UUID, tekniskOpphør: TekniskOpphør) {
-        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :tekniskOpphørJson::JSON, :type, :eksternId)"
+        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :tekniskopphørjson::JSON, :type, :eksternId)"
         val tekniskOpphørString = objectMapper.writeValueAsString(tekniskOpphør)
 
         val mapSqlParameterSource = MapSqlParameterSource(
@@ -78,6 +76,14 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
     }
 
+    fun hentAlleBehandlinger(): List<Iverksett> {
+        return namedParameterJdbcTemplate.query(HENT_ALLE_IVERKSETT_SQL) { rs: ResultSet, _: Int ->
+            val iverksettDto = rs.getJson<IverksettDto>("data")
+                               ?: error("Feil i transformering av json data fra iverksett")
+            iverksettDto.toDomain()
+        }
+    }
+
     fun hentAvEksternId(eksternId: Long): Iverksett {
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(
@@ -114,7 +120,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     fun oppdaterData(): Int {
         val sql = """
             UPDATE iverksett SET data =
-            (select regexp_replace(data::text, '(.*)(vedtaksdato":")(\d+-\d+-\d+)(.*)','\1vedtakstidspunkt":"\3T00:00:00\4')::json from iverksett)
+            (SELECT REGEXP_REPLACE(data::TEXT, '(.*)(vedtaksdato":")(\d+-\d+-\d+)(.*)','\1vedtakstidspunkt":"\3T00:00:00\4')::JSON FROM iverksett)
                 """
         return namedParameterJdbcTemplate.update(sql, MapSqlParameterSource())
     }
@@ -122,6 +128,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     // language=PostgreSQL
     companion object {
 
+        const val HENT_ALLE_IVERKSETT_SQL = "SELECT data FROM iverksett"
         const val HENT_IVERKSETT_SQL = "SELECT data FROM iverksett WHERE behandling_id = :behandlingId AND type = :type"
         const val HENT_IVERKSETT_EKSTERN_ID_SQL = "SELECT data FROM iverksett WHERE ekstern_id = :eksternId AND type = :type"
 
