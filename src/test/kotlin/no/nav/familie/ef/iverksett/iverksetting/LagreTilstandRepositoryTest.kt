@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -25,8 +26,6 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     private val behandlingsId: UUID = UUID.randomUUID()
     private val journalpostId: UUID = UUID.randomUUID()
 
-    private val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
-
     @BeforeEach
     fun beforeEach() {
         tilstandServiceRepository.opprettTomtResultat(behandlingsId)
@@ -36,12 +35,15 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     fun `oppdater tilkjent ytelse, forvent ingen unntak`() {
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         tilstandServiceRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
+        assertThat(tilstandServiceRepository.hentIverksettResultat(behandlingsId)!!.tilkjentYtelseForUtbetaling).isNotNull
     }
 
     @Test
     fun `oppdater oppdrag, forvent ingen unntak`() {
         val oppdragResultat = OppdragResultat(oppdragStatus = OppdragStatus.KVITTERT_OK)
         tilstandServiceRepository.oppdaterOppdragResultat(behandlingsId, oppdragResultat)
+        assertThat(tilstandServiceRepository.hentIverksettResultat(behandlingsId)!!.oppdragResultat).isNotNull
+
     }
 
     @Test
@@ -52,6 +54,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
                         journalpostId = journalpostId.toString()
                 )
         )
+        assertThat(tilstandServiceRepository.hentIverksettResultat(behandlingsId)!!.journalpostResultat).isNotNull
     }
 
     @Test
@@ -60,6 +63,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
                 behandlingsId,
                 DistribuerVedtaksbrevResultat(bestillingId = "12345")
         )
+        assertThat(tilstandServiceRepository.hentIverksettResultat(behandlingsId)!!.vedtaksbrevResultat).isNotNull
     }
 
     @Test
@@ -82,6 +86,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
                 behandlingsId,
                 TilbakekrevingResultat(opprettTilbakekrevingRequest)
         )
+        assertThat(tilstandServiceRepository.hentIverksettResultat(behandlingsId)!!.tilbakekrevingResultat).isNotNull
     }
 
 }

@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import java.sql.ResultSet
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 fun ResultSet.getUUID(columnLabel: String): UUID = UUID.fromString(this.getString(columnLabel))
@@ -34,3 +36,7 @@ inline fun <reified T> NamedParameterJdbcTemplate.queryForNullableObject(sql: St
     }
 }
 
+object SporbarUtils {
+
+    fun now(): LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+}
