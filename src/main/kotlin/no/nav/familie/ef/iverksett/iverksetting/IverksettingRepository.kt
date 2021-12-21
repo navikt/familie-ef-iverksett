@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
-import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettType
@@ -8,8 +7,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TekniskOpphør
 import no.nav.familie.ef.iverksett.util.getJson
 import no.nav.familie.ef.iverksett.util.getUUID
 import no.nav.familie.ef.iverksett.util.queryForJson
-import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.objectMapper
+import org.springframework.jdbc.core.ResultSetExtractor
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
@@ -77,11 +76,14 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun hentAlleBehandlinger(): List<Iverksett> {
-        return namedParameterJdbcTemplate.query(HENT_ALLE_IVERKSETT_SQL) { rs: ResultSet, _: Int ->
-            val iverksettDto = rs.getJson<IverksettDto>("data")
-                               ?: error("Feil i transformering av json data fra iverksett")
-            iverksettDto.toDomain()
+        val resultSetExtractor = ResultSetExtractor { rs ->
+            val behandlinger = mutableListOf<Iverksett>()
+            while (rs.next()) {
+                behandlinger.add(rs.getJson<Iverksett>("data") ?: error("Kunne ikke transformere iverksett data"))
+            }
+            behandlinger
         }
+        return namedParameterJdbcTemplate.query(HENT_ALLE_IVERKSETT_SQL, resultSetExtractor) ?: error("Fant ingen behandlinger")
     }
 
     fun hentAvEksternId(eksternId: Long): Iverksett {

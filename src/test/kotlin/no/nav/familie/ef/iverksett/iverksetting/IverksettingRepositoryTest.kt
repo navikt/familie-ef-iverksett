@@ -88,11 +88,11 @@ class IverksettingRepositoryTest : ServerTest() {
     }
 
     @Test
-    fun `hent all iverksettinger, forvent at alle blir hentet`() {
+    fun `hent et sett med iverksettinger, forvent at alle blir hentet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         val n = 10
-        (0..n).forEach {
+        (1..n).forEach {
             iverksettingRepository.lagre(
                     UUID.randomUUID(),
                     iverksett,
