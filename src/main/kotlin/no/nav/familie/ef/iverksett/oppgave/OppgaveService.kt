@@ -71,13 +71,9 @@ class OppgaveService(
         }
     }
 
-    private fun hentForrigeBehandling(iverksett: Iverksett): Iverksett {
-        return iverksettingRepository.hent(iverksett.behandling.behandlingId)
-    }
-
     private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
-        if (iverksett.behandling.forrigeBehandlingId == null) return true
-        val forrigeBehandling = hentForrigeBehandling(iverksett)
+        val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId ?: return true
+        val forrigeBehandling = iverksettingRepository.hent(forrigeBehandlingId)
         return harEndretAktivitet(iverksett, forrigeBehandling) || harEndretPeriode(iverksett, forrigeBehandling)
     }
 
