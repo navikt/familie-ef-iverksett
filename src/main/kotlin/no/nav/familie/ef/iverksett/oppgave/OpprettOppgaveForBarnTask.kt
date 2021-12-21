@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.oppgave
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -14,13 +15,17 @@ import java.time.format.DateTimeFormatter
         beskrivelse = "Oppretter oppgave for barn som fyller 1/2 eller 1 år",
 
         )
-class OpprettOppgaveForBarnTask(val taskRepository: TaskRepository, val opprettOppgaveForBarnService: OpprettOppgaveForBarnService) : AsyncTaskStep {
+class OpprettOppgaveForBarnTask(val taskRepository: TaskRepository,
+                                val opprettOppgaveForBarnService: OpprettOppgaveForBarnService,
+                                val featureToggleService: FeatureToggleService) : AsyncTaskStep {
 
     val DATE_FORMAT_ISO_YEAR_MONTH_DAY = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val INNEN_ANTALL_UKER = 1L
 
     override fun doTask(task: Task) {
-        opprettOppgaveForBarnService.opprettOppgaverForAlleBarnSomFyller(INNEN_ANTALL_UKER)
+        if (featureToggleService.isEnabled("familie.ef.iverksett.opprett-oppgaver-barnsomfylleraar")) {
+            opprettOppgaveForBarnService.opprettOppgaverForAlleBarnSomFyller(INNEN_ANTALL_UKER)
+        }
     }
 
     override fun onCompletion(task: Task) {

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
         produces = [MediaType.APPLICATION_JSON_VALUE]
 )
 @ProtectedWithClaims(issuer = "azuread")
-class IverksettingController(
+class OpprettOppgaveForBarnTaskController(
         private val opprettOppgaveForBarnTask: OpprettOppgaveForBarnTask
 ) {
 
