@@ -45,12 +45,6 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    internal fun removeMe() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettRemoveMe.json")
-        val iverksett = ObjectMapperProvider.objectMapper.readValue<IverksettDto>(json).toDomain()
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
-    }
-    @Test
     internal fun `innvilget førstegangsbehandling, forvent skalOpprette true`() {
         val iverksett = mockk<Iverksett>()
         setupIverksettMock(iverksett,

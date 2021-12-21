@@ -26,7 +26,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun lagreTekniskOpphør(behandlingId: UUID, tekniskOpphør: TekniskOpphør) {
-        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :tekniskopphørjson::JSON, :type, :eksternId)"
+        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :tekniskOpphørJson::JSON, :type, :eksternId)"
         val tekniskOpphørString = objectMapper.writeValueAsString(tekniskOpphør)
 
         val mapSqlParameterSource = MapSqlParameterSource(
