@@ -154,8 +154,11 @@ internal class OppgaveServiceTest {
                         )
                 )
         )
-        every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
+        val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId!!
+        every { iverksettRepository.hent(forrigeBehandlingId) } returns forrigeBehandlingIverksett
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+
+        verify(exactly = 1) { iverksettRepository.hent(forrigeBehandlingId) }
     }
 
     @Test

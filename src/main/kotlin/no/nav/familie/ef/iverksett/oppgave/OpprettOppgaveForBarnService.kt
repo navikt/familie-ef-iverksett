@@ -19,7 +19,7 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
         behandlinger.forEach { iverksett ->
             iverksett.søker.barn.forEach { barn ->
                 barn.personIdent?.let {
-                    kanOppretteOppgaveForBarnSomFyllerÅr(it)?.let {
+                    opprettFødselsnummer(it)?.let {
                         if (barnBlirEttÅr(innenAntallUker, it)) {
                             opprettOppgaveForBarn(iverksett, OppgaveBeskrivelse.beskrivelseBarnFyllerEttÅr())
                             secureLogger.info("Opprettet innhentDokumentasjon-oppgave for barn med personident=$it")
@@ -33,7 +33,7 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
         }
     }
 
-    private fun kanOppretteOppgaveForBarnSomFyllerÅr(fødselsnummer: String): Fødselsnummer? {
+    private fun opprettFødselsnummer(fødselsnummer: String): Fødselsnummer? {
         return try {
             Fødselsnummer(fødselsnummer)
         } catch (ex: IllegalArgumentException) {
@@ -62,7 +62,7 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
         return LocalDate.now().isBefore(fødselsnummer.fødselsdato.plusMonths(antallMnd))
     }
 
-    private fun LocalDate.isAfterOrEqual(date : LocalDate) : Boolean {
+    private fun LocalDate.isAfterOrEqual(date: LocalDate): Boolean {
         return this.isEqual(date) || this.isAfter(date)
     }
 
