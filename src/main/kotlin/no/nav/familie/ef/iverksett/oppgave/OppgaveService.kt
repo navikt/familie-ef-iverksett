@@ -74,9 +74,9 @@ class OppgaveService(
         }
     }
 
-    private fun opphørstato(iverksett: Iverksett): LocalDate {
+    private fun opphørstato(iverksett: Iverksett): LocalDate? {
         val tilkjentYtelse = iverksett.vedtak.tilkjentYtelse ?: error("TilkjentYtelse er null")
-        return tilkjentYtelse.andelerTilkjentYtelse.maxOf { it.tilOgMed }
+        return tilkjentYtelse.andelerTilkjentYtelse.maxOfOrNull { it.tilOgMed }
     }
 
     private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
