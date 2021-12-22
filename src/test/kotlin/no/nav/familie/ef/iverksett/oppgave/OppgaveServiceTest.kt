@@ -272,7 +272,7 @@ internal class OppgaveServiceTest {
     }
 
     @Test
-    internal fun `revurdering opphør, forvent andel med tom dato blir med i beskrivelse`() {
+    internal fun `revurdering opphør, forvent at andel med maks tom dato blir sendt som arg til beskrivelse`() {
         val iverksett = mockk<Iverksett>()
         val opphørsdato = slot<LocalDate>()
         every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
