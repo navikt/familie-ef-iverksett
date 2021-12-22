@@ -22,8 +22,8 @@ object OppfølgingsoppgaveBeskrivelse {
                "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
     }
 
-    fun beskrivelseRevurderingOpphørt(vedtaksTidspunkt: LocalDateTime): String {
-        return "Overgangsstønad er stanset fra ${vedtaksTidspunkt.toLocalDate().toReadable()}."
+    fun beskrivelseRevurderingOpphørt(vedtaksTidspunkt: LocalDate): String {
+        return "Overgangsstønad er stanset fra ${vedtaksTidspunkt.toReadable()}."
     }
 
     private fun LocalDate.toReadable(): String {

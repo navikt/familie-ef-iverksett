@@ -3,10 +3,13 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
 import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget
 import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget
 import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import org.springframework.stereotype.Service
@@ -16,7 +19,8 @@ import java.time.LocalDate
 class OppgaveService(
         private val oppgaveClient: OppgaveClient,
         private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-        private val iverksettingRepository: IverksettingRepository
+        private val iverksettingRepository: IverksettingRepository,
+        private val tilstandRepository: TilstandRepository
 ) {
 
     fun skalOppretteVurderHendelseOppgave(iverksett: Iverksett): Boolean {
@@ -66,9 +70,20 @@ class OppgaveService(
                             iverksett.gjeldendeVedtak())
                 } ?: finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             }
-            Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(iverksett.vedtak.vedtakstidspunkt)
+            Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(opphørstato(iverksett))
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
         }
+    }
+
+    private fun opphørstato(iverksett: Iverksett): LocalDate {
+        val forrigeTilkjentYtelse : TilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
+            tilstandRepository.hentTilkjentYtelse(it)
+            ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=${it}")
+        } ?: error("forrigeBehandlingId er null for behandlingId=${iverksett.behandling.behandlingId}")
+        val tilkjentYtelse: TilkjentYtelse = iverksett.vedtak.tilkjentYtelse ?: error("Tilkjent ytelse er null")
+        return ØkonomiUtils.andelTilOpphørMedDato(forrigeTilkjentYtelse.andelerTilkjentYtelse,
+                                                  tilkjentYtelse.andelerTilkjentYtelse)?.second
+               ?: error("Feil ved utleding av opphørsdato")
     }
 
     private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
