@@ -19,8 +19,7 @@ import java.time.LocalDate
 class OppgaveService(
         private val oppgaveClient: OppgaveClient,
         private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-        private val iverksettingRepository: IverksettingRepository,
-        private val tilstandRepository: TilstandRepository
+        private val iverksettingRepository: IverksettingRepository
 ) {
 
     fun skalOppretteVurderHendelseOppgave(iverksett: Iverksett): Boolean {
@@ -76,14 +75,8 @@ class OppgaveService(
     }
 
     private fun opphørstato(iverksett: Iverksett): LocalDate {
-        val forrigeTilkjentYtelse : TilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
-            tilstandRepository.hentTilkjentYtelse(it)
-            ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=${it}")
-        } ?: error("forrigeBehandlingId er null for behandlingId=${iverksett.behandling.behandlingId}")
-        val tilkjentYtelse: TilkjentYtelse = iverksett.vedtak.tilkjentYtelse ?: error("Tilkjent ytelse er null")
-        return ØkonomiUtils.andelTilOpphørMedDato(forrigeTilkjentYtelse.andelerTilkjentYtelse,
-                                                  tilkjentYtelse.andelerTilkjentYtelse)?.second
-               ?: error("Feil ved utleding av opphørsdato")
+        val tilkjentYtelse = iverksett.vedtak.tilkjentYtelse ?: error("TilkjentYtelse er null")
+        return tilkjentYtelse.andelerTilkjentYtelse.maxOf { it.tilOgMed }
     }
 
     private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
