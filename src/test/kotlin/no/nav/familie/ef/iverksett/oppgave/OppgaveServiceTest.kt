@@ -266,6 +266,7 @@ internal class OppgaveServiceTest {
                 Vedtaksresultat.OPPHØRT,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
+        setupAndeler(iverksett, listOf(LocalDate.now()))
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
         verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
