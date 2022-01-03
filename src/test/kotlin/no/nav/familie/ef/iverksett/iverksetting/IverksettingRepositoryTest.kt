@@ -41,7 +41,7 @@ class IverksettingRepositoryTest : ServerTest() {
 
     @Test
     fun `deserialiser og lagre iverksett, forvent ingen unntak`() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
+        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagre(
                 UUID.randomUUID(),
@@ -52,7 +52,7 @@ class IverksettingRepositoryTest : ServerTest() {
 
     @Test
     fun `lagre og hent iverksett, forvent likhet`() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
+        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagre(
                 iverksett.behandling.behandlingId,
@@ -65,7 +65,7 @@ class IverksettingRepositoryTest : ServerTest() {
 
     @Test
     fun `lagre og hent iverksett av eksternId, forvent likhet`() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
+        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagre(
                 iverksett.behandling.behandlingId,
@@ -78,7 +78,7 @@ class IverksettingRepositoryTest : ServerTest() {
 
     @Test
     fun `lagre og hent teknisk opphør av eksternId, forvent IllegalStateException`() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
+        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagreTekniskOpphør(
                 iverksett.behandling.behandlingId,
