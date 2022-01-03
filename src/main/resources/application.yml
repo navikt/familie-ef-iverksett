@@ -55,7 +55,7 @@ logging:
   config: "classpath:logback-spring.xml"
 
 springdoc:
-  packagesToScan: no.nav.familie.ef.sak
+  packagesToScan: no.nav.familie.ef.iverksett
   pathsToMatch: /v3/api-docs,/api/**
   swagger-ui:
     disable-swagger-default-url: true
