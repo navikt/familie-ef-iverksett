@@ -59,7 +59,7 @@ class VedtakstatistikkServiceTest {
 
     @Test
     internal fun `map fra iverksettDtoEksempel til behandlingDVH`() {
-        val iverksettDtoJson: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
+        val iverksettDtoJson: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
 
         val iverksettDto = objectMapper.readValue<IverksettDto>(iverksettDtoJson)
         val iverksett = iverksettDto.toDomain()
