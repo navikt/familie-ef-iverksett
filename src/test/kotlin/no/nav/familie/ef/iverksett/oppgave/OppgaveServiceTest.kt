@@ -3,11 +3,13 @@ package no.nav.familie.ef.iverksett.oppgave
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
+import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
@@ -264,9 +266,29 @@ internal class OppgaveServiceTest {
                 Vedtaksresultat.OPPHØRT,
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
+        setupAndeler(iverksett, listOf(LocalDate.now()))
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
         verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
+    }
+
+    @Test
+    internal fun `revurdering opphør, forvent at andel med maks tom dato blir sendt som arg til beskrivelse`() {
+        val iverksett = mockk<Iverksett>()
+        val opphørsdato = slot<LocalDate>()
+        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
+        setupIverksettMock(
+                iverksett,
+                UUID.randomUUID(),
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.OPPHØRT,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+        setupAndeler(iverksett, listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1)))
+
+        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
+        assertThat(opphørsdato.captured).isEqualTo(LocalDate.now())
     }
 
     private fun setupIverksettMock(
@@ -283,6 +305,11 @@ internal class OppgaveServiceTest {
         every { iverksettMock.vedtak.vedtaksperioder } returns vedtaksperioder
         every { iverksettMock.søker.personIdent } returns "12345678910"
         every { iverksettMock.vedtak.vedtakstidspunkt } returns LocalDateTime.MIN
+    }
+
+    private fun setupAndeler(iverksettMock: Iverksett, tilOgMedDatoer: List<LocalDate>) {
+        val andeler = tilOgMedDatoer.map { lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusDays(1), tilOgMed = it) }
+        every { iverksettMock.vedtak.tilkjentYtelse!!.andelerTilkjentYtelse } returns andeler
     }
 
     private fun vedtaksPeriode(
