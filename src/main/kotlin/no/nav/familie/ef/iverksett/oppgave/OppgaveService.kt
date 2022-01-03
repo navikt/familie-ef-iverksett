@@ -66,9 +66,14 @@ class OppgaveService(
                             iverksett.gjeldendeVedtak())
                 } ?: finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             }
-            Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(iverksett.vedtak.vedtakstidspunkt)
+            Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(opphørstato(iverksett))
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
         }
+    }
+
+    private fun opphørstato(iverksett: Iverksett): LocalDate? {
+        val tilkjentYtelse = iverksett.vedtak.tilkjentYtelse ?: error("TilkjentYtelse er null")
+        return tilkjentYtelse.andelerTilkjentYtelse.maxOfOrNull { it.tilOgMed }
     }
 
     private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
