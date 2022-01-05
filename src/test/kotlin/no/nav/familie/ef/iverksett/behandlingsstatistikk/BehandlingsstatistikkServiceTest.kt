@@ -35,7 +35,7 @@ internal class BehandlingsstatistikkServiceTest {
 
         behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikkDto)
 
-        assertThat(captureSlot.captured.behandlingDvh.behandlingId).isEqualTo(behandlingStatistikkDto.behandlingId.toString())
+        assertThat(captureSlot.captured.behandlingDvh.behandlingId).isEqualTo(behandlingStatistikkDto.eksternBehandlingId)
         assertThat(captureSlot.captured.behandlingDvh.personIdent).isEqualTo(behandlingStatistikkDto.personIdent)
         assertThat(captureSlot.captured.behandlingDvh.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
         assertThat(captureSlot.captured.behandlingDvh.saksnummer).isEqualTo(behandlingStatistikkDto.eksternFagsakId)

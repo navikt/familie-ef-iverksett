@@ -17,7 +17,25 @@ internal class BehandlingsstatistikkRepositoryTest : ServerTest() {
     @Autowired
     private lateinit var behandlingsstatistikkRepository: BehandlingsstatistikkRepository
     private val behandlingId: UUID = UUID.randomUUID()
-    private val behandlingstatistikkPåbegynt = opprettBehandlingstatistikk(behandlingId)
+    private val behandlingstatistikkPåbegynt = BehandlingDVH(behandlingId = 123L,
+                                                             personIdent = "personIdent",
+                                                             saksbehandler = "gjeldendeSaksbehandlerId",
+                                                             registrertTid = ZonedDateTime.now(),
+                                                             endretTid = ZonedDateTime.now(),
+                                                             tekniskTid = ZonedDateTime.now(),
+                                                             sakYtelse = "EFOG",
+                                                             behandlingType = "Førstegangsbehandling",
+                                                             behandlingStatus = "MOTTATT",
+                                                             opprettetAv = "gjeldendeSaksbehandlerId",
+                                                             opprettetEnhet = "",
+                                                             ansvarligEnhet = "",
+                                                             saksnummer = 123L,
+                                                             sakId = 123L,
+                                                             mottattTid = ZonedDateTime.now(),
+                                                             behandlingMetode = "MANUELL",
+                                                             avsender = "NAV Enslig forelder",
+                                                             totrinnsbehandling = true,
+                                                             sakUtland = "Nasjonal")
 
     @BeforeEach
     internal fun beforeEach() {
@@ -65,24 +83,4 @@ internal class BehandlingsstatistikkRepositoryTest : ServerTest() {
         }
     }
 
-    private fun opprettBehandlingstatistikk(behandlingId: UUID): BehandlingDVH {
-        return BehandlingDVH(behandlingId = behandlingId.toString(),
-                             personIdent = "persinIdent",
-                             saksbehandler = "gjeldendeSaksbehandlerId",
-                             registrertTid = ZonedDateTime.now(),
-                             endretTid = ZonedDateTime.now(),
-                             tekniskTid = ZonedDateTime.now(),
-                             sakYtelse = "EFOG",
-                             behandlingType = "Førstegangsbehandling",
-                             behandlingStatus = "MOTTATT",
-                             opprettetAv = "gjeldendeSaksbehandlerId",
-                             opprettetEnhet = "",
-                             ansvarligEnhet = "",
-                             saksnummer = "saksnummer",
-                             mottattTid = ZonedDateTime.now(),
-                             behandlingMetode = "MANUELL",
-                             avsender = "NAV Enslig forelder",
-                             totrinnsbehandling = true,
-                             sakUtland = "Nasjonal")
-    }
 }

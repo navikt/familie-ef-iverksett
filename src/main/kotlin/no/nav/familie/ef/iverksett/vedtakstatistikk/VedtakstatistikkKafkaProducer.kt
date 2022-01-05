@@ -21,7 +21,7 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
 
         runCatching {
-            kafkaProducerService.send(topic, vedtakStatistikk.behandlingId, vedtakStatistikk.toJson())
+            kafkaProducerService.send(topic, vedtakStatistikk.behandlingId.toString(), vedtakStatistikk.toJson())
             logger.info("Vedtakstatistikk sent to Kafka")
             secureLogger.info("$vedtakStatistikk sent to Kafka.")
         }.onFailure {
