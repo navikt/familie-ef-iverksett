@@ -13,31 +13,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.LocalDateTime
 import java.util.UUID
 
 class IverksettingRepositoryTest : ServerTest() {
 
     @Autowired
-    private lateinit var iverksettingTestUtilRepository: IverksettingTestUtilRepository
-
-    @Autowired
     private lateinit var iverksettingRepository: IverksettingRepository
-
-    @Test
-    fun `Kjør script som endrer data til å inneholde vedtakstidspunkt - og sjekk at mapping fortsatt fungerer`() {
-        val gammelJsonVersjonIverksett: String = ResourceLoaderTestUtil.readResource("json/IverksettVedtaksdatoEksempel.json")
-
-        val behandlingId = UUID.randomUUID()
-        iverksettingTestUtilRepository.manueltLagreIverksett(behandlingId, gammelJsonVersjonIverksett)
-        val behandlingId2 = UUID.randomUUID()
-        iverksettingTestUtilRepository.manueltLagreIverksett(behandlingId2, gammelJsonVersjonIverksett)
-        iverksettingTestUtilRepository.oppdaterData()
-
-        val iverksettMedVedtakstidspunkt = iverksettingRepository.hent(behandlingId)
-        assertThat(iverksettMedVedtakstidspunkt).isNotNull
-        assertThat(iverksettMedVedtakstidspunkt.vedtak.vedtakstidspunkt).isEqualTo(LocalDateTime.of(2021, 5, 10, 0, 0))
-    }
 
     @Test
     fun `deserialiser og lagre iverksett, forvent ingen unntak`() {
