@@ -5,6 +5,7 @@ import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -19,6 +20,8 @@ class OpprettOppgaveForBarnTask(val taskRepository: TaskRepository,
                                 val opprettOppgaveForBarnService: OpprettOppgaveForBarnService,
                                 val featureToggleService: FeatureToggleService) : AsyncTaskStep {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     val DATE_FORMAT_ISO_YEAR_MONTH_DAY = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val INNEN_ANTALL_UKER = 1L
 
@@ -26,6 +29,9 @@ class OpprettOppgaveForBarnTask(val taskRepository: TaskRepository,
         if (featureToggleService.isEnabled("familie.ef.iverksett.opprett-oppgaver-barnsomfylleraar")) {
             /** TODO : Sende med dato for siste kjøring */
             opprettOppgaveForBarnService.opprettOppgaverForAlleBarnSomFyller(INNEN_ANTALL_UKER, LocalDate.now().minusWeeks(1))
+        }
+        else {
+            logger.warn("Feature toggle opprett-oppgaver-barnsomfylleraar er ikke enablet")
         }
     }
 
