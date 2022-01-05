@@ -76,14 +76,9 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun hentAlleBehandlinger(): List<Iverksett> {
-        val resultSetExtractor = ResultSetExtractor { rs ->
-            val behandlinger = mutableListOf<Iverksett>()
-            while (rs.next()) {
-                behandlinger.add(rs.getJson<Iverksett>("data") ?: error("Kunne ikke transformere iverksett data"))
-            }
-            behandlinger
+        return namedParameterJdbcTemplate.query(HENT_ALLE_IVERKSETT_SQL) { rs, _ ->
+            rs.getJson<Iverksett>("data")
         }
-        return namedParameterJdbcTemplate.query(HENT_ALLE_IVERKSETT_SQL, resultSetExtractor) ?: error("Fant ingen behandlinger")
     }
 
     fun hentAvEksternId(eksternId: Long): Iverksett {
