@@ -28,10 +28,10 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
                     opprettFødselsnummer(it)?.let {
                         if (barnBlirEttÅr(innenAntallUker, referanseDato, it)) {
                             opprettOppgaveForBarn(iverksett, OppgaveBeskrivelse.beskrivelseBarnFyllerEttÅr())
-                            secureLogger.info("Opprettet innhentDokumentasjon-oppgave for barn med personident=$it")
+                            secureLogger.info("Opprettet innhentDokumentasjon-oppgave for barn med behandlingId=${iverksett.behandling.behandlingId}")
                         } else if (barnBlirSeksMnd(innenAntallUker, referanseDato, it)) {
                             opprettOppgaveForBarn(iverksett, OppgaveBeskrivelse.beskrivelseBarnBlirSeksMnd())
-                            secureLogger.info("Opprettet innhentDokumentasjons-oppgave for barn med personident=$it")
+                            secureLogger.info("Opprettet innhentDokumentasjons-oppgave for barn med behandlingId=${iverksett.behandling.behandlingId}")
                         }
                     }
                 }
