@@ -50,7 +50,7 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
 
     private fun opprettOppgaveForBarn(iverksett: Iverksett, beskrivelse: String) {
         if (innhentDokumentasjonOppgaveFinnes(iverksett)) {
-            logger.info("Oppgave av type innhent dokumantasjon finnes allerede")
+            logger.info("Oppgave av type innhent dokumentasjon finnes allerede")
             return
         }
         val oppgaveId = oppgaveClient.opprettOppgave(OppgaveUtil.opprettOppgaveRequest(iverksett,
