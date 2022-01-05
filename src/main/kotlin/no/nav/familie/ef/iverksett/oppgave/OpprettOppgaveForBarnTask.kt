@@ -24,7 +24,8 @@ class OpprettOppgaveForBarnTask(val taskRepository: TaskRepository,
 
     override fun doTask(task: Task) {
         if (featureToggleService.isEnabled("familie.ef.iverksett.opprett-oppgaver-barnsomfylleraar")) {
-            opprettOppgaveForBarnService.opprettOppgaverForAlleBarnSomFyller(INNEN_ANTALL_UKER)
+            /** TODO : Sende med dato for siste kjøring */
+            opprettOppgaveForBarnService.opprettOppgaverForAlleBarnSomFyller(INNEN_ANTALL_UKER, LocalDate.now().minusWeeks(1))
         }
     }
 

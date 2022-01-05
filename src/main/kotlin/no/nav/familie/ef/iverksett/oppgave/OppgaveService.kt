@@ -9,6 +9,7 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurde
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingOpphørt
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -41,7 +42,8 @@ class OppgaveService(
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
-        val opprettOppgaveRequest = OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(iverksett, enhetsnummer, beskrivelse)
+        val opprettOppgaveRequest =
+                OppgaveUtil.opprettOppgaveRequest(iverksett, enhetsnummer, Oppgavetype.VurderHenvendelse, beskrivelse)
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
                ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }

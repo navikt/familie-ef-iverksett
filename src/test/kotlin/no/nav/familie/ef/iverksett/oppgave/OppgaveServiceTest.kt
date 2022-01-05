@@ -34,11 +34,7 @@ internal class OppgaveServiceTest {
         mockkObject(OppgaveBeskrivelse)
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns mockk()
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) } returns ""
-        every { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
-        every { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) } returns ""
-        every { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) } returns ""
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any()) } returns mockk()
     }
 
     @Test
@@ -210,7 +206,6 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `innvilget førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingInnvilget`() {
         val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -226,7 +221,6 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `avslått førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingAvslått`() {
         val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -242,7 +236,6 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `innvilget revurdering, forvent kall til beskrivelseRevurderingInnvilget`() {
         val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -258,7 +251,6 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `opphørt revurdering, forvent kall til beskrivelseRevurderingOpphørt`() {
         val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -276,7 +268,6 @@ internal class OppgaveServiceTest {
     internal fun `revurdering opphør, forvent at andel med maks tom dato blir sendt som arg til beskrivelse`() {
         val iverksett = mockk<Iverksett>()
         val opphørsdato = slot<LocalDate>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
