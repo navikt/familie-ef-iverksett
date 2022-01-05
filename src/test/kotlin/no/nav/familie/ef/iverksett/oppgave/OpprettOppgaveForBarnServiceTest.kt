@@ -13,6 +13,7 @@ import no.nav.familie.util.FnrGenerator
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.util.UUID
 
 /**
  * Vi tar utgangspunkt i at en periode er [fra, til], dvs fra og med frem til og med, ved sjekk om en fødselsdato slår til i løpet
@@ -36,6 +37,7 @@ internal class OpprettOppgaveForBarnServiceTest {
         mockkObject(OppgaveBeskrivelse)
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
         every { iverksett.søker.personIdent } returns "1234567890"
+        every { iverksett.behandling.behandlingId } returns UUID.randomUUID()
         every { oppgaveClient.hentOppgaver(any()) } returns emptyList()
         every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any()) } returns mockk()
     }

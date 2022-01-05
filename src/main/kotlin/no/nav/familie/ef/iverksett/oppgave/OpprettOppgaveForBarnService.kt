@@ -26,10 +26,10 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
             iverksett.søker.barn.forEach { barn ->
                 barn.personIdent?.let {
                     opprettFødselsnummer(it)?.let {
-                        if (barnBlirEttÅr(innenAntallUker, referanseDato, it)) {
+                        if (barnBlirEttÅr(innenAntallUker, referanseDato, it.fødselsdato)) {
                             opprettOppgaveForBarn(iverksett, OppgaveBeskrivelse.beskrivelseBarnFyllerEttÅr())
                             secureLogger.info("Opprettet innhentDokumentasjon-oppgave for barn med behandlingId=${iverksett.behandling.behandlingId}")
-                        } else if (barnBlirSeksMnd(innenAntallUker, referanseDato, it)) {
+                        } else if (barnBlirSeksMnd(innenAntallUker, referanseDato, it.fødselsdato)) {
                             opprettOppgaveForBarn(iverksett, OppgaveBeskrivelse.beskrivelseBarnBlirSeksMnd())
                             secureLogger.info("Opprettet innhentDokumentasjons-oppgave for barn med behandlingId=${iverksett.behandling.behandlingId}")
                         }
@@ -67,18 +67,18 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
         return oppgaveTyper?.contains(Oppgavetype.InnhentDokumentasjon.name) ?: false
     }
 
-    private fun barnBlirEttÅr(innenAntallUker: Long, referanseDato: LocalDate, fødselsnummer: Fødselsnummer): Boolean {
-        return barnErUnder(12L, referanseDato, fødselsnummer)
-               && LocalDate.now().plusWeeks(innenAntallUker) >= fødselsnummer.fødselsdato.plusYears(1)
+    private fun barnBlirEttÅr(innenAntallUker: Long, referanseDato: LocalDate, fødselsdato: LocalDate): Boolean {
+        return barnErUnder(12L, referanseDato, fødselsdato)
+               && LocalDate.now().plusWeeks(innenAntallUker) >= fødselsdato.plusYears(1)
     }
 
-    private fun barnBlirSeksMnd(innenAntallUker: Long, referanseDato: LocalDate, fødselsnummer: Fødselsnummer): Boolean {
-        return barnErUnder(6L, referanseDato, fødselsnummer)
-               && LocalDate.now().plusWeeks(innenAntallUker) >= fødselsnummer.fødselsdato.plusMonths(6L)
+    private fun barnBlirSeksMnd(innenAntallUker: Long, referanseDato: LocalDate, fødselsdato : LocalDate): Boolean {
+        return barnErUnder(6L, referanseDato, fødselsdato)
+               && LocalDate.now().plusWeeks(innenAntallUker) >= fødselsdato.plusMonths(6L)
     }
 
-    private fun barnErUnder(antallMnd: Long, referanseDato: LocalDate, fødselsnummer: Fødselsnummer): Boolean {
-        return referanseDato <= fødselsnummer.fødselsdato.plusMonths(antallMnd)
+    private fun barnErUnder(antallMnd: Long, referanseDato: LocalDate, fødselsdato: LocalDate): Boolean {
+        return referanseDato <= fødselsdato.plusMonths(antallMnd)
     }
 
     private fun referanseDato(innenAntallUker: Long, sisteKjøring: LocalDate): LocalDate {
