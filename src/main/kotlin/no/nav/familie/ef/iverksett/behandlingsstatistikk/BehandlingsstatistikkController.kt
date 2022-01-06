@@ -15,6 +15,6 @@ class BehandlingsstatistikkController(private val behandlingsstatistikkService: 
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendBehandlingstatistikk(@RequestBody behandlingStatistikk: BehandlingsstatistikkDto) {
-        behandlingsstatistikkService.lagreBehandlingstatistikk(behandlingStatistikk)
+        behandlingsstatistikkService.sendBehandlingstatistikk(behandlingStatistikk)
     }
 }

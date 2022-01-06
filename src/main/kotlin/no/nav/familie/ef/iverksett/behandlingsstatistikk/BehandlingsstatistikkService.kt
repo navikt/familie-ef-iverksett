@@ -9,19 +9,11 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
-class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer,
-                                   private val behandlingsstatistikkRepository: BehandlingsstatistikkRepository
-) {
+class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer) {
 
     @Transactional
-    fun lagreBehandlingstatistikk(behandlingsstatistikkDto: BehandlingsstatistikkDto) {
+    fun sendBehandlingstatistikk(behandlingsstatistikkDto: BehandlingsstatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingsstatistikkDto)
-        behandlingsstatistikkRepository.insert(
-                Behandlingsstatistikk(behandlingId = behandlingsstatistikkDto.behandlingId,
-                                      behandlingDvh = behandlingDVH,
-                                      hendelse = behandlingsstatistikkDto.hendelse
-                )
-        )
         behandlingsstatistikkProducer.sendBehandling(behandlingDVH)
     }
 
