@@ -22,14 +22,14 @@ class TaskType(
 fun hovedflyt() = listOf(
         TaskType(OpprettTilbakekrevingTask.TYPE),
         TaskType(IverksettMotOppdragTask.TYPE),
-        TaskType(VentePåStatusFraØkonomiTask.TYPE, 20),
+        TaskType(VentePåStatusFraØkonomiTask.TYPE, 20), // går ikke videre ved migrering
         TaskType(JournalførVedtaksbrevTask.TYPE),
         TaskType(DistribuerVedtaksbrevTask.TYPE),
 )
 
 fun publiseringsflyt() = listOf(
     TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
-    TaskType(SendPerioderTilInfotrygdTask.TYPE),
+    TaskType(SendPerioderTilInfotrygdTask.TYPE), // går ikke videre ved migrering
     TaskType(SendFattetVedtakTilArenaTask.TYPE),
     TaskType(PubliserVedtakTilKafkaTask.TYPE),
     TaskType(OpprettOppfølgingsOppgaveTask.TYPE),

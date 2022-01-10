@@ -5,10 +5,12 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -28,6 +30,8 @@ class VentePåStatusFraØkonomiTask(
         private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
@@ -45,7 +49,14 @@ class VentePåStatusFraØkonomiTask(
     }
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNesteTask())
+        val behandlingId = UUID.fromString(task.payload)
+        val iverksett = iverksettingRepository.hent(behandlingId)
+
+        if (iverksett.erMigrering()) {
+            logger.info("Journalfør ikke vedtaksbrev for behandling=$behandlingId då årsaken er migrering")
+        } else {
+            taskRepository.save(task.opprettNesteTask())
+        }
     }
 
     companion object {
