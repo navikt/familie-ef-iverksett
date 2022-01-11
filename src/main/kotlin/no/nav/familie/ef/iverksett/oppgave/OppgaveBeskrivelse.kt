@@ -3,7 +3,6 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object OppgaveBeskrivelse {
@@ -26,14 +25,6 @@ object OppgaveBeskrivelse {
         return opphørsdato?.let {
             "Overgangsstønad er stanset fra ${opphørsdato.toReadable()}."
         } ?: "Overgangsstønad er stanset"
-    }
-
-    fun beskrivelseBarnFyllerEttÅr(): String {
-        return "Barn 1 år. Vurder aktivitetsplikten."
-    }
-
-    fun beskrivelseBarnBlirSeksMnd(): String {
-        return "Barn 1/2 år. Send varsel om aktivitetsplikt."
     }
 
     private fun LocalDate.toReadable(): String {
