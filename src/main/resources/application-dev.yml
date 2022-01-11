@@ -11,4 +11,8 @@ ENSLIG_FORSORGER_BEHANDLING_TOPIC: teamfamilie.aapen-ensligforsorger-behandling-
 
 # Q1
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner-q1.dev-fss-pub.nais.io
-FAMILIE_INTEGRASJONER_SCOPE: api://dev-fss.teamfamilie.familie-integrasjoner-q1/.default
+no.nav.security.jwt:
+  client:
+    registration:
+      familie-dokarkiv:
+        scope: api://dev-fss.teamfamilie.familie-integrasjoner-q1/.default
