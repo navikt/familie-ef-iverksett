@@ -1,99 +1,48 @@
 package no.nav.familie.ef.iverksett.oppgave
 
+import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.kontrakter.ef.søknad.Fødselsnummer
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 @Service
 class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
-                                   private val iverksettingRepository: IverksettingRepository) {
+                                   private val iverksettingRepository: IverksettingRepository,
+                                   private val familieIntegrasjonerClient: FamilieIntegrasjonerClient) {
 
-    private val secureLogger = LoggerFactory.getLogger("secureLogger")
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun opprettOppgaverForAlleBarnSomFyller(innenAntallUker: Long, sisteKjøring: LocalDate) {
-        val referanseDato = referanseDato(innenAntallUker, sisteKjøring)
-        val behandlinger = iverksettingRepository.hentAlleBehandlinger()
-        behandlinger.forEach { iverksett ->
-            iverksett.søker.barn.forEach { barn ->
-                barn.personIdent?.let {
-                    opprettFødselsnummer(it)?.let {
-                        if (barnBlirEttÅr(innenAntallUker, referanseDato, it.fødselsdato)) {
-                            opprettOppgaveForBarn(iverksett, OppgaveBeskrivelse.beskrivelseBarnFyllerEttÅr())
-                            secureLogger.info("Opprettet innhentDokumentasjon-oppgave for barn med behandlingId=${iverksett.behandling.behandlingId}")
-                        } else if (barnBlirSeksMnd(innenAntallUker, referanseDato, it.fødselsdato)) {
-                            opprettOppgaveForBarn(iverksett, OppgaveBeskrivelse.beskrivelseBarnBlirSeksMnd())
-                            secureLogger.info("Opprettet innhentDokumentasjons-oppgave for barn med behandlingId=${iverksett.behandling.behandlingId}")
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun opprettFødselsnummer(fødselsnummer: String): Fødselsnummer? {
-        return try {
-            Fødselsnummer(fødselsnummer)
-        } catch (ex: IllegalArgumentException) {
-            secureLogger.warn("Kunne ikke opprette Fødselsnummer objekt av barn med fødselsnummer=$fødselsnummer")
-            null
-        }
-    }
-
-    private fun opprettOppgaveForBarn(iverksett: Iverksett, beskrivelse: String) {
-        if (innhentDokumentasjonOppgaveFinnes(iverksett)) {
-            logger.info("Oppgave av type innhent dokumentasjon finnes allerede")
+    fun opprettOppgaveForBarnSomFyllerAar(oppgaveForBarn: OppgaveForBarn) {
+        val behandling = iverksettingRepository.hent(oppgaveForBarn.id)
+        if (innhentDokumentasjonOppgaveFinnes(behandling, oppgaveForBarn)) {
+            logger.info("Oppgave av type innhent dokumentasjon finnes allerede for behandlingId=${oppgaveForBarn.id}")
             return
         }
-        val oppgaveId = oppgaveClient.opprettOppgave(OppgaveUtil.opprettOppgaveRequest(iverksett,
-                                                                                       enhetForInnhentDokumentasjon(iverksett),
+        val oppgaveId = oppgaveClient.opprettOppgave(OppgaveUtil.opprettOppgaveRequest(behandling,
+                                                                                       enhetForInnhentDokumentasjon(behandling.søker.personIdent),
                                                                                        Oppgavetype.InnhentDokumentasjon,
-                                                                                       beskrivelse))?.let { it }
-                        ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${iverksett.behandling.behandlingId}")
+                                                                                       oppgaveForBarn.beskrivelse))?.let { it }
+                        ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.id}")
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId")
     }
 
-    private fun innhentDokumentasjonOppgaveFinnes(iverksett: Iverksett): Boolean {
-        val finnOppgaveRequest = FinnOppgaveRequest(tema = Tema.ENF, aktørId = iverksett.søker.personIdent)
-        val oppgaveTyper = oppgaveClient.hentOppgaver(finnOppgaveRequest)?.map { it.oppgavetype }
-        return oppgaveTyper?.contains(Oppgavetype.InnhentDokumentasjon.name) ?: false
+    private fun innhentDokumentasjonOppgaveFinnes(iverksett: Iverksett, oppgaveForBarn: OppgaveForBarn): Boolean {
+        val finnOppgaveRequest = FinnOppgaveRequest(tema = Tema.ENF,
+                                                    aktørId = iverksett.søker.personIdent,
+                                                    oppgavetype = Oppgavetype.InnhentDokumentasjon)
+        val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
+                ?.mapNotNull { it.beskrivelse }
+                ?.map { it.trim().lowercase() }
+        return oppgaveBeskrivelser?.contains(oppgaveForBarn.beskrivelse.trim().lowercase()) ?: false
     }
 
-    private fun barnBlirEttÅr(innenAntallUker: Long, referanseDato: LocalDate, fødselsdato: LocalDate): Boolean {
-        return barnErUnder(12L, referanseDato, fødselsdato)
-               && LocalDate.now().plusWeeks(innenAntallUker) >= fødselsdato.plusYears(1)
-    }
-
-    private fun barnBlirSeksMnd(innenAntallUker: Long, referanseDato: LocalDate, fødselsdato : LocalDate): Boolean {
-        return barnErUnder(6L, referanseDato, fødselsdato)
-               && LocalDate.now().plusWeeks(innenAntallUker) >= fødselsdato.plusMonths(6L)
-    }
-
-    private fun barnErUnder(antallMnd: Long, referanseDato: LocalDate, fødselsdato: LocalDate): Boolean {
-        return referanseDato <= fødselsdato.plusMonths(antallMnd)
-    }
-
-    private fun referanseDato(innenAntallUker: Long, sisteKjøring: LocalDate): LocalDate {
-        val periodeGap = ChronoUnit.DAYS.between(sisteKjøring, LocalDate.now()) - innenAntallUker * 7
-        if (periodeGap > 0) {
-            return LocalDate.now().minusDays(periodeGap)
-        }
-        return LocalDate.now()
-    }
-
-    private fun enhetForInnhentDokumentasjon(iverksett: Iverksett): Enhet {
-
-        /** TODO : Legg til sjekk for egenansatte (4483 hvis egenansatt) */
-
-        return Enhet("4489", "")
+    private fun enhetForInnhentDokumentasjon(personIdent: String): Enhet {
+        return familieIntegrasjonerClient.hentBehandlendeEnhetForBehandlingMedRelasjoner(personIdent).first()
     }
 
 }
