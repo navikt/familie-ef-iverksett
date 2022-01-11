@@ -87,19 +87,4 @@ class IverksettingRepositoryTest : ServerTest() {
         Assertions.assertThrows(IllegalStateException::class.java) { iverksettingRepository.hentAvEksternId(iverksett.behandling.eksternId) }
     }
 
-    @Test
-    fun `hent et sett med iverksettinger, forvent at alle blir hentet`() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
-        val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
-        val n = 10
-        (1..n).forEach {
-            iverksettingRepository.lagre(
-                    UUID.randomUUID(),
-                    iverksett,
-                    opprettBrev()
-            )
-        }
-        val iverksettinger = iverksettingRepository.hentAlleBehandlinger()
-        assertThat(iverksettinger).hasSize(n)
-    }
 }
