@@ -22,7 +22,6 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.temporal.TemporalAdjusters
 import java.util.UUID
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
 
@@ -102,20 +101,21 @@ fun simuleringsoppsummering(
                 tomSisteUtbetaling = tom
         )
 
-fun posteringer(fraDato: YearMonth,
+fun posteringer(måned: YearMonth = januar(2021),
                 antallMåneder: Int = 1,
                 beløp: Int = 5000,
-                posteringstype: PosteringType = PosteringType.YTELSE
+                posteringstype: PosteringType = PosteringType.YTELSE,
+                betalingstype: BetalingType = BetalingType.DEBIT
 
 ): List<SimulertPostering> = MutableList(antallMåneder) { index ->
     SimulertPostering(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
-                      fom = fraDato.plusMonths(index.toLong()).atDay(1),
-                      tom = fraDato.plusMonths(index.toLong()).atEndOfMonth(),
-                      betalingType = BetalingType.DEBIT,
+                      fom = måned.plusMonths(index.toLong()).atDay(1),
+                      tom = måned.plusMonths(index.toLong()).atEndOfMonth(),
+                      betalingType = betalingstype,
                       beløp = beløp.toBigDecimal(),
                       posteringType = posteringstype,
-                      forfallsdato = fraDato.plusMonths(index.toLong()).atEndOfMonth(),
-                      utenInntrekk = false)
+                      forfallsdato = måned.plusMonths(index.toLong()).atEndOfMonth(), // Forfallsdato i bank (dagen går til brukeren). Det sendes til banken kanskje en uke i forveien
+                      utenInntrekk = false) // Brukes ikke for EF
 }
 
 fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, periode: Periode) =
@@ -127,6 +127,7 @@ fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, period
         )
 
 fun Int.januar(år: Int) = LocalDate.of(år, 1, this)
+fun Int.februar(år: Int) = LocalDate.of(år, 2, this)
 fun Int.august(år: Int) = LocalDate.of(år, 8, this)
 fun januar(år: Int) = YearMonth.of(år, 1)
 fun februar(år: Int) = YearMonth.of(år, 2)
