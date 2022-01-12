@@ -16,13 +16,25 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.Properties
 
 @Service
-class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
-                                   private val iverksettingRepository: IverksettingRepository,
-                                   private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-                                   private val oppgaveForBarnTask: OpprettOppgaveForBarnTask,
-                                   private val taskRepository: TaskRepository) {
+class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
+                                    private val iverksettingRepository: IverksettingRepository,
+                                    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+                                    private val taskRepository: TaskRepository) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    @Transactional
+    fun opprettTaskerForBarn(oppgaverForBarn: List<OppgaveForBarn>) {
+        oppgaverForBarn.forEach {
+            try {
+                taskRepository.save(Task(OpprettOppgaveForBarnTask.TYPE,
+                                         objectMapper.writeValueAsString(it),
+                                         Properties()))
+            } catch (ex: Exception) {
+                logger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
+            }
+        }
+    }
 
     fun opprettOppgaveForBarnSomFyllerAar(oppgaveForBarn: OppgaveForBarn) {
         val behandling = iverksettingRepository.hent(oppgaveForBarn.behandlingId)
@@ -36,19 +48,6 @@ class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
                                                                                        oppgaveForBarn.beskrivelse))?.let { it }
                         ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId")
-    }
-
-    @Transactional
-    fun opprettTaskerForBarn(oppgaverForBarn: List<OppgaveForBarn>) {
-        oppgaverForBarn.forEach {
-            try {
-                taskRepository.save(Task(OpprettOppgaveForBarnTask.TYPE,
-                                         objectMapper.writeValueAsString(it),
-                                         Properties()))
-            } catch (ex: Exception) {
-                logger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
-            }
-        }
     }
 
     private fun innhentDokumentasjonOppgaveFinnes(iverksett: Iverksett, oppgaveForBarn: OppgaveForBarn): Boolean {

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
         taskStepType = OpprettOppgaveForBarnTask.TYPE,
         beskrivelse = "Oppretter oppgave for barn som fyller 1/2 eller 1 år")
 class OpprettOppgaveForBarnTask(val taskRepository: TaskRepository,
-                                val opprettOppgaveForBarnService: OpprettOppgaveForBarnService,
+                                val opprettOppgaveForBarnService: OpprettOppgaverForBarnService,
                                 val featureToggleService: FeatureToggleService) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)

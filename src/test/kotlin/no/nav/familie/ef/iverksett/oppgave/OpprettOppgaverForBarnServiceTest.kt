@@ -10,18 +10,20 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-internal class OpprettOppgaveForBarnServiceTest {
+internal class OpprettOppgaverForBarnServiceTest {
 
     val iverksett = mockk<Iverksett>()
     val iverksettingRepository = mockk<IverksettingRepository>()
     val oppgaveClient = mockk<OppgaveClient>()
     val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
+    val taskRepository = mockk<TaskRepository>()
     val opprettOppgaveForBarnService =
-            OpprettOppgaveForBarnService(oppgaveClient, iverksettingRepository, familieIntegrasjonerClient)
+            OpprettOppgaverForBarnService(oppgaveClient, iverksettingRepository, familieIntegrasjonerClient, taskRepository)
 
     @BeforeEach
     fun init() {
@@ -30,6 +32,7 @@ internal class OpprettOppgaveForBarnServiceTest {
         every { iverksett.søker.personIdent } returns "1234567890"
         every { iverksett.behandling.behandlingId } returns UUID.randomUUID()
         every { iverksettingRepository.hent(any()) } returns iverksett
+        every { familieIntegrasjonerClient.hentAktørId(any()) } returns ""
         every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any()) } returns mockk()
     }
 

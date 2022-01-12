@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 )
 @ProtectedWithClaims(issuer = "azuread")
 class OpprettOppgaveForBarnTaskController(
-        private val oppgaveForBarnService: OpprettOppgaveForBarnService
+        private val oppgaveForBarnService: OpprettOppgaverForBarnService
 ) {
 
     @PostMapping("/oppgaverforbarn")
