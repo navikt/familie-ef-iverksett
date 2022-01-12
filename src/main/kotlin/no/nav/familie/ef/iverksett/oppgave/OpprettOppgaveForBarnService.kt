@@ -5,35 +5,56 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
+import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
+import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.domene.TaskRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.Properties
 
 @Service
 class OpprettOppgaveForBarnService(private val oppgaveClient: OppgaveClient,
                                    private val iverksettingRepository: IverksettingRepository,
-                                   private val familieIntegrasjonerClient: FamilieIntegrasjonerClient) {
+                                   private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+                                   private val oppgaveForBarnTask: OpprettOppgaveForBarnTask,
+                                   private val taskRepository: TaskRepository) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun opprettOppgaveForBarnSomFyllerAar(oppgaveForBarn: OppgaveForBarn) {
-        val behandling = iverksettingRepository.hent(oppgaveForBarn.id)
+        val behandling = iverksettingRepository.hent(oppgaveForBarn.behandlingId)
         if (innhentDokumentasjonOppgaveFinnes(behandling, oppgaveForBarn)) {
-            logger.info("Oppgave av type innhent dokumentasjon finnes allerede for behandlingId=${oppgaveForBarn.id}")
+            logger.info("Oppgave av type innhent dokumentasjon finnes allerede for behandlingId=${oppgaveForBarn.behandlingId}")
             return
         }
         val oppgaveId = oppgaveClient.opprettOppgave(OppgaveUtil.opprettOppgaveRequest(behandling,
                                                                                        enhetForInnhentDokumentasjon(behandling.søker.personIdent),
                                                                                        Oppgavetype.InnhentDokumentasjon,
                                                                                        oppgaveForBarn.beskrivelse))?.let { it }
-                        ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.id}")
+                        ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId")
     }
 
+    @Transactional
+    fun opprettTaskerForBarn(oppgaverForBarn: List<OppgaveForBarn>) {
+        oppgaverForBarn.forEach {
+            try {
+                taskRepository.save(Task(OpprettOppgaveForBarnTask.TYPE,
+                                         objectMapper.writeValueAsString(it),
+                                         Properties()))
+            } catch (ex: Exception) {
+                logger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
+            }
+        }
+    }
+
     private fun innhentDokumentasjonOppgaveFinnes(iverksett: Iverksett, oppgaveForBarn: OppgaveForBarn): Boolean {
+        val aktørId = familieIntegrasjonerClient.hentAktørId(iverksett.søker.personIdent)
         val finnOppgaveRequest = FinnOppgaveRequest(tema = Tema.ENF,
-                                                    aktørId = iverksett.søker.personIdent,
+                                                    aktørId = aktørId,
                                                     oppgavetype = Oppgavetype.InnhentDokumentasjon)
         val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
                 ?.mapNotNull { it.beskrivelse }
