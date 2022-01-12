@@ -22,8 +22,7 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
 
         runCatching {
             kafkaProducerService.send(topic, vedtakStatistikk.behandlingId.toString(), vedtakStatistikk.toJson())
-            logger.info("Vedtakstatistikk sent to Kafka")
-            secureLogger.info("$vedtakStatistikk sent to Kafka.")
+            logger.info("Vedtakstatistikk for behandling=${vedtakStatistikk.behandlingId} sent til Kafka")
         }.onFailure {
             val errorMessage = "Could not send vedtak to Kafka. Check secure logs for more information."
             logger.error(errorMessage)
