@@ -23,7 +23,7 @@ class FellesTilEksterneKontrakterEnumTest {
     @Test
     fun `for alle eksterne kontrakter enums, forvent fullstendig mapping fra familie kontrakter enums`() {
         Vedtaksresultat.values().forEach { Vedtak.valueOf(it.name) }
-        BehandlingÅrsak.values().forEach { BehandlingÅrsakEkstern.valueOf(it.name) }
+        BehandlingÅrsak.values().filter { it != BehandlingÅrsak.MIGRERING }.forEach { BehandlingÅrsakEkstern.valueOf(it.name) }
         BehandlingType.values().forEach { BehandlingTypeEkstern.valueOf(it.name) }
         Vilkårsresultat.values().forEach { VilkårsresultatEkstern.valueOf(it.name) }
         VedtaksperiodeType.values().forEach { VedtakPeriodeTypeEkstern.valueOf(it.name) }
