@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.util.medContentTypeJsonUTF8
 import no.nav.familie.http.client.AbstractRestClient
 import no.nav.familie.kontrakter.felles.Ressurs
+import no.nav.familie.kontrakter.felles.getDataOrThrow
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveResponseDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
@@ -23,7 +24,7 @@ class OppgaveClient(
 
     val oppgaveUrl = "$integrasjonUrl/api/oppgave"
 
-    fun hentOppgaver(finnOppgaveRequest: FinnOppgaveRequest): List<Oppgave>? {
+    fun hentOppgaver(finnOppgaveRequest: FinnOppgaveRequest): List<Oppgave> {
         val opprettOppgaveUri = URI.create("$oppgaveUrl/oppgave/v4")
         val response =
                 postForEntity<Ressurs<FinnOppgaveResponseDto>>(
@@ -31,7 +32,7 @@ class OppgaveClient(
                         finnOppgaveRequest,
                         HttpHeaders().medContentTypeJsonUTF8()
                 )
-        return response.data?.oppgaver
+        return response.getDataOrThrow().oppgaver
     }
 
     fun opprettOppgave(opprettOppgaveRequest: OpprettOppgaveRequest): Long? {
