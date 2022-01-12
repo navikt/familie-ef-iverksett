@@ -30,15 +30,13 @@ import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 
 object BehandlingDVHMapper {
 
-    fun map(iverksett: Iverksett): BehandlingDVH {
-        return BehandlingDVH(fagsakId = iverksett.fagsak.fagsakId.toString(),
-                             behandlingId = iverksett.behandling.behandlingId.toString(),
-                             relatertBehandlingId = iverksett.behandling.forrigeBehandlingId?.toString(),
-                             adressebeskyttelse = iverksett.søker.adressebeskyttelse
-                                     ?.let { Adressebeskyttelse.valueOf(it.name) },
+    fun map(iverksett: Iverksett, forrigeIverksett: Iverksett?): BehandlingDVH {
+        return BehandlingDVH(fagsakId = iverksett.fagsak.eksternId,
+                             behandlingId = iverksett.behandling.eksternId,
+                             relatertBehandlingId = forrigeIverksett?.behandling?.eksternId,
+                             adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let { Adressebeskyttelse.valueOf(it.name) },
                              tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")),
-                             vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger
-                                     .map { mapTilVilkårsvurderinger(it) },
+                             vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map { mapTilVilkårsvurderinger(it) },
                              person = mapTilPerson(personIdent = iverksett.søker.personIdent),
                              barn = iverksett.søker.barn.map { mapTilBarn(it) },
                              behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
@@ -54,10 +52,9 @@ object BehandlingDVHMapper {
                              aktivitetskrav = Aktivitetskrav(
                                      aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
                                      harSagtOppArbeidsforhold = VilkårsvurderingUtil
-                                             .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling
-                                                                                                .vilkårsvurderinger)
+                                             .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger)
                              ),
-                             funksjonellId = iverksett.behandling.eksternId.toString(),
+                             funksjonellId = iverksett.behandling.eksternId,
                              stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name))
 
     }
@@ -67,16 +64,15 @@ object BehandlingDVHMapper {
                                  eksternFagsakId: Long,
                                  søker: Søker): List<Utbetaling> {
         return tilkjentYtelse.andelerTilkjentYtelse.map {
-            Utbetaling(
-                    beløp = it.beløp,
-                    samordningsfradrag = it.samordningsfradrag,
-                    inntekt = it.inntekt,
-                    inntektsreduksjon = it.inntektsreduksjon,
-                    fraOgMed = it.fraOgMed,
-                    tilOgMed = it.tilOgMed,
-                    Utbetalingsdetalj(gjelderPerson = mapTilPerson(personIdent = søker.personIdent),
-                                      klassekode = stønadsType.tilKlassifisering(),
-                                      delytelseId = eksternFagsakId.toString() + (it.periodeId ?: "")))
+            Utbetaling(beløp = it.beløp,
+                       samordningsfradrag = it.samordningsfradrag,
+                       inntekt = it.inntekt,
+                       inntektsreduksjon = it.inntektsreduksjon,
+                       fraOgMed = it.fraOgMed,
+                       tilOgMed = it.tilOgMed,
+                       Utbetalingsdetalj(gjelderPerson = mapTilPerson(personIdent = søker.personIdent),
+                                         klassekode = stønadsType.tilKlassifisering(),
+                                         delytelseId = eksternFagsakId.toString() + (it.periodeId ?: "")))
         }
     }
 

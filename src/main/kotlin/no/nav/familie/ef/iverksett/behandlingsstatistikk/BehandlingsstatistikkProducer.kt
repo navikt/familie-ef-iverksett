@@ -20,7 +20,7 @@ class BehandlingsstatistikkProducer(private val kafkaProducerService: KafkaProdu
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nBehandlingstatistikk: {}", topic, behandlingDvh)
         runCatching {
-            kafkaProducerService.send(topic, behandlingDvh.behandlingId, behandlingDvh.toJson())
+            kafkaProducerService.send(topic, behandlingDvh.behandlingId.toString(), behandlingDvh.toJson())
             logger.info("Behandlingstatistikk for behandling=${behandlingDvh.behandlingId} " +
                         "behandlingStatus=${behandlingDvh.behandlingStatus} sent til Kafka")
         }.onFailure {
