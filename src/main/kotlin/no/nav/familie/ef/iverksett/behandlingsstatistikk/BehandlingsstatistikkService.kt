@@ -9,26 +9,18 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
-class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer,
-                                   private val behandlingsstatistikkRepository: BehandlingsstatistikkRepository
-) {
+class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer) {
 
     @Transactional
-    fun lagreBehandlingstatistikk(behandlingsstatistikkDto: BehandlingsstatistikkDto) {
+    fun sendBehandlingstatistikk(behandlingsstatistikkDto: BehandlingsstatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingsstatistikkDto)
-        behandlingsstatistikkRepository.insert(
-                Behandlingsstatistikk(behandlingId = behandlingsstatistikkDto.behandlingId,
-                                      behandlingDvh = behandlingDVH,
-                                      hendelse = behandlingsstatistikkDto.hendelse
-                )
-        )
         behandlingsstatistikkProducer.sendBehandling(behandlingDVH)
     }
 
     private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingsstatistikkDto): BehandlingDVH {
 
         val tekniskTid = ZonedDateTime.now(ZoneId.of("Europe/Oslo"))
-        return BehandlingDVH(behandlingId = behandlingstatistikk.behandlingId.toString(),
+        return BehandlingDVH(behandlingId = behandlingstatistikk.eksternBehandlingId,
                              sakId = behandlingstatistikk.eksternFagsakId,
                              personIdent = behandlingstatistikk.personIdent,
                              registrertTid = behandlingstatistikk.behandlingOpprettetTidspunkt
@@ -37,19 +29,15 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                              tekniskTid = tekniskTid,
                              behandlingStatus = behandlingstatistikk.hendelse.name,
                              opprettetAv = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                 behandlingstatistikk.gjeldendeSaksbehandlerId
-                             ),
+                                                                 behandlingstatistikk.gjeldendeSaksbehandlerId),
                              saksnummer = behandlingstatistikk.eksternFagsakId,
                              mottattTid = behandlingstatistikk.henvendelseTidspunkt,
                              saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId
-                             ),
+                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId),
                              opprettetEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                    behandlingstatistikk.opprettetEnhet
-                             ),
+                                                                    behandlingstatistikk.opprettetEnhet),
                              ansvarligEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                    behandlingstatistikk.ansvarligEnhet
-                             ),
+                                                                    behandlingstatistikk.ansvarligEnhet),
                              behandlingMetode = "MANUELL",
                              avsender = "NAV enslig forelder",
                              behandlingType = behandlingstatistikk.behandlingstype.name,
@@ -58,16 +46,14 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                              resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
                              ansvarligBeslutter = if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse)
                                  sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                       behandlingstatistikk.gjeldendeSaksbehandlerId
-                                 ) else null,
+                                                       behandlingstatistikk.gjeldendeSaksbehandlerId) else null,
                              vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse)
                                  behandlingstatistikk.hendelseTidspunkt else null,
                              ferdigBehandletTid = if (Hendelse.FERDIG == behandlingstatistikk.hendelse)
                                  behandlingstatistikk.hendelseTidspunkt else null,
                              totrinnsbehandling = true,
                              sakUtland = "Nasjonal",
-                             relatertBehandlingId = behandlingstatistikk.relatertBehandlingId.toString()
-        )
+                             relatertBehandlingId = behandlingstatistikk.relatertEksternBehandlingId)
 
     }
 
