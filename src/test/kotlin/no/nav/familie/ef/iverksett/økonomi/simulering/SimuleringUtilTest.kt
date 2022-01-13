@@ -153,26 +153,6 @@ internal class SimuleringUtilTest {
         Assertions.assertEquals(BigDecimal.valueOf(-196), simuleringsperioder[0].resultat)
     }
 
-    @Ignore
-    fun `Test 'nytt beløp', 'tidligere utbetalt' og 'resultat' for simuleringsperiode med reduksjon i feilutbetaling`() {
-        val posteringer =
-                posteringer(juli(2021), beløp = 100, posteringstype = YTELSE) +
-                posteringer(juli(2021), beløp = 100, posteringstype = YTELSE) +
-                posteringer(juli(2021), beløp = -99, posteringstype = YTELSE) +
-                posteringer(juli(2021), beløp = -99, posteringstype = YTELSE) +
-                posteringer(juli(2021), beløp = 98, posteringstype = FEILUTBETALING) +
-                posteringer(juli(2021), beløp = -99, posteringstype = FEILUTBETALING)
-
-        val simuleringsperioder = grupperPosteringerEtterDato(
-                posteringer.tilSimuleringMottakere())
-
-        Assertions.assertEquals(1, simuleringsperioder.size)
-
-        Assertions.assertEquals(BigDecimal.valueOf(200), simuleringsperioder[0].nyttBeløp)
-        Assertions.assertEquals(BigDecimal.valueOf(197), simuleringsperioder[0].tidligereUtbetalt)
-        Assertions.assertEquals(BigDecimal.valueOf(1), simuleringsperioder[0].resultat)
-    }
-
     val simulertePosteringerMedNegativFeilutbetaling =
             posteringer(juli(2021), beløp = -500, posteringstype = FEILUTBETALING) +
             posteringer(juli(2021), beløp = -2000, posteringstype = YTELSE) +
