@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(
-        path = ["/api/iverksett/task/barnfylleraar"],
+        path = ["/oppgave-for-barns-alder"],
         produces = [MediaType.APPLICATION_JSON_VALUE]
 )
 @ProtectedWithClaims(issuer = "azuread")
@@ -19,7 +19,7 @@ class OpprettOppgaveForBarnTaskController(
         private val oppgaveForBarnService: OpprettOppgaverForBarnService
 ) {
 
-    @PostMapping("/oppgaverforbarn")
+    @PostMapping("/opprett")
     fun opprettTask(@RequestBody oppgaverForBarn: OppgaverForBarn): ResponseEntity<Unit> {
         oppgaveForBarnService.opprettTaskerForBarn(oppgaverForBarn.oppgaverForBarn)
         return ResponseEntity(HttpStatus.OK)
