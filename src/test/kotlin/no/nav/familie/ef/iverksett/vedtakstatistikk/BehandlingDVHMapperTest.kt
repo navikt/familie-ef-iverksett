@@ -108,13 +108,12 @@ internal class BehandlingDVHMapperTest {
                                                                           tilOgMed = LocalDate.of(2021, 10, 31))
                                                    ))
 
-                )
-        )
+                ), null)
 
         assertThat(behandlingDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
-        assertThat(behandlingDVH.fagsakId).isEqualTo(fagsakId.toString())
-        assertThat(behandlingDVH.behandlingId).isEqualTo(behandlingId.toString())
-        assertThat(behandlingDVH.funksjonellId).isEqualTo(eksternBehandlingId.toString())
+        assertThat(behandlingDVH.fagsakId).isEqualTo(eksternFagsakId)
+        assertThat(behandlingDVH.behandlingId).isEqualTo(eksternBehandlingId)
+        assertThat(behandlingDVH.funksjonellId).isEqualTo(eksternBehandlingId)
         assertThat(behandlingDVH.vedtaksperioder).hasSize(2)
         assertThat(behandlingDVH.utbetalinger).hasSize(2)
         assertThat(behandlingDVH.aktivitetskrav.aktivitetspliktInntrefferDato).isNull()

@@ -48,25 +48,25 @@ class VedtakstatistikkServiceTest {
         every { vedtakstatistikkKafkaProducer.sendVedtak(capture(behandlingDvhSlot)) } just Runs
 
         val iverksett = opprettIverksett(behandlingId)
-        vedtakstatistikkService.sendTilKafka(iverksett = iverksett)
+        vedtakstatistikkService.sendTilKafka(iverksett = iverksett, forrigeIverksett = null)
         verify(exactly = 1) { vedtakstatistikkKafkaProducer.sendVedtak(any()) }
 
-        val behandlingDVH = opprettBehandlingDVH(behandlingId = behandlingId.toString(),
-                                                 fagsakId = iverksett.fagsak.fagsakId.toString(),
+        val behandlingDVH = opprettBehandlingDVH(behandlingId = iverksett.behandling.eksternId,
+                                                 fagsakId = iverksett.fagsak.eksternId,
                                                  tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.toLocalDate())
         assertThat(behandlingDVH).isEqualTo(behandlingDvhSlot.captured)
     }
 
     @Test
     internal fun `map fra iverksettDtoEksempel til behandlingDVH`() {
-        val iverksettDtoJson: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
+        val iverksettDtoJson: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
 
         val iverksettDto = objectMapper.readValue<IverksettDto>(iverksettDtoJson)
         val iverksett = iverksettDto.toDomain()
 
         val behandlingDvhSlot = slot<BehandlingDVH>()
         every { vedtakstatistikkKafkaProducer.sendVedtak(capture(behandlingDvhSlot)) } just Runs
-        vedtakstatistikkService.sendTilKafka(iverksett)
+        vedtakstatistikkService.sendTilKafka(iverksett, null)
 
         assertThat(behandlingDvhSlot.captured).isNotNull
         assertThat(behandlingDvhSlot.captured.vilkårsvurderinger.size).isEqualTo(2)
@@ -76,8 +76,8 @@ class VedtakstatistikkServiceTest {
                 .isEqualTo(VilkårType.SAGT_OPP_ELLER_REDUSERT.name)
     }
 
-    private fun opprettBehandlingDVH(behandlingId: String,
-                                     fagsakId: String,
+    private fun opprettBehandlingDVH(behandlingId: Long,
+                                     fagsakId: Long,
                                      tidspunktVedtak: LocalDate): BehandlingDVH {
         return BehandlingDVH(fagsakId = fagsakId,
                              behandlingId = behandlingId,
@@ -108,7 +108,7 @@ class VedtakstatistikkServiceTest {
 
                              aktivitetskrav = Aktivitetskrav(aktivitetspliktInntrefferDato = null,
                                                              harSagtOppArbeidsforhold = true),
-                             funksjonellId = "9",
+                             funksjonellId = 9L,
                              stønadstype = StønadType.OVERGANGSSTØNAD)
     }
 }

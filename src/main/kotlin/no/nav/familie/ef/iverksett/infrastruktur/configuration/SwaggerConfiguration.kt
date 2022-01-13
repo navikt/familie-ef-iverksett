@@ -1,30 +1,33 @@
 package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
+import io.swagger.v3.oas.models.Components
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.info.Info
+import io.swagger.v3.oas.models.security.SecurityRequirement
+import io.swagger.v3.oas.models.security.SecurityScheme
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import springfox.documentation.builders.ApiInfoBuilder
-import springfox.documentation.builders.PathSelectors
-import springfox.documentation.service.ApiInfo
-import springfox.documentation.spi.DocumentationType
-import springfox.documentation.spring.web.plugins.Docket
-import java.util.function.Predicate
+
 
 @Configuration
 class SwaggerConfiguration {
 
+    private val bearer = "Bearer"
+
     @Bean
-    fun postsApi(): Docket {
-        return Docket(DocumentationType.SWAGGER_2).groupName("teamfamilie").apiInfo(apiInfo()).select().paths(postPaths()).build()
+    fun openApi(): OpenAPI {
+        return OpenAPI().info(Info().title("Familie ef sak api"))
+                .components(Components().addSecuritySchemes(bearer, bearerTokenSecurityScheme()))
+                .addSecurityItem(SecurityRequirement().addList(bearer, listOf("read", "write")))
     }
 
-    private fun postPaths(): Predicate<String> {
-        return PathSelectors.regex("/api.*")
-    }
-
-    private fun apiInfo(): ApiInfo {
-        return ApiInfoBuilder().title("Iverksett API").version("0.1")
-                .description("")
-                .build()
+    private fun bearerTokenSecurityScheme(): SecurityScheme {
+        return SecurityScheme()
+                .type(SecurityScheme.Type.APIKEY)
+                .scheme(bearer)
+                .bearerFormat("JWT")
+                .`in`(SecurityScheme.In.HEADER)
+                .name("Authorization")
     }
 
 }

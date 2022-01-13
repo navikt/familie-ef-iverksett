@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test
 class IverksettJsonTransformTest {
 
     @Test
-    fun `deserialiser JSON til IverksettDto, kall toDomain, forvent ingen unntak`() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/iverksettDtoEksempel.json")
+    fun `deserialiser JSON til IverksettDtoJson, kall toDomain, forvent likhet`() {
+        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksettJson = objectMapper.readValue<IverksettDto>(json)
         val iverksett = iverksettJson.toDomain()
         assertThat(iverksett).isNotNull()
@@ -21,9 +21,8 @@ class IverksettJsonTransformTest {
                 .isEqualTo(objectMapper.readTree(objectMapper.writeValueAsString(iverksettJson)))
     }
 
-
     @Test
-    fun `deserialiser JSON til Iverksett, kall toDomain, forvent ingen unntak`() {
+    fun `deserialiser JSON til Iverksett, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettEksempel.json")
         val iverksett = objectMapper.readValue<Iverksett>(json)
         assertThat(iverksett).isNotNull

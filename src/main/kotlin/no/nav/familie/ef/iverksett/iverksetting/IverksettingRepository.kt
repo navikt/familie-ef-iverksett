@@ -24,7 +24,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
     }
 
     fun lagreTekniskOpphør(behandlingId: UUID, tekniskOpphør: TekniskOpphør) {
-        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :tekniskopphørjson::JSON, :type, :eksternId)"
+        val sql = "INSERT INTO iverksett VALUES(:behandlingId, :tekniskOpphørJson::JSON, :type, :eksternId)"
         val tekniskOpphørString = objectMapper.writeValueAsString(tekniskOpphør)
 
         val mapSqlParameterSource = MapSqlParameterSource(
@@ -103,15 +103,6 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
         )
         return namedParameterJdbcTemplate.queryForJson(HENT_IVERKSETT_SQL, mapSqlParameterSource)
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
-    }
-
-    @Transactional
-    fun oppdaterData(): Int {
-        val sql = """
-            UPDATE iverksett SET data =
-            (SELECT REGEXP_REPLACE(data::TEXT, '(.*)(vedtaksdato":")(\d+-\d+-\d+)(.*)','\1vedtakstidspunkt":"\3T00:00:00\4')::JSON FROM iverksett)
-                """
-        return namedParameterJdbcTemplate.update(sql, MapSqlParameterSource())
     }
 
     // language=PostgreSQL

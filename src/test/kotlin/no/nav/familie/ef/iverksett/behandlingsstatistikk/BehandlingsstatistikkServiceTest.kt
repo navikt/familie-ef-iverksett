@@ -1,10 +1,13 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.slot
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettBehandlingsstatistikkDto
+import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -14,40 +17,38 @@ import java.util.UUID
 
 internal class BehandlingsstatistikkServiceTest {
 
-    private val behandlingstatistikkRepository = mockk<BehandlingsstatistikkRepository>()
     private val behandlingstatistikkProducer = mockk<BehandlingsstatistikkProducer>(relaxed = true)
     private val featureToggleService = mockk<FeatureToggleService>()
-    private val behandlingstatistikkService =
-            BehandlingsstatistikkService(behandlingstatistikkProducer, behandlingstatistikkRepository)
-    private val captureSlot = slot<Behandlingsstatistikk>()
+    private val behandlingstatistikkService = BehandlingsstatistikkService(behandlingstatistikkProducer)
+    private val captureSlot = slot<BehandlingDVH>()
 
     @BeforeEach
     fun setUp() {
         every { featureToggleService.isEnabled(any()) } returns true
-        every { behandlingstatistikkRepository.insert(capture(captureSlot)) }.answers { captureSlot.captured }
+        every { behandlingstatistikkProducer.sendBehandling(capture(captureSlot)) } just runs
     }
 
     @Test
-    fun `lagre BehandlingsstatistikkDto med hendelsestype MOTTATT, forvent likhet for det som lagres`() {
+    fun `sendBehandlingsstatistikkDto med hendelsestype MOTTATT, mappes korrekt for sending til DVH`() {
 
         val uuid = UUID.randomUUID()
         val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.MOTTATT, fortrolig = false)
 
-        behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikkDto)
+        behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
-        assertThat(captureSlot.captured.behandlingDvh.behandlingId).isEqualTo(behandlingStatistikkDto.behandlingId.toString())
-        assertThat(captureSlot.captured.behandlingDvh.personIdent).isEqualTo(behandlingStatistikkDto.personIdent)
-        assertThat(captureSlot.captured.behandlingDvh.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
-        assertThat(captureSlot.captured.behandlingDvh.saksnummer).isEqualTo(behandlingStatistikkDto.eksternFagsakId)
-        assertThat(captureSlot.captured.behandlingDvh.registrertTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
-        assertThat(captureSlot.captured.behandlingDvh.behandlingType).isEqualTo(behandlingStatistikkDto.behandlingstype.name)
-        assertThat(captureSlot.captured.behandlingDvh.ansvarligEnhet).isEqualTo(behandlingStatistikkDto.ansvarligEnhet)
-        assertThat(captureSlot.captured.behandlingDvh.opprettetEnhet).isEqualTo(behandlingStatistikkDto.opprettetEnhet)
-        assertThat(captureSlot.captured.behandlingDvh.sakYtelse).isEqualTo(behandlingStatistikkDto.stønadstype.name)
+        assertThat(captureSlot.captured.behandlingId).isEqualTo(behandlingStatistikkDto.eksternBehandlingId)
+        assertThat(captureSlot.captured.personIdent).isEqualTo(behandlingStatistikkDto.personIdent)
+        assertThat(captureSlot.captured.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
+        assertThat(captureSlot.captured.saksnummer).isEqualTo(behandlingStatistikkDto.eksternFagsakId)
+        assertThat(captureSlot.captured.registrertTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
+        assertThat(captureSlot.captured.behandlingType).isEqualTo(behandlingStatistikkDto.behandlingstype.name)
+        assertThat(captureSlot.captured.ansvarligEnhet).isEqualTo(behandlingStatistikkDto.ansvarligEnhet)
+        assertThat(captureSlot.captured.opprettetEnhet).isEqualTo(behandlingStatistikkDto.opprettetEnhet)
+        assertThat(captureSlot.captured.sakYtelse).isEqualTo(behandlingStatistikkDto.stønadstype.name)
     }
 
     @Test
-    fun `lagre BehandlingsstatistikkDto med hendelsestype PÅBEGYNT, forvent likhet for det som hentes og lagres`() {
+    fun `sendBehandlingsstatistikkDto med hendelsestype PÅBEGYNT, mappes korrekt for sending til DVH`() {
 
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
@@ -55,16 +56,16 @@ internal class BehandlingsstatistikkServiceTest {
         val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.PÅBEGYNT, fortrolig = false)
                 .copy(hendelseTidspunkt = endretTid, gjeldendeSaksbehandlerId = saksbehandler)
 
-        behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikkDto)
+        behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
-        assertThat(captureSlot.captured.behandlingDvh.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
-        assertThat(captureSlot.captured.behandlingDvh.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
-        assertThat(captureSlot.captured.behandlingDvh.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
-        assertThat(captureSlot.captured.behandlingDvh.behandlingStatus).isEqualTo(Hendelse.PÅBEGYNT.name)
+        assertThat(captureSlot.captured.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
+        assertThat(captureSlot.captured.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
+        assertThat(captureSlot.captured.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
+        assertThat(captureSlot.captured.behandlingStatus).isEqualTo(Hendelse.PÅBEGYNT.name)
     }
 
     @Test
-    fun `lagre BehandlingsstatistikkDto med hendelsestype VEDTATT, forvent likhet for det som hentes og lagres`() {
+    fun `sendBehandlingsstatistikkDto med hendelsestype VEDTATT, mappes korrekt for sending til DVH`() {
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
         val saksbehandler = "Saksbehandler som vedtar"
@@ -76,19 +77,19 @@ internal class BehandlingsstatistikkServiceTest {
                       behandlingResultat = behandlingResultat,
                       resultatBegrunnelse = resultatBegrunnelse)
 
-        behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikkDto)
+        behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
-        assertThat(captureSlot.captured.behandlingDvh.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
-        assertThat(captureSlot.captured.behandlingDvh.vedtakTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
-        assertThat(captureSlot.captured.behandlingDvh.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
-        assertThat(captureSlot.captured.behandlingDvh.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
-        assertThat(captureSlot.captured.behandlingDvh.behandlingStatus).isEqualTo(Hendelse.VEDTATT.name)
-        assertThat(captureSlot.captured.behandlingDvh.behandlingResultat).isEqualTo(behandlingStatistikkDto.behandlingResultat)
-        assertThat(captureSlot.captured.behandlingDvh.resultatBegrunnelse).isEqualTo(behandlingStatistikkDto.resultatBegrunnelse)
+        assertThat(captureSlot.captured.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
+        assertThat(captureSlot.captured.vedtakTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
+        assertThat(captureSlot.captured.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
+        assertThat(captureSlot.captured.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
+        assertThat(captureSlot.captured.behandlingStatus).isEqualTo(Hendelse.VEDTATT.name)
+        assertThat(captureSlot.captured.behandlingResultat).isEqualTo(behandlingStatistikkDto.behandlingResultat)
+        assertThat(captureSlot.captured.resultatBegrunnelse).isEqualTo(behandlingStatistikkDto.resultatBegrunnelse)
     }
 
     @Test
-    fun `lagre BehandlingsstatistikkDto med hendelsestype BESLUTTET, forvent likhet for det som hentes og lagres`() {
+    fun `sendBehandlingsstatistikkDto med hendelsestype BESLUTTET, mappes korrekt for sending til DVH`() {
 
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
@@ -101,31 +102,30 @@ internal class BehandlingsstatistikkServiceTest {
                       behandlingResultat = behandlingResultat,
                       resultatBegrunnelse = resultatBegrunnelse)
 
-        behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikkDto)
+        behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
-        assertThat(captureSlot.captured.behandlingDvh.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
-        assertThat(captureSlot.captured.behandlingDvh.ansvarligBeslutter)
-                .isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
-        assertThat(captureSlot.captured.behandlingDvh.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
-        assertThat(captureSlot.captured.behandlingDvh.behandlingStatus).isEqualTo(Hendelse.BESLUTTET.name)
-        assertThat(captureSlot.captured.behandlingDvh.behandlingResultat).isEqualTo(behandlingStatistikkDto.behandlingResultat)
-        assertThat(captureSlot.captured.behandlingDvh.resultatBegrunnelse).isEqualTo(behandlingStatistikkDto.resultatBegrunnelse)
+        assertThat(captureSlot.captured.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
+        assertThat(captureSlot.captured.ansvarligBeslutter).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
+        assertThat(captureSlot.captured.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
+        assertThat(captureSlot.captured.behandlingStatus).isEqualTo(Hendelse.BESLUTTET.name)
+        assertThat(captureSlot.captured.behandlingResultat).isEqualTo(behandlingStatistikkDto.behandlingResultat)
+        assertThat(captureSlot.captured.resultatBegrunnelse).isEqualTo(behandlingStatistikkDto.resultatBegrunnelse)
     }
 
     @Test
-    fun `lagre BehandlingsstatistikkDto med hendelsestype FERDIG, forvent likhet for det som hentes og lagres`() {
+    fun `sendBehandlingsstatistikkDto med hendelsestype FERDIG, mappes korrekt for sending til DVH`() {
 
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
         val behandlingStatistikkDto =
                 opprettBehandlingsstatistikkDto(uuid, Hendelse.FERDIG, fortrolig = false).copy(hendelseTidspunkt = endretTid)
 
-        behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikkDto)
+        behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
-        assertThat(captureSlot.captured.behandlingDvh.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
-        assertThat(captureSlot.captured.behandlingDvh.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
-        assertThat(captureSlot.captured.behandlingDvh.ferdigBehandletTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
-        assertThat(captureSlot.captured.behandlingDvh.behandlingStatus).isEqualTo(Hendelse.FERDIG.name)
+        assertThat(captureSlot.captured.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
+        assertThat(captureSlot.captured.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
+        assertThat(captureSlot.captured.ferdigBehandletTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
+        assertThat(captureSlot.captured.behandlingStatus).isEqualTo(Hendelse.FERDIG.name)
     }
 
     @Test
@@ -134,11 +134,11 @@ internal class BehandlingsstatistikkServiceTest {
         val uuid = UUID.randomUUID()
         val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.MOTTATT, fortrolig = true)
 
-        behandlingstatistikkService.lagreBehandlingstatistikk(behandlingStatistikkDto)
+        behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
-        assertThat(captureSlot.captured.behandlingDvh.opprettetAv).isEqualTo("-5")
-        assertThat(captureSlot.captured.behandlingDvh.opprettetEnhet).isEqualTo("-5")
-        assertThat(captureSlot.captured.behandlingDvh.ansvarligEnhet).isEqualTo("-5")
+        assertThat(captureSlot.captured.opprettetAv).isEqualTo("-5")
+        assertThat(captureSlot.captured.opprettetEnhet).isEqualTo("-5")
+        assertThat(captureSlot.captured.ansvarligEnhet).isEqualTo("-5")
 
     }
 

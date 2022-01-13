@@ -25,20 +25,7 @@ class VedtakstatistikkTestController(
 
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendStatistikk(@RequestBody data: IverksettDto) {
-        vedtakstatistikkService.sendTilKafka(data.toDomain())
-    }
-
-    private fun opprettTilkjentYtelse(): TilkjentYtelse {
-        return TilkjentYtelse(UUID.randomUUID(),
-                              andelerTilkjentYtelse = listOf(AndelTilkjentYtelse(beløp = 100,
-                                                                                 fraOgMed = LocalDate.now(),
-                                                                                 tilOgMed = LocalDate.now().plusDays(1),
-                                                                                 periodetype = Periodetype.MÅNED,
-                                                                                 inntekt = 100,
-                                                                                 samordningsfradrag = 0,
-                                                                                 inntektsreduksjon = 0,
-                                                                                 periodeId = 1L))
-        )
+        vedtakstatistikkService.sendTilKafka(data.toDomain(), null)
     }
 
 }

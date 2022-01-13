@@ -8,3 +8,11 @@ arena-mq:
 DEPLOY_ENV: dev
 ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-test
 ENSLIG_FORSORGER_BEHANDLING_TOPIC: teamfamilie.aapen-ensligforsorger-behandling-test
+
+# Q1
+FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner-q1.dev-fss-pub.nais.io
+no.nav.security.jwt:
+  client:
+    registration:
+      familie-dokarkiv:
+        scope: api://dev-fss.teamfamilie.familie-integrasjoner-q1/.default

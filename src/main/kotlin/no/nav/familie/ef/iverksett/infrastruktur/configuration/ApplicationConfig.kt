@@ -32,7 +32,7 @@ import java.time.temporal.ChronoUnit
 @ComponentScan("no.nav.familie.ef.iverksett", "no.nav.familie.prosessering", "no.nav.familie.sikkerhet", excludeFilters = [
     ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class])
 ])
-@EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger"])
+@EnableJwtTokenValidation(ignore = ["org.springframework", "org.springdoc"])
 @Import(RestTemplateAzure::class)
 @EnableOAuth2Client(cacheEnabled = true)
 @EnableScheduling
