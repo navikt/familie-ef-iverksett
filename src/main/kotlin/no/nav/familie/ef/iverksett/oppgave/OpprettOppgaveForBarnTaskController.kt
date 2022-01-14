@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.oppgave
 
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -20,8 +21,8 @@ class OpprettOppgaveForBarnTaskController(
 ) {
 
     @PostMapping("/opprett")
-    fun opprettTask(@RequestBody oppgaverForBarn: OppgaverForBarn): ResponseEntity<Unit> {
+    fun opprettTask(@RequestBody oppgaverForBarn: OppgaverForBarn): Ressurs<String> {
         oppgaveForBarnService.opprettTaskerForBarn(oppgaverForBarn.oppgaverForBarn)
-        return ResponseEntity(HttpStatus.OK)
+        return Ressurs.success("OK")
     }
 }
