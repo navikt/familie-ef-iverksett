@@ -57,7 +57,7 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
         val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
                 ?.mapNotNull { it.beskrivelse }
                 ?.map { it.trim().lowercase() }
-        return oppgaveBeskrivelser?.contains(oppgaveForBarn.beskrivelse.trim().lowercase()) ?: false
+        return oppgaveBeskrivelser.contains(oppgaveForBarn.beskrivelse.trim().lowercase())
     }
 
     private fun enhetForInnhentDokumentasjon(personIdent: String): Enhet {
