@@ -35,15 +35,20 @@ class OppgaveService(
     }
 
     fun opprettVurderHendelseOppgave(iverksett: Iverksett): Long {
-        val enhetsnummer = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
-                           ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
+        val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
+                    ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
         val opprettOppgaveRequest =
-                OppgaveUtil.opprettOppgaveRequest(iverksett, enhetsnummer, Oppgavetype.VurderHenvendelse, beskrivelse)
+                OppgaveUtil.opprettOppgaveRequest(iverksett.fagsak.eksternId,
+                                                  iverksett.søker.personIdent,
+                                                  iverksett.fagsak.stønadstype,
+                                                  enhet,
+                                                  Oppgavetype.VurderHenvendelse,
+                                                  beskrivelse)
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
                ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }

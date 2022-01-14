@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.oppgave
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
@@ -13,25 +13,32 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.util.Locale
+import java.util.UUID
 
 
 object OppgaveUtil {
 
-    fun opprettOppgaveRequest(iverksett: Iverksett,
+    fun opprettBehandlingstema(stønadstype: StønadType): Behandlingstema {
+        return Behandlingstema
+                .fromValue(stønadstype.name.lowercase(Locale.getDefault())
+                                   .replaceFirstChar { it.uppercase() })
+    }
+
+    fun opprettOppgaveRequest(eksternFagsakId: Long,
+                              personIdent: String,
+                              stønadstype: StønadType,
                               enhetsnummer: Enhet,
                               oppgavetype: Oppgavetype,
                               beskrivelse: String): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
-                ident = OppgaveIdentV2(ident = iverksett.søker.personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
-                saksId = iverksett.fagsak.eksternId.toString(),
+                ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
+                saksId = eksternFagsakId.toString(),
                 tema = Tema.ENF,
                 oppgavetype = oppgavetype,
                 fristFerdigstillelse = fristFerdigstillelse(),
                 beskrivelse = beskrivelse,
                 enhetsnummer = enhetsnummer.enhetId,
-                behandlingstema = Behandlingstema
-                        .fromValue(iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
-                                           .replaceFirstChar { it.uppercase() }).value,
+                behandlingstema = opprettBehandlingstema(stønadstype).value,
                 tilordnetRessurs = null,
                 behandlesAvApplikasjon = "familie-ef-sak"
         )

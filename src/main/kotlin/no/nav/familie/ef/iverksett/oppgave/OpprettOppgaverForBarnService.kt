@@ -1,8 +1,7 @@
 package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
-import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -17,7 +16,6 @@ import java.util.Properties
 
 @Service
 class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
-                                    private val iverksettingRepository: IverksettingRepository,
                                     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
                                     private val taskRepository: TaskRepository) {
 
@@ -37,21 +35,22 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
     }
 
     fun opprettOppgaveForBarnSomFyllerAar(oppgaveForBarn: OppgaveForBarn) {
-        val behandling = iverksettingRepository.hent(oppgaveForBarn.behandlingId)
-        if (innhentDokumentasjonOppgaveFinnes(behandling, oppgaveForBarn)) {
+        if (innhentDokumentasjonOppgaveFinnes(oppgaveForBarn)) {
             logger.info("Oppgave av type innhent dokumentasjon finnes allerede for behandlingId=${oppgaveForBarn.behandlingId}")
             return
         }
-        val oppgaveId = oppgaveClient.opprettOppgave(OppgaveUtil.opprettOppgaveRequest(behandling,
-                                                                                       enhetForInnhentDokumentasjon(behandling.søker.personIdent),
+        val oppgaveId = oppgaveClient.opprettOppgave(OppgaveUtil.opprettOppgaveRequest(oppgaveForBarn.eksternFagsakId,
+                                                                                       oppgaveForBarn.personIdent,
+                                                                                       StønadType.valueOf(oppgaveForBarn.stønadType),
+                                                                                       enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
                                                                                        Oppgavetype.InnhentDokumentasjon,
                                                                                        oppgaveForBarn.beskrivelse))?.let { it }
                         ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId")
     }
 
-    private fun innhentDokumentasjonOppgaveFinnes(iverksett: Iverksett, oppgaveForBarn: OppgaveForBarn): Boolean {
-        val aktørId = familieIntegrasjonerClient.hentAktørId(iverksett.søker.personIdent)
+    private fun innhentDokumentasjonOppgaveFinnes(oppgaveForBarn: OppgaveForBarn): Boolean {
+        val aktørId = familieIntegrasjonerClient.hentAktørId(oppgaveForBarn.personIdent)
         val finnOppgaveRequest = FinnOppgaveRequest(tema = Tema.ENF,
                                                     aktørId = aktørId,
                                                     oppgavetype = Oppgavetype.InnhentDokumentasjon)

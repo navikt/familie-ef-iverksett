@@ -5,8 +5,8 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
-import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
@@ -18,12 +18,11 @@ import java.util.UUID
 internal class OpprettOppgaverForBarnServiceTest {
 
     val iverksett = mockk<Iverksett>()
-    val iverksettingRepository = mockk<IverksettingRepository>()
     val oppgaveClient = mockk<OppgaveClient>()
     val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
     val taskRepository = mockk<TaskRepository>()
     val opprettOppgaveForBarnService =
-            OpprettOppgaverForBarnService(oppgaveClient, iverksettingRepository, familieIntegrasjonerClient, taskRepository)
+            OpprettOppgaverForBarnService(oppgaveClient, familieIntegrasjonerClient, taskRepository)
 
     @BeforeEach
     fun init() {
@@ -31,9 +30,8 @@ internal class OpprettOppgaverForBarnServiceTest {
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
         every { iverksett.søker.personIdent } returns "1234567890"
         every { iverksett.behandling.behandlingId } returns UUID.randomUUID()
-        every { iverksettingRepository.hent(any()) } returns iverksett
         every { familieIntegrasjonerClient.hentAktørId(any()) } returns ""
-        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any()) } returns mockk()
     }
 
     @Test
@@ -53,6 +51,6 @@ internal class OpprettOppgaverForBarnServiceTest {
     }
 
     private fun opprettOppgaveForBarn(id: UUID = UUID.randomUUID(), beskrivelse: String = "beskrivelse"): OppgaveForBarn {
-        return OppgaveForBarn(id, beskrivelse)
+        return OppgaveForBarn(id, 0L, "12345678910", StønadType.OVERGANGSSTØNAD.name, beskrivelse)
     }
 }
