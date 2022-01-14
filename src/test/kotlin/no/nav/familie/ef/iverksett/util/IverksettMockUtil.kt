@@ -55,7 +55,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-fun opprettIverksettDto(behandlingId: UUID, andelsbeløp: Int = 5000): IverksettDto {
+fun opprettIverksettDto(behandlingId: UUID,
+                        behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
+                        andelsbeløp: Int = 5000): IverksettDto {
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
             beløp = andelsbeløp,
@@ -75,7 +77,7 @@ fun opprettIverksettDto(behandlingId: UUID, andelsbeløp: Int = 5000): Iverksett
                     forrigeBehandlingId = null,
                     eksternId = 9L,
                     behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-                    behandlingÅrsak = BehandlingÅrsak.SØKNAD,
+                    behandlingÅrsak = behandlingÅrsak,
                     vilkårsvurderinger = listOf(
                             VilkårsvurderingDto(
                                     vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,

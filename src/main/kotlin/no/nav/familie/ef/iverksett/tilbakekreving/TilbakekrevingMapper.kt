@@ -93,6 +93,7 @@ private fun BehandlingÅrsak.visningsTekst(): String {
         BehandlingÅrsak.SØKNAD -> "Søknad"
         BehandlingÅrsak.KLAGE -> "Klage"
         BehandlingÅrsak.NYE_OPPLYSNINGER -> "Nye opplysninger"
+        BehandlingÅrsak.MIGRERING -> error("Skal ikke opprette tilbakekreving på migrering")
     }
 }
 

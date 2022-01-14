@@ -9,6 +9,7 @@ import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -22,6 +23,8 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
                                    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
                                    private val iverksettingRepository: IverksettingRepository,
                                    private val taskRepository: TaskRepository) : AsyncTaskStep {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
@@ -38,7 +41,13 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
     }
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNestePubliseringTask())
+        val behandlingId = UUID.fromString(task.payload)
+        val iverksett = iverksettingRepository.hent(behandlingId)
+        if (iverksett.erMigrering()) {
+            logger.info("Siste tasken i publiseringsflyt for behandling=$behandlingId då årsaken er migrering")
+        } else {
+            taskRepository.save(task.opprettNestePubliseringTask())
+        }
     }
 
     companion object {

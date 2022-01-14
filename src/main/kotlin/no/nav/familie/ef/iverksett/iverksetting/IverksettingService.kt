@@ -31,7 +31,7 @@ class IverksettingService(val taskRepository: TaskRepository,
                           val tilstandRepository: TilstandRepository) {
 
     @Transactional
-    fun startIverksetting(iverksett: Iverksett, brev: Brev) {
+    fun startIverksetting(iverksett: Iverksett, brev: Brev?) {
 
         iverksettingRepository.lagre(
                 iverksett.behandling.behandlingId,
