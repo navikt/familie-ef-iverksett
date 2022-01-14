@@ -18,9 +18,9 @@ import java.util.UUID
 class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     @Transactional
-    fun lagre(behandlingId: UUID, iverksett: Iverksett, brev: Brev) {
+    fun lagre(behandlingId: UUID, iverksett: Iverksett, brev: Brev?) {
         lagreIverksett(behandlingId, iverksett)
-        lagreBrev(behandlingId, brev)
+        brev?.let { lagreBrev(behandlingId, it) }
     }
 
     fun lagreTekniskOpphør(behandlingId: UUID, tekniskOpphør: TekniskOpphør) {
