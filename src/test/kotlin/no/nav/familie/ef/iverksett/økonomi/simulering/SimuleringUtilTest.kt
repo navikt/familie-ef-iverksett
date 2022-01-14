@@ -196,6 +196,13 @@ internal class SimuleringUtilTest {
         Assertions.assertEquals(BigDecimal.valueOf(500), restSimulering.feilutbetaling)
     }
 
+    /*
+        De neste testene antar at brukeren går gjennom følgende for ÉN periode:
+        - Førstegangsbehandling gir ytelse på kr 10 000
+        - Revurdering reduserer ytelse fra kr 10 000 til kr 2 000, dvs kr 8 000 feilutbetalt
+        - Revurdering øker ytelse fra kr 2 000 til kr 3 000, dvs feilutbetaling reduseres
+        - Revurdering øker ytelse fra kr 3 000 tik kr 12 000, dvs feilutbetaling nulles ut, og etterbetaling skjer
+     */
     @Test
     fun `ytelse på 10000 korrigert til 2000`() {
 
@@ -240,7 +247,7 @@ internal class SimuleringUtilTest {
     }
 
     @Test
-    fun test() {
+    fun `ytelse på 3000 korrigert til 12000`() {
 
         val øktYtelseFra3_000Til12_000 =
                 posteringer(beløp = -3_000, posteringstype = YTELSE, betalingstype = KREDIT) +

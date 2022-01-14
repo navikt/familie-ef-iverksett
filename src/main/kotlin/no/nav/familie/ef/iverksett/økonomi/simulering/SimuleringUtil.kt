@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringsperiodeEtterbe
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringsperiodeEtterbetaling.medEtterbetaling
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
+import no.nav.familie.kontrakter.felles.simulering.PosteringType
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.FEILUTBETALING
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.YTELSE
 import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
@@ -15,7 +16,8 @@ import java.math.BigDecimal.ZERO
 import java.time.LocalDate
 import java.util.WeakHashMap
 
-fun lagSimuleringsoppsummering(detaljertSimuleringResultat: DetaljertSimuleringResultat, tidSimuleringHentet: LocalDate): Simuleringsoppsummering {
+fun lagSimuleringsoppsummering(detaljertSimuleringResultat: DetaljertSimuleringResultat,
+                               tidSimuleringHentet: LocalDate): Simuleringsoppsummering {
     val perioder = grupperPosteringerEtterDato(detaljertSimuleringResultat.simuleringMottaker)
 
     val framtidigePerioder =
@@ -31,7 +33,7 @@ fun lagSimuleringsoppsummering(detaljertSimuleringResultat: DetaljertSimuleringR
             perioder = perioder,
             fomDatoNestePeriode = nestePeriode?.fom,
             etterbetaling = hentTotalEtterbetaling(perioder, nestePeriode?.fom),
-            feilutbetaling = hentTotalFeilutbetaling(perioder, nestePeriode?.fom).let { maxOf(it, ZERO) },
+            feilutbetaling = hentTotalFeilutbetaling(perioder, nestePeriode?.fom),
             fom = perioder.minOfOrNull { it.fom },
             tomDatoNestePeriode = nestePeriode?.tom,
             forfallsdatoNestePeriode = nestePeriode?.forfallsdato,
@@ -53,55 +55,31 @@ fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simul
                         nyttBeløp = hentNyttBeløp(posteringListe),
                         tidligereUtbetalt = hentTidligereUtbetalt(posteringListe),
                         resultat = hentResultat(posteringListe),
-                        feilutbetaling = hentPositivFeilutbetaling(posteringListe)
+                        feilutbetaling = posteringListe.sumBarePositiv(FEILUTBETALING)
                 ).medEtterbetaling(hentEtterbetaling(posteringListe))
             }
 }
 
-private fun hentNyttBeløp(posteringer: List<SimulertPostering>): BigDecimal {
-    val sumPositiveYtelser = posteringer
-            .filter { it.posteringType == YTELSE && it.beløp > ZERO }
-            .sumOf { it.beløp }
+private fun hentNyttBeløp(posteringer: List<SimulertPostering>) =
+        posteringer.sumBarePositiv(YTELSE) - posteringer.sumBarePositiv(FEILUTBETALING)
 
-    val positivFeilutbetaling = maxOf(hentPositivFeilutbetaling(posteringer), ZERO)
-
-    return sumPositiveYtelser - positivFeilutbetaling
-}
-
-private fun hentPositivFeilutbetaling(posteringer: List<SimulertPostering>) =
-        posteringer
-                .filter { it.posteringType == FEILUTBETALING && it.beløp > ZERO }
-                .sumOf { it.beløp }
-
-private fun hentNegativFeilutbetaling(posteringer: List<SimulertPostering>) =
-        posteringer
-                .filter { it.posteringType == FEILUTBETALING && it.beløp < ZERO }
-                .sumOf { it.beløp }
-
-private fun hentTidligereUtbetalt(posteringer: List<SimulertPostering>): BigDecimal {
-    val sumNegativeYtelser = posteringer
-            .filter { it.posteringType === YTELSE && it.beløp < ZERO }
-            .sumOf { it.beløp }
-
-    val negativFeilutbetaling = hentNegativFeilutbetaling(posteringer)
-    return negativFeilutbetaling - sumNegativeYtelser
-}
+private fun hentTidligereUtbetalt(posteringer: List<SimulertPostering>) =
+        posteringer.sumBareNegativ(FEILUTBETALING) - posteringer.sumBareNegativ(YTELSE)
 
 private fun hentResultat(posteringer: List<SimulertPostering>): BigDecimal {
-    val positivFeilutbetaling = hentPositivFeilutbetaling(posteringer)
+    val positivFeilutbetaling = posteringer.sumBarePositiv(FEILUTBETALING)
 
     return when {
-        positivFeilutbetaling > ZERO -> -positivFeilutbetaling
+        positivFeilutbetaling > ZERO -> - positivFeilutbetaling
         else -> hentNyttBeløp(posteringer) - hentTidligereUtbetalt(posteringer)
     }
 }
 
-private fun hentEtterbetaling(posteringer: List<SimulertPostering>): BigDecimal {
-    return when {
-        hentPositivFeilutbetaling(posteringer) > ZERO -> ZERO
-        else -> hentResultat(posteringer) + hentNegativFeilutbetaling(posteringer)
-    }
-}
+private fun hentEtterbetaling(posteringer: List<SimulertPostering>) =
+        when {
+            posteringer.sumBarePositiv(FEILUTBETALING) > ZERO -> ZERO
+            else -> hentResultat(posteringer) + posteringer.sumBareNegativ(FEILUTBETALING)
+        }
 
 private fun hentTotalEtterbetaling(simuleringsperioder: List<Simuleringsperiode>, fomDatoNestePeriode: LocalDate?) =
         simuleringsperioder
@@ -113,6 +91,12 @@ private fun hentTotalFeilutbetaling(simuleringsperioder: List<Simuleringsperiode
         simuleringsperioder
                 .filter { fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode }
                 .sumOf { it.feilutbetaling }
+
+private fun List<SimulertPostering>.sumBarePositiv(type:PosteringType) =
+        this.filter { it.posteringType == type && it.beløp > ZERO }.sumOf { it.beløp }
+
+private fun List<SimulertPostering>.sumBareNegativ(type:PosteringType) =
+        this.filter { it.posteringType == type && it.beløp < ZERO }.sumOf { it.beløp }
 
 private data class PeriodeMedForfall(
         val fom: LocalDate,
