@@ -105,7 +105,7 @@ fun posteringer(måned: YearMonth = januar(2021),
                 antallMåneder: Int = 1,
                 beløp: Int = 5000,
                 posteringstype: PosteringType = PosteringType.YTELSE,
-                betalingstype: BetalingType = BetalingType.DEBIT
+                betalingstype: BetalingType = if (beløp >=0) BetalingType.DEBIT else BetalingType.KREDIT
 
 ): List<SimulertPostering> = MutableList(antallMåneder) { index ->
     SimulertPostering(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
@@ -129,9 +129,13 @@ fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, period
 fun Int.januar(år: Int) = LocalDate.of(år, 1, this)
 fun Int.februar(år: Int) = LocalDate.of(år, 2, this)
 fun Int.august(år: Int) = LocalDate.of(år, 8, this)
+fun Int.november(år: Int) = LocalDate.of(år, 11, this)
+
 fun januar(år: Int) = YearMonth.of(år, 1)
 fun februar(år: Int) = YearMonth.of(år, 2)
+fun mai(år: Int) = YearMonth.of(år,5)
 fun juli(år: Int) = YearMonth.of(år, 7)
+fun september(år: Int) = YearMonth.of(år, 9)
 
 fun List<SimulertPostering>.tilSimuleringsperioder() =
         grupperPosteringerEtterDato(this.tilSimuleringMottakere())

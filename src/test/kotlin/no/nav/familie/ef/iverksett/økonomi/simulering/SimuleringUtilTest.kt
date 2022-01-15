@@ -4,7 +4,10 @@ import no.nav.familie.ef.iverksett.august
 import no.nav.familie.ef.iverksett.februar
 import no.nav.familie.ef.iverksett.januar
 import no.nav.familie.ef.iverksett.juli
+import no.nav.familie.ef.iverksett.mai
+import no.nav.familie.ef.iverksett.november
 import no.nav.familie.ef.iverksett.posteringer
+import no.nav.familie.ef.iverksett.september
 import no.nav.familie.ef.iverksett.tilDetaljertSimuleringsresultat
 import no.nav.familie.ef.iverksett.tilSimuleringMottakere
 import no.nav.familie.ef.iverksett.tilSimuleringsperioder
@@ -16,7 +19,6 @@ import no.nav.familie.kontrakter.felles.simulering.PosteringType.MOTP
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.YTELSE
 import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -267,4 +269,78 @@ internal class SimuleringUtilTest {
         assertThat(simuleringsperioder[0].feilutbetaling).isEqualTo(0.toBigDecimal())
         assertThat(oppsummering.etterbetaling).isEqualTo(2_000.toBigDecimal())
     }
+
+    /*
+    De neste testene antar at brukeren går gjennom følgende førstegangsbehandling og revurderinger i november 2021:
+    2021	Feb	    Mar	    Apr	    Mai	    Jun	    Jul	    Aug	    Sep	    Okt	    Nov
+    18/11	17153	17153	17153	18195	18195	18195	18195	18195	18195
+    22/11				    17257	17257	17257	17257
+    23/11	17341	17341	17341	18382	18382	18382	18382	18382	18382	18382
+    */
+
+    @Test
+    fun `førstegangsbehandling 18 nov`() {
+        val førstegangsbehandling_18_nov =
+                posteringer(februar(2021), 3, 17_153, YTELSE) +
+                posteringer(mai(2021), 6, 18_195, YTELSE)
+
+        val oppsummering =
+                lagSimuleringsoppsummering(førstegangsbehandling_18_nov.tilDetaljertSimuleringsresultat(),
+                                           18.november(2021))
+
+        assertThat(oppsummering.feilutbetaling).isEqualTo(0.toBigDecimal())
+        assertThat(oppsummering.etterbetaling).isEqualTo(160_629.toBigDecimal())
+    }
+
+    @Test
+    fun `revurdering 22 nov`() {
+        val revurering_22_nov =
+                //Forrige ytelse
+                posteringer(februar(2021), 3, -17_153, YTELSE) +
+                posteringer(mai(2021), 6, -18_195, YTELSE) +
+                //Ny ytelse
+                posteringer(februar(2021), 3, 17_153, YTELSE) +
+                posteringer(mai(2021), 4, 17_257, YTELSE) +
+                posteringer(september(2021), 2, 18_195, YTELSE) +
+                //Feilutbetaling
+                posteringer(mai(2021), 4, 938, FEILUTBETALING) +
+                //Motpost feilutbetaling
+                posteringer(mai(2021), 4, -938, MOTP) +
+                //Teknisk postering
+                posteringer(mai(2021), 4, 938, YTELSE)
+
+        val oppsummering =
+                lagSimuleringsoppsummering(revurering_22_nov.tilDetaljertSimuleringsresultat(),
+                                           22.november(2021))
+
+        assertThat(oppsummering.feilutbetaling).isEqualTo(3_752.toBigDecimal())
+        assertThat(oppsummering.etterbetaling).isEqualTo(0.toBigDecimal())
+    }
+
+    @Test
+    fun `revurdering 23 nov`() {
+        val revurdering_23_nov =
+                //Forrige utelse
+                posteringer(februar(2021), 3, -17_153, YTELSE) +
+                posteringer(mai(2021), 4, -17_257, YTELSE) +
+                posteringer(september(2021), 2, -18_195, YTELSE) +
+                //Ny ytelse
+                posteringer(februar(2021), 3, 17_341, YTELSE) +
+                posteringer(mai(2021), 7, 18_382, YTELSE) +
+                //Teknisk postering
+                posteringer(mai(2021), 4, -938, YTELSE) +
+                //Reduser feilutbetaling til null
+                posteringer(mai(2021), 4, -938, FEILUTBETALING) +
+                //Motpost feilutbetaling
+                posteringer(mai(2021), 4, 938, MOTP)
+
+
+        val oppsummering =
+                lagSimuleringsoppsummering(revurdering_23_nov.tilDetaljertSimuleringsresultat(),
+                                           23.november(2021))
+
+        assertThat(oppsummering.feilutbetaling).isEqualTo(0.toBigDecimal())
+        assertThat(oppsummering.etterbetaling).isEqualTo(1_686.toBigDecimal())
+    }
+
 }
