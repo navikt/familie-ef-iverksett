@@ -26,8 +26,8 @@ class FellesTilEksterneKontrakterEnumTest {
         BehandlingÅrsak.values().filter { it != BehandlingÅrsak.MIGRERING }.forEach { BehandlingÅrsakEkstern.valueOf(it.name) }
         BehandlingType.values().forEach { BehandlingTypeEkstern.valueOf(it.name) }
         Vilkårsresultat.values().forEach { VilkårsresultatEkstern.valueOf(it.name) }
-        VedtaksperiodeType.values().forEach { VedtakPeriodeTypeEkstern.valueOf(it.name) }
-        AktivitetType.values().forEach { AktivitetTypeEkstern.valueOf(it.name) }
+        VedtaksperiodeType.values().filter { it != VedtaksperiodeType.MIGRERING }.forEach { VedtakPeriodeTypeEkstern.valueOf(it.name) }
+        AktivitetType.values().filter { it != AktivitetType.MIGRERING }.forEach { AktivitetTypeEkstern.valueOf(it.name) }
         AdressebeskyttelseGradering.values().forEach { AdresseBeskyttelseEkstern.valueOf(it.name) }
         StønadType.values().forEach { StønadTypeEkstern.valueOf(it.name) }
     }
