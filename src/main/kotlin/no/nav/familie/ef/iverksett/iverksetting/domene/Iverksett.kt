@@ -25,7 +25,9 @@ data class Iverksett(
         val behandling: Behandlingsdetaljer,
         val søker: Søker,
         val vedtak: Vedtaksdetaljer,
-)
+) {
+    fun erMigrering(): Boolean = behandling.behandlingÅrsak == BehandlingÅrsak.MIGRERING
+}
 
 data class Fagsakdetaljer(
         val fagsakId: UUID,

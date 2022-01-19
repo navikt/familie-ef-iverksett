@@ -13,6 +13,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
@@ -21,6 +22,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -31,10 +33,10 @@ import java.util.UUID
 internal class VentePåStatusFraØkonomiTaskTest {
 
     private val oppdragClient = mockk<OppdragClient>()
-    val iverksettingRepository = mockk<IverksettingRepository>()
-    val taskRepository = mockk<TaskRepository>()
-    val tilstandRepository = mockk<TilstandRepository>()
-    val behandlingId: UUID = UUID.randomUUID()
+    private val iverksettingRepository = mockk<IverksettingRepository>()
+    private val taskRepository = mockk<TaskRepository>()
+    private val tilstandRepository = mockk<TilstandRepository>()
+    private val behandlingId: UUID = UUID.randomUUID()
     private val iverksettingService = IverksettingService(taskRepository = taskRepository,
                                                           oppdragClient = oppdragClient,
                                                           iverksettingRepository = iverksettingRepository,
@@ -43,29 +45,50 @@ internal class VentePåStatusFraØkonomiTaskTest {
     private val ventePåStatusFraØkonomiTask =
             VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskRepository, tilstandRepository)
 
+    @BeforeEach
+    internal fun setUp() {
+        every { oppdragClient.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
+        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId).toDomain()
+        every { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) } just runs
+        every { taskRepository.save(any()) } answers { firstArg() }
+    }
+
     @Test
     internal fun `kjør doTask for VentePåStatusFraØkonomiTaskhvis, forvent ingen unntak`() {
         val oppdragResultatSlot = slot<OppdragResultat>()
-        every { oppdragClient.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
-        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId).toDomain()
         every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse(listOf(utbetalingsperiode))
-        every { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) } just runs
 
-        ventePåStatusFraØkonomiTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
+        runTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
 
         verify(exactly = 1) { tilstandRepository.oppdaterOppdragResultat(behandlingId, capture(oppdragResultatSlot)) }
         assertThat(oppdragResultatSlot.captured.oppdragStatus).isEqualTo(OppdragStatus.KVITTERT_OK)
+        verify(exactly = 1) { taskRepository.save(any()) }
     }
 
     @Test
     internal fun `Skal ikke gjøre noe hvis ingen utbetalingoppdrag på tilkjent ytelse`() {
-        every { oppdragClient.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
-        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId).toDomain()
         every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse()
 
-        ventePåStatusFraØkonomiTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
+        runTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
 
         verify(exactly = 0) { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) }
+        verify(exactly = 1) { taskRepository.save(any()) }
+    }
+
+    @Test
+    internal fun `migrering - skal ikke opprette task for journalføring av vedtaksbrev`() {
+        val opprettIverksettDto = opprettIverksettDto(behandlingId, behandlingÅrsak = BehandlingÅrsak.MIGRERING)
+        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto.toDomain()
+        every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse(listOf(utbetalingsperiode))
+
+        runTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
+
+        verify(exactly = 0) { taskRepository.save(any()) }
+    }
+
+    private fun runTask(task: Task) {
+        ventePåStatusFraØkonomiTask.doTask(task)
+        ventePåStatusFraØkonomiTask.onCompletion(task)
     }
 
     private val utbetalingsperiode = Utbetalingsperiode(
