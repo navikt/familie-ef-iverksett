@@ -10,6 +10,7 @@ import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
+import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
@@ -54,7 +55,8 @@ data class Vedtaksdetaljer(
         val beslutterId: String,
         val tilkjentYtelse: TilkjentYtelse?,
         val vedtaksperioder: List<Vedtaksperiode>,
-        val tilbakekreving: Tilbakekrevingsdetaljer? = null
+        val tilbakekreving: Tilbakekrevingsdetaljer? = null,
+        val brevmottakere: Brevmottakere? = null
 )
 
 data class Behandlingsdetaljer(
@@ -100,4 +102,12 @@ data class TilbakekrevingMedVarsel(
         val varseltekst: String,
         val sumFeilutbetaling: BigDecimal?,
         val perioder: List<Periode>?
+)
+
+data class Brevmottakere(val mottakere: List<Brevmottaker>)
+data class Brevmottaker(
+    val ident: String,
+    val navn: String,
+    val identType: BrevmottakerKontrakter.IdentType,
+    val mottakerRolle: BrevmottakerKontrakter.MottakerRolle
 )

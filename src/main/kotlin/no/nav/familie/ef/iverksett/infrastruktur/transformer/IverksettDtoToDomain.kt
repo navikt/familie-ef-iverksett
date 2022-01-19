@@ -1,6 +1,8 @@
 package no.nav.familie.ef.iverksett.infrastruktur.transformer
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottaker
+import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
@@ -12,6 +14,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
@@ -73,7 +76,8 @@ fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
                            beslutterId = this.beslutterId,
                            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
                            vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
-                           tilbakekreving = this.tilbakekreving?.toDomain())
+                           tilbakekreving = this.tilbakekreving?.toDomain(),
+                           brevmottakere = this.brevmottakere?.toDomain())
 }
 
 fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
@@ -89,6 +93,18 @@ fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel {
             sumFeilutbetaling = this.sumFeilutbetaling,
             perioder = this.perioder,
     )
+}
+
+fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere {
+
+    return Brevmottakere(mottakere = this.map {
+        Brevmottaker(
+            ident = it.ident,
+            navn = it.navn,
+            identType = it.identType,
+            mottakerRolle = it.mottakerRolle
+        )
+    })
 }
 
 fun IverksettDto.toDomain(): Iverksett {

@@ -6,6 +6,9 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
+import no.nav.familie.kontrakter.felles.BrukerIdType
+import no.nav.familie.kontrakter.felles.dokarkiv.AvsenderMottaker
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
@@ -41,21 +44,54 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
                                 dokumenttype = Dokumenttype.VEDTAKSBREV_OVERGANGSSTØNAD,
                                 tittel = lagDokumentTittel(iverksett.fagsak.stønadstype, iverksett.vedtak.vedtaksresultat))
 
-        val journalpostId = journalpostClient.arkiverDokument(
-                ArkiverDokumentRequest(
-                        fnr = iverksett.søker.personIdent,
-                        forsøkFerdigstill = true,
-                        hoveddokumentvarianter = listOf(dokument),
-                        fagsakId = iverksett.fagsak.eksternId.toString(),
-                        journalførendeEnhet = iverksett.søker.tilhørendeEnhet,
-                        eksternReferanseId = "$behandlingId-vedtaksbrev"
-                ),
-                iverksett.vedtak.beslutterId
-        ).journalpostId
 
-        tilstandRepository.oppdaterJournalpostResultat(behandlingId = behandlingId,
-                                                       JournalpostResultat(journalpostId = journalpostId)
+        val arkiverDokumentRequest = ArkiverDokumentRequest(
+            fnr = iverksett.søker.personIdent,
+            forsøkFerdigstill = true,
+            hoveddokumentvarianter = listOf(dokument),
+            fagsakId = iverksett.fagsak.eksternId.toString(),
+            journalførendeEnhet = iverksett.søker.tilhørendeEnhet,
+            eksternReferanseId = "$behandlingId-vedtaksbrev"
         )
+
+        if(iverksett.vedtak.brevmottakere != null){
+            val journalførteIdenter: List<String> =
+                    tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId)?.keys?.toList() ?: emptyList()
+
+            iverksett.vedtak.brevmottakere.mottakere.map {
+                if (!journalførteIdenter.contains(it.ident)) {
+                    val journalpostId = journalpostClient.arkiverDokument(
+                            arkiverDokumentRequest.copy(
+                                    avsenderMottaker = AvsenderMottaker(
+                                            id = it.ident,
+                                            idType = it.identType.tilIdType(),
+                                            navn = it.navn
+                                    )
+                            ),
+                            iverksett.vedtak.beslutterId
+                    ).journalpostId
+
+                    tilstandRepository.oppdaterJournalpostResultatBrevmottakere(
+                            behandlingId = behandlingId,
+                            mottakerIdent = it.ident,
+                            JournalpostResultat(journalpostId = journalpostId)
+                    )
+                }
+
+            }
+
+        }
+         else{
+            val journalpostId = journalpostClient.arkiverDokument(
+                arkiverDokumentRequest,
+                iverksett.vedtak.beslutterId
+            ).journalpostId
+
+            tilstandRepository.oppdaterJournalpostResultat(
+                behandlingId = behandlingId,
+                JournalpostResultat(journalpostId = journalpostId)
+            )
+        }
     }
 
     private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat): String =
@@ -85,4 +121,11 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
 
         const val TYPE = "journalførVedtaksbrev"
     }
+
+    private fun Brevmottaker.IdentType.tilIdType(): BrukerIdType =
+        when (this) {
+            Brevmottaker.IdentType.ORGANISASJONSNUMMER -> BrukerIdType.ORGNR
+            Brevmottaker.IdentType.PERSONIDENT -> BrukerIdType.FNR
+        }
+
 }
