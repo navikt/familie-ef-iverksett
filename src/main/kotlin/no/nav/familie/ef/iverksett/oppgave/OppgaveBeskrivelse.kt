@@ -3,10 +3,9 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-object OppfølgingsoppgaveBeskrivelse {
+object OppgaveBeskrivelse {
 
     fun beskrivelseFørstegangsbehandlingInnvilget(periode: Pair<LocalDate, LocalDate>, vedtak: Vedtaksperiode): String {
         return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
