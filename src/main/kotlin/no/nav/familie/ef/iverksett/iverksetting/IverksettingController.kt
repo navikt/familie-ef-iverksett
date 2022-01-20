@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
@@ -9,7 +8,6 @@ import no.nav.familie.ef.iverksett.tilbakekreving.validerTilbakekreving
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
-import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -17,6 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
@@ -44,7 +43,7 @@ class IverksettingController(
     }
 
     @PostMapping("migrering")
-    fun iverksett(iverksettDto: IverksettDto) {
+    fun iverksett(@RequestBody iverksettDto: IverksettDto) {
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         iverksettingService.startIverksetting(iverksett, null)
