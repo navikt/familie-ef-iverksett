@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
+import no.nav.familie.ef.iverksett.økonomi.simulering.grupperPosteringerEtterDato
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
@@ -20,7 +21,7 @@ import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.temporal.TemporalAdjusters
+import java.time.YearMonth
 import java.util.UUID
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
 
@@ -100,20 +101,21 @@ fun simuleringsoppsummering(
                 tomSisteUtbetaling = tom
         )
 
-fun posteringer(fraDato: LocalDate,
+fun posteringer(måned: YearMonth = januar(2021),
                 antallMåneder: Int = 1,
-                beløp: BigDecimal = BigDecimal(5000),
-                posteringstype: PosteringType = PosteringType.YTELSE
+                beløp: Int = 5000,
+                posteringstype: PosteringType = PosteringType.YTELSE,
+                betalingstype: BetalingType = if (beløp >=0) BetalingType.DEBIT else BetalingType.KREDIT
 
 ): List<SimulertPostering> = MutableList(antallMåneder) { index ->
     SimulertPostering(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
-                      fom = fraDato.plusMonths(index.toLong()),
-                      tom = fraDato.plusMonths(index.toLong()).with(TemporalAdjusters.lastDayOfMonth()),
-                      betalingType = BetalingType.DEBIT,
-                      beløp = beløp,
+                      fom = måned.plusMonths(index.toLong()).atDay(1),
+                      tom = måned.plusMonths(index.toLong()).atEndOfMonth(),
+                      betalingType = betalingstype,
+                      beløp = beløp.toBigDecimal(),
                       posteringType = posteringstype,
-                      forfallsdato = fraDato.plusMonths(index.toLong()).with(TemporalAdjusters.lastDayOfMonth()),
-                      utenInntrekk = false)
+                      forfallsdato = måned.plusMonths(index.toLong()).atEndOfMonth(), // Forfallsdato i bank (dagen går til brukeren). Det sendes til banken kanskje en uke i forveien
+                      utenInntrekk = false) // Brukes ikke for EF
 }
 
 fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, periode: Periode) =
@@ -123,3 +125,23 @@ fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, period
                           perioder = listOf(periode)
                   )
         )
+
+fun Int.januar(år: Int) = LocalDate.of(år, 1, this)
+fun Int.februar(år: Int) = LocalDate.of(år, 2, this)
+fun Int.august(år: Int) = LocalDate.of(år, 8, this)
+fun Int.november(år: Int) = LocalDate.of(år, 11, this)
+
+fun januar(år: Int) = YearMonth.of(år, 1)
+fun februar(år: Int) = YearMonth.of(år, 2)
+fun mai(år: Int) = YearMonth.of(år,5)
+fun juli(år: Int) = YearMonth.of(år, 7)
+fun september(år: Int) = YearMonth.of(år, 9)
+
+fun List<SimulertPostering>.tilSimuleringsperioder() =
+        grupperPosteringerEtterDato(this.tilSimuleringMottakere())
+
+fun List<SimulertPostering>.tilSimuleringMottakere() =
+        listOf(SimuleringMottaker(this, "12345678901", MottakerType.BRUKER))
+
+fun List<SimulertPostering>.tilDetaljertSimuleringsresultat() =
+        DetaljertSimuleringResultat(this.tilSimuleringMottakere())
