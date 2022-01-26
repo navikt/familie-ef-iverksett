@@ -114,12 +114,14 @@ fun opprettIverksettDto(behandlingId: UUID,
     )
 }
 
-fun opprettAndelTilkjentYtelse() = lagAndelTilkjentYtelse(
+fun opprettAndelTilkjentYtelse(fraOgMed: LocalDate = LocalDate.of(2021, 1, 1),
+                               tilOgMed: LocalDate = LocalDate.of(2021, 12, 31),
+                               inntekt: Int = 100) = lagAndelTilkjentYtelse(
         beløp = 5000,
         periodetype = Periodetype.MÅNED,
-        fraOgMed = LocalDate.of(2021, 1, 1),
-        tilOgMed = LocalDate.of(2021, 12, 31),
-        inntekt = 100,
+        fraOgMed = fraOgMed,
+        tilOgMed = tilOgMed,
+        inntekt = inntekt,
         samordningsfradrag = 2,
         inntektsreduksjon = 5
 )
