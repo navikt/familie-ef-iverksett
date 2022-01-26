@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
 
 @RestController
-@RequestMapping(path = ["/api/statistikk/behandlingsstatistikk"])
+@RequestMapping(path = ["/api/behandling"])
 @ProtectedWithClaims(issuer = "azuread")
 class BehandlingController(private val behandlingService: BehandlingService) {
 
