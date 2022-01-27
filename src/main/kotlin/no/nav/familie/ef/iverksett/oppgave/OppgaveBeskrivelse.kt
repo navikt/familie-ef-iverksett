@@ -3,10 +3,9 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-object OppfølgingsoppgaveBeskrivelse {
+object OppgaveBeskrivelse {
 
     fun beskrivelseFørstegangsbehandlingInnvilget(periode: Pair<LocalDate, LocalDate>, vedtak: Vedtaksperiode): String {
         return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
@@ -38,6 +37,7 @@ object OppfølgingsoppgaveBeskrivelse {
 
     private fun AktivitetType.beskrivelse(): String {
         return when (this) {
+            AktivitetType.MIGRERING -> error("Skal ikke opprette oppfølgningsoppgave for migrering")
             AktivitetType.IKKE_AKTIVITETSPLIKT -> ""
             AktivitetType.BARN_UNDER_ETT_ÅR -> "Barn er under 1 år"
             AktivitetType.FORSØRGER_I_ARBEID -> "Forsørger er i arbeid (§15-6 første ledd)"

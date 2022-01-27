@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
@@ -23,6 +24,7 @@ import java.util.UUID
 
 internal class OppgaveServiceTest {
 
+    val iverksett = mockk<Iverksett>()
     val iverksettRepository = mockk<IverksettingRepository>()
     val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
     val oppgaveClient = mockk<OppgaveClient>()
@@ -31,14 +33,10 @@ internal class OppgaveServiceTest {
     @BeforeEach
     internal fun init() {
         mockkObject(OppgaveUtil)
-        mockkObject(OppfølgingsoppgaveBeskrivelse)
+        mockkObject(OppgaveBeskrivelse)
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns mockk()
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) } returns ""
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) } returns ""
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) } returns ""
-        every { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) } returns ""
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any()) } returns mockk()
     }
 
     @Test
@@ -54,14 +52,12 @@ internal class OppgaveServiceTest {
 
     @Test
     internal fun `revurdering opphørt, forvent skalOpprette true`() {
-        val iverksett = mockk<Iverksett>()
         setupIverksettMock(iverksett, UUID.randomUUID(), BehandlingType.REVURDERING, Vedtaksresultat.OPPHØRT, emptyList())
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering avslått, forvent skalOpprette false`() {
-        val iverksett = mockk<Iverksett>()
         setupIverksettMock(iverksett, UUID.randomUUID(), BehandlingType.REVURDERING, Vedtaksresultat.AVSLÅTT, emptyList())
         every { iverksettRepository.hent(any()) } returns iverksett
         assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
@@ -69,7 +65,6 @@ internal class OppgaveServiceTest {
 
     @Test
     internal fun `revurdering innvilget med kun aktivitetsendring, forvent skalOpprette true`() {
-        val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
                 iverksett,
@@ -91,7 +86,6 @@ internal class OppgaveServiceTest {
 
     @Test
     internal fun `revurdering innvilget, men avslått f-behandling, forvent skalOpprette true`() {
-        val iverksett = mockk<Iverksett>()
 
         setupIverksettMock(
                 iverksett,
@@ -106,7 +100,6 @@ internal class OppgaveServiceTest {
 
     @Test
     internal fun `revurdering innvilget, men avslått f-behandling, forvent kall til beskrivelseFørstegangsbehandlingInnvilget`() {
-        val iverksett = mockk<Iverksett>()
 
         setupIverksettMock(
                 iverksett,
@@ -117,13 +110,12 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
-        verify(exactly = 0) { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
+        verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
+        verify(exactly = 0) { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
 
     @Test
     internal fun `revurdering innvilget med aktivitetsendring og periodeendring, forvent skalOpprette true`() {
-        val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
                 iverksett,
@@ -182,7 +174,6 @@ internal class OppgaveServiceTest {
 
     @Test
     internal fun `revurdering innvilget med kun endring i fom dato, forvent skalOpprette false`() {
-        val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
         setupIverksettMock(
                 iverksett,
@@ -209,8 +200,6 @@ internal class OppgaveServiceTest {
 
     @Test
     internal fun `innvilget førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingInnvilget`() {
-        val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -220,13 +209,11 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
+        verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
     }
 
     @Test
     internal fun `avslått førstegangsbehandling, forvent kall til beskrivelseFørstegangsbehandlingAvslått`() {
-        val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -236,13 +223,11 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
+        verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
     }
 
     @Test
     internal fun `innvilget revurdering, forvent kall til beskrivelseRevurderingInnvilget`() {
-        val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -252,13 +237,11 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
+        verify { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
 
     @Test
     internal fun `opphørt revurdering, forvent kall til beskrivelseRevurderingOpphørt`() {
-        val iverksett = mockk<Iverksett>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -269,14 +252,12 @@ internal class OppgaveServiceTest {
         setupAndeler(iverksett, listOf(LocalDate.now()))
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
+        verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
     }
 
     @Test
     internal fun `revurdering opphør, forvent at andel med maks tom dato blir sendt som arg til beskrivelse`() {
-        val iverksett = mockk<Iverksett>()
         val opphørsdato = slot<LocalDate>()
-        every { OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(any(), any(), any()) } returns mockk()
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -287,7 +268,7 @@ internal class OppgaveServiceTest {
         setupAndeler(iverksett, listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1)))
 
         oppgaveService.opprettVurderHendelseOppgave(iverksett)
-        verify { OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
+        verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
         assertThat(opphørsdato.captured).isEqualTo(LocalDate.now())
     }
 
@@ -305,6 +286,8 @@ internal class OppgaveServiceTest {
         every { iverksettMock.vedtak.vedtaksperioder } returns vedtaksperioder
         every { iverksettMock.søker.personIdent } returns "12345678910"
         every { iverksettMock.vedtak.vedtakstidspunkt } returns LocalDateTime.MIN
+        every { iverksettMock.fagsak.eksternId } returns 0L
+        every { iverksettMock.fagsak.stønadstype } returns StønadType.OVERGANGSSTØNAD
     }
 
     private fun setupAndeler(iverksettMock: Iverksett, tilOgMedDatoer: List<LocalDate>) {
