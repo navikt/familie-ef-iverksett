@@ -66,6 +66,6 @@ class IverksettingRepositoryTest : ServerTest() {
                 opprettTekniskOpphør(iverksett.behandling.behandlingId, iverksett.behandling.eksternId)
         )
         Assertions.assertThrows(IllegalStateException::class.java) { iverksettingRepository.hentAvEksternId(iverksett.behandling.eksternId) }
-
     }
+
 }

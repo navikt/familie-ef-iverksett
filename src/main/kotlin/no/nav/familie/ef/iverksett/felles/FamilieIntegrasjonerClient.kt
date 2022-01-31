@@ -24,14 +24,20 @@ class FamilieIntegrasjonerClient(
         private val integrasjonUri: URI
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
 
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-
     private val hentIdenterURI =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_HENT_IDENTER).build().toUri()
     private val aktørUri =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_AKTØR).build().toUri()
+
     private fun arbeidsfordelingUri(tema: String) =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING, tema).build().toUri()
+
+    private fun arbeidsfordelingUriMedRelasjoner(tema: String) =
+            UriComponentsBuilder.fromUri(integrasjonUri)
+                    .pathSegment(PATH_ARBEIDSFORDELING, tema)
+                    .pathSegment("med-relasjoner")
+                    .build()
+                    .toUri()
 
     fun hentIdenter(personident: String, medHistprikk: Boolean): List<PersonIdentMedHistorikk> {
         val uri = UriComponentsBuilder.fromUri(hentIdenterURI).queryParam("historikk", medHistprikk).build().toUri()
@@ -52,6 +58,12 @@ class FamilieIntegrasjonerClient(
     fun hentBehandlendeEnhetForBehandling(personident: String): Enhet? {
         val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))
         return response.getDataOrThrow().firstOrNull()
+    }
+
+    fun hentBehandlendeEnhetForBehandlingMedRelasjoner(personident: String): List<Enhet> {
+        val response =
+                postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUriMedRelasjoner(TEMA_ENSLIG_FORSØRGER), Ident(personident))
+        return response.getDataOrThrow()
     }
 
     companion object {

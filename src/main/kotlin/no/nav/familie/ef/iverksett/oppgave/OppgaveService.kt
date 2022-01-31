@@ -3,15 +3,13 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
-import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
-import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget
-import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingInnvilget
-import no.nav.familie.ef.iverksett.oppgave.OppfølgingsoppgaveBeskrivelse.beskrivelseRevurderingOpphørt
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils
+import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
+import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget
+import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingInnvilget
+import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingOpphørt
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -37,14 +35,20 @@ class OppgaveService(
     }
 
     fun opprettVurderHendelseOppgave(iverksett: Iverksett): Long {
-        val enhetsnummer = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
-                           ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
+        val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
+                    ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
-        val opprettOppgaveRequest = OppgaveUtil.opprettVurderHenvendelseOppgaveRequest(iverksett, enhetsnummer, beskrivelse)
+        val opprettOppgaveRequest =
+                OppgaveUtil.opprettOppgaveRequest(iverksett.fagsak.eksternId,
+                                                  iverksett.søker.personIdent,
+                                                  iverksett.fagsak.stønadstype,
+                                                  enhet,
+                                                  Oppgavetype.VurderHenvendelse,
+                                                  beskrivelse)
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
                ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
