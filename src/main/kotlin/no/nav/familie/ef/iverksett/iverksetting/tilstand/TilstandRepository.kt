@@ -161,6 +161,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                     rs.getJson("tilkjentYtelseForUtbetaling"),
                     rs.getJson("oppdragResultat"),
                     rs.getJson("journalpostResultat"),
+                    rs.getJson("journalpostResultatBrevmottakere"),
                     rs.getJson("vedtaksBrevResultat"),
                     rs.getJson("tilbakekrevingResultat"))
         }

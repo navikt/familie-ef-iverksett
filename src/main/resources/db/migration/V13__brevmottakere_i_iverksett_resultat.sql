@@ -1,0 +1,1 @@
+ALTER TABLE iverksett_resultat ADD COLUMN journalpostResultatBrevmottakere JSON;

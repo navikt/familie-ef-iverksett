@@ -271,12 +271,14 @@ class IverksettResultatMockBuilder private constructor(
     data class Builder(
             var oppdragResultat: OppdragResultat? = null,
             var journalpostResultat: JournalpostResultat? = null,
+            var journalpostResultatBrevmottakere: Map<String, JournalpostResultat>? = null,
             var vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null,
             var tilbakekrevingResultat: TilbakekrevingResultat? = null
     ) {
 
         fun oppdragResultat(oppdragResultat: OppdragResultat) = apply { this.oppdragResultat = oppdragResultat }
         fun journalPostResultat() = apply { this.journalpostResultat = JournalpostResultat(UUID.randomUUID().toString()) }
+
         fun vedtaksbrevResultat(behandlingId: UUID) =
                 apply { this.vedtaksbrevResultat = DistribuerVedtaksbrevResultat(bestillingId = behandlingId.toString()) }
 
@@ -288,6 +290,7 @@ class IverksettResultatMockBuilder private constructor(
                                   tilkjentYtelse,
                                   oppdragResultat,
                                   journalpostResultat,
+                                  journalpostResultatBrevmottakere,
                                   vedtaksbrevResultat,
                                   tilbakekrevingResultat)
     }
