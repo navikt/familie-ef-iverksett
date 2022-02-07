@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.kontrakter.ef.felles.StønadType
@@ -54,44 +55,57 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
             eksternReferanseId = "$behandlingId-vedtaksbrev"
         )
 
-        if(iverksett.vedtak.brevmottakere != null){
-            val journalførteIdenter: List<String> =
-                    tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId)?.keys?.toList() ?: emptyList()
-
-            iverksett.vedtak.brevmottakere.mottakere.map {
-                if (!journalførteIdenter.contains(it.ident)) {
-                    val journalpostId = journalpostClient.arkiverDokument(
-                            arkiverDokumentRequest.copy(
-                                    avsenderMottaker = AvsenderMottaker(
-                                            id = it.ident,
-                                            idType = it.identType.tilIdType(),
-                                            navn = it.navn
-                                    )
-                            ),
-                            iverksett.vedtak.beslutterId
-                    ).journalpostId
-
-                    tilstandRepository.oppdaterJournalpostResultatBrevmottakere(
-                            behandlingId = behandlingId,
-                            mottakerIdent = it.ident,
-                            JournalpostResultat(journalpostId = journalpostId)
-                    )
-                }
-
-            }
+        if(iverksett.vedtak.brevmottakere.mottakere.isNotEmpty()){
+            journalførDokumentMedBrevmottakere(behandlingId, iverksett, arkiverDokumentRequest)
 
         }
          else{
-            val journalpostId = journalpostClient.arkiverDokument(
+            journalførDokumentForStønadsmottaker(arkiverDokumentRequest, iverksett, behandlingId)
+        }
+    }
+
+    private fun journalførDokumentMedBrevmottakere(behandlingId: UUID,
+                                                   iverksett: Iverksett,
+                                                   arkiverDokumentRequest: ArkiverDokumentRequest) {
+        val journalførteIdenter: List<String> =
+                tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId)?.keys?.toList() ?: emptyList()
+
+        iverksett.vedtak.brevmottakere.mottakere.mapIndexed { indeks, mottaker ->
+            if (!journalførteIdenter.contains(mottaker.ident)) {
+                val journalpostId = journalpostClient.arkiverDokument(
+                        arkiverDokumentRequest.copy(
+                                eksternReferanseId = "$behandlingId-vedtaksbrev-mottaker$indeks",
+                                avsenderMottaker = AvsenderMottaker(
+                                        id = mottaker.ident,
+                                        idType = mottaker.identType.tilIdType(),
+                                        navn = mottaker.navn
+                                )
+                        ),
+                        iverksett.vedtak.beslutterId
+                ).journalpostId
+
+                tilstandRepository.oppdaterJournalpostResultatBrevmottakere(
+                        behandlingId = behandlingId,
+                        mottakerIdent = mottaker.ident,
+                        JournalpostResultat(journalpostId = journalpostId)
+                )
+            }
+
+        }
+    }
+
+    private fun journalførDokumentForStønadsmottaker(arkiverDokumentRequest: ArkiverDokumentRequest,
+                                                     iverksett: Iverksett,
+                                                     behandlingId: UUID) {
+        val journalpostId = journalpostClient.arkiverDokument(
                 arkiverDokumentRequest,
                 iverksett.vedtak.beslutterId
-            ).journalpostId
+        ).journalpostId
 
-            tilstandRepository.oppdaterJournalpostResultat(
+        tilstandRepository.oppdaterJournalpostResultat(
                 behandlingId = behandlingId,
                 JournalpostResultat(journalpostId = journalpostId)
-            )
-        }
+        )
     }
 
     private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat): String =

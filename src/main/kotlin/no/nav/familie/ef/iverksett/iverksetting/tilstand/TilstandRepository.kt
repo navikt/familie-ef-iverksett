@@ -147,7 +147,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
     }
 
     fun hentJournalpostResultatBrevmottakere(behandlingId: UUID): Map<String, JournalpostResultat>? {
-        val sql = "SELECT journalpostresultat_brevmottakere FROM iverksett_resultat WHERE behandling_id = :behandlingId"
+        val sql = "SELECT journalpostresultatbrevmottakere FROM iverksett_resultat WHERE behandling_id = :behandlingId"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
     }

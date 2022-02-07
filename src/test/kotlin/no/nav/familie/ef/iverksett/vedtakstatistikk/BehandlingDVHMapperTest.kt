@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
@@ -106,7 +107,8 @@ internal class BehandlingDVHMapperTest {
                                                                           fraOgMed = LocalDate.of(2021, 6, 1),
                                                                           periodeType = VedtaksperiodeType.HOVEDPERIODE,
                                                                           tilOgMed = LocalDate.of(2021, 10, 31))
-                                                   ))
+                                                   ),
+                                                   brevmottakere = Brevmottakere(emptyList()))
 
                 ), null)
 
