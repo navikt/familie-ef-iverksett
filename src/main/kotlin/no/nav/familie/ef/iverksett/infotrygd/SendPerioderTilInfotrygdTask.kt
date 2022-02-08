@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.infotrygd
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -29,6 +30,9 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
     override fun doTask(task: Task) {
         val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
         val stønadstype = iverksett.fagsak.stønadstype
+        if (stønadstype != StønadType.OVERGANGSSTØNAD) {
+            return
+        }
         val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
                 .map { it.personIdent }.toSet()
         val perioder = iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.map {
