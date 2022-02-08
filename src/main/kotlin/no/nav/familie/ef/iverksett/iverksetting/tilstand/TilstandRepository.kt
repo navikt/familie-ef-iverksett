@@ -73,7 +73,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
 
         val eksisterendeResultat = hentJournalpostResultatBrevmottakere(behandlingId)
 
-        val resultatermedNyBrevmottaker = (eksisterendeResultat ?: emptyMap()) + mapOf(Pair(mottakerIdent, journalPostResultat))
+        val resultatermedNyBrevmottaker = (eksisterendeResultat ?: emptyMap()) + mapOf(mottakerIdent to journalPostResultat)
 
 
         val journalPostResultatJson =

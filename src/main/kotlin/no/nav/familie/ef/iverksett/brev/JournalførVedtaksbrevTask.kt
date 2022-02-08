@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.brev
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
@@ -32,7 +33,8 @@ import java.util.UUID
 class JournalførVedtaksbrevTask(private val iverksettingRepository: IverksettingRepository,
                                 private val journalpostClient: JournalpostClient,
                                 private val taskRepository: TaskRepository,
-                                private val tilstandRepository: TilstandRepository
+                                private val tilstandRepository: TilstandRepository,
+                                private val featureToggleService: FeatureToggleService
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
@@ -55,9 +57,8 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
             eksternReferanseId = "$behandlingId-vedtaksbrev"
         )
 
-        if(iverksett.vedtak.brevmottakere.mottakere.isNotEmpty()){
+        if(iverksett.vedtak.brevmottakere.mottakere.isNotEmpty() && featureToggleService.isEnabled("familie.ef.iverksett.brevmottakere") ){
             journalførDokumentMedBrevmottakere(behandlingId, iverksett, arkiverDokumentRequest)
-
         }
          else{
             journalførDokumentForStønadsmottaker(arkiverDokumentRequest, iverksett, behandlingId)

@@ -6,6 +6,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
@@ -18,6 +19,7 @@ import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.Properties
 import java.util.UUID
@@ -28,9 +30,15 @@ internal class JournalførVedtaksbrevTaskTest {
     private val journalpostClient = mockk<JournalpostClient>()
     val taskRepository = mockk<TaskRepository>()
     val tilstandRepository = mockk<TilstandRepository>()
+    val featureToggleService = mockk<FeatureToggleService>()
     private val journalførVedtaksbrevTask =
-            JournalførVedtaksbrevTask(iverksettingRepository, journalpostClient, taskRepository, tilstandRepository)
+            JournalførVedtaksbrevTask(iverksettingRepository, journalpostClient, taskRepository, tilstandRepository, featureToggleService)
     val behandlingId: UUID = UUID.randomUUID()
+
+    @BeforeEach
+    fun setUp(){
+        every { featureToggleService.isEnabled(any()) } returns true
+    }
 
     @Test
     internal fun `skal journalføre brev og opprette ny task`() {
