@@ -6,7 +6,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
-import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
@@ -38,7 +37,7 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
         val vedtaksbrev = iverksettingRepository.hentBrev(behandlingId)
         val dokument = Dokument(vedtaksbrev.pdf,
                                 Filtype.PDFA,
-                                dokumenttype = Dokumenttype.VEDTAKSBREV_OVERGANGSSTØNAD,
+                                dokumenttype = vedtaksbrevForStønadType(iverksett.fagsak.stønadstype),
                                 tittel = lagDokumentTittel(iverksett.fagsak.stønadstype, iverksett.vedtak.vedtaksresultat))
 
         val journalpostId = journalpostClient.arkiverDokument(
@@ -60,22 +59,6 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
 
     private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat): String =
             lagVedtakstekst(vedtaksresultat) + lagStønadtypeTekst(stønadstype)
-
-
-    private fun lagStønadtypeTekst(stønadstype: StønadType): String =
-            when (stønadstype) {
-                StønadType.OVERGANGSSTØNAD -> "overgangstønad"
-                StønadType.BARNETILSYN -> "stønad til barnetilsyn"
-                StønadType.SKOLEPENGER -> "stønad til skolepenger"
-            }
-
-
-    private fun lagVedtakstekst(vedtaksresultat: Vedtaksresultat): String =
-            when (vedtaksresultat) {
-                Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av "
-                Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av "
-                Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av "
-            }
 
     override fun onCompletion(task: Task) {
         taskRepository.save(task.opprettNesteTask())
