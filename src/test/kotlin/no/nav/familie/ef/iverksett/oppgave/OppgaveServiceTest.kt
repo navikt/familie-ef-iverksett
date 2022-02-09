@@ -47,20 +47,20 @@ internal class OppgaveServiceTest {
                            BehandlingType.FØRSTEGANGSBEHANDLING,
                            Vedtaksresultat.INNVILGET,
                            emptyList())
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering opphørt, forvent skalOpprette true`() {
         setupIverksettMock(iverksett, UUID.randomUUID(), BehandlingType.REVURDERING, Vedtaksresultat.OPPHØRT, emptyList())
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering avslått, forvent skalOpprette false`() {
         setupIverksettMock(iverksett, UUID.randomUUID(), BehandlingType.REVURDERING, Vedtaksresultat.AVSLÅTT, emptyList())
         every { iverksettRepository.hent(any()) } returns iverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
 
     @Test
@@ -82,7 +82,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
@@ -96,7 +96,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
         )
         every { iverksettRepository.hent(any()) } returns iverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
@@ -110,7 +110,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
         )
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
         verify(exactly = 0) { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
@@ -141,7 +141,7 @@ internal class OppgaveServiceTest {
         )
         val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId!!
         every { iverksettRepository.hent(forrigeBehandlingId) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
 
         verify(exactly = 1) { iverksettRepository.hent(forrigeBehandlingId) }
     }
@@ -171,7 +171,7 @@ internal class OppgaveServiceTest {
                 )
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
@@ -198,7 +198,7 @@ internal class OppgaveServiceTest {
                 )
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
 
     @Test
@@ -211,7 +211,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
     }
 
@@ -225,7 +225,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
     }
 
@@ -239,7 +239,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
 
@@ -254,7 +254,7 @@ internal class OppgaveServiceTest {
         )
         setupAndeler(iverksett, listOf(LocalDate.now()))
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
     }
 
@@ -270,7 +270,7 @@ internal class OppgaveServiceTest {
         )
         setupAndeler(iverksett, listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1)))
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
         assertThat(opphørsdato.captured).isEqualTo(LocalDate.now())
     }
@@ -287,7 +287,7 @@ internal class OppgaveServiceTest {
             Vedtaksresultat.OPPHØRT,
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
@@ -316,7 +316,7 @@ internal class OppgaveServiceTest {
         )
         setupAndeler(iverksett, listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1)))
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
 
     private fun setupIverksettMock(
