@@ -21,6 +21,9 @@ class OppgaveService(
 ) {
 
     fun skalOppretteVurderHendelseOppgave(iverksett: Iverksett): Boolean {
+        if (iverksett.erMigrering()) {
+            return false
+        }
         return when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> true
             BehandlingType.REVURDERING -> {
