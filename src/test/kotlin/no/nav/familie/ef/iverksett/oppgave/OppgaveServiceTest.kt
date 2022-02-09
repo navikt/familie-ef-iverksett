@@ -287,7 +287,7 @@ internal class OppgaveServiceTest {
             Vedtaksresultat.OPPHØRT,
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
@@ -316,7 +316,7 @@ internal class OppgaveServiceTest {
         )
         setupAndeler(iverksett, listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1)))
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
 
     private fun setupIverksettMock(
