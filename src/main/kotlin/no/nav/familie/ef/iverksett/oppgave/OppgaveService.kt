@@ -21,6 +21,9 @@ class OppgaveService(
 ) {
 
     fun skalOppretteVurderHenvendelseOppgave(iverksett: Iverksett): Boolean {
+        if (iverksett.erMigrering()) {
+            return false
+        }
         return when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> true
             BehandlingType.REVURDERING -> {
@@ -86,6 +89,9 @@ class OppgaveService(
     private fun aktivitetEllerPeriodeEndret(iverksett: Iverksett): Boolean {
         val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId ?: return true
         val forrigeBehandling = iverksettingRepository.hent(forrigeBehandlingId)
+        if (forrigeBehandling.erMigrering()) {
+            return false
+        }
         return harEndretAktivitet(iverksett, forrigeBehandling) || harEndretPeriode(iverksett, forrigeBehandling)
     }
 
