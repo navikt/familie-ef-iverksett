@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
-import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
@@ -27,7 +26,7 @@ class BrevController(
                         forsøkFerdigstill = true,
                         hoveddokumentvarianter = listOf(Dokument(data.fil,
                                                                  Filtype.PDFA,
-                                                                 dokumenttype = Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV,
+                                                                 dokumenttype = frittståendeBrevtypeTilDokumenttype(data.brevtype),
                                                                  tittel = data.brevtype.tittel)),
                         fagsakId = data.eksternFagsakId.toString(),
                         journalførendeEnhet = data.journalførendeEnhet,
