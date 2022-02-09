@@ -20,7 +20,7 @@ class OppgaveService(
         private val iverksettingRepository: IverksettingRepository
 ) {
 
-    fun skalOppretteVurderHendelseOppgave(iverksett: Iverksett): Boolean {
+    fun skalOppretteVurderHenvendelseOppgave(iverksett: Iverksett): Boolean {
         return when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> true
             BehandlingType.REVURDERING -> {
@@ -34,7 +34,7 @@ class OppgaveService(
         }
     }
 
-    fun opprettVurderHendelseOppgave(iverksett: Iverksett): Long {
+    fun opprettVurderHenvendelseOppgave(iverksett: Iverksett): Long {
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
                     ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = when (iverksett.behandling.behandlingType) {

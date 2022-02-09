@@ -27,8 +27,8 @@ class OpprettOppfølgingsOppgaveTask(private val oppgaveService: OppgaveService,
     override fun doTask(task: Task) {
         if (featureToggleService.isEnabled("familie.ef.iverksett.opprett-oppfoelgingsoppgave")) {
             val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
-            if (oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)) {
-                val oppgaveId = oppgaveService.opprettVurderHendelseOppgave(iverksett)
+            if (oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)) {
+                val oppgaveId = oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
                 logger.info("Opprettet oppgave for oppgaveID=${oppgaveId}")
             }
         } else {
