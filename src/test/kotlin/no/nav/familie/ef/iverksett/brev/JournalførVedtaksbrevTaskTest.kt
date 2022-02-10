@@ -14,7 +14,9 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
+import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
@@ -103,6 +105,30 @@ internal class JournalførVedtaksbrevTaskTest {
         assertThat(capturedArkiverdokumentRequester.map { it.avsenderMottaker!!.id }).containsAll(brevmottakere.map { it.ident })
 
     }
+
+    internal fun `Journalføring av barnetilsynbrev og opprette ny task`() {
+        val behandlingIdString = behandlingId.toString()
+        val journalpostId = "123456789"
+        val arkiverDokumentRequestSlot = slot<ArkiverDokumentRequest>()
+        val journalpostResultatSlot = slot<JournalpostResultat>()
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
+                journalpostId,
+                true)
+        every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId,
+                                                                                        stønadType = StønadType.BARNETILSYN).toDomain())
+        every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
+        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, capture(journalpostResultatSlot)) } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
+        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any()) }
+        assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
+        assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.first().dokumenttype).isEqualTo(Dokumenttype.VEDTAKSBREV_BARNETILSYN)
+        assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
+    }
+
 
     @Test
     internal fun `skal opprette ny task når den er ferdig`() {

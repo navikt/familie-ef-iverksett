@@ -37,35 +37,36 @@ internal class OppgaveServiceTest {
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns mockk()
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
         every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any()) } returns mockk()
+        every { iverksett.erMigrering() } returns false
     }
 
     @Test
     internal fun `innvilget førstegangsbehandling, forvent skalOpprette true`() {
-        val iverksett = mockk<Iverksett>()
         setupIverksettMock(iverksett,
                            UUID.randomUUID(),
                            BehandlingType.FØRSTEGANGSBEHANDLING,
                            Vedtaksresultat.INNVILGET,
                            emptyList())
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering opphørt, forvent skalOpprette true`() {
         setupIverksettMock(iverksett, UUID.randomUUID(), BehandlingType.REVURDERING, Vedtaksresultat.OPPHØRT, emptyList())
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering avslått, forvent skalOpprette false`() {
         setupIverksettMock(iverksett, UUID.randomUUID(), BehandlingType.REVURDERING, Vedtaksresultat.AVSLÅTT, emptyList())
         every { iverksettRepository.hent(any()) } returns iverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
 
     @Test
     internal fun `revurdering innvilget med kun aktivitetsendring, forvent skalOpprette true`() {
         val forrigeBehandlingIverksett = mockk<Iverksett>()
+        every { forrigeBehandlingIverksett.erMigrering() } returns false
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -81,7 +82,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
@@ -95,7 +96,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
         )
         every { iverksettRepository.hent(any()) } returns iverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
@@ -109,7 +110,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT))
         )
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
         verify(exactly = 0) { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
@@ -117,6 +118,7 @@ internal class OppgaveServiceTest {
     @Test
     internal fun `revurdering innvilget med aktivitetsendring og periodeendring, forvent skalOpprette true`() {
         val forrigeBehandlingIverksett = mockk<Iverksett>()
+        every { forrigeBehandlingIverksett.erMigrering() } returns false
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -139,15 +141,15 @@ internal class OppgaveServiceTest {
         )
         val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId!!
         every { iverksettRepository.hent(forrigeBehandlingId) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
 
         verify(exactly = 1) { iverksettRepository.hent(forrigeBehandlingId) }
     }
 
     @Test
     internal fun `revurdering innvilget med kun periodeendring, forvent skalOpprette true`() {
-        val iverksett = mockk<Iverksett>()
         val forrigeBehandlingIverksett = mockk<Iverksett>()
+        every { forrigeBehandlingIverksett.erMigrering() } returns false
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -169,12 +171,13 @@ internal class OppgaveServiceTest {
                 )
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
 
     @Test
     internal fun `revurdering innvilget med kun endring i fom dato, forvent skalOpprette false`() {
         val forrigeBehandlingIverksett = mockk<Iverksett>()
+        every { forrigeBehandlingIverksett.erMigrering() } returns false
         setupIverksettMock(
                 iverksett,
                 UUID.randomUUID(),
@@ -195,7 +198,7 @@ internal class OppgaveServiceTest {
                 )
         )
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
-        assertThat(oppgaveService.skalOppretteVurderHendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
 
     @Test
@@ -208,7 +211,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
     }
 
@@ -222,7 +225,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
     }
 
@@ -236,7 +239,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
 
@@ -251,7 +254,7 @@ internal class OppgaveServiceTest {
         )
         setupAndeler(iverksett, listOf(LocalDate.now()))
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
     }
 
@@ -267,9 +270,53 @@ internal class OppgaveServiceTest {
         )
         setupAndeler(iverksett, listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1)))
 
-        oppgaveService.opprettVurderHendelseOppgave(iverksett)
+        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
         assertThat(opphørsdato.captured).isEqualTo(LocalDate.now())
+    }
+
+    @Test
+    internal fun `av migreringssak, revurdering opphør, forvent at skalOppretteVurderHendelseOppgave er lik true`() {
+        val forrigeBehandling = mockk<Iverksett>()
+        every { iverksett.erMigrering() } returns false
+        every { forrigeBehandling.erMigrering() } returns true
+        setupIverksettMock(
+            iverksett,
+            UUID.randomUUID(),
+            BehandlingType.REVURDERING,
+            Vedtaksresultat.OPPHØRT,
+            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
+    }
+
+    @Test
+    internal fun `av migreringssak, revurdering innvilget med aktivitetsendring, forvent at skalOppretteVurderHendelseOppgave er lik false`() {
+        val forrigeBehandlingIverksett = mockk<Iverksett>()
+        every { iverksett.erMigrering() } returns false
+        every { forrigeBehandlingIverksett.erMigrering() } returns true
+        setupIverksettMock(
+            iverksett,
+            UUID.randomUUID(),
+            BehandlingType.REVURDERING,
+            Vedtaksresultat.INNVILGET,
+            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+        setupIverksettMock(
+            forrigeBehandlingIverksett,
+            UUID.randomUUID(),
+            BehandlingType.REVURDERING,
+            Vedtaksresultat.INNVILGET,
+            listOf(
+                vedtaksPeriode(
+                    aktivitet = AktivitetType.UTVIDELSE_FORSØRGER_I_UTDANNING,
+                    fraOgMed = LocalDate.now().plusMonths(3)
+                )
+            )
+        )
+        setupAndeler(iverksett, listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1)))
+        every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
 
     private fun setupIverksettMock(

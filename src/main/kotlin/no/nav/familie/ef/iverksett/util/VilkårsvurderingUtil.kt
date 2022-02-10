@@ -15,17 +15,16 @@ object VilkårsvurderingUtil {
         return if (vilkårsvurdering.resultat == Vilkårsresultat.SKAL_IKKE_VURDERES) {
             null
         } else {
-            vilkårsvurdering.delvilkårsvurderinger.flatMap { it.vurderinger }
-                    .firstOrNull { it.regelId == RegelId.SAGT_OPP_ELLER_REDUSERT }
-                    ?.let { harSagtOppEllerRedusertStilling(it.svar) }
-            ?: error("Finner ikke delvilkårsvurderingen for sagt opp eller redusert stilling")
+            val vurdering = vilkårsvurdering.delvilkårsvurderinger.flatMap { it.vurderinger }
+                                    .firstOrNull { it.regelId == RegelId.SAGT_OPP_ELLER_REDUSERT }
+                            ?: error("Finner ikke delvilkårsvurderingen for sagt opp eller redusert stilling")
+            harSagtOppEllerRedusertStilling(vurdering.svar)
         }
     }
 
     private fun harSagtOppEllerRedusertStilling(svarId: SvarId?) = when (svarId) {
         SvarId.JA -> true
         SvarId.NEI -> false
-        else -> error("Sagt opp eller redusert har bara ja eller nej som svarslaternativ $svarId")
-
+        else -> null
     }
 }

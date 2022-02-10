@@ -58,7 +58,8 @@ import java.util.UUID
 
 fun opprettIverksettDto(behandlingId: UUID,
                         behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
-                        andelsbeløp: Int = 5000): IverksettDto {
+                        andelsbeløp: Int = 5000,
+                        stønadType: StønadType = StønadType.OVERGANGSSTØNAD): IverksettDto {
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
             beløp = andelsbeløp,
@@ -72,7 +73,7 @@ fun opprettIverksettDto(behandlingId: UUID,
     )
 
     return IverksettDto(
-            fagsak = FagsakdetaljerDto(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
+            fagsak = FagsakdetaljerDto(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = stønadType),
             behandling = BehandlingsdetaljerDto(
                     behandlingId = behandlingId,
                     forrigeBehandlingId = null,
