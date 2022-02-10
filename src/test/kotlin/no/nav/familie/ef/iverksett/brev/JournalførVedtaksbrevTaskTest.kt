@@ -106,6 +106,7 @@ internal class JournalførVedtaksbrevTaskTest {
 
     }
 
+    @Test
     internal fun `Journalføring av barnetilsynbrev og opprette ny task`() {
         val behandlingIdString = behandlingId.toString()
         val journalpostId = "123456789"
