@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.oppgave
 
-import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
+import no.nav.familie.ef.iverksett.arbeidsoppfølging.ArbeidsoppfølgingKafkaProducer
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
@@ -9,14 +9,12 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurde
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingOpphørt
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
-import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
 @Service
 class OppgaveService(
-        private val oppgaveClient: OppgaveClient,
-        private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+        private val arbeidsoppfølgingKafkaProducer: ArbeidsoppfølgingKafkaProducer,
         private val iverksettingRepository: IverksettingRepository
 ) {
 
@@ -37,23 +35,15 @@ class OppgaveService(
         }
     }
 
-    fun opprettVurderHenvendelseOppgave(iverksett: Iverksett): Long {
-        val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
-                    ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
+    fun opprettVurderHenvendelseOppgave(iverksett: Iverksett) {
         val beskrivelse = when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
-        val opprettOppgaveRequest =
-                OppgaveUtil.opprettOppgaveRequest(iverksett.fagsak.eksternId,
-                                                  iverksett.søker.personIdent,
-                                                  iverksett.fagsak.stønadstype,
-                                                  enhet,
-                                                  Oppgavetype.VurderHenvendelse,
-                                                  beskrivelse)
-        return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
-               ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+        val vedtakArbeidsoppfølging =
+                OppgaveUtil.opprettVedtakArbeidsoppfølging(iverksett, beskrivelse)
+        return arbeidsoppfølgingKafkaProducer.sendVedtak(vedtakArbeidsoppfølging)
     }
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: Iverksett): String {

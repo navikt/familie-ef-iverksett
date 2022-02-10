@@ -1,5 +1,7 @@
 package no.nav.familie.ef.iverksett.oppgave
 
+import no.nav.familie.ef.iverksett.arbeidsoppfølging.VedtakArbeidsoppfølging
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import no.nav.familie.kontrakter.felles.Tema
@@ -13,7 +15,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
 import java.util.Locale
-import java.util.UUID
 
 
 object OppgaveUtil {
@@ -42,6 +43,10 @@ object OppgaveUtil {
                 tilordnetRessurs = null,
                 behandlesAvApplikasjon = "familie-ef-sak"
         )
+    }
+
+    fun opprettVedtakArbeidsoppfølging(iverksett: Iverksett, beskrivelse: String): VedtakArbeidsoppfølging {
+        return VedtakArbeidsoppfølging(iverksett.behandling.behandlingId, iverksett.vedtak.vedtaksperioder, beskrivelse)
     }
 
     private fun fristFerdigstillelse(daysToAdd: Long = 0): LocalDate {
