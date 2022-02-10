@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.arbeidsoppfølging.ArbeidsoppfølgingKafkaProducer
+import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
@@ -18,6 +19,7 @@ import java.time.LocalDate
 @Service
 class OppgaveService(
         private val arbeidsoppfølgingKafkaProducer: ArbeidsoppfølgingKafkaProducer,
+        private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
         private val iverksettingRepository: IverksettingRepository
 ) {
 
@@ -39,13 +41,15 @@ class OppgaveService(
     }
 
     fun opprettVurderHenvendelseOppgave(iverksett: Iverksett) {
+        val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
+                    ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
         val vedtakArbeidsoppfølging =
-                OppgaveUtil.opprettVedtakArbeidsoppfølging(iverksett, beskrivelse)
+                OppgaveUtil.opprettVedtakArbeidsoppfølging(iverksett, enhet, beskrivelse)
         return arbeidsoppfølgingKafkaProducer.sendVedtak(vedtakArbeidsoppfølging)
     }
 

@@ -45,8 +45,14 @@ object OppgaveUtil {
         )
     }
 
-    fun opprettVedtakArbeidsoppfølging(iverksett: Iverksett, beskrivelse: String): VedtakArbeidsoppfølging {
-        return VedtakArbeidsoppfølging(iverksett.behandling.behandlingId, iverksett.vedtak.vedtaksperioder, beskrivelse)
+    fun opprettVedtakArbeidsoppfølging(iverksett: Iverksett, enhet: Enhet, beskrivelse: String): VedtakArbeidsoppfølging {
+        return VedtakArbeidsoppfølging(iverksett.behandling.eksternId,
+                                       iverksett.søker.personIdent,
+                                       iverksett.fagsak.stønadstype,
+                                       enhet,
+                                       Oppgavetype.VurderHenvendelse,
+                                       iverksett.vedtak.vedtaksperioder,
+                                       beskrivelse)
     }
 
     private fun fristFerdigstillelse(daysToAdd: Long = 0): LocalDate {
