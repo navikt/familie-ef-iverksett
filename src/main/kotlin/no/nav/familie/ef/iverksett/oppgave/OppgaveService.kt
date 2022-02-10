@@ -12,6 +12,9 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
+/**
+ * TODO : Kanskje endre navn med "Oppgave" i seg til "Vedtak" e.l ?
+ */
 @Service
 class OppgaveService(
         private val arbeidsoppfølgingKafkaProducer: ArbeidsoppfølgingKafkaProducer,
