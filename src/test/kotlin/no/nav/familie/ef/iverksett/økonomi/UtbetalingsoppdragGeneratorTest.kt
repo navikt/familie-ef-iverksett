@@ -28,8 +28,18 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
+    fun `Revurdering bak i tiden før vi hadde beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_bak_i_tiden.csv"))
+    }
+
+    @Test
     fun `Revurdering med 0 beløp beholder periodId når man har flere perioder`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder.csv"))
+    }
+
+    @Test
+    fun `Revurdering med 0 beløp beholder periodId når man har flere perioder, men også endring i tidligere beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder_overlapp.csv"))
     }
 
     @Test

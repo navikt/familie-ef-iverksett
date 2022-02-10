@@ -101,9 +101,10 @@ object ØkonomiUtils {
      */
     private fun finnOpphørsdato(forrigeAndeler: Set<AndelTilkjentYtelse>,
                                 oppdaterteAndeler: Set<AndelTilkjentYtelse>): LocalDate? {
+        val erNullAndel = oppdaterteAndeler.singleOrNull()?.erNull() ?: false
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val førsteDatoIForrigePeriode = forrigeAndeler.minByOrNull { it.fraOgMed }?.fraOgMed
-        if (førsteEndring != null && førsteDatoIForrigePeriode != null && førsteEndring.isBefore(førsteDatoIForrigePeriode)) {
+        if (!erNullAndel && førsteEndring != null && førsteDatoIForrigePeriode != null && førsteEndring.isBefore(førsteDatoIForrigePeriode)) {
             return førsteDatoIForrigePeriode
         }
         return førsteEndring
