@@ -10,7 +10,8 @@ data class TilkjentYtelse(
         val id: UUID = UUID.randomUUID(),
         val utbetalingsoppdrag: Utbetalingsoppdrag? = null,
         val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
-        val andelerTilkjentYtelse: List<AndelTilkjentYtelse>) {
+        val andelerTilkjentYtelse: List<AndelTilkjentYtelse>,
+        val opphørsdato: LocalDate?) {
 
 
     fun toMedMetadata(

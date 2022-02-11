@@ -7,7 +7,7 @@ import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as Tilkj
 
 fun TilkjentYtelseDto.toDomain(): TilkjentYtelse {
     return TilkjentYtelse(
-            andelerTilkjentYtelse = this.andelerTilkjentYtelse.map { it.toDomain() })
+            andelerTilkjentYtelse = this.andelerTilkjentYtelse.map { it.toDomain() }, opphørsdato = null) // TODO map fra DTO
 }
 
 fun TilkjentYtelseMedMetadataDto.toDomain(): TilkjentYtelseMedMetaData {

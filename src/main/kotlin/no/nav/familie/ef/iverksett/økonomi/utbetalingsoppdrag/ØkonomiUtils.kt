@@ -75,18 +75,28 @@ object ØkonomiUtils {
      * @return siste andel og opphørsdato fra kjede med opphør, returnerer null hvis det ikke finnes ett opphørsdato
      */
     fun andelTilOpphørMedDato(andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
-                              andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>): Pair<AndelTilkjentYtelse, LocalDate>? {
-
+                              andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
+                              opphørsDato: LocalDate?): Pair<AndelTilkjentYtelse, LocalDate>? {
         val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
-        val opphørsdato = finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
+
+        validerOpphørsdato(andelerNyTilkjentYtelse, opphørsDato)
+        val opphørsdato = opphørsDato ?: finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
 
         val sisteForrigeAndel = andelerForrigeTilkjentYtelse.lastOrNull()
         return if (sisteForrigeAndel == null || opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
             null
         } else {
             Pair(sisteForrigeAndel, opphørsdato)
+        }
+    }
+
+    private fun validerOpphørsdato(andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
+                                   opphørsDato: LocalDate?) {
+        val nyMinDato = andelerNyTilkjentYtelse.minOfOrNull { it.fraOgMed }
+        if (opphørsDato != null && nyMinDato != null && nyMinDato.isBefore(opphørsDato)) {
+            error("Kan ikke sette opphør etter dato på første perioden")
         }
     }
 
@@ -101,11 +111,12 @@ object ØkonomiUtils {
      */
     private fun finnOpphørsdato(forrigeAndeler: Set<AndelTilkjentYtelse>,
                                 oppdaterteAndeler: Set<AndelTilkjentYtelse>): LocalDate? {
-        val erNullAndel = oppdaterteAndeler.singleOrNull()?.erNull() ?: false
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val førsteDatoIForrigePeriode = forrigeAndeler.minByOrNull { it.fraOgMed }?.fraOgMed
-        if (!erNullAndel && førsteEndring != null && førsteDatoIForrigePeriode != null && førsteEndring.isBefore(førsteDatoIForrigePeriode)) {
-            return førsteDatoIForrigePeriode
+        val førsteDatoNyePerioder = oppdaterteAndeler.minOfOrNull { it.fraOgMed }
+        if (førsteDatoNyePerioder != null && førsteDatoIForrigePeriode != null &&
+            førsteDatoNyePerioder.isBefore(førsteDatoIForrigePeriode)) {
+            return førsteDatoNyePerioder
         }
         return førsteEndring
     }
