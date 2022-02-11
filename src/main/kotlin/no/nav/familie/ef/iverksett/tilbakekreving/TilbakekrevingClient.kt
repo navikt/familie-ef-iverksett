@@ -8,7 +8,6 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Behandling
 import no.nav.familie.kontrakter.felles.tilbakekreving.FinnesBehandlingResponse
 import no.nav.familie.kontrakter.felles.tilbakekreving.ForhåndsvisVarselbrevRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.KanBehandlingOpprettesManueltRespons
-import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettManueltTilbakekrevingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import org.springframework.beans.factory.annotation.Qualifier
@@ -60,13 +59,8 @@ class TilbakekrevingClient(@Qualifier("azure") restOperations: RestOperations,
                              HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_PDF) })
     }
 
-    fun opprettBehandling(opprettTilbakekrevingRequest: OpprettTilbakekrevingRequest): String {
-        val response: Ressurs<String> = postForEntity(opprettTilbakekrevingUri, opprettTilbakekrevingRequest)
-        return response.getDataOrThrow()
-    }
-
-    fun opprettBehandlingManuelt(request: OpprettManueltTilbakekrevingRequest) {
-        postForEntity<Ressurs<String>>(opprettBehandlingManueltUri, request)
+    fun opprettBehandling(opprettTilbakekrevingRequest: OpprettTilbakekrevingRequest) {
+        postForEntity<Ressurs<String>>(opprettTilbakekrevingUri, opprettTilbakekrevingRequest)
     }
 
     fun finnesÅpenBehandling(fagsakId: Long): Boolean {

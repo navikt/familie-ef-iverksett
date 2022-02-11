@@ -50,7 +50,7 @@ internal class OpprettTilbakekrevingTaskTest {
         every { tilbakekrevingClient.finnesÅpenBehandling(any()) } returns false
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) } returns
                 Enhet("1", "Oslo")
-        every { tilbakekrevingClient.opprettBehandling(any()) } returns ""
+        every { tilbakekrevingClient.opprettBehandling(any()) } just Runs
     }
 
     @Test
