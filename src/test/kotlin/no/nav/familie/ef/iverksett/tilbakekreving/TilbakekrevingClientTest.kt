@@ -4,11 +4,8 @@ import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandling
-import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
 import no.nav.familie.kontrakter.felles.tilbakekreving.FeilutbetaltePerioderDto
 import no.nav.familie.kontrakter.felles.tilbakekreving.ForhåndsvisVarselbrevRequest
-import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettManueltTilbakekrevingRequest
-import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import org.assertj.core.api.Assertions.assertThat
@@ -36,38 +33,6 @@ internal class TilbakekrevingClientTest : ServerTest() {
         val hentForhåndsvisningVarselbrev = tilbakekrevingClient.hentForhåndsvisningVarselbrev(forhåndsvisVarselbrevRequest)
 
         assertThat(hentForhåndsvisningVarselbrev.decodeToString()).isEqualTo("Dette er en PDF!")
-    }
-
-    @Test
-    fun `opprettBehandling returnerer id for opprettet behandling` () {
-        val opprettTilbakekrevingRequest =
-                OpprettTilbakekrevingRequest(fagsystem = Fagsystem.EF,
-                                             ytelsestype = Ytelsestype.OVERGANGSSTØNAD,
-                                             eksternFagsakId = 1L.toString(),
-                                             personIdent = "65465465421",
-                                             eksternId = 1L.toString(),
-                                             manueltOpprettet = false,
-                                             enhetId = "1147",
-                                             enhetsnavn = "Oslo",
-                                             varsel = null,
-                                             saksbehandlerIdent = "AD45678",
-                                             revurderingsvedtaksdato = LocalDate.now(),
-                                             faktainfo = Faktainfo("Feil utbetaling", "Krev tilbake"))
-
-        val behandlingId = tilbakekrevingClient.opprettBehandling(opprettTilbakekrevingRequest)
-
-        assertThat(behandlingId).matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
-
-    }
-
-    @Test
-    fun `opprettBehandlingManuelt kaster ingen feil ved korrekt opprettelse` () {
-        val request = OpprettManueltTilbakekrevingRequest(1L.toString(),
-                                                          Ytelsestype.OVERGANGSSTØNAD,
-                                                          1L.toString())
-
-        tilbakekrevingClient.opprettBehandlingManuelt(request)
-
     }
 
     @Test
