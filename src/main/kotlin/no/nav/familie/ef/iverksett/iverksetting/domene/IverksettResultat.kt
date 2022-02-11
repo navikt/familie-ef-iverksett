@@ -10,6 +10,7 @@ data class IverksettResultat(
         val tilkjentYtelseForUtbetaling: TilkjentYtelse?,
         val oppdragResultat: OppdragResultat? = null,
         val journalpostResultat: JournalpostResultat? = null,
+        val journalpostResultatBrevmottakere: Map<String, JournalpostResultat>? = null,
         val vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null,
         val tilbakekrevingResultat: TilbakekrevingResultat? = null
 )
