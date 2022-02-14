@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.util
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
+import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
@@ -204,7 +205,8 @@ fun opprettIverksett(behandlingId: UUID,
                                                             tilOgMed = LocalDate.now(),
                                                             aktivitet = AktivitetType.BARNET_ER_SYKT,
                                                             periodeType = VedtaksperiodeType.HOVEDPERIODE)),
-                    tilbakekreving = tilbakekreving
+                    tilbakekreving = tilbakekreving,
+                    brevmottakere = Brevmottakere(emptyList())
             )
     )
 }
@@ -274,12 +276,14 @@ class IverksettResultatMockBuilder private constructor(
     data class Builder(
             var oppdragResultat: OppdragResultat? = null,
             var journalpostResultat: JournalpostResultat? = null,
+            var journalpostResultatBrevmottakere: Map<String, JournalpostResultat>? = null,
             var vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null,
             var tilbakekrevingResultat: TilbakekrevingResultat? = null
     ) {
 
         fun oppdragResultat(oppdragResultat: OppdragResultat) = apply { this.oppdragResultat = oppdragResultat }
         fun journalPostResultat() = apply { this.journalpostResultat = JournalpostResultat(UUID.randomUUID().toString()) }
+
         fun vedtaksbrevResultat(behandlingId: UUID) =
                 apply { this.vedtaksbrevResultat = DistribuerVedtaksbrevResultat(bestillingId = behandlingId.toString()) }
 
@@ -291,6 +295,7 @@ class IverksettResultatMockBuilder private constructor(
                                   tilkjentYtelse,
                                   oppdragResultat,
                                   journalpostResultat,
+                                  journalpostResultatBrevmottakere,
                                   vedtaksbrevResultat,
                                   tilbakekrevingResultat)
     }

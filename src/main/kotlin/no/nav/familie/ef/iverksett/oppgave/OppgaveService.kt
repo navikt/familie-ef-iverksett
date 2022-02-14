@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørste
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingInnvilget
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingOpphørt
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
+import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
@@ -21,7 +22,7 @@ class OppgaveService(
 ) {
 
     fun skalOppretteVurderHenvendelseOppgave(iverksett: Iverksett): Boolean {
-        if (iverksett.erMigrering()) {
+        if (iverksett.erMigrering() || iverksett.fagsak.stønadstype != StønadType.OVERGANGSSTØNAD) {
             return false
         }
         return when (iverksett.behandling.behandlingType) {

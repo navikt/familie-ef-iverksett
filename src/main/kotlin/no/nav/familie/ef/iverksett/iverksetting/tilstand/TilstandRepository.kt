@@ -24,7 +24,7 @@ import java.util.UUID
 class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun opprettTomtResultat(behandlingId: UUID) {
-        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL, NULL)"
+        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL, NULL, NULL)"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
@@ -65,6 +65,25 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
         ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}," +
                  "journalPostResultatJson : $journalPostResultatJson")
+    }
+
+    fun oppdaterJournalpostResultatBrevmottakere(behandlingId: UUID, mottakerIdent: String, journalPostResultat: JournalpostResultat) {
+        val sql = "UPDATE iverksett_resultat SET journalpostresultatBrevmottakere = :journalpostResultat::JSON " +
+                "WHERE behandling_id = :behandlingId"
+
+        val eksisterendeResultat = hentJournalpostResultatBrevmottakere(behandlingId)
+
+        val resultatermedNyBrevmottaker = (eksisterendeResultat ?: emptyMap()) + mapOf(mottakerIdent to journalPostResultat)
+
+
+        val journalPostResultatJson =
+            objectMapper.writeValueAsString(resultatermedNyBrevmottaker)
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+            .addValue("journalpostResultat", journalPostResultatJson)
+
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
+            ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}," +
+                             "journalPostResultatJson : $journalPostResultatJson")
     }
 
     fun oppdaterDistribuerVedtaksbrevResultat(behandlingId: UUID,
@@ -127,6 +146,12 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
         return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
     }
 
+    fun hentJournalpostResultatBrevmottakere(behandlingId: UUID): Map<String, JournalpostResultat>? {
+        val sql = "SELECT journalpostresultatbrevmottakere FROM iverksett_resultat WHERE behandling_id = :behandlingId"
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+    }
+
     fun hentIverksettResultat(behandlingId: UUID): IverksettResultat? {
         val sql = "SELECT * FROM iverksett_resultat WHERE behandling_id = :behandlingId"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
@@ -136,6 +161,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                     rs.getJson("tilkjentYtelseForUtbetaling"),
                     rs.getJson("oppdragResultat"),
                     rs.getJson("journalpostResultat"),
+                    rs.getJson("journalpostResultatBrevmottakere"),
                     rs.getJson("vedtaksBrevResultat"),
                     rs.getJson("tilbakekrevingResultat"))
         }
