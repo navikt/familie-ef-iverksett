@@ -75,12 +75,14 @@ object ØkonomiUtils {
      * @return siste andel og opphørsdato fra kjede med opphør, returnerer null hvis det ikke finnes ett opphørsdato
      */
     fun andelTilOpphørMedDato(andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
-                              andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>): Pair<AndelTilkjentYtelse, LocalDate>? {
-
+                              andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
+                              opphørsDato: LocalDate?): Pair<AndelTilkjentYtelse, LocalDate>? {
         val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
-        val opphørsdato = finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
+
+        validerOpphørsdato(andelerNyTilkjentYtelse, opphørsDato)
+        val opphørsdato = opphørsDato ?: finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
 
         val sisteForrigeAndel = andelerForrigeTilkjentYtelse.lastOrNull()
         return if (sisteForrigeAndel == null || opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
@@ -90,11 +92,19 @@ object ØkonomiUtils {
         }
     }
 
+    private fun validerOpphørsdato(andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
+                                   opphørsDato: LocalDate?) {
+        val nyMinDato = andelerNyTilkjentYtelse.minOfOrNull { it.fraOgMed }
+        if (opphørsDato != null && nyMinDato != null && nyMinDato.isBefore(opphørsDato)) {
+            error("Kan ikke sette opphør etter dato på første perioden")
+        }
+    }
+
     /**
      * Skal finne opphørsdato til utbetalingsoppdraget
      *
-     * Hvis første andelen i nye andeler er før første andelen i forrige andeler så skal første datoet i
-     * forrige andeler returneres
+     * Returnerer første endret periode, uavhengig om den er andel med 0-beløp eller ikke
+     * Dette for å kunne opphøre perioder bak i tiden, som kan være før perioder som finnes i EF, men som finnes i Infotrygd
      *
      * Hvis forrige kjede inneholder 2 andeler og den nye kjeden endrer i den andre andelen,
      * så skal opphørsdatoet settes til startdato for andre andelen i forrige kjede
@@ -103,8 +113,10 @@ object ØkonomiUtils {
                                 oppdaterteAndeler: Set<AndelTilkjentYtelse>): LocalDate? {
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val førsteDatoIForrigePeriode = forrigeAndeler.minByOrNull { it.fraOgMed }?.fraOgMed
-        if (førsteEndring != null && førsteDatoIForrigePeriode != null && førsteEndring.isBefore(førsteDatoIForrigePeriode)) {
-            return førsteDatoIForrigePeriode
+        val førsteDatoNyePerioder = oppdaterteAndeler.minOfOrNull { it.fraOgMed }
+        if (førsteDatoNyePerioder != null && førsteDatoIForrigePeriode != null &&
+            førsteDatoNyePerioder.isBefore(førsteDatoIForrigePeriode)) {
+            return førsteDatoNyePerioder
         }
         return førsteEndring
     }

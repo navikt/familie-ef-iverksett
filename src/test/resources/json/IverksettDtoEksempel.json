@@ -84,7 +84,8 @@
           "samordningsfradrag": 0,
           "inntektsreduksjon": 0
         }
-      ]
+      ],
+      "opphørsdato": null
     },
     "tilbakekreving": {
       "tilbakekrevingsvalg": "OPPRETT_TILBAKEKREVING_MED_VARSEL",

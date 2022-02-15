@@ -155,7 +155,8 @@ fun opprettIverksett(behandlingId: UUID,
             id = UUID.randomUUID(),
             utbetalingsoppdrag = null,
             status = TilkjentYtelseStatus.AKTIV,
-            andelerTilkjentYtelse = andeler
+            andelerTilkjentYtelse = andeler,
+            opphørsdato = null
     )
 
     val behandlingType = forrigeBehandlingId?.let { BehandlingType.REVURDERING } ?: BehandlingType.FØRSTEGANGSBEHANDLING
@@ -219,7 +220,8 @@ fun opprettTilkjentYtelse(behandlingId: UUID,
     return TilkjentYtelse(
             id = behandlingId,
             utbetalingsoppdrag = null,
-            andelerTilkjentYtelse = andeler
+            andelerTilkjentYtelse = andeler,
+            opphørsdato = null
     )
 }
 

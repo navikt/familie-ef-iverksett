@@ -20,7 +20,8 @@ class TekniskOpphørController(val tekniskOpphørService: TekniskOpphørService)
         val tekniskOpphør = TekniskOpphør(forrigeBehandlingId = tekniskOpphørDto.forrigeBehandlingId,
                                           tilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
                                                   tilkjentYtelse = TilkjentYtelse(
-                                                          andelerTilkjentYtelse = emptyList()),
+                                                          andelerTilkjentYtelse = emptyList(),
+                                                          opphørsdato = null),
                                                   saksbehandlerId = tekniskOpphørDto.saksbehandlerId,
                                                   eksternBehandlingId = tekniskOpphørDto.eksternBehandlingId,
                                                   stønadstype = tekniskOpphørDto.stønadstype,

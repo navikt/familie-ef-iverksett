@@ -117,7 +117,8 @@ internal class VentePåStatusFraØkonomiTaskTest {
                                                                                     avstemmingTidspunkt = LocalDateTime.now(),
                                                                                     utbetalingsperiode = utbetalingsperioder),
                                             status = TilkjentYtelseStatus.SENDT_TIL_IVERKSETTING,
-                                            andelerTilkjentYtelse = listOf())
+                                            andelerTilkjentYtelse = listOf(),
+                                            opphørsdato = null)
         return tilkjentYtelse
     }
 
