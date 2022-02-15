@@ -103,8 +103,8 @@ object ØkonomiUtils {
     /**
      * Skal finne opphørsdato til utbetalingsoppdraget
      *
-     * Hvis første andelen i nye andeler er før første andelen i forrige andeler så skal første datoet i
-     * forrige andeler returneres
+     * Returnerer første endrer periode, uavhengig om den er andel med 0-beløp eller ikke
+     * Dette for å kunne opphøre perioder bak i tiden, som kan være før perioder som finnes i EF, men som finnes i Infotrygd
      *
      * Hvis forrige kjede inneholder 2 andeler og den nye kjeden endrer i den andre andelen,
      * så skal opphørsdatoet settes til startdato for andre andelen i forrige kjede
