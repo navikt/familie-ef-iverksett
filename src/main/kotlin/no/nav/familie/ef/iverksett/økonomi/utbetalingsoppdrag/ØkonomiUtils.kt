@@ -117,7 +117,7 @@ object ØkonomiUtils {
         val nyOpphørsdato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.opphørsdato
         if (forrigeOpphørsdato != null) {
             if (nyOpphørsdato == null) {
-                error("Må ha med opphørsdato hvis man tidligere opphørt")
+                error("Må ha med opphørsdato hvis man har tidligere opphørsdato")
             } else if (nyOpphørsdato > forrigeOpphørsdato) {
                 error("Nytt opphørsdato=$nyOpphørsdato kan ikke være etter forrigeOpphørsdato=$forrigeOpphørsdato")
             }

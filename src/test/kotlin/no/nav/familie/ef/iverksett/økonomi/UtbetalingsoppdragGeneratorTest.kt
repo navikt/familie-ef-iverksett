@@ -169,7 +169,7 @@ internal class UtbetalingsoppdragGeneratorTest {
         fun `revurdering uten opphørsdato når forrige revurdering har opphørsdato er ikke gyldig`() {
             assertThatThrownBy {
                 TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_mangler_opphørsdato.csv"))
-            }.hasMessageContaining("Må ha med opphørsdato hvis man tidligere opphørt")
+            }.hasMessageContaining("Må ha med opphørsdato hvis man har tidligere opphørsdato")
         }
 
         @Test
@@ -186,7 +186,7 @@ internal class UtbetalingsoppdragGeneratorTest {
 
         @Test
         fun `opphørsdato er den samme som tidligere - skal ikke sende opphørsdato på nytt når det finnes endringer senere i tiden`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_opphørsdato.csv"))
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_endringer_på_andeler.csv"))
         }
 
         @Test
@@ -196,7 +196,7 @@ internal class UtbetalingsoppdragGeneratorTest {
 
         @Test
         fun `har opphørsdato, sender ny tilkjent ytelse uten andeler - opphører fra første tidligere andelen`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_samme_med_opphør_senere.csv"))
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_uten_andeler.csv"))
         }
     }
 

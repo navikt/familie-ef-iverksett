@@ -133,7 +133,7 @@ class TestOppdragGroup {
         if (tidligereOpphørsdato != null && to.opphørsdato != null) {
             error("Kan kun sette 1 opphørsdato på en input/output")
         }
-        return to.opphørsdato
+        return tidligereOpphørsdato ?: to.opphørsdato
     }
 
     val input: TilkjentYtelseMedMetaData by lazy {
