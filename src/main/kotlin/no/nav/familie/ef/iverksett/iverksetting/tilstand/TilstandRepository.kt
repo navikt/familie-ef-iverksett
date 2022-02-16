@@ -99,6 +99,33 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                  "distribuerVedtaksbrevResultatJson : $distribuerVedtaksbrevResultatJson")
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun oppdaterDistribuerVedtaksbrevResultatForBrevmottaker(behandlingId: UUID,
+                                                             journalpostId: String, resultat: DistribuerVedtaksbrevResultat) {
+        val sql = "UPDATE iverksett_resultat SET vedtaksbrevresultatbrevmottakere = :distribuerVedtaksbrevResultatBrevmottakereJson::JSON " +
+                  "WHERE behandling_id = :behandlingId"
+
+        val eksisterendeResultat: Map<String, DistribuerVedtaksbrevResultat>? = hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId)
+
+        val resultatermedNyJournalpost = (eksisterendeResultat ?: emptyMap()) + mapOf(journalpostId to resultat)
+
+
+        val distribuerVedtaksbrevResultatBrevmottakereJson = objectMapper.writeValueAsString(resultatermedNyJournalpost)
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+                .addValue("distribuerVedtaksbrevResultatBrevmottakereJson", distribuerVedtaksbrevResultatBrevmottakereJson)
+
+        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
+        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, " +
+                 "distribuerVedtaksbrevResultatBrevmottakereJson : $distribuerVedtaksbrevResultatBrevmottakereJson")
+    }
+
+    fun hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId: UUID): Map<String, DistribuerVedtaksbrevResultat>? {
+        val sql = "SELECT vedtaksbrevresultatbrevmottakere FROM iverksett_resultat WHERE behandling_id = :behandlingId"
+        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
+        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+    }
+
+
     fun oppdaterTilbakekrevingResultat(behandlingId: UUID,
                                        tilbakekrevingResultat: TilbakekrevingResultat) {
         val sql = "UPDATE iverksett_resultat SET tilbakekrevingresultat = :tilbakekrevingResultatJson::JSON " +
@@ -111,7 +138,6 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
         ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, " +
                  "tilbakekrevingResultatJson : $tilbakekrevingResultatJson")
     }
-
 
     fun hentTilkjentYtelse(behandlingId: UUID): TilkjentYtelse? {
         val sql = "SELECT tilkjentytelseforutbetaling FROM iverksett_resultat WHERE behandling_id = :behandlingId"
