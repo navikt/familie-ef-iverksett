@@ -92,11 +92,12 @@ data class TestOppdrag(val type: TestOppdragType,
 
 class TestOppdragGroup {
 
+    private var opphørsdatoInn: LocalDate? = null
+    private var opphørsdatoUt: LocalDate? = null
     private val andelerTilkjentYtelseInn: MutableList<AndelTilkjentYtelse> = mutableListOf()
     private val andelerTilkjentYtelseUt: MutableList<AndelTilkjentYtelse> = mutableListOf()
     private val utbetalingsperioder: MutableList<Utbetalingsperiode> = mutableListOf()
 
-    //private val sporbar = Sporbar()
     private var oppdragKode110: Utbetalingsoppdrag.KodeEndring = Utbetalingsoppdrag.KodeEndring.NY
     private var personIdent: String? = null
     private var oppdragId: UUID? = null
@@ -106,20 +107,37 @@ class TestOppdragGroup {
             TestOppdragType.Input -> {
                 oppdragId = to.oppdragId
                 personIdent = to.fnr
-                to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseInn.add(it) }
+                if (to.opphørsdato != null) {
+                    if (to.startPeriode != null || to.sluttPeriode != null) {
+                        error("Kan ikke kombinere opphør og start/sluttperiode for input")
+                    }
+                    opphørsdatoInn = validerOgGetOpphørsdao(to, opphørsdatoInn)
+                } else {
+                    to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseInn.add(it) }
+                }
             }
             TestOppdragType.Oppdrag -> {
                 oppdragKode110 = Utbetalingsoppdrag.KodeEndring.valueOf(to.status110!!)
                 to.tilUtbetalingsperiode()?.also { utbetalingsperioder.add(it) }
             }
             TestOppdragType.Output -> {
+                opphørsdatoUt = validerOgGetOpphørsdao(to, opphørsdatoUt)
+                // Vi lagrer ned en nullandel for output
                 to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseUt.add(it) }
             }
         }
     }
 
+    private fun validerOgGetOpphørsdao(to: TestOppdrag, tidligereOpphørsdato: LocalDate?): LocalDate? {
+        if (tidligereOpphørsdato != null && to.opphørsdato != null) {
+            error("Kan kun sette 1 opphørsdato på en input/output")
+        }
+        return to.opphørsdato
+    }
+
     val input: TilkjentYtelseMedMetaData by lazy {
-        TilkjentYtelseMedMetaData(TilkjentYtelse(andelerTilkjentYtelse = andelerTilkjentYtelseInn),
+        TilkjentYtelseMedMetaData(TilkjentYtelse(andelerTilkjentYtelse = andelerTilkjentYtelseInn,
+                                                 opphørsdato = opphørsdatoInn),
                                   stønadstype = StønadType.OVERGANGSSTØNAD,
                                   eksternBehandlingId = behandlingEksternId,
                                   eksternFagsakId = fagsakEksternId,
@@ -144,7 +162,8 @@ class TestOppdragGroup {
 
         TilkjentYtelse(id = input.tilkjentYtelse.id,
                        andelerTilkjentYtelse = andelerTilkjentYtelseUt,
-                       utbetalingsoppdrag = utbetalingsoppdrag)
+                       utbetalingsoppdrag = utbetalingsoppdrag,
+                       opphørsdato = opphørsdatoUt)
 
     }
 }

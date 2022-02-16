@@ -58,7 +58,7 @@ data class Vedtaksdetaljer(
         val tilkjentYtelse: TilkjentYtelse?,
         val vedtaksperioder: List<Vedtaksperiode>,
         val tilbakekreving: Tilbakekrevingsdetaljer? = null,
-        val brevmottakere: Brevmottakere
+        val brevmottakere: Brevmottakere? = null
 )
 
 data class Behandlingsdetaljer(

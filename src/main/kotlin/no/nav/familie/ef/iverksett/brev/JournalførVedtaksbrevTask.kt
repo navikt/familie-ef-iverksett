@@ -56,7 +56,7 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
             eksternReferanseId = "$behandlingId-vedtaksbrev"
         )
 
-        if(iverksett.vedtak.brevmottakere.mottakere.isNotEmpty() && featureToggleService.isEnabled("familie.ef.iverksett.brevmottakere") ){
+        if((iverksett.vedtak.brevmottakere?.mottakere?.isNotEmpty() == true) && featureToggleService.isEnabled("familie.ef.iverksett.brevmottakere") ){
             journalførDokumentMedBrevmottakere(behandlingId, iverksett, arkiverDokumentRequest)
         }
          else{
@@ -70,7 +70,7 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
         val journalførteIdenter: List<String> =
                 tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId)?.keys?.toList() ?: emptyList()
 
-        iverksett.vedtak.brevmottakere.mottakere.mapIndexed { indeks, mottaker ->
+        iverksett.vedtak.brevmottakere?.mottakere?.mapIndexed { indeks, mottaker ->
             if (!journalførteIdenter.contains(mottaker.ident)) {
                 val journalpostId = journalpostClient.arkiverDokument(
                         arkiverDokumentRequest.copy(

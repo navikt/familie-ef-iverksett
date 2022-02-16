@@ -8,6 +8,7 @@ import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
@@ -28,8 +29,48 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
+    fun `Revurdering bak i tiden før vi hadde beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_bak_i_tiden.csv"))
+    }
+
+    @Test
+    fun `Revurdering med opphørsdato bak i tiden, før vi hadde beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphør_bak_i_tiden.csv"))
+    }
+
+    @Test
     fun `Revurdering med 0 beløp beholder periodId når man har flere perioder`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder.csv"))
+    }
+
+    @Test
+    fun `Revurdering bak i tiden med beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_bak_i_tiden_med_beløp.csv"))
+    }
+
+    @Test
+    fun `Revurdering frem i tiden med 0-beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_frem_i_tiden_med_0beløp.csv"))
+    }
+
+    @Test
+    fun `Revurdering frem i tiden med beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_frem_i_tiden_med_beløp.csv"))
+    }
+
+    @Test
+    fun `Revurdering med 0 beløp beholder periodId når man har flere perioder, men også endring i tidligere beløp`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder_overlapp.csv"))
+    }
+
+    @Test
+    fun `Revurdering med 0 beløp beholder periodId når man har flere perioder, før tidligere periode`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder_overlapp_før_tidiligere_periode.csv"))
+    }
+
+    @Test
+    fun `Revurdering med opphør bak i tiden, samt ny periode frem i tiden`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphør_bak_i_tiden_med_periode.csv"))
     }
 
     @Test
@@ -85,6 +126,13 @@ internal class UtbetalingsoppdragGeneratorTest {
     @Test
     fun `Har en periode og får ett opphør`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/1_periode_får_ett_opphør.csv"))
+    }
+
+    @Test
+    internal fun `Skal ikke kunne sende opphørsdato etter en andel sin dato`() {
+        assertThatThrownBy{
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphør_etter_andel_sitt_dato_feiler.csv"))
+        }.hasMessageContaining("Kan ikke sette opphør etter dato på første perioden")
     }
 
     @Test
@@ -202,7 +250,8 @@ internal class UtbetalingsoppdragGeneratorTest {
             TilkjentYtelseMedMetaData(tilkjentYtelse = TilkjentYtelse(id = UUID.randomUUID(),
                                                                       utbetalingsoppdrag = null,
                                                                       status = TilkjentYtelseStatus.OPPRETTET,
-                                                                      andelerTilkjentYtelse = andelTilkjentYtelse.toList()),
+                                                                      andelerTilkjentYtelse = andelTilkjentYtelse.toList(),
+                                                                      opphørsdato = null),
                                       personIdent = "1",
                                       behandlingId = behandlingId,
                                       eksternBehandlingId = 1,
