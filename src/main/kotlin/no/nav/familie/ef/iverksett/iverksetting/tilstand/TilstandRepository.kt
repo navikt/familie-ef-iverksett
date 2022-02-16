@@ -67,6 +67,7 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                  "journalPostResultatJson : $journalPostResultatJson")
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun oppdaterJournalpostResultatBrevmottakere(behandlingId: UUID, mottakerIdent: String, journalPostResultat: JournalpostResultat) {
         val sql = "UPDATE iverksett_resultat SET journalpostresultatBrevmottakere = :journalpostResultat::JSON " +
                 "WHERE behandling_id = :behandlingId"
