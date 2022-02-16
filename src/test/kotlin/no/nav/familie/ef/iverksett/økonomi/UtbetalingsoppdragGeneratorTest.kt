@@ -198,6 +198,16 @@ internal class UtbetalingsoppdragGeneratorTest {
         fun `har opphørsdato, sender ny tilkjent ytelse uten andeler - opphører fra første tidligere andelen`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_uten_andeler.csv"))
         }
+
+        @Test
+        fun `førstegangsbehandling - skal ikke sende opphør når man sender med opphørsdato i førstevedtak der datoet er samme som startdato`() {
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphørsdato_førstegangsbehandling_samme_som_andel.csv"))
+        }
+
+        @Test
+        fun `førstegangsbehandling - skal sende opphør når man sender med opphørsdato i førstevedtak der datoet før startdato`() {
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphørsdato_førstegangsbehandling_samme_som_andel.csv"))
+        }
     }
 
     @Test
