@@ -25,7 +25,10 @@ class JournalpostClientMock(@Value("\${FAMILIE_INTEGRASJONER_API_URL}") private 
 
     val responses = listOf(WireMock.get(WireMock.urlEqualTo(pingUri.path))
                                    .willReturn(WireMock.aResponse().withStatus(200)),
-                           WireMock.post(WireMock.urlMatching("${dokarkivUri.path}.*"))
+                           WireMock.post(WireMock.urlMatching("${dokarkivUri.path}.*")).atPriority(1)
+                                   .withRequestBody(WireMock.matchingJsonPath("$..id", WireMock.containing("SkalKasteFeil")))
+                                   .willReturn(WireMock.serverError()),
+                           WireMock.post(WireMock.urlMatching("${dokarkivUri.path}.*")).atPriority(2)
                                    .willReturn(WireMock.okJson(objectMapper.writeValueAsString(arkiverDokumentResponse))),
                            WireMock.post(WireMock.urlEqualTo(distribuerDokumentUri.path))
                                    .willReturn(WireMock.okJson(objectMapper.writeValueAsString(bestillingId))))
@@ -33,7 +36,7 @@ class JournalpostClientMock(@Value("\${FAMILIE_INTEGRASJONER_API_URL}") private 
     @Bean("mock-integrasjoner")
     @Profile("mock-integrasjoner")
     fun integrationMockServer(): WireMockServer {
-        val mockServer = WireMockServer(8085)
+        val mockServer = WireMockServer(9085)
         responses.forEach {
             mockServer.stubFor(it)
         }
