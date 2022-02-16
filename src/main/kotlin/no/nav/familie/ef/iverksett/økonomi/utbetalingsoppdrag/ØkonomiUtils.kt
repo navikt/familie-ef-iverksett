@@ -98,10 +98,10 @@ object ØkonomiUtils {
      * Hvis ikke så skal den finne finnOpphørsdato, som gjør en diff mellom tidligere og nye andeler
      */
     private fun beregnOpphørsdato(forrigeOpphørsdato: LocalDate?,
-                                  nyttOpphørsdato: LocalDate?,
+                                  nyOpphørsdato: LocalDate?,
                                   forrigeAndeler: Set<AndelTilkjentYtelse>,
                                   oppdaterteAndeler: Set<AndelTilkjentYtelse>): LocalDate? {
-        val opphørsdatoHvisIkkeLikSomForrige = if (forrigeOpphørsdato == nyttOpphørsdato) null else nyttOpphørsdato
+        val opphørsdatoHvisIkkeLikSomForrige = if (forrigeOpphørsdato == nyOpphørsdato) null else nyOpphørsdato
         return opphørsdatoHvisIkkeLikSomForrige ?: finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
     }
 
@@ -114,16 +114,16 @@ object ØkonomiUtils {
                            forrigeTilkjentYtelse: TilkjentYtelse?) {
         val nyMinDato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
         val forrigeOpphørsdato = forrigeTilkjentYtelse?.opphørsdato
-        val nyttOpphørsdato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.opphørsdato
+        val nyOpphørsdato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.opphørsdato
         if (forrigeOpphørsdato != null) {
-            if (nyttOpphørsdato == null) {
+            if (nyOpphørsdato == null) {
                 error("Må ha med opphørsdato hvis man tidligere opphørt")
-            } else if (nyttOpphørsdato > forrigeOpphørsdato) {
-                error("Nytt opphørsdato=$nyttOpphørsdato kan ikke være etter forrigeOpphørsdato=$forrigeOpphørsdato")
+            } else if (nyOpphørsdato > forrigeOpphørsdato) {
+                error("Nytt opphørsdato=$nyOpphørsdato kan ikke være etter forrigeOpphørsdato=$forrigeOpphørsdato")
             }
         }
 
-        if (nyttOpphørsdato != null && nyMinDato != null && nyMinDato.isBefore(nyttOpphørsdato)) {
+        if (nyOpphørsdato != null && nyMinDato != null && nyMinDato.isBefore(nyOpphørsdato)) {
             error("Kan ikke sette opphør etter dato på første perioden")
         }
     }
