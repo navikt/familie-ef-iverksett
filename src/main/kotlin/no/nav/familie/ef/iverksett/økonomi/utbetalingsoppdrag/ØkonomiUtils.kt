@@ -3,6 +3,8 @@ package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Companion.disjunkteAndeler
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Companion.snittAndeler
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.time.LocalDate
 import java.util.UUID
@@ -75,14 +77,13 @@ object ØkonomiUtils {
      * @return siste andel og opphørsdato fra kjede med opphør, returnerer null hvis det ikke finnes ett opphørsdato
      */
     fun andelTilOpphørMedDato(andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
-                              andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
-                              opphørsDato: LocalDate?): Pair<AndelTilkjentYtelse, LocalDate>? {
+                              forrigeOpphørsdato: LocalDate?,
+                              nyTilkjentYtelse: TilkjentYtelse): Pair<AndelTilkjentYtelse, LocalDate>? {
         val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
-        val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
+        val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
 
-        validerOpphørsdato(andelerNyTilkjentYtelse, opphørsDato)
-        val opphørsdato = opphørsDato ?: finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
+        val opphørsdato = beregnOpphørsdato(forrigeOpphørsdato, nyTilkjentYtelse.opphørsdato, forrigeAndeler, oppdaterteAndeler)
 
         val sisteForrigeAndel = andelerForrigeTilkjentYtelse.lastOrNull()
         return if (sisteForrigeAndel == null || opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
@@ -92,10 +93,37 @@ object ØkonomiUtils {
         }
     }
 
-    private fun validerOpphørsdato(andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
-                                   opphørsDato: LocalDate?) {
-        val nyMinDato = andelerNyTilkjentYtelse.minOfOrNull { it.fraOgMed }
-        if (opphørsDato != null && nyMinDato != null && nyMinDato.isBefore(opphørsDato)) {
+    /**
+     * Skal bruke opphørsdato fra tilkjent ytelse hvis den ikke er den samme som forrige opphørsdato
+     * Hvis ikke så skal den finne finnOpphørsdato, som gjør en diff mellom tidligere og nye andeler
+     */
+    private fun beregnOpphørsdato(forrigeOpphørsdato: LocalDate?,
+                                  nyttOpphørsdato: LocalDate?,
+                                  forrigeAndeler: Set<AndelTilkjentYtelse>,
+                                  oppdaterteAndeler: Set<AndelTilkjentYtelse>): LocalDate? {
+        val opphørsdatoHvisIkkeLikSomForrige = if (forrigeOpphørsdato == nyttOpphørsdato) null else nyttOpphørsdato
+        return opphørsdatoHvisIkkeLikSomForrige ?: finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
+    }
+
+    /**
+     * Nytt opphørsdato må finnes hvis det finnes opphørsdato på tidligere tilkjent ytelse
+     * Nytt opphørsdato må være etter forrige opphørsdato, då den inneholder dato for når vi historiskt har første datoet
+     * Opphørsdato kan ikke være etter første andel
+     */
+    fun validerOpphørsdato(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
+                           forrigeTilkjentYtelse: TilkjentYtelse?) {
+        val nyMinDato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
+        val forrigeOpphørsdato = forrigeTilkjentYtelse?.opphørsdato
+        val nyttOpphørsdato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.opphørsdato
+        if (forrigeOpphørsdato != null) {
+            if (nyttOpphørsdato == null) {
+                error("Må ha med opphørsdato hvis man tidligere opphørt")
+            } else if (nyttOpphørsdato > forrigeOpphørsdato) {
+                error("Nytt opphørsdato=$nyttOpphørsdato kan ikke være etter forrigeOpphørsdato=$forrigeOpphørsdato")
+            }
+        }
+
+        if (nyttOpphørsdato != null && nyMinDato != null && nyMinDato.isBefore(nyttOpphørsdato)) {
             error("Kan ikke sette opphør etter dato på første perioden")
         }
     }

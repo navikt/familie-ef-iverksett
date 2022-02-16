@@ -13,6 +13,7 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import java.math.BigDecimal
 import java.net.URL
@@ -269,7 +270,8 @@ object TestOppdragParser {
 
 object TestOppdragRunner {
 
-    fun run(url: URL) {
+    fun run(url: URL?) {
+        if (url == null) error("Url Mangler")
         val grupper = TestOppdragParser.parseToTestOppdragGroup(url)
 
         var forrigeTilkjentYtelse: TilkjentYtelse? = null
