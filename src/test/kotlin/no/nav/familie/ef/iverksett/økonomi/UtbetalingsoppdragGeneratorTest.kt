@@ -159,7 +159,7 @@ internal class UtbetalingsoppdragGeneratorTest {
     inner class Opphørsdato {
 
         @Test
-        internal fun `skal ikke kunne sende opphørsdato etter en andel sin dato`() {
+        internal fun `opphørsdato etter forrige andel sin opphørsdato er ikke gyldig`() {
             assertThatThrownBy {
                 TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphør_etter_andel_sitt_dato_feiler.csv"))
             }.hasMessageContaining("Kan ikke sette opphør etter dato på første perioden")
@@ -173,7 +173,7 @@ internal class UtbetalingsoppdragGeneratorTest {
         }
 
         @Test
-        fun `opphørsdato er etter tidligere opphørsdato er ikke gyldig`() {
+        fun `opphørsdato etter tidligere opphørsdato er ikke gyldig`() {
             assertThatThrownBy {
                 TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_etter_tidligere.csv"))
             }.hasMessageContaining("kan ikke være etter forrigeOpphørsdato")
