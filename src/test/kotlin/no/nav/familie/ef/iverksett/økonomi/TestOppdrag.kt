@@ -85,6 +85,8 @@ data class TestOppdrag(val type: TestOppdragType,
                                utbetalesTil = fnr,
                                behandlingId = 1,
                                utbetalingsgrad = 100)
+        else if (opphørsdato != null)
+            error("Kan ikke sette opphørsdato her, mangler start/slutt/linjeId")
         else
             null
     }
@@ -132,12 +134,12 @@ class TestOppdragGroup {
         if (tidligereOpphørsdato != null && to.opphørsdato != null) {
             error("Kan kun sette 1 opphørsdato på en input/output")
         }
-        return to.opphørsdato
+        return tidligereOpphørsdato ?: to.opphørsdato
     }
 
     val input: TilkjentYtelseMedMetaData by lazy {
         TilkjentYtelseMedMetaData(TilkjentYtelse(andelerTilkjentYtelse = andelerTilkjentYtelseInn,
-                                                 opphørsdato = opphørsdatoInn),
+                                                 startdato = opphørsdatoInn),
                                   stønadstype = StønadType.OVERGANGSSTØNAD,
                                   eksternBehandlingId = behandlingEksternId,
                                   eksternFagsakId = fagsakEksternId,
@@ -163,7 +165,7 @@ class TestOppdragGroup {
         TilkjentYtelse(id = input.tilkjentYtelse.id,
                        andelerTilkjentYtelse = andelerTilkjentYtelseUt,
                        utbetalingsoppdrag = utbetalingsoppdrag,
-                       opphørsdato = opphørsdatoUt)
+                       startdato = opphørsdatoUt)
 
     }
 }
@@ -243,19 +245,23 @@ object TestOppdragParser {
 
         var newGroup = true
 
-        parse(url).forEach { to ->
-            when (to.type) {
-                TestOppdragType.Input -> {
-                    if (newGroup) {
-                        result.add(TestOppdragGroup())
-                        newGroup = false
+        parse(url).forEachIndexed { index, to ->
+            try {
+                when (to.type) {
+                    TestOppdragType.Input -> {
+                        if (newGroup) {
+                            result.add(TestOppdragGroup())
+                            newGroup = false
+                        }
+                    }
+                    else -> {
+                        newGroup = true
                     }
                 }
-                else -> {
-                    newGroup = true
-                }
+                result.last().add(to)
+            } catch (e: Exception) {
+                throw RuntimeException("Feilet index=$index", e)
             }
-            result.last().add(to)
         }
 
         return result
@@ -269,7 +275,8 @@ object TestOppdragParser {
 
 object TestOppdragRunner {
 
-    fun run(url: URL) {
+    fun run(url: URL?) {
+        if (url == null) error("Url Mangler")
         val grupper = TestOppdragParser.parseToTestOppdragGroup(url)
 
         var forrigeTilkjentYtelse: TilkjentYtelse? = null
