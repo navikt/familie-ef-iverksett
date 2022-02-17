@@ -68,6 +68,7 @@
       "id": "996d4770-3d03-4b16-b78b-227338219b72",
       "utbetalingsoppdrag": null,
       "status": "IKKE_KLAR",
+      "startdato": null,
       "andelerTilkjentYtelse": [
         {
           "beløp": 0,

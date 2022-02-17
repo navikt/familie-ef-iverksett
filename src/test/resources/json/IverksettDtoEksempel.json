@@ -85,7 +85,8 @@
           "inntektsreduksjon": 0
         }
       ],
-      "opphørsdato": null
+      "opphørsdato": null,
+      "startdato": null
     },
     "tilbakekreving": {
       "tilbakekrevingsvalg": "OPPRETT_TILBAKEKREVING_MED_VARSEL",
