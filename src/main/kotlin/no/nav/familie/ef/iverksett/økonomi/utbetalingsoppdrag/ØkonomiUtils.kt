@@ -129,13 +129,19 @@ object ØkonomiUtils {
         if (nyOpphørsdato != null && nyMinDato != null && nyMinDato.isBefore(nyOpphørsdato)) {
             error("Kan ikke sette opphør etter dato på første perioden")
         }
-        if (nyOpphørsdato != null && forrigeTilkjentYtelse != null && andelerUtenNullVerdier(forrigeTilkjentYtelse).isEmpty()) {
+        if (kunNullVerdierIForrigeTilkjenteYtelseOgOpphørEllerOpphørFørTidligereOpphørsdato(
+                        forrigeTilkjentYtelse, nyOpphørsdato, forrigeOpphørsdato)) {
             error("Kan ikke opphøre før tidligere opphør når det finnes en tidligere tilkjent ytelse uten andeler")
         }
-        if(nyOpphørsdato != null && forrigeTilkjentYtelse == null) {
+        if (nyOpphørsdato != null && forrigeTilkjentYtelse == null) {
             error("Kan ikke opphøre noe når det ikke finnes en tidligere behandling")
         }
     }
+
+    private fun kunNullVerdierIForrigeTilkjenteYtelseOgOpphørEllerOpphørFørTidligereOpphørsdato(
+            forrigeTilkjentYtelse: TilkjentYtelse?, nyOpphørsdato: LocalDate?, forrigeOpphørsdato: LocalDate?) =
+            (nyOpphørsdato != null && forrigeTilkjentYtelse != null && andelerUtenNullVerdier(forrigeTilkjentYtelse).isEmpty()
+             && (forrigeOpphørsdato == null || (nyOpphørsdato < forrigeOpphørsdato)))
 
     /**
      * Skal finne opphørsdato til utbetalingsoppdraget
