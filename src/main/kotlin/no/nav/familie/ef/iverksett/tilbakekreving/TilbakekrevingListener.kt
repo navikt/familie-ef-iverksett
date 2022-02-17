@@ -55,7 +55,7 @@ class TilbakekrevingListener(
             familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)?.let {
                 val fagsystemsbehandling = iverksett.tilFagsystembehandling(it)
                 tilbakekrevingProducer.send(fagsystemsbehandling, key)
-            } ?: throw Exception()
+            } ?: error("Kan ikke finne behandlende enhet for søker på behandling ${iverksett.behandling.behandlingId}")
         } catch (ex: Exception) {
             secureLogger.error("Feil veld sending av melding med key=$key. Forsøker å sende HentFagsystemsbehandlingRespons med feilmelding.")
             tilbakekrevingProducer.send(HentFagsystemsbehandlingRespons(feilMelding = ex.message), key)
