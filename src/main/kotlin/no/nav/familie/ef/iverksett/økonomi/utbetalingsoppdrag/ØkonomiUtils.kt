@@ -86,7 +86,7 @@ object ØkonomiUtils {
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
 
-        val opphørsdato = beregnOpphørsdato(forrigeOpphørsdato, nyTilkjentYtelse.opphørsdato, forrigeAndeler, oppdaterteAndeler)
+        val opphørsdato = beregnOpphørsdato(forrigeOpphørsdato, nyTilkjentYtelse.startdato, forrigeAndeler, oppdaterteAndeler)
 
         val sisteForrigeAndel = andelerForrigeTilkjentYtelse.lastOrNull()
         return if (sisteForrigeAndel == null || opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
@@ -116,8 +116,8 @@ object ØkonomiUtils {
     fun validerOpphørsdato(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
                            forrigeTilkjentYtelse: TilkjentYtelse?) {
         val nyMinDato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
-        val forrigeOpphørsdato = forrigeTilkjentYtelse?.opphørsdato
-        val nyOpphørsdato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.opphørsdato
+        val forrigeOpphørsdato = forrigeTilkjentYtelse?.startdato
+        val nyOpphørsdato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.startdato
         if (forrigeOpphørsdato != null) {
             if (nyOpphørsdato == null) {
                 error("Må ha med opphørsdato hvis man har tidligere opphørsdato")

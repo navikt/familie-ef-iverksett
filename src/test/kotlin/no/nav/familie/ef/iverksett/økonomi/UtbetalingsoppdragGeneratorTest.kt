@@ -301,7 +301,7 @@ internal class UtbetalingsoppdragGeneratorTest {
                                                                       utbetalingsoppdrag = null,
                                                                       status = TilkjentYtelseStatus.OPPRETTET,
                                                                       andelerTilkjentYtelse = andelTilkjentYtelse.toList(),
-                                                                      opphørsdato = null),
+                                                                      startdato = null),
                                       personIdent = "1",
                                       behandlingId = behandlingId,
                                       eksternBehandlingId = 1,

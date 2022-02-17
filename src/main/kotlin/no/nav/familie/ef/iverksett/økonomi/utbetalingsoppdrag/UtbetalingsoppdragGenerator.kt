@@ -37,7 +37,7 @@ object UtbetalingsoppdragGenerator {
 
         val beståendeAndeler = beståendeAndeler(andelerForrigeTilkjentYtelse, andelerNyTilkjentYtelse)
         val andelTilOpphørMedDato = andelTilOpphørMedDato(andelerForrigeTilkjentYtelse,
-                                                          forrigeTilkjentYtelse?.opphørsdato,
+                                                          forrigeTilkjentYtelse?.startdato,
                                                           nyTilkjentYtelse)
         val andelerTilOpprettelse = andelerTilOpprettelse(andelerNyTilkjentYtelse, beståendeAndeler)
 

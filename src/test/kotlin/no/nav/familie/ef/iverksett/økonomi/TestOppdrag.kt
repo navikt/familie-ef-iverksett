@@ -139,7 +139,7 @@ class TestOppdragGroup {
 
     val input: TilkjentYtelseMedMetaData by lazy {
         TilkjentYtelseMedMetaData(TilkjentYtelse(andelerTilkjentYtelse = andelerTilkjentYtelseInn,
-                                                 opphørsdato = opphørsdatoInn),
+                                                 startdato = opphørsdatoInn),
                                   stønadstype = StønadType.OVERGANGSSTØNAD,
                                   eksternBehandlingId = behandlingEksternId,
                                   eksternFagsakId = fagsakEksternId,
@@ -165,7 +165,7 @@ class TestOppdragGroup {
         TilkjentYtelse(id = input.tilkjentYtelse.id,
                        andelerTilkjentYtelse = andelerTilkjentYtelseUt,
                        utbetalingsoppdrag = utbetalingsoppdrag,
-                       opphørsdato = opphørsdatoUt)
+                       startdato = opphørsdatoUt)
 
     }
 }
