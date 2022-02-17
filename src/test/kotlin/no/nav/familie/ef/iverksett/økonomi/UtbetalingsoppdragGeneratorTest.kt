@@ -182,7 +182,7 @@ internal class UtbetalingsoppdragGeneratorTest {
         }
 
         @Test
-        fun `opphørsdato før tidligere 0 andeler`() {
+        fun `kan ikke opphøre når man bare har 0-andeler`() {
             assertThatThrownBy {
                 TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_0andeler.csv"))
             }.hasMessageContaining("Kan ikke opphøre før tidligere opphør")
@@ -208,6 +208,11 @@ internal class UtbetalingsoppdragGeneratorTest {
         @Test
         fun `har opphørsdato, sender ny tilkjent ytelse uten andeler - opphører fra første tidligere andelen`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_uten_andeler.csv"))
+        }
+
+        @Test
+        fun `opphører vedtak med 0-periode, og sen innvilget ny stønad`() {
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_med_0beløp.csv"))
         }
     }
 

@@ -129,11 +129,23 @@ object ØkonomiUtils {
         if (nyOpphørsdato != null && nyMinDato != null && nyMinDato.isBefore(nyOpphørsdato)) {
             error("Kan ikke sette opphør etter dato på første perioden")
         }
-        if (nyOpphørsdato != null && forrigeTilkjentYtelse != null && andelerUtenNullVerdier(forrigeTilkjentYtelse).isEmpty()) {
-            error("Kan ikke opphøre før tidligere opphør når det finnes en tidligere tilkjent ytelse uten andeler")
-        }
-        if(nyOpphørsdato != null && forrigeTilkjentYtelse == null) {
+
+        validerOpphørOg0Andeler(forrigeTilkjentYtelse, nyOpphørsdato, forrigeOpphørsdato)
+
+        if (nyOpphørsdato != null && forrigeTilkjentYtelse == null) {
             error("Kan ikke opphøre noe når det ikke finnes en tidligere behandling")
+        }
+    }
+
+    private fun validerOpphørOg0Andeler(forrigeTilkjentYtelse: TilkjentYtelse?,
+                                        nyOpphørsdato: LocalDate?,
+                                        forrigeOpphørsdato: LocalDate?) {
+        val harOpphørEllerOpphørFørForrigeTilkjentYtelse =
+                nyOpphørsdato != null && (forrigeOpphørsdato == null || (nyOpphørsdato < forrigeOpphørsdato))
+        val harForrigeTilkjentYtelseUtenBeløp =
+                forrigeTilkjentYtelse != null && andelerUtenNullVerdier(forrigeTilkjentYtelse).isEmpty()
+        if (harOpphørEllerOpphørFørForrigeTilkjentYtelse && harForrigeTilkjentYtelseUtenBeløp) {
+            error("Kan ikke opphøre før tidligere opphør når det finnes en tidligere tilkjent ytelse uten andeler")
         }
     }
 
