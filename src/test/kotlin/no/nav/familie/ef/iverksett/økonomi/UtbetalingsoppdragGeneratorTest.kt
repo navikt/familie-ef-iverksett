@@ -35,11 +35,6 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
-    fun `Revurdering med opphørsdato bak i tiden, før vi hadde beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphør_bak_i_tiden.csv"))
-    }
-
-    @Test
     fun `Revurdering med 0 beløp beholder periodId når man har flere perioder`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder.csv"))
     }
@@ -181,7 +176,23 @@ internal class UtbetalingsoppdragGeneratorTest {
 
         @Test
         fun `opphørsdato før tidligere skal sende nytt opphørsdato til oppdrag`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_opphørsdato.csv"))
+            assertThatThrownBy {
+                TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_opphørsdato.csv"))
+            }.hasMessageContaining("Kan ikke opphøre før tidligere opphør")
+        }
+
+        @Test
+        fun `opphørsdato før tidligere 0 andeler`() {
+            assertThatThrownBy {
+                TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_0andeler.csv"))
+            }.hasMessageContaining("Kan ikke opphøre før tidligere opphør")
+        }
+
+        @Test
+        fun `førstegangsbehandling - kan ikke sende opphørsdato i en førstegangsbehandling`() {
+            assertThatThrownBy {
+                TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphørsdato_førstegangsbehandling_samme_som_andel.csv"))
+            }.hasMessageContaining("Kan ikke opphøre noe når det ikke finnes en tidligere behandling")
         }
 
         @Test
@@ -197,16 +208,6 @@ internal class UtbetalingsoppdragGeneratorTest {
         @Test
         fun `har opphørsdato, sender ny tilkjent ytelse uten andeler - opphører fra første tidligere andelen`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_uten_andeler.csv"))
-        }
-
-        @Test
-        fun `førstegangsbehandling - skal ikke sende opphør når man sender med opphørsdato i førstevedtak der datoet er samme som startdato`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphørsdato_førstegangsbehandling_samme_som_andel.csv"))
-        }
-
-        @Test
-        fun `førstegangsbehandling - skal sende opphør når man sender med opphørsdato i førstevedtak der datoet før startdato`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphørsdato_førstegangsbehandling_samme_som_andel.csv"))
         }
     }
 

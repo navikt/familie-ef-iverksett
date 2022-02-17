@@ -33,6 +33,9 @@ fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): And
 
 object ØkonomiUtils {
 
+    fun andelerUtenNullVerdier(tilkjentYtelse: TilkjentYtelse?): List<AndelTilkjentYtelse> =
+            tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.erNull() } ?: emptyList()
+
     /**
      * Lager oversikt over siste andel i hver kjede som finnes uten endring i oppdatert tilstand.
      * Vi må opphøre og eventuelt gjenoppbygge hver kjede etter denne. Må ta vare på andel og ikke kun offset da
@@ -125,6 +128,12 @@ object ØkonomiUtils {
 
         if (nyOpphørsdato != null && nyMinDato != null && nyMinDato.isBefore(nyOpphørsdato)) {
             error("Kan ikke sette opphør etter dato på første perioden")
+        }
+        if (nyOpphørsdato != null && forrigeTilkjentYtelse != null && andelerUtenNullVerdier(forrigeTilkjentYtelse).isEmpty()) {
+            error("Kan ikke opphøre før tidligere opphør når det finnes en tidligere tilkjent ytelse uten andeler")
+        }
+        if(nyOpphørsdato != null && forrigeTilkjentYtelse == null) {
+            error("Kan ikke opphøre noe når det ikke finnes en tidligere behandling")
         }
     }
 

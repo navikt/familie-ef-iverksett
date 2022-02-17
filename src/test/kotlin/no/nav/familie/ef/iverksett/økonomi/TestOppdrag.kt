@@ -13,7 +13,6 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import java.math.BigDecimal
 import java.net.URL
@@ -86,6 +85,8 @@ data class TestOppdrag(val type: TestOppdragType,
                                utbetalesTil = fnr,
                                behandlingId = 1,
                                utbetalingsgrad = 100)
+        else if (opphørsdato != null)
+            error("Kan ikke sette opphørsdato her, mangler start/slutt/linjeId")
         else
             null
     }
@@ -244,19 +245,23 @@ object TestOppdragParser {
 
         var newGroup = true
 
-        parse(url).forEach { to ->
-            when (to.type) {
-                TestOppdragType.Input -> {
-                    if (newGroup) {
-                        result.add(TestOppdragGroup())
-                        newGroup = false
+        parse(url).forEachIndexed { index, to ->
+            try {
+                when (to.type) {
+                    TestOppdragType.Input -> {
+                        if (newGroup) {
+                            result.add(TestOppdragGroup())
+                            newGroup = false
+                        }
+                    }
+                    else -> {
+                        newGroup = true
                     }
                 }
-                else -> {
-                    newGroup = true
-                }
+                result.last().add(to)
+            } catch (e: Exception) {
+                throw RuntimeException("Feilet index=$index", e)
             }
-            result.last().add(to)
         }
 
         return result
