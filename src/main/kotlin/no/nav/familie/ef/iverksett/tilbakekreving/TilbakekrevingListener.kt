@@ -35,10 +35,10 @@ class TilbakekrevingListener(
         try {
             MDC.put(MDCConstants.MDC_CALL_ID, UUID.randomUUID().toString())
             transformerOgSend(data, key)
-        } catch (e: Exception) {
+        } catch (ex: Exception) {
             logger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med eksternId=$key")
-            secureLogger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med consumerRecord=$consumerRecord")
-            throw e
+            secureLogger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med consumerRecord=$consumerRecord", ex)
+            throw ex
         } finally {
             MDC.remove(MDCConstants.MDC_CALL_ID)
         }
