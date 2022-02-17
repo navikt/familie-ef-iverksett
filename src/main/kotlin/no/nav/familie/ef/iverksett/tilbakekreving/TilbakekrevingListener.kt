@@ -3,7 +3,6 @@ package no.nav.familie.ef.iverksett.tilbakekreving
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
@@ -36,10 +35,10 @@ class TilbakekrevingListener(
         try {
             MDC.put(MDCConstants.MDC_CALL_ID, UUID.randomUUID().toString())
             transformerOgSend(data, key)
-        } catch (e: Exception) {
+        } catch (ex: Exception) {
             logger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med eksternId=$key")
-            secureLogger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med consumerRecord=$consumerRecord")
-            throw e
+            secureLogger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med consumerRecord=$consumerRecord", ex)
+            throw ex
         } finally {
             MDC.remove(MDCConstants.MDC_CALL_ID)
         }
@@ -53,10 +52,13 @@ class TilbakekrevingListener(
                 return
             }
             val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
-            val enhet: Enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)!!
-            val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet)
-            tilbakekrevingProducer.send(fagsystemsbehandling, key)
+            familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)?.let {
+                val fagsystemsbehandling = iverksett.tilFagsystembehandling(it)
+                tilbakekrevingProducer.send(fagsystemsbehandling, key)
+            } ?: error("Kan ikke finne behandlende enhet for søker på behandling ${iverksett.behandling.behandlingId}")
         } catch (ex: Exception) {
+            secureLogger.error("Feil ved sending av melding med key=$key. Forsøker å sende HentFagsystemsbehandlingRespons med feilmelding.",
+                               ex)
             tilbakekrevingProducer.send(HentFagsystemsbehandlingRespons(feilMelding = ex.message), key)
         }
     }
