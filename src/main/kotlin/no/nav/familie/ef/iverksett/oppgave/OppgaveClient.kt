@@ -25,7 +25,7 @@ class OppgaveClient(
     val oppgaveUrl = "$integrasjonUrl/api/oppgave"
 
     fun hentOppgaver(finnOppgaveRequest: FinnOppgaveRequest): List<Oppgave> {
-        val opprettOppgaveUri = URI.create("$oppgaveUrl/oppgave/v4")
+        val opprettOppgaveUri = URI.create("$oppgaveUrl/v4")
         val response =
                 postForEntity<Ressurs<FinnOppgaveResponseDto>>(
                         opprettOppgaveUri,
