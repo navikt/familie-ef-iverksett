@@ -26,6 +26,20 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
 
+        validerJournalpostresultat(behandlingId)
+
+        val vedtaksbrevHarEnkelMottaker = tilstandRepository.hentJournalpostResultat(behandlingId) !== null
+
+        if (vedtaksbrevHarEnkelMottaker){
+            distribuerTilEnkelMottaker(behandlingId)
+        } else {
+            distribuerTilBrevmottakere(behandlingId)
+        }
+
+
+    }
+
+    private fun distribuerTilEnkelMottaker(behandlingId: UUID) {
         val journalpostId = tilstandRepository.hentJournalpostResultat(behandlingId)?.journalpostId
         journalpostId
                 ?.let { journalpostClient.distribuerBrev(it) }
@@ -35,13 +49,21 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
                                                                              DistribuerVedtaksbrevResultat(bestillingId = bestillingId)
                     )
                 }
+    }
 
-        if (featureToggleService.isEnabled("familie.ef.iverksett.brevmottakere")) {
-            distribuerTilBrevmottakere(behandlingId)
+
+    private fun validerJournalpostresultat(behandlingId: UUID) {
+        if (tilstandRepository.hentJournalpostResultat(behandlingId) == null && tilstandRepository.hentJournalpostResultatBrevmottakere(
+                        behandlingId) === null) {
+            error("Fant ingen journalpost for behandling")
         }
     }
 
     private fun distribuerTilBrevmottakere(behandlingId: UUID) {
+        if (!featureToggleService.isEnabled("familie.ef.iverksett.brevmottakere")) {
+            error("Toggle for distribuering til brevmottakere er ikke påskrudd")
+        }
+
         val journalposterIdBrevmottakere = tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId)
 
         val distribuerteJournalposter =
