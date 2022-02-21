@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.brev
 
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
@@ -29,9 +30,13 @@ fun lagStønadtypeTekst(stønadstype: StønadType): String =
             StønadType.SKOLEPENGER -> "stønad til skolepenger"
         }
 
-fun lagVedtakstekst(vedtaksresultat: Vedtaksresultat): String =
+fun lagVedtakstekst(vedtaksresultat: Vedtaksresultat, behandlingÅrsak: BehandlingÅrsak): String =
+    if (behandlingÅrsak == BehandlingÅrsak.SANKSJON_1_MND) {
+        "Vedtak om sanksjon av "
+    } else {
         when (vedtaksresultat) {
             Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av "
             Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av "
             Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av "
         }
+    }
