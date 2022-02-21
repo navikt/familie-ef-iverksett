@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.and
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerTilOpprettelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerUtenNullVerdier
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.validerOpphørsdato
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
@@ -73,18 +74,11 @@ object UtbetalingsoppdragGenerator {
     private fun opphørsperioder(forrigeTilkjentYtelse: TilkjentYtelse?,
                                 nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): List<Utbetalingsperiode> {
         val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
-        val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
 
-        val andelTilOpphørMedDato = andelTilOpphørMedDato(andelerForrigeTilkjentYtelse,
-                                                          forrigeTilkjentYtelse?.startdato,
-                                                          nyTilkjentYtelse)
-
-        return andelTilOpphørMedDato?.let {
-            lagUtbetalingsperioderForOpphør(andeler = andelTilOpphørMedDato,
-                                            tilkjentYtelse = nyTilkjentYtelseMedMetaData,
-                                            behandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
-                                            type = nyTilkjentYtelseMedMetaData.stønadstype)
-        } ?: emptyList()
+        val utbetalingsperiode = utbetalingsperiodeForOpphør(andelerForrigeTilkjentYtelse,
+                                                             forrigeTilkjentYtelse?.startdato,
+                                                             nyTilkjentYtelseMedMetaData)
+        return utbetalingsperiode?.let { listOf(it) } ?: emptyList()
     }
 
     private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
@@ -104,20 +98,6 @@ object UtbetalingsoppdragGenerator {
         return this.ifEmpty {
             listOf(nullAndelTilkjentYtelse(nyTilkjentYtelseMedMetaData.behandlingId, sistePeriodeIdIForrigeKjede))
         }
-    }
-
-    private fun lagUtbetalingsperioderForOpphør(andeler: Pair<AndelTilkjentYtelse, LocalDate>,
-                                                behandlingId: Long,
-                                                type: StønadType,
-                                                tilkjentYtelse: TilkjentYtelseMedMetaData): List<Utbetalingsperiode> {
-        val (sisteAndelIKjede, opphørKjedeFom) = andeler
-        return listOf(lagPeriodeFraAndel(andel = sisteAndelIKjede,
-                                         eksternBehandlingId = behandlingId,
-                                         type = type,
-                                         personIdent = tilkjentYtelse.personIdent,
-                                         vedtaksdato = tilkjentYtelse.vedtaksdato,
-                                         opphørKjedeFom = opphørKjedeFom,
-                                         erEndringPåEksisterendePeriode = true))
     }
 
     private fun lagUtbetalingsperioderForOpprettelse(andeler: List<AndelTilkjentYtelse>,

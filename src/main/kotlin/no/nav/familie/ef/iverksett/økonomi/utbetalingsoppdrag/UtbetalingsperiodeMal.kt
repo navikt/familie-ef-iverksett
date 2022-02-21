@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
@@ -37,6 +38,18 @@ fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                            utbetalesTil = personIdent,
                            behandlingId = eksternBehandlingId,
                            utbetalingsgrad = andel.utbetalingsgrad())
+
+fun lagUtbetalingsperiodeForOpphør(sisteAndelIKjede: AndelTilkjentYtelse,
+                                   opphørKjedeFom: LocalDate,
+                                   tilkjentYtelse: TilkjentYtelseMedMetaData): Utbetalingsperiode {
+    return lagPeriodeFraAndel(andel = sisteAndelIKjede,
+                              eksternBehandlingId = tilkjentYtelse.eksternBehandlingId,
+                              type = tilkjentYtelse.stønadstype,
+                              personIdent = tilkjentYtelse.personIdent,
+                              vedtaksdato = tilkjentYtelse.vedtaksdato,
+                              opphørKjedeFom = opphørKjedeFom,
+                              erEndringPåEksisterendePeriode = true)
+}
 
 fun mapSatstype(periodetype: Periodetype) = when (periodetype) {
     Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND
