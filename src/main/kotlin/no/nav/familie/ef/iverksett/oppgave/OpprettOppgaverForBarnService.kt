@@ -30,6 +30,7 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
                                          Properties()))
             } catch (ex: Exception) {
                 logger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
+                throw ex
             }
         }
     }
