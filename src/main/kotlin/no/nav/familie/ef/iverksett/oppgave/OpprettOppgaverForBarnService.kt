@@ -26,8 +26,7 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
         oppgaverForBarn.forEach {
             try {
                 taskRepository.save(Task(OpprettOppgaveForBarnTask.TYPE,
-                                         objectMapper.writeValueAsString(it),
-                                         Properties()))
+                                         objectMapper.writeValueAsString(it)))
             } catch (ex: Exception) {
                 logger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
                 throw ex
