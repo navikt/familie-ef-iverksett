@@ -36,9 +36,6 @@ object UtbetalingsoppdragGenerator {
         val sistePeriodeIdIForrigeKjede = sistePeriodeId(forrigeTilkjentYtelse)
 
         val beståendeAndeler = beståendeAndeler(andelerForrigeTilkjentYtelse, andelerNyTilkjentYtelse)
-        val andelTilOpphørMedDato = andelTilOpphørMedDato(andelerForrigeTilkjentYtelse,
-                                                          forrigeTilkjentYtelse?.startdato,
-                                                          nyTilkjentYtelse)
         val andelerTilOpprettelse = andelerTilOpprettelse(andelerNyTilkjentYtelse, beståendeAndeler)
 
         val andelerTilOpprettelseMedPeriodeId =
@@ -52,12 +49,7 @@ object UtbetalingsoppdragGenerator {
                                                      tilkjentYtelse = nyTilkjentYtelseMedMetaData,
                                                      type = nyTilkjentYtelseMedMetaData.stønadstype)
 
-        val utbetalingsperioderSomOpphøres = andelTilOpphørMedDato?.let {
-            lagUtbetalingsperioderForOpphør(andeler = andelTilOpphørMedDato,
-                                            tilkjentYtelse = nyTilkjentYtelseMedMetaData,
-                                            behandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
-                                            type = nyTilkjentYtelseMedMetaData.stønadstype)
-        } ?: emptyList()
+        val utbetalingsperioderSomOpphøres = opphørsperioder(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
 
         val utbetalingsperioder = listOf(utbetalingsperioderSomOpprettes, utbetalingsperioderSomOpphøres)
                 .flatten()
@@ -76,6 +68,23 @@ object UtbetalingsoppdragGenerator {
         return nyTilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag,
                                      andelerTilkjentYtelse = gjeldendeAndeler)
         //TODO legge til startperiode, sluttperiode, opphørsdato. Se i BA-sak - legges på i konsistensavstemming?
+    }
+
+    private fun opphørsperioder(forrigeTilkjentYtelse: TilkjentYtelse?,
+                                nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): List<Utbetalingsperiode> {
+        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
+        val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
+
+        val andelTilOpphørMedDato = andelTilOpphørMedDato(andelerForrigeTilkjentYtelse,
+                                                          forrigeTilkjentYtelse?.startdato,
+                                                          nyTilkjentYtelse)
+
+        return andelTilOpphørMedDato?.let {
+            lagUtbetalingsperioderForOpphør(andeler = andelTilOpphørMedDato,
+                                            tilkjentYtelse = nyTilkjentYtelseMedMetaData,
+                                            behandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
+                                            type = nyTilkjentYtelseMedMetaData.stønadstype)
+        } ?: emptyList()
     }
 
     private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
