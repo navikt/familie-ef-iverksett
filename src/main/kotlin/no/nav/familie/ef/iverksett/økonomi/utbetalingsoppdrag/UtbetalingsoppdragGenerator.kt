@@ -4,18 +4,15 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelTilOpphørMedDato
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerTilOpprettelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerUtenNullVerdier
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.validerOpphørsdato
-import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.ENDR
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
-import java.time.LocalDate
 import java.util.UUID
 
 object UtbetalingsoppdragGenerator {
@@ -39,16 +36,12 @@ object UtbetalingsoppdragGenerator {
         val beståendeAndeler = beståendeAndeler(andelerForrigeTilkjentYtelse, andelerNyTilkjentYtelse)
         val andelerTilOpprettelse = andelerTilOpprettelse(andelerNyTilkjentYtelse, beståendeAndeler)
 
-        val andelerTilOpprettelseMedPeriodeId =
-                lagAndelerMedPeriodeId(andelerTilOpprettelse,
-                                       sistePeriodeIdIForrigeKjede,
-                                       nyTilkjentYtelseMedMetaData.behandlingId)
+        val andelerTilOpprettelseMedPeriodeId = lagAndelerMedPeriodeId(andelerTilOpprettelse,
+                                                                       sistePeriodeIdIForrigeKjede,
+                                                                       nyTilkjentYtelseMedMetaData.behandlingId)
 
-        val utbetalingsperioderSomOpprettes =
-                lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
-                                                     eksternBehandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
-                                                     tilkjentYtelse = nyTilkjentYtelseMedMetaData,
-                                                     type = nyTilkjentYtelseMedMetaData.stønadstype)
+        val utbetalingsperioderSomOpprettes = lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
+                                                                                   tilkjentYtelse = nyTilkjentYtelseMedMetaData)
 
         val utbetalingsperioderSomOpphøres = opphørsperioder(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
 
@@ -101,13 +94,11 @@ object UtbetalingsoppdragGenerator {
     }
 
     private fun lagUtbetalingsperioderForOpprettelse(andeler: List<AndelTilkjentYtelse>,
-                                                     eksternBehandlingId: Long,
-                                                     type: StønadType,
                                                      tilkjentYtelse: TilkjentYtelseMedMetaData): List<Utbetalingsperiode> {
         return andeler.map {
             lagPeriodeFraAndel(andel = it,
-                               type = type,
-                               eksternBehandlingId = eksternBehandlingId,
+                               type = tilkjentYtelse.stønadstype,
+                               eksternBehandlingId = tilkjentYtelse.eksternBehandlingId,
                                vedtaksdato = tilkjentYtelse.vedtaksdato,
                                personIdent = tilkjentYtelse.personIdent)
         }
