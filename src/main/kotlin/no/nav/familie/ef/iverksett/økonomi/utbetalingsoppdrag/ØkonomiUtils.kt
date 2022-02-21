@@ -80,12 +80,14 @@ object ØkonomiUtils {
      * @param[andelerNyTilkjentYtelse] nåværende tilstand
      * @return utbetalingsperiode for opphør, returnerer null hvis det ikke finnes ett opphørsdato
      */
-    fun utbetalingsperiodeForOpphør(andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
-                                    forrigeOpphørsdato: LocalDate?,
+    fun utbetalingsperiodeForOpphør(forrigeTilkjentYtelse: TilkjentYtelse?,
                                     nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
-        val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
+        val forrigeOpphørsdato = forrigeTilkjentYtelse?.startdato
+        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
         val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
+
+        val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
 
         val opphørsdato = beregnOpphørsdato(forrigeOpphørsdato, nyTilkjentYtelse.startdato, forrigeAndeler, oppdaterteAndeler)

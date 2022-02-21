@@ -43,10 +43,10 @@ object UtbetalingsoppdragGenerator {
         val utbetalingsperioderSomOpprettes = lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
                                                                                    tilkjentYtelse = nyTilkjentYtelseMedMetaData)
 
-        val utbetalingsperioderSomOpphøres = opphørsperioder(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
+        val utbetalingsperiodeSomOpphøres = utbetalingsperiodeForOpphør(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
 
-        val utbetalingsperioder = listOf(utbetalingsperioderSomOpprettes, utbetalingsperioderSomOpphøres)
-                .flatten()
+        val utbetalingsperioder = (utbetalingsperioderSomOpprettes + utbetalingsperiodeSomOpphøres)
+                .filterNotNull()
                 .sortedBy { it.periodeId }
         val utbetalingsoppdrag =
                 Utbetalingsoppdrag(saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
@@ -62,16 +62,6 @@ object UtbetalingsoppdragGenerator {
         return nyTilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag,
                                      andelerTilkjentYtelse = gjeldendeAndeler)
         //TODO legge til startperiode, sluttperiode, opphørsdato. Se i BA-sak - legges på i konsistensavstemming?
-    }
-
-    private fun opphørsperioder(forrigeTilkjentYtelse: TilkjentYtelse?,
-                                nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): List<Utbetalingsperiode> {
-        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
-
-        val utbetalingsperiode = utbetalingsperiodeForOpphør(andelerForrigeTilkjentYtelse,
-                                                             forrigeTilkjentYtelse?.startdato,
-                                                             nyTilkjentYtelseMedMetaData)
-        return utbetalingsperiode?.let { listOf(it) } ?: emptyList()
     }
 
     private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
