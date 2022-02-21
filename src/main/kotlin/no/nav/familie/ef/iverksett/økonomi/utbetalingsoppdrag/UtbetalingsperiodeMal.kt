@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
@@ -11,35 +10,13 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 /**
- * Lager mal for generering av utbetalingsperioder med tilpasset setting av verdier basert på parametre
+ * * Lager utbetalingsperioder som legges på utbetalingsoppdrag. En utbetalingsperiode tilsvarer linjer hos økonomi
  *
- * @param[vedtak] for vedtakdato og opphørsdato hvis satt
+ * @param[andel] andel som skal mappes til periode
+ * @param[opphørKjedeFom] fom-dato fra tidligste periode i kjede med endring
  * @param[erEndringPåEksisterendePeriode] ved true vil oppdrag sette asksjonskode ENDR på linje og ikke referere bakover
- * @return mal med tilpasset lagPeriodeFraAndel
+ * @return Periode til utbetalingsoppdrag
  */
-data class UtbetalingsperiodeMal(val tilkjentYtelse: TilkjentYtelseMedMetaData,
-                                 val erEndringPåEksisterendePeriode: Boolean = false) {
-
-    /**
-     * Lager utbetalingsperioder som legges på utbetalingsoppdrag. En utbetalingsperiode tilsvarer linjer hos økonomi
-     *
-     * @param[andel] andel som skal mappes til periode
-     * @param[opphørKjedeFom] fom-dato fra tidligste periode i kjede med endring
-     * @return Periode til utbetalingsoppdrag
-     */
-    fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
-                           type: StønadType,
-                           behandlingId: Long,
-                           opphørKjedeFom: LocalDate? = null): Utbetalingsperiode =
-            lagPeriodeFraAndel(andel = andel,
-                               type = type,
-                               eksternBehandlingId = behandlingId,
-                               vedtaksdato = tilkjentYtelse.vedtaksdato,
-                               personIdent = tilkjentYtelse.personIdent,
-                               opphørKjedeFom = opphørKjedeFom,
-                               erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode)
-}
-
 fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                        type: StønadType,
                        eksternBehandlingId: Long,

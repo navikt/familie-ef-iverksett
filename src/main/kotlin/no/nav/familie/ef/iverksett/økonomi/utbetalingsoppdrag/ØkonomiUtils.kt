@@ -75,7 +75,7 @@ object ØkonomiUtils {
     /**
      * Tar utgangspunkt i forrige tilstand og finner kjede med andeler til opphør og tilhørende opphørsdato
      *
-     * @param[andelerForrigeTilkjentYtelse] forrige behandlings tilstand
+     * @param[andelerForrigeTilkjentYtelse] forrige behandlings tilstand, uten andeler med 0-beløp
      * @param[andelerNyTilkjentYtelse] nåværende tilstand
      * @return siste andel og opphørsdato fra kjede med opphør, returnerer null hvis det ikke finnes ett opphørsdato
      */
