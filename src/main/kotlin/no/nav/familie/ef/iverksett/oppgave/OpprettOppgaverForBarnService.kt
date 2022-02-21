@@ -12,7 +12,6 @@ import no.nav.familie.prosessering.domene.TaskRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.Properties
 
 @Service
 class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
@@ -20,6 +19,7 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
                                     private val taskRepository: TaskRepository) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     @Transactional
     fun opprettTaskerForBarn(oppgaverForBarn: List<OppgaveForBarn>) {
@@ -28,7 +28,7 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
                 taskRepository.save(Task(OpprettOppgaveForBarnTask.TYPE,
                                          objectMapper.writeValueAsString(it)))
             } catch (ex: Exception) {
-                logger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
+                secureLogger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
                 throw ex
             }
         }
