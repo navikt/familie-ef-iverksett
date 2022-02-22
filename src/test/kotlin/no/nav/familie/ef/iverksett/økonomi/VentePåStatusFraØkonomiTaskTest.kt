@@ -118,7 +118,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
                                                                                     utbetalingsperiode = utbetalingsperioder),
                                             status = TilkjentYtelseStatus.SENDT_TIL_IVERKSETTING,
                                             andelerTilkjentYtelse = listOf(),
-                                            opphørsdato = null)
+                                            startdato = null)
         return tilkjentYtelse
     }
 

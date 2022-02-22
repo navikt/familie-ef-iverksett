@@ -11,7 +11,7 @@ data class TilkjentYtelse(
         val utbetalingsoppdrag: Utbetalingsoppdrag? = null,
         val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
         val andelerTilkjentYtelse: List<AndelTilkjentYtelse>,
-        val opphørsdato: LocalDate?) {
+        val startdato: LocalDate?) {
 
 
     fun toMedMetadata(
