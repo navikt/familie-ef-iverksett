@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
@@ -44,7 +45,7 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
         val dokument = Dokument(vedtaksbrev.pdf,
                                 Filtype.PDFA,
                                 dokumenttype = vedtaksbrevForStønadType(iverksett.fagsak.stønadstype),
-                                tittel = lagDokumentTittel(iverksett.fagsak.stønadstype, iverksett.vedtak.vedtaksresultat))
+                                tittel = lagDokumentTittel(iverksett.fagsak.stønadstype, iverksett.vedtak.vedtaksresultat, iverksett.behandling.behandlingÅrsak))
 
 
         val arkiverDokumentRequest = ArkiverDokumentRequest(
@@ -108,8 +109,8 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
         )
     }
 
-    private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat): String =
-            lagVedtakstekst(vedtaksresultat) + lagStønadtypeTekst(stønadstype)
+    private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat, behandlingsårsak: BehandlingÅrsak): String =
+            lagVedtakstekst(vedtaksresultat, behandlingsårsak) + lagStønadtypeTekst(stønadstype)
 
     override fun onCompletion(task: Task) {
         taskRepository.save(task.opprettNesteTask())
