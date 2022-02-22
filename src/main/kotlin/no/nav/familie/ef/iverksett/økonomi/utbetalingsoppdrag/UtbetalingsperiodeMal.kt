@@ -11,35 +11,13 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 /**
- * Lager mal for generering av utbetalingsperioder med tilpasset setting av verdier basert på parametre
+ * * Lager utbetalingsperioder som legges på utbetalingsoppdrag. En utbetalingsperiode tilsvarer linjer hos økonomi
  *
- * @param[vedtak] for vedtakdato og opphørsdato hvis satt
+ * @param[andel] andel som skal mappes til periode
+ * @param[opphørKjedeFom] fom-dato fra tidligste periode i kjede med endring
  * @param[erEndringPåEksisterendePeriode] ved true vil oppdrag sette asksjonskode ENDR på linje og ikke referere bakover
- * @return mal med tilpasset lagPeriodeFraAndel
+ * @return Periode til utbetalingsoppdrag
  */
-data class UtbetalingsperiodeMal(val tilkjentYtelse: TilkjentYtelseMedMetaData,
-                                 val erEndringPåEksisterendePeriode: Boolean = false) {
-
-    /**
-     * Lager utbetalingsperioder som legges på utbetalingsoppdrag. En utbetalingsperiode tilsvarer linjer hos økonomi
-     *
-     * @param[andel] andel som skal mappes til periode
-     * @param[opphørKjedeFom] fom-dato fra tidligste periode i kjede med endring
-     * @return Periode til utbetalingsoppdrag
-     */
-    fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
-                           type: StønadType,
-                           behandlingId: Long,
-                           opphørKjedeFom: LocalDate? = null): Utbetalingsperiode =
-            lagPeriodeFraAndel(andel = andel,
-                               type = type,
-                               eksternBehandlingId = behandlingId,
-                               vedtaksdato = tilkjentYtelse.vedtaksdato,
-                               personIdent = tilkjentYtelse.personIdent,
-                               opphørKjedeFom = opphørKjedeFom,
-                               erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode)
-}
-
 fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                        type: StønadType,
                        eksternBehandlingId: Long,
@@ -60,6 +38,18 @@ fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                            utbetalesTil = personIdent,
                            behandlingId = eksternBehandlingId,
                            utbetalingsgrad = andel.utbetalingsgrad())
+
+fun lagUtbetalingsperiodeForOpphør(sisteAndelIKjede: AndelTilkjentYtelse,
+                                   opphørKjedeFom: LocalDate,
+                                   tilkjentYtelse: TilkjentYtelseMedMetaData): Utbetalingsperiode {
+    return lagPeriodeFraAndel(andel = sisteAndelIKjede,
+                              eksternBehandlingId = tilkjentYtelse.eksternBehandlingId,
+                              type = tilkjentYtelse.stønadstype,
+                              personIdent = tilkjentYtelse.personIdent,
+                              vedtaksdato = tilkjentYtelse.vedtaksdato,
+                              opphørKjedeFom = opphørKjedeFom,
+                              erEndringPåEksisterendePeriode = true)
+}
 
 fun mapSatstype(periodetype: Periodetype) = when (periodetype) {
     Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND

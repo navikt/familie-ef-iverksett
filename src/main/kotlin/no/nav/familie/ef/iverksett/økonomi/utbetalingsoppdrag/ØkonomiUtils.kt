@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Compa
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.time.LocalDate
 import java.util.UUID
 
@@ -75,15 +76,18 @@ object ØkonomiUtils {
     /**
      * Tar utgangspunkt i forrige tilstand og finner kjede med andeler til opphør og tilhørende opphørsdato
      *
-     * @param[andelerForrigeTilkjentYtelse] forrige behandlings tilstand
+     * @param[andelerForrigeTilkjentYtelse] forrige behandlings tilstand, uten andeler med 0-beløp
      * @param[andelerNyTilkjentYtelse] nåværende tilstand
-     * @return siste andel og opphørsdato fra kjede med opphør, returnerer null hvis det ikke finnes ett opphørsdato
+     * @return utbetalingsperiode for opphør, returnerer null hvis det ikke finnes ett opphørsdato
      */
-    fun andelTilOpphørMedDato(andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
-                              forrigeOpphørsdato: LocalDate?,
-                              nyTilkjentYtelse: TilkjentYtelse): Pair<AndelTilkjentYtelse, LocalDate>? {
+    fun utbetalingsperiodeForOpphør(forrigeTilkjentYtelse: TilkjentYtelse?,
+                                    nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
+        val forrigeOpphørsdato = forrigeTilkjentYtelse?.startdato
+        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
         val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
+
+        val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
 
         val opphørsdato = beregnOpphørsdato(forrigeOpphørsdato, nyTilkjentYtelse.startdato, forrigeAndeler, oppdaterteAndeler)
@@ -92,7 +96,7 @@ object ØkonomiUtils {
         return if (sisteForrigeAndel == null || opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
             null
         } else {
-            Pair(sisteForrigeAndel, opphørsdato)
+            lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, opphørsdato, nyTilkjentYtelseMedMetaData)
         }
     }
 
