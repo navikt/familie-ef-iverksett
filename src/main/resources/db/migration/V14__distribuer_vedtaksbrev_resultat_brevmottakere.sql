@@ -1,1 +1,0 @@
-ALTER TABLE iverksett_resultat ADD COLUMN vedtaksbrevresultatbrevmottakere JSON;

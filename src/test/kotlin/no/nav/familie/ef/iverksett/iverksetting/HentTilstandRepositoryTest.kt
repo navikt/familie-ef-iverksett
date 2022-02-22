@@ -48,8 +48,11 @@ internal class HentTilstandRepositoryTest : ServerTest() {
 
     @Test
     fun `hent ekisterende journalpost resultat, forvent likhet og ingen unntak`() {
-        val journalpostResultat = JournalpostResultat("123456789", LocalDateTime.now())
-        tilstandRepository.oppdaterJournalpostResultat(behandlingId, journalpostResultat)
+        val journalpostResultat = IverksettResultatMockBuilder.Builder().journalPostResultat().build(behandlingId, tilkjentYtelse).journalpostResultat
+
+        val (mottakerIdent, resultat) = journalpostResultat!!.entries.first()
+        tilstandRepository.oppdaterJournalpostResultat(behandlingId, mottakerIdent, resultat)
+
         val hentetJournalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId)
         assertThat(hentetJournalpostResultat).isEqualTo(journalpostResultat)
     }
@@ -69,8 +72,11 @@ internal class HentTilstandRepositoryTest : ServerTest() {
                 .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
         tilstandRepository.oppdaterOppdragResultat(behandlingId, resultat.oppdragResultat!!)
-        tilstandRepository.oppdaterJournalpostResultat(behandlingId, resultat.journalpostResultat!!)
-        tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId, resultat.vedtaksbrevResultat!!)
+        val (mottakerIdent, journalpostresultat) = resultat.journalpostResultat?.entries!!.first()
+        tilstandRepository.oppdaterJournalpostResultat(behandlingId, mottakerIdent, journalpostresultat)
+        val (journalpostId, vedtaksbrevResultat) = resultat.vedtaksbrevResultat?.entries!!.first()
+
+        tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId, journalpostId, vedtaksbrevResultat)
         val iverksettResultat = tilstandRepository.hentIverksettResultat(behandlingId)
         assertThat(iverksettResultat).isEqualTo(resultat)
     }

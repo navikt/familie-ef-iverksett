@@ -63,7 +63,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
                                                 Properties()))
 
 
-        val distribuerVedtaksbrevResultat = tilstandRepository.hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId)
+        val distribuerVedtaksbrevResultat = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)
         assertThat(distribuerVedtaksbrevResultat).hasSize(2)
         assertThat(distribuerVedtaksbrevResultat?.get(journalpostA)).isNotNull
         assertThat(distribuerVedtaksbrevResultat?.get(journalpostB)).isNotNull
@@ -77,11 +77,11 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
     ) {
         tilstandRepository.opprettTomtResultat(behandlingId)
 
-        tilstandRepository.oppdaterJournalpostResultatBrevmottakere(behandlingId = behandlingId,
+        tilstandRepository.oppdaterJournalpostResultat(behandlingId = behandlingId,
                                                                     mottakerIdent = mottakerA,
                                                                     journalPostResultat = JournalpostResultat(journalpostA))
 
-        tilstandRepository.oppdaterJournalpostResultatBrevmottakere(behandlingId = behandlingId,
+        tilstandRepository.oppdaterJournalpostResultat(behandlingId = behandlingId,
                                                                     mottakerIdent = mottakerB,
                                                                     journalPostResultat = JournalpostResultat(journalpostB))
     }
@@ -106,7 +106,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         }
 
 
-        val distribuerVedtaksbrevResultat = tilstandRepository.hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId)
+        val distribuerVedtaksbrevResultat = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)
         assertThat(distribuerVedtaksbrevResultat).hasSize(1)
         assertThat(distribuerVedtaksbrevResultat?.get(journalpostA)).isNotNull
         assertThat(distribuerVedtaksbrevResultat?.get(journalpostB)).isNull()

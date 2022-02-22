@@ -35,16 +35,14 @@ internal class DistribuerVedtaksbrevTaskTest {
         val bestillingId = "111"
         val distribuerVedtaksbrevResultat = slot<DistribuerVedtaksbrevResultat>()
 
-        every { tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId) } returns emptyMap()
-        every { tilstandRepository.hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId) } returns emptyMap()
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns JournalpostResultat(
-                journalpostId,
-                LocalDateTime.now()
-        )
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns mapOf("123" to JournalpostResultat(journalpostId))
+        every { tilstandRepository.hentTilbakekrevingResultat(behandlingId) } returns null
         every { journalpostClient.distribuerBrev(journalpostId) } returns bestillingId
+        every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null andThen mapOf(journalpostId to DistribuerVedtaksbrevResultat(bestillingId))
         every {
             tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
                     behandlingId,
+                    any(),
                     capture(distribuerVedtaksbrevResultat)
             )
         } returns Unit
@@ -52,7 +50,7 @@ internal class DistribuerVedtaksbrevTaskTest {
         distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
 
         verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostId) }
-        verify(exactly = 1) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId, any()) }
+        verify(exactly = 1) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId, any(), any()) }
         assertThat(distribuerVedtaksbrevResultat.captured.bestillingId).isEqualTo(bestillingId)
         assertThat(distribuerVedtaksbrevResultat.captured.dato).isNotNull()
     }
@@ -64,13 +62,12 @@ internal class DistribuerVedtaksbrevTaskTest {
         val bestillingIder = listOf("111", "222")
         val distribuerVedtaksbrevResultatSlots = mutableListOf<DistribuerVedtaksbrevResultat>()
 
-        every { tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId) } returns mapOf("1" to journalpostResultater[0],
-                                                                                                      "2" to journalpostResultater[1])
-        every { tilstandRepository.hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId) } returns emptyMap()
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns mapOf("1" to journalpostResultater[0],
+                                                                                         "2" to journalpostResultater[1])
+        every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
         every { journalpostClient.distribuerBrev(any()) } returns bestillingIder[0] andThen bestillingIder[1]
         every {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultatForBrevmottaker(
+            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
                     behandlingId,
                     any(),
                     capture(distribuerVedtaksbrevResultatSlots)
@@ -82,9 +79,9 @@ internal class DistribuerVedtaksbrevTaskTest {
         verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostResultater[0].journalpostId) }
         verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostResultater[1].journalpostId) }
         verify(exactly = 2) {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultatForBrevmottaker(behandlingId,
-                                                                                    any(),
-                                                                                    any())
+            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId,
+                                                                     any(),
+                                                                     any())
         }
         assertThat(distribuerVedtaksbrevResultatSlots.containsAll(bestillingIder.map { DistribuerVedtaksbrevResultat(it) }))
     }
@@ -107,12 +104,11 @@ internal class DistribuerVedtaksbrevTaskTest {
         val journalpostSlot = slot<String>()
         val distribuerVedtaksbrevResultatSlot = slot<DistribuerVedtaksbrevResultat>()
 
-        every { tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId) } returns journalpostResultater
-        every { tilstandRepository.hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId) } returns distribuerteJournalposter
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns journalpostResultater
+        every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns distribuerteJournalposter
         every { journalpostClient.distribuerBrev(capture(journalpostSlot)) } returns ikkeDistrbuertJournalpostBestillingId
         every {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultatForBrevmottaker(
+            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
                     behandlingId,
                     ikkeDistribuertJournalpost,
                     capture(distribuerVedtaksbrevResultatSlot)
@@ -124,12 +120,12 @@ internal class DistribuerVedtaksbrevTaskTest {
         verify(exactly = 0) { journalpostClient.distribuerBrev(distribuertJournalpost) }
         verify(exactly = 1) { journalpostClient.distribuerBrev(ikkeDistribuertJournalpost) }
         verify(exactly = 0) {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultatForBrevmottaker(behandlingId,
+            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId,
                                                                                     distribuertJournalpost,
                                                                                     any())
         }
         verify(exactly = 1) {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultatForBrevmottaker(behandlingId,
+            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId,
                                                                                     ikkeDistribuertJournalpost,
                                                                                     any())
         }

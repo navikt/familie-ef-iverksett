@@ -60,6 +60,7 @@ class JournalførVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
     @Test
     fun `skal oppdatere journalpostresultat for brevmottakere`() {
         val identA = "123"
+        val identB = "321"
         val iverksettMedBrevmottakere = iverksett.copy(vedtak =
                                                        iverksett.vedtak.copy(brevmottakere = Brevmottakere(
                                                                mottakere = listOf(
@@ -67,7 +68,7 @@ class JournalførVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
                                                                                     navn = "Navn",
                                                                                     identType = PERSONIDENT,
                                                                                     mottakerRolle = MottakerRolle.BRUKER),
-                                                                       Brevmottaker(ident = "321",
+                                                                       Brevmottaker(ident = identB,
                                                                                     navn = "Navn",
                                                                                     identType = PERSONIDENT,
                                                                                     mottakerRolle = MottakerRolle.VERGE)))))
@@ -83,10 +84,11 @@ class JournalførVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
                                                 behandlingId.toString(),
                                                 Properties()))
 
-        val journalpostResultatBrevmottakere = tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId = behandlingId)
+        val journalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId = behandlingId)
 
-        assertThat(journalpostResultatBrevmottakere).hasSize(2)
-        assertThat(journalpostResultatBrevmottakere?.get(identA)).isNotNull
+        assertThat(journalpostResultat).hasSize(2)
+        assertThat(journalpostResultat?.get(identA)).isNotNull
+        assertThat(journalpostResultat?.get(identB)).isNotNull
     }
 
     @Test
@@ -119,11 +121,11 @@ class JournalførVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         } catch (_: Exception){ }
 
 
-        val journalpostResultatBrevmottakere = tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId = behandlingId)
+        val journalpostResultatMap = tilstandRepository.hentJournalpostResultat(behandlingId = behandlingId)
 
-        assertThat(journalpostResultatBrevmottakere).hasSize(1)
-        assertThat(journalpostResultatBrevmottakere?.get(identA)).isNotNull
-        assertThat(journalpostResultatBrevmottakere?.get(identB)).isNull()
+        assertThat(journalpostResultatMap).hasSize(1)
+        assertThat(journalpostResultatMap?.get(identA)).isNotNull
+        assertThat(journalpostResultatMap?.get(identB)).isNull()
     }
 
     companion object {

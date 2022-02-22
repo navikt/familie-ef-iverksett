@@ -28,55 +28,25 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
 
         validerJournalpostresultat(behandlingId)
 
-        val vedtaksbrevHarEnkelMottaker = tilstandRepository.hentJournalpostResultat(behandlingId) !== null
+        val journalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId)
 
-        if (vedtaksbrevHarEnkelMottaker){
-            distribuerTilEnkelMottaker(behandlingId)
-        } else {
-            distribuerTilBrevmottakere(behandlingId)
-        }
+        val distribuerteJournalposter = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)?.keys ?: emptySet()
 
-
-    }
-
-    private fun distribuerTilEnkelMottaker(behandlingId: UUID) {
-        val journalpostId = tilstandRepository.hentJournalpostResultat(behandlingId)?.journalpostId
-        journalpostId
-                ?.let { journalpostClient.distribuerBrev(it) }
-                ?.also { bestillingId ->
-                    loggBrevDistribuert(journalpostId, behandlingId, bestillingId)
-                    tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId = behandlingId,
-                                                                             DistribuerVedtaksbrevResultat(bestillingId = bestillingId)
-                    )
-                }
-    }
-
-
-    private fun validerJournalpostresultat(behandlingId: UUID) {
-        if (tilstandRepository.hentJournalpostResultat(behandlingId) == null && tilstandRepository.hentJournalpostResultatBrevmottakere(
-                        behandlingId) === null) {
-            error("Fant ingen journalpost for behandling")
-        }
-    }
-
-    private fun distribuerTilBrevmottakere(behandlingId: UUID) {
-        if (!featureToggleService.isEnabled("familie.ef.iverksett.brevmottakere")) {
-            error("Toggle for distribuering til brevmottakere er ikke påskrudd")
-        }
-
-        val journalposterIdBrevmottakere = tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId)
-
-        val distribuerteJournalposter =
-                tilstandRepository.hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId)?.keys ?: emptySet()
-
-        journalposterIdBrevmottakere?.filter { (_, journalpostResultat) ->
+        journalpostResultat?.filter { (_, journalpostResultat) ->
             journalpostResultat.journalpostId !in distribuerteJournalposter
         }?.forEach { (_, journalpostResultat) ->
             val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId)
             loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultatForBrevmottaker(behandlingId,
+            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId,
                                                                                     journalpostResultat.journalpostId,
                                                                                     DistribuerVedtaksbrevResultat(bestillingId))
+        }
+
+    }
+
+    private fun validerJournalpostresultat(behandlingId: UUID) {
+        if (tilstandRepository.hentJournalpostResultat(behandlingId).isNullOrEmpty()){
+            error("Fant ingen journalpost for behandling=[$behandlingId]")
         }
     }
 

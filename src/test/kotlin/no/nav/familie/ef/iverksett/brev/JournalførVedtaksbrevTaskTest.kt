@@ -55,12 +55,13 @@ internal class JournalførVedtaksbrevTaskTest {
                 true)
         every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
         every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
-        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, capture(journalpostResultatSlot)) } returns Unit
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(journalpostId))
+        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) } returns Unit
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
-        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any()) }
+        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
         assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
     }
@@ -88,8 +89,8 @@ internal class JournalførVedtaksbrevTaskTest {
 
         every { iverksettingRepository.hent(behandlingId) } returns iverksettMedBrevmottakere
         every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
-        every { tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId) } returns null
-        every { tilstandRepository.oppdaterJournalpostResultatBrevmottakere(behandlingId, any(), any()) } just Runs
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null  andThen mapOf("123" to JournalpostResultat("journalpostId"))
+        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) } just Runs
 
         every {
             journalpostClient.arkiverDokument(capture(capturedArkiverdokumentRequester),
@@ -119,12 +120,13 @@ internal class JournalførVedtaksbrevTaskTest {
         every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId,
                                                                                         stønadType = StønadType.BARNETILSYN).toDomain())
         every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
-        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, capture(journalpostResultatSlot)) } returns Unit
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null  andThen mapOf("123" to JournalpostResultat("journalpostId"))
+        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) } returns Unit
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
-        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any()) }
+        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
         assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
         assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.first().dokumenttype).isEqualTo(Dokumenttype.VEDTAKSBREV_BARNETILSYN)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)

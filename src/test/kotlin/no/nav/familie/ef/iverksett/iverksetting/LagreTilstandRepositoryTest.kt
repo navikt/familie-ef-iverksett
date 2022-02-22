@@ -48,6 +48,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     fun `oppdater journalpost, forvent ingen unntak`() {
         tilstandServiceRepository.oppdaterJournalpostResultat(
                 behandlingsId,
+                "123",
                 JournalpostResultat(
                         journalpostId = journalpostId.toString()
                 )
@@ -58,6 +59,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     fun `oppdater distribuerVedtaksbrev, forvent ingen unntak`() {
         tilstandServiceRepository.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingsId,
+                "123",
                 DistribuerVedtaksbrevResultat(bestillingId = "12345")
         )
     }
@@ -67,6 +69,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
         assertThrows<IllegalStateException> {
             tilstandServiceRepository.oppdaterDistribuerVedtaksbrevResultat(
                     UUID.randomUUID(),
+                    "123",
                     DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
             )
         }

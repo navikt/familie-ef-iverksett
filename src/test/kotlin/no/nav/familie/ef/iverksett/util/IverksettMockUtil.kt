@@ -269,23 +269,28 @@ class IverksettResultatMockBuilder private constructor(
 
         val tilkjentYtelse: TilkjentYtelse,
         val oppdragResultat: OppdragResultat,
-        val journalpostResultat: JournalpostResultat,
-        val vedtaksbrevResultat: DistribuerVedtaksbrevResultat
+        val journalpostResultat: Map<String, JournalpostResultat>,
+        val vedtaksbrevResultat: Map<String, DistribuerVedtaksbrevResultat>
 ) {
 
     data class Builder(
             var oppdragResultat: OppdragResultat? = null,
-            var journalpostResultat: JournalpostResultat? = null,
-            var journalpostResultatBrevmottakere: Map<String, JournalpostResultat>? = null,
-            var vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null,
+            var journalpostResultat: Map<String, JournalpostResultat>? = null,
+            var vedtaksbrevResultat: Map<String, DistribuerVedtaksbrevResultat>? = null,
             var tilbakekrevingResultat: TilbakekrevingResultat? = null
     ) {
 
         fun oppdragResultat(oppdragResultat: OppdragResultat) = apply { this.oppdragResultat = oppdragResultat }
-        fun journalPostResultat() = apply { this.journalpostResultat = JournalpostResultat(UUID.randomUUID().toString()) }
+        fun journalPostResultat() = apply {
+            this.journalpostResultat = mapOf("123456789" to JournalpostResultat(UUID.randomUUID().toString()))
+        }
 
         fun vedtaksbrevResultat(behandlingId: UUID) =
-                apply { this.vedtaksbrevResultat = DistribuerVedtaksbrevResultat(bestillingId = behandlingId.toString()) }
+                apply {
+                    this.vedtaksbrevResultat =
+                            mapOf(this.journalpostResultat!!.entries.first().value.journalpostId to DistribuerVedtaksbrevResultat(
+                                    bestillingId = behandlingId.toString()))
+                }
 
         fun tilbakekrevingResultat(tilbakekrevingResultat: TilbakekrevingResultat?) =
                 apply { this.tilbakekrevingResultat = tilbakekrevingResultat }
@@ -295,7 +300,6 @@ class IverksettResultatMockBuilder private constructor(
                                   tilkjentYtelse,
                                   oppdragResultat,
                                   journalpostResultat,
-                                  journalpostResultatBrevmottakere,
                                   vedtaksbrevResultat,
                                   tilbakekrevingResultat)
     }

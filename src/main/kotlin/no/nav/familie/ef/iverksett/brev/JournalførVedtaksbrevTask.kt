@@ -37,9 +37,22 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
+
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
 
+        if ((iverksett.vedtak.brevmottakere?.mottakere?.isNotEmpty() == true) && !featureToggleService.isEnabled("familie.ef.iverksett.brevmottakere")) {
+            error("Toggle for journalføring til brevmottakere er ikke påskrudd")
+        }
+
+        journalførVedtaksbrev(behandlingId, iverksett)
+
+        validerJournalpostResultatErSatt(behandlingId)
+
+    }
+
+    private fun journalførVedtaksbrev(behandlingId: UUID,
+                                      iverksett: Iverksett) {
         val vedtaksbrev = iverksettingRepository.hentBrev(behandlingId)
         val dokument = Dokument(vedtaksbrev.pdf,
                                 Filtype.PDFA,
@@ -48,28 +61,28 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
 
 
         val arkiverDokumentRequest = ArkiverDokumentRequest(
-            fnr = iverksett.søker.personIdent,
-            forsøkFerdigstill = true,
-            hoveddokumentvarianter = listOf(dokument),
-            fagsakId = iverksett.fagsak.eksternId.toString(),
-            journalførendeEnhet = iverksett.søker.tilhørendeEnhet,
-            eksternReferanseId = "$behandlingId-vedtaksbrev"
+                fnr = iverksett.søker.personIdent,
+                forsøkFerdigstill = true,
+                hoveddokumentvarianter = listOf(dokument),
+                fagsakId = iverksett.fagsak.eksternId.toString(),
+                journalførendeEnhet = iverksett.søker.tilhørendeEnhet,
+                eksternReferanseId = "$behandlingId-vedtaksbrev"
         )
 
-        if((iverksett.vedtak.brevmottakere?.mottakere?.isNotEmpty() == true) && featureToggleService.isEnabled("familie.ef.iverksett.brevmottakere") ){
-            journalførDokumentMedBrevmottakere(behandlingId, iverksett, arkiverDokumentRequest)
-        }
-         else{
-            journalførDokumentForStønadsmottaker(arkiverDokumentRequest, iverksett, behandlingId)
+        val journalførteIdenter: List<String> =
+                tilstandRepository.hentJournalpostResultat(behandlingId)?.keys?.toList() ?: emptyList()
+
+        if(iverksett.vedtak.brevmottakere?.mottakere?.isEmpty() == true){
+            journalførVedtaksbrevTilStønadmottaker(arkiverDokumentRequest, iverksett, behandlingId)
+        } else {
+            journalførVedtaksbrevTilBrevmottakere(iverksett, journalførteIdenter, arkiverDokumentRequest, behandlingId)
         }
     }
 
-    private fun journalførDokumentMedBrevmottakere(behandlingId: UUID,
-                                                   iverksett: Iverksett,
-                                                   arkiverDokumentRequest: ArkiverDokumentRequest) {
-        val journalførteIdenter: List<String> =
-                tilstandRepository.hentJournalpostResultatBrevmottakere(behandlingId)?.keys?.toList() ?: emptyList()
-
+    private fun journalførVedtaksbrevTilBrevmottakere(iverksett: Iverksett,
+                                                      journalførteIdenter: List<String>,
+                                                      arkiverDokumentRequest: ArkiverDokumentRequest,
+                                                      behandlingId: UUID) {
         iverksett.vedtak.brevmottakere?.mottakere?.mapIndexed { indeks, mottaker ->
             if (!journalførteIdenter.contains(mottaker.ident)) {
                 val journalpostId = journalpostClient.arkiverDokument(
@@ -84,19 +97,18 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
                         iverksett.vedtak.beslutterId
                 ).journalpostId
 
-                tilstandRepository.oppdaterJournalpostResultatBrevmottakere(
+                tilstandRepository.oppdaterJournalpostResultat(
                         behandlingId = behandlingId,
                         mottakerIdent = mottaker.ident,
                         JournalpostResultat(journalpostId = journalpostId)
                 )
             }
-
         }
     }
 
-    private fun journalførDokumentForStønadsmottaker(arkiverDokumentRequest: ArkiverDokumentRequest,
-                                                     iverksett: Iverksett,
-                                                     behandlingId: UUID) {
+    private fun journalførVedtaksbrevTilStønadmottaker(arkiverDokumentRequest: ArkiverDokumentRequest,
+                                                       iverksett: Iverksett,
+                                                       behandlingId: UUID) {
         val journalpostId = journalpostClient.arkiverDokument(
                 arkiverDokumentRequest,
                 iverksett.vedtak.beslutterId
@@ -104,9 +116,18 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
 
         tilstandRepository.oppdaterJournalpostResultat(
                 behandlingId = behandlingId,
-                JournalpostResultat(journalpostId = journalpostId)
+                mottakerIdent = iverksett.søker.personIdent,
+                journalPostResultat = JournalpostResultat(journalpostId = journalpostId)
         )
     }
+
+    private fun validerJournalpostResultatErSatt(behandlingId: UUID) {
+        val journalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId)
+        if(journalpostResultat.isNullOrEmpty()){
+            error("Ingen journalføringer er gjort")
+        }
+    }
+
 
     private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat): String =
             lagVedtakstekst(vedtaksresultat) + lagStønadtypeTekst(stønadstype)

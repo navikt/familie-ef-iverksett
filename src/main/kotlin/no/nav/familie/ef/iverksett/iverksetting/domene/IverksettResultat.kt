@@ -9,9 +9,8 @@ data class IverksettResultat(
         val behandlingId: UUID,
         val tilkjentYtelseForUtbetaling: TilkjentYtelse?,
         val oppdragResultat: OppdragResultat? = null,
-        val journalpostResultat: JournalpostResultat? = null,
-        val journalpostResultatBrevmottakere: Map<String, JournalpostResultat>? = null,
-        val vedtaksbrevResultat: DistribuerVedtaksbrevResultat? = null,
+        val journalpostResultat: Map<String, JournalpostResultat>? = null,
+        val vedtaksbrevResultat: Map<String, DistribuerVedtaksbrevResultat>? = null,
         val tilbakekrevingResultat: TilbakekrevingResultat? = null
 )
 

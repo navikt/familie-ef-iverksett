@@ -24,7 +24,7 @@ import java.util.UUID
 class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun opprettTomtResultat(behandlingId: UUID) {
-        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL, NULL, NULL)"
+        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL, NULL)"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
     }
@@ -55,10 +55,15 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
     }
 
 
-    fun oppdaterJournalpostResultat(behandlingId: UUID, journalPostResultat: JournalpostResultat) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun oppdaterJournalpostResultat(behandlingId: UUID, mottakerIdent: String, journalPostResultat: JournalpostResultat) {
         val sql = "UPDATE iverksett_resultat SET journalpostresultat = :journalpostResultat::JSON " +
                   "WHERE behandling_id = :behandlingId"
-        val journalPostResultatJson = objectMapper.writeValueAsString(journalPostResultat)
+
+        val eksisterendeResultat = hentJournalpostResultat(behandlingId)
+        val resultatermedNyBrevmottaker = (eksisterendeResultat ?: emptyMap()) + mapOf(mottakerIdent to journalPostResultat)
+
+        val journalPostResultatJson = objectMapper.writeValueAsString(resultatermedNyBrevmottaker)
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
                 .addValue("journalpostResultat", journalPostResultatJson)
 
@@ -68,47 +73,15 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun oppdaterJournalpostResultatBrevmottakere(behandlingId: UUID, mottakerIdent: String, journalPostResultat: JournalpostResultat) {
-        val sql = "UPDATE iverksett_resultat SET journalpostresultatBrevmottakere = :journalpostResultat::JSON " +
-                "WHERE behandling_id = :behandlingId"
-
-        val eksisterendeResultat = hentJournalpostResultatBrevmottakere(behandlingId)
-
-        val resultatermedNyBrevmottaker = (eksisterendeResultat ?: emptyMap()) + mapOf(mottakerIdent to journalPostResultat)
-
-
-        val journalPostResultatJson =
-            objectMapper.writeValueAsString(resultatermedNyBrevmottaker)
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-            .addValue("journalpostResultat", journalPostResultatJson)
-
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-            ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}," +
-                             "journalPostResultatJson : $journalPostResultatJson")
-    }
-
     fun oppdaterDistribuerVedtaksbrevResultat(behandlingId: UUID,
+                                              journalpostId: String,
                                               distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat) {
-        val sql = "UPDATE iverksett_resultat SET vedtaksbrevresultat = :distribuerVedtaksbrevResultatJson::JSON " +
-                  "WHERE behandling_id = :behandlingId"
-        val distribuerVedtaksbrevResultatJson = objectMapper.writeValueAsString(distribuerVedtaksbrevResultat)
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-                .addValue("distribuerVedtaksbrevResultatJson", distribuerVedtaksbrevResultatJson)
-
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-        ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = ${behandlingId}, " +
-                 "distribuerVedtaksbrevResultatJson : $distribuerVedtaksbrevResultatJson")
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun oppdaterDistribuerVedtaksbrevResultatForBrevmottaker(behandlingId: UUID,
-                                                             journalpostId: String, resultat: DistribuerVedtaksbrevResultat) {
-        val sql = "UPDATE iverksett_resultat SET vedtaksbrevresultatbrevmottakere = :distribuerVedtaksbrevResultatBrevmottakereJson::JSON " +
+        val sql = "UPDATE iverksett_resultat SET vedtaksbrevresultat = :distribuerVedtaksbrevResultatBrevmottakereJson::JSON " +
                   "WHERE behandling_id = :behandlingId"
 
-        val eksisterendeResultat: Map<String, DistribuerVedtaksbrevResultat>? = hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId)
+        val eksisterendeResultat: Map<String, DistribuerVedtaksbrevResultat>? = hentdistribuerVedtaksbrevResultat(behandlingId)
 
-        val resultatermedNyJournalpost = (eksisterendeResultat ?: emptyMap()) + mapOf(journalpostId to resultat)
+        val resultatermedNyJournalpost = (eksisterendeResultat ?: emptyMap()) + mapOf(journalpostId to distribuerVedtaksbrevResultat)
 
 
         val distribuerVedtaksbrevResultatBrevmottakereJson = objectMapper.writeValueAsString(resultatermedNyJournalpost)
@@ -120,8 +93,8 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                  "distribuerVedtaksbrevResultatBrevmottakereJson : $distribuerVedtaksbrevResultatBrevmottakereJson")
     }
 
-    fun hentdistribuerVedtaksbrevResultatBrevmottakere(behandlingId: UUID): Map<String, DistribuerVedtaksbrevResultat>? {
-        val sql = "SELECT vedtaksbrevresultatbrevmottakere FROM iverksett_resultat WHERE behandling_id = :behandlingId"
+    fun hentdistribuerVedtaksbrevResultat(behandlingId: UUID): Map<String, DistribuerVedtaksbrevResultat>? {
+        val sql = "SELECT vedtaksbrevresultat FROM iverksett_resultat WHERE behandling_id = :behandlingId"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
     }
@@ -167,14 +140,8 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
         return result
     }
 
-    fun hentJournalpostResultat(behandlingId: UUID): JournalpostResultat? {
+    fun hentJournalpostResultat(behandlingId: UUID): Map<String, JournalpostResultat>? {
         val sql = "SELECT journalpostresultat FROM iverksett_resultat WHERE behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
-    }
-
-    fun hentJournalpostResultatBrevmottakere(behandlingId: UUID): Map<String, JournalpostResultat>? {
-        val sql = "SELECT journalpostresultatbrevmottakere FROM iverksett_resultat WHERE behandling_id = :behandlingId"
         val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
         return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
     }
@@ -188,7 +155,6 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
                     rs.getJson("tilkjentYtelseForUtbetaling"),
                     rs.getJson("oppdragResultat"),
                     rs.getJson("journalpostResultat"),
-                    rs.getJson("journalpostResultatBrevmottakere"),
                     rs.getJson("vedtaksBrevResultat"),
                     rs.getJson("tilbakekrevingResultat"))
         }
