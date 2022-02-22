@@ -14,6 +14,9 @@ fun frittståendeBrevtypeTilDokumenttype(frittståendeBrevType: FrittståendeBre
             FrittståendeBrevType.MANGELBREV_BARNETILSYN -> Dokumenttype.BARNETILSYN_FRITTSTÅENDE_BREV
             FrittståendeBrevType.INFOBREV_SKOLEPENGER -> Dokumenttype.SKOLEPENGER_FRITTSTÅENDE_BREV
             FrittståendeBrevType.MANGELBREV_SKOLEPENGER -> Dokumenttype.SKOLEPENGER_FRITTSTÅENDE_BREV
+            FrittståendeBrevType.SANKSJONSBREV_OVERGANGSTØNAD -> Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV
+            FrittståendeBrevType.SANKSJONSBREV_BARNETILSYN -> Dokumenttype.BARNETILSYN_FRITTSTÅENDE_BREV
+            FrittståendeBrevType.SANKSJONSBREV_SKOLEPENGER -> Dokumenttype.SKOLEPENGER_FRITTSTÅENDE_BREV
         }
 
 fun vedtaksbrevForStønadType(stønadType: StønadType): Dokumenttype =
