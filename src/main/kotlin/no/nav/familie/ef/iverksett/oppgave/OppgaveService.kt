@@ -97,7 +97,8 @@ class OppgaveService(
     }
 
     private fun harEndretAktivitet(iverksett: Iverksett, forrigeBehandling: Iverksett): Boolean {
-        return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
+        return forrigeBehandling.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT
+               || iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
     }
 
     private fun harEndretPeriode(iverksett: Iverksett, forrigeBehandling: Iverksett): Boolean {
