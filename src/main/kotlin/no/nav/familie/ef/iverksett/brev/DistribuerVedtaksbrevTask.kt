@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.brev
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -17,17 +18,39 @@ import java.util.UUID
                      triggerTidVedFeilISekunder = 15 * 60L,
                      beskrivelse = "Distribuerer vedtaksbrev.")
 class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient,
-                                private val tilstandRepository: TilstandRepository) : AsyncTaskStep {
+                                private val tilstandRepository: TilstandRepository,
+                                private val featureToggleService: FeatureToggleService) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val journalpostId = tilstandRepository.hentJournalpostResultat(behandlingId)?.journalpostId
-        val bestillingId = journalpostId?.let { journalpostClient.distribuerBrev(it) }
-        tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId = behandlingId,
-                                                                 DistribuerVedtaksbrevResultat(bestillingId = bestillingId)
-        )
+
+        validerJournalpostresultat(behandlingId)
+
+        val journalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId)
+
+        val distribuerteJournalposter = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)?.keys ?: emptySet()
+
+        journalpostResultat?.filter { (_, journalpostResultat) ->
+            journalpostResultat.journalpostId !in distribuerteJournalposter
+        }?.forEach { (_, journalpostResultat) ->
+            val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId)
+            loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
+            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId,
+                                                                     journalpostResultat.journalpostId,
+                                                                     DistribuerVedtaksbrevResultat(bestillingId))
+        }
+
+    }
+
+    private fun validerJournalpostresultat(behandlingId: UUID) {
+        if (tilstandRepository.hentJournalpostResultat(behandlingId).isNullOrEmpty()) {
+            error("Fant ingen journalpost for behandling=[$behandlingId]")
+        }
+    }
+
+    private fun loggBrevDistribuert(journalpostId: String, behandlingId: UUID, bestillingId: String) {
         logger.info("Distribuer vedtaksbrev journalpost=[${journalpostId}] " +
                     "for behandling=[${behandlingId}] med bestillingId=[$bestillingId]")
     }

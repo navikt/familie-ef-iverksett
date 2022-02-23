@@ -30,8 +30,14 @@ class JournalpostClientMock(@Value("\${FAMILIE_INTEGRASJONER_API_URL}") private 
                                    .willReturn(WireMock.serverError()),
                            WireMock.post(WireMock.urlMatching("${dokarkivUri.path}.*")).atPriority(2)
                                    .willReturn(WireMock.okJson(objectMapper.writeValueAsString(arkiverDokumentResponse))),
-                           WireMock.post(WireMock.urlEqualTo(distribuerDokumentUri.path))
-                                   .willReturn(WireMock.okJson(objectMapper.writeValueAsString(bestillingId))))
+                           WireMock.post(WireMock.urlEqualTo(distribuerDokumentUri.path)).atPriority(2)
+                                   .willReturn(WireMock.okJson(objectMapper.writeValueAsString(bestillingId))),
+                           WireMock.post(WireMock.urlEqualTo(distribuerDokumentUri.path)).atPriority(1)
+                                   .withRequestBody(WireMock.matchingJsonPath("$..journalpostId", WireMock.containing("SkalFeile")))
+                                   .willReturn(WireMock.serverError()))
+
+    fun journalføringPath():String = "${dokarkivUri.path}.*"
+    fun distribuerPath():String = "${distribuerDokumentUri.path}.*"
 
     @Bean("mock-integrasjoner")
     @Profile("mock-integrasjoner")
