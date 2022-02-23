@@ -48,8 +48,17 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
 
         journalførVedtaksbrev(behandlingId, iverksett)
 
-        validerJournalpostResultatErSatt(behandlingId)
+        validerJournalpostResultatErSatt(behandlingId, iverksett)
 
+    }
+
+    private fun journalførOgLagreResultat(behandlingId: UUID, arkiverDokumentRequest: ArkiverDokumentRequest, mottakerIdent: String, beslutterId: String) {
+        val journalpostId = journalpostClient.arkiverDokument(arkiverDokumentRequest, beslutterId).journalpostId
+        tilstandRepository.oppdaterJournalpostResultat(
+                behandlingId = behandlingId,
+                mottakerIdent = mottakerIdent,
+                JournalpostResultat(journalpostId = journalpostId)
+        )
     }
 
     private fun journalførVedtaksbrev(behandlingId: UUID,
@@ -86,23 +95,19 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
                                                       behandlingId: UUID) {
         iverksett.vedtak.brevmottakere?.mottakere?.mapIndexed { indeks, mottaker ->
             if (!journalførteIdenter.contains(mottaker.ident)) {
-                val journalpostId = journalpostClient.arkiverDokument(
-                        arkiverDokumentRequest.copy(
-                                eksternReferanseId = "$behandlingId-vedtaksbrev-mottaker$indeks",
-                                avsenderMottaker = AvsenderMottaker(
-                                        id = mottaker.ident,
-                                        idType = mottaker.identType.tilIdType(),
-                                        navn = mottaker.navn
-                                )
-                        ),
-                        iverksett.vedtak.beslutterId
-                ).journalpostId
-
-                tilstandRepository.oppdaterJournalpostResultat(
-                        behandlingId = behandlingId,
-                        mottakerIdent = mottaker.ident,
-                        JournalpostResultat(journalpostId = journalpostId)
+                val arkiverDokumentRequestForMottaker = arkiverDokumentRequest.copy(
+                        eksternReferanseId = "$behandlingId-vedtaksbrev-mottaker$indeks",
+                        avsenderMottaker = AvsenderMottaker(
+                                id = mottaker.ident,
+                                idType = mottaker.identType.tilIdType(),
+                                navn = mottaker.navn
+                        )
                 )
+
+                journalførOgLagreResultat(behandlingId = behandlingId,
+                                          arkiverDokumentRequest = arkiverDokumentRequestForMottaker,
+                                          mottakerIdent = mottaker.ident,
+                                          beslutterId = iverksett.vedtak.beslutterId)
             }
         }
     }
@@ -110,22 +115,23 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
     private fun journalførVedtaksbrevTilStønadmottaker(arkiverDokumentRequest: ArkiverDokumentRequest,
                                                        iverksett: Iverksett,
                                                        behandlingId: UUID) {
-        val journalpostId = journalpostClient.arkiverDokument(
-                arkiverDokumentRequest,
-                iverksett.vedtak.beslutterId
-        ).journalpostId
-
-        tilstandRepository.oppdaterJournalpostResultat(
-                behandlingId = behandlingId,
-                mottakerIdent = iverksett.søker.personIdent,
-                journalPostResultat = JournalpostResultat(journalpostId = journalpostId)
-        )
+        journalførOgLagreResultat(behandlingId = behandlingId,
+                                  arkiverDokumentRequest = arkiverDokumentRequest,
+                                  mottakerIdent = iverksett.søker.personIdent,
+                                  beslutterId = iverksett.vedtak.beslutterId)
     }
 
-    private fun validerJournalpostResultatErSatt(behandlingId: UUID) {
-        val journalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId)
-        if(journalpostResultat.isNullOrEmpty()){
-            error("Ingen journalføringer er gjort")
+    private fun validerJournalpostResultatErSatt(behandlingId: UUID, iverksett: Iverksett) {
+        val antallJournalføringer = tilstandRepository.hentJournalpostResultat(behandlingId)?.size
+                                    ?: error("Ingen journalføringer for behandling=[$behandlingId]")
+
+        val satteBrevmottakere = iverksett.vedtak.brevmottakere?.mottakere?.size ?: 0
+
+        // Hvis ingen brevmottakere er satt skal bare stønadsmottaker ha vedtaksbrevet
+        val forventetJournalføringer = if (satteBrevmottakere > 0) satteBrevmottakere else 1
+
+        if (forventetJournalføringer != antallJournalføringer) {
+            error("Feil ved journalføring av vedtaksbrev. Forventet $forventetJournalføringer journalføringsreultat, fant $antallJournalføringer.")
         }
     }
 

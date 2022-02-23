@@ -13,8 +13,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
-import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
@@ -89,7 +89,8 @@ internal class JournalførVedtaksbrevTaskTest {
 
         every { iverksettingRepository.hent(behandlingId) } returns iverksettMedBrevmottakere
         every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null  andThen mapOf("123" to JournalpostResultat("journalpostId"))
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
+                "journalpostId"), "444" to JournalpostResultat("journalpostId"))
         every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) } just Runs
 
         every {
@@ -120,8 +121,13 @@ internal class JournalførVedtaksbrevTaskTest {
         every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId,
                                                                                         stønadType = StønadType.BARNETILSYN).toDomain())
         every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null  andThen mapOf("123" to JournalpostResultat("journalpostId"))
-        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) } returns Unit
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
+                "journalpostId"))
+        every {
+            tilstandRepository.oppdaterJournalpostResultat(behandlingId,
+                                                           any(),
+                                                           capture(journalpostResultatSlot))
+        } returns Unit
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 

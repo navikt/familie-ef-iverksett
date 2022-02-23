@@ -38,14 +38,14 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
             val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId)
             loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
             tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId,
-                                                                                    journalpostResultat.journalpostId,
-                                                                                    DistribuerVedtaksbrevResultat(bestillingId))
+                                                                     journalpostResultat.journalpostId,
+                                                                     DistribuerVedtaksbrevResultat(bestillingId))
         }
 
     }
 
     private fun validerJournalpostresultat(behandlingId: UUID) {
-        if (tilstandRepository.hentJournalpostResultat(behandlingId).isNullOrEmpty()){
+        if (tilstandRepository.hentJournalpostResultat(behandlingId).isNullOrEmpty()) {
             error("Fant ingen journalpost for behandling=[$behandlingId]")
         }
     }
