@@ -36,6 +36,8 @@ class JournalpostClientMock(@Value("\${FAMILIE_INTEGRASJONER_API_URL}") private 
                                    .withRequestBody(WireMock.matchingJsonPath("$..journalpostId", WireMock.containing("SkalFeile")))
                                    .willReturn(WireMock.serverError()))
 
+    fun journalføringPath():String = "${dokarkivUri.path}.*"
+
     @Bean("mock-integrasjoner")
     @Profile("mock-integrasjoner")
     fun integrationMockServer(): WireMockServer {
