@@ -86,6 +86,28 @@ internal class OppgaveServiceTest {
     }
 
     @Test
+    internal fun `revurdering innvilget, forrige behandling opphørt og uten perioder, forvent skalOpprette true`() {
+        val forrigeBehandlingIverksett = mockk<Iverksett>()
+        every { forrigeBehandlingIverksett.erMigrering() } returns false
+        setupIverksettMock(
+                iverksett,
+                UUID.randomUUID(),
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+        )
+        setupIverksettMock(
+                forrigeBehandlingIverksett,
+                UUID.randomUUID(),
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.OPPHØRT,
+                listOf()
+        )
+        every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
+    }
+
+    @Test
     internal fun `revurdering innvilget, men avslått f-behandling, forvent skalOpprette true`() {
 
         setupIverksettMock(
@@ -281,11 +303,11 @@ internal class OppgaveServiceTest {
         every { iverksett.erMigrering() } returns false
         every { forrigeBehandling.erMigrering() } returns true
         setupIverksettMock(
-            iverksett,
-            UUID.randomUUID(),
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.OPPHØRT,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+                iverksett,
+                UUID.randomUUID(),
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.OPPHØRT,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
     }
@@ -296,23 +318,23 @@ internal class OppgaveServiceTest {
         every { iverksett.erMigrering() } returns false
         every { forrigeBehandlingIverksett.erMigrering() } returns true
         setupIverksettMock(
-            iverksett,
-            UUID.randomUUID(),
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.INNVILGET,
-            listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
+                iverksett,
+                UUID.randomUUID(),
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID))
         )
         setupIverksettMock(
-            forrigeBehandlingIverksett,
-            UUID.randomUUID(),
-            BehandlingType.REVURDERING,
-            Vedtaksresultat.INNVILGET,
-            listOf(
-                vedtaksPeriode(
-                    aktivitet = AktivitetType.UTVIDELSE_FORSØRGER_I_UTDANNING,
-                    fraOgMed = LocalDate.now().plusMonths(3)
+                forrigeBehandlingIverksett,
+                UUID.randomUUID(),
+                BehandlingType.REVURDERING,
+                Vedtaksresultat.INNVILGET,
+                listOf(
+                        vedtaksPeriode(
+                                aktivitet = AktivitetType.UTVIDELSE_FORSØRGER_I_UTDANNING,
+                                fraOgMed = LocalDate.now().plusMonths(3)
+                        )
                 )
-            )
         )
         setupAndeler(iverksett, listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1)))
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
