@@ -37,6 +37,7 @@ class JournalpostClientMock(@Value("\${FAMILIE_INTEGRASJONER_API_URL}") private 
                                    .willReturn(WireMock.serverError()))
 
     fun journalføringPath():String = "${dokarkivUri.path}.*"
+    fun distribuerPath():String = "${distribuerDokumentUri.path}.*"
 
     @Bean("mock-integrasjoner")
     @Profile("mock-integrasjoner")
