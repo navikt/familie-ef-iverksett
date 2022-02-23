@@ -93,6 +93,9 @@ class OppgaveService(
         if (forrigeBehandling.erMigrering()) {
             return false
         }
+        if (forrigeBehandling.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT) {
+            return true
+        }
         return harEndretAktivitet(iverksett, forrigeBehandling) || harEndretPeriode(iverksett, forrigeBehandling)
     }
 
