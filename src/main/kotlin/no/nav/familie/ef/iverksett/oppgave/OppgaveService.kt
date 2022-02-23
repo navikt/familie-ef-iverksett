@@ -93,12 +93,14 @@ class OppgaveService(
         if (forrigeBehandling.erMigrering()) {
             return false
         }
+        if (forrigeBehandling.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT) {
+            return true
+        }
         return harEndretAktivitet(iverksett, forrigeBehandling) || harEndretPeriode(iverksett, forrigeBehandling)
     }
 
     private fun harEndretAktivitet(iverksett: Iverksett, forrigeBehandling: Iverksett): Boolean {
-        return forrigeBehandling.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT
-               || iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
+        return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
     }
 
     private fun harEndretPeriode(iverksett: Iverksett, forrigeBehandling: Iverksett): Boolean {
