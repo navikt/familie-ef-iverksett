@@ -84,8 +84,9 @@ object ØkonomiUtils {
                                     nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         validerOpphørsdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
+        if (forrigeTilkjentYtelse == null) return null
 
-        val sisteForrigeAndel = forrigeTilkjentYtelse?.sisteAndelIKjede
+        val sisteForrigeAndel = forrigeTilkjentYtelse.sisteAndelIKjede
                                 ?: andelerUtenNullVerdier(forrigeTilkjentYtelse).lastOrNull()
                                 ?: return null // hvis det ikke finnes tidligere andel så kan vi ikke opphøre noe
 
@@ -103,16 +104,49 @@ object ØkonomiUtils {
     /**
      * Skal bruke opphørsdato fra tilkjent ytelse hvis den ikke er den samme som forrige opphørsdato
      * Hvis ikke så skal den finne finnOpphørsdato, som gjør en diff mellom tidligere og nye andeler
+     *
+     * Skal finne opphørsdato til utbetalingsoppdraget
+     *
+     * Returnerer første endret periode, uavhengig om den er andel med 0-beløp eller ikke
+     * Dette for å kunne opphøre perioder bak i tiden, som kan være før perioder som finnes i EF, men som finnes i Infotrygd
+     *
+     * Hvis forrige kjede inneholder 2 andeler og den nye kjeden endrer i den andre andelen,
+     * så skal opphørsdatoet settes til startdato for andre andelen i forrige kjede
      */
-    private fun beregnOpphørsdato(forrigeTilkjentYtelse: TilkjentYtelse?,
+    private fun beregnOpphørsdato(forrigeTilkjentYtelse: TilkjentYtelse,
                                   nyTilkjentYtelse: TilkjentYtelse): LocalDate? {
-        if (forrigeTilkjentYtelse?.startdato != nyTilkjentYtelse.startdato) return nyTilkjentYtelse.startdato
+        val forrigeStartdato = forrigeTilkjentYtelse.startdato
+        // TODO ulempen med dette er hvis vi bestemmer å sende startdato på alle behandlinger fra ef-sak, då må vi nog flytte denne, eller sjekke om nytt startdato er før første dato på nye perioder?
+        if (forrigeStartdato != nyTilkjentYtelse.startdato) return nyTilkjentYtelse.startdato
 
         val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
 
-        return finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
+        val førsteEndring = finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
+
+        if (opphørsdatoErEtterTidligereOpphørsdato(forrigeTilkjentYtelse, førsteEndring, forrigeStartdato)) {
+            return null
+        }
+        return førsteEndring
+    }
+
+    /**
+     * Hvis tidligere andeler er tomme eller kun nullbeløp
+     * Sjekker om første endring er før tidligere startdato eller før forrigeSisteAndel i kjeden
+     */
+    private fun opphørsdatoErEtterTidligereOpphørsdato(forrigeTilkjentYtelse: TilkjentYtelse,
+                                                       førsteEndring: LocalDate?,
+                                                       forrigeStartdato: LocalDate?): Boolean {
+        val sisteAndelIKjedeTilOgMed = forrigeTilkjentYtelse.sisteAndelIKjede?.fraOgMed
+        val tidligereAndeler = forrigeTilkjentYtelse.andelerTilkjentYtelse
+        val manglerTidligereAndeler = tidligereAndeler.isEmpty() || tidligereAndeler.singleOrNull()?.erNull() == true
+        if (førsteEndring != null && manglerTidligereAndeler
+            && ((forrigeStartdato != null && førsteEndring >= forrigeStartdato) ||
+                (sisteAndelIKjedeTilOgMed != null && førsteEndring >= sisteAndelIKjedeTilOgMed))) {
+            return true
+        }
+        return false
     }
 
     /**

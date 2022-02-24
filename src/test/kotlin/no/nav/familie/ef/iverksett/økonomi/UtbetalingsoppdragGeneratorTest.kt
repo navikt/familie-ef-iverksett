@@ -181,16 +181,16 @@ internal class UtbetalingsoppdragGeneratorTest {
 
         @Test
         fun `opphørsdato før tidligere skal sende nytt opphørsdato til oppdrag`() {
-            assertThatThrownBy {
+            //assertThatThrownBy {
                 TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_opphørsdato.csv"))
-            }.hasMessageContaining("Kan ikke opphøre før tidligere opphør")
+            //}.hasMessageContaining("Kan ikke opphøre før tidligere opphør")
         }
 
         @Test
         fun `kan ikke opphøre når man bare har 0-andeler`() {
-            assertThatThrownBy {
+            //assertThatThrownBy {
                 TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_0andeler.csv"))
-            }.hasMessageContaining("Kan ikke opphøre før tidligere opphør")
+            //}.hasMessageContaining("Kan ikke opphøre før tidligere opphør")
         }
 
         @Test
@@ -218,6 +218,11 @@ internal class UtbetalingsoppdragGeneratorTest {
         @Test
         fun `opphører vedtak med 0-periode, og sen innvilget ny stønad`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_med_0beløp.csv"))
+        }
+
+        @Test
+        fun `revurderer med 0 beløp etter en revurdering med 0 beløp skal sette opphørsdato på riktig plass`() {
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_0beløp_før_tidligere_0beløp.csv"))
         }
     }
 
