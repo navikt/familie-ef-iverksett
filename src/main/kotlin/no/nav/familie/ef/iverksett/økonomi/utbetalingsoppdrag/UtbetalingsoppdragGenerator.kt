@@ -71,6 +71,7 @@ object UtbetalingsoppdragGenerator {
                                  forrigeTilkjentYtelse: TilkjentYtelse?) =
             (gjeldendeAndeler + listOfNotNull(forrigeTilkjentYtelse?.sisteAndelIKjede))
                     .filter { it.periodeId != null }
+                    .filter { it.fraOgMed != NULL_DATO }
                     .maxByOrNull { it.periodeId ?: error("Mangler periodeId") }
 
     private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
