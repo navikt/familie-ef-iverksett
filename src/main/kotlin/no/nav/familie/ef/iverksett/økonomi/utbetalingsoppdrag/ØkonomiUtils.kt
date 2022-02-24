@@ -82,6 +82,8 @@ object ØkonomiUtils {
      */
     fun utbetalingsperiodeForOpphør(forrigeTilkjentYtelse: TilkjentYtelse?,
                                     nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
+        validerOpphørsdato(nyTilkjentYtelseMedMetaData, forrigeTilkjentYtelse)
+
         val forrigeOpphørsdato = forrigeTilkjentYtelse?.startdato
         val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
         val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
@@ -117,8 +119,8 @@ object ØkonomiUtils {
      * Nytt opphørsdato må være etter forrige opphørsdato, då den inneholder dato for når vi historiskt har første datoet
      * Opphørsdato kan ikke være etter første andel
      */
-    fun validerOpphørsdato(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
-                           forrigeTilkjentYtelse: TilkjentYtelse?) {
+    private fun validerOpphørsdato(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
+                                   forrigeTilkjentYtelse: TilkjentYtelse?) {
         val nyMinDato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
         val forrigeOpphørsdato = forrigeTilkjentYtelse?.startdato
         val nyOpphørsdato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.startdato

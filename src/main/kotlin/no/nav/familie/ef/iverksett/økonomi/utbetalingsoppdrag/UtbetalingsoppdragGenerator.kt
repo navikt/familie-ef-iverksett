@@ -8,7 +8,6 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.and
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerUtenNullVerdier
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.validerOpphørsdato
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.ENDR
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
@@ -27,7 +26,6 @@ object UtbetalingsoppdragGenerator {
      */
     fun lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
                                                forrigeTilkjentYtelse: TilkjentYtelse? = null): TilkjentYtelse {
-        validerOpphørsdato(nyTilkjentYtelseMedMetaData, forrigeTilkjentYtelse)
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         val andelerNyTilkjentYtelse = andelerUtenNullVerdier(nyTilkjentYtelse)
         val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
