@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -26,15 +27,13 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
 
-        validerJournalpostresultat(behandlingId)
-
-        val journalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId)
+        val journalpostResultat = hentJournalpostResultat(behandlingId)
 
         val distribuerteJournalposter = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)?.keys ?: emptySet()
 
-        journalpostResultat?.filter { (_, journalpostResultat) ->
+        journalpostResultat.filter { (_, journalpostResultat) ->
             journalpostResultat.journalpostId !in distribuerteJournalposter
-        }?.forEach { (_, journalpostResultat) ->
+        }.forEach { (_, journalpostResultat) ->
             val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId)
             loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
             tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId,
@@ -44,10 +43,12 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
 
     }
 
-    private fun validerJournalpostresultat(behandlingId: UUID) {
-        if (tilstandRepository.hentJournalpostResultat(behandlingId).isNullOrEmpty()) {
+    private fun hentJournalpostResultat(behandlingId: UUID): Map<String, JournalpostResultat> {
+        val journalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId)
+        if (journalpostResultat.isNullOrEmpty()) {
             error("Fant ingen journalpost for behandling=[$behandlingId]")
         }
+        return journalpostResultat
     }
 
     private fun loggBrevDistribuert(journalpostId: String, behandlingId: UUID, bestillingId: String) {
