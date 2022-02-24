@@ -125,6 +125,11 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
+    fun `revurderer og sletter periode 2, revurdererer på nytt og skal då bygge videre fra andre perioden sin periodeId`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_sletter_periode2_revurderer_på_nytt.csv"))
+    }
+
+    @Test
     fun `Har 2 perioder og får en endring på andre perioden men har feil behandlingId i testen`() {
         val catchThrowable = catchThrowable {
             TestOppdragRunner.run(javaClass.getResource(
