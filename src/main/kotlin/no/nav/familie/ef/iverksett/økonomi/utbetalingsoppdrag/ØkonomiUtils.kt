@@ -132,18 +132,20 @@ object ØkonomiUtils {
     }
 
     /**
-     * Hvis tidligere andeler er tomme eller kun nullbeløp
-     * Sjekker om første endring er før tidligere startdato eller før forrigeSisteAndel i kjeden
+     * Hvis man mangler tidligere andeler, eller kun har 0-beløp,
+     * Hvis då opphørsdatoet er etter tidligere siste andel, eller tidligere opphørsdato, trenger vi ikke å sette nytt opphørsdato
+     * Då vi allerede har opphørt perioder i det tidsintervallet
      */
     private fun opphørsdatoErEtterTidligereOpphørsdato(forrigeTilkjentYtelse: TilkjentYtelse,
                                                        førsteEndring: LocalDate?,
                                                        forrigeStartdato: LocalDate?): Boolean {
-        val sisteAndelIKjedeTilOgMed = forrigeTilkjentYtelse.sisteAndelIKjede?.fraOgMed
         val tidligereAndeler = forrigeTilkjentYtelse.andelerTilkjentYtelse
         val manglerTidligereAndeler = tidligereAndeler.isEmpty() || tidligereAndeler.singleOrNull()?.erNull() == true
-        if (førsteEndring != null && manglerTidligereAndeler
-            && ((forrigeStartdato != null && førsteEndring >= forrigeStartdato) ||
-                (sisteAndelIKjedeTilOgMed != null && førsteEndring >= sisteAndelIKjedeTilOgMed))) {
+        if (!manglerTidligereAndeler || førsteEndring == null) return false
+
+        val sisteAndelIKjedeTilOgMed = forrigeTilkjentYtelse.sisteAndelIKjede?.fraOgMed
+        if (((forrigeStartdato != null && førsteEndring >= forrigeStartdato) ||
+             (sisteAndelIKjedeTilOgMed != null && førsteEndring >= sisteAndelIKjedeTilOgMed))) {
             return true
         }
         return false
