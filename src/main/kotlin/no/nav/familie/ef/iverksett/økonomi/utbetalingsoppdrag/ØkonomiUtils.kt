@@ -82,20 +82,18 @@ object ØkonomiUtils {
      */
     fun utbetalingsperiodeForOpphør(forrigeTilkjentYtelse: TilkjentYtelse?,
                                     nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
-        validerOpphørsdato(nyTilkjentYtelseMedMetaData, forrigeTilkjentYtelse)
-
-        val forrigeOpphørsdato = forrigeTilkjentYtelse?.startdato
-        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
-        val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
-        val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
-
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
-        val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
+        validerOpphørsdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
 
-        val opphørsdato = beregnOpphørsdato(forrigeOpphørsdato, nyTilkjentYtelse.startdato, forrigeAndeler, oppdaterteAndeler)
+        val sisteForrigeAndel = forrigeTilkjentYtelse?.sisteAndelIKjede
+                                ?: andelerUtenNullVerdier(forrigeTilkjentYtelse).lastOrNull()
+                                ?: return null // hvis det ikke finnes tidligere andel så kan vi ikke opphøre noe
 
-        val sisteForrigeAndel = andelerForrigeTilkjentYtelse.lastOrNull()
-        return if (sisteForrigeAndel == null || opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
+        val forrigeMaksDato = andelerUtenNullVerdier(forrigeTilkjentYtelse).map { it.tilOgMed }.maxOrNull()
+
+        val opphørsdato = beregnOpphørsdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
+
+        return if (opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
             null
         } else {
             lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, opphørsdato, nyTilkjentYtelseMedMetaData)
@@ -106,12 +104,15 @@ object ØkonomiUtils {
      * Skal bruke opphørsdato fra tilkjent ytelse hvis den ikke er den samme som forrige opphørsdato
      * Hvis ikke så skal den finne finnOpphørsdato, som gjør en diff mellom tidligere og nye andeler
      */
-    private fun beregnOpphørsdato(forrigeOpphørsdato: LocalDate?,
-                                  nyOpphørsdato: LocalDate?,
-                                  forrigeAndeler: Set<AndelTilkjentYtelse>,
-                                  oppdaterteAndeler: Set<AndelTilkjentYtelse>): LocalDate? {
-        val opphørsdatoHvisIkkeLikSomForrige = if (forrigeOpphørsdato == nyOpphørsdato) null else nyOpphørsdato
-        return opphørsdatoHvisIkkeLikSomForrige ?: finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
+    private fun beregnOpphørsdato(forrigeTilkjentYtelse: TilkjentYtelse?,
+                                  nyTilkjentYtelse: TilkjentYtelse): LocalDate? {
+        if (forrigeTilkjentYtelse?.startdato != nyTilkjentYtelse.startdato) return nyTilkjentYtelse.startdato
+
+        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
+        val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
+        val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
+
+        return finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
     }
 
     /**
@@ -119,11 +120,11 @@ object ØkonomiUtils {
      * Nytt opphørsdato må være etter forrige opphørsdato, då den inneholder dato for når vi historiskt har første datoet
      * Opphørsdato kan ikke være etter første andel
      */
-    private fun validerOpphørsdato(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
-                                   forrigeTilkjentYtelse: TilkjentYtelse?) {
-        val nyMinDato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
+    private fun validerOpphørsdato(forrigeTilkjentYtelse: TilkjentYtelse?,
+                                   nyTilkjentYtelse: TilkjentYtelse) {
+        val nyMinDato = nyTilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
         val forrigeOpphørsdato = forrigeTilkjentYtelse?.startdato
-        val nyOpphørsdato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.startdato
+        val nyOpphørsdato = nyTilkjentYtelse.startdato
         if (forrigeOpphørsdato != null) {
             if (nyOpphørsdato == null) {
                 error("Må ha med opphørsdato hvis man har tidligere opphørsdato")
