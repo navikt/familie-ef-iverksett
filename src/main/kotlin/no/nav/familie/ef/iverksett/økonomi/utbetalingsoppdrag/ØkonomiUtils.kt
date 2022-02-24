@@ -116,10 +116,14 @@ object ØkonomiUtils {
     private fun beregnOpphørsdato(forrigeTilkjentYtelse: TilkjentYtelse,
                                   nyTilkjentYtelse: TilkjentYtelse): LocalDate? {
         val forrigeStartdato = forrigeTilkjentYtelse.startdato
+        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
+
         // TODO ulempen med dette er hvis vi bestemmer å sende startdato på alle behandlinger fra ef-sak, då må vi nog flytte denne, eller sjekke om nytt startdato er før første dato på nye perioder?
         if (forrigeStartdato != nyTilkjentYtelse.startdato) return nyTilkjentYtelse.startdato
+        // todo alternativ?
+        //val firstOrNull = andelerForrigeTilkjentYtelse.minOfOrNull { it.fraOgMed }
+        //if (nyTilkjentYtelse.startdato != null && (andelerForrigeTilkjentYtelse.isEmpty() || (firstOrNull != null && nyTilkjentYtelse.startdato < firstOrNull))) return nyTilkjentYtelse.startdato
 
-        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
 
