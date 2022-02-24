@@ -260,7 +260,7 @@ object TestOppdragParser {
                 }
                 result.last().add(to)
             } catch (e: Exception) {
-                throw RuntimeException("Feilet index=$index", e)
+                throw RuntimeException("Feilet index=$index - ${e.message}", e)
             }
         }
 
@@ -295,7 +295,8 @@ object TestOppdragRunner {
     private fun truncateAvstemmingDato(tilkjentYtelse: TilkjentYtelse): TilkjentYtelse {
         val utbetalingsoppdrag = tilkjentYtelse.utbetalingsoppdrag ?: return tilkjentYtelse
         val nyAvstemmingsitdspunkt = utbetalingsoppdrag.avstemmingTidspunkt.truncatedTo(ChronoUnit.HOURS)
-        return tilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag.copy(avstemmingTidspunkt = nyAvstemmingsitdspunkt))
+        return tilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag.copy(avstemmingTidspunkt = nyAvstemmingsitdspunkt),
+                                   sisteAndelIKjede = null)
     }
 
     private fun lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelse: TilkjentYtelseMedMetaData,

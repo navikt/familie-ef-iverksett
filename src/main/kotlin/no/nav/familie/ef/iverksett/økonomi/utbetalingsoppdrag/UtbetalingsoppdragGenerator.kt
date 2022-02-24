@@ -59,10 +59,19 @@ object UtbetalingsoppdragGenerator {
         val gjeldendeAndeler = (beståendeAndeler + andelerTilOpprettelseMedPeriodeId)
                 .ellerNullAndel(nyTilkjentYtelseMedMetaData, sistePeriodeIdIForrigeKjede)
 
+        val sisteAndelIKjede = sisteAndelIKjede(gjeldendeAndeler, forrigeTilkjentYtelse)
+
         return nyTilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag,
-                                     andelerTilkjentYtelse = gjeldendeAndeler)
+                                     andelerTilkjentYtelse = gjeldendeAndeler,
+                                     sisteAndelIKjede = sisteAndelIKjede)
         //TODO legge til startperiode, sluttperiode, opphørsdato. Se i BA-sak - legges på i konsistensavstemming?
     }
+
+    private fun sisteAndelIKjede(gjeldendeAndeler: List<AndelTilkjentYtelse>,
+                                 forrigeTilkjentYtelse: TilkjentYtelse?) =
+            (gjeldendeAndeler + listOfNotNull(forrigeTilkjentYtelse?.sisteAndelIKjede))
+                    .filter { it.periodeId != null }
+                    .maxByOrNull { it.periodeId ?: error("Mangler periodeId") }
 
     private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
             forrigeTilkjentYtelse == null || (forrigeTilkjentYtelseManglerPeriodeOgErNy(forrigeTilkjentYtelse))
@@ -109,6 +118,7 @@ object UtbetalingsoppdragGenerator {
 
     private fun sistePeriodeId(tilkjentYtelse: TilkjentYtelse?): PeriodeId? {
         return tilkjentYtelse?.let { ytelse ->
+            ytelse.sisteAndelIKjede?.tilPeriodeId() ?:
             ytelse.andelerTilkjentYtelse.filter { it.periodeId != null }.maxByOrNull { it.periodeId!! }?.tilPeriodeId()
         }
     }
