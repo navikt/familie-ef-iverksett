@@ -80,7 +80,7 @@ internal class TilstandPatchTest {
         val tilkjentYtelse = TilkjentYtelse(andelerTilkjentYtelse = andel.toList(),
                                             startdato = null,
                                             utbetalingsoppdrag = utbetalingsoppdrag(tid))
-        return TilstandPatchData(TilstandPatch.FagsakId(UUID.randomUUID()), UUID.randomUUID(), tilkjentYtelse)
+        return TilstandPatchData(UUID.randomUUID(), UUID.randomUUID(), tilkjentYtelse)
     }
 
     fun utbetalingsoppdrag(localDateTime: LocalDateTime) =
