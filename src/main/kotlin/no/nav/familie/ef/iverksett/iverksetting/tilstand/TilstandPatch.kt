@@ -49,13 +49,14 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
             val tidligerePeriodeId = sisteAndel?.periodeId
 
             if (tidligereAndel == null && sisteAndel == null) {
-                logger.warn("Finner ikke andel siste andel til $behandlingId")
+                logger.warn("fagsak=${data.fagsakId} behandling=$behandlingId - finner ikke andel siste andel")
                 return
             }
             if (tidligereAndel == null || (sisteAndelPeriodeId != null && tidligerePeriodeId != null && sisteAndelPeriodeId < tidligerePeriodeId)) {
                 tidligereAndel = sisteAndel
             }
 
+            logger.info("fagsak=${data.fagsakId} behandling=$behandlingId - setter periodeId=${tidligereAndel?.periodeId}")
             if (oppdaterDatabas) {
                 tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId,
                                                                        tilkjentYtelse.copy(sisteAndelIKjede = tidligereAndel))
@@ -72,7 +73,7 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
             """
         val data = jdbcTemplate.query(sql) { rs, _ ->
             val behandlingId = rs.getUUID("behandling_id")
-            val fagsakId = FagsakId(rs.getUUID("fagsak_id"))
+            val fagsakId = rs.getUUID("fagsak_id")
             val tilkjentYtelse = rs.getString("tilkjentytelseforutbetaling")
             Triple(fagsakId, behandlingId, tilkjentYtelse)
         }
@@ -94,8 +95,5 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
         }
     }
 
-    @JvmInline
-    value class FagsakId(private val id: UUID)
-
-    class TilstandPatchData(val fagsakId: FagsakId, val behandlingId: UUID, val tilkjentYtelse: TilkjentYtelse)
+    class TilstandPatchData(val fagsakId: UUID, val behandlingId: UUID, val tilkjentYtelse: TilkjentYtelse)
 }
