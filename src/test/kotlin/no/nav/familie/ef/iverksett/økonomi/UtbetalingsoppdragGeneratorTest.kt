@@ -214,6 +214,11 @@ internal class UtbetalingsoppdragGeneratorTest {
         fun `opphører vedtak med 0-periode, og sen innvilget ny stønad`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_med_0beløp.csv"))
         }
+
+        @Test
+        fun `revurderer med 0 beløp etter en revurdering med 0 beløp skal sette opphørsdato på riktig plass`() {
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_0beløp_før_tidligere_0beløp.csv"))
+        }
     }
 
     @Test
