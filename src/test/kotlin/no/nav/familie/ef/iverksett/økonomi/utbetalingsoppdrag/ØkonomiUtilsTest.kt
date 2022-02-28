@@ -8,7 +8,6 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utb
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -91,8 +90,35 @@ internal class ØkonomiUtilsTest {
             internal fun `andeler er like, uten beløp, med tidligere siste andel`() {
                 assertThat(test(andeler = listOf(andelUtenBeløp()),
                                 tidligereAndeler = listOf(andelUtenBeløp()),
-                                sisteAndelIKjede = andelMedBeløp().copy(periodeId = 2,
-                                                                        forrigePeriodeId = 1)).opphørsdato())
+                                sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6,
+                                                                        forrigePeriodeId = 5)).opphørsdato())
+                        .isNull()
+            }
+
+            @Test
+            internal fun `andeler er like, med beløp, med tidligere siste andel`() {
+                assertThat(test(andeler = listOf(andelMedBeløp()),
+                                tidligereAndeler = listOf(andelMedBeløp()),
+                                sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6,
+                                                                        forrigePeriodeId = 5)).opphørsdato())
+                        .isNull()
+            }
+
+            @Test
+            internal fun `andeler er like, med og uten beløp, med tidligere siste andel`() {
+                assertThat(test(andeler = listOf(andelMedBeløp(), andelUtenBeløp(fra = start2, til = slutt2)),
+                                tidligereAndeler = listOf(andelMedBeløp(), andelUtenBeløp(fra = start2, til = slutt2)),
+                                sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6,
+                                                                        forrigePeriodeId = 5)).opphørsdato())
+                        .isNull()
+            }
+
+            @Test
+            internal fun `andeler er like, uten og med beløp, med tidligere siste andel`() {
+                assertThat(test(andeler = listOf(andelUtenBeløp(), andelMedBeløp(fra = start2, til = slutt2)),
+                                tidligereAndeler = listOf(andelUtenBeløp(), andelMedBeløp(fra = start2, til = slutt2)),
+                                sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6,
+                                                                        forrigePeriodeId = 5)).opphørsdato())
                         .isNull()
             }
 
@@ -180,18 +206,30 @@ internal class ØkonomiUtilsTest {
                         .isNull()
             }
 
-
-            @Disabled // må legge inn sisteAndelIKjede
             @Test
             internal fun `endringer i periode etter tidligere opphør skal peke til siste andel`() {
                 val sisteAndelIKjede =
-                        andelMedBeløp(3, fra = start2, til = slutt2).copy(periodeId = 4, forrigePeriodeId = 3)
+                        andelMedBeløp(3, fra = start2, til = slutt2)
+                                .copy(periodeId = 6, forrigePeriodeId = 5)
                 val førsteAndel = andelMedBeløp(beløp = 1)
                 val nyAndel = førsteAndel.copy(beløp = 2)
                 val opphørsperiode = test(andeler = listOf(førsteAndel, nyAndel),
                                           tidligereAndeler = listOf(førsteAndel),
                                           sisteAndelIKjede = sisteAndelIKjede) ?: error("Burde generert opphørsperiode")
                 assertThat(opphørsperiode.opphørsdato()).isEqualTo(førsteAndel.fraOgMed)
+                assertThat(opphørsperiode.periodeId).isEqualTo(sisteAndelIKjede.periodeId)
+                assertThat(opphørsperiode.forrigePeriodeId).isEqualTo(sisteAndelIKjede.forrigePeriodeId)
+            }
+
+            @Test
+            internal fun `andel uten beløp, og andel med beløp som endrer seg, med tidligere siste andel`() {
+                val sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6, forrigePeriodeId = 5)
+                val opphørsperiode = test(andeler = listOf(andelUtenBeløp(),
+                                                           andelMedBeløp(fra = start2, til = slutt2)),
+                                          tidligereAndeler = listOf(andelUtenBeløp(),
+                                                                    andelMedBeløp(beløp = 2, fra = start2, til = slutt2)),
+                                          sisteAndelIKjede = sisteAndelIKjede)!!
+                assertThat(opphørsperiode.opphørsdato()).isEqualTo(start2)
                 assertThat(opphørsperiode.periodeId).isEqualTo(sisteAndelIKjede.periodeId)
                 assertThat(opphørsperiode.forrigePeriodeId).isEqualTo(sisteAndelIKjede.forrigePeriodeId)
             }
@@ -206,9 +244,8 @@ internal class ØkonomiUtilsTest {
             return utbetalingsperiodeForOpphør(opprettTilkjentYtelse(
                     andeler = leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler),
                     startdato = tidligereStartDato,
-                    //sisteAndelIKjede = sisteAndelIKjede TODO
-            ),
-                                               tilkjentYtelseMedMetadata(andeler, startdato))
+                    sisteAndelIKjede = sisteAndelIKjede
+            ), tilkjentYtelseMedMetadata(andeler, startdato))
         }
 
         fun Utbetalingsperiode?.opphørsdato(): LocalDate? = this?.opphør?.opphørDatoFom

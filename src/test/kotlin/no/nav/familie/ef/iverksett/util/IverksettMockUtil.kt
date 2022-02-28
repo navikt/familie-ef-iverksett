@@ -149,12 +149,14 @@ fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID = UUID.randomUUID(),
 
 fun opprettTilkjentYtelse(behandlingId: UUID = UUID.randomUUID(),
                           andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
-                          startdato: LocalDate? = null): TilkjentYtelse {
+                          startdato: LocalDate? = null,
+                          sisteAndelIKjede: AndelTilkjentYtelse? = null): TilkjentYtelse {
     return TilkjentYtelse(
             id = behandlingId,
             utbetalingsoppdrag = null,
             andelerTilkjentYtelse = andeler,
-            startdato = startdato
+            startdato = startdato,
+            sisteAndelIKjede = sisteAndelIKjede
     )
 }
 

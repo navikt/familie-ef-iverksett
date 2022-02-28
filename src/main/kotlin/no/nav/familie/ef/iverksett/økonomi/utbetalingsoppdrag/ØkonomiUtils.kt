@@ -95,7 +95,7 @@ object ØkonomiUtils {
 
         val opphørsdato = beregnOpphørsdato(forrigeOpphørsdato, nyTilkjentYtelse.startdato, forrigeAndeler, oppdaterteAndeler)
 
-        val sisteForrigeAndel = andelerForrigeTilkjentYtelse.lastOrNull()
+        val sisteForrigeAndel = forrigeTilkjentYtelse.sisteAndelIKjede ?: andelerForrigeTilkjentYtelse.lastOrNull()
         return if (sisteForrigeAndel == null || opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
             null
         } else {
