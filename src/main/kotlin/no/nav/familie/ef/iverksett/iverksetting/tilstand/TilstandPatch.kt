@@ -74,6 +74,7 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
             FROM iverksett i
             JOIN iverksett_resultat ir ON i.behandling_id = ir.behandling_id
             WHERE tilkjentytelseforutbetaling IS NOT NULL
+            AND i.type = 'VANLIG'
             """
         val data = jdbcTemplate.query(sql) { rs, _ ->
             val behandlingId = rs.getUUID("behandling_id")
