@@ -40,7 +40,7 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
     fun oppdaterSisteAndelIKjede(oppdaterDatabas: Boolean = false) {
         val data = getData()
         data.groupBy { it.fagsakId }.values.forEach { gruppe ->
-            håndterGruppe(gruppe)
+            håndterGruppe(gruppe, oppdaterDatabas)
         }
     }
 
@@ -56,7 +56,7 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
 
             if (tidligereAndel == null && sisteAndel == null) {
                 logger.warn("fagsak=${data.fagsakId} behandling=$behandlingId - finner ikke andel siste andel")
-                return
+                return@forEach
             }
             if (tidligereAndel == null || (sisteAndelPeriodeId != null && tidligerePeriodeId != null && sisteAndelPeriodeId < tidligerePeriodeId)) {
                 tidligereAndel = sisteAndel
