@@ -1,5 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksetting.tilstand
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
@@ -89,7 +91,8 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
             val tilkjentYtelse = objectMapper.readValue<TilkjentYtelse>(tilkjentYtelseJsonString)
             val jsonTilString = objectMapper.writeValueAsString(tilkjentYtelse)
 
-            if (objectMapper.readTree(jsonTilString) != objectMapper.readTree(tilkjentYtelseJsonString)) {
+            if (setDefaultValues(objectMapper.readTree(jsonTilString))
+                    != setDefaultValues(objectMapper.readTree(tilkjentYtelseJsonString))) {
                 logger.warn("Behandling=$behandlingId sin json er ikke lik den serialiserte json")
                 return@mapNotNull null
             }
@@ -98,6 +101,14 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
                 return@mapNotNull null
             }
             TilstandPatchData(fagsakId, behandlingId, tilkjentYtelse)
+        }
+    }
+
+    private fun setDefaultValues(readTree: JsonNode) {
+        listOf("sisteAndelIKjede", "startdato").forEach {
+            if (!readTree.has(it)) {
+                (readTree as ObjectNode).put(it, null as String?)
+            }
         }
     }
 
