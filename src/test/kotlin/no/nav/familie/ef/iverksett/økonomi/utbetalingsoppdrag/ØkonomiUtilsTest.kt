@@ -21,6 +21,9 @@ internal class ØkonomiUtilsTest {
     private val start2 = LocalDate.of(2021, 8, 1)
     private val slutt2 = LocalDate.of(2021, 10, 31)
 
+    private val start3 = LocalDate.of(2021, 11, 1)
+    private val slutt3 = LocalDate.of(2021, 12, 31)
+
     private val opphørsdatoFørAndeler = LocalDate.of(2021, 1, 1)
     private val opphørsdatoEtterAndeler = slutt.plusDays(1) // etter andel sitt dato
 
@@ -223,7 +226,7 @@ internal class ØkonomiUtilsTest {
 
             @Test
             internal fun `andel uten beløp, og andel med beløp som endrer seg, med tidligere siste andel`() {
-                val sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6, forrigePeriodeId = 5)
+                val sisteAndelIKjede = andelMedBeløp(fra = start3, til = slutt3).copy(periodeId = 6, forrigePeriodeId = 5)
                 val opphørsperiode = test(andeler = listOf(andelUtenBeløp(),
                                                            andelMedBeløp(fra = start2, til = slutt2)),
                                           tidligereAndeler = listOf(andelUtenBeløp(),
@@ -241,12 +244,18 @@ internal class ØkonomiUtilsTest {
                          tidligereAndeler: List<AndelTilkjentYtelse> = emptyList(),
                          tidligereStartDato: LocalDate? = null,
                          sisteAndelIKjede: AndelTilkjentYtelse? = null): Utbetalingsperiode? {
+            val tidligereAndelerMedPeriodeId = leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler)
             return utbetalingsperiodeForOpphør(opprettTilkjentYtelse(
-                    andeler = leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler),
+                    andeler = tidligereAndelerMedPeriodeId,
                     startdato = tidligereStartDato,
-                    sisteAndelIKjede = sisteAndelIKjede
+                    sisteAndelIKjede = sisteAndel(sisteAndelIKjede, tidligereAndelerMedPeriodeId)
             ), tilkjentYtelseMedMetadata(andeler, startdato))
         }
+
+        private fun sisteAndel(sisteAndelIKjede: AndelTilkjentYtelse?,
+                               tidligereAndelerMedPeriodeId: List<AndelTilkjentYtelse>) =
+                sisteAndelIKjede ?: tidligereAndelerMedPeriodeId.maxByOrNull { it.periodeId!! }
+                        ?.takeIf { it.fraOgMed != NULL_DATO }
 
         fun Utbetalingsperiode?.opphørsdato(): LocalDate? = this?.opphør?.opphørDatoFom
 
