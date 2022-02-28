@@ -12,7 +12,6 @@ data class TilkjentYtelse(
         val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
         val andelerTilkjentYtelse: List<AndelTilkjentYtelse>,
         val sisteAndelIKjede: AndelTilkjentYtelse? = null,
-        // todo kunde vurdert å ha med sist opphørtFomDato eller noe slik for hvilket opphørsdato man skal sende i neste (som då kan sjekkes hvis man har 0 andeler i tidligere TY)
         val startdato: LocalDate?) {
 
 

@@ -147,6 +147,19 @@ fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID = UUID.randomUUID(),
 
 }
 
+fun opprettTilkjentYtelse(behandlingId: UUID = UUID.randomUUID(),
+                          andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
+                          startdato: LocalDate? = null,
+                          sisteAndelIKjede: AndelTilkjentYtelse? = null): TilkjentYtelse {
+    return TilkjentYtelse(
+            id = behandlingId,
+            utbetalingsoppdrag = null,
+            andelerTilkjentYtelse = andeler,
+            startdato = startdato,
+            sisteAndelIKjede = sisteAndelIKjede
+    )
+}
+
 fun opprettTekniskOpphør(behandlingId: UUID, eksternId: Long): TekniskOpphør {
     return TekniskOpphør(behandlingId, opprettTilkjentYtelseMedMetadata(behandlingId, eksternId))
 }
@@ -220,19 +233,6 @@ fun opprettBrev(): Brev {
     return Brev(UUID.fromString("234bed7c-b1d3-11eb-8529-0242ac130003"), ByteArray(256))
 }
 
-fun opprettTilkjentYtelse(behandlingId: UUID = UUID.randomUUID(),
-                          andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
-                          startdato: LocalDate? = null,
-                          sisteAndelIKjede: AndelTilkjentYtelse? = null): TilkjentYtelse {
-    return TilkjentYtelse(
-            id = behandlingId,
-            utbetalingsoppdrag = null,
-            andelerTilkjentYtelse = andeler,
-            startdato = startdato,
-            sisteAndelIKjede = sisteAndelIKjede
-    )
-}
-
 fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
     return FrittståendeBrevDto(
             personIdent = "12345678910",
@@ -300,4 +300,3 @@ class IverksettResultatMockBuilder private constructor(
                                   tilbakekrevingResultat)
     }
 }
-

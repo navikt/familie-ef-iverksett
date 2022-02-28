@@ -118,6 +118,7 @@ object UtbetalingsoppdragGenerator {
     private fun sistePeriodeId(tilkjentYtelse: TilkjentYtelse?): PeriodeId? {
         return tilkjentYtelse?.let { ytelse ->
             ytelse.sisteAndelIKjede?.tilPeriodeId() ?:
+            // TODO denne kan fjernes når den er patchet
             ytelse.andelerTilkjentYtelse.filter { it.periodeId != null }.maxByOrNull { it.periodeId!! }?.tilPeriodeId()
         }
     }

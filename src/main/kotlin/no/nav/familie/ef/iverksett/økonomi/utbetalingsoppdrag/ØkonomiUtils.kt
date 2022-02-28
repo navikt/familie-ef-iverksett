@@ -83,7 +83,7 @@ object ØkonomiUtils {
     fun utbetalingsperiodeForOpphør(forrigeTilkjentYtelse: TilkjentYtelse?,
                                     nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
-        validerOpphørsdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
+        validerStartdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
         if (forrigeTilkjentYtelse == null) return null
 
         val sisteForrigeAndel = forrigeTilkjentYtelse.sisteAndelIKjede
@@ -160,27 +160,24 @@ object ØkonomiUtils {
      * Nytt opphørsdato må være etter forrige opphørsdato, då den inneholder dato for når vi historiskt har første datoet
      * Opphørsdato kan ikke være etter første andel
      */
-    private fun validerOpphørsdato(forrigeTilkjentYtelse: TilkjentYtelse?,
-                                   nyTilkjentYtelse: TilkjentYtelse) {
+    private fun validerStartdato(forrigeTilkjentYtelse: TilkjentYtelse?,
+                                 nyTilkjentYtelse: TilkjentYtelse) {
         val nyMinDato = nyTilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
-        val forrigeOpphørsdato = forrigeTilkjentYtelse?.startdato
-        val nyOpphørsdato = nyTilkjentYtelse.startdato
-        if (forrigeOpphørsdato != null) {
-            if (nyOpphørsdato == null) {
+        val forrigeStartdato = forrigeTilkjentYtelse?.startdato
+        val nyStartdato = nyTilkjentYtelse.startdato
+        if (forrigeStartdato != null) {
+            if (nyStartdato == null) {
                 error("Må ha med opphørsdato hvis man har tidligere opphørsdato")
-            } else if (nyOpphørsdato > forrigeOpphørsdato) {
-                error("Nytt opphørsdato=$nyOpphørsdato kan ikke være etter forrigeOpphørsdato=$forrigeOpphørsdato")
+            } else if (nyStartdato > forrigeStartdato) {
+                error("Nytt opphørsdato=$nyStartdato kan ikke være etter forrigeOpphørsdato=$forrigeStartdato")
             }
         }
-
-        if (nyOpphørsdato != null && forrigeTilkjentYtelse == null) {
+        if (forrigeTilkjentYtelse == null && nyStartdato != null) {
             error("Kan ikke opphøre noe når det ikke finnes en tidligere behandling")
         }
-
-        if (nyOpphørsdato != null && nyMinDato != null && nyMinDato.isBefore(nyOpphørsdato)) {
+        if (nyStartdato != null && nyMinDato != null && nyMinDato.isBefore(nyStartdato)) {
             error("Kan ikke sette opphør etter dato på første perioden")
         }
-
     }
 
     /**

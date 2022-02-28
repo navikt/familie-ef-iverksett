@@ -10,6 +10,7 @@ import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.catchThrowable
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
