@@ -68,10 +68,10 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
 
     private fun getData(): List<TilstandPatchData> {
         val sql = """
-            SELECT ir.behandling_id, i -> 'fagsak' ->> 'fagsakId' fagsak_id, tilkjentytelseforutbetaling 
+            SELECT ir.behandling_id, i.data -> 'fagsak' ->> 'fagsakId' fagsak_id, tilkjentytelseforutbetaling 
             FROM iverksett i
             JOIN iverksett_resultat ir ON i.behandling_id = ir.behandling_id
-            WHERE tilkjentytelseforutbetaling -> 'andelerTilkjentYtelse' IS NOT NULL
+            WHERE tilkjentytelseforutbetaling IS NOT NULL
             """
         val data = jdbcTemplate.query(sql) { rs, _ ->
             val behandlingId = rs.getUUID("behandling_id")
