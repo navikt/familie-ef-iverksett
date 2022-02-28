@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.util.getUUID
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.NULL_DATO
 import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 @RestController("api/tilstandpatch")
+@Unprotected
 class TilstandPatchController(private val tilstandPatch: TilstandPatch) {
 
     @GetMapping
