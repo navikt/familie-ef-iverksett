@@ -10,6 +10,7 @@ import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.catchThrowable
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
@@ -215,6 +216,7 @@ internal class UtbetalingsoppdragGeneratorTest {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_med_0beløp.csv"))
         }
 
+        @Disabled
         @Test
         fun `revurderer med 0 beløp etter en revurdering med 0 beløp skal sette opphørsdato på riktig plass`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_0beløp_før_tidligere_0beløp.csv"))
