@@ -87,8 +87,9 @@ class TilstandPatch(private val jdbcTemplate: JdbcTemplate,
             val behandlingId = it.second
             val tilkjentYtelseJsonString = it.third
             val tilkjentYtelse = objectMapper.readValue<TilkjentYtelse>(tilkjentYtelseJsonString)
-            val json2 = objectMapper.writeValueAsString(tilkjentYtelse)
-            if (tilkjentYtelseJsonString != json2) {
+            val jsonTilString = objectMapper.writeValueAsString(tilkjentYtelse)
+
+            if (objectMapper.readTree(jsonTilString) != objectMapper.readTree(tilkjentYtelseJsonString)) {
                 logger.warn("Behandling=$behandlingId sin json er ikke lik den serialiserte json")
                 return@mapNotNull null
             }
