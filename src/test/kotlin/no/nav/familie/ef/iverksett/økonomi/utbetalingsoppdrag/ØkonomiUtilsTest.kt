@@ -32,7 +32,7 @@ internal class ØkonomiUtilsTest {
         inner class UtenTidligereTilkjentYtelse {
 
             @Test
-            internal fun `uten opphørsdato skal ikke få opphørsdato`() {
+            internal fun `skal ikke få opphørsdato når det ikke finnes tidligere andeler`() {
                 assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = emptyList())).isNull()
                 assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelMedBeløp()))).isNull()
                 assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelUtenBeløp()))).isNull()
