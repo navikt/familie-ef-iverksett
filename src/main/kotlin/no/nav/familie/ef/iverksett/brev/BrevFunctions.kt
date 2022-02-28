@@ -1,5 +1,7 @@
 package no.nav.familie.ef.iverksett.brev
 
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.kontrakter.ef.felles.StønadType
@@ -33,13 +35,22 @@ fun lagStønadtypeTekst(stønadstype: StønadType): String =
             StønadType.SKOLEPENGER -> "stønad til skolepenger"
         }
 
-fun lagVedtakstekst(vedtaksresultat: Vedtaksresultat, behandlingÅrsak: BehandlingÅrsak): String =
-    if (behandlingÅrsak == BehandlingÅrsak.SANKSJON_1_MND) {
-        "Vedtak om sanksjon av "
-    } else {
-        when (vedtaksresultat) {
-            Vedtaksresultat.INNVILGET -> "Vedtak om innvilgelse av "
-            Vedtaksresultat.AVSLÅTT -> "Vedtak om avslag av "
-            Vedtaksresultat.OPPHØRT -> "Vedtak om opphør av "
+fun lagVedtakstekst(iverksett: Iverksett): String =
+        if (iverksett.behandling.behandlingType === BehandlingType.FØRSTEGANGSBEHANDLING){
+            when (iverksett.vedtak.vedtaksresultat) {
+                    Vedtaksresultat.INNVILGET -> "Vedtak om innvilget "
+                    Vedtaksresultat.AVSLÅTT -> "Vedtak om avslått "
+                    Vedtaksresultat.OPPHØRT -> "Vedtak om opphørt "
+                }
+        } else {
+            if(iverksett.behandling.behandlingÅrsak === BehandlingÅrsak.SANKSJON_1_MND){
+                "Vedtak om sanksjon av "
+            }
+            else {
+                if(iverksett.vedtak.vedtaksresultat === Vedtaksresultat.OPPHØRT){
+                    "Vedtak om opphørt "
+                } else {
+                    "Vedtak om revurdert "
+                }
+            }
         }
-    }
