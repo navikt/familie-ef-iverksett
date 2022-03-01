@@ -136,7 +136,7 @@ class TestOppdragGroup {
     val input: TilkjentYtelseMedMetaData by lazy {
         val startdato = opphørsdatoInn
                         ?: andelerTilkjentYtelseInn.minOfOrNull { it.fraOgMed }
-                        ?: error("Trenger andel eller opphørsdato på input")
+                        ?: error("Input feiler - hvis man ikke har en andel må man sette opphørsdato")
         TilkjentYtelseMedMetaData(TilkjentYtelse(andelerTilkjentYtelse = andelerTilkjentYtelseInn,
                                                  startdato = startdato),
                                   stønadstype = StønadType.OVERGANGSSTØNAD,
@@ -152,7 +152,7 @@ class TestOppdragGroup {
     val output: TilkjentYtelse by lazy {
         val startdato = opphørsdatoUt
                         ?: andelerTilkjentYtelseUt.minOfOrNull { it.fraOgMed }
-                        ?: error("Trenger andel eller opphørsdato på output")
+                        ?: error("Output feiler - hvis man ikke har en andel må man sette opphørsdato")
         val utbetalingsoppdrag =
                 Utbetalingsoppdrag(kodeEndring = oppdragKode110,
                                    fagSystem = "EFOG",
