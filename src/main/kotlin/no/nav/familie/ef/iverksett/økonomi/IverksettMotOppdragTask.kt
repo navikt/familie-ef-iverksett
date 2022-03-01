@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
@@ -22,7 +23,8 @@ import java.util.UUID
 class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRepository,
                               private val oppdragClient: OppdragClient,
                               private val taskRepository: TaskRepository,
-                              private val tilstandRepository: TilstandRepository
+                              private val tilstandRepository: TilstandRepository,
+                              private val featureToggleService: FeatureToggleService
 ) : AsyncTaskStep {
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -44,7 +46,8 @@ class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRe
                 ) ?: error("Mangler tilkjent ytelse på vedtaket")
 
         val utbetaling = lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelseMedMetaData,
-                                                                forrigeTilkjentYtelse
+                                                                forrigeTilkjentYtelse,
+                                                                featureToggleService.isEnabled("familie.ef.iverksett.opphoer-v2")
         )
 
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)

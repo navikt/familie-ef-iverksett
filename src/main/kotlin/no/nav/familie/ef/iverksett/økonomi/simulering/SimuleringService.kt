@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.iverksetting.domene.Simulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
@@ -12,7 +13,8 @@ import java.time.LocalDate
 @Service
 class SimuleringService(
         private val oppdragKlient: OppdragClient,
-        private val tilstandRepository: TilstandRepository
+        private val tilstandRepository: TilstandRepository,
+        private val featureToggleService: FeatureToggleService
 ) {
 
     fun hentSimulering(simulering: Simulering): DetaljertSimuleringResultat {
@@ -23,7 +25,8 @@ class SimuleringService(
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse
+                    forrigeTilkjentYtelse,
+                    featureToggleService.isEnabled("familie.ef.iverksett.opphoer-v2")
             )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag

@@ -30,7 +30,8 @@ class IverksettTekniskOpphørTask(private val iverksettingRepository: Iverksetti
         }
         val utbetaling =
                 UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(tekniskOpphør.tilkjentYtelseMedMetaData,
-                                                                                   forrigeTilkjentYtelse)
+                                                                                   forrigeTilkjentYtelse,
+                                                                                   true)
 
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let { oppdragClient.iverksettOppdrag(it) }

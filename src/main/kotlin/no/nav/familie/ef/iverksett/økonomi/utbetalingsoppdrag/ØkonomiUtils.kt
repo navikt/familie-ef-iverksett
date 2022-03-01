@@ -80,10 +80,10 @@ object ØkonomiUtils {
      * @param[andelerNyTilkjentYtelse] nåværende tilstand
      * @return utbetalingsperiode for opphør, returnerer null hvis det ikke finnes ett opphørsdato
      */
-    fun utbetalingsperiodeForOpphør(forrigeTilkjentYtelse: TilkjentYtelse?,
-                                    nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
+    fun utbetalingsperiodeForOpphørGammel(forrigeTilkjentYtelse: TilkjentYtelse?,
+                                          nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
-        validerStartdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
+        validerStartdato(forrigeTilkjentYtelse, nyTilkjentYtelse, gammelVersjon = true)
 
         // hvis det ikke finnes tidligere andel så kan vi ikke opphøre noe
         val sisteForrigeAndel = forrigeTilkjentYtelse?.sisteAndelIKjede ?: return null
@@ -92,6 +92,38 @@ object ØkonomiUtils {
         val opphørsdato = beregnOpphørsdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
 
         return if (opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
+            null
+        } else {
+            lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, opphørsdato, nyTilkjentYtelseMedMetaData)
+        }
+    }
+
+    fun utbetalingsperiodeForOpphør(forrigeTilkjentYtelse: TilkjentYtelse?,
+                                    nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
+        val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
+        validerStartdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
+
+        // hvis det ikke finnes tidligere andel så kan vi ikke opphøre noe
+        val sisteForrigeAndel = forrigeTilkjentYtelse?.sisteAndelIKjede ?: return null
+        val forrigeAndeler = andelerUtenNullVerdier(forrigeTilkjentYtelse)
+        val forrigeMaksDato = forrigeAndeler.map { it.tilOgMed }.maxOrNull()
+        val nyeAndeler = andelerUtenNullVerdier(nyTilkjentYtelse)
+
+        // TODO denne kan fjernes når startdato blir not null
+        if (forrigeTilkjentYtelse.startdato == null || nyTilkjentYtelse.startdato == null) {
+            error("Må ha med startdato på ny og gammel tilkjent ytelse")
+        }
+        if (nyTilkjentYtelse.startdato < forrigeTilkjentYtelse.startdato) {
+            return lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, nyTilkjentYtelse.startdato, nyTilkjentYtelseMedMetaData)
+        }
+
+        val opphørsdato = finnOpphørsdato(forrigeAndeler.toSet(), nyeAndeler.toSet())
+
+        val manglerTidligereAndelerOgOpphørsdatoErEtterTidligereStartdato =
+                opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startdato && forrigeAndeler.isEmpty()
+        return if (manglerTidligereAndelerOgOpphørsdatoErEtterTidligereStartdato ||
+                   opphørsdato == null ||
+                   erNyPeriode(forrigeMaksDato, opphørsdato)) {
             null
         } else {
             lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, opphørsdato, nyTilkjentYtelseMedMetaData)
@@ -120,7 +152,8 @@ object ØkonomiUtils {
      * Opphørsdato kan ikke være etter første andel
      */
     private fun validerStartdato(forrigeTilkjentYtelse: TilkjentYtelse?,
-                                 nyTilkjentYtelse: TilkjentYtelse) {
+                                 nyTilkjentYtelse: TilkjentYtelse,
+                                 gammelVersjon: Boolean = false) {
         val nyMinDato = nyTilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
         val forrigeStartdato = forrigeTilkjentYtelse?.startdato
         val nyStartdato = nyTilkjentYtelse.startdato
@@ -131,14 +164,16 @@ object ØkonomiUtils {
                 error("Nytt opphørsdato=$nyStartdato kan ikke være etter forrigeOpphørsdato=$forrigeStartdato")
             }
         }
-        if (forrigeTilkjentYtelse == null && nyStartdato != null) {
+        if (gammelVersjon && forrigeTilkjentYtelse == null && nyStartdato != null) {
             error("Kan ikke opphøre noe når det ikke finnes en tidligere behandling")
         }
         if (nyStartdato != null && nyMinDato != null && nyMinDato.isBefore(nyStartdato)) {
             error("Kan ikke sette opphør etter dato på første perioden")
         }
 
-        validerOpphørOg0Andeler(forrigeTilkjentYtelse, nyStartdato, forrigeStartdato)
+        if (gammelVersjon) {
+            validerOpphørOg0Andeler(forrigeTilkjentYtelse, nyStartdato, forrigeStartdato)
+        }
     }
 
     private fun validerOpphørOg0Andeler(forrigeTilkjentYtelse: TilkjentYtelse?,

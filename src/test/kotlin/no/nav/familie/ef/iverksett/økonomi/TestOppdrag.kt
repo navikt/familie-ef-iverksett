@@ -110,27 +110,23 @@ class TestOppdragGroup {
                 oppdragId = to.oppdragId
                 personIdent = to.fnr
                 if (to.opphørsdato != null) {
-                    if (to.startPeriode != null || to.sluttPeriode != null) {
-                        error("Kan ikke kombinere opphør og start/sluttperiode for input")
-                    }
-                    opphørsdatoInn = validerOgGetOpphørsdao(to, opphørsdatoInn)
-                } else {
-                    to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseInn.add(it) }
+                    opphørsdatoInn = validerOgGetOpphørsdato(to, opphørsdatoInn)
                 }
+                to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseInn.add(it) }
             }
             TestOppdragType.Oppdrag -> {
                 oppdragKode110 = Utbetalingsoppdrag.KodeEndring.valueOf(to.status110!!)
                 to.tilUtbetalingsperiode()?.also { utbetalingsperioder.add(it) }
             }
             TestOppdragType.Output -> {
-                opphørsdatoUt = validerOgGetOpphørsdao(to, opphørsdatoUt)
+                opphørsdatoUt = validerOgGetOpphørsdato(to, opphørsdatoUt)
                 // Vi lagrer ned en nullandel for output
                 to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseUt.add(it) }
             }
         }
     }
 
-    private fun validerOgGetOpphørsdao(to: TestOppdrag, tidligereOpphørsdato: LocalDate?): LocalDate? {
+    private fun validerOgGetOpphørsdato(to: TestOppdrag, tidligereOpphørsdato: LocalDate?): LocalDate? {
         if (tidligereOpphørsdato != null && to.opphørsdato != null) {
             error("Kan kun sette 1 opphørsdato på en input/output")
         }
@@ -138,8 +134,11 @@ class TestOppdragGroup {
     }
 
     val input: TilkjentYtelseMedMetaData by lazy {
+        val startdato = opphørsdatoInn
+                        ?: andelerTilkjentYtelseInn.minOfOrNull { it.fraOgMed }
+                        ?: error("Trenger andel eller opphørsdato på input")
         TilkjentYtelseMedMetaData(TilkjentYtelse(andelerTilkjentYtelse = andelerTilkjentYtelseInn,
-                                                 startdato = opphørsdatoInn),
+                                                 startdato = startdato),
                                   stønadstype = StønadType.OVERGANGSSTØNAD,
                                   eksternBehandlingId = behandlingEksternId,
                                   eksternFagsakId = fagsakEksternId,
@@ -151,6 +150,9 @@ class TestOppdragGroup {
     }
 
     val output: TilkjentYtelse by lazy {
+        val startdato = opphørsdatoUt
+                        ?: andelerTilkjentYtelseUt.minOfOrNull { it.fraOgMed }
+                        ?: error("Trenger andel eller opphørsdato på output")
         val utbetalingsoppdrag =
                 Utbetalingsoppdrag(kodeEndring = oppdragKode110,
                                    fagSystem = "EFOG",
@@ -165,7 +167,7 @@ class TestOppdragGroup {
         TilkjentYtelse(id = input.tilkjentYtelse.id,
                        andelerTilkjentYtelse = andelerTilkjentYtelseUt,
                        utbetalingsoppdrag = utbetalingsoppdrag,
-                       startdato = opphørsdatoUt)
+                       startdato = startdato)
 
     }
 }
@@ -284,7 +286,12 @@ object TestOppdragRunner {
         val om = objectMapper.writerWithDefaultPrettyPrinter()
         grupper.forEachIndexed { indeks, gruppe ->
             val input = gruppe.input
-            val faktisk = lagTilkjentYtelseMedUtbetalingsoppdrag(input, forrigeTilkjentYtelse)
+            val faktisk: TilkjentYtelse
+            try {
+                faktisk = lagTilkjentYtelseMedUtbetalingsoppdrag(input, forrigeTilkjentYtelse)
+            } catch (e: Exception) {
+                throw RuntimeException("Feilet indeks=$indeks - ${e.message}", e)
+            }
             Assertions.assertEquals(om.writeValueAsString(truncateAvstemmingDato(gruppe.output)),
                                     om.writeValueAsString(truncateAvstemmingDato(faktisk)),
                                     "Feiler for gruppe med indeks $indeks")
