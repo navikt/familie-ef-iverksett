@@ -83,15 +83,20 @@ object ØkonomiUtils {
     fun utbetalingsperiodeForOpphørGammel(forrigeTilkjentYtelse: TilkjentYtelse?,
                                           nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
-        validerStartdato(forrigeTilkjentYtelse, nyTilkjentYtelse, gammelVersjon = true)
+        validerStartdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
+        if (forrigeTilkjentYtelse == null) return null
 
-        // hvis det ikke finnes tidligere andel så kan vi ikke opphøre noe
-        val sisteForrigeAndel = forrigeTilkjentYtelse?.sisteAndelIKjede ?: return null
-        val forrigeMaksDato = andelerUtenNullVerdier(forrigeTilkjentYtelse).map { it.tilOgMed }.maxOrNull()
+        val forrigeOpphørsdato = forrigeTilkjentYtelse.startdato
+        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
+        val forrigeMaksDato = andelerForrigeTilkjentYtelse.map { it.tilOgMed }.maxOrNull()
+        val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
 
-        val opphørsdato = beregnOpphørsdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
+        val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
 
-        return if (opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
+        val opphørsdato = beregnOpphørsdato(forrigeOpphørsdato, nyTilkjentYtelse.startdato, forrigeAndeler, oppdaterteAndeler)
+
+        val sisteForrigeAndel = andelerForrigeTilkjentYtelse.lastOrNull()
+        return if (sisteForrigeAndel == null || opphørsdato == null || erNyPeriode(forrigeMaksDato, opphørsdato)) {
             null
         } else {
             lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, opphørsdato, nyTilkjentYtelseMedMetaData)
@@ -134,15 +139,11 @@ object ØkonomiUtils {
      * Skal bruke opphørsdato fra tilkjent ytelse hvis den ikke er den samme som forrige opphørsdato
      * Hvis ikke så skal den finne finnOpphørsdato, som gjør en diff mellom tidligere og nye andeler
      */
-    private fun beregnOpphørsdato(forrigeTilkjentYtelse: TilkjentYtelse,
-                                  nyTilkjentYtelse: TilkjentYtelse): LocalDate? {
-        val forrigeOpphørsdato = forrigeTilkjentYtelse.startdato
-        val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
-        val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
-        val oppdaterteAndeler = nyTilkjentYtelse.andelerTilkjentYtelse.toSet()
-
-        val opphørsdatoHvisIkkeLikSomForrige =
-                if (forrigeOpphørsdato == nyTilkjentYtelse.startdato) null else nyTilkjentYtelse.startdato
+    private fun beregnOpphørsdato(forrigeOpphørsdato: LocalDate?,
+                                  nyOpphørsdato: LocalDate?,
+                                  forrigeAndeler: Set<AndelTilkjentYtelse>,
+                                  oppdaterteAndeler: Set<AndelTilkjentYtelse>): LocalDate? {
+        val opphørsdatoHvisIkkeLikSomForrige = if (forrigeOpphørsdato == nyOpphørsdato) null else nyOpphørsdato
         return opphørsdatoHvisIkkeLikSomForrige ?: finnOpphørsdato(forrigeAndeler, oppdaterteAndeler)
     }
 
