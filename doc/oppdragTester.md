@@ -52,6 +52,11 @@ gruppe av input/output representeres av typene `input`+`oppdrag`+`output`
 | 5   | Oppdrag | 2      |
 | 6   | Output  | 2      |
 
+#### Startdato på Input output
+* Startdato på tilkjent ytelse settes gjennom å sette x på den måned i input/output som startdato er gjeldende fra
+* Hvis man ikke setter startdato så brukes den første perioden for den input/output.
+* Hvis man då ikke har en periode, så kaster den feil og man må då sette x i en kolonne som indikerer startdato 
+
 ## Kjeder
 Når vi sender perioder til økonomi så slår vi de sammen til en kjede, dvs en periode har ett forhold til forrige periode - litt som en `LinkedList`. <br />
 Hver periode har en `periodeId`. En periode refererer alltid til forrige periode med `forrigePeriodeId`, hvis det ikke er den første perioden som sendes for personen.
