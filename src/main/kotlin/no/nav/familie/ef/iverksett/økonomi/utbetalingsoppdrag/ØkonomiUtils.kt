@@ -124,9 +124,7 @@ object ØkonomiUtils {
 
         val opphørsdato = finnOpphørsdato(forrigeAndeler.toSet(), nyeAndeler.toSet())
 
-        val manglerTidligereAndelerOgOpphørsdatoErEtterTidligereStartdato =
-                opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startdato && forrigeAndeler.isEmpty()
-        return if (manglerTidligereAndelerOgOpphørsdatoErEtterTidligereStartdato ||
+        return if (harIngenAndelerÅOpphøre(opphørsdato, forrigeTilkjentYtelse, forrigeAndeler) ||
                    opphørsdato == null ||
                    erNyPeriode(forrigeMaksDato, opphørsdato)) {
             null
@@ -134,6 +132,14 @@ object ØkonomiUtils {
             lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, opphørsdato, nyTilkjentYtelseMedMetaData)
         }
     }
+
+    /**
+     * Når tidligere andeler er empty, og opphørsdato er etter forrige sitt startdato trenger vi ikke å opphøre noe
+     */
+    private fun harIngenAndelerÅOpphøre(opphørsdato: LocalDate?,
+                                        forrigeTilkjentYtelse: TilkjentYtelse,
+                                        forrigeAndeler: List<AndelTilkjentYtelse>) =
+            forrigeAndeler.isEmpty() && opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startdato
 
     /**
      * Skal bruke opphørsdato fra tilkjent ytelse hvis den ikke er den samme som forrige opphørsdato
