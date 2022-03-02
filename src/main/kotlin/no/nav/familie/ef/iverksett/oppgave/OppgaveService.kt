@@ -107,7 +107,7 @@ class OppgaveService(
         return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
     }
 
-    private fun Iverksett.gjeldendeVedtak() = this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed }?.let { it }
+    private fun Iverksett.gjeldendeVedtak() = this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed }
                                               ?: error("Kunne ikke finne vedtaksperioder")
 
     private fun Iverksett.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate {
