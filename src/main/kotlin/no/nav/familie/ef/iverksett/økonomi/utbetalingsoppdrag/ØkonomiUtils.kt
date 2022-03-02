@@ -118,7 +118,8 @@ object ØkonomiUtils {
         if (forrigeTilkjentYtelse.startdato == null || nyTilkjentYtelse.startdato == null) {
             error("Må ha med startdato på ny og gammel tilkjent ytelse")
         }
-        if (nyTilkjentYtelse.startdato < forrigeTilkjentYtelse.startdato) {
+        val skalOpphøreFørTidligereStartdato = nyTilkjentYtelse.startdato < forrigeTilkjentYtelse.startdato
+        if (skalOpphøreFørTidligereStartdato) {
             return lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, nyTilkjentYtelse.startdato, nyTilkjentYtelseMedMetaData)
         }
 
