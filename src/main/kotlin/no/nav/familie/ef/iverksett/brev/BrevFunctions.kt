@@ -36,21 +36,17 @@ fun lagStønadtypeTekst(stønadstype: StønadType): String =
         }
 
 fun lagVedtakstekst(iverksett: Iverksett): String =
-        if (iverksett.behandling.behandlingType === BehandlingType.FØRSTEGANGSBEHANDLING){
-            when (iverksett.vedtak.vedtaksresultat) {
-                    Vedtaksresultat.INNVILGET -> "Vedtak om innvilget "
-                    Vedtaksresultat.AVSLÅTT -> "Vedtak om avslått "
-                    Vedtaksresultat.OPPHØRT -> "Vedtak om opphørt "
-                }
-        } else {
-            if(iverksett.behandling.behandlingÅrsak === BehandlingÅrsak.SANKSJON_1_MND){
-                "Vedtak om sanksjon av "
-            }
-            else {
-                if(iverksett.vedtak.vedtaksresultat === Vedtaksresultat.OPPHØRT){
-                    "Vedtak om opphørt "
-                } else {
-                    "Vedtak om revurdert "
-                }
-            }
+        when {
+            iverksett.behandling.behandlingType === BehandlingType.FØRSTEGANGSBEHANDLING ->
+                lagVedtakstekstFørstegangsbehandling(iverksett)
+            iverksett.behandling.behandlingÅrsak === BehandlingÅrsak.SANKSJON_1_MND -> "Vedtak om sanksjon av "
+            iverksett.vedtak.vedtaksresultat === Vedtaksresultat.OPPHØRT -> "Vedtak om opphørt "
+            else -> "Vedtak om revurdert "
+        }
+
+private fun lagVedtakstekstFørstegangsbehandling(iverksett: Iverksett) =
+        when (iverksett.vedtak.vedtaksresultat) {
+            Vedtaksresultat.INNVILGET -> "Vedtak om innvilget "
+            Vedtaksresultat.AVSLÅTT -> "Vedtak om avslått "
+            Vedtaksresultat.OPPHØRT -> error("Førstegangsbehandling kan ikke ha resultat Opphørt")
         }
