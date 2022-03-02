@@ -3,13 +3,12 @@ package no.nav.familie.ef.iverksett.patch
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.util.opprettAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.web.client.postForEntity
-import org.springframework.http.HttpEntity
 import java.util.UUID
 
 internal class PatchAktivitetServiceTest : ServerTest() {
@@ -39,7 +38,7 @@ internal class PatchAktivitetServiceTest : ServerTest() {
     }
 
     private fun lagIverksettMedAktivitetMigrering(behandlingId: UUID, aktivitetType: AktivitetType): Iverksett {
-        val iverksett = opprettIverksett(behandlingId, null, emptyList(), null)
+        val iverksett = opprettIverksett(behandlingId, null, listOf(opprettAndelTilkjentYtelse()), null)
         val vedtaksperioder = iverksett.vedtak.vedtaksperioder
         return iverksett.copy(vedtak = iverksett.vedtak.copy(vedtaksperioder = vedtaksperioder.map { it.copy(aktivitet = aktivitetType) }))
     }

@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.and
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerUtenNullVerdier
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphørGammel
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.ENDR
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
@@ -25,7 +26,8 @@ object UtbetalingsoppdragGenerator {
      * @return Ny tilkjent ytelse med andeler med id'er, samt utbetalingsoppdrag
      */
     fun lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
-                                               forrigeTilkjentYtelse: TilkjentYtelse? = null): TilkjentYtelse {
+                                               forrigeTilkjentYtelse: TilkjentYtelse? = null,
+                                               brukNyOpphør: Boolean = true): TilkjentYtelse {
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         val andelerNyTilkjentYtelse = andelerUtenNullVerdier(nyTilkjentYtelse)
         val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
@@ -41,7 +43,9 @@ object UtbetalingsoppdragGenerator {
         val utbetalingsperioderSomOpprettes = lagUtbetalingsperioderForOpprettelse(andeler = andelerTilOpprettelseMedPeriodeId,
                                                                                    tilkjentYtelse = nyTilkjentYtelseMedMetaData)
 
-        val utbetalingsperiodeSomOpphøres = utbetalingsperiodeForOpphør(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
+        val utbetalingsperiodeSomOpphøres =
+                if (brukNyOpphør) utbetalingsperiodeForOpphør(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
+                else utbetalingsperiodeForOpphørGammel(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
 
         val utbetalingsperioder = (utbetalingsperioderSomOpprettes + utbetalingsperiodeSomOpphøres)
                 .filterNotNull()

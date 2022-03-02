@@ -28,7 +28,8 @@ class SimuleringService(
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse
+                    forrigeTilkjentYtelse,
+                    featureToggleService.isEnabled("familie.ef.iverksett.opphoer-v2")
             )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag

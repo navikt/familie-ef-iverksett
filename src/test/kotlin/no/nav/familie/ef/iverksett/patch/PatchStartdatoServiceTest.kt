@@ -21,15 +21,19 @@ internal class PatchStartdatoServiceTest : ServerTest() {
     @Autowired private lateinit var patchStartdatoService: PatchStartdatoService
 
     private val startdato = LocalDate.of(2020, 1, 1)
+    private val tidligereStartdato = LocalDate.of(2029, 1, 1)
+
     private val startdatoString = startdato.format(DateTimeFormatter.ISO_LOCAL_DATE)
     private val behandlingId = UUID.randomUUID()
 
     @Test
     internal fun `skal sette startdato`() {
-        val iverksett = opprettIverksett(behandlingId, null, emptyList(), null)
+        val iverksett = opprettIverksett(behandlingId, null, emptyList(), null, tidligereStartdato)
         iverksettingRepository.lagre(behandlingId, iverksett, null)
         tilstandRepository.opprettTomtResultat(behandlingId)
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, TilkjentYtelse(andelerTilkjentYtelse = emptyList(), startdato = null))
+        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId,
+                                                               TilkjentYtelse(andelerTilkjentYtelse = emptyList(),
+                                                                              startdato = tidligereStartdato))
 
         patchStartdatoService.patch(behandlingId, startdatoString, true)
 
