@@ -167,14 +167,15 @@ fun opprettTekniskOpphør(behandlingId: UUID, eksternId: Long): TekniskOpphør {
 fun opprettIverksett(behandlingId: UUID,
                      forrigeBehandlingId: UUID? = null,
                      andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
-                     tilbakekreving: Tilbakekrevingsdetaljer? = null): Iverksett {
+                     tilbakekreving: Tilbakekrevingsdetaljer? = null,
+                     startdato: LocalDate? = startdato(andeler)): Iverksett {
 
     val tilkjentYtelse = TilkjentYtelse(
             id = UUID.randomUUID(),
             utbetalingsoppdrag = null,
             status = TilkjentYtelseStatus.AKTIV,
             andelerTilkjentYtelse = andeler,
-            startdato = null
+            startdato = startdato
     )
 
     val behandlingType = forrigeBehandlingId?.let { BehandlingType.REVURDERING } ?: BehandlingType.FØRSTEGANGSBEHANDLING
@@ -228,6 +229,9 @@ fun opprettIverksett(behandlingId: UUID,
             )
     )
 }
+
+private fun startdato(andeler: List<AndelTilkjentYtelse>) =
+        andeler.minOfOrNull { it.fraOgMed } ?: error("Trenger å sette startdato hvs det ikke finnes andeler")
 
 fun opprettBrev(): Brev {
     return Brev(UUID.fromString("234bed7c-b1d3-11eb-8529-0242ac130003"), ByteArray(256))

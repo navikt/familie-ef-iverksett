@@ -6,6 +6,8 @@ import io.mockk.slot
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.util.opprettAndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
@@ -42,8 +44,11 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
     private val tekniskOpphørBehandlingId: UUID = UUID.randomUUID()
 
     private val oppdragClient = mockk<OppdragClient>()
+    private val andelTilkjentYtelse = opprettAndelTilkjentYtelse()
     private val tilkjentYtelse =
-            lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(forrigeBehandlingId, 1L))
+            opprettTilkjentYtelse(forrigeBehandlingId, andeler = listOf(andelTilkjentYtelse), startdato = andelTilkjentYtelse.fraOgMed)
+    private val tilkjentYtelseMedUtbetalingsoppdrag =
+            lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(forrigeBehandlingId, 1L, tilkjentYtelse))
 
     @PostConstruct
     fun init() {
@@ -56,7 +61,7 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
     @Test
     fun skaIverksetteTekniskOpphør() {
         tilstandRepository.opprettTomtResultat(forrigeBehandlingId)
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(forrigeBehandlingId, tilkjentYtelse)
+        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(forrigeBehandlingId, tilkjentYtelseMedUtbetalingsoppdrag)
 
 
         val utbetalingsoppdrag = slot<Utbetalingsoppdrag>()
@@ -72,7 +77,7 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
                                                                         eksternFagsakId = 0,
                                                                         personIdent = "12345678",
                                                                         behandlingId = tekniskOpphørBehandlingId,
-                                                                        vedtaksdato = LocalDate.now()))
+                                                                        vedtaksdato = andelTilkjentYtelse.fraOgMed))
 
         val iverksettTekniskOpphørTask = taskRepository.findAll().first()
         assertThat(iverksettTekniskOpphørTask.type).isEqualTo(IverksettTekniskOpphørTask.TYPE)
@@ -82,9 +87,7 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
         assertThat(utbetalingsoppdrag.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.ENDR)
         val opphør = utbetalingsoppdrag.captured.utbetalingsperiode.first().opphør
         assertThat(opphør).isNotNull
-        assertThat(opphør!!.opphørDatoFom).isEqualTo(tilkjentYtelse.andelerTilkjentYtelse.minByOrNull { it.fraOgMed }!!.fraOgMed)
-
-
+        assertThat(opphør!!.opphørDatoFom).isEqualTo(tilkjentYtelseMedUtbetalingsoppdrag.andelerTilkjentYtelse.minByOrNull { it.fraOgMed }!!.fraOgMed)
     }
 
 }
