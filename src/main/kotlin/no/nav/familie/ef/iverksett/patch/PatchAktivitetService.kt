@@ -19,20 +19,21 @@ import java.util.UUID
 @RestController
 @Unprotected
 @RequestMapping("api/patch-aktivitet")
-class PatchController(private val patchService: PatchService) {
+class PatchAktivitetController(private val patchAktivitetService: PatchAktivitetService) {
 
     @GetMapping
     fun patch(@RequestParam oppdaterVedtak: Boolean = false) {
-        patchService.patch(oppdaterVedtak)
+        patchAktivitetService.patch(oppdaterVedtak)
     }
 }
 
 @Service
-class PatchService(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+class PatchAktivitetService(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
 
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     private val behandlingIder = setOf<String>()
+
     fun patch(oppdaterVedtak: Boolean) {
         behandlingIder.map { UUID.fromString(it) }.forEach {
             patch(it, oppdaterVedtak)
@@ -49,10 +50,6 @@ class PatchService(private val namedParameterJdbcTemplate: NamedParameterJdbcTem
 
         val iverksett = objectMapper.readTree(json)
 
-        if (objectMapper.readTree(objectMapper.writeValueAsString(iverksett)) != objectMapper.readTree(json)) {
-            logger.info("Json er ulik for behandling=$behandlingId")
-            return
-        }
         val vedtaksperioder = iverksett.get("vedtak").get("vedtaksperioder")
         if (vedtaksperioder.size() != 1) {
             logger.info("Vedtaksperioder har size=${vedtaksperioder.size()} behandling=$behandlingId")

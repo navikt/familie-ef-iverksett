@@ -10,18 +10,18 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
-internal class PatchServiceTest : ServerTest() {
+internal class PatchAktivitetServiceTest : ServerTest() {
 
 
     @Autowired private lateinit var iverksettingRepository: IverksettingRepository
-    @Autowired private lateinit var patchService: PatchService
+    @Autowired private lateinit var patchAktivitetService: PatchAktivitetService
 
     @Test
     internal fun `skal oppdatere iverksett`() {
         val behandlingId = UUID.randomUUID()
         val iverksett = lagIverksettMedAktivitetMigrering(behandlingId, AktivitetType.MIGRERING)
         iverksettingRepository.lagre(behandlingId, iverksett, null)
-        patchService.patch(behandlingId, true)
+        patchAktivitetService.patch(behandlingId, true)
         assertThat(iverksettingRepository.hent(behandlingId).vedtak.vedtaksperioder.single().aktivitet)
                 .isEqualTo(AktivitetType.FORSØRGER_REELL_ARBEIDSSØKER)
     }
@@ -31,7 +31,7 @@ internal class PatchServiceTest : ServerTest() {
         val behandlingId = UUID.randomUUID()
         val iverksett = lagIverksettMedAktivitetMigrering(behandlingId, AktivitetType.IKKE_AKTIVITETSPLIKT)
         iverksettingRepository.lagre(behandlingId, iverksett, null)
-        patchService.patch(behandlingId, true)
+        patchAktivitetService.patch(behandlingId, true)
         assertThat(iverksettingRepository.hent(behandlingId).vedtak.vedtaksperioder.single().aktivitet)
                 .isEqualTo(AktivitetType.IKKE_AKTIVITETSPLIKT)
     }
