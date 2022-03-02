@@ -10,7 +10,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -23,9 +24,10 @@ import java.util.UUID
 @RequestMapping("api/patch-startdato")
 class PatchStartdatoController(private val patchStartdatoService: PatchStartdatoService) {
 
-    @GetMapping
-    fun patch(@RequestParam oppdaterVedtak: Boolean = false) {
-        patchStartdatoService.patch(oppdaterVedtak)
+    @PostMapping
+    fun patch(@RequestBody data: List<String>,
+              @RequestParam oppdaterVedtak: Boolean = false) {
+        patchStartdatoService.patch(data, oppdaterVedtak)
     }
 }
 
@@ -35,20 +37,19 @@ class PatchStartdatoService(private val namedParameterJdbcTemplate: NamedParamet
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    fun patch(oppdaterVedtak: Boolean) {
-        val data = this::class.java.classLoader.getResourceAsStream("patch-startdato.csv")!!.bufferedReader().readLines()
-                .map { line -> line.split(",").let { UUID.fromString(it[0]) to LocalDate.parse(it[1]) } }
+    fun patch(data: List<String>, oppdaterVedtak: Boolean) {
         if (data.isEmpty()) {
             logger.warn("Mangler data")
             return
         }
-        data.forEach { (behandlingId, startdato) ->
-            try {
-                patch(behandlingId, startdato, oppdaterVedtak)
-            } catch (e: Exception) {
-                throw RuntimeException("Feilet patching av $behandlingId", e)
-            }
-        }
+        data.map { line -> line.split(",").let { UUID.fromString(it[0]) to LocalDate.parse(it[1]) } }
+                .forEach { (behandlingId, startdato) ->
+                    try {
+                        patch(behandlingId, startdato, oppdaterVedtak)
+                    } catch (e: Exception) {
+                        throw RuntimeException("Feilet patching av $behandlingId", e)
+                    }
+                }
     }
 
     fun patch(behandlingId: UUID, startdato: LocalDate, oppdaterVedtak: Boolean) {
