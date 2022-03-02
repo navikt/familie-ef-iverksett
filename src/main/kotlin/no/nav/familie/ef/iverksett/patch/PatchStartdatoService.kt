@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @RestController
@@ -42,17 +41,17 @@ class PatchStartdatoService(private val namedParameterJdbcTemplate: NamedParamet
             logger.warn("Mangler data")
             return
         }
-        data.map { line -> line.split(",").let { UUID.fromString(it[0]) to LocalDate.parse(it[1]) } }
-                .forEach { (behandlingId, startdato) ->
-                    try {
-                        patch(behandlingId, startdato, oppdaterVedtak)
-                    } catch (e: Exception) {
-                        throw RuntimeException("Feilet patching av $behandlingId", e)
-                    }
-                }
+        data.map { line -> line.split(",").let { UUID.fromString(it[0]) to it[1] } }.forEach { (behandlingId, startdato) ->
+            try {
+                patch(behandlingId, startdato, oppdaterVedtak)
+            } catch (e: Exception) {
+                throw RuntimeException("Feilet patching av $behandlingId", e)
+            }
+        }
     }
 
-    fun patch(behandlingId: UUID, startdato: LocalDate, oppdaterVedtak: Boolean) {
+    fun patch(behandlingId: UUID, startdato: String, oppdaterVedtak: Boolean) {
+        LocalDate.parse(startdato) // kun for å sjekke att dato er gyldig
         val harOppdatert = oppdaterIverksett(behandlingId, startdato, oppdaterVedtak)
         if (!harOppdatert) {
             logger.info("behandling=$behandlingId har ikke blitt oppdatert, då den ikke finnes")
@@ -61,7 +60,7 @@ class PatchStartdatoService(private val namedParameterJdbcTemplate: NamedParamet
         oppdaterIverksettResultat(behandlingId, startdato, oppdaterVedtak)
     }
 
-    private fun oppdaterIverksett(behandlingId: UUID, startdato: LocalDate, oppdaterVedtak: Boolean): Boolean {
+    private fun oppdaterIverksett(behandlingId: UUID, startdato: String, oppdaterVedtak: Boolean): Boolean {
         val params = mapOf("behandlingId" to behandlingId,
                            "type" to IverksettType.VANLIG.name)
         val sql = """SELECT data FROM iverksett WHERE behandling_id = :behandlingId AND type = :type"""
@@ -70,8 +69,7 @@ class PatchStartdatoService(private val namedParameterJdbcTemplate: NamedParamet
         }.singleOrNull() ?: return false
 
         val iverksett = objectMapper.readTree(dataJson)
-        (iverksett.get("vedtak").get("tilkjentYtelse") as ObjectNode).put("startdato",
-                                                                          startdato.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        (iverksett.get("vedtak").get("tilkjentYtelse") as ObjectNode).put("startdato", startdato)
         val mapSqlParameterSource = MapSqlParameterSource(params.toMutableMap().apply {
             put("data", objectMapper.writeValueAsString(iverksett))
         })
@@ -82,7 +80,7 @@ class PatchStartdatoService(private val namedParameterJdbcTemplate: NamedParamet
         return true
     }
 
-    private fun oppdaterIverksettResultat(behandlingId: UUID, startdato: LocalDate, oppdaterVedtak: Boolean) {
+    private fun oppdaterIverksettResultat(behandlingId: UUID, startdato: String, oppdaterVedtak: Boolean) {
         val params = mapOf<String, Any>("behandlingId" to behandlingId)
         val sql = """SELECT tilkjentytelseforutbetaling FROM iverksett_resultat WHERE behandling_id = :behandlingId"""
         val dataJson =
@@ -90,7 +88,7 @@ class PatchStartdatoService(private val namedParameterJdbcTemplate: NamedParamet
                     rs.getString("tilkjentYtelseForUtbetaling")
                 } ?: error("Finner ikke data for behandling=$behandlingId")
         val iverksett = objectMapper.readTree(dataJson) as ObjectNode
-        iverksett.put("startdato", startdato.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        iverksett.put("startdato", startdato)
 
         val mapSqlParameterSource = MapSqlParameterSource(params.toMutableMap().apply {
             put("data", objectMapper.writeValueAsString(iverksett))
