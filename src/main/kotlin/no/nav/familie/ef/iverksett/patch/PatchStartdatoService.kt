@@ -86,7 +86,11 @@ class PatchStartdatoService(private val namedParameterJdbcTemplate: NamedParamet
         val dataJson =
                 namedParameterJdbcTemplate.queryForObject(sql, MapSqlParameterSource(params)) { rs, _ ->
                     rs.getString("tilkjentYtelseForUtbetaling")
-                } ?: error("Finner ikke data for behandling=$behandlingId")
+                }
+        if (dataJson == null) {
+            logger.warn("behandling=$behandlingId finner ikke iverksett_resultat")
+            return
+        }
         val iverksett = objectMapper.readTree(dataJson) as ObjectNode
         iverksett.put("startdato", startdato)
 
