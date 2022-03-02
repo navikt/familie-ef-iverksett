@@ -8,6 +8,8 @@ import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.web.client.postForEntity
+import org.springframework.http.HttpEntity
 import java.util.UUID
 
 internal class PatchAktivitetServiceTest : ServerTest() {

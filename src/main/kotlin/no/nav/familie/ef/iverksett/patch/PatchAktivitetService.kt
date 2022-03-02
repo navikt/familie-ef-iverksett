@@ -10,7 +10,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -21,9 +22,10 @@ import java.util.UUID
 @RequestMapping("api/patch-aktivitet")
 class PatchAktivitetController(private val patchAktivitetService: PatchAktivitetService) {
 
-    @GetMapping
-    fun patch(@RequestParam oppdaterVedtak: Boolean = false) {
-        patchAktivitetService.patch(oppdaterVedtak)
+    @PostMapping
+    fun patch(@RequestBody data: List<String>,
+              @RequestParam oppdaterVedtak: Boolean = false) {
+        patchAktivitetService.patch(data, oppdaterVedtak)
     }
 }
 
@@ -32,10 +34,8 @@ class PatchAktivitetService(private val namedParameterJdbcTemplate: NamedParamet
 
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
-    private val behandlingIder = setOf<String>()
-
-    fun patch(oppdaterVedtak: Boolean) {
-        behandlingIder.map { UUID.fromString(it) }.forEach {
+    fun patch(data: List<String>, oppdaterVedtak: Boolean) {
+        data.map { UUID.fromString(it) }.forEach {
             patch(it, oppdaterVedtak)
         }
     }
