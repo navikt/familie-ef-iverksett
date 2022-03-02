@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.patch
 
-import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import com.fasterxml.jackson.databind.node.ObjectNode
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettType
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -43,35 +42,36 @@ class PatchService(private val namedParameterJdbcTemplate: NamedParameterJdbcTem
     fun patch(behandlingId: UUID, oppdaterVedtak: Boolean) {
         val params = mapOf("behandlingId" to behandlingId,
                            "type" to IverksettType.VANLIG.name)
-        val dataJson =
-                namedParameterJdbcTemplate.queryForObject("""SELECT data FROM iverksett WHERE behandling_id = :behandlingId AND type = :type""",
-                                                          MapSqlParameterSource(params)) { rs, _ ->
-                    rs.getString("data")
-                } ?: error("Finner ikke data for behandling=$behandlingId")
-        val iverksett = objectMapper.readValue<Iverksett>(dataJson)
+        val sql = """SELECT data FROM iverksett WHERE behandling_id = :behandlingId AND type = :type"""
+        val json = namedParameterJdbcTemplate.queryForObject(sql, MapSqlParameterSource(params)) { rs, _ ->
+            rs.getString("data")
+        } ?: error("Finner ikke data for behandling=$behandlingId")
 
-        if (objectMapper.readTree(objectMapper.writeValueAsString(iverksett)) != objectMapper.readTree(dataJson)) {
+        val iverksett = objectMapper.readTree(json)
+
+        if (objectMapper.readTree(objectMapper.writeValueAsString(iverksett)) != objectMapper.readTree(json)) {
             logger.info("Json er ulik for behandling=$behandlingId")
             return
         }
-        val vedtaksperioder = iverksett.vedtak.vedtaksperioder
-        if (vedtaksperioder.size != 1) {
-            logger.info("Vedtaksperioder har size=${vedtaksperioder.size} behandling=$behandlingId")
+        val vedtaksperioder = iverksett.get("vedtak").get("vedtaksperioder")
+        if (vedtaksperioder.size() != 1) {
+            logger.info("Vedtaksperioder har size=${vedtaksperioder.size()} behandling=$behandlingId")
             return
         }
-        val aktivitet = vedtaksperioder.single().aktivitet
+
+        val periode = vedtaksperioder.single()
+        val aktivitet = periode.get("aktivitet").asText().let { AktivitetType.valueOf(it) }
         if (aktivitet != AktivitetType.MIGRERING) {
             logger.info("aktivitet=$aktivitet for behandling=$behandlingId")
             return
         }
+        (periode as ObjectNode).put("aktivitet", AktivitetType.FORSØRGER_REELL_ARBEIDSSØKER.name)
         if (oppdaterVedtak) {
-            val oppdatertIverksett =
-                    iverksett.copy(vedtak = iverksett.vedtak.copy(vedtaksperioder = vedtaksperioder.map { it.copy(aktivitet = AktivitetType.FORSØRGER_REELL_ARBEIDSSØKER) }))
             val mapSqlParameterSource = MapSqlParameterSource(params.toMutableMap().apply {
-                put("data", objectMapper.writeValueAsString(oppdatertIverksett))
+                put("data", objectMapper.writeValueAsString(iverksett))
             })
-            namedParameterJdbcTemplate.update("""UPDATE iverksett SET data=:data::JSON WHERE behandling_id = :behandlingId AND type = :type""",
-                                              mapSqlParameterSource)
+            val updateSql = """UPDATE iverksett SET data=:data::JSON WHERE behandling_id = :behandlingId AND type = :type"""
+            namedParameterJdbcTemplate.update(updateSql, mapSqlParameterSource)
         }
     }
 }

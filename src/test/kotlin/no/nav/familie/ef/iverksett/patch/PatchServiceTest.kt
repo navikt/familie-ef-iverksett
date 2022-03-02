@@ -19,16 +19,26 @@ internal class PatchServiceTest : ServerTest() {
     @Test
     internal fun `skal oppdatere iverksett`() {
         val behandlingId = UUID.randomUUID()
-        val iverksett = lagIverksettMedAktivitetMigrering(behandlingId)
+        val iverksett = lagIverksettMedAktivitetMigrering(behandlingId, AktivitetType.MIGRERING)
         iverksettingRepository.lagre(behandlingId, iverksett, null)
         patchService.patch(behandlingId, true)
         assertThat(iverksettingRepository.hent(behandlingId).vedtak.vedtaksperioder.single().aktivitet)
                 .isEqualTo(AktivitetType.FORSØRGER_REELL_ARBEIDSSØKER)
     }
 
-    private fun lagIverksettMedAktivitetMigrering(behandlingId: UUID): Iverksett {
+    @Test
+    internal fun `skal ikke oppdatere iverksett hvis den ikke har riktig aktivitet`() {
+        val behandlingId = UUID.randomUUID()
+        val iverksett = lagIverksettMedAktivitetMigrering(behandlingId, AktivitetType.IKKE_AKTIVITETSPLIKT)
+        iverksettingRepository.lagre(behandlingId, iverksett, null)
+        patchService.patch(behandlingId, true)
+        assertThat(iverksettingRepository.hent(behandlingId).vedtak.vedtaksperioder.single().aktivitet)
+                .isEqualTo(AktivitetType.IKKE_AKTIVITETSPLIKT)
+    }
+
+    private fun lagIverksettMedAktivitetMigrering(behandlingId: UUID, aktivitetType: AktivitetType): Iverksett {
         val iverksett = opprettIverksett(behandlingId, null, emptyList(), null)
         val vedtaksperioder = iverksett.vedtak.vedtaksperioder
-        return iverksett.copy(vedtak = iverksett.vedtak.copy(vedtaksperioder = vedtaksperioder.map { it.copy(aktivitet = AktivitetType.MIGRERING) }))
+        return iverksett.copy(vedtak = iverksett.vedtak.copy(vedtaksperioder = vedtaksperioder.map { it.copy(aktivitet = aktivitetType) }))
     }
 }
