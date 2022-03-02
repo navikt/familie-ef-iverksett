@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.hovedflyt
 import no.nav.familie.ef.iverksett.infrastruktur.task.publiseringsflyt
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
@@ -9,7 +10,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveTask
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
-import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
@@ -28,11 +28,14 @@ import java.util.UUID
 class IverksettingService(val taskRepository: TaskRepository,
                           val oppdragClient: OppdragClient,
                           val iverksettingRepository: IverksettingRepository,
-                          val tilstandRepository: TilstandRepository) {
+                          val tilstandRepository: TilstandRepository,
+                          val featureToggleService: FeatureToggleService) {
 
     @Transactional
     fun startIverksetting(iverksett: Iverksett, brev: Brev?) {
-
+        if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
+            error("Kan ikke iverksette akkurat nå")
+        }
         iverksettingRepository.lagre(
                 iverksett.behandling.behandlingId,
                 iverksett,

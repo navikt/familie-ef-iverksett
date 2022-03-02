@@ -18,6 +18,9 @@ class SimuleringService(
 ) {
 
     fun hentSimulering(simulering: Simulering): DetaljertSimuleringResultat {
+        if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
+            error("Kan ikke sende inn simmulere")
+        }
         try {
             val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
                 tilstandRepository.hentTilkjentYtelse(simulering.forrigeBehandlingId)
@@ -51,6 +54,9 @@ class SimuleringService(
     }
 
     fun hentBeriketSimulering(simulering: Simulering): BeriketSimuleringsresultat {
+        if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
+            error("Kan ikke sende inn simmulere")
+        }
         val detaljertSimuleringResultat = hentSimulering(simulering)
         val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
 
