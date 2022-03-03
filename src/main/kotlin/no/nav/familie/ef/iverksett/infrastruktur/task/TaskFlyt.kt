@@ -29,7 +29,7 @@ fun hovedflyt() = listOf(
 
 fun publiseringsflyt() = listOf(
     TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
-    TaskType(SendPerioderTilInfotrygdTask.TYPE), // går ikke videre ved migrering
+    TaskType(SendPerioderTilInfotrygdTask.TYPE), // Hopper til vedtakstatistikk ved migrering
     TaskType(SendFattetVedtakTilArenaTask.TYPE),
     TaskType(PubliserVedtakTilKafkaTask.TYPE),
     TaskType(OpprettOppfølgingsOppgaveTask.TYPE),
@@ -46,7 +46,7 @@ fun Task.opprettNesteTask(): Task {
 }
 
 fun Task.opprettNestePubliseringTask(erMigrering: Boolean = false): Task {
-    val nesteTask = if (erMigrering) {
+    val nesteTask = if (erMigrering && this.type == SendPerioderTilInfotrygdTask.TYPE) {
         TaskType(VedtakstatistikkTask.TYPE)
     } else {
         TaskType(this.type).nestePubliseringsflytTask()
