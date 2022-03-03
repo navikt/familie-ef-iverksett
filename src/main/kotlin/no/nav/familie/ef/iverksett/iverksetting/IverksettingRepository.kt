@@ -75,7 +75,7 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
 
     //Brukt i patch
     fun hentAlleMigrerte(): List<UUID> {
-        val alleMigrerteSql = "select data->'behandling'->'behandlingId' as behandling_id from iverksett where data->'behandling'->>'behandlingÅrsak' = 'MIGRERING'"
+        val alleMigrerteSql = "select behandling_id from iverksett where data->'behandling'->>'behandlingÅrsak' = 'MIGRERING'"
 
         return namedParameterJdbcTemplate.query(alleMigrerteSql, iverksettMapper)
     }
