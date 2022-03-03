@@ -28,9 +28,7 @@ class SimuleringService(
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse,
-                    featureToggleService.isEnabled("familie.ef.iverksett.opphoer-v2")
-            )
+                    forrigeTilkjentYtelse)
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
                                      ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
