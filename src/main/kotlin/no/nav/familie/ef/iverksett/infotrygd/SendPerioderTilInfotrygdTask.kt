@@ -48,10 +48,9 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
         if (iverksett.erMigrering()) {
-            logger.info("Siste tasken i publiseringsflyt for behandling=$behandlingId då årsaken er migrering")
-        } else {
-            taskRepository.save(task.opprettNestePubliseringTask())
+            logger.info("Siste tasken i publiseringsflyt er SendPerioderTilInfotrygd før vedtakstatistikk sendes for behandling=$behandlingId då årsaken er migrering")
         }
+        taskRepository.save(task.opprettNestePubliseringTask(iverksett.erMigrering()))
     }
 
     companion object {
