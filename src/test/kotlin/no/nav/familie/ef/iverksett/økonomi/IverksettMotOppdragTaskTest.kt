@@ -9,7 +9,6 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
-import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.prosessering.domene.Task
@@ -33,8 +32,7 @@ internal class IverksettMotOppdragTaskTest {
                     iverksettingRepository = iverksettingRepository,
                     oppdragClient = oppdragClient,
                     taskRepository = taskRepository,
-                    tilstandRepository = tilstandRepository,
-                    featureToggleService = mockFeatureToggleService()
+                    tilstandRepository = tilstandRepository
             )
 
     @BeforeEach
