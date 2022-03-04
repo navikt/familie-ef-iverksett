@@ -23,15 +23,11 @@ class FellesTilEksterneKontrakterEnumTest {
     @Test
     fun `for alle eksterne kontrakter enums, forvent fullstendig mapping fra familie kontrakter enums`() {
         Vedtaksresultat.values().forEach { Vedtak.valueOf(it.name) }
-        BehandlingÅrsak.values()
-                .filter { it !in setOf(BehandlingÅrsak.MIGRERING, BehandlingÅrsak.SANKSJON_1_MND) }
-                .forEach { BehandlingÅrsakEkstern.valueOf(it.name) }
+        BehandlingÅrsak.values().forEach { BehandlingÅrsakEkstern.valueOf(it.name) }
         BehandlingType.values().forEach { BehandlingTypeEkstern.valueOf(it.name) }
         Vilkårsresultat.values().forEach { VilkårsresultatEkstern.valueOf(it.name) }
-        VedtaksperiodeType.values()
-                .filter { it != VedtaksperiodeType.MIGRERING }
-                .forEach { VedtakPeriodeTypeEkstern.valueOf(it.name) }
-        AktivitetType.values().filter { it != AktivitetType.MIGRERING }.forEach { AktivitetTypeEkstern.valueOf(it.name) }
+        VedtaksperiodeType.values().forEach { VedtakPeriodeTypeEkstern.valueOf(it.name) }
+        AktivitetType.values().forEach { AktivitetTypeEkstern.valueOf(it.name) }
         AdressebeskyttelseGradering.values().forEach { AdresseBeskyttelseEkstern.valueOf(it.name) }
         StønadType.values().forEach { StønadTypeEkstern.valueOf(it.name) }
     }
