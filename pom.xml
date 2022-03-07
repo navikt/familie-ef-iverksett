@@ -20,7 +20,7 @@
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20220221162703_957e034</felles.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-        <mockk.version>1.12.2</mockk.version>
+        <mockk.version>1.12.3</mockk.version>
         <revision>1.0</revision>
         <dotenv.version>6.2.2</dotenv.version>
         <logback.spring.starter>2.11.0</logback.spring.starter>
