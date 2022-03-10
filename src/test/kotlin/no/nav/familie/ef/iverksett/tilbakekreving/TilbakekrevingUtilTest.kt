@@ -1,10 +1,13 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.medFeilutbetaling
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingMedVarsel
+import no.nav.familie.kontrakter.felles.simulering.Simuleringsoppsummering
+import no.nav.familie.kontrakter.felles.simulering.Simuleringsperiode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import org.assertj.core.api.Assertions.assertThat
@@ -15,8 +18,8 @@ import java.util.UUID
 
 internal class TilbakekrevingUtilTest {
 
-    val fom = LocalDate.of(2021, 1, 1)
-    val tom = LocalDate.of(2021, 12, 31)
+    private val fom: LocalDate = LocalDate.of(2021, 1, 1)
+    private val tom: LocalDate = LocalDate.of(2021, 12, 31)
     val perioder = listOf(Periode(fom = fom, tom = tom))
 
     @Test
@@ -34,6 +37,62 @@ internal class TilbakekrevingUtilTest {
         val nyTilbakekreving = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat).vedtak.tilbakekreving
 
         assertThat(nyTilbakekreving).isEqualTo(tilbakekrevingsdetaljer)
+    }
+
+    @Test
+    fun `oppdaterVarsel skal bare ta med perioder som har feilutbetalinger i varselet`() {
+        val simuleringsoppsummering =
+                Simuleringsoppsummering(perioder = listOf(Simuleringsperiode(fom = LocalDate.of(2021, 12, 1),
+                                                                             tom = LocalDate.of(2021, 12, 31),
+                                                                             forfallsdato = LocalDate.of(2022, 3, 8),
+                                                                             nyttBeløp = BigDecimal(11295.0),
+                                                                             tidligereUtbetalt = BigDecimal(11295.0),
+                                                                             resultat = BigDecimal(0.0),
+                                                                             feilutbetaling = BigDecimal(0)),
+                                                          Simuleringsperiode(fom = LocalDate.of(2022, 1, 1),
+                                                                             tom = LocalDate.of(2022, 1, 31),
+                                                                             forfallsdato = LocalDate.of(2022, 3, 8),
+                                                                             nyttBeløp = BigDecimal(8745.0),
+                                                                             tidligereUtbetalt = BigDecimal(11295.0),
+                                                                             resultat = BigDecimal(-2550.0),
+                                                                             feilutbetaling = BigDecimal(2550.0)),
+                                                          Simuleringsperiode(fom = LocalDate.of(2022, 2, 1),
+                                                                             tom = LocalDate.of(2022, 2, 28),
+                                                                             forfallsdato = LocalDate.of(2022, 3, 8),
+                                                                             nyttBeløp = BigDecimal(8745.0),
+                                                                             tidligereUtbetalt = BigDecimal(11295.0),
+                                                                             resultat = BigDecimal(-2550.0),
+                                                                             feilutbetaling = BigDecimal(2550.0)),
+                                                          Simuleringsperiode(fom = LocalDate.of(2022, 3, 1),
+                                                                             tom = LocalDate.of(2022, 3, 31),
+                                                                             forfallsdato = LocalDate.of(2022, 3, 17),
+                                                                             nyttBeløp = BigDecimal(4620.0),
+                                                                             tidligereUtbetalt = BigDecimal(0),
+                                                                             resultat = BigDecimal(4620.0),
+                                                                             feilutbetaling = BigDecimal(0)),
+                                                          Simuleringsperiode(fom = LocalDate.of(2022, 4, 1),
+                                                                             tom = LocalDate.of(2022, 4, 30),
+                                                                             forfallsdato = LocalDate.of(2022, 4, 13),
+                                                                             nyttBeløp = BigDecimal(4620.0),
+                                                                             tidligereUtbetalt = BigDecimal(0),
+                                                                             resultat = BigDecimal(4620.0),
+                                                                             feilutbetaling = BigDecimal(0))),
+                                        fomDatoNestePeriode = LocalDate.of(2022, 3, 1),
+                                        etterbetaling = BigDecimal(0.0),
+                                        feilutbetaling = BigDecimal(5100.0),
+                                        fom = LocalDate.of(2021, 12, 1),
+                                        tomDatoNestePeriode = LocalDate.of(2022, 3, 31),
+                                        forfallsdatoNestePeriode = LocalDate.of(2022, 3, 17),
+                                        tidSimuleringHentet = LocalDate.of(2022, 3, 10),
+                                        tomSisteUtbetaling = LocalDate.of(2022, 2, 28))
+        val tilbakekrevingsdetaljer =
+                Tilbakekrevingsdetaljer(Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+                                        TilbakekrevingMedVarsel("varseltekst", BigDecimal.ZERO, listOf()))
+
+        val varsel = tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering)
+
+        assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.size).isEqualTo(2)
+        assertThat(varsel.tilbakekrevingMedVarsel?.sumFeilutbetaling).isEqualTo(BigDecimal(5100.0))
     }
 
     @Test

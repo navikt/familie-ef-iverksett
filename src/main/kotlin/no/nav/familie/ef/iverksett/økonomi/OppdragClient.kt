@@ -52,7 +52,7 @@ class OppdragClient(@Value("\${FAMILIE_OPPDRAG_API_URL}")
         return postForEntity<Ressurs<String>>(konsistensavstemmingUri, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
     }
 
-    fun hentSimulering(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat {
+    fun hentSimuleringsresultat(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat {
         return postForEntity<Ressurs<DetaljertSimuleringResultat>>(postSimuleringUri, utbetalingsoppdrag).getDataOrThrow()
     }
 

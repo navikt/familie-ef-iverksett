@@ -6,12 +6,7 @@ import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
 import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
-import no.nav.familie.ef.iverksett.januar
-import no.nav.familie.ef.iverksett.juli
-import no.nav.familie.ef.iverksett.posteringer
 import no.nav.familie.ef.iverksett.simuleringDto
-import no.nav.familie.ef.iverksett.simuleringsoppsummering
-import no.nav.familie.ef.iverksett.tilDetaljertSimuleringsresultat
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
@@ -21,7 +16,6 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.Utbetalingsoppdra
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
-import no.nav.familie.kontrakter.felles.simulering.PosteringType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -30,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.exchange
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
-import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
 
@@ -62,7 +55,7 @@ class SimuleringControllerTest : ServerTest() {
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
         assertThat(respons.body?.data).isEqualTo(detaljertSimuleringResultat())
-        verify(exactly = 1) { oppdragClient.hentSimulering(any()) }
+        verify(exactly = 1) { oppdragClient.hentSimuleringsresultat(any()) }
     }
 
     @Test
@@ -75,7 +68,7 @@ class SimuleringControllerTest : ServerTest() {
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
         assertThat(respons.body?.data).isEqualTo(beriketSimuleringsresultat())
-        verify(exactly = 1) { oppdragClient.hentSimulering(any()) }
+        verify(exactly = 1) { oppdragClient.hentSimuleringsresultat(any()) }
     }
 
     @Test
@@ -89,7 +82,7 @@ class SimuleringControllerTest : ServerTest() {
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
         assertThat(respons.body?.data).isEqualTo(lagSimuleringsresultatMedTomListe())
-        verify(exactly = 0) { oppdragClient.hentSimulering(any()) }
+        verify(exactly = 0) { oppdragClient.hentSimuleringsresultat(any()) }
     }
 
     @Test
@@ -103,7 +96,7 @@ class SimuleringControllerTest : ServerTest() {
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
         assertThat(respons.body?.data).isEqualTo(lagSimuleringsresultatMedTomListe())
-        verify(exactly = 0) { oppdragClient.hentSimulering(any()) }
+        verify(exactly = 0) { oppdragClient.hentSimuleringsresultat(any()) }
     }
 
     @Test
@@ -119,7 +112,7 @@ class SimuleringControllerTest : ServerTest() {
                                                                                   HttpEntity(revurdering, headers))
 
         assertThat(response.body?.data?.detaljer?.simuleringMottaker).isNotEmpty
-        verify(exactly = 1) { oppdragClient.hentSimulering(any()) }
+        verify(exactly = 1) { oppdragClient.hentSimuleringsresultat(any()) }
     }
 
     @Test
@@ -135,7 +128,7 @@ class SimuleringControllerTest : ServerTest() {
                                                                                  HttpEntity(revurdering, headers))
 
         assertThat(respons.body?.data).isEqualTo(lagSimuleringsresultatMedTomListe())
-        verify(exactly = 0) { oppdragClient.hentSimulering(any()) }
+        verify(exactly = 0) { oppdragClient.hentSimuleringsresultat(any()) }
     }
 
     private fun lagFørstegangsbehandlingUtenBeløp(behandlingId: UUID) {
