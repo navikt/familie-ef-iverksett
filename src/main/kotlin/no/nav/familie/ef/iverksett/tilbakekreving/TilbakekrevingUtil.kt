@@ -18,15 +18,15 @@ fun Iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleri
     val tilbakekreving = this.vedtak.tilbakekreving
     val simuleringsoppsummering = beriketSimuleringsresultat.oppsummering
 
-    val nyTilbakekreving: Tilbakekrevingsdetaljer?
-    if (tilbakekreving == null && simuleringsoppsummering.harFeilutbetaling)
-        nyTilbakekreving = TILBAKEKREVING_UTEN_VARSEL
-    else if (tilbakekreving != null && !simuleringsoppsummering.harFeilutbetaling)
-        nyTilbakekreving = null
-    else if (harAvvikIVarsel(tilbakekreving, simuleringsoppsummering))
-        nyTilbakekreving = tilbakekreving?.oppdaterVarsel(simuleringsoppsummering)
-    else
-        nyTilbakekreving = tilbakekreving
+    val nyTilbakekreving: Tilbakekrevingsdetaljer? =
+            if (tilbakekreving == null && simuleringsoppsummering.harFeilutbetaling)
+                TILBAKEKREVING_UTEN_VARSEL
+            else if (tilbakekreving != null && !simuleringsoppsummering.harFeilutbetaling)
+                null
+            else if (harAvvikIVarsel(tilbakekreving, simuleringsoppsummering))
+                tilbakekreving?.oppdaterVarsel(simuleringsoppsummering)
+            else
+                tilbakekreving
 
     return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
 }
@@ -46,12 +46,14 @@ val Tilbakekrevingsdetaljer?.skalTilbakekreves: Boolean
 val Simuleringsoppsummering.harFeilutbetaling: Boolean
     get() = this.feilutbetaling > BigDecimal.ZERO
 
-fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringsoppsummering): Tilbakekrevingsdetaljer? {
+fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringsoppsummering): Tilbakekrevingsdetaljer {
 
-    return this.copy(
-            tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel?.copy(
-                    sumFeilutbetaling = simuleringsoppsummering.feilutbetaling,
+    return this.copy(tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel
+            ?.copy(sumFeilutbetaling = simuleringsoppsummering.feilutbetaling,
                     // Kjøres ikke konsolidering her. Det (kan hende at det) gjøres i ef-sak
-                    perioder = simuleringsoppsummering.perioder.map { Periode(it.fom, it.tom) }))
+                   perioder = simuleringsoppsummering.perioder
+                           .filter { it.feilutbetaling.compareTo(BigDecimal.ZERO) != 0 }
+                           .map { Periode(it.fom, it.tom) }
+            ))
 
 }

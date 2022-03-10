@@ -23,7 +23,7 @@ class OppdragClientMock {
         every { oppdragClientMock.konsistensavstemming(any()) } returns "OK"
         every { oppdragClientMock.grensesnittavstemming(any()) } returns "OK"
         every { oppdragClientMock.iverksettOppdrag(any()) } returns "OK"
-        every { oppdragClientMock.hentSimulering(any()) } returns detaljertSimuleringResultat()
+        every { oppdragClientMock.hentSimuleringsresultat(any()) } returns detaljertSimuleringResultat()
         every { oppdragClientMock.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
 
         return oppdragClientMock
