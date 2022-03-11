@@ -2,12 +2,12 @@ package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import no.nav.familie.ef.iverksett.util.ObjectMapperProvider
+import no.nav.familie.http.client.RetryOAuth2HttpClient
 import no.nav.familie.http.config.RestTemplateAzure
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.log.filter.LogFilter
 import no.nav.familie.log.filter.RequestTimeFilter
 import no.nav.security.token.support.client.core.http.OAuth2HttpClient
-import no.nav.security.token.support.client.spring.oauth2.DefaultOAuth2HttpClient
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.slf4j.LoggerFactory
@@ -85,9 +85,9 @@ class ApplicationConfig {
     @Bean
     @Primary
     fun oAuth2HttpClient(): OAuth2HttpClient {
-        return DefaultOAuth2HttpClient(RestTemplateBuilder()
-                                               .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
-                                               .setReadTimeout(Duration.of(4, ChronoUnit.SECONDS)))
+        return RetryOAuth2HttpClient(RestTemplateBuilder()
+                                             .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
+                                             .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS)))
     }
 
 }
