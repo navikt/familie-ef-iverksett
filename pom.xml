@@ -34,6 +34,7 @@
         <ibm-mq-client.version>9.2.5.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
         <unleash.version>4.4.1</unleash.version>
+        <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
     </properties>
 
     <repositories>
@@ -238,7 +239,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
-            <artifactId>token-validation-test-support</artifactId>
+            <artifactId>token-validation-spring-test</artifactId>
             <version>${token-validation-spring.version}</version>
             <scope>test</scope>
         </dependency>

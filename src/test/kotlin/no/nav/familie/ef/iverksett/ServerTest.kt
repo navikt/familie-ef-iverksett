@@ -3,7 +3,9 @@ package no.nav.familie.ef.iverksett
 import com.github.tomakehurst.wiremock.WireMockServer
 import no.nav.familie.ef.iverksett.infrastruktur.configuration.ApplicationConfig
 import no.nav.familie.ef.iverksett.infrastruktur.database.DbContainerInitializer
-import no.nav.familie.ef.iverksett.util.onBehalfOfToken
+import no.nav.familie.ef.iverksett.util.TokenUtil
+import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ContextConfiguration(initializers = [DbContainerInitializer::class])
 @SpringBootTest(classes = [ApplicationLocal::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("servertest", "mock-oppdrag", "mock-kafkatemplate", "mock-tilbakekreving", "mock-oauth", "mock-integrasjoner")
+@EnableMockOAuth2Server
 abstract class ServerTest {
 
     protected val restTemplate = TestRestTemplate(ApplicationConfig().restTemplateBuilder())
@@ -32,6 +35,9 @@ abstract class ServerTest {
 
     @Autowired
     private lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
+
+    @Autowired
+    private lateinit var mockOAuth2Server: MockOAuth2Server
 
     @LocalServerPort
     private var port: Int? = 0
@@ -62,7 +68,8 @@ abstract class ServerTest {
 
     protected val lokalTestToken: String
         get() {
-            return onBehalfOfToken()
+            @Suppress("SpringJavaInjectionPointsAutowiringInspection")
+            return TokenUtil.onBehalfOfToken(mockOAuth2Server, saksbehandler = "julenissen")
         }
 
 }
