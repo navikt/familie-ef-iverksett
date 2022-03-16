@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
-import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -41,12 +41,12 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
         }
         val oppgaveId = oppgaveClient.opprettOppgave(OppgaveUtil.opprettOppgaveRequest(oppgaveForBarn.eksternFagsakId,
                                                                                        oppgaveForBarn.personIdent,
-                                                                                       StønadType.valueOf(oppgaveForBarn.stønadType),
+                                                                                       oppgaveForBarn.stønadType,
                                                                                        enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
                                                                                        Oppgavetype.InnhentDokumentasjon,
-                                                                                       oppgaveForBarn.beskrivelse))?.let { it }
+                                                                                       oppgaveForBarn.beskrivelse))
                         ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
-        logger.info("Opprettet oppgave med oppgaveId=$oppgaveId")
+        logger.info("Opprettet oppgave med oppgaveId=$oppgaveId for behandling=${oppgaveForBarn.behandlingId}")
     }
 
     private fun innhentDokumentasjonOppgaveFinnes(oppgaveForBarn: OppgaveForBarn): Boolean {
@@ -55,8 +55,9 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
                                                     aktørId = aktørId,
                                                     oppgavetype = Oppgavetype.InnhentDokumentasjon)
         val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
-                ?.mapNotNull { it.beskrivelse }
-                ?.map { it.trim().lowercase() }
+                .mapNotNull { it.beskrivelse }
+                // Burde denne filtrere vekk allerede lukkede oppgaver? Sånn att vi ikke risikerer att vi finner en gammel oppgave? Og då har match mot den
+                .map { it.trim().lowercase() }
         return oppgaveBeskrivelser.contains(oppgaveForBarn.beskrivelse.trim().lowercase())
     }
 
