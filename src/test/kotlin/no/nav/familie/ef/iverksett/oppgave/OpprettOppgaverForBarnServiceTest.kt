@@ -7,6 +7,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
@@ -51,6 +52,6 @@ internal class OpprettOppgaverForBarnServiceTest {
     }
 
     private fun opprettOppgaveForBarn(id: UUID = UUID.randomUUID(), beskrivelse: String = "beskrivelse"): OppgaveForBarn {
-        return OppgaveForBarn(id, 0L, "12345678910", StønadType.OVERGANGSSTØNAD.name, beskrivelse)
+        return OppgaveForBarn(id, 0L, "12345678910", StønadType.OVERGANGSSTØNAD, beskrivelse)
     }
 }

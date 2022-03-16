@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
