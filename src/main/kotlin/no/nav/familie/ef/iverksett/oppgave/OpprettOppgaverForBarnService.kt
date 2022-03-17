@@ -7,11 +7,13 @@ import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
+import no.nav.familie.kontrakter.felles.oppgave.StatusEnum
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
@@ -39,12 +41,18 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
             logger.info("Oppgave av type innhent dokumentasjon finnes allerede for behandlingId=${oppgaveForBarn.behandlingId}")
             return
         }
-        val oppgaveId = oppgaveClient.opprettOppgave(OppgaveUtil.opprettOppgaveRequest(oppgaveForBarn.eksternFagsakId,
-                                                                                       oppgaveForBarn.personIdent,
-                                                                                       oppgaveForBarn.stønadType,
-                                                                                       enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
-                                                                                       Oppgavetype.InnhentDokumentasjon,
-                                                                                       oppgaveForBarn.beskrivelse))
+
+        val oppgaveType = if (oppgaveForBarn.aktivFra == null) Oppgavetype.InnhentDokumentasjon else Oppgavetype.Fremlegg
+
+        val opprettOppgaveRequest = OppgaveUtil.opprettOppgaveRequest(
+                oppgaveForBarn.eksternFagsakId,
+                oppgaveForBarn.personIdent,
+                oppgaveForBarn.stønadType,
+                enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
+                oppgaveType,
+                oppgaveForBarn.beskrivelse,
+                oppgaveForBarn.aktivFra)
+        val oppgaveId = oppgaveClient.opprettOppgave(opprettOppgaveRequest)
                         ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId for behandling=${oppgaveForBarn.behandlingId}")
     }
@@ -53,10 +61,10 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
         val aktørId = familieIntegrasjonerClient.hentAktørId(oppgaveForBarn.personIdent)
         val finnOppgaveRequest = FinnOppgaveRequest(tema = Tema.ENF,
                                                     aktørId = aktørId,
-                                                    oppgavetype = Oppgavetype.InnhentDokumentasjon)
+                                                    fristFomDato = LocalDate.now().minusDays(1))
         val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
+                .filter { it.status != StatusEnum.FERDIGSTILT || it.status != StatusEnum.FEILREGISTRERT }
                 .mapNotNull { it.beskrivelse }
-                // Burde denne filtrere vekk allerede lukkede oppgaver? Sånn att vi ikke risikerer att vi finner en gammel oppgave? Og då har match mot den
                 .map { it.trim().lowercase() }
         return oppgaveBeskrivelser.contains(oppgaveForBarn.beskrivelse.trim().lowercase())
     }
