@@ -61,7 +61,8 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
         val aktørId = familieIntegrasjonerClient.hentAktørId(oppgaveForBarn.personIdent)
         val finnOppgaveRequest = FinnOppgaveRequest(tema = Tema.ENF,
                                                     aktørId = aktørId,
-                                                    fristFomDato = LocalDate.now().minusDays(1))
+                                                    fristFomDato = LocalDate.now().minusWeeks(2),
+                                                    fristTomDato = LocalDate.now().plusWeeks(2))
         val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
                 .filter { it.status != StatusEnum.FERDIGSTILT || it.status != StatusEnum.FEILREGISTRERT }
                 .mapNotNull { it.beskrivelse }
