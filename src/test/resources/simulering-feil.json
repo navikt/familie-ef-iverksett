@@ -1,0 +1,350 @@
+{
+  "simuleringMottaker": [
+    {
+      "simulertPostering": [
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2021-11-01",
+          "tom": "2021-11-30",
+          "betalingType": "KREDIT",
+          "beløp": -9120.00,
+          "posteringType": "JUSTERING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2021-11-01",
+          "tom": "2021-11-30",
+          "betalingType": "DEBIT",
+          "beløp": 9120.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2021-11-01",
+          "tom": "2021-11-30",
+          "betalingType": "DEBIT",
+          "beløp": 4275.00,
+          "posteringType": "FEILUTBETALING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2021-11-01",
+          "tom": "2021-11-30",
+          "betalingType": "DEBIT",
+          "beløp": 4275.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2021-11-01",
+          "tom": "2021-11-30",
+          "betalingType": "DEBIT",
+          "beløp": 9120.00,
+          "posteringType": "JUSTERING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2021-11-01",
+          "tom": "2021-11-30",
+          "betalingType": "KREDIT",
+          "beløp": -4275.00,
+          "posteringType": "MOTP",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2021-11-01",
+          "tom": "2021-11-30",
+          "betalingType": "KREDIT",
+          "beløp": -13395.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2021-12-01",
+          "tom": "2021-12-31",
+          "betalingType": "DEBIT",
+          "beløp": 13395.00,
+          "posteringType": "FEILUTBETALING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2021-12-01",
+          "tom": "2021-12-31",
+          "betalingType": "DEBIT",
+          "beløp": 13395.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2021-12-01",
+          "tom": "2021-12-31",
+          "betalingType": "KREDIT",
+          "beløp": -13395.00,
+          "posteringType": "MOTP",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2021-12-01",
+          "tom": "2021-12-31",
+          "betalingType": "KREDIT",
+          "beløp": -13395.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2022-01-01",
+          "tom": "2022-01-31",
+          "betalingType": "KREDIT",
+          "beløp": -2228.00,
+          "posteringType": "FORSKUDSSKATT",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2022-01-01",
+          "tom": "2022-01-31",
+          "betalingType": "KREDIT",
+          "beløp": -13395.00,
+          "posteringType": "JUSTERING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2022-01-01",
+          "tom": "2022-01-31",
+          "betalingType": "DEBIT",
+          "beløp": 19950.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-01-01",
+          "tom": "2022-01-31",
+          "betalingType": "DEBIT",
+          "beløp": 13395.00,
+          "posteringType": "JUSTERING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-01-01",
+          "tom": "2022-01-31",
+          "betalingType": "KREDIT",
+          "beløp": -13395.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2022-02-01",
+          "tom": "2022-02-28",
+          "betalingType": "KREDIT",
+          "beløp": -8970.00,
+          "posteringType": "JUSTERING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2022-02-01",
+          "tom": "2022-02-28",
+          "betalingType": "DEBIT",
+          "beløp": 8970.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-02-01",
+          "tom": "2022-02-28",
+          "betalingType": "DEBIT",
+          "beløp": 4425.00,
+          "posteringType": "FEILUTBETALING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-02-01",
+          "tom": "2022-02-28",
+          "betalingType": "DEBIT",
+          "beløp": 4425.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-02-01",
+          "tom": "2022-02-28",
+          "betalingType": "DEBIT",
+          "beløp": 8970.00,
+          "posteringType": "JUSTERING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-02-01",
+          "tom": "2022-02-28",
+          "betalingType": "KREDIT",
+          "beløp": -4425.00,
+          "posteringType": "MOTP",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-02-01",
+          "tom": "2022-02-28",
+          "betalingType": "KREDIT",
+          "beløp": -13395.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2022-03-01",
+          "tom": "2022-03-31",
+          "betalingType": "KREDIT",
+          "beløp": -9645.00,
+          "posteringType": "JUSTERING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2022-03-01",
+          "tom": "2022-03-31",
+          "betalingType": "DEBIT",
+          "beløp": 9645.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-03-01",
+          "tom": "2022-03-31",
+          "betalingType": "DEBIT",
+          "beløp": 3250.00,
+          "posteringType": "FEILUTBETALING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-03-01",
+          "tom": "2022-03-31",
+          "betalingType": "DEBIT",
+          "beløp": 3750.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-03-01",
+          "tom": "2022-03-31",
+          "betalingType": "DEBIT",
+          "beløp": 9645.00,
+          "posteringType": "JUSTERING",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-03-01",
+          "tom": "2022-03-31",
+          "betalingType": "KREDIT",
+          "beløp": -3250.00,
+          "posteringType": "MOTP",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-03-01",
+          "tom": "2022-03-31",
+          "betalingType": "KREDIT",
+          "beløp": -500.00,
+          "posteringType": "TREKK",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-03-01",
+          "tom": "2022-03-31",
+          "betalingType": "DEBIT",
+          "beløp": 500.00,
+          "posteringType": "TREKK",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD",
+          "fom": "2022-03-01",
+          "tom": "2022-03-31",
+          "betalingType": "KREDIT",
+          "beløp": -13395.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-03-18",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2022-04-01",
+          "tom": "2022-04-30",
+          "betalingType": "KREDIT",
+          "beløp": -3164.00,
+          "posteringType": "FORSKUDSSKATT",
+          "forfallsdato": "2022-04-13",
+          "utenInntrekk": false
+        },
+        {
+          "fagOmrådeKode": "ENSLIG_FORSØRGER_OVERGANGSSTØNAD",
+          "fom": "2022-04-01",
+          "tom": "2022-04-30",
+          "betalingType": "DEBIT",
+          "beløp": 9307.00,
+          "posteringType": "YTELSE",
+          "forfallsdato": "2022-04-13",
+          "utenInntrekk": false
+        }
+      ],
+      "mottakerNummer": "1",
+      "mottakerType": "BRUKER"
+    }
+  ]
+}
