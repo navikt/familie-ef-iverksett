@@ -37,7 +37,7 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
     }
 
     fun opprettOppgaveForBarnSomFyllerAar(oppgaveForBarn: OppgaveForBarn) {
-        if (innhentDokumentasjonOppgaveFinnes(oppgaveForBarn)) {
+        if (oppgaveFinnesAllerede(oppgaveForBarn)) {
             logger.info("Oppgave av type innhent dokumentasjon finnes allerede for behandlingId=${oppgaveForBarn.behandlingId}")
             return
         }
@@ -57,12 +57,13 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId for behandling=${oppgaveForBarn.behandlingId}")
     }
 
-    private fun innhentDokumentasjonOppgaveFinnes(oppgaveForBarn: OppgaveForBarn): Boolean {
+    private fun oppgaveFinnesAllerede(oppgaveForBarn: OppgaveForBarn): Boolean {
         val aktørId = familieIntegrasjonerClient.hentAktørId(oppgaveForBarn.personIdent)
+        val fristdato = oppgaveForBarn.aktivFra ?: LocalDate.now()
         val finnOppgaveRequest = FinnOppgaveRequest(tema = Tema.ENF,
                                                     aktørId = aktørId,
-                                                    fristFomDato = LocalDate.now().minusWeeks(2),
-                                                    fristTomDato = LocalDate.now().plusWeeks(2))
+                                                    fristFomDato = fristdato.minusWeeks(2),
+                                                    fristTomDato = fristdato.plusWeeks(2))
         val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
                 .filter { it.status != StatusEnum.FERDIGSTILT || it.status != StatusEnum.FEILREGISTRERT }
                 .mapNotNull { it.beskrivelse }

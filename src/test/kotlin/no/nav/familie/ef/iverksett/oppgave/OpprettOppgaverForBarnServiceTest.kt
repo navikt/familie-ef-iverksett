@@ -9,6 +9,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
+import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
@@ -21,14 +22,15 @@ import java.util.UUID
 
 internal class OpprettOppgaverForBarnServiceTest {
 
-    val iverksett = mockk<Iverksett>()
-    val oppgaveClient = mockk<OppgaveClient>()
-    val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
-    val taskRepository = mockk<TaskRepository>()
-    val opprettOppgaveForBarnService =
+    private val iverksett = mockk<Iverksett>()
+    private val oppgaveClient = mockk<OppgaveClient>()
+    private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
+    private val taskRepository = mockk<TaskRepository>()
+    private val opprettOppgaveForBarnService =
             OpprettOppgaverForBarnService(oppgaveClient, familieIntegrasjonerClient, taskRepository)
 
-    val oppgaveSlot = slot<OpprettOppgaveRequest>()
+    private val oppgaveSlot = slot<OpprettOppgaveRequest>()
+    private val hentOppgaverSlot = slot<FinnOppgaveRequest>()
 
     @BeforeEach
     fun init() {
@@ -38,20 +40,23 @@ internal class OpprettOppgaverForBarnServiceTest {
         every { iverksett.behandling.behandlingId } returns UUID.randomUUID()
         every { familieIntegrasjonerClient.hentAktørId(any()) } returns ""
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandlingMedRelasjoner(any()) } returns listOf(Enhet("", ""))
+        every { oppgaveClient.hentOppgaver(capture(hentOppgaverSlot)) } returns emptyList()
     }
 
     @Test
     fun `innhentDokumentasjon oppgave med samme beskrivelse finnes, forvent at oppgave ikke opprettes`() {
-        every { oppgaveClient.hentOppgaver(any()) } returns listOf(Oppgave(oppgavetype = Oppgavetype.InnhentDokumentasjon.name,
-                                                                           beskrivelse = "beskrivelse"))
+        every { oppgaveClient.hentOppgaver(capture(hentOppgaverSlot)) } returns
+                listOf(Oppgave(oppgavetype = Oppgavetype.InnhentDokumentasjon.name, beskrivelse = "beskrivelse"))
+
         opprettOppgaveForBarnService.opprettOppgaveForBarnSomFyllerAar(opprettOppgaveForBarn())
         verify(exactly = 0) { oppgaveClient.opprettOppgave(any()) }
+
+        assertThat(hentOppgaverSlot.captured.fristFomDato).isEqualTo(LocalDate.now().minusWeeks(2))
+        assertThat(hentOppgaverSlot.captured.fristTomDato).isEqualTo(LocalDate.now().plusWeeks(2))
     }
 
     @Test
     fun `ingen oppgaver finnes for barn som fyller år, forvent at oppgave opprettes`() {
-        every { oppgaveClient.hentOppgaver(any()) } returns emptyList()
-
         opprettOppgaveForBarnService.opprettOppgaveForBarnSomFyllerAar(opprettOppgaveForBarn())
 
         verify(exactly = 1) { oppgaveClient.opprettOppgave(any()) }
@@ -64,7 +69,6 @@ internal class OpprettOppgaverForBarnServiceTest {
     @Test
     internal fun `skal lage fremleggningsoppgave med frist frem i tiden hvis aktivFra er satt`() {
         val aktivFra = LocalDate.now().plusYears(1)
-        every { oppgaveClient.hentOppgaver(any()) } returns emptyList()
 
         opprettOppgaveForBarnService.opprettOppgaveForBarnSomFyllerAar(opprettOppgaveForBarn(aktivFra = aktivFra))
 
@@ -72,6 +76,8 @@ internal class OpprettOppgaverForBarnServiceTest {
         val oppgaveRequest = oppgaveSlot.captured
         assertThat(oppgaveRequest.oppgavetype).isEqualTo(Oppgavetype.Fremlegg)
         assertThat(oppgaveRequest.fristFerdigstillelse).isAfterOrEqualTo(aktivFra)
+        assertThat(hentOppgaverSlot.captured.fristFomDato).isEqualTo(aktivFra.minusWeeks(2))
+        assertThat(hentOppgaverSlot.captured.fristTomDato).isEqualTo(aktivFra.plusWeeks(2))
     }
 
     private fun opprettOppgaveForBarn(id: UUID = UUID.randomUUID(),
