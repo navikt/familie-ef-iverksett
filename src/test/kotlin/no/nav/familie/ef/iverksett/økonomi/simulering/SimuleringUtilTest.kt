@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.august
 import no.nav.familie.ef.iverksett.februar
 import no.nav.familie.ef.iverksett.januar
@@ -11,8 +12,10 @@ import no.nav.familie.ef.iverksett.september
 import no.nav.familie.ef.iverksett.tilDetaljertSimuleringsresultat
 import no.nav.familie.ef.iverksett.tilSimuleringMottakere
 import no.nav.familie.ef.iverksett.tilSimuleringsperioder
+import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.simulering.BetalingType.DEBIT
 import no.nav.familie.kontrakter.felles.simulering.BetalingType.KREDIT
+import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.FEILUTBETALING
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.MOTP
@@ -22,8 +25,19 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import java.time.LocalDate
 
 internal class SimuleringUtilTest {
+
+    @Test
+    internal fun `feil beløp i mars`() {
+        val json = SimuleringUtilTest::class.java.classLoader.getResource("simulering-feil.json")!!.readBytes()
+        val simuleringResultat = objectMapper.readValue<DetaljertSimuleringResultat>(json)
+
+        val lagSimuleringsoppsummering = lagSimuleringsoppsummering(simuleringResultat, LocalDate.now())
+        val mars = lagSimuleringsoppsummering.perioder.find { it.fom.monthValue == 3 } ?: error("Finner ikke mars")
+        assertThat(mars.nyttBeløp.compareTo(BigDecimal(9645))).isEqualTo(0)
+    }
 
     @Test
     internal fun `skal ikke mappe simuleringsdata for forskuddskatt, motp, justering og trekk `() {
