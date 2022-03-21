@@ -28,7 +28,7 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
     }
 
     @Test
-    internal fun `Sende behandlingsstatistikk skal gi 200 OK`() {
+    internal fun `Sending av behandlingsstatistikk skal gi 200 OK`() {
 
         val behandlingId = UUID.randomUUID()
         val mottatt = opprettBehandlingsstatistikkDto(behandlingId, Hendelse.MOTTATT, false)
@@ -50,8 +50,6 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
         val ferdig = opprettBehandlingsstatistikkDto(behandlingId, Hendelse.FERDIG, false)
         Assertions.assertThat(send(ferdig).statusCode.value()).isEqualTo(200)
         Assertions.assertThat(kafkaProducerPayloadSlot.captured).doesNotContain("Z\",")
-
-
     }
 
     private fun send(behandlingStatistikkDto: BehandlingsstatistikkDto): ResponseEntity<HttpStatus> =

@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
+import org.springframework.kafka.core.KafkaOperations
+import org.springframework.kafka.support.SendResult
+import org.springframework.util.concurrent.SettableListenableFuture
 
 @Configuration
 @Profile("mock-kafkatemplate")
@@ -26,6 +29,14 @@ class KafkaTemplateMock {
             println("Sender denne payloaden til kafkaproducer: ${payloadSlot.captured}")
         }
         return kafkaProducer
+    }
+
+    @Bean
+    fun kafkaOperations(): KafkaOperations<String, String> {
+        val kafkaOperations = mockk<KafkaOperations<String, String>>(relaxed = true)
+        val future: SettableListenableFuture<SendResult<String, String>> = SettableListenableFuture()
+        every { kafkaOperations.send(any(), any(), capture(payloadSlot)) } returns future
+        return kafkaOperations
     }
 
     @Bean

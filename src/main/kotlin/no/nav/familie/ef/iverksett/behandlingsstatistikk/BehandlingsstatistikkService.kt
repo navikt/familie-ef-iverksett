@@ -1,20 +1,27 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
+import no.nav.familie.ef.iverksett.util.toJson
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.kafka.core.KafkaOperations
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
-class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer) {
+class BehandlingsstatistikkService(private val kafkaOperations: KafkaOperations<String, String>,
+                                   @Value("\${ENSLIG_FORSORGER_BEHANDLING_TOPIC}") val topic: String) {
+
+
 
     @Transactional
     fun sendBehandlingstatistikk(behandlingsstatistikkDto: BehandlingsstatistikkDto) {
-        val behandlingDVH = mapTilBehandlingDVH(behandlingsstatistikkDto)
-        behandlingsstatistikkProducer.sendBehandling(behandlingDVH)
+        val behandlingDvh = mapTilBehandlingDVH(behandlingsstatistikkDto)
+        kafkaOperations.send(topic, behandlingDvh.behandlingId.toString(), behandlingDvh.toJson())
+                .addCallback(BehandlingsstatistikkCallback(behandlingDvh))
     }
 
     private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingsstatistikkDto): BehandlingDVH {

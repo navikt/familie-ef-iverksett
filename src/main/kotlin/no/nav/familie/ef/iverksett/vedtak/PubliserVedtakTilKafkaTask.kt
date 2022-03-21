@@ -22,11 +22,12 @@ class PubliserVedtakTilKafkaTask(private val taskRepository: TaskRepository,
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
-        vedtakKafkaProducer.sendVedtak(EnsligForsørgerVedtakhendelse(
+        val efVedtakhendelse = EnsligForsørgerVedtakhendelse(
                 behandlingId = iverksett.behandling.eksternId,
                 personIdent = iverksett.søker.personIdent,
                 stønadType = EksternStønadType.valueOf(iverksett.fagsak.stønadstype.name)
-        ))
+        )
+        vedtakKafkaProducer.sendVedtak(efVedtakhendelse)
     }
 
     override fun onCompletion(task: Task) {

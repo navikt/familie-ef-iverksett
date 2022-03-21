@@ -1,14 +1,14 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
-import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.ef.iverksett.util.toJson
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 
 @Component
-class TilbakekrevingProducer(private val kafkaProducerService: KafkaProducerService) {
+class TilbakekrevingProducer(private val kafkaTemplate: KafkaTemplate<String, String>) {
 
     @Value("\${FAGSYSTEMBEHANDLING_RESPONS_TOPIC}")
     lateinit var topic: String
@@ -17,7 +17,7 @@ class TilbakekrevingProducer(private val kafkaProducerService: KafkaProducerServ
 
     fun send(behandling: HentFagsystemsbehandlingRespons, key: String) {
         try {
-            kafkaProducerService.send(topic, key, behandling.toJson())
+            kafkaTemplate.send(topic, key, behandling.toJson())
             logger.info("Fagsystembehandling er sent til Kafka. key=${key} " +
                         "eksternFagsakId=${behandling.hentFagsystemsbehandling?.eksternFagsakId}")
         } catch (ex: Exception) {
@@ -26,6 +26,4 @@ class TilbakekrevingProducer(private val kafkaProducerService: KafkaProducerServ
             throw RuntimeException(errorMessage)
         }
     }
-
-    private fun Any.toJson(): String = objectMapper.writeValueAsString(this)
 }
