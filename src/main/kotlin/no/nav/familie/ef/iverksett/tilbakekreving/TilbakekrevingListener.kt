@@ -30,7 +30,6 @@ class TilbakekrevingListener(
                    topics = ["teamfamilie.privat-tbk-hentfagsystemsbehandling-request-topic"],
                    containerFactory = "concurrentTilbakekrevingListenerContainerFactory")
     fun listen(consumerRecord: ConsumerRecord<String, String>) {
-        logger.info("HentFagsystemsbehandlingRequest er mottatt i kafka $consumerRecord")
         val key: String = consumerRecord.key()
         val data: String = consumerRecord.value()
         try {
@@ -52,6 +51,7 @@ class TilbakekrevingListener(
             if (!request.erEfYtelse()) {
                 return
             }
+            logger.info("HentFagsystemsbehandlingRequest er mottatt i kafka med key=$key og data=$data")
             val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
             familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)?.let {
                 val fagsystemsbehandling = iverksett.tilFagsystembehandling(it)
