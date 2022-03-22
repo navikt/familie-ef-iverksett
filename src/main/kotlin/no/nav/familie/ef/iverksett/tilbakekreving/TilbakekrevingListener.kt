@@ -31,7 +31,6 @@ class TilbakekrevingListener(
                    containerFactory = "concurrentTilbakekrevingListenerContainerFactory")
     fun listen(consumerRecord: ConsumerRecord<String, String>) {
         logger.info("HentFagsystemsbehandlingRequest er mottatt i kafka $consumerRecord")
-        secureLogger.info("HentFagsystemsbehandlingRequest er mottatt i kafka $consumerRecord")
         val key: String = consumerRecord.key()
         val data: String = consumerRecord.value()
         try {
