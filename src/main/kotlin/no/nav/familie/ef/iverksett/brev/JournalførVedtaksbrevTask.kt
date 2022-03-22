@@ -67,7 +67,7 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
         val dokument = Dokument(vedtaksbrev.pdf,
                                 Filtype.PDFA,
                                 dokumenttype = vedtaksbrevForStønadType(iverksett.fagsak.stønadstype),
-                                tittel = lagDokumentTittel(iverksett.fagsak.stønadstype, iverksett.vedtak.vedtaksresultat, iverksett.behandling.behandlingÅrsak))
+                                tittel = lagDokumentTittel(iverksett))
 
 
         val arkiverDokumentRequest = ArkiverDokumentRequest(
@@ -136,8 +136,8 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
     }
 
 
-    private fun lagDokumentTittel(stønadstype: StønadType, vedtaksresultat: Vedtaksresultat, behandlingsårsak: BehandlingÅrsak): String =
-            lagVedtakstekst(vedtaksresultat, behandlingsårsak) + lagStønadtypeTekst(stønadstype)
+    private fun lagDokumentTittel(iverksett: Iverksett): String =
+            lagVedtakstekst(iverksett) + lagStønadtypeTekst(iverksett.fagsak.stønadstype)
 
     override fun onCompletion(task: Task) {
         taskRepository.save(task.opprettNesteTask())
