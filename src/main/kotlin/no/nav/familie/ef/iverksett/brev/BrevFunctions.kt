@@ -41,6 +41,8 @@ fun lagVedtakstekst(iverksett: Iverksett): String =
                 lagVedtakstekstFørstegangsbehandling(iverksett)
             iverksett.behandling.behandlingÅrsak === BehandlingÅrsak.SANKSJON_1_MND -> "Vedtak om sanksjon av "
             iverksett.vedtak.vedtaksresultat === Vedtaksresultat.OPPHØRT -> "Vedtak om opphørt "
+            iverksett.vedtak.vedtaksresultat === Vedtaksresultat.INNVILGET
+            && iverksett.behandling.behandlingÅrsak === BehandlingÅrsak.SØKNAD -> "Vedtak om innvilget "
             else -> "Vedtak om revurdert "
         }
 
