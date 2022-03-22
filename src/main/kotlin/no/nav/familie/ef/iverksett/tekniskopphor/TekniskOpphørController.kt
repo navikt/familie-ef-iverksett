@@ -21,7 +21,7 @@ class TekniskOpphørController(val tekniskOpphørService: TekniskOpphørService)
                                           tilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
                                                   tilkjentYtelse = TilkjentYtelse(
                                                           andelerTilkjentYtelse = emptyList(),
-                                                          startdato = null),
+                                                          startdato = tekniskOpphørDto.vedtaksdato), // TODO denne må nog fikses
                                                   saksbehandlerId = tekniskOpphørDto.saksbehandlerId,
                                                   eksternBehandlingId = tekniskOpphørDto.eksternBehandlingId,
                                                   stønadstype = tekniskOpphørDto.stønadstype,

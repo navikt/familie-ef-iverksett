@@ -11,9 +11,9 @@ import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.Month
 import java.util.Locale
-import java.util.UUID
 
 
 object OppgaveUtil {
@@ -29,13 +29,14 @@ object OppgaveUtil {
                               stønadstype: StønadType,
                               enhetsnummer: Enhet,
                               oppgavetype: Oppgavetype,
-                              beskrivelse: String): OpprettOppgaveRequest {
+                              beskrivelse: String,
+                              fristFerdigstillelse: LocalDate? = null): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
                 ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
                 saksId = eksternFagsakId.toString(),
                 tema = Tema.ENF,
                 oppgavetype = oppgavetype,
-                fristFerdigstillelse = fristFerdigstillelse(),
+                fristFerdigstillelse = fristFerdigstillelse(fristFerdigstillelse),
                 beskrivelse = beskrivelse,
                 enhetsnummer = enhetsnummer.enhetId,
                 behandlingstema = opprettBehandlingstema(stønadstype).value,
@@ -44,8 +45,8 @@ object OppgaveUtil {
         )
     }
 
-    private fun fristFerdigstillelse(daysToAdd: Long = 0): LocalDate {
-        var date = LocalDateTime.now().plusDays(daysToAdd)
+    private fun fristFerdigstillelse(aktivFra: LocalDate?, daysToAdd: Long = 0): LocalDate {
+        var date = (aktivFra?.atTime(LocalTime.now()) ?: LocalDateTime.now()).plusDays(daysToAdd)
 
         if (date.hour >= 14) {
             date = date.plusDays(1)

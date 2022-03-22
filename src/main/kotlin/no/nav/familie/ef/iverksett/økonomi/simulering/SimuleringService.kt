@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.iverksetting.domene.Simulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
@@ -12,10 +13,14 @@ import java.time.LocalDate
 @Service
 class SimuleringService(
         private val oppdragKlient: OppdragClient,
-        private val tilstandRepository: TilstandRepository
+        private val tilstandRepository: TilstandRepository,
+        private val featureToggleService: FeatureToggleService
 ) {
 
-    fun hentSimulering(simulering: Simulering): DetaljertSimuleringResultat {
+    fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
+        if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
+            error("Kan ikke sende inn simmulere")
+        }
         try {
             val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
                 tilstandRepository.hentTilkjentYtelse(simulering.forrigeBehandlingId)
@@ -23,8 +28,7 @@ class SimuleringService(
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse
-            )
+                    forrigeTilkjentYtelse)
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
                                      ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
@@ -33,22 +37,17 @@ class SimuleringService(
                 return DetaljertSimuleringResultat(emptyList())
             }
 
-            return oppdragKlient.hentSimulering(utbetalingsoppdrag)
+            return oppdragKlient.hentSimuleringsresultat(utbetalingsoppdrag)
         } catch (feil: Throwable) {
             throw Exception("Henting av simuleringsresultat feilet", feil)
         }
     }
 
-    private fun erFørstegangsbehandlingUtenBeløp(simulering: Simulering) =
-            simulering.forrigeBehandlingId == null && manglerEllerKunNullbeløp(simulering)
-
-    private fun manglerEllerKunNullbeløp(simulering: Simulering): Boolean {
-        val andeler = simulering.nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse
-        return andeler.isEmpty() || andeler.all { it.beløp == 0 }
-    }
-
     fun hentBeriketSimulering(simulering: Simulering): BeriketSimuleringsresultat {
-        val detaljertSimuleringResultat = hentSimulering(simulering)
+        if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
+            error("Kan ikke sende inn simmulere")
+        }
+        val detaljertSimuleringResultat = hentDetaljertSimuleringResultat(simulering)
         val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
 
         return BeriketSimuleringsresultat(

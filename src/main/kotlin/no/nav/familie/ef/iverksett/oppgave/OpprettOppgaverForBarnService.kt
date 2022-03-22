@@ -1,18 +1,19 @@
 package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
-import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
+import no.nav.familie.kontrakter.felles.oppgave.StatusEnum
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.Properties
+import java.time.LocalDate
 
 @Service
 class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
@@ -20,43 +21,53 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
                                     private val taskRepository: TaskRepository) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     @Transactional
     fun opprettTaskerForBarn(oppgaverForBarn: List<OppgaveForBarn>) {
         oppgaverForBarn.forEach {
             try {
                 taskRepository.save(Task(OpprettOppgaveForBarnTask.TYPE,
-                                         objectMapper.writeValueAsString(it),
-                                         Properties()))
+                                         objectMapper.writeValueAsString(it)))
             } catch (ex: Exception) {
-                logger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
+                secureLogger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
+                throw ex
             }
         }
     }
 
     fun opprettOppgaveForBarnSomFyllerAar(oppgaveForBarn: OppgaveForBarn) {
-        if (innhentDokumentasjonOppgaveFinnes(oppgaveForBarn)) {
+        if (oppgaveFinnesAllerede(oppgaveForBarn)) {
             logger.info("Oppgave av type innhent dokumentasjon finnes allerede for behandlingId=${oppgaveForBarn.behandlingId}")
             return
         }
-        val oppgaveId = oppgaveClient.opprettOppgave(OppgaveUtil.opprettOppgaveRequest(oppgaveForBarn.eksternFagsakId,
-                                                                                       oppgaveForBarn.personIdent,
-                                                                                       StønadType.valueOf(oppgaveForBarn.stønadType),
-                                                                                       enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
-                                                                                       Oppgavetype.InnhentDokumentasjon,
-                                                                                       oppgaveForBarn.beskrivelse))?.let { it }
+
+        val oppgaveType = if (oppgaveForBarn.aktivFra == null) Oppgavetype.InnhentDokumentasjon else Oppgavetype.Fremlegg
+
+        val opprettOppgaveRequest = OppgaveUtil.opprettOppgaveRequest(
+                oppgaveForBarn.eksternFagsakId,
+                oppgaveForBarn.personIdent,
+                oppgaveForBarn.stønadType,
+                enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
+                oppgaveType,
+                oppgaveForBarn.beskrivelse,
+                oppgaveForBarn.aktivFra)
+        val oppgaveId = oppgaveClient.opprettOppgave(opprettOppgaveRequest)
                         ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
-        logger.info("Opprettet oppgave med oppgaveId=$oppgaveId")
+        logger.info("Opprettet oppgave med oppgaveId=$oppgaveId for behandling=${oppgaveForBarn.behandlingId}")
     }
 
-    private fun innhentDokumentasjonOppgaveFinnes(oppgaveForBarn: OppgaveForBarn): Boolean {
+    private fun oppgaveFinnesAllerede(oppgaveForBarn: OppgaveForBarn): Boolean {
         val aktørId = familieIntegrasjonerClient.hentAktørId(oppgaveForBarn.personIdent)
+        val fristdato = oppgaveForBarn.aktivFra ?: LocalDate.now()
         val finnOppgaveRequest = FinnOppgaveRequest(tema = Tema.ENF,
                                                     aktørId = aktørId,
-                                                    oppgavetype = Oppgavetype.InnhentDokumentasjon)
+                                                    fristFomDato = fristdato.minusWeeks(2),
+                                                    fristTomDato = fristdato.plusWeeks(2))
         val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
-                ?.mapNotNull { it.beskrivelse }
-                ?.map { it.trim().lowercase() }
+                .filter { it.status != StatusEnum.FERDIGSTILT || it.status != StatusEnum.FEILREGISTRERT }
+                .mapNotNull { it.beskrivelse }
+                .map { it.trim().lowercase() }
         return oppgaveBeskrivelser.contains(oppgaveForBarn.beskrivelse.trim().lowercase())
     }
 

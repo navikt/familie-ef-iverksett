@@ -39,12 +39,12 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     lateinit var tekniskOpphørTask: IverksettTekniskOpphørTask
 
     private val behandlingid: UUID = UUID.randomUUID()
-    private val forsteAndel = lagAndelTilkjentYtelse(
+    private val førsteAndel = lagAndelTilkjentYtelse(
             beløp = 1000,
             fraOgMed = LocalDate.of(2021, 1, 1),
             tilOgMed = LocalDate.of(2021, 1, 31),
             periodetype = Periodetype.MÅNED)
-    private val iverksett = opprettIverksett(behandlingid, andeler = listOf(forsteAndel))
+    private val iverksett = opprettIverksett(behandlingid, andeler = listOf(førsteAndel), startdato = førsteAndel.fraOgMed)
 
     @BeforeEach
     internal fun setUp() {
@@ -64,7 +64,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         val behandlingIdRevurdering = UUID.randomUUID()
         val iverksettRevurdering = opprettIverksett(behandlingIdRevurdering,
                                                     behandlingid,
-                                                    listOf(forsteAndel,
+                                                    listOf(førsteAndel,
                                                            lagAndelTilkjentYtelse(
                                                                    beløp = 1000,
                                                                    fraOgMed = LocalDate.now(),
@@ -88,7 +88,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         val behandlingIdRevurdering = UUID.randomUUID()
         val iverksettRevurdering = opprettIverksett(behandlingIdRevurdering,
                                                     behandlingid,
-                                                    listOf(forsteAndel.copy(beløp = 299),
+                                                    listOf(førsteAndel.copy(beløp = 299),
                                                            lagAndelTilkjentYtelse(
                                                                    beløp = 1000,
                                                                    fraOgMed = LocalDate.now(),
@@ -110,7 +110,8 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     @Test
     internal fun `iverksett med opphør, forventer beløp lik 0 og dato lik NULL_DATO`() {
         val opphørBehandlingId = UUID.randomUUID()
-        val iverksettMedOpphør = opprettIverksett(opphørBehandlingId, behandlingid, emptyList())
+        val startdato = førsteAndel.fraOgMed
+        val iverksettMedOpphør = opprettIverksett(opphørBehandlingId, behandlingid, emptyList(), startdato = startdato)
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettMedOpphør, opprettBrev())
@@ -138,7 +139,8 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                                                             beløp = 1000,
                                                             fraOgMed = LocalDate.now(),
                                                             tilOgMed = LocalDate.now().plusDays(15),
-                                                            periodetype = Periodetype.MÅNED)))
+                                                            periodetype = Periodetype.MÅNED)),
+                                                    startdato = førsteAndel.fraOgMed)
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
@@ -165,7 +167,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                                 eksternFagsakId = iverksett.fagsak.eksternId,
                                 personIdent = iverksett.søker.personIdent,
                                 behandlingId = tekniskOpphørId,
-                                vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate())
+                                vedtaksdato = førsteAndel.fraOgMed)
     }
 
     private fun iverksettMotOppdrag() {

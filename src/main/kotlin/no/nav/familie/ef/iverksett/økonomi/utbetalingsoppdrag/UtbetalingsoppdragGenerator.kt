@@ -8,7 +8,6 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.and
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerUtenNullVerdier
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.validerOpphørsdato
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.ENDR
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
@@ -27,7 +26,6 @@ object UtbetalingsoppdragGenerator {
      */
     fun lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
                                                forrigeTilkjentYtelse: TilkjentYtelse? = null): TilkjentYtelse {
-        validerOpphørsdato(nyTilkjentYtelseMedMetaData, forrigeTilkjentYtelse)
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         val andelerNyTilkjentYtelse = andelerUtenNullVerdier(nyTilkjentYtelse)
         val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
@@ -59,10 +57,20 @@ object UtbetalingsoppdragGenerator {
         val gjeldendeAndeler = (beståendeAndeler + andelerTilOpprettelseMedPeriodeId)
                 .ellerNullAndel(nyTilkjentYtelseMedMetaData, sistePeriodeIdIForrigeKjede)
 
+        val sisteAndelIKjede = sisteAndelIKjede(gjeldendeAndeler, forrigeTilkjentYtelse)
+
         return nyTilkjentYtelse.copy(utbetalingsoppdrag = utbetalingsoppdrag,
-                                     andelerTilkjentYtelse = gjeldendeAndeler)
+                                     andelerTilkjentYtelse = gjeldendeAndeler,
+                                     sisteAndelIKjede = sisteAndelIKjede)
         //TODO legge til startperiode, sluttperiode, opphørsdato. Se i BA-sak - legges på i konsistensavstemming?
     }
+
+    private fun sisteAndelIKjede(gjeldendeAndeler: List<AndelTilkjentYtelse>,
+                                 forrigeTilkjentYtelse: TilkjentYtelse?) =
+            (gjeldendeAndeler + listOfNotNull(forrigeTilkjentYtelse?.sisteAndelIKjede))
+                    .filter { it.periodeId != null }
+                    .filter { it.fraOgMed != NULL_DATO }
+                    .maxByOrNull { it.periodeId ?: error("Mangler periodeId") }
 
     private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
             forrigeTilkjentYtelse == null || (forrigeTilkjentYtelseManglerPeriodeOgErNy(forrigeTilkjentYtelse))
@@ -109,6 +117,8 @@ object UtbetalingsoppdragGenerator {
 
     private fun sistePeriodeId(tilkjentYtelse: TilkjentYtelse?): PeriodeId? {
         return tilkjentYtelse?.let { ytelse ->
+            ytelse.sisteAndelIKjede?.tilPeriodeId() ?:
+            // TODO denne kan fjernes når den er patchet
             ytelse.andelerTilkjentYtelse.filter { it.periodeId != null }.maxByOrNull { it.periodeId!! }?.tilPeriodeId()
         }
     }

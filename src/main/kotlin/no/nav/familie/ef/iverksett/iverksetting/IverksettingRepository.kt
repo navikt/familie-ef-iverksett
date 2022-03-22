@@ -73,6 +73,17 @@ class IverksettingRepository(val namedParameterJdbcTemplate: NamedParameterJdbcT
                ?: error("Finner ikke iverksett med behandlingId=${behandlingId}")
     }
 
+    //Brukt i patch
+    fun hentAlleMigrerte(): List<UUID> {
+        val alleMigrerteSql = "select behandling_id from iverksett where data->'behandling'->>'behandlingÅrsak' = 'MIGRERING'"
+
+        return namedParameterJdbcTemplate.query(alleMigrerteSql, iverksettMapper)
+    }
+
+    private val iverksettMapper = { rs: ResultSet, _: Int ->
+        rs.getUUID("behandling_id")
+    }
+
     fun hentAvEksternId(eksternId: Long): Iverksett {
         val mapSqlParameterSource = MapSqlParameterSource(
                 mapOf(

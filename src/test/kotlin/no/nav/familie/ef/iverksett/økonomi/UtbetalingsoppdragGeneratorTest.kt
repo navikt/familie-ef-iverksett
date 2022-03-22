@@ -125,6 +125,11 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
+    fun `revurderer og sletter periode 2, revurdererer på nytt og skal då bygge videre fra andre perioden sin periodeId`() {
+        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_sletter_periode2_revurderer_på_nytt.csv"))
+    }
+
+    @Test
     fun `Har 2 perioder og får en endring på andre perioden men har feil behandlingId i testen`() {
         val catchThrowable = catchThrowable {
             TestOppdragRunner.run(javaClass.getResource(
@@ -157,14 +162,7 @@ internal class UtbetalingsoppdragGeneratorTest {
         internal fun `opphørsdato etter forrige andel sin opphørsdato er ikke gyldig`() {
             assertThatThrownBy {
                 TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphør_etter_andel_sitt_dato_feiler.csv"))
-            }.hasMessageContaining("Kan ikke sette opphør etter dato på første perioden")
-        }
-
-        @Test
-        fun `revurdering uten opphørsdato når forrige revurdering har opphørsdato er ikke gyldig`() {
-            assertThatThrownBy {
-                TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_mangler_opphørsdato.csv"))
-            }.hasMessageContaining("Må ha med opphørsdato hvis man har tidligere opphørsdato")
+            }.hasMessageContaining("Nytt opphørsdato=2020-03-01 kan ikke være etter")
         }
 
         @Test
@@ -176,23 +174,17 @@ internal class UtbetalingsoppdragGeneratorTest {
 
         @Test
         fun `opphørsdato før tidligere skal sende nytt opphørsdato til oppdrag`() {
-            assertThatThrownBy {
-                TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_opphørsdato.csv"))
-            }.hasMessageContaining("Kan ikke opphøre før tidligere opphør")
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_opphørsdato.csv"))
         }
 
         @Test
-        fun `kan ikke opphøre når man bare har 0-andeler`() {
-            assertThatThrownBy {
-                TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_0andeler.csv"))
-            }.hasMessageContaining("Kan ikke opphøre før tidligere opphør")
+        fun `kan opphøre når man bare har 0-andeler`() {
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_0andeler.csv"))
         }
 
         @Test
-        fun `førstegangsbehandling - kan ikke sende opphørsdato i en førstegangsbehandling`() {
-            assertThatThrownBy {
-                TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphørsdato_førstegangsbehandling_samme_som_andel.csv"))
-            }.hasMessageContaining("Kan ikke opphøre noe når det ikke finnes en tidligere behandling")
+        fun `førstegangsbehandling - kan sende startdato i en førstegangsbehandling`() {
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphørsdato_førstegangsbehandling_samme_som_andel.csv"))
         }
 
         @Test
@@ -214,6 +206,11 @@ internal class UtbetalingsoppdragGeneratorTest {
         fun `opphører vedtak med 0-periode, og sen innvilget ny stønad`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_med_0beløp.csv"))
         }
+
+        @Test
+        fun `revurderer med 0 beløp etter en revurdering med 0 beløp skal sette opphørsdato på riktig plass`() {
+            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_0beløp_før_tidligere_0beløp.csv"))
+        }
     }
 
     @Test
@@ -226,11 +223,15 @@ internal class UtbetalingsoppdragGeneratorTest {
         val andel2 = opprettAndel(2, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 12, 31)) // endres i behandling b
         val andel3 = opprettAndel(2, LocalDate.of(2022, 1, 1), LocalDate.of(2022, 12, 31)) // ny i behandling b
         val førsteTilkjentYtelse =
-                lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(behandlingA, andel1, andel2))
+                lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(behandlingA,
+                                                                                        andel1.fraOgMed,
+                                                                                        andel1,
+                                                                                        andel2))
 
         assertFørsteBehandling(førsteTilkjentYtelse, behandlingA)
 
         val nyePerioder = opprettTilkjentYtelseMedMetadata(behandlingB,
+                                                           andel1.fraOgMed,
                                                            andel1,
                                                            andel2.copy(tilOgMed = andel2.tilOgMed.minusMonths(2)),
                                                            andel3)
@@ -301,12 +302,13 @@ internal class UtbetalingsoppdragGeneratorTest {
                                    kildeBehandlingId = UUID.randomUUID()) // overskreves
 
     private fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID,
+                                                 startdato: LocalDate,
                                                  vararg andelTilkjentYtelse: AndelTilkjentYtelse) =
             TilkjentYtelseMedMetaData(tilkjentYtelse = TilkjentYtelse(id = UUID.randomUUID(),
                                                                       utbetalingsoppdrag = null,
                                                                       status = TilkjentYtelseStatus.OPPRETTET,
                                                                       andelerTilkjentYtelse = andelTilkjentYtelse.toList(),
-                                                                      startdato = null),
+                                                                      startdato = startdato),
                                       personIdent = "1",
                                       behandlingId = behandlingId,
                                       eksternBehandlingId = 1,

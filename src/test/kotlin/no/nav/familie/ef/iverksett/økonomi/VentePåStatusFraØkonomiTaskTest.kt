@@ -12,6 +12,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
@@ -40,7 +41,8 @@ internal class VentePåStatusFraØkonomiTaskTest {
     private val iverksettingService = IverksettingService(taskRepository = taskRepository,
                                                           oppdragClient = oppdragClient,
                                                           iverksettingRepository = iverksettingRepository,
-                                                          tilstandRepository = tilstandRepository)
+                                                          tilstandRepository = tilstandRepository,
+                                                          featureToggleService = mockFeatureToggleService())
 
     private val ventePåStatusFraØkonomiTask =
             VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskRepository, tilstandRepository)

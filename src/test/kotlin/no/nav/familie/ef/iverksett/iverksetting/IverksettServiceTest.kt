@@ -5,6 +5,7 @@ import io.mockk.mockk
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
@@ -24,7 +25,8 @@ internal class IverksettServiceTest {
     private var iverksettStatusService: IverksettingService = IverksettingService(taskRepository = taskRepository,
                                                                                   tilstandRepository = tilstandRepository,
                                                                                   iverksettingRepository = iverksettingRepository,
-                                                                                  oppdragClient = oppdragClient)
+                                                                                  oppdragClient = oppdragClient,
+                                                                                  featureToggleService = mockFeatureToggleService())
 
 
     @Test
