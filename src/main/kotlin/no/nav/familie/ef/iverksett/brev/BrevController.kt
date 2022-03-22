@@ -20,13 +20,17 @@ class BrevController(
 
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(@RequestBody data: FrittståendeBrevDto): ResponseEntity<Any> {
+
+        val dokumenttype =
+                data.stønadType?.let { stønadstypeTilDokumenttype(it) } ?: frittståendeBrevtypeTilDokumenttype(data.brevtype)
+
         val journalpostId = journalpostClient.arkiverDokument(
                 ArkiverDokumentRequest(
                         fnr = data.personIdent,
                         forsøkFerdigstill = true,
                         hoveddokumentvarianter = listOf(Dokument(data.fil,
                                                                  Filtype.PDFA,
-                                                                 dokumenttype = frittståendeBrevtypeTilDokumenttype(data.brevtype),
+                                                                 dokumenttype = dokumenttype,
                                                                  tittel = data.brevtype.tittel)),
                         fagsakId = data.eksternFagsakId.toString(),
                         journalførendeEnhet = data.journalførendeEnhet,
