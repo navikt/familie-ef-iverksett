@@ -24,7 +24,7 @@
         <revision>1.0</revision>
         <dotenv.version>6.2.2</dotenv.version>
         <logback.spring.starter>2.11.0</logback.spring.starter>
-        <prosessering.version>1.20220309070312_27348fa</prosessering.version>
+        <prosessering.version>1.20220321101749_55e4576</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <familie.kontrakter.version>2.0_20220322142631_a75f8b0</familie.kontrakter.version>
