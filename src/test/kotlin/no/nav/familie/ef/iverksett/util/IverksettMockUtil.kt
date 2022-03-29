@@ -245,7 +245,7 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
             fil = "fil.pdf".toByteArray(),
             journalførendeEnhet = "4489",
             saksbehandlerIdent = "saksbehandlerIdent",
-            stønadType = no.nav.familie.kontrakter.felles.ef.StønadType.OVERGANGSSTØNAD
+            stønadType = StønadType.OVERGANGSSTØNAD
     )
 }
 
