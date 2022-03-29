@@ -3,24 +3,9 @@ package no.nav.familie.ef.iverksett.brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
-import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.ef.StønadType
-
-fun frittståendeBrevtypeTilDokumenttype(frittståendeBrevType: FrittståendeBrevType) =
-        when (frittståendeBrevType) {
-            FrittståendeBrevType.INFOBREV_OVERGANGSSTØNAD -> Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV
-            FrittståendeBrevType.MANGELBREV_OVERGANGSSTØNAD -> Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV
-            FrittståendeBrevType.INFOBREV_BARNETILSYN -> Dokumenttype.BARNETILSYN_FRITTSTÅENDE_BREV
-            FrittståendeBrevType.MANGELBREV_BARNETILSYN -> Dokumenttype.BARNETILSYN_FRITTSTÅENDE_BREV
-            FrittståendeBrevType.INFOBREV_SKOLEPENGER -> Dokumenttype.SKOLEPENGER_FRITTSTÅENDE_BREV
-            FrittståendeBrevType.MANGELBREV_SKOLEPENGER -> Dokumenttype.SKOLEPENGER_FRITTSTÅENDE_BREV
-            FrittståendeBrevType.SANKSJONSBREV_OVERGANGSTØNAD -> Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV
-            FrittståendeBrevType.SANKSJONSBREV_BARNETILSYN -> Dokumenttype.BARNETILSYN_FRITTSTÅENDE_BREV
-            FrittståendeBrevType.SANKSJONSBREV_SKOLEPENGER -> Dokumenttype.SKOLEPENGER_FRITTSTÅENDE_BREV
-            else -> error("Kan ikke utlede dokumenttype for frittståendebrevtype $frittståendeBrevType")
-        }
 
 fun stønadstypeTilDokumenttype(stønadType: StønadType) =
         when(stønadType){

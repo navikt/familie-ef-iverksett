@@ -30,7 +30,6 @@ import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
 import no.nav.familie.kontrakter.ef.felles.RegelId
-import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.VilkårType
@@ -49,6 +48,7 @@ import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
@@ -241,10 +241,11 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
     return FrittståendeBrevDto(
             personIdent = "12345678910",
             eksternFagsakId = 1,
-            brevtype = FrittståendeBrevType.INFOBREV_OVERGANGSSTØNAD,
+            brevtype = FrittståendeBrevType.INFORMASJONSBREV,
             fil = "fil.pdf".toByteArray(),
             journalførendeEnhet = "4489",
-            saksbehandlerIdent = "saksbehandlerIdent"
+            saksbehandlerIdent = "saksbehandlerIdent",
+            stønadType = StønadType.OVERGANGSSTØNAD
     )
 }
 
