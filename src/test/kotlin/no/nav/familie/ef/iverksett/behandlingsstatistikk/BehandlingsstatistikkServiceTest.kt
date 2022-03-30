@@ -93,7 +93,7 @@ internal class BehandlingsstatistikkServiceTest {
 
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
-        val ansvarligBeslutter = "Saksbehandler som beslutter"
+        val ansvarligBeslutter = "beslutterId"
         val behandlingResultat = "Behandlingsresultat fra beslutter"
         val resultatBegrunnelse = "Begrunnelse for vedtak"
         val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.BESLUTTET, fortrolig = false)
