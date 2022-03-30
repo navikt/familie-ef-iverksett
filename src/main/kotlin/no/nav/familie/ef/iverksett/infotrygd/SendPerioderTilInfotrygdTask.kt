@@ -3,9 +3,9 @@ package no.nav.familie.ef.iverksett.infotrygd
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task

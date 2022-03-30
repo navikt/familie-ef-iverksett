@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi.grensesnitt
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
-import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
 import no.nav.familie.prosessering.AsyncTaskStep

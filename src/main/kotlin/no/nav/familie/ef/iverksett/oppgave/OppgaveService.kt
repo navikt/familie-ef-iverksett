@@ -8,8 +8,8 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørste
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingInnvilget
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingOpphørt
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
-import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
 import java.time.LocalDate

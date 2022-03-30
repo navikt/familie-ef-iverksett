@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.util
 
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
-import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime

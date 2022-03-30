@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
-import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import java.time.LocalDate
 import java.util.UUID
