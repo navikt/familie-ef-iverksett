@@ -28,25 +28,25 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                              endretTid = behandlingstatistikk.hendelseTidspunkt,
                              tekniskTid = tekniskTid,
                              behandlingStatus = behandlingstatistikk.hendelse.name,
-                             opprettetAv = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                 behandlingstatistikk.gjeldendeSaksbehandlerId),
+                             opprettetAv = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                           behandlingstatistikk.gjeldendeSaksbehandlerId),
                              saksnummer = behandlingstatistikk.eksternFagsakId,
                              mottattTid = behandlingstatistikk.henvendelseTidspunkt,
-                             saksbehandler = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                   behandlingstatistikk.gjeldendeSaksbehandlerId),
-                             opprettetEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                    behandlingstatistikk.opprettetEnhet),
-                             ansvarligEnhet = sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                    behandlingstatistikk.ansvarligEnhet),
+                             saksbehandler = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                             behandlingstatistikk.gjeldendeSaksbehandlerId),
+                             opprettetEnhet = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                              behandlingstatistikk.opprettetEnhet),
+                             ansvarligEnhet = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                              behandlingstatistikk.ansvarligEnhet),
                              behandlingMetode = "MANUELL",
                              avsender = "NAV enslig forelder",
                              behandlingType = behandlingstatistikk.behandlingstype.name,
                              sakYtelse = behandlingstatistikk.stønadstype.name,
                              behandlingResultat = behandlingstatistikk.behandlingResultat,
                              resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
-                             ansvarligBeslutter = if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse)
-                                 sjekkStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                       behandlingstatistikk.gjeldendeSaksbehandlerId) else null,
+                             ansvarligBeslutter = if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty())
+                                 maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse, behandlingstatistikk.beslutterId.toString())
+                                                else null,
                              vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse)
                                  behandlingstatistikk.hendelseTidspunkt else null,
                              ferdigBehandletTid = if (Hendelse.FERDIG == behandlingstatistikk.hendelse)
@@ -57,12 +57,14 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
 
     }
 
-    private fun sjekkStrengtFortrolig(erStrengtFortrolig: Boolean,
-                                      verdi: String): String {
+    private fun maskerVerdiHvisStrengtFortrolig(erStrengtFortrolig: Boolean,
+                                                verdi: String): String {
         if (erStrengtFortrolig) {
             return "-5"
         }
         return verdi
     }
+
+    fun String?.isNotNullOrEmpty() = this != null && this.isNotEmpty()
 
 }

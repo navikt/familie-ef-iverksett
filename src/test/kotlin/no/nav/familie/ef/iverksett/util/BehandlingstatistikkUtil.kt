@@ -14,6 +14,7 @@ fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fort
                                     eksternBehandlingId = 654L,
                                     personIdent = "aktor",
                                     gjeldendeSaksbehandlerId = "saksbehandler",
+                                    beslutterId = "beslutterId",
                                     eksternFagsakId = 123L,
                                     hendelseTidspunkt = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC")),
                                     hendelse = hendelse,
