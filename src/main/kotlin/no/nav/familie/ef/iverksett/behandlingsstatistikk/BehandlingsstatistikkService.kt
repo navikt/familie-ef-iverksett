@@ -28,16 +28,16 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                              endretTid = behandlingstatistikk.hendelseTidspunkt,
                              tekniskTid = tekniskTid,
                              behandlingStatus = behandlingstatistikk.hendelse.name,
-                             opprettetAv = maskerVerdiHvisFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                    behandlingstatistikk.gjeldendeSaksbehandlerId),
+                             opprettetAv = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                           behandlingstatistikk.gjeldendeSaksbehandlerId),
                              saksnummer = behandlingstatistikk.eksternFagsakId,
                              mottattTid = behandlingstatistikk.henvendelseTidspunkt,
-                             saksbehandler = maskerVerdiHvisFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                      behandlingstatistikk.gjeldendeSaksbehandlerId),
-                             opprettetEnhet = maskerVerdiHvisFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                       behandlingstatistikk.opprettetEnhet),
-                             ansvarligEnhet = maskerVerdiHvisFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                       behandlingstatistikk.ansvarligEnhet),
+                             saksbehandler = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                             behandlingstatistikk.gjeldendeSaksbehandlerId),
+                             opprettetEnhet = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                              behandlingstatistikk.opprettetEnhet),
+                             ansvarligEnhet = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
+                                                                              behandlingstatistikk.ansvarligEnhet),
                              behandlingMetode = "MANUELL",
                              avsender = "NAV enslig forelder",
                              behandlingType = behandlingstatistikk.behandlingstype.name,
@@ -45,7 +45,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                              behandlingResultat = behandlingstatistikk.behandlingResultat,
                              resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
                              ansvarligBeslutter = if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty())
-                                 maskerVerdiHvisFortrolig(behandlingstatistikk.strengtFortroligAdresse, behandlingstatistikk.beslutterId.toString())
+                                 maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse, behandlingstatistikk.beslutterId.toString())
                                                 else null,
                              vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse)
                                  behandlingstatistikk.hendelseTidspunkt else null,
@@ -57,8 +57,8 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
 
     }
 
-    private fun maskerVerdiHvisFortrolig(erStrengtFortrolig: Boolean,
-                                         verdi: String): String {
+    private fun maskerVerdiHvisStrengtFortrolig(erStrengtFortrolig: Boolean,
+                                                verdi: String): String {
         if (erStrengtFortrolig) {
             return "-5"
         }
