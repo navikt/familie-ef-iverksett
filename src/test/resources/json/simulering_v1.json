@@ -4,6 +4,7 @@
     "behandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003",
     "vedtaksdato": "2021-07-23",
     "tilkjentYtelse": {
+      "startdato":  "2020-03-01",
       "andelerTilkjentYtelse": [
         {
           "utbetaltPerPeriode": 3800,

@@ -70,7 +70,8 @@ fun opprettIverksettDto(behandlingId: UUID,
             kildeBehandlingId = UUID.randomUUID()
     )
     val tilkjentYtelse = TilkjentYtelseDto(
-            andelerTilkjentYtelse = listOf(andelTilkjentYtelse)
+            andelerTilkjentYtelse = listOf(andelTilkjentYtelse),
+            startdato = LocalDate.of(2020, 3, 1)
     )
 
     return IverksettDto(
