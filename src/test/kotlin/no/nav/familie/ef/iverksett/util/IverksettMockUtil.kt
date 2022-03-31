@@ -149,7 +149,7 @@ fun opprettTilkjentYtelseMedMetadata(behandlingId: UUID = UUID.randomUUID(),
 
 fun opprettTilkjentYtelse(behandlingId: UUID = UUID.randomUUID(),
                           andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
-                          startdato: LocalDate? = null,
+                          startdato: LocalDate = startdato(andeler),
                           sisteAndelIKjede: AndelTilkjentYtelse? = null): TilkjentYtelse {
     return TilkjentYtelse(
             id = behandlingId,
@@ -168,7 +168,7 @@ fun opprettIverksett(behandlingId: UUID,
                      forrigeBehandlingId: UUID? = null,
                      andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
                      tilbakekreving: Tilbakekrevingsdetaljer? = null,
-                     startdato: LocalDate? = startdato(andeler)): Iverksett {
+                     startdato: LocalDate = startdato(andeler)): Iverksett {
 
     val tilkjentYtelse = TilkjentYtelse(
             id = UUID.randomUUID(),
@@ -230,7 +230,7 @@ fun opprettIverksett(behandlingId: UUID,
     )
 }
 
-private fun startdato(andeler: List<AndelTilkjentYtelse>) =
+fun startdato(andeler: List<AndelTilkjentYtelse>) =
         andeler.minOfOrNull { it.fraOgMed } ?: error("Trenger å sette startdato hvs det ikke finnes andeler")
 
 fun opprettBrev(): Brev {

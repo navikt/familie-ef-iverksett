@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
+import no.nav.familie.ef.iverksett.util.startdato
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.ef.iverksett.økonomi.simulering.grupperPosteringerEtterDato
 import no.nav.familie.kontrakter.ef.felles.StønadType
@@ -28,7 +29,8 @@ import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as Tilkj
 fun simuleringDto(andeler: List<AndelTilkjentYtelseDto> = listOf(lagDefaultAndeler()), forrigeBehandlingId: UUID? = UUID.randomUUID()): SimuleringDto {
     val behandlingId = UUID.fromString("4b657902-d994-11eb-b8bc-0242ac130003")
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetadataDto(
-            tilkjentYtelse = TilkjentYtelseDto(andelerTilkjentYtelse = andeler),
+            tilkjentYtelse = TilkjentYtelseDto(andelerTilkjentYtelse = andeler,
+                                               startdato = andeler.minOfOrNull { it.fraOgMed } ?: LocalDate.now()),
             saksbehandlerId = "saksbehandlerId",
             eksternBehandlingId = 1,
             stønadstype = StønadType.OVERGANGSSTØNAD,

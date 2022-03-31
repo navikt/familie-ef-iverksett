@@ -104,7 +104,7 @@ internal class KonsistensavstemmingServiceTest {
 
     private fun lagTilkjentYtelseMedMetadata(): TilkjentYtelseMedMetaData {
         return TilkjentYtelseMedMetaData(tilkjentYtelse = TilkjentYtelse(andelerTilkjentYtelse = listOf(andel1, andel2),
-                                                                         startdato = null),
+                                                                         startdato = LocalDate.now()),
                                          saksbehandlerId = saksbehandlerId,
                                          eksternBehandlingId = eksternBehandlingId,
                                          stønadstype = StønadType.OVERGANGSSTØNAD,

@@ -12,7 +12,7 @@ data class TilkjentYtelse(
         val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
         val andelerTilkjentYtelse: List<AndelTilkjentYtelse>,
         val sisteAndelIKjede: AndelTilkjentYtelse? = null,
-        val startdato: LocalDate?) {
+        val startdato: LocalDate) {
 
 
     fun toMedMetadata(

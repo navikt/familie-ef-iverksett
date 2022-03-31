@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
+import no.nav.familie.ef.iverksett.util.startdato
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
@@ -72,18 +73,6 @@ internal class ØkonomiUtilsTest {
                              startdato = opphørsdatoFørAndeler,
                              tidligereStartDato = LocalDate.MIN)
                     }.hasMessageContaining("Nytt opphørsdato=2021-01-01 kan ikke være etter")
-                }
-            }
-
-            @Test
-            internal fun `mangler opphørsdato når det finnes tidligere opphørsdato er ikke gyldig`() {
-                listOf(emptyList(), listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach { andeler ->
-                    assertThatThrownBy {
-                        test(andeler = andeler,
-                             tidligereAndeler = andeler,
-                             startdato = null,
-                             tidligereStartDato = LocalDate.MIN)
-                    }.hasMessageContaining("Må ha med opphørsdato hvis man har tidligere opphørsdato")
                 }
             }
 
@@ -266,8 +255,8 @@ internal class ØkonomiUtilsTest {
 
         private fun test(andeler: List<AndelTilkjentYtelse>,
                          tidligereAndeler: List<AndelTilkjentYtelse>,
-                         startdato: LocalDate? = andeler.minOf { it.fraOgMed },
-                         tidligereStartDato: LocalDate = tidligereAndeler.minOf { it.fraOgMed },
+                         startdato: LocalDate = startdato(andeler),
+                         tidligereStartDato: LocalDate = startdato(tidligereAndeler),
                          sisteAndelIKjede: AndelTilkjentYtelse? = null): Utbetalingsperiode? {
             val tidligereAndelerMedPeriodeId = leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler)
             val forrigeTilkjentYtelse = opprettTilkjentYtelse(
@@ -287,7 +276,7 @@ internal class ØkonomiUtilsTest {
         fun Utbetalingsperiode?.opphørsdato(): LocalDate? = this?.opphør?.opphørDatoFom
 
         private fun testOpphørsdatoUtenTidligereTilkjentYtelse(andeler: List<AndelTilkjentYtelse>,
-                                                               startdato: LocalDate? = null) =
+                                                               startdato: LocalDate = startdato(andeler)) =
                 utbetalingsperiodeForOpphør(null, tilkjentYtelseMedMetadata(andeler, startdato))
 
         private fun leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler: List<AndelTilkjentYtelse>): List<AndelTilkjentYtelse> {
@@ -302,7 +291,7 @@ internal class ØkonomiUtilsTest {
         }
 
         private fun tilkjentYtelseMedMetadata(andeler: List<AndelTilkjentYtelse>,
-                                              startdato: LocalDate?) =
+                                              startdato: LocalDate) =
                 opprettTilkjentYtelseMedMetadata(tilkjentYtelse = opprettTilkjentYtelse(andeler = andeler, startdato = startdato))
 
         fun andelMedBeløp(beløp: Int = 1,

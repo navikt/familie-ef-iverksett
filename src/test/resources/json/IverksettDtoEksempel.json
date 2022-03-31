@@ -86,7 +86,7 @@
         }
       ],
       "opphørsdato": null,
-      "startdato": null
+      "startdato": "2021-01-01"
     },
     "tilbakekreving": {
       "tilbakekrevingsvalg": "OPPRETT_TILBAKEKREVING_MED_VARSEL",

@@ -97,7 +97,7 @@ internal class BehandlingDVHMapperTest {
                                                                                        periodeId = 2,
                                                                                        forrigePeriodeId = 1,
                                                                                        kildeBehandlingId = behandlingId)
-                                                           ), startdato = null),
+                                                           ), startdato = LocalDate.now()),
                                                    vedtaksperioder = listOf(
                                                            Vedtaksperiode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
                                                                           fraOgMed = LocalDate.of(2021, 1, 1),
