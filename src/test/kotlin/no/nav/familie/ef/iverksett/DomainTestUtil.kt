@@ -28,7 +28,8 @@ import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as Tilkj
 fun simuleringDto(andeler: List<AndelTilkjentYtelseDto> = listOf(lagDefaultAndeler()), forrigeBehandlingId: UUID? = UUID.randomUUID()): SimuleringDto {
     val behandlingId = UUID.fromString("4b657902-d994-11eb-b8bc-0242ac130003")
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetadataDto(
-            tilkjentYtelse = TilkjentYtelseDto(andelerTilkjentYtelse = andeler),
+            tilkjentYtelse = TilkjentYtelseDto(andelerTilkjentYtelse = andeler,
+                                               startdato = andeler.minOfOrNull { it.fraOgMed } ?: LocalDate.now()),
             saksbehandlerId = "saksbehandlerId",
             eksternBehandlingId = 1,
             stønadstype = StønadType.OVERGANGSSTØNAD,
