@@ -1,13 +1,13 @@
 package no.nav.familie.ef.iverksett.oppgave
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 object OppgaveBeskrivelse {
 
-    fun beskrivelseFørstegangsbehandlingInnvilget(periode: Pair<LocalDate, LocalDate>, vedtak: Vedtaksperiode): String {
+    fun beskrivelseFørstegangsbehandlingInnvilget(periode: Pair<LocalDate, LocalDate>, vedtak: VedtaksperiodeOvergangsstønad): String {
         return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
                "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
     }
@@ -16,7 +16,7 @@ object OppgaveBeskrivelse {
         return "Søknad om overgangsstønad er avslått i vedtak datert ${vedtaksdato.toReadable()}."
     }
 
-    fun beskrivelseRevurderingInnvilget(vedtaksPeriode: Pair<LocalDate, LocalDate>, gjeldendeVedtak: Vedtaksperiode): String {
+    fun beskrivelseRevurderingInnvilget(vedtaksPeriode: Pair<LocalDate, LocalDate>, gjeldendeVedtak: VedtaksperiodeOvergangsstønad): String {
         return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
                "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
     }

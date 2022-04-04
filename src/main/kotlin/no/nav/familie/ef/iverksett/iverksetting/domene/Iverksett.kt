@@ -1,5 +1,10 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
@@ -20,13 +25,30 @@ import java.time.LocalDateTime
 import java.util.UUID
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
 
-data class Iverksett(
-        val fagsak: Fagsakdetaljer,
-        val behandling: Behandlingsdetaljer,
-        val søker: Søker,
-        val vedtak: Vedtaksdetaljer,
-) {
+sealed class Iverksett {
+
+    abstract val fagsak: Fagsakdetaljer
+    abstract val behandling: Behandlingsdetaljer
+    abstract val søker: Søker
+    abstract val vedtak: Vedtaksdetaljer
+
     fun erMigrering(): Boolean = behandling.behandlingÅrsak == BehandlingÅrsak.MIGRERING
+
+    abstract fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): Iverksett
+
+}
+
+data class IverksettOvergangsstønad(
+        override val fagsak: Fagsakdetaljer,
+        override val behandling: Behandlingsdetaljer,
+        override val søker: Søker,
+        override val vedtak: VedtaksdetaljerOvergangsstønad,
+) : Iverksett() {
+
+    override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettOvergangsstønad {
+        return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
+    }
+
 }
 
 data class Fagsakdetaljer(
@@ -42,24 +64,48 @@ data class Søker(
         val adressebeskyttelse: AdressebeskyttelseGradering? = null
 )
 
-data class Vedtaksperiode(
-        val aktivitet: AktivitetType,
-        val fraOgMed: LocalDate,
-        val periodeType: VedtaksperiodeType,
-        val tilOgMed: LocalDate
-)
+sealed class Vedtaksperiode {
 
-data class Vedtaksdetaljer(
-        val vedtaksresultat: Vedtaksresultat,
-        val vedtakstidspunkt: LocalDateTime,
-        val opphørÅrsak: OpphørÅrsak?,
-        val saksbehandlerId: String,
-        val beslutterId: String,
-        val tilkjentYtelse: TilkjentYtelse?,
-        val vedtaksperioder: List<Vedtaksperiode>,
-        val tilbakekreving: Tilbakekrevingsdetaljer? = null,
-        val brevmottakere: Brevmottakere? = null
-)
+    abstract val fraOgMed: LocalDate
+    abstract val tilOgMed: LocalDate
+}
+
+data class VedtaksperiodeOvergangsstønad(
+        override val fraOgMed: LocalDate,
+        override val tilOgMed: LocalDate,
+        val aktivitet: AktivitetType,
+        val periodeType: VedtaksperiodeType) : Vedtaksperiode() {
+}
+
+data class BarnetilsynVedtaksperiode(
+        override val fraOgMed: LocalDate,
+        override val tilOgMed: LocalDate) : Vedtaksperiode() {
+}
+
+sealed class Vedtaksdetaljer {
+
+    abstract val vedtaksresultat: Vedtaksresultat
+    abstract val vedtakstidspunkt: LocalDateTime
+    abstract val opphørÅrsak: OpphørÅrsak?
+    abstract val saksbehandlerId: String
+    abstract val beslutterId: String
+    abstract val tilkjentYtelse: TilkjentYtelse?
+    abstract val tilbakekreving: Tilbakekrevingsdetaljer?
+    abstract val brevmottakere: Brevmottakere?
+    abstract val vedtaksperioder: List<Vedtaksperiode>
+}
+
+data class VedtaksdetaljerOvergangsstønad(
+        override val vedtaksresultat: Vedtaksresultat,
+        override val vedtakstidspunkt: LocalDateTime,
+        override val opphørÅrsak: OpphørÅrsak?,
+        override val saksbehandlerId: String,
+        override val beslutterId: String,
+        override val tilkjentYtelse: TilkjentYtelse?,
+        override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
+        override val brevmottakere: Brevmottakere? = null,
+        override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad>
+) : Vedtaksdetaljer()
 
 data class Behandlingsdetaljer(
         val forrigeBehandlingId: UUID? = null,
@@ -108,8 +154,31 @@ data class TilbakekrevingMedVarsel(
 
 data class Brevmottakere(val mottakere: List<Brevmottaker>)
 data class Brevmottaker(
-    val ident: String,
-    val navn: String,
-    val identType: BrevmottakerKontrakter.IdentType,
-    val mottakerRolle: BrevmottakerKontrakter.MottakerRolle
+        val ident: String,
+        val navn: String,
+        val identType: BrevmottakerKontrakter.IdentType,
+        val mottakerRolle: BrevmottakerKontrakter.MottakerRolle
 )
+
+
+private class VedtakDtoDeserializer : StdDeserializer<Iverksett>(Iverksett::class.java) {
+
+    override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): Iverksett {
+        val mapper = p.codec as ObjectMapper
+        val node: JsonNode = mapper.readTree(p)
+
+        val stønadstype = node.get("fagsak").get("stønadstype").asText()
+        return when (StønadType.valueOf(stønadstype)) {
+            StønadType.OVERGANGSSTØNAD -> mapper.treeToValue(node, IverksettOvergangsstønad::class.java)
+            else -> error("Har ikke mapping for $stønadstype")
+        }
+    }
+}
+
+class IverksettModule : com.fasterxml.jackson.databind.module.SimpleModule() {
+
+    init {
+        addDeserializer(Iverksett::class.java, VedtakDtoDeserializer())
+    }
+}
+

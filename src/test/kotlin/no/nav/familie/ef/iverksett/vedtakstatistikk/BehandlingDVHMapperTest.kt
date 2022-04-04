@@ -6,11 +6,11 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
@@ -42,74 +42,21 @@ internal class BehandlingDVHMapperTest {
     private val barnFnr = "24101576627"
     private val termindato: LocalDate? = LocalDate.now().plusDays(40)
 
-
     @Test
     internal fun `skal mappe iverksett til dvh verdier`() {
 
         val behandlingDVH = BehandlingDVHMapper.map(
-                Iverksett(fagsak = Fagsakdetaljer(fagsakId = fagsakId,
-                                                  eksternId = eksternFagsakId,
-                                                  stønadstype = StønadType.OVERGANGSSTØNAD),
-                          behandling = Behandlingsdetaljer(forrigeBehandlingId = null,
-                                                           behandlingId = behandlingId,
-                                                           eksternId = eksternBehandlingId,
-                                                           behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-                                                           behandlingÅrsak = BehandlingÅrsak.SØKNAD,
-                                                           relatertBehandlingId = null,
-                                                           vilkårsvurderinger = lagVilkårsvurderinger(),
-                                                           aktivitetspliktInntrefferDato = null),
-                          søker = Søker(personIdent = søker,
-                                        barn = listOf(
-                                                Barn(personIdent = barnFnr),
-                                                Barn(termindato = termindato),
-                                        ),
-                                        tilhørendeEnhet = "4489",
-                                        adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG),
-                          vedtak = Vedtaksdetaljer(vedtaksresultat = Vedtaksresultat.INNVILGET,
-                                                   vedtakstidspunkt = LocalDateTime.now(),
-                                                   opphørÅrsak = null,
-                                                   saksbehandlerId = "A123456",
-                                                   beslutterId = "B123456",
-                                                   tilkjentYtelse = TilkjentYtelse(
-                                                           id = UUID.randomUUID(),
-                                                           utbetalingsoppdrag = null,
-                                                           status = TilkjentYtelseStatus.OPPRETTET,
-                                                           andelerTilkjentYtelse = listOf(
-                                                                   AndelTilkjentYtelse(beløp = 9000,
-                                                                                       fraOgMed = LocalDate.of(2021, 1, 1),
-                                                                                       tilOgMed = LocalDate.of(2021, 5, 31),
-                                                                                       periodetype = Periodetype.MÅNED,
-                                                                                       inntekt = 300000,
-                                                                                       samordningsfradrag = 1000,
-                                                                                       inntektsreduksjon = 11000,
-                                                                                       periodeId = 1,
-                                                                                       forrigePeriodeId = null,
-                                                                                       kildeBehandlingId = behandlingId
-
-                                                                   ),
-                                                                   AndelTilkjentYtelse(beløp = 10000,
-                                                                                       fraOgMed = LocalDate.of(2021, 6, 1),
-                                                                                       tilOgMed = LocalDate.of(2021, 10, 31),
-                                                                                       periodetype = Periodetype.MÅNED,
-                                                                                       inntekt = 300000,
-                                                                                       samordningsfradrag = 0,
-                                                                                       inntektsreduksjon = 11000,
-                                                                                       periodeId = 2,
-                                                                                       forrigePeriodeId = 1,
-                                                                                       kildeBehandlingId = behandlingId)
-                                                           ), startdato = LocalDate.now()),
-                                                   vedtaksperioder = listOf(
-                                                           Vedtaksperiode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
-                                                                          fraOgMed = LocalDate.of(2021, 1, 1),
-                                                                          periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL,
-                                                                          tilOgMed = LocalDate.of(2021, 1, 1)),
-                                                           Vedtaksperiode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                                                                          fraOgMed = LocalDate.of(2021, 6, 1),
-                                                                          periodeType = VedtaksperiodeType.HOVEDPERIODE,
-                                                                          tilOgMed = LocalDate.of(2021, 10, 31))
-                                                   ),
-                                                   brevmottakere = Brevmottakere(emptyList()))
-
+                IverksettOvergangsstønad(
+                        fagsak = fagsakdetaljer(),
+                        behandling = behandlingsdetaljer(),
+                        søker = Søker(personIdent = søker,
+                                      barn = listOf(
+                                              Barn(personIdent = barnFnr),
+                                              Barn(termindato = termindato),
+                                      ),
+                                      tilhørendeEnhet = "4489",
+                                      adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG),
+                        vedtak = vedtaksdetaljerOvergangsstønad()
                 ), null)
 
         assertThat(behandlingDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
@@ -120,6 +67,80 @@ internal class BehandlingDVHMapperTest {
         assertThat(behandlingDVH.utbetalinger).hasSize(2)
         assertThat(behandlingDVH.aktivitetskrav.aktivitetspliktInntrefferDato).isNull()
     }
+
+    fun fagsakdetaljer(): Fagsakdetaljer =
+            Fagsakdetaljer(fagsakId = fagsakId,
+                           eksternId = eksternFagsakId,
+                           stønadstype = StønadType.OVERGANGSSTØNAD)
+
+    fun behandlingsdetaljer(): Behandlingsdetaljer =
+            Behandlingsdetaljer(forrigeBehandlingId = null,
+                                behandlingId = behandlingId,
+                                eksternId = eksternBehandlingId,
+                                behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+                                behandlingÅrsak = BehandlingÅrsak.SØKNAD,
+                                relatertBehandlingId = null,
+                                vilkårsvurderinger = lagVilkårsvurderinger(),
+                                aktivitetspliktInntrefferDato = null)
+
+    fun tilkjentYtelse(): TilkjentYtelse =
+            TilkjentYtelse(
+                    id = UUID.randomUUID(),
+                    utbetalingsoppdrag = null,
+                    status = TilkjentYtelseStatus.OPPRETTET,
+                    andelerTilkjentYtelse = listOf(
+                            AndelTilkjentYtelse(beløp = 9000,
+                                                fraOgMed = LocalDate.of(2021,
+                                                                        1,
+                                                                        1),
+                                                tilOgMed = LocalDate.of(2021,
+                                                                        5,
+                                                                        31),
+                                                periodetype = Periodetype.MÅNED,
+                                                inntekt = 300000,
+                                                samordningsfradrag = 1000,
+                                                inntektsreduksjon = 11000,
+                                                periodeId = 1,
+                                                forrigePeriodeId = null,
+                                                kildeBehandlingId = behandlingId
+
+                            ),
+                            AndelTilkjentYtelse(beløp = 10000,
+                                                fraOgMed = LocalDate.of(2021,
+                                                                        6,
+                                                                        1),
+                                                tilOgMed = LocalDate.of(2021,
+                                                                        10,
+                                                                        31),
+                                                periodetype = Periodetype.MÅNED,
+                                                inntekt = 300000,
+                                                samordningsfradrag = 0,
+                                                inntektsreduksjon = 11000,
+                                                periodeId = 2,
+                                                forrigePeriodeId = 1,
+                                                kildeBehandlingId = behandlingId)
+                    ), startdato = LocalDate.now())
+
+    fun vedtaksdetaljerOvergangsstønad() =
+            VedtaksdetaljerOvergangsstønad(
+                    vedtaksresultat = Vedtaksresultat.INNVILGET,
+                    vedtakstidspunkt = LocalDateTime.now(),
+                    opphørÅrsak = null,
+                    saksbehandlerId = "A123456",
+                    beslutterId = "B123456",
+                    tilkjentYtelse = tilkjentYtelse(),
+                    vedtaksperioder = listOf(
+                            VedtaksperiodeOvergangsstønad(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
+                                                          fraOgMed = LocalDate.of(2021, 1, 1),
+                                                          periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL,
+                                                          tilOgMed = LocalDate.of(2021, 1, 1)),
+                            VedtaksperiodeOvergangsstønad(aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
+                                                          fraOgMed = LocalDate.of(2021, 6, 1),
+                                                          periodeType = VedtaksperiodeType.HOVEDPERIODE,
+                                                          tilOgMed = LocalDate.of(2021, 10, 31))
+                    ),
+                    brevmottakere = Brevmottakere(emptyList()))
+
 
     private fun lagVilkårsvurderinger(): List<Vilkårsvurdering> = listOf(
             Vilkårsvurdering(vilkårType = VilkårType.FORUTGÅENDE_MEDLEMSKAP,

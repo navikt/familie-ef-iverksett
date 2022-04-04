@@ -4,7 +4,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.util.VilkårsvurderingUtil
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
@@ -42,7 +43,7 @@ object BehandlingDVHMapper {
                              behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
                              behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
                              vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
-                             vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak.vedtaksperioder),
+                             vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak),
                              utbetalinger = iverksett.vedtak.tilkjentYtelse?.let {
                                  mapTilUtbetaling(it,
                                                   iverksett.fagsak.stønadstype,
@@ -92,8 +93,11 @@ object BehandlingDVHMapper {
         )
     }
 
-    private fun mapToVedtaksperioder(vedtaksperioder: List<Vedtaksperiode>): List<VedtaksperiodeDto> {
-        return vedtaksperioder.map {
+    private fun mapToVedtaksperioder(vedtaksdetaljer: Vedtaksdetaljer): List<VedtaksperiodeDto> {
+        if (vedtaksdetaljer !is VedtaksdetaljerOvergangsstønad) {
+            error("Håndterer ikke ${vedtaksdetaljer::class.java.simpleName}")
+        }
+        return vedtaksdetaljer.vedtaksperioder.map {
             VedtaksperiodeDto(it.fraOgMed,
                               it.tilOgMed,
                               AktivitetType.valueOf(it.aktivitet.name),
