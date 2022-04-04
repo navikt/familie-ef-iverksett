@@ -3,12 +3,12 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
-import no.nav.familie.kontrakter.ef.felles.StønadType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.junit.jupiter.api.Test
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse as AdresseBeskyttelseEkstern
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType as AktivitetTypeEkstern

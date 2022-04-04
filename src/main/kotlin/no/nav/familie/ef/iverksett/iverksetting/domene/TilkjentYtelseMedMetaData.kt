@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
-import no.nav.familie.kontrakter.ef.felles.StønadType
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import java.time.LocalDate
 import java.util.UUID
 
