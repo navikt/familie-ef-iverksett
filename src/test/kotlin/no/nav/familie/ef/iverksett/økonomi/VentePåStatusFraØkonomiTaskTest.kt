@@ -110,18 +110,17 @@ internal class VentePåStatusFraØkonomiTaskTest {
 
 
     private fun tilkjentYtelse(utbetalingsperioder: List<Utbetalingsperiode> = listOf()): TilkjentYtelse {
-        val tilkjentYtelse = TilkjentYtelse(id = UUID.randomUUID(),
-                                            utbetalingsoppdrag = Utbetalingsoppdrag(kodeEndring = NY,
-                                                                                    fagSystem = "",
-                                                                                    saksnummer = "",
-                                                                                    aktoer = "",
-                                                                                    saksbehandlerId = "",
-                                                                                    avstemmingTidspunkt = LocalDateTime.now(),
-                                                                                    utbetalingsperiode = utbetalingsperioder),
-                                            status = TilkjentYtelseStatus.SENDT_TIL_IVERKSETTING,
-                                            andelerTilkjentYtelse = listOf(),
-                                            startdato = null)
-        return tilkjentYtelse
+        return TilkjentYtelse(id = UUID.randomUUID(),
+                              utbetalingsoppdrag = Utbetalingsoppdrag(kodeEndring = NY,
+                                                                      fagSystem = "",
+                                                                      saksnummer = "",
+                                                                      aktoer = "",
+                                                                      saksbehandlerId = "",
+                                                                      avstemmingTidspunkt = LocalDateTime.now(),
+                                                                      utbetalingsperiode = utbetalingsperioder),
+                              status = TilkjentYtelseStatus.SENDT_TIL_IVERKSETTING,
+                              andelerTilkjentYtelse = listOf(),
+                              startdato = LocalDate.now())
     }
 
 }
