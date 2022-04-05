@@ -14,6 +14,8 @@ import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
+import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.ef.StønadType
@@ -161,7 +163,7 @@ data class Brevmottaker(
 )
 
 
-private class VedtakDtoDeserializer : StdDeserializer<Iverksett>(Iverksett::class.java) {
+private class IverksettDeserializer : StdDeserializer<Iverksett>(Iverksett::class.java) {
 
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): Iverksett {
         val mapper = p.codec as ObjectMapper
@@ -175,10 +177,24 @@ private class VedtakDtoDeserializer : StdDeserializer<Iverksett>(Iverksett::clas
     }
 }
 
-class IverksettModule : com.fasterxml.jackson.databind.module.SimpleModule() {
+class IverksettDtoDeserializer : StdDeserializer<IverksettDto>(IverksettDto::class.java) {
 
-    init {
-        addDeserializer(Iverksett::class.java, VedtakDtoDeserializer())
+    override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): IverksettDto {
+        val mapper = p.codec as ObjectMapper
+        val node: JsonNode = mapper.readTree(p)
+
+        val stønadstype = node.get("fagsak").get("stønadstype").asText()
+        return when (StønadType.valueOf(stønadstype)) {
+            StønadType.OVERGANGSSTØNAD -> mapper.treeToValue(node, IverksettOvergangsstønadDto::class.java)
+            else -> error("Har ikke mapping for $stønadstype")
+        }
     }
 }
 
+
+class IverksettModule : com.fasterxml.jackson.databind.module.SimpleModule() {
+    init {
+        addDeserializer(IverksettDto::class.java, IverksettDtoDeserializer())
+        addDeserializer(Iverksett::class.java, IverksettDeserializer())
+    }
+}

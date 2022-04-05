@@ -5,15 +5,14 @@ import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.ef.iverksett.util.opprettTekniskOpphør
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
-import no.nav.familie.kontrakter.felles.objectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.util.UUID
 
 class IverksettingRepositoryTest : ServerTest() {
 
@@ -23,12 +22,7 @@ class IverksettingRepositoryTest : ServerTest() {
     @Test
     fun `deserialiser og lagre iverksett, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
-        val iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
-        iverksettingRepository.lagre(
-                UUID.randomUUID(),
-                iverksett,
-                opprettBrev()
-        )
+        val iverksett = objectMapper.readValue<IverksettDto>(json)
     }
 
     @Test

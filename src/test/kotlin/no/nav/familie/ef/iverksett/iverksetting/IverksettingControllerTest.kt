@@ -7,6 +7,7 @@ import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.http.client.MultipartBuilder
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerOvergangsstønadDto
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -58,8 +59,9 @@ class IverksettingControllerTest : ServerTest() {
     @Test
     internal fun `starte iverksetting for avslag ytelse gir 200 OK`() {
         val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
+        //Copy skal legges inn som egen metode i egen PR
         val iverksettJsonMedAvslag =
-                iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null, resultat = Vedtaksresultat.AVSLÅTT))
+                iverksettJson.copy(vedtak = (iverksettJson.vedtak as VedtaksdetaljerOvergangsstønadDto).copy(tilkjentYtelse = null, resultat = Vedtaksresultat.AVSLÅTT))
         val request = MultipartBuilder()
                 .withJson("data", iverksettJsonMedAvslag)
                 .withByteArray("fil", "1", byteArrayOf(12))
@@ -77,7 +79,7 @@ class IverksettingControllerTest : ServerTest() {
     @Test
     internal fun `Innvilget vedtak uten tilkjent ytelse gir 400 feil`() {
         val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        val iverksettJsonUtenTilkjentYtelse = iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null))
+        val iverksettJsonUtenTilkjentYtelse = iverksettJson.copy(vedtak = (iverksettJson.vedtak as VedtaksdetaljerOvergangsstønadDto).copy(tilkjentYtelse = null))
         val request = MultipartBuilder()
                 .withJson("data", iverksettJsonUtenTilkjentYtelse)
                 .withByteArray("fil", "1", byteArrayOf(12))

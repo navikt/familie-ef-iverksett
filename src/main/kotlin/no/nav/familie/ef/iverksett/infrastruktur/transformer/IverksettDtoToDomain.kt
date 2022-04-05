@@ -10,6 +10,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
@@ -18,11 +19,13 @@ import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
+import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingMedVarselDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
-import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeDto
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerOvergangsstønadDto
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
@@ -62,7 +65,22 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
                                aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato)
 }
 
-fun VedtaksperiodeDto.toDomain(): VedtaksperiodeOvergangsstønad {
+fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
+    return VedtaksdetaljerOvergangsstønad(
+            vedtaksresultat = this.resultat,
+            vedtakstidspunkt = this.vedtakstidspunkt,
+            opphørÅrsak = this.opphørÅrsak,
+            saksbehandlerId = this.saksbehandlerId,
+            beslutterId = this.beslutterId,
+            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
+            tilbakekreving = this.tilbakekreving?.toDomain(),
+            brevmottakere = this.brevmottakere.toDomain(),
+            //vedtaksperioder = this.vedtaksperioder.map { it.toDomain() }
+            vedtaksperioder = listOf()
+        )
+}
+
+fun VedtaksperiodeOvergangsstønadDto.toDomain(): VedtaksperiodeOvergangsstønad {
     return VedtaksperiodeOvergangsstønad( //Dette blir generisk på et senere tidspunkt - tar det i egen PR
             aktivitet = this.aktivitet,
             fraOgMed = this.fraOgMed,
@@ -70,7 +88,7 @@ fun VedtaksperiodeDto.toDomain(): VedtaksperiodeOvergangsstønad {
             tilOgMed = this.tilOgMed)
 }
 
-fun VedtaksdetaljerDto.toDomain(): VedtaksdetaljerOvergangsstønad {
+fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstønad {
     return VedtaksdetaljerOvergangsstønad(
             vedtaksresultat = this.resultat,
             vedtakstidspunkt = this.vedtakstidspunkt,
@@ -111,6 +129,15 @@ fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere {
 }
 
 fun IverksettDto.toDomain(): Iverksett {
+    when (this) {
+        is IverksettOvergangsstønadDto -> IverksettOvergangsstønad(
+                fagsak = this.fagsak.toDomain(),
+                søker = this.søker.toDomain(),
+                behandling = this.behandling.toDomain(),
+                vedtak = this.vedtak.toDomain()
+        )
+        else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
+    }
     return IverksettOvergangsstønad(
             fagsak = this.fagsak.toDomain(),
             søker = this.søker.toDomain(),
@@ -118,3 +145,14 @@ fun IverksettDto.toDomain(): Iverksett {
             vedtak = this.vedtak.toDomain()
     )
 }
+
+
+/*
+fun IverksettOvergangsstønadDto.toDomain(): IverksettOvergangsstønad {
+    return IverksettOvergangsstønad(
+            fagsak = this.fagsak.toDomain(),
+            søker = this.søker.toDomain(),
+            behandling = this.behandling.toDomain(),
+            vedtak = this.vedtak.toDomain()
+    )
+}*/
