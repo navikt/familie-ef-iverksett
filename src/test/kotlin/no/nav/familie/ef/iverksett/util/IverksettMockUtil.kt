@@ -7,7 +7,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
@@ -18,8 +18,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
@@ -165,12 +165,52 @@ fun opprettTekniskOpphør(behandlingId: UUID, eksternId: Long): TekniskOpphør {
     return TekniskOpphør(behandlingId, opprettTilkjentYtelseMedMetadata(behandlingId, eksternId))
 }
 
-fun opprettIverksett(behandlingId: UUID,
-                     forrigeBehandlingId: UUID? = null,
-                     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
-                     tilbakekreving: Tilbakekrevingsdetaljer? = null,
-                     startdato: LocalDate = startdato(andeler)): Iverksett {
+fun behandlingsdetaljer(
+        behandlingId: UUID = UUID.randomUUID(),
+        forrigeBehandlingId: UUID? = null,
+        behandlingType: BehandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+        behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD
+): Behandlingsdetaljer {
+    return Behandlingsdetaljer(
+            behandlingId = behandlingId,
+            forrigeBehandlingId = forrigeBehandlingId,
+            eksternId = 9L,
+            behandlingType = behandlingType,
+            behandlingÅrsak = behandlingÅrsak,
+            relatertBehandlingId = null,
+            vilkårsvurderinger = listOf(
+                    Vilkårsvurdering(
+                            vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            delvilkårsvurderinger = listOf(
+                                    Delvilkårsvurdering(
+                                            resultat = Vilkårsresultat.OPPFYLT,
+                                            vurderinger = listOf(
+                                                    Vurdering(
+                                                            regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
+                                                            svar = SvarId.JA,
+                                                            begrunnelse = "Nei")
+                                            )
+                                    )
+                            )
+                    )
+            )
 
+    )
+}
+
+fun vedtaksperioderOvergangsstønad() =
+        VedtaksperiodeOvergangsstønad(fraOgMed = LocalDate.now(),
+                                      tilOgMed = LocalDate.now(),
+                                      aktivitet = AktivitetType.BARNET_ER_SYKT,
+                                      periodeType = VedtaksperiodeType.HOVEDPERIODE)
+
+fun vedtaksdetaljerOvergangsstønad(vedtaksresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
+                                   andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
+                                   tilbakekreving: Tilbakekrevingsdetaljer? = null,
+                                   startdato: LocalDate = startdato(andeler),
+                                   vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad()))
+        : VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = TilkjentYtelse(
             id = UUID.randomUUID(),
             utbetalingsoppdrag = null,
@@ -178,56 +218,50 @@ fun opprettIverksett(behandlingId: UUID,
             andelerTilkjentYtelse = andeler,
             startdato = startdato
     )
+    return VedtaksdetaljerOvergangsstønad(
+            vedtaksresultat = vedtaksresultat,
+            vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
+            opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
+            saksbehandlerId = "A12345",
+            beslutterId = "B23456",
+            tilkjentYtelse = tilkjentYtelse,
+            vedtaksperioder = vedtaksperioder,
+            tilbakekreving = tilbakekreving,
+            brevmottakere = Brevmottakere(emptyList())
+    )
+}
 
+fun opprettIverksett(behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetaljer(),
+                     vedtaksdetaljer: VedtaksdetaljerOvergangsstønad = vedtaksdetaljerOvergangsstønad()) =
+        IverksettOvergangsstønad(
+                fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
+                behandling = behandlingsdetaljer,
+                søker = Søker(
+                        personIdent = "12345678910",
+                        barn = emptyList(),
+                        tilhørendeEnhet = "4489",
+                        adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
+                ),
+                vedtak = vedtaksdetaljer
+        )
+
+
+fun opprettIverksett(behandlingId: UUID = UUID.randomUUID(),
+                     forrigeBehandlingId: UUID? = null,
+                     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
+                     tilbakekreving: Tilbakekrevingsdetaljer? = null,
+                     startdato: LocalDate = startdato(andeler)): IverksettOvergangsstønad {
     val behandlingType = forrigeBehandlingId?.let { BehandlingType.REVURDERING } ?: BehandlingType.FØRSTEGANGSBEHANDLING
-    return Iverksett(
+    return IverksettOvergangsstønad(
             fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
-            behandling = Behandlingsdetaljer(
-                    behandlingId = behandlingId,
-                    forrigeBehandlingId = forrigeBehandlingId,
-                    eksternId = 9L,
-                    behandlingType = behandlingType,
-                    behandlingÅrsak = BehandlingÅrsak.SØKNAD,
-                    relatertBehandlingId = null,
-                    vilkårsvurderinger = listOf(
-                            Vilkårsvurdering(
-                                    vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
-                                    resultat = Vilkårsresultat.OPPFYLT,
-                                    delvilkårsvurderinger = listOf(
-                                            Delvilkårsvurdering(
-                                                    resultat = Vilkårsresultat.OPPFYLT,
-                                                    vurderinger = listOf(
-                                                            Vurdering(
-                                                                    regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
-                                                                    svar = SvarId.JA,
-                                                                    begrunnelse = "Nei")
-                                                    )
-                                            )
-                                    )
-                            )
-                    )
-
-            ),
+            behandling = behandlingsdetaljer(behandlingId, forrigeBehandlingId, behandlingType),
             søker = Søker(
                     personIdent = "12345678910",
                     barn = emptyList(),
                     tilhørendeEnhet = "4489",
                     adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
             ),
-            vedtak = Vedtaksdetaljer(
-                    vedtaksresultat = Vedtaksresultat.INNVILGET,
-                    vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
-                    opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
-                    saksbehandlerId = "A12345",
-                    beslutterId = "B23456",
-                    tilkjentYtelse = tilkjentYtelse,
-                    vedtaksperioder = listOf(Vedtaksperiode(fraOgMed = LocalDate.now(),
-                                                            tilOgMed = LocalDate.now(),
-                                                            aktivitet = AktivitetType.BARNET_ER_SYKT,
-                                                            periodeType = VedtaksperiodeType.HOVEDPERIODE)),
-                    tilbakekreving = tilbakekreving,
-                    brevmottakere = Brevmottakere(emptyList())
-            )
+            vedtak = vedtaksdetaljerOvergangsstønad(Vedtaksresultat.INNVILGET, andeler, tilbakekreving, startdato)
     )
 }
 

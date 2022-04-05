@@ -16,6 +16,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.util.copy
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.PERSONIDENT
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.BRUKER
@@ -34,7 +35,7 @@ import java.util.Properties
 import java.util.UUID
 import javax.annotation.PostConstruct
 
-class JournalførVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
+class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
 
     @Autowired private lateinit var tilstandRepository: TilstandRepository
     @Autowired private lateinit var iverksettingRepository: IverksettingRepository

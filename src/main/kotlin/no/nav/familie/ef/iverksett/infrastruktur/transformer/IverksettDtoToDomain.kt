@@ -6,15 +6,15 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksperiode
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
-import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
@@ -25,6 +25,7 @@ import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeDto
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
+import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
 
 fun VurderingDto.toDomain(): Vurdering {
     return Vurdering(this.regelId, this.svar, this.begrunnelse)
@@ -61,23 +62,25 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
                                aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato)
 }
 
-fun VedtaksperiodeDto.toDomain(): Vedtaksperiode {
-    return Vedtaksperiode(aktivitet = this.aktivitet,
-                          fraOgMed = this.fraOgMed,
-                          periodeType = this.periodeType,
-                          tilOgMed = this.tilOgMed)
+fun VedtaksperiodeDto.toDomain(): VedtaksperiodeOvergangsstønad {
+    return VedtaksperiodeOvergangsstønad( //Dette blir generisk på et senere tidspunkt - tar det i egen PR
+            aktivitet = this.aktivitet,
+            fraOgMed = this.fraOgMed,
+            periodeType = this.periodeType,
+            tilOgMed = this.tilOgMed)
 }
 
-fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
-    return Vedtaksdetaljer(vedtaksresultat = this.resultat,
-                           vedtakstidspunkt = this.vedtakstidspunkt,
-                           opphørÅrsak = this.opphørÅrsak,
-                           saksbehandlerId = this.saksbehandlerId,
-                           beslutterId = this.beslutterId,
-                           tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
-                           vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
-                           tilbakekreving = this.tilbakekreving?.toDomain(),
-                           brevmottakere = this.brevmottakere?.toDomain())
+fun VedtaksdetaljerDto.toDomain(): VedtaksdetaljerOvergangsstønad {
+    return VedtaksdetaljerOvergangsstønad(
+            vedtaksresultat = this.resultat,
+            vedtakstidspunkt = this.vedtakstidspunkt,
+            opphørÅrsak = this.opphørÅrsak,
+            saksbehandlerId = this.saksbehandlerId,
+            beslutterId = this.beslutterId,
+            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
+            vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
+            tilbakekreving = this.tilbakekreving?.toDomain(),
+            brevmottakere = this.brevmottakere?.toDomain())
 }
 
 fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
@@ -99,16 +102,16 @@ fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere {
 
     return Brevmottakere(mottakere = this.map {
         Brevmottaker(
-            ident = it.ident,
-            navn = it.navn,
-            identType = it.identType,
-            mottakerRolle = it.mottakerRolle
+                ident = it.ident,
+                navn = it.navn,
+                identType = it.identType,
+                mottakerRolle = it.mottakerRolle
         )
     })
 }
 
 fun IverksettDto.toDomain(): Iverksett {
-    return Iverksett(
+    return IverksettOvergangsstønad(
             fagsak = this.fagsak.toDomain(),
             søker = this.søker.toDomain(),
             behandling = this.behandling.toDomain(),

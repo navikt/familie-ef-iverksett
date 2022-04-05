@@ -28,7 +28,7 @@ fun Iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleri
             else
                 tilbakekreving
 
-    return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
+    return this.medNyTilbakekreving(nyTilbakekreving)
 }
 
 private fun harAvvikIVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer?,
