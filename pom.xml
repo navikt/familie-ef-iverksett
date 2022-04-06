@@ -27,7 +27,7 @@
         <prosessering.version>1.20220321101749_55e4576</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <familie.kontrakter.version>2.0_20220331215756_9594442</familie.kontrakter.version>
+        <familie.kontrakter.version>2.0_20220406133852_e1934d1</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220316102935_a849241</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220107115927_4388dc5</familie.eksterne-kontrakter.saksstatistikk-ef>
         <token-validation-spring.version>2.0.14</token-validation-spring.version>

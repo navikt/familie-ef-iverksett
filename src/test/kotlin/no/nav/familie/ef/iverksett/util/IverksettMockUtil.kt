@@ -39,12 +39,12 @@ import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
-import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
+import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
-import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
@@ -60,7 +60,7 @@ import java.util.UUID
 fun opprettIverksettDto(behandlingId: UUID,
                         behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
                         andelsbeløp: Int = 5000,
-                        stønadType: StønadType = StønadType.OVERGANGSSTØNAD): IverksettDto {
+                    stønadType: StønadType = StønadType.OVERGANGSSTØNAD): IverksettOvergangsstønadDto {
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
             beløp = andelsbeløp,
@@ -74,7 +74,7 @@ fun opprettIverksettDto(behandlingId: UUID,
             startdato = LocalDate.of(2020, 3, 1)
     )
 
-    return IverksettDto(
+    return IverksettOvergangsstønadDto(
             fagsak = FagsakdetaljerDto(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = stønadType),
             behandling = BehandlingsdetaljerDto(
                     behandlingId = behandlingId,
@@ -106,7 +106,7 @@ fun opprettIverksettDto(behandlingId: UUID,
                     tilhørendeEnhet = "4489",
                     adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
             ),
-            vedtak = VedtaksdetaljerDto(
+            vedtak = VedtaksdetaljerOvergangsstønadDto(
                     resultat = Vedtaksresultat.INNVILGET,
                     vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
                     opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
