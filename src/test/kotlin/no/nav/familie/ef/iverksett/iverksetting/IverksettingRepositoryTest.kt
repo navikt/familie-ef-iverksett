@@ -20,12 +20,6 @@ class IverksettingRepositoryTest : ServerTest() {
     private lateinit var iverksettingRepository: IverksettingRepository
 
     @Test
-    fun `deserialiser og lagre iverksett, forvent ingen unntak`() {
-        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
-        val iverksett = objectMapper.readValue<IverksettDto>(json)
-    }
-
-    @Test
     fun `lagre og hent iverksett, forvent likhet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()

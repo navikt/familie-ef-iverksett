@@ -10,7 +10,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
@@ -23,7 +22,6 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingMedVarselDto
-import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
@@ -63,21 +61,6 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
                                behandlingÅrsak = this.behandlingÅrsak,
                                vilkårsvurderinger = this.vilkårsvurderinger.map { it.toDomain() },
                                aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato)
-}
-
-fun VedtaksdetaljerDto.toDomain(): Vedtaksdetaljer {
-    return VedtaksdetaljerOvergangsstønad(
-            vedtaksresultat = this.resultat,
-            vedtakstidspunkt = this.vedtakstidspunkt,
-            opphørÅrsak = this.opphørÅrsak,
-            saksbehandlerId = this.saksbehandlerId,
-            beslutterId = this.beslutterId,
-            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
-            tilbakekreving = this.tilbakekreving?.toDomain(),
-            brevmottakere = this.brevmottakere.toDomain(),
-            //vedtaksperioder = this.vedtaksperioder.map { it.toDomain() }
-            vedtaksperioder = listOf()
-        )
 }
 
 fun VedtaksperiodeOvergangsstønadDto.toDomain(): VedtaksperiodeOvergangsstønad {
@@ -129,7 +112,7 @@ fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere {
 }
 
 fun IverksettDto.toDomain(): Iverksett {
-    when (this) {
+    return when (this) {
         is IverksettOvergangsstønadDto -> IverksettOvergangsstønad(
                 fagsak = this.fagsak.toDomain(),
                 søker = this.søker.toDomain(),
@@ -138,21 +121,4 @@ fun IverksettDto.toDomain(): Iverksett {
         )
         else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
     }
-    return IverksettOvergangsstønad(
-            fagsak = this.fagsak.toDomain(),
-            søker = this.søker.toDomain(),
-            behandling = this.behandling.toDomain(),
-            vedtak = this.vedtak.toDomain()
-    )
 }
-
-
-/*
-fun IverksettOvergangsstønadDto.toDomain(): IverksettOvergangsstønad {
-    return IverksettOvergangsstønad(
-            fagsak = this.fagsak.toDomain(),
-            søker = this.søker.toDomain(),
-            behandling = this.behandling.toDomain(),
-            vedtak = this.vedtak.toDomain()
-    )
-}*/
