@@ -6,23 +6,31 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
+import no.nav.familie.kontrakter.ef.iverksett.PeriodeMedBeløpDto
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingMedVarselDto
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerOvergangsstønadDto
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
@@ -64,11 +72,20 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
 }
 
 fun VedtaksperiodeOvergangsstønadDto.toDomain(): VedtaksperiodeOvergangsstønad {
-    return VedtaksperiodeOvergangsstønad( //Dette blir generisk på et senere tidspunkt - tar det i egen PR
+    return VedtaksperiodeOvergangsstønad(
             aktivitet = this.aktivitet,
             fraOgMed = this.fraOgMed,
             periodeType = this.periodeType,
             tilOgMed = this.tilOgMed)
+}
+
+fun VedtaksperiodeBarnetilsynDto.toDomain(): VedtaksperiodeBarnetilsyn {
+    return VedtaksperiodeBarnetilsyn(
+            fraOgMed = this.fraOgMed,
+            tilOgMed = this.tilOgMed,
+            utgifter = this.utgifter,
+            antallBarn = this.antallBarn
+    )
 }
 
 fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstønad {
@@ -81,7 +98,22 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
             tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
             vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
             tilbakekreving = this.tilbakekreving?.toDomain(),
-            brevmottakere = this.brevmottakere?.toDomain())
+            brevmottakere = this.brevmottakere.toDomain())
+}
+
+fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn {
+    return VedtaksdetaljerBarnetilsyn(
+            vedtaksresultat = this.resultat,
+            vedtakstidspunkt = this.vedtakstidspunkt,
+            opphørÅrsak = this.opphørÅrsak,
+            saksbehandlerId = this.saksbehandlerId,
+            beslutterId = this.beslutterId,
+            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
+            vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
+            tilbakekreving = this.tilbakekreving?.toDomain(),
+            brevmottakere = this.brevmottakere.toDomain(),
+            kontantstøtte = this.kontantstøtte.map { it.toDomain() },
+            tilleggsstønad = this.tilleggsstønad.map { it.toDomain() })
 }
 
 fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
@@ -111,9 +143,20 @@ fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere {
     })
 }
 
+fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
+        PeriodeMedBeløp(fraOgMed = this.fraOgMed,
+                        tilOgMed = this.tilOgMed,
+                        beløp = this.beløp)
+
 fun IverksettDto.toDomain(): Iverksett {
     return when (this) {
         is IverksettOvergangsstønadDto -> IverksettOvergangsstønad(
+                fagsak = this.fagsak.toDomain(),
+                søker = this.søker.toDomain(),
+                behandling = this.behandling.toDomain(),
+                vedtak = this.vedtak.toDomain()
+        )
+        is IverksettBarnetilsynDto -> IverksettBarnetilsyn(
                 fagsak = this.fagsak.toDomain(),
                 søker = this.søker.toDomain(),
                 behandling = this.behandling.toDomain(),

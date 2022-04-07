@@ -20,8 +20,21 @@ class IverksettingRepositoryTest : ServerTest() {
     private lateinit var iverksettingRepository: IverksettingRepository
 
     @Test
-    fun `lagre og hent iverksett, forvent likhet`() {
+    fun `lagre og hent iverksett overgangsstønad, forvent likhet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
+        val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
+        iverksettingRepository.lagre(
+                iverksett.behandling.behandlingId,
+                iverksett,
+                opprettBrev()
+        )
+        val iverksettResultat = iverksettingRepository.hent(iverksett.behandling.behandlingId)
+        assertThat(iverksett).isEqualTo(iverksettResultat)
+    }
+
+    @Test
+    fun `lagre og hent iverksett barnetilsyn, forvent likhet`() {
+        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettBarnetilsynDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagre(
                 iverksett.behandling.behandlingId,
