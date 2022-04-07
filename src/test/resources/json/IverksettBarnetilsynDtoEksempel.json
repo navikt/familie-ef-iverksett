@@ -1,0 +1,122 @@
+{
+  "fagsak": {
+    "fagsakId": "234bed7c-b1d3-11eb-9999-0242ac130003",
+    "eksternId": 12,
+    "stønadstype": "BARNETILSYN"
+  },
+  "behandling": {
+    "behandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003",
+    "forrigeBehandlingId": "999abcde-fabc-11eb-8529-0242ac130003",
+    "eksternId": 14,
+    "behandlingType": "FØRSTEGANGSBEHANDLING",
+    "behandlingÅrsak": "NYE_OPPLYSNINGER",
+    "vilkårsvurderinger": [
+      {
+        "vilkårType":"AKTIVITET",
+        "resultat":"IKKE_AKTUELL",
+        "delvilkårsvurderinger": [
+          {
+            "resultat": "IKKE_AKTUELL",
+            "vurderinger": [
+              {
+                "regelId": "BOR_OG_OPPHOLDER_SEG_I_NORGE",
+                "svar": "ANDRE_FORELDER_MEDLEM_MINST_5_ÅR_AVBRUDD_MINDRE_ENN_10_ÅR",
+                "begrunnelse": "string"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "vilkårType": "SAGT_OPP_ELLER_REDUSERT",
+        "resultat": "OPPFYLT",
+        "delvilkårsvurderinger": [
+          {
+            "resultat": "OPPFYLT",
+            "vurderinger": [
+              {
+                "regelId": "SAGT_OPP_ELLER_REDUSERT",
+                "svar": "JA",
+                "begrunnelse": "string"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "aktivitetspliktInntrefferDato":null,
+    "kravMottatt": null
+  },
+  "søker": {
+    "barn": [
+      {
+        "personIdent": "1234567910",
+        "termindato": null
+      }
+    ],
+    "tilhørendeEnhet": "4489",
+    "adressebeskyttelse": "STRENGT_FORTROLIG",
+    "personIdent": "12345678901"
+  },
+  "vedtak": {
+    "resultat": "AVSLÅTT",
+    "opphørÅrsak": "PERIODE_UTLØPT",
+    "vedtakstidspunkt": "2021-05-10T01:00:00",
+    "vedtaksperioder": [
+      {
+        "fraOgMed": "2021-06-10",
+        "tilOgMed": "2021-06-10",
+        "utgifter": 10.123,
+        "antallBarn": 2
+      }
+    ],
+    "saksbehandlerId": "A123456",
+    "beslutterId": "B123456",
+    "tilkjentYtelse": {
+      "andelerTilkjentYtelse": [
+        {
+          "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "fraOgMed": "2021-05-10",
+          "periodetype": "MÅNED",
+          "tilOgMed": "2021-05-10",
+          "beløp": 0,
+          "inntekt": 0,
+          "samordningsfradrag": 0,
+          "inntektsreduksjon": 0
+        }
+      ],
+      "startdato": "2020-03-01"
+    },
+    "tilbakekreving": {
+      "tilbakekrevingsvalg": "OPPRETT_TILBAKEKREVING_MED_VARSEL",
+      "tilbakekrevingMedVarsel": {
+        "varseltekst": "varsel",
+        "sumFeilutbetaling": 1,
+        "perioder": [
+          {
+            "fom": "2021-01-01",
+            "tom": "2021-01-01"
+          }
+        ]
+      }
+    },
+    "brevmottakere": [ ],
+    "kontantstøtte": [
+      {
+        "fraOgMed": "2021-07-10",
+        "tilOgMed": "2021-07-10",
+        "beløp": 11
+      }
+    ],
+    "tilleggsstønad": [
+      {
+        "fraOgMed": "2021-07-10",
+        "tilOgMed": "2021-07-10",
+        "beløp": 12
+      }
+    ]
+  }
+}
+
+
+
