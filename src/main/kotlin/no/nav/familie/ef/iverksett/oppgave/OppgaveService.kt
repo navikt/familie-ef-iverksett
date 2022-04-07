@@ -23,11 +23,8 @@ class OppgaveService(
         private val iverksettingRepository: IverksettingRepository
 ) {
 
-    fun skalOppretteVurderHenvendelseOppgave(iverksett: Iverksett): Boolean {
-        if (iverksett !is IverksettOvergangsstønad) {
-            error("Håndterer ikke ${iverksett::class.java.simpleName}")
-        }
-        if (iverksett.erMigrering() || iverksett.fagsak.stønadstype != StønadType.OVERGANGSSTØNAD) {
+    fun skalOppretteVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Boolean {
+        if (iverksett.erMigrering()) {
             return false
         }
         return when (iverksett.behandling.behandlingType) {
@@ -43,10 +40,7 @@ class OppgaveService(
         }
     }
 
-    fun opprettVurderHenvendelseOppgave(iverksett: Iverksett): Long {
-        if (iverksett !is IverksettOvergangsstønad) {
-            error("Håndterer ikke ${iverksett::class.java.simpleName}")
-        }
+    fun opprettVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Long {
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
                     ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = when (iverksett.behandling.behandlingType) {
@@ -65,10 +59,7 @@ class OppgaveService(
                ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
-    private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: Iverksett): String {
-        if (iverksett !is IverksettOvergangsstønad) {
-            error("Håndterer ikke ${iverksett::class.java.simpleName}")
-        }
+    private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
         return when (iverksett.vedtak.vedtaksresultat) {
             Vedtaksresultat.INNVILGET -> beskrivelseFørstegangsbehandlingInnvilget(
                     iverksett.totalVedtaksperiode(),
@@ -93,7 +84,7 @@ class OppgaveService(
         }
     }
 
-    private fun opphørsdato(iverksett: Iverksett): LocalDate? {
+    private fun opphørsdato(iverksett: IverksettOvergangsstønad): LocalDate? {
         val tilkjentYtelse = iverksett.vedtak.tilkjentYtelse ?: error("TilkjentYtelse er null")
         return tilkjentYtelse.andelerTilkjentYtelse.maxOfOrNull { it.tilOgMed }
     }

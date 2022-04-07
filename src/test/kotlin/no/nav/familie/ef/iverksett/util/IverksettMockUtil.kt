@@ -7,10 +7,12 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TekniskOpphør
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
@@ -18,7 +20,9 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
@@ -60,7 +64,7 @@ import java.util.UUID
 fun opprettIverksettDto(behandlingId: UUID,
                         behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
                         andelsbeløp: Int = 5000,
-                    stønadType: StønadType = StønadType.OVERGANGSSTØNAD): IverksettOvergangsstønadDto {
+                        stønadType: StønadType = StønadType.OVERGANGSSTØNAD): IverksettOvergangsstønadDto {
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
             beløp = andelsbeløp,
@@ -205,19 +209,19 @@ fun vedtaksperioderOvergangsstønad() =
                                       aktivitet = AktivitetType.BARNET_ER_SYKT,
                                       periodeType = VedtaksperiodeType.HOVEDPERIODE)
 
+fun vedtaksperioderBarnetilsyn() =
+        VedtaksperiodeBarnetilsyn(fraOgMed = LocalDate.now(),
+                                  tilOgMed = LocalDate.now(),
+                                  utgifter = BigDecimal.ONE,
+                                  antallBarn = 10)
+
 fun vedtaksdetaljerOvergangsstønad(vedtaksresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
                                    andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
                                    tilbakekreving: Tilbakekrevingsdetaljer? = null,
                                    startdato: LocalDate = startdato(andeler),
                                    vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad()))
         : VedtaksdetaljerOvergangsstønad {
-    val tilkjentYtelse = TilkjentYtelse(
-            id = UUID.randomUUID(),
-            utbetalingsoppdrag = null,
-            status = TilkjentYtelseStatus.AKTIV,
-            andelerTilkjentYtelse = andeler,
-            startdato = startdato
-    )
+    val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerOvergangsstønad(
             vedtaksresultat = vedtaksresultat,
             vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
@@ -230,6 +234,52 @@ fun vedtaksdetaljerOvergangsstønad(vedtaksresultat: Vedtaksresultat = Vedtaksre
             brevmottakere = Brevmottakere(emptyList())
     )
 }
+
+fun vedtaksdetaljerBarnetilsyn(vedtaksresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
+                               andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
+                               tilbakekreving: Tilbakekrevingsdetaljer? = null,
+                               startdato: LocalDate = startdato(andeler),
+                               vedtaksperioder: List<VedtaksperiodeBarnetilsyn> = listOf(vedtaksperioderBarnetilsyn()))
+        : VedtaksdetaljerBarnetilsyn {
+    val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
+    return VedtaksdetaljerBarnetilsyn(
+            vedtaksresultat = vedtaksresultat,
+            vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
+            opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
+            saksbehandlerId = "A12345",
+            beslutterId = "B23456",
+            tilkjentYtelse = tilkjentYtelse,
+            vedtaksperioder = vedtaksperioder,
+            tilbakekreving = tilbakekreving,
+            brevmottakere = Brevmottakere(emptyList()),
+            kontantstøtte = listOf(PeriodeMedBeløp(LocalDate.of(2022, 1, 1), LocalDate.of(2021, 3, 31), 10)),
+            tilleggsstønad = listOf(PeriodeMedBeløp(LocalDate.of(2022, 2, 1), LocalDate.of(2021, 3, 31), 5))
+    )
+}
+
+private fun lagTilkjentYtelse(andeler: List<AndelTilkjentYtelse>,
+                              startdato: LocalDate): TilkjentYtelse =
+        TilkjentYtelse(
+                id = UUID.randomUUID(),
+                utbetalingsoppdrag = null,
+                status = TilkjentYtelseStatus.AKTIV,
+                andelerTilkjentYtelse = andeler,
+                startdato = startdato
+        )
+
+fun opprettIverksettBarnetilsyn(behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetaljer(),
+                                vedtaksdetaljer: VedtaksdetaljerBarnetilsyn = vedtaksdetaljerBarnetilsyn()) =
+        IverksettBarnetilsyn(
+                fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
+                behandling = behandlingsdetaljer,
+                søker = Søker(
+                        personIdent = "12345678910",
+                        barn = emptyList(),
+                        tilhørendeEnhet = "4489",
+                        adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
+                ),
+                vedtak = vedtaksdetaljer
+        )
 
 fun opprettIverksett(behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetaljer(),
                      vedtaksdetaljer: VedtaksdetaljerOvergangsstønad = vedtaksdetaljerOvergangsstønad()) =
