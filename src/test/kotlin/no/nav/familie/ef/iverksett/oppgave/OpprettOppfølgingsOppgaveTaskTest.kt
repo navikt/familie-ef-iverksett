@@ -3,9 +3,7 @@ package no.nav.familie.ef.iverksett.oppgave
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettIverksettBarnetilsyn
 import no.nav.familie.prosessering.domene.Task
@@ -22,8 +20,7 @@ internal class OpprettOppfølgingsOppgaveTaskTest {
     private val taskService = OpprettOppfølgingsOppgaveTask(
             oppgaveService,
             iverksettingRepository,
-            taskRepository,
-            mockFeatureToggleService(),
+            taskRepository
     )
 
     @Test
