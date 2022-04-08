@@ -8,7 +8,7 @@ import io.mockk.runs
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveTask
+import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.prosessering.domene.Task
@@ -48,7 +48,7 @@ internal class PubliserVedtakTilKafkaTaskTest {
         task.onCompletion(lagTask())
 
         verify(exactly = 1) { taskRepository.save(any()) }
-        assertThat(taskSlot.captured.type).isEqualTo(OpprettOppfølgingsOppgaveTask.TYPE)
+        assertThat(taskSlot.captured.type).isEqualTo(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE)
     }
 
     @Test

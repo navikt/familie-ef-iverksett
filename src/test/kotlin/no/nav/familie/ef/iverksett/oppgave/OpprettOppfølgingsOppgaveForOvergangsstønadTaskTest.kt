@@ -11,13 +11,13 @@ import no.nav.familie.prosessering.domene.TaskRepository
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-internal class OpprettOppfølgingsOppgaveTaskTest {
+internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
 
     private val oppgaveService = mockk<OppgaveService>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val taskRepository = mockk<TaskRepository>()
 
-    private val taskService = OpprettOppfølgingsOppgaveTask(
+    private val taskService = OpprettOppfølgingsOppgaveForOvergangsstønadTask(
             oppgaveService,
             iverksettingRepository,
             taskRepository
@@ -52,5 +52,5 @@ internal class OpprettOppfølgingsOppgaveTaskTest {
         verify(exactly = 1) { taskRepository.save(any()) }
     }
 
-    private fun opprettTask() = Task(OpprettOppfølgingsOppgaveTask.TYPE, UUID.randomUUID().toString())
+    private fun opprettTask() = Task(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE, UUID.randomUUID().toString())
 }
