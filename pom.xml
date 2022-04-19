@@ -23,7 +23,6 @@
         <mockk.version>1.12.3</mockk.version>
         <revision>1.0</revision>
         <dotenv.version>6.2.2</dotenv.version>
-        <logback.spring.starter>2.11.0</logback.spring.starter>
         <prosessering.version>1.20220321101749_55e4576</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
@@ -215,9 +214,9 @@
 
         <!-- Test -->
         <dependency>
-            <groupId>net.rakugakibox.spring.boot</groupId>
+            <groupId>dev.akkinoc.spring.boot</groupId>
             <artifactId>logback-access-spring-boot-starter</artifactId>
-            <version>${logback.spring.starter}</version>
+            <version>3.2.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
