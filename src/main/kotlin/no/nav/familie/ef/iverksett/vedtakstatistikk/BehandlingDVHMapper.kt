@@ -2,9 +2,11 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.util.VilkårsvurderingUtil
@@ -12,52 +14,105 @@ import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
-import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
+import no.nav.familie.eksterne.kontrakter.ef.BehandlingBarnetilsynDVH
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
+import no.nav.familie.eksterne.kontrakter.ef.PeriodeMedBeløp
 import no.nav.familie.eksterne.kontrakter.ef.Person
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
-import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeDto
+import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
+import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeBarnetilsynDto
+import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeOvergangsstønadDto
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
+import no.nav.familie.kontrakter.felles.objectMapper
 import java.time.ZoneId
 import no.nav.familie.eksterne.kontrakter.ef.Barn as BarnEkstern
 import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 
 object BehandlingDVHMapper {
 
-    fun map(iverksett: Iverksett, forrigeIverksett: Iverksett?): BehandlingDVH {
-        return BehandlingDVH(fagsakId = iverksett.fagsak.eksternId,
-                             behandlingId = iverksett.behandling.eksternId,
-                             relatertBehandlingId = forrigeIverksett?.behandling?.eksternId,
-                             adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let { Adressebeskyttelse.valueOf(it.name) },
-                             tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")),
-                             vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map { mapTilVilkårsvurderinger(it) },
-                             person = mapTilPerson(personIdent = iverksett.søker.personIdent),
-                             barn = iverksett.søker.barn.map { mapTilBarn(it) },
-                             behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
-                             behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
-                             vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
-                             vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak),
-                             utbetalinger = iverksett.vedtak.tilkjentYtelse?.let {
-                                 mapTilUtbetaling(it,
-                                                  iverksett.fagsak.stønadstype,
-                                                  iverksett.fagsak.eksternId,
-                                                  iverksett.søker)
-                             } ?: emptyList(),
-                             aktivitetskrav = Aktivitetskrav(
-                                     aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
-                                     harSagtOppArbeidsforhold = VilkårsvurderingUtil
-                                             .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger)
-                             ),
-                             funksjonellId = iverksett.behandling.eksternId,
-                             stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name))
+    fun mapIverksettTilVedtakstatistikkJson(iverksett: Iverksett, forrigeIverksett: Iverksett?): String {
+        //Kunne unngått if-else på denne logikken her, men måtte unngå sealed class i kontrakt mot datavarehus
+        if (iverksett is IverksettOvergangsstønad) {
+            return mapTilVedtakOvergangsstønadDVHJson(iverksett, forrigeIverksett?.behandling?.eksternId)
+        } else if (iverksett is IverksettBarnetilsyn) {
+            return mapTilVedtakBarnetilsynDVHJson(iverksett, forrigeIverksett?.behandling?.eksternId)
+        } else {
+            error("Feil ved mapping til vedtakstatistikk: Støtter ikke skolepenger")
+        }
+    }
 
+    private fun mapTilVedtakBarnetilsynDVHJson(iverksett: IverksettBarnetilsyn, forrigeIverksettBehandlingEksternId: Long?): String {
+        return BehandlingBarnetilsynDVH(fagsakId = iverksett.fagsak.eksternId,
+                                        behandlingId = iverksett.behandling.eksternId,
+                                        relatertBehandlingId = forrigeIverksettBehandlingEksternId,
+                                        adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let {
+                                            Adressebeskyttelse.valueOf(it.name)
+                                        },
+                                        tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")),
+                                        vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map {
+                                            mapTilVilkårsvurderinger(it)
+                                        },
+                                        person = mapTilPerson(personIdent = iverksett.søker.personIdent),
+                                        barn = iverksett.søker.barn.map { mapTilBarn(it) },
+                                        behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
+                                        behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
+                                        vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
+                                        vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak),
+                                        utbetalinger = iverksett.vedtak.tilkjentYtelse?.let {
+                                            mapTilUtbetaling(it,
+                                                             iverksett.fagsak.stønadstype,
+                                                             iverksett.fagsak.eksternId,
+                                                             iverksett.søker)
+                                        } ?: emptyList(),
+                                        aktivitetskrav = Aktivitetskrav(
+                                                aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
+                                                harSagtOppArbeidsforhold = VilkårsvurderingUtil
+                                                        .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger)
+                                        ),
+                                        funksjonellId = iverksett.behandling.eksternId,
+                                        stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
+                                        perioderKontantstøtte = iverksett.vedtak.kontantstøtte.map { PeriodeMedBeløp(it.fraOgMed, it.tilOgMed, it.beløp) },
+                                        perioderTilleggsstønad = iverksett.vedtak.tilleggsstønad.map { PeriodeMedBeløp(it.fraOgMed, it.tilOgMed, it.beløp) }).toJson()
+    }
+
+    private fun mapTilVedtakOvergangsstønadDVHJson(iverksett: IverksettOvergangsstønad,
+                                                   forrigeIverksettBehandlingEksternId: Long?): String {
+        return VedtakOvergangsstønadDVH(fagsakId = iverksett.fagsak.eksternId,
+                                        behandlingId = iverksett.behandling.eksternId,
+                                        relatertBehandlingId = forrigeIverksettBehandlingEksternId,
+                                        adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let {
+                                            Adressebeskyttelse.valueOf(it.name)
+                                        },
+                                        tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")),
+                                        vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map {
+                                            mapTilVilkårsvurderinger(it)
+                                        },
+                                        person = mapTilPerson(personIdent = iverksett.søker.personIdent),
+                                        barn = iverksett.søker.barn.map { mapTilBarn(it) },
+                                        behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
+                                        behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
+                                        vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
+                                        vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak),
+                                        utbetalinger = iverksett.vedtak.tilkjentYtelse?.let {
+                                            mapTilUtbetaling(it,
+                                                             iverksett.fagsak.stønadstype,
+                                                             iverksett.fagsak.eksternId,
+                                                             iverksett.søker)
+                                        } ?: emptyList(),
+                                        aktivitetskrav = Aktivitetskrav(
+                                                aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
+                                                harSagtOppArbeidsforhold = VilkårsvurderingUtil
+                                                        .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger)
+                                        ),
+                                        funksjonellId = iverksett.behandling.eksternId,
+                                        stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name)).toJson()
     }
 
     private fun mapTilUtbetaling(tilkjentYtelse: TilkjentYtelse,
@@ -93,15 +148,23 @@ object BehandlingDVHMapper {
         )
     }
 
-    private fun mapToVedtaksperioder(vedtaksdetaljer: Vedtaksdetaljer): List<VedtaksperiodeDto> {
-        if (vedtaksdetaljer !is VedtaksdetaljerOvergangsstønad) {
-            error("Håndterer ikke ${vedtaksdetaljer::class.java.simpleName}")
-        }
+    private fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerOvergangsstønad): List<VedtaksperiodeOvergangsstønadDto> {
         return vedtaksdetaljer.vedtaksperioder.map {
-            VedtaksperiodeDto(it.fraOgMed,
-                              it.tilOgMed,
-                              AktivitetType.valueOf(it.aktivitet.name),
-                              VedtaksperiodeType.valueOf(it.periodeType.name))
+            VedtaksperiodeOvergangsstønadDto(it.fraOgMed,
+                                             it.tilOgMed,
+                                             AktivitetType.valueOf(it.aktivitet.name),
+                                             VedtaksperiodeType.valueOf(it.periodeType.name))
+        }
+    }
+
+    private fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerBarnetilsyn): List<VedtaksperiodeBarnetilsynDto> {
+        return vedtaksdetaljer.vedtaksperioder.map {
+            VedtaksperiodeBarnetilsynDto(it.fraOgMed,
+                                         it.tilOgMed,
+                                         it.utgifter.toInt(),
+                                         it.antallBarn)
         }
     }
 }
+
+fun Any.toJson(): String = objectMapper.writeValueAsString(this)

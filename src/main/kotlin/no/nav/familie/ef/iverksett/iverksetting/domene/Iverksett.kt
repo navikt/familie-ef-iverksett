@@ -18,7 +18,6 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
-import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
@@ -39,7 +38,6 @@ sealed class Iverksett {
     fun erMigrering(): Boolean = behandling.behandlingÅrsak == BehandlingÅrsak.MIGRERING
 
     abstract fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): Iverksett
-
 }
 
 data class IverksettOvergangsstønad(
@@ -52,6 +50,7 @@ data class IverksettOvergangsstønad(
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettOvergangsstønad {
         return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
     }
+
 
 }
 
