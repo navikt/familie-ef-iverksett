@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
@@ -30,25 +29,13 @@ import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.objectMapper
 import java.time.ZoneId
 import no.nav.familie.eksterne.kontrakter.ef.Barn as BarnEkstern
 import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 
-object BehandlingDVHMapper {
+object VedtakstatistikkMapper {
 
-    fun mapIverksettTilVedtakstatistikkJson(iverksett: Iverksett, forrigeIverksett: Iverksett?): String {
-        //Kunne unngått if-else på denne logikken her, men måtte unngå sealed class i kontrakt mot datavarehus
-        if (iverksett is IverksettOvergangsstønad) {
-            return mapTilVedtakOvergangsstønadDVHJson(iverksett, forrigeIverksett?.behandling?.eksternId)
-        } else if (iverksett is IverksettBarnetilsyn) {
-            return mapTilVedtakBarnetilsynDVHJson(iverksett, forrigeIverksett?.behandling?.eksternId)
-        } else {
-            error("Feil ved mapping til vedtakstatistikk: Støtter ikke skolepenger")
-        }
-    }
-
-    private fun mapTilVedtakBarnetilsynDVHJson(iverksett: IverksettBarnetilsyn, forrigeIverksettBehandlingEksternId: Long?): String {
+    fun mapTilVedtakBarnetilsynDVH(iverksett: IverksettBarnetilsyn, forrigeIverksettBehandlingEksternId: Long?): BehandlingBarnetilsynDVH {
         return BehandlingBarnetilsynDVH(fagsakId = iverksett.fagsak.eksternId,
                                         behandlingId = iverksett.behandling.eksternId,
                                         relatertBehandlingId = forrigeIverksettBehandlingEksternId,
@@ -79,11 +66,11 @@ object BehandlingDVHMapper {
                                         funksjonellId = iverksett.behandling.eksternId,
                                         stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
                                         perioderKontantstøtte = iverksett.vedtak.kontantstøtte.map { PeriodeMedBeløp(it.fraOgMed, it.tilOgMed, it.beløp) },
-                                        perioderTilleggsstønad = iverksett.vedtak.tilleggsstønad.map { PeriodeMedBeløp(it.fraOgMed, it.tilOgMed, it.beløp) }).toJson()
+                                        perioderTilleggsstønad = iverksett.vedtak.tilleggsstønad.map { PeriodeMedBeløp(it.fraOgMed, it.tilOgMed, it.beløp) })
     }
 
-    private fun mapTilVedtakOvergangsstønadDVHJson(iverksett: IverksettOvergangsstønad,
-                                                   forrigeIverksettBehandlingEksternId: Long?): String {
+    fun mapTilVedtakOvergangsstønadDVH(iverksett: IverksettOvergangsstønad,
+                                                   forrigeIverksettBehandlingEksternId: Long?): VedtakOvergangsstønadDVH {
         return VedtakOvergangsstønadDVH(fagsakId = iverksett.fagsak.eksternId,
                                         behandlingId = iverksett.behandling.eksternId,
                                         relatertBehandlingId = forrigeIverksettBehandlingEksternId,
@@ -112,7 +99,7 @@ object BehandlingDVHMapper {
                                                         .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger)
                                         ),
                                         funksjonellId = iverksett.behandling.eksternId,
-                                        stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name)).toJson()
+                                        stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name))
     }
 
     private fun mapTilUtbetaling(tilkjentYtelse: TilkjentYtelse,
@@ -161,10 +148,8 @@ object BehandlingDVHMapper {
         return vedtaksdetaljer.vedtaksperioder.map {
             VedtaksperiodeBarnetilsynDto(it.fraOgMed,
                                          it.tilOgMed,
-                                         it.utgifter.toInt(),
+                                         it.utgifter,
                                          it.antallBarn)
         }
     }
 }
-
-fun Any.toJson(): String = objectMapper.writeValueAsString(this)

@@ -6,11 +6,10 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
-import io.mockk.verify
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
@@ -44,17 +43,16 @@ class VedtakstatistikkServiceTest {
     internal fun `vedtakstatistikk skal kalle kafka producer med riktig data`() {
         val behandlingId = UUID.randomUUID()
 
-        val vedtakstatistikkJsonSlot = slot<String>()
-        every { vedtakstatistikkKafkaProducer.sendVedtak(any(), capture(vedtakstatistikkJsonSlot)) } just Runs
+        val vedtakstatistikkJsonSlot = slot<VedtakOvergangsstønadDVH>()
+        every { vedtakstatistikkKafkaProducer.sendVedtak(capture(vedtakstatistikkJsonSlot)) } just Runs
 
-        val iverksett = opprettIverksett(behandlingId)
-        vedtakstatistikkService.sendTilKafka(iverksett = iverksett, forrigeIverksett = null)
-        verify(exactly = 1) { vedtakstatistikkKafkaProducer.sendVedtak(any(), any()) }
+        val iverksettOvergangsstønad = opprettIverksettOvergangsstønad(behandlingId)
+        vedtakstatistikkService.sendTilKafka(iverksett = iverksettOvergangsstønad, forrigeIverksett = null)
 
-        val vedtakOvergangsstønadDVH = opprettVedtakstatistikkOvergangsstønad(behandlingId = iverksett.behandling.eksternId,
-                                                                   fagsakId = iverksett.fagsak.eksternId,
-                                                                   tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.toLocalDate()).toJson()
-        assertThat(vedtakOvergangsstønadDVH).isEqualTo(vedtakstatistikkJsonSlot.captured)
+        val vedtakOvergangsstønad = opprettVedtakstatistikkOvergangsstønad(behandlingId = iverksettOvergangsstønad.behandling.eksternId,
+                                                                           fagsakId = iverksettOvergangsstønad.fagsak.eksternId,
+                                                                           tidspunktVedtak = iverksettOvergangsstønad.vedtak.vedtakstidspunkt.toLocalDate())
+        assertThat(vedtakOvergangsstønad).isEqualTo(vedtakstatistikkJsonSlot.captured)
     }
 
     @Test
@@ -64,15 +62,15 @@ class VedtakstatistikkServiceTest {
         val iverksettDto = objectMapper.readValue<IverksettDto>(iverksettDtoJson)
         val iverksett = iverksettDto.toDomain()
 
-        val vedtakOvergangsstønadDVHJsonSlot = slot<String>()
-        every { vedtakstatistikkKafkaProducer.sendVedtak(any(), capture(vedtakOvergangsstønadDVHJsonSlot)) } just Runs
+        val vedtakOvergangsstønadDVH = slot<VedtakOvergangsstønadDVH>()
+        every { vedtakstatistikkKafkaProducer.sendVedtak(capture(vedtakOvergangsstønadDVH)) } just Runs
         vedtakstatistikkService.sendTilKafka(iverksett, null)
-        val vedtakOvergangsstønadDVH = objectMapper.readValue(vedtakOvergangsstønadDVHJsonSlot.captured, VedtakOvergangsstønadDVH::class.java)
+        //val vedtakOvergangsstønadDVH = objectMapper.readValue(vedtakOvergangsstønadDVHJsonSlot.captured, VedtakOvergangsstønadDVH::class.java)
         assertThat(vedtakOvergangsstønadDVH).isNotNull
-        assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger.size).isEqualTo(2)
+        assertThat(vedtakOvergangsstønadDVH.captured.vilkårsvurderinger.size).isEqualTo(2)
         //Egen test på vilkårtype, da det er mismatch mellom ekstern kontrakt og ef. F.eks. finnes ikke aktivitet i kontrakt.
-        assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger.first().vilkår.name).isEqualTo(VilkårType.AKTIVITET.name)
-        assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger.last().vilkår.name)
+        assertThat(vedtakOvergangsstønadDVH.captured.vilkårsvurderinger.first().vilkår.name).isEqualTo(VilkårType.AKTIVITET.name)
+        assertThat(vedtakOvergangsstønadDVH.captured.vilkårsvurderinger.last().vilkår.name)
                 .isEqualTo(VilkårType.SAGT_OPP_ELLER_REDUSERT.name)
     }
 

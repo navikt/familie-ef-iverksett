@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.tilbakekreving
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
@@ -21,7 +21,7 @@ internal class TilbakekrevingMapperTest {
     fun `konverter Iverksetting til OpprettTilbakekrevingRequest`() {
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer()
-        val iverksett = opprettIverksett(behandlingsId, tilbakekreving = tilbakekreving)
+        val iverksett = opprettIverksettOvergangsstønad(behandlingsId, tilbakekreving = tilbakekreving)
         val enhet = Enhet("123", "enhet")
         val forventetRevurderingssårsak = "Søknad"
 
@@ -57,7 +57,7 @@ internal class TilbakekrevingMapperTest {
     @Test
     fun `konverter Iverksetting til Hentfagsystembehandling`() {
         val behandlingsId = UUID.randomUUID()
-        val iverksett = opprettIverksett(behandlingsId)
+        val iverksett = opprettIverksettOvergangsstønad(behandlingsId)
         val enhet = Enhet(enhetId = "enhetId", enhetNavn = "enhetNavn")
         val fagsystemsbehandling = iverksett.tilFagsystembehandling(enhet = enhet).hentFagsystemsbehandling!!
 

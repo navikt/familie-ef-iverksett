@@ -96,7 +96,7 @@ data class VedtaksperiodeOvergangsstønad(
 data class VedtaksperiodeBarnetilsyn(
         override val fraOgMed: LocalDate,
         override val tilOgMed: LocalDate,
-        val utgifter: BigDecimal,
+        val utgifter: Int,
         val antallBarn: Int) : Vedtaksperiode() {
 }
 

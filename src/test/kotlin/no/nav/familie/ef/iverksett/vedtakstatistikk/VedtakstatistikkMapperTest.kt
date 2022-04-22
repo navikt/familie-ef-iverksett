@@ -17,9 +17,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
-import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
-import no.nav.familie.eksterne.kontrakter.ef.BehandlingBarnetilsynDVH
-import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.RegelId
@@ -35,7 +32,6 @@ import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -53,7 +49,7 @@ internal class VedtakstatistikkMapperTest {
     @Test
     internal fun `skal mappe iverksett til VedtakOvergangsstønadDVH`() {
 
-        val vedtakstatistikkJson = BehandlingDVHMapper.mapIverksettTilVedtakstatistikkJson(
+        val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
                 IverksettOvergangsstønad(
                         fagsak = fagsakdetaljer(),
                         behandling = behandlingsdetaljer(),
@@ -66,7 +62,6 @@ internal class VedtakstatistikkMapperTest {
                                       adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG),
                         vedtak = vedtaksdetaljerOvergangsstønad()
                 ), null)
-        val vedtakOvergangsstønadDVH = objectMapper.readValue(vedtakstatistikkJson, VedtakOvergangsstønadDVH::class.java)
         assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
         assertThat(vedtakOvergangsstønadDVH.fagsakId).isEqualTo(eksternFagsakId)
         assertThat(vedtakOvergangsstønadDVH.behandlingId).isEqualTo(eksternBehandlingId)
@@ -79,7 +74,7 @@ internal class VedtakstatistikkMapperTest {
     @Test
     internal fun `skal mappe iverksett til VedtakBarnetilsynDVH`() {
 
-        val vedtakstatistikkJson = BehandlingDVHMapper.mapIverksettTilVedtakstatistikkJson(
+        val vedtakBarnetilsynDVH = VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(
                 IverksettBarnetilsyn(
                         fagsak = fagsakdetaljer(),
                         behandling = behandlingsdetaljer(),
@@ -92,7 +87,7 @@ internal class VedtakstatistikkMapperTest {
                                       adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG),
                         vedtak = vedtaksdetaljerBarnetilsyn()
                 ), null)
-        val vedtakBarnetilsynDVH = objectMapper.readValue(vedtakstatistikkJson, BehandlingBarnetilsynDVH::class.java)
+
         assertThat(vedtakBarnetilsynDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
         assertThat(vedtakBarnetilsynDVH.fagsakId).isEqualTo(eksternFagsakId)
         assertThat(vedtakBarnetilsynDVH.behandlingId).isEqualTo(eksternBehandlingId)
@@ -178,11 +173,11 @@ internal class VedtakstatistikkMapperTest {
             vedtaksperioder = listOf(
                     VedtaksperiodeBarnetilsyn(fraOgMed = LocalDate.of(2021, 1, 1),
                                               tilOgMed = LocalDate.of(2021, 1, 1),
-                                              utgifter = BigDecimal.valueOf(1000),
+                                              utgifter = 1000,
                                               antallBarn = 1),
                     VedtaksperiodeBarnetilsyn(fraOgMed = LocalDate.of(2021, 6, 1),
                                               tilOgMed = LocalDate.of(2021, 10, 31),
-                                              utgifter = BigDecimal.valueOf(2000),
+                                              utgifter = 2000,
                                               antallBarn = 2)
             ),
             brevmottakere = Brevmottakere(emptyList()),

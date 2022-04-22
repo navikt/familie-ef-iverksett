@@ -4,7 +4,7 @@ import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.medFeilutbetaling
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingMedVarsel
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsoppsummering
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsperiode
@@ -30,7 +30,7 @@ internal class TilbakekrevingUtilTest {
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
                 tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(feilutbetaling, perioder)
         )
-        val iverksett = opprettIverksett(UUID.randomUUID(), tilbakekreving = tilbakekrevingsdetaljer)
+        val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = tilbakekrevingsdetaljer)
 
         val beriketSimuleringsresultat = beriketSimuleringsresultat(feilutbetaling, fom, tom)
 
@@ -102,7 +102,7 @@ internal class TilbakekrevingUtilTest {
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
                 tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder)
         )
-        val iverksett = opprettIverksett(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
+        val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
 
         val nyFom = fom.minusMonths(1)
         val nyTom = tom.plusMonths(1)
@@ -122,7 +122,7 @@ internal class TilbakekrevingUtilTest {
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
                 tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder)
         )
-        val iverksett = opprettIverksett(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
+        val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
 
         val beriketSimuleringsresultat = beriketSimuleringsresultat(BigDecimal.ZERO, fom, tom)
 
@@ -134,7 +134,7 @@ internal class TilbakekrevingUtilTest {
     @Test
     fun `oppdagelse av feilutbetaling i iverksett skal legge til tilbakekreving uten varsel`() {
 
-        val iverksett = opprettIverksett(UUID.randomUUID(), tilbakekreving = null)
+        val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = null)
 
         val beriketSimuleringsresultat = beriketSimuleringsresultat(BigDecimal.TEN, fom, tom)
 
