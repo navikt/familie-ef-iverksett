@@ -13,7 +13,6 @@ import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
-import no.nav.familie.eksterne.kontrakter.ef.BehandlingBarnetilsynDVH
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
 import no.nav.familie.eksterne.kontrakter.ef.PeriodeMedBeløp
@@ -21,6 +20,7 @@ import no.nav.familie.eksterne.kontrakter.ef.Person
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
+import no.nav.familie.eksterne.kontrakter.ef.VedtakBarnetilsynDVH
 import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeBarnetilsynDto
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeOvergangsstønadDto
@@ -35,8 +35,8 @@ import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 
 object VedtakstatistikkMapper {
 
-    fun mapTilVedtakBarnetilsynDVH(iverksett: IverksettBarnetilsyn, forrigeIverksettBehandlingEksternId: Long?): BehandlingBarnetilsynDVH {
-        return BehandlingBarnetilsynDVH(fagsakId = iverksett.fagsak.eksternId,
+    fun mapTilVedtakBarnetilsynDVH(iverksett: IverksettBarnetilsyn, forrigeIverksettBehandlingEksternId: Long?): VedtakBarnetilsynDVH {
+        return VedtakBarnetilsynDVH(fagsakId = iverksett.fagsak.eksternId,
                                         behandlingId = iverksett.behandling.eksternId,
                                         relatertBehandlingId = forrigeIverksettBehandlingEksternId,
                                         adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let {
@@ -58,11 +58,7 @@ object VedtakstatistikkMapper {
                                                              iverksett.fagsak.eksternId,
                                                              iverksett.søker)
                                         } ?: emptyList(),
-                                        aktivitetskrav = Aktivitetskrav(
-                                                aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
-                                                harSagtOppArbeidsforhold = VilkårsvurderingUtil
-                                                        .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger)
-                                        ),
+                                        aktivitetskrav = VilkårsvurderingUtil.hentAktivitetsvilkårBarnetilsyn(iverksett.behandling.vilkårsvurderinger),
                                         funksjonellId = iverksett.behandling.eksternId,
                                         stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
                                         perioderKontantstøtte = iverksett.vedtak.kontantstøtte.map { PeriodeMedBeløp(it.fraOgMed, it.tilOgMed, it.beløp) },

@@ -17,6 +17,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
+import no.nav.familie.eksterne.kontrakter.ef.AktivitetsvilkårBarnetilsyn
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.RegelId
@@ -76,7 +77,7 @@ internal class VedtakstatistikkMapperTest {
 
         val vedtakBarnetilsynDVH = VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(
                 IverksettBarnetilsyn(
-                        fagsak = fagsakdetaljer(),
+                        fagsak = fagsakdetaljer(stønadstype = StønadType.BARNETILSYN),
                         behandling = behandlingsdetaljer(),
                         søker = Søker(personIdent = søker,
                                       barn = listOf(
@@ -88,7 +89,7 @@ internal class VedtakstatistikkMapperTest {
                         vedtak = vedtaksdetaljerBarnetilsyn()
                 ), null)
 
-        assertThat(vedtakBarnetilsynDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
+        assertThat(vedtakBarnetilsynDVH.aktivitetskrav.name).isEqualTo(AktivitetsvilkårBarnetilsyn.ER_I_ARBEID.name)
         assertThat(vedtakBarnetilsynDVH.fagsakId).isEqualTo(eksternFagsakId)
         assertThat(vedtakBarnetilsynDVH.behandlingId).isEqualTo(eksternBehandlingId)
         assertThat(vedtakBarnetilsynDVH.funksjonellId).isEqualTo(eksternBehandlingId)
@@ -98,7 +99,6 @@ internal class VedtakstatistikkMapperTest {
         assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().utgifter).isEqualTo(1000)
         assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().antallBarn).isEqualTo(1)
         assertThat(vedtakBarnetilsynDVH.utbetalinger).hasSize(2)
-        assertThat(vedtakBarnetilsynDVH.aktivitetskrav.aktivitetspliktInntrefferDato).isNull()
         assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte).hasSize(1)
         assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte.first().fraOgMed).isEqualTo(LocalDate.of(2021, 5, 1))
         assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte.first().tilOgMed).isEqualTo(LocalDate.of(2021, 7, 1))
@@ -110,10 +110,10 @@ internal class VedtakstatistikkMapperTest {
     }
 
 
-    fun fagsakdetaljer(): Fagsakdetaljer =
+    fun fagsakdetaljer(stønadstype: StønadType = StønadType.OVERGANGSSTØNAD): Fagsakdetaljer =
             Fagsakdetaljer(fagsakId = fagsakId,
                            eksternId = eksternFagsakId,
-                           stønadstype = StønadType.OVERGANGSSTØNAD)
+                           stønadstype = stønadstype)
 
     fun behandlingsdetaljer(): Behandlingsdetaljer =
             Behandlingsdetaljer(forrigeBehandlingId = null,
@@ -325,6 +325,13 @@ internal class VedtakstatistikkMapperTest {
                                                                           SvarId.NEI,
                                                                           null)))
                              )),
-
+            Vilkårsvurdering(vilkårType = VilkårType.AKTIVITET_ARBEID,
+                             resultat = Vilkårsresultat.OPPFYLT,
+                             delvilkårsvurderinger = listOf(
+                                     Delvilkårsvurdering(Vilkårsresultat.OPPFYLT,
+                                                         listOf(Vurdering(RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM,
+                                                                          SvarId.ER_I_ARBEID,
+                                                                          null)))
+                             ))
             )
 }

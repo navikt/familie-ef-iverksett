@@ -1,7 +1,8 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
-import no.nav.familie.eksterne.kontrakter.ef.BehandlingBarnetilsynDVH
+import no.nav.familie.eksterne.kontrakter.ef.StønadType
+import no.nav.familie.eksterne.kontrakter.ef.VedtakBarnetilsynDVH
 import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
 import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
@@ -18,19 +19,19 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     fun sendVedtak(vedtakstatistikk: VedtakOvergangsstønadDVH) {
-        sendVedtak(vedtakstatistikk.behandlingId, vedtakstatistikk.toJson())
+        sendVedtak(vedtakstatistikk.behandlingId, vedtakstatistikk.stønadstype, vedtakstatistikk.toJson())
     }
 
-    fun sendVedtak(vedtakstatistikk: BehandlingBarnetilsynDVH) {
-        sendVedtak(vedtakstatistikk.behandlingId, vedtakstatistikk.toJson())
+    fun sendVedtak(vedtakstatistikk: VedtakBarnetilsynDVH) {
+        sendVedtak(vedtakstatistikk.behandlingId, vedtakstatistikk.stønadstype, vedtakstatistikk.toJson())
     }
 
-    fun sendVedtak(behandlingId: Long, vedtakStatistikk: String) {
+    fun sendVedtak(behandlingId: Long, stønadstype: StønadType, vedtakStatistikk: String) {
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
 
         runCatching {
-            kafkaProducerService.send(topic, behandlingId.toString(), vedtakStatistikk)
+            kafkaProducerService.sendMedStønadstypeIHeader(topic, stønadstype, behandlingId.toString(), vedtakStatistikk)
             logger.info("Vedtakstatistikk for behandling=${behandlingId} sent til Kafka")
         }.onFailure {
             val errorMessage = "Could not send vedtak to Kafka. Check secure logs for more information."
