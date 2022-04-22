@@ -18,7 +18,6 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
-import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
@@ -97,7 +96,7 @@ data class VedtaksperiodeOvergangsstønad(
 data class VedtaksperiodeBarnetilsyn(
         override val fraOgMed: LocalDate,
         override val tilOgMed: LocalDate,
-        val utgifter: BigDecimal,
+        val utgifter: Int,
         val antallBarn: Int) : Vedtaksperiode() {
 }
 
