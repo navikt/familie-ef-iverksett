@@ -212,7 +212,7 @@ fun vedtaksperioderOvergangsstønad() =
 fun vedtaksperioderBarnetilsyn() =
         VedtaksperiodeBarnetilsyn(fraOgMed = LocalDate.now(),
                                   tilOgMed = LocalDate.now(),
-                                  utgifter = BigDecimal.ONE,
+                                  utgifter = 1,
                                   antallBarn = 10)
 
 fun vedtaksdetaljerOvergangsstønad(vedtaksresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
