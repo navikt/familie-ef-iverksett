@@ -4,8 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.util.opprettIverksett
 import no.nav.familie.ef.iverksett.util.opprettIverksettBarnetilsyn
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.junit.jupiter.api.Test
@@ -25,7 +25,7 @@ internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
 
     @Test
     internal fun `skal opprette oppfølgningsoppgave for overgangsstønad`() {
-        every { iverksettingRepository.hent(any()) } returns opprettIverksett()
+        every { iverksettingRepository.hent(any()) } returns opprettIverksettOvergangsstønad()
         every { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) } returns true
         every { oppgaveService.opprettVurderHenvendelseOppgave(any()) } returns 1
 

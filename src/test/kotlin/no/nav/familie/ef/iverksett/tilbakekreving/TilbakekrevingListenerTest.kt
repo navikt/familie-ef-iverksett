@@ -7,7 +7,7 @@ import io.mockk.runs
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -31,7 +31,7 @@ internal class TilbakekrevingListenerTest {
 
     @BeforeEach
     internal fun setUp() {
-        every { iverksettingRepository.hentAvEksternId(any()) } returns opprettIverksett(behandlingId = UUID.randomUUID())
+        every { iverksettingRepository.hentAvEksternId(any()) } returns opprettIverksettOvergangsstønad(behandlingId = UUID.randomUUID())
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) } returns Enhet(enhetId = "0", enhetNavn = "navn")
         every { tilbakekrevingProducer.send(any(), any()) } just runs
         listener = TilbakekrevingListener(iverksettingRepository, familieIntegrasjonerClient, tilbakekrevingProducer)

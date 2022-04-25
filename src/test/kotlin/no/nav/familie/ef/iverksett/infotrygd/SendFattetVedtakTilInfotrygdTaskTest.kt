@@ -8,7 +8,7 @@ import io.mockk.slot
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
@@ -30,7 +30,7 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
             SendFattetVedtakTilInfotrygdTask(infotrygdFeedClient, familieIntegrasjonerClient, iverksettingRepository, mockk())
 
     private val behandlingId = UUID.randomUUID()
-    private val iverksett = opprettIverksett(behandlingId)
+    private val iverksett = opprettIverksettOvergangsstønad(behandlingId)
     private val personIdent = iverksett.søker.personIdent
     private val historiskPersonIdent = "2"
     private val perioder = listOf(

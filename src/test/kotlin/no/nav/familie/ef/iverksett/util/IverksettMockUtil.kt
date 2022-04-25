@@ -281,8 +281,8 @@ fun opprettIverksettBarnetilsyn(behandlingsdetaljer: Behandlingsdetaljer = behan
                 vedtak = vedtaksdetaljer
         )
 
-fun opprettIverksett(behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetaljer(),
-                     vedtaksdetaljer: VedtaksdetaljerOvergangsstønad = vedtaksdetaljerOvergangsstønad()) =
+fun opprettIverksettOvergangsstønad(behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetaljer(),
+                                    vedtaksdetaljer: VedtaksdetaljerOvergangsstønad = vedtaksdetaljerOvergangsstønad()) =
         IverksettOvergangsstønad(
                 fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
                 behandling = behandlingsdetaljer,
@@ -296,11 +296,11 @@ fun opprettIverksett(behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetal
         )
 
 
-fun opprettIverksett(behandlingId: UUID = UUID.randomUUID(),
-                     forrigeBehandlingId: UUID? = null,
-                     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
-                     tilbakekreving: Tilbakekrevingsdetaljer? = null,
-                     startdato: LocalDate = startdato(andeler)): IverksettOvergangsstønad {
+fun opprettIverksettOvergangsstønad(behandlingId: UUID = UUID.randomUUID(),
+                                    forrigeBehandlingId: UUID? = null,
+                                    andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
+                                    tilbakekreving: Tilbakekrevingsdetaljer? = null,
+                                    startdato: LocalDate = startdato(andeler)): IverksettOvergangsstønad {
     val behandlingType = forrigeBehandlingId?.let { BehandlingType.REVURDERING } ?: BehandlingType.FØRSTEGANGSBEHANDLING
     return IverksettOvergangsstønad(
             fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),

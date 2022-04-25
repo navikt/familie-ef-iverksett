@@ -1,7 +1,9 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
-import no.nav.familie.eksterne.kontrakter.ef.BehandlingDVH
+import no.nav.familie.eksterne.kontrakter.ef.StønadType
+import no.nav.familie.eksterne.kontrakter.ef.VedtakBarnetilsynDVH
+import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
 import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -16,13 +18,21 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    fun sendVedtak(vedtakStatistikk: BehandlingDVH) {
+    fun sendVedtak(vedtakstatistikk: VedtakOvergangsstønadDVH) {
+        sendVedtak(vedtakstatistikk.behandlingId, vedtakstatistikk.stønadstype, vedtakstatistikk.toJson())
+    }
+
+    fun sendVedtak(vedtakstatistikk: VedtakBarnetilsynDVH) {
+        sendVedtak(vedtakstatistikk.behandlingId, vedtakstatistikk.stønadstype, vedtakstatistikk.toJson())
+    }
+
+    fun sendVedtak(behandlingId: Long, stønadstype: StønadType, vedtakStatistikk: String) {
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
 
         runCatching {
-            kafkaProducerService.send(topic, vedtakStatistikk.behandlingId.toString(), vedtakStatistikk.toJson())
-            logger.info("Vedtakstatistikk for behandling=${vedtakStatistikk.behandlingId} sent til Kafka")
+            kafkaProducerService.sendMedStønadstypeIHeader(topic, stønadstype, behandlingId.toString(), vedtakStatistikk)
+            logger.info("Vedtakstatistikk for behandling=${behandlingId} sent til Kafka")
         }.onFailure {
             val errorMessage = "Could not send vedtak to Kafka. Check secure logs for more information."
             logger.error(errorMessage)
@@ -32,4 +42,4 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
     }
 }
 
-private fun Any.toJson(): String = objectMapper.writeValueAsString(this)
+fun Any.toJson(): String = objectMapper.writeValueAsString(this)

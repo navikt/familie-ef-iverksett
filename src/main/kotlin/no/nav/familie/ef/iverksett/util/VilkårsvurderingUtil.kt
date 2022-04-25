@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.util
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
+import no.nav.familie.eksterne.kontrakter.ef.AktivitetsvilkårBarnetilsyn
 import no.nav.familie.kontrakter.ef.felles.RegelId
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
@@ -20,6 +21,15 @@ object VilkårsvurderingUtil {
                             ?: error("Finner ikke delvilkårsvurderingen for sagt opp eller redusert stilling")
             harSagtOppEllerRedusertStilling(vurdering.svar)
         }
+    }
+
+    fun hentAktivitetsvilkårBarnetilsyn(vilkårsvurderinger: List<Vilkårsvurdering>): AktivitetsvilkårBarnetilsyn {
+        val test = vilkårsvurderinger.find { it.vilkårType == VilkårType.AKTIVITET_ARBEID }
+                               ?: error("Finner ikke vurderingen for arbeid aktivitet barnetilsyn")
+        val svar = test.delvilkårsvurderinger.first().vurderinger.find { it.regelId == RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM }?.svar
+                   ?: error("Finner ikke delvilkårvurderingen for arbeid aktivitet barnetilsyn")
+
+        return AktivitetsvilkårBarnetilsyn.valueOf(svar.name)
     }
 
     private fun harSagtOppEllerRedusertStilling(svarId: SvarId?) = when (svarId) {

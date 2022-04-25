@@ -9,7 +9,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
@@ -82,7 +82,7 @@ class IverksettJsonTransformTest {
     @Test
     internal fun `deserialiser iverksettOvergangsstønad til json og serialiser tilbake til object, forvent likhet`() {
         val behandlingId = UUID.randomUUID()
-        val iverksett = opprettIverksett(behandlingId)
+        val iverksett = opprettIverksettOvergangsstønad(behandlingId)
         val parsetIverksett = objectMapper.readValue<Iverksett>(objectMapper.writeValueAsString(iverksett))
         assertThat(iverksett).isEqualTo(parsetIverksett)
     }

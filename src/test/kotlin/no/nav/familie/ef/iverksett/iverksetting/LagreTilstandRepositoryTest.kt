@@ -7,7 +7,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.tilbakekreving.tilOpprettTilbakekrevingRequest
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
@@ -78,7 +78,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     @Test
     fun `oppdater tilbakekrevingsresultat, forvent ingen unntak`() {
 
-        val opprettTilbakekrevingRequest = opprettIverksett(behandlingsId)
+        val opprettTilbakekrevingRequest = opprettIverksettOvergangsstønad(behandlingsId)
                 .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
         tilstandServiceRepository.oppdaterTilbakekrevingResultat(
