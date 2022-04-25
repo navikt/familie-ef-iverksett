@@ -42,7 +42,7 @@ class IverksettingController(
         iverksettingService.startIverksetting(iverksett, opprettBrev(iverksettDto, fil))
     }
 
-    @PostMapping("migrering")
+    @PostMapping("migrering", "uten-brev")
     fun iverksett(@RequestBody iverksettDto: IverksettDto) {
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
