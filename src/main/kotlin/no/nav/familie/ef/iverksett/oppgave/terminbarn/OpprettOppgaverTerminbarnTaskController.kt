@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping(path = ["/api/oppgave-for-terminbarn"])
 class OpprettOppgaverTerminbarnTaskController(
-        private val oppgaveForBarnService: OpprettOppgaverTerminbarnService
+        private val oppgaverForTerminbarnService: OpprettOppgaverTerminbarnService
 ) {
 
     @PostMapping("/opprett")
     fun opprettTask(@RequestBody oppgaverForBarn: OppgaverForBarnDto) {
-        oppgaveForBarnService.opprettTaskerForTerminbarn(oppgaverForBarn.oppgaverForBarn)
+        oppgaverForTerminbarnService.opprettTaskerForTerminbarn(oppgaverForBarn.oppgaverForBarn)
     }
 }
