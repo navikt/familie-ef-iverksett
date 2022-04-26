@@ -8,7 +8,6 @@ import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,15 +18,9 @@ class OpprettOppgaveForBarnTask(val taskRepository: TaskRepository,
                                 val opprettOppgaveForBarnService: OpprettOppgaverForBarnService,
                                 val featureToggleService: FeatureToggleService) : AsyncTaskStep {
 
-    private val logger = LoggerFactory.getLogger(javaClass)
-
     override fun doTask(task: Task) {
-        if (featureToggleService.isEnabled("familie.ef.iverksett.opprett-oppgaver-barnsomfylleraar")) {
-            val oppgaveForBarn = objectMapper.readValue<OppgaveForBarn>(task.payload)
-            opprettOppgaveForBarnService.opprettOppgaveForBarnSomFyllerAar(oppgaveForBarn)
-        } else {
-            logger.warn("Feature toggle opprett-oppgaver-barnsomfylleraar er ikke enablet")
-        }
+        val oppgaveForBarn = objectMapper.readValue<OppgaveForBarn>(task.payload)
+        opprettOppgaveForBarnService.opprettOppgaveForBarnSomFyllerAar(oppgaveForBarn)
     }
 
     companion object {
