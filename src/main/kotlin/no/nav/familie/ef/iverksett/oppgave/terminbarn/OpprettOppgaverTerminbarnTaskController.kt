@@ -12,7 +12,7 @@ class OpprettOppgaverTerminbarnTaskController(
         private val oppgaverForTerminbarnService: OpprettOppgaverTerminbarnService
 ) {
 
-    @PostMapping("/opprett")
+    @PostMapping("/")
     fun opprettTask(@RequestBody oppgaverForBarn: OppgaverForBarnDto) {
         oppgaverForTerminbarnService.opprettTaskerForTerminbarn(oppgaverForBarn.oppgaverForBarn)
     }
