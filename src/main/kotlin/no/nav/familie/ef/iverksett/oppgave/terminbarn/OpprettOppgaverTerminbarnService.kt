@@ -19,20 +19,12 @@ class OpprettOppgaverTerminbarnService(private val oppgaveClient: OppgaveClient,
                                        private val taskRepository: TaskRepository) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     @Transactional
     fun opprettTaskerForTerminbarn(oppgaverForBarn: List<OppgaveForBarn>) {
-        oppgaverForBarn.forEach {
-            try {
-                taskRepository.save(Task(
-                        OpprettOppgaverTerminbarnTask.TYPE,
-                        ObjectMapperProvider.objectMapper.writeValueAsString(it)))
-            } catch (ex: Exception) {
-                secureLogger.error("Kunne ikke opprette task for barn med OppgaveForBarn=$it")
-                throw ex
-            }
-        }
+        taskRepository.saveAll(oppgaverForBarn.map {
+            Task(OpprettOppgaverTerminbarnTask.TYPE, ObjectMapperProvider.objectMapper.writeValueAsString(it))
+        })
     }
 
     fun opprettOppgaveForTerminbarn(oppgaveForBarn: OppgaveForBarn) {
