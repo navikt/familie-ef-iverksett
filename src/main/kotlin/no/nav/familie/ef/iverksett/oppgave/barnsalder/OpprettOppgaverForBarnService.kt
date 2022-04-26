@@ -1,13 +1,14 @@
-package no.nav.familie.ef.iverksett.oppgave
+package no.nav.familie.ef.iverksett.oppgave.barnsalder
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
+import no.nav.familie.ef.iverksett.oppgave.OppgaveClient
+import no.nav.familie.ef.iverksett.oppgave.OppgaveUtil
 import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
-import no.nav.familie.kontrakter.felles.oppgave.StatusEnum
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.slf4j.LoggerFactory
@@ -27,8 +28,9 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
     fun opprettTaskerForBarn(oppgaverForBarn: List<OppgaveForBarn>) {
         oppgaverForBarn.forEach {
             try {
-                taskRepository.save(Task(OpprettOppgaveForBarnTask.TYPE,
-                                         objectMapper.writeValueAsString(it)))
+                taskRepository.save(Task(
+                        OpprettOppgaveForBarnTask.TYPE,
+                        objectMapper.writeValueAsString(it)))
             } catch (ex: Exception) {
                 secureLogger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
                 throw ex
@@ -51,7 +53,8 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
                 enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
                 oppgaveType,
                 oppgaveForBarn.beskrivelse,
-                oppgaveForBarn.aktivFra)
+                oppgaveForBarn.aktivFra
+        )
         val oppgaveId = oppgaveClient.opprettOppgave(opprettOppgaveRequest)
                         ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId for behandling=${oppgaveForBarn.behandlingId}")
@@ -65,7 +68,6 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
                                                     fristFomDato = fristdato.minusWeeks(2),
                                                     fristTomDato = fristdato.plusWeeks(2))
         val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
-                .filter { it.status != StatusEnum.FERDIGSTILT || it.status != StatusEnum.FEILREGISTRERT }
                 .mapNotNull { it.beskrivelse }
                 .map { it.trim().lowercase() }
         return oppgaveBeskrivelser.contains(oppgaveForBarn.beskrivelse.trim().lowercase())
