@@ -26,7 +26,7 @@ class OpprettOppgaverTerminbarnTask(val taskRepository: TaskRepository,
             val oppgaveForBarn = objectMapper.readValue<OppgaveForBarn>(task.payload)
             opprettOppgaverForTerminbarnService.opprettOppgaveForTerminbarn(oppgaveForBarn)
         } else {
-            logger.warn("Feature toggle opprett-oppgaver-ugyldigeterminbarn er ikke enablet")
+            logger.warn("Feature toggle opprett-oppgaver-ugyldigeterminbarn er ikke enablet. TaskID=${task.id}")
         }
     }
 
