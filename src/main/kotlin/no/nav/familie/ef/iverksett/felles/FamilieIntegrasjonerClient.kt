@@ -32,6 +32,9 @@ class FamilieIntegrasjonerClient(
     private fun arbeidsfordelingUri(tema: String) =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING, tema).build().toUri()
 
+    private fun arbeidsfordelingOppfølingUri(tema: String) =
+            UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING_OPPFØLGING, tema).build().toUri()
+
     private fun arbeidsfordelingUriMedRelasjoner(tema: String) =
             UriComponentsBuilder.fromUri(integrasjonUri)
                     .pathSegment(PATH_ARBEIDSFORDELING, tema)
@@ -51,7 +54,7 @@ class FamilieIntegrasjonerClient(
     }
 
     fun hentBehandlendeEnhetForOppfølging(personident: String): Enhet? {
-        val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUri(TEMA_OPPFØLGING), Ident(personident))
+        val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingOppfølingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))
         return response.getDataOrThrow().firstOrNull()
     }
 
@@ -68,9 +71,9 @@ class FamilieIntegrasjonerClient(
 
     companion object {
 
-        private const val TEMA_OPPFØLGING = "OPP" //Oppfølging - lokalenhet
         private const val TEMA_ENSLIG_FORSØRGER = "ENF" //NAY - 4489
         const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet"
+        const val PATH_ARBEIDSFORDELING_OPPFØLGING = "api/arbeidsfordeling/oppfolging"
         const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
     }
