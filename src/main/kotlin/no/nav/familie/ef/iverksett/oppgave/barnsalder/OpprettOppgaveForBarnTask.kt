@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.oppgave
+package no.nav.familie.ef.iverksett.oppgave.barnsalder
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service
 
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = OpprettOppgaveForBarnTask.TYPE,
-        beskrivelse = "Oppretter oppgave for barn som fyller 1/2 eller 1 år")
+    taskStepType = OpprettOppgaveForBarnTask.TYPE,
+    beskrivelse = "Oppretter oppgave for barn som fyller 1/2 eller 1 år")
 class OpprettOppgaveForBarnTask(val taskRepository: TaskRepository,
                                 val opprettOppgaveForBarnService: OpprettOppgaverForBarnService,
                                 val featureToggleService: FeatureToggleService) : AsyncTaskStep {

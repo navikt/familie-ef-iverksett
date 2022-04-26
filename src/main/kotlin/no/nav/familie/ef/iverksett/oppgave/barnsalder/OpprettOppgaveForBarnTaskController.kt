@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.oppgave
+package no.nav.familie.ef.iverksett.oppgave.barnsalder
 
 import no.nav.familie.kontrakter.ef.iverksett.OppgaverForBarnDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
