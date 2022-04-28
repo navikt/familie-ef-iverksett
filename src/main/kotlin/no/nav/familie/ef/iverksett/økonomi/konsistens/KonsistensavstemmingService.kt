@@ -30,7 +30,7 @@ class KonsistensavstemmingService(
             konsistensavstemmingDto: KonsistensavstemmingDto,
             sendStartmelding: Boolean = true,
             sendAvsluttmelding: Boolean = true,
-            transaksjonsId: UUID? = null
+            transaksjonId: UUID? = null
     ) {
         try {
             val utbetalingsoppdrag = lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto)
@@ -42,7 +42,7 @@ class KonsistensavstemmingService(
             oppdragKlient.konsistensavstemming(konsistensavstemmingUtbetalingsoppdrag,
                                                sendStartmelding,
                                                sendAvsluttmelding,
-                                               transaksjonsId)
+                                               transaksjonId)
         } catch (feil: Throwable) {
             throw Exception("Sending av utbetalingsoppdrag til konsistensavtemming feilet", feil)
         }

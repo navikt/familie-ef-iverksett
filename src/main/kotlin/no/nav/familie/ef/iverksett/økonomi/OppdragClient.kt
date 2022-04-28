@@ -52,11 +52,11 @@ class OppdragClient(@Value("\${FAMILIE_OPPDRAG_API_URL}")
     fun konsistensavstemming(konsistensavstemmingUtbetalingsoppdrag: KonsistensavstemmingUtbetalingsoppdrag,
                              sendStartmelding: Boolean = true,
                              sendAvsluttmelding: Boolean = true,
-                             transaksjonsId: UUID? = null): String {
+                             transaksjonId: UUID? = null): String {
         val url = UriComponentsBuilder.fromUri(konsistensavstemmingUri)
                 .queryParam("sendStartmelding", sendStartmelding)
                 .queryParam("sendAvsluttmelding", sendAvsluttmelding)
-                .queryParam("transaksjonsId", transaksjonsId.toString())
+                .queryParam("transaksjonId", transaksjonId.toString())
                 .build().toUri()
         return postForEntity<Ressurs<String>>(url, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
     }

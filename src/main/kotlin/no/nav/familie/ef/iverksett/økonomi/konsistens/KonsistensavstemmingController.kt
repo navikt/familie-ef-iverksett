@@ -22,8 +22,8 @@ class KonsistensavstemmingController(
     fun startKonsistensavstemming(@RequestBody konsistensavstemmingDto: KonsistensavstemmingDto,
                                   @RequestParam(name = "sendStartmelding") sendStartmelding: Boolean = true,
                                   @RequestParam(name = "sendAvsluttmelding") sendAvsluttmelding: Boolean = true,
-                                  @RequestParam(name = "transaksjonsId") transaksjonsId: UUID? = null) {
+                                  @RequestParam(name = "transaksjonId") transaksjonId: UUID? = null) {
         konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto,
-        sendStartmelding, sendAvsluttmelding, transaksjonsId)
+        sendStartmelding, sendAvsluttmelding, transaksjonId)
     }
 }
