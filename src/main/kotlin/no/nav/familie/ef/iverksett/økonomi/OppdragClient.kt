@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
+import java.util.UUID
 
 @Service
 class OppdragClient(@Value("\${FAMILIE_OPPDRAG_API_URL}")
@@ -48,8 +49,16 @@ class OppdragClient(@Value("\${FAMILIE_OPPDRAG_API_URL}")
         return postForEntity<Ressurs<String>>(grensesnittavstemmingUri, grensesnittavstemmingRequest).getDataOrThrow()
     }
 
-    fun konsistensavstemming(konsistensavstemmingUtbetalingsoppdrag: KonsistensavstemmingUtbetalingsoppdrag): String {
-        return postForEntity<Ressurs<String>>(konsistensavstemmingUri, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
+    fun konsistensavstemming(konsistensavstemmingUtbetalingsoppdrag: KonsistensavstemmingUtbetalingsoppdrag,
+                             sendStartmelding: Boolean = true,
+                             sendAvsluttmelding: Boolean = true,
+                             transaksjonsId: UUID? = null): String {
+        val url = UriComponentsBuilder.fromUri(konsistensavstemmingUri)
+                .queryParam("sendStartmelding", sendStartmelding)
+                .queryParam("sendAvsluttmelding", sendAvsluttmelding)
+                .queryParam("transaksjonsId", transaksjonsId.toString())
+                .build().toUri()
+        return postForEntity<Ressurs<String>>(url, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
     }
 
     fun hentSimuleringsresultat(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat {

@@ -6,7 +6,9 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/konsistensavstemming")
@@ -17,7 +19,11 @@ class KonsistensavstemmingController(
 ) {
 
     @PostMapping
-    fun startKonsistensavstemming(@RequestBody konsistensavstemmingDto: KonsistensavstemmingDto) {
-        konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto)
+    fun startKonsistensavstemming(@RequestBody konsistensavstemmingDto: KonsistensavstemmingDto,
+                                  @RequestParam(name = "sendStartmelding") sendStartmelding: Boolean = true,
+                                  @RequestParam(name = "sendAvsluttmelding") sendAvsluttmelding: Boolean = true,
+                                  @RequestParam(name = "transaksjonsId") transaksjonsId: UUID? = null) {
+        konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto,
+        sendStartmelding, sendAvsluttmelding, transaksjonsId)
     }
 }
