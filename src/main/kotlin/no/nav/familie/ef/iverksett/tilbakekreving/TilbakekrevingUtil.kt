@@ -19,9 +19,7 @@ fun Iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleri
     val simuleringsoppsummering = beriketSimuleringsresultat.oppsummering
 
     val nyTilbakekreving: Tilbakekrevingsdetaljer? =
-            if (tilbakekreving == null && simuleringsoppsummering.harFeilutbetaling)
-                TILBAKEKREVING_UTEN_VARSEL
-            else if (tilbakekreving != null && !simuleringsoppsummering.harFeilutbetaling)
+            if (tilbakekreving != null  && !simuleringsoppsummering.harFeilutbetaling)
                 null
             else if (harAvvikIVarsel(tilbakekreving, simuleringsoppsummering))
                 tilbakekreving?.oppdaterVarsel(simuleringsoppsummering)

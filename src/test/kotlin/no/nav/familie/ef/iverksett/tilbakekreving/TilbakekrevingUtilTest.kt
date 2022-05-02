@@ -131,17 +131,4 @@ internal class TilbakekrevingUtilTest {
         assertThat(nyTilbakekreving).isNull()
     }
 
-    @Test
-    fun `oppdagelse av feilutbetaling i iverksett skal legge til tilbakekreving uten varsel`() {
-
-        val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = null)
-
-        val beriketSimuleringsresultat = beriketSimuleringsresultat(BigDecimal.TEN, fom, tom)
-
-        val nyTilbakekreving = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat).vedtak.tilbakekreving
-
-        assertThat(nyTilbakekreving).isNotNull
-        assertThat(nyTilbakekreving!!.tilbakekrevingsvalg).isEqualTo(Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL)
-        assertThat(nyTilbakekreving.tilbakekrevingMedVarsel).isNull()
-    }
 }
