@@ -26,10 +26,10 @@
         <prosessering.version>1.20220321101749_55e4576</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <familie.kontrakter.version>2.0_20220422142843_5371873</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220422132737_4d92878</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.kontrakter.version>2.0_20220429151635_4bb9f6d</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220502125212_55aff01</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220107115927_4388dc5</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <token-validation-spring.version>2.0.14</token-validation-spring.version>
+        <token-validation-spring.version>2.0.15</token-validation-spring.version>
         <ibm-mq-client.version>9.2.5.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
         <unleash.version>4.4.1</unleash.version>
@@ -216,7 +216,7 @@
         <dependency>
             <groupId>dev.akkinoc.spring.boot</groupId>
             <artifactId>logback-access-spring-boot-starter</artifactId>
-            <version>3.2.5</version>
+            <version>3.2.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -233,7 +233,7 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8</artifactId>
-            <version>2.33.1</version>
+            <version>2.33.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
