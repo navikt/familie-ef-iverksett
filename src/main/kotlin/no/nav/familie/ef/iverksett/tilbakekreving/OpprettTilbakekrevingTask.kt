@@ -47,10 +47,7 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
             logger.warn("OpprettTilbakekrevingTask ikke utført - tilkjentYtelse er null, Behandling: $behandlingId")
             return
         } else if (iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
-            logger.info("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
-            return
-        } else if (iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
-            logger.info("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
+            logger.warn("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
             return
         } else if (finnesÅpenTilbakekrevingsbehandling(iverksett)) {
             logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=${behandlingId}")
