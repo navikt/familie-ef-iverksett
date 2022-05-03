@@ -55,12 +55,13 @@ internal class OpprettTilbakekrevingTaskTest {
     }
 
     @Test
-    fun `uendret og ingen feilutbetaling`() {
+    fun `uendret og ingen feilutbetaling - ikke opprett tilbakekreving`() {
 
+        val tilbakekreving = null
         val behandlingsId = UUID.randomUUID()
-        val iverksett =
-                opprettIverksettOvergangsstønad(behandlingsId, tilbakekreving = null, forrigeBehandlingId = UUID.randomUUID())
-
+        val iverksett = opprettIverksettOvergangsstønad(behandlingsId,
+                                                        tilbakekreving = tilbakekreving,
+                                                        forrigeBehandlingId = UUID.randomUUID())
         every { iverksettingRepository.hent(behandlingsId) } returns iverksett
 
         doTask(behandlingsId)
