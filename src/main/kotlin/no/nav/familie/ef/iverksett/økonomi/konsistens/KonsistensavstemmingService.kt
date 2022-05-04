@@ -37,7 +37,7 @@ class KonsistensavstemmingService(
             val konsistensavstemmingUtbetalingsoppdrag = KonsistensavstemmingUtbetalingsoppdrag(
                     konsistensavstemmingDto.stønadType.tilKlassifisering(),
                     utbetalingsoppdrag,
-                    LocalDateTime.now()
+                    konsistensavstemmingDto.avstemmingstidspunkt ?: LocalDateTime.now()
             )
             oppdragKlient.konsistensavstemming(konsistensavstemmingUtbetalingsoppdrag,
                                                sendStartmelding,
@@ -50,6 +50,8 @@ class KonsistensavstemmingService(
 
     private fun lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto: KonsistensavstemmingDto)
             : List<Utbetalingsoppdrag> {
+        if (konsistensavstemmingDto.tilkjenteYtelser.isEmpty()) return emptyList()
+
         val stønadType = konsistensavstemmingDto.stønadType
         val tilkjentYtelsePerBehandlingId = konsistensavstemmingDto.tilkjenteYtelser.associateBy { it.behandlingId }
         val behandlingIdTilkjentYtelseForUtbetalingMap = tilstandRepository.hentTilkjentYtelse(tilkjentYtelsePerBehandlingId.keys)
