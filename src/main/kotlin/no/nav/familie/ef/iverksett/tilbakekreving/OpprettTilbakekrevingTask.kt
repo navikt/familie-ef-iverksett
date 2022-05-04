@@ -40,28 +40,28 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
 
-        if (iverksett.vedtak.tilkjentYtelse == null) {
+        if (!iverksett.vedtak.tilbakekreving.skalTilbakekreves) {
+            logger.info("Tilbakekreving ikke valgt for behandlingId=$behandlingId. Oppretter derfor ikke tilbakekrevingsbehandling.")
+            return
+        } else if (iverksett.vedtak.tilkjentYtelse == null) {
             logger.warn("OpprettTilbakekrevingTask ikke utført - tilkjentYtelse er null, Behandling: $behandlingId")
             return
         } else if (iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
-            logger.info("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
+            logger.warn("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
+            return
+        } else if (finnesÅpenTilbakekrevingsbehandling(iverksett)) {
+            logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=${behandlingId}")
             return
         }
 
-        val beriketSimuleringsresultat = hentBeriketSimulering(iverksett)
-        val nyIverksett = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat)
+        val nyBeriketSimuleringsresultat = hentBeriketSimulering(iverksett)
+        val nyIverksett = iverksett.oppfriskTilbakekreving(nyBeriketSimuleringsresultat)
 
-        if (nyIverksett != iverksett) {
-            logger.info("Grunnlaget for tilbakekreving for behandling=${behandlingId} har endret seg siden saksbehandlingen")
-        }
+        loggForskjell(nyIverksett, iverksett, behandlingId)
 
-        if (!nyIverksett.vedtak.tilbakekreving.skalTilbakekreves) {
-            logger.debug("Behandling=${behandlingId} skal ikke tilbakekreves")
-        } else if (!beriketSimuleringsresultat.harFeilutbetaling()) {
+        if (!nyBeriketSimuleringsresultat.harFeilutbetaling()) {
             logger.info("Behandling=${behandlingId} har ikke (lenger) positiv feilutbetaling i simuleringen")
-        } else if (finnesÅpenTilbakekrevingsbehandling(nyIverksett)) {
-            logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=${behandlingId}")
-        } else {
+        }  else {
             logger.info("Det kreves tilbakekrevingsbehandling for behandling=${behandlingId}")
             val opprettTilbakekrevingRequest = lagTilbakekrevingRequest(nyIverksett)
             tilbakekrevingClient.opprettBehandling(opprettTilbakekrevingRequest)
@@ -72,6 +72,15 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
             // Burde iverksett oppdateres i DBen, siden tilbakekreving potensielt er endret?
             // iverksettingRepository.lagreIverksett(behandlingId,nyIverksett)
             logger.info("Opprettet tilbakekrevingsbehandling for behandling=${behandlingId}")
+        }
+    }
+
+
+    private fun loggForskjell(nyIverksett: Iverksett,
+                              iverksett: Iverksett,
+                              behandlingId: UUID?) {
+        if (nyIverksett != iverksett) {
+            logger.info("Grunnlaget for tilbakekreving for behandling=${behandlingId} har endret seg siden saksbehandlingen")
         }
     }
 
