@@ -28,11 +28,7 @@ class FellesTilEksterneKontrakterEnumTest {
         BehandlingÅrsak.values().forEach { BehandlingÅrsakEkstern.valueOf(it.name) }
         BehandlingType.values().forEach { BehandlingTypeEkstern.valueOf(it.name) }
         Vilkårsresultat.values().forEach { VilkårsresultatEkstern.valueOf(it.name) }
-        VilkårType.values().filterNot {
-            setOf(VilkårType.AKTIVITET_ARBEID,
-                  VilkårType.INNTEKT,
-                  VilkårType.ALDER_PÅ_BARN).contains(it)
-        }.forEach { Vilkår.valueOf(it.name) }
+        VilkårType.values().forEach { Vilkår.valueOf(it.name) }
         VedtaksperiodeType.values().forEach { VedtakPeriodeTypeEkstern.valueOf(it.name) }
         AktivitetType.values().forEach { AktivitetTypeEkstern.valueOf(it.name) }
         AdressebeskyttelseGradering.values().forEach { AdresseBeskyttelseEkstern.valueOf(it.name) }
