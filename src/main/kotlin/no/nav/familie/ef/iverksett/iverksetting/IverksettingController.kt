@@ -77,7 +77,7 @@ class IverksettingController(
     }
 
     private fun validerSkalHaBrev(iverksett: Iverksett) {
-        if (!iverksett.skalIkkeSendeBrev()) {
+        if (iverksett.skalIkkeSendeBrev()) {
             throw ApiFeil("Kan ikke ha iverksetting med brev når det er migrering eller årsak er korrigering uten brev",
                           HttpStatus.BAD_REQUEST)
         }
