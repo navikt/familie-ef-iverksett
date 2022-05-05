@@ -11,7 +11,6 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurde
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingOpphørt
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
-import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -24,7 +23,7 @@ class OppgaveService(
 ) {
 
     fun skalOppretteVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Boolean {
-        if (iverksett.erMigrering()) {
+        if (iverksett.skalIkkeSendeBrev()) {
             return false
         }
         return when (iverksett.behandling.behandlingType) {
@@ -95,7 +94,7 @@ class OppgaveService(
         if (forrigeBehandling !is IverksettOvergangsstønad) {
             error("Forrige behandling er av annen type=${forrigeBehandling::class.java.simpleName}")
         }
-        if (forrigeBehandling.erMigrering()) {
+        if (forrigeBehandling.skalIkkeSendeBrev()) {
             return false
         }
         if (forrigeBehandling.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT) {

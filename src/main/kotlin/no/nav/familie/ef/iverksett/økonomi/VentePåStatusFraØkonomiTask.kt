@@ -5,7 +5,6 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
-import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -52,8 +51,8 @@ class VentePåStatusFraØkonomiTask(
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
 
-        if (iverksett.erMigrering()) {
-            logger.info("Journalfør ikke vedtaksbrev for behandling=$behandlingId då årsaken er migrering")
+        if (iverksett.skalIkkeSendeBrev()) {
+            logger.info("Journalfør ikke vedtaksbrev for behandling=$behandlingId då årsak=${iverksett.behandling.behandlingÅrsak}")
         } else {
             taskRepository.save(task.opprettNesteTask())
         }

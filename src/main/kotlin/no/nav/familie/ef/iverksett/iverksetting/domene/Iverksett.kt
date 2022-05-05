@@ -35,7 +35,11 @@ sealed class Iverksett {
     abstract val søker: Søker
     abstract val vedtak: Vedtaksdetaljer
 
+
     fun erMigrering(): Boolean = behandling.behandlingÅrsak == BehandlingÅrsak.MIGRERING
+
+    fun skalIkkeSendeBrev(): Boolean =
+            erMigrering() || behandling.behandlingÅrsak == BehandlingÅrsak.KORRIGERING_UTEN_BREV
 
     abstract fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): Iverksett
 }
