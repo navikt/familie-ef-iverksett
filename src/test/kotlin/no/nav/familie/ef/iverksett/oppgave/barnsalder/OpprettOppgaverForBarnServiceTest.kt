@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.oppgave
+package no.nav.familie.ef.iverksett.oppgave.barnsalder
 
 import io.mockk.every
 import io.mockk.mockk
@@ -6,6 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.oppgave.OppgaveClient
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.ef.StønadType

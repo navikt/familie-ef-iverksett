@@ -5,7 +5,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.jms.core.JmsTemplate
@@ -22,7 +22,7 @@ class VedtakhendelseProducerTest {
         val vedtakHendelseXmlSlot = slot<String>()
         every { jmsTemplate.convertAndSend(capture(vedtakHendelseXmlSlot)) } just Runs
 
-        val iverksett = opprettIverksett(UUID.randomUUID())
+        val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID())
         val vedtakHendelser = mapIverksettTilVedtakHendelser(iverksett, "a123")
         vedtakhendelseProducer.produce(vedtakHendelser)
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")

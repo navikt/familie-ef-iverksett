@@ -42,7 +42,6 @@ sealed class Iverksett {
             erMigrering() || behandling.behandlingÅrsak == BehandlingÅrsak.KORRIGERING
 
     abstract fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): Iverksett
-
 }
 
 data class IverksettOvergangsstønad(
@@ -55,6 +54,7 @@ data class IverksettOvergangsstønad(
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettOvergangsstønad {
         return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
     }
+
 
 }
 

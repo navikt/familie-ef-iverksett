@@ -6,7 +6,7 @@ import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.tekniskopphor.IverksettTekniskOpphørTask
 import no.nav.familie.ef.iverksett.tekniskopphor.TekniskOpphørController
 import no.nav.familie.ef.iverksett.util.opprettBrev
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.NULL_DATO
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.TekniskOpphørDto
@@ -44,7 +44,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
             fraOgMed = LocalDate.of(2021, 1, 1),
             tilOgMed = LocalDate.of(2021, 1, 31),
             periodetype = Periodetype.MÅNED)
-    private val iverksett = opprettIverksett(behandlingid, andeler = listOf(førsteAndel), startdato = førsteAndel.fraOgMed)
+    private val iverksett = opprettIverksettOvergangsstønad(behandlingid, andeler = listOf(førsteAndel), startdato = førsteAndel.fraOgMed)
 
     @BeforeEach
     internal fun setUp() {
@@ -62,9 +62,9 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     @Test
     internal fun `revurdering med en ny periode, forvent at den nye perioden har peker på den forrige`() {
         val behandlingIdRevurdering = UUID.randomUUID()
-        val iverksettRevurdering = opprettIverksett(behandlingIdRevurdering,
-                                                    behandlingid,
-                                                    listOf(førsteAndel,
+        val iverksettRevurdering = opprettIverksettOvergangsstønad(behandlingIdRevurdering,
+                                                                   behandlingid,
+                                                                   listOf(førsteAndel,
                                                            lagAndelTilkjentYtelse(
                                                                    beløp = 1000,
                                                                    fraOgMed = LocalDate.now(),
@@ -86,9 +86,9 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     @Test
     internal fun `revurdering der beløpet på den første endres, og en ny legges til, forvent at den første perioden erstattes`() {
         val behandlingIdRevurdering = UUID.randomUUID()
-        val iverksettRevurdering = opprettIverksett(behandlingIdRevurdering,
-                                                    behandlingid,
-                                                    listOf(førsteAndel.copy(beløp = 299),
+        val iverksettRevurdering = opprettIverksettOvergangsstønad(behandlingIdRevurdering,
+                                                                   behandlingid,
+                                                                   listOf(førsteAndel.copy(beløp = 299),
                                                            lagAndelTilkjentYtelse(
                                                                    beløp = 1000,
                                                                    fraOgMed = LocalDate.now(),
@@ -111,7 +111,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     internal fun `iverksett med opphør, forventer beløp lik 0 og dato lik NULL_DATO`() {
         val opphørBehandlingId = UUID.randomUUID()
         val startdato = førsteAndel.fraOgMed
-        val iverksettMedOpphør = opprettIverksett(opphørBehandlingId, behandlingid, emptyList(), startdato = startdato)
+        val iverksettMedOpphør = opprettIverksettOvergangsstønad(opphørBehandlingId, behandlingid, emptyList(), startdato = startdato)
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettMedOpphør, opprettBrev())
@@ -133,14 +133,14 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         iverksettTekniskOpphør()
 
         val behandlingIdRevurdering = UUID.randomUUID()
-        val iverksettRevurdering = opprettIverksett(behandlingIdRevurdering,
-                                                    tekniskOpphørId,
-                                                    listOf(lagAndelTilkjentYtelse(
+        val iverksettRevurdering = opprettIverksettOvergangsstønad(behandlingIdRevurdering,
+                                                                   tekniskOpphørId,
+                                                                   listOf(lagAndelTilkjentYtelse(
                                                             beløp = 1000,
                                                             fraOgMed = LocalDate.now(),
                                                             tilOgMed = LocalDate.now().plusDays(15),
                                                             periodetype = Periodetype.MÅNED)),
-                                                    startdato = førsteAndel.fraOgMed)
+                                                                   startdato = førsteAndel.fraOgMed)
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())

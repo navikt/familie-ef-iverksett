@@ -1,14 +1,13 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.tilbakekreving.tilOpprettTilbakekrevingRequest
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
@@ -17,7 +16,6 @@ import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.LocalDateTime
 import java.util.UUID
 
 internal class HentTilstandRepositoryTest : ServerTest() {
@@ -106,7 +104,7 @@ internal class HentTilstandRepositoryTest : ServerTest() {
     @Test
     fun `lagre tilbakekrevingsresultat, hent IverksettResultat med tilbakekrevingsresultat`() {
 
-        val iverksett = opprettIverksett(behandlingId)
+        val iverksett = opprettIverksettOvergangsstønad(behandlingId)
         val opprettTilbakekrevingRequest = iverksett
                 .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
@@ -127,7 +125,7 @@ internal class HentTilstandRepositoryTest : ServerTest() {
     fun `overskriv tomt (null) tilbakekrevingsresultat`() {
 
         val id = UUID.randomUUID()
-        val iverksett = opprettIverksett(id)
+        val iverksett = opprettIverksettOvergangsstønad(id)
         val opprettTilbakekrevingRequest = iverksett
                 .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 

@@ -9,7 +9,7 @@ import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
@@ -103,7 +103,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
     }
 
     private fun opprettData(vararg andelTilkjentYtelse: AndelTilkjentYtelse): Iverksett {
-        val iverksett = opprettIverksett(behandlingId)
+        val iverksett = opprettIverksettOvergangsstønad(behandlingId)
         val vedtak = iverksett.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
         return iverksett.copy(vedtak = vedtak.copy(tilkjentYtelse =

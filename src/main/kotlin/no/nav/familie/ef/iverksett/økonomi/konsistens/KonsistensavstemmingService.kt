@@ -26,10 +26,23 @@ class KonsistensavstemmingService(
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    fun sendKonsistensavstemming(konsistensavstemmingDto: KonsistensavstemmingDto) {
+    fun sendKonsistensavstemming(
+            konsistensavstemmingDto: KonsistensavstemmingDto,
+            sendStartmelding: Boolean = true,
+            sendAvsluttmelding: Boolean = true,
+            transaksjonId: UUID? = null
+    ) {
         try {
             val utbetalingsoppdrag = lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto)
-            sendKonsistensavstemming(utbetalingsoppdrag, konsistensavstemmingDto.stønadType)
+            val konsistensavstemmingUtbetalingsoppdrag = KonsistensavstemmingUtbetalingsoppdrag(
+                    konsistensavstemmingDto.stønadType.tilKlassifisering(),
+                    utbetalingsoppdrag,
+                    konsistensavstemmingDto.avstemmingstidspunkt ?: LocalDateTime.now()
+            )
+            oppdragKlient.konsistensavstemming(konsistensavstemmingUtbetalingsoppdrag,
+                                               sendStartmelding,
+                                               sendAvsluttmelding,
+                                               transaksjonId)
         } catch (feil: Throwable) {
             throw Exception("Sending av utbetalingsoppdrag til konsistensavtemming feilet", feil)
         }
@@ -37,6 +50,8 @@ class KonsistensavstemmingService(
 
     private fun lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto: KonsistensavstemmingDto)
             : List<Utbetalingsoppdrag> {
+        if (konsistensavstemmingDto.tilkjenteYtelser.isEmpty()) return emptyList()
+
         val stønadType = konsistensavstemmingDto.stønadType
         val tilkjentYtelsePerBehandlingId = konsistensavstemmingDto.tilkjenteYtelser.associateBy { it.behandlingId }
         val behandlingIdTilkjentYtelseForUtbetalingMap = tilstandRepository.hentTilkjentYtelse(tilkjentYtelsePerBehandlingId.keys)
@@ -99,13 +114,4 @@ class KonsistensavstemmingService(
             a.fraOgMed == b.fraOgMed &&
             a.tilOgMed == b.tilOgMed
 
-    private fun sendKonsistensavstemming(utbetalingsoppdrag: List<Utbetalingsoppdrag>,
-                                         stønadType: StønadType) {
-        val konsistensavstemmingUtbetalingsoppdrag = KonsistensavstemmingUtbetalingsoppdrag(
-                stønadType.tilKlassifisering(),
-                utbetalingsoppdrag,
-                LocalDateTime.now()
-        )
-        oppdragKlient.konsistensavstemming(konsistensavstemmingUtbetalingsoppdrag)
-    }
 }

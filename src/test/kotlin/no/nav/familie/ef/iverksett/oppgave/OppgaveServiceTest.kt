@@ -11,7 +11,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.util.behandlingsdetaljer
-import no.nav.familie.ef.iverksett.util.opprettIverksett
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.vedtaksdetaljerOvergangsstønad
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
@@ -333,7 +333,7 @@ internal class OppgaveServiceTest {
             andelsdatoer: List<LocalDate> = emptyList()
     ): IverksettOvergangsstønad {
         val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else BehandlingÅrsak.SØKNAD
-        return opprettIverksett(
+        return opprettIverksettOvergangsstønad(
                 behandlingsdetaljer = behandlingsdetaljer(forrigeBehandlingId = forrigeBehandlingId,
                                                           behandlingType = behandlingType,
                                                           behandlingÅrsak = behandlingÅrsak),

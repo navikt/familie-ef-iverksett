@@ -6,13 +6,18 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
+import no.nav.familie.eksterne.kontrakter.ef.AktivitetsvilkårBarnetilsyn
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.RegelId
@@ -32,7 +37,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-internal class BehandlingDVHMapperTest {
+internal class VedtakstatistikkMapperTest {
 
     val fagsakId: UUID = UUID.randomUUID()
     val behandlingId: UUID = UUID.randomUUID()
@@ -43,9 +48,9 @@ internal class BehandlingDVHMapperTest {
     private val termindato: LocalDate? = LocalDate.now().plusDays(40)
 
     @Test
-    internal fun `skal mappe iverksett til dvh verdier`() {
+    internal fun `skal mappe iverksett til VedtakOvergangsstønadDVH`() {
 
-        val behandlingDVH = BehandlingDVHMapper.map(
+        val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
                 IverksettOvergangsstønad(
                         fagsak = fagsakdetaljer(),
                         behandling = behandlingsdetaljer(),
@@ -58,20 +63,57 @@ internal class BehandlingDVHMapperTest {
                                       adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG),
                         vedtak = vedtaksdetaljerOvergangsstønad()
                 ), null)
-
-        assertThat(behandlingDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
-        assertThat(behandlingDVH.fagsakId).isEqualTo(eksternFagsakId)
-        assertThat(behandlingDVH.behandlingId).isEqualTo(eksternBehandlingId)
-        assertThat(behandlingDVH.funksjonellId).isEqualTo(eksternBehandlingId)
-        assertThat(behandlingDVH.vedtaksperioder).hasSize(2)
-        assertThat(behandlingDVH.utbetalinger).hasSize(2)
-        assertThat(behandlingDVH.aktivitetskrav.aktivitetspliktInntrefferDato).isNull()
+        assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
+        assertThat(vedtakOvergangsstønadDVH.fagsakId).isEqualTo(eksternFagsakId)
+        assertThat(vedtakOvergangsstønadDVH.behandlingId).isEqualTo(eksternBehandlingId)
+        assertThat(vedtakOvergangsstønadDVH.funksjonellId).isEqualTo(eksternBehandlingId)
+        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder).hasSize(2)
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger).hasSize(2)
+        assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.aktivitetspliktInntrefferDato).isNull()
     }
 
-    fun fagsakdetaljer(): Fagsakdetaljer =
+    @Test
+    internal fun `skal mappe iverksett til VedtakBarnetilsynDVH`() {
+
+        val vedtakBarnetilsynDVH = VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(
+                IverksettBarnetilsyn(
+                        fagsak = fagsakdetaljer(stønadstype = StønadType.BARNETILSYN),
+                        behandling = behandlingsdetaljer(),
+                        søker = Søker(personIdent = søker,
+                                      barn = listOf(
+                                              Barn(personIdent = barnFnr),
+                                              Barn(termindato = termindato),
+                                      ),
+                                      tilhørendeEnhet = "4489",
+                                      adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG),
+                        vedtak = vedtaksdetaljerBarnetilsyn()
+                ), null)
+
+        assertThat(vedtakBarnetilsynDVH.aktivitetskrav.name).isEqualTo(AktivitetsvilkårBarnetilsyn.ER_I_ARBEID.name)
+        assertThat(vedtakBarnetilsynDVH.fagsakId).isEqualTo(eksternFagsakId)
+        assertThat(vedtakBarnetilsynDVH.behandlingId).isEqualTo(eksternBehandlingId)
+        assertThat(vedtakBarnetilsynDVH.funksjonellId).isEqualTo(eksternBehandlingId)
+        assertThat(vedtakBarnetilsynDVH.vedtaksperioder).hasSize(2)
+        assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().fraOgMed).isEqualTo(LocalDate.of(2021,1,1))
+        assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().tilOgMed).isEqualTo(LocalDate.of(2021,1,1))
+        assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().utgifter).isEqualTo(1000)
+        assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().antallBarn).isEqualTo(1)
+        assertThat(vedtakBarnetilsynDVH.utbetalinger).hasSize(2)
+        assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte).hasSize(1)
+        assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte.first().fraOgMed).isEqualTo(LocalDate.of(2021, 5, 1))
+        assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte.first().tilOgMed).isEqualTo(LocalDate.of(2021, 7, 1))
+        assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte.first().beløp).isEqualTo(1000)
+        assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad).hasSize(1)
+        assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad.first().fraOgMed).isEqualTo(LocalDate.of(2021, 6, 1))
+        assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad.first().tilOgMed).isEqualTo(LocalDate.of(2021, 8, 1))
+        assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad.first().beløp).isEqualTo(2000)
+    }
+
+
+    fun fagsakdetaljer(stønadstype: StønadType = StønadType.OVERGANGSSTØNAD): Fagsakdetaljer =
             Fagsakdetaljer(fagsakId = fagsakId,
                            eksternId = eksternFagsakId,
-                           stønadstype = StønadType.OVERGANGSSTØNAD)
+                           stønadstype = stønadstype)
 
     fun behandlingsdetaljer(): Behandlingsdetaljer =
             Behandlingsdetaljer(forrigeBehandlingId = null,
@@ -120,6 +162,28 @@ internal class BehandlingDVHMapperTest {
                                                 forrigePeriodeId = 1,
                                                 kildeBehandlingId = behandlingId)
                     ), startdato = LocalDate.now())
+
+    fun vedtaksdetaljerBarnetilsyn() = VedtaksdetaljerBarnetilsyn(
+            vedtaksresultat = Vedtaksresultat.INNVILGET,
+            vedtakstidspunkt = LocalDateTime.now(),
+            opphørÅrsak = null,
+            saksbehandlerId = "A123456",
+            beslutterId = "B123456",
+            tilkjentYtelse = tilkjentYtelse(),
+            vedtaksperioder = listOf(
+                    VedtaksperiodeBarnetilsyn(fraOgMed = LocalDate.of(2021, 1, 1),
+                                              tilOgMed = LocalDate.of(2021, 1, 1),
+                                              utgifter = 1000,
+                                              antallBarn = 1),
+                    VedtaksperiodeBarnetilsyn(fraOgMed = LocalDate.of(2021, 6, 1),
+                                              tilOgMed = LocalDate.of(2021, 10, 31),
+                                              utgifter = 2000,
+                                              antallBarn = 2)
+            ),
+            brevmottakere = Brevmottakere(emptyList()),
+            kontantstøtte = listOf(PeriodeMedBeløp(LocalDate.of(2021, 5, 1), LocalDate.of(2021, 7, 1), 1000)),
+            tilleggsstønad = listOf(PeriodeMedBeløp(LocalDate.of(2021, 6, 1), LocalDate.of(2021, 8, 1), 2000)),
+    )
 
     fun vedtaksdetaljerOvergangsstønad() =
             VedtaksdetaljerOvergangsstønad(
@@ -261,6 +325,13 @@ internal class BehandlingDVHMapperTest {
                                                                           SvarId.NEI,
                                                                           null)))
                              )),
-
+            Vilkårsvurdering(vilkårType = VilkårType.AKTIVITET_ARBEID,
+                             resultat = Vilkårsresultat.OPPFYLT,
+                             delvilkårsvurderinger = listOf(
+                                     Delvilkårsvurdering(Vilkårsresultat.OPPFYLT,
+                                                         listOf(Vurdering(RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM,
+                                                                          SvarId.ER_I_ARBEID,
+                                                                          null)))
+                             ))
             )
 }
