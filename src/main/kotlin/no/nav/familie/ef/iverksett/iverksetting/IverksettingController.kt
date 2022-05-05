@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.tilbakekreving.validerTilbakekreving
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
@@ -46,6 +47,7 @@ class IverksettingController(
     fun iverksett(@RequestBody iverksettDto: IverksettDto) {
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
+        validerUtenBrev(iverksett)
         iverksettingService.startIverksetting(iverksett, null)
     }
 
@@ -63,6 +65,14 @@ class IverksettingController(
 
     private fun opprettBrev(iverksettDto: IverksettDto, fil: MultipartFile): Brev {
         return Brev(iverksettDto.behandling.behandlingId, fil.bytes)
+    }
+
+    private fun validerUtenBrev(iverksett: Iverksett) {
+        if (!iverksett.erMigrering() && iverksett.behandling.behandlingÅrsak != BehandlingÅrsak.KORRIGERING_UTEN_BREV) {
+            throw ApiFeil("Kan ikke ha iverksetting uten brev når det ikke er en migrering, " +
+                          "eller årsak er korrigering uten brev ",
+                          HttpStatus.BAD_REQUEST)
+        }
     }
 
     private fun valider(iverksett: Iverksett) {
