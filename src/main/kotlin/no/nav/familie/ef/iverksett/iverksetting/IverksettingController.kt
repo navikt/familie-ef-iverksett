@@ -68,7 +68,7 @@ class IverksettingController(
     }
 
     private fun validerUtenBrev(iverksett: Iverksett) {
-        if (!iverksett.erMigrering() && iverksett.behandling.behandlingÅrsak != BehandlingÅrsak.KORRIGERING_UTEN_BREV) {
+        if (!iverksett.skalIkkeSendeBrev()) {
             throw ApiFeil("Kan ikke ha iverksetting uten brev når det ikke er en migrering, " +
                           "eller årsak er korrigering uten brev ",
                           HttpStatus.BAD_REQUEST)
