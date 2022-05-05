@@ -38,34 +38,18 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        hentIverksettinghvisTilbakekreving( behandlingId)?.let {
-            opprettTilbakekreving(behandlingId, it)
-        }
-    }
-
-    private fun hentIverksettinghvisTilbakekreving(behandlingId: UUID): Iverksett? {
         val iverksett = iverksettingRepository.hent(behandlingId)
-        if (iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
-            logger.warn("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
-            return null
-        } else if (!iverksett.vedtak.tilbakekreving.skalTilbakekreves) {
-            logger.info("Tilbakekreving ikke valgt for behandlingId=$behandlingId. Oppretter derfor ikke tilbakekrevingsbehandling.")
-            return null
-        } else if (iverksett.vedtak.tilkjentYtelse == null) {
-            logger.warn("OpprettTilbakekrevingTask ikke utført - tilkjentYtelse er null, Behandling: $behandlingId")
-            return null
-        } else if (finnesÅpenTilbakekrevingsbehandling(iverksett)) {
-            logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=${behandlingId}")
-            return null
+        if (!skalOppretteTilbakekreving(iverksett, behandlingId)) {
+            return
         }
         val nyBeriketSimuleringsresultat = hentBeriketSimulering(iverksett)
         val nyIverksett = iverksett.oppfriskTilbakekreving(nyBeriketSimuleringsresultat)
         loggForskjell(nyIverksett, iverksett, behandlingId)
-        if (!nyBeriketSimuleringsresultat.harFeilutbetaling()) {
+        if (nyBeriketSimuleringsresultat.harFeilutbetaling()) {
+            opprettTilbakekreving(behandlingId, nyIverksett)
+        } else {
             logger.info("Behandling=${behandlingId} har ikke (lenger) positiv feilutbetaling i simuleringen")
-            return null
         }
-        return nyIverksett
     }
 
     private fun opprettTilbakekreving(behandlingId: UUID,
@@ -80,6 +64,24 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
         // Burde iverksett oppdateres i DBen, siden tilbakekreving potensielt er endret?
         // iverksettingRepository.lagreIverksett(behandlingId,nyIverksett)
         logger.info("Opprettet tilbakekrevingsbehandling for behandling=${behandlingId}")
+    }
+
+    private fun skalOppretteTilbakekreving(iverksett: Iverksett,
+                                           behandlingId: UUID?): Boolean {
+        if (iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
+            logger.warn("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
+            return false
+        } else if (!iverksett.vedtak.tilbakekreving.skalTilbakekreves) {
+            logger.info("Tilbakekreving ikke valgt for behandlingId=$behandlingId. Oppretter derfor ikke tilbakekrevingsbehandling.")
+            return false
+        } else if (iverksett.vedtak.tilkjentYtelse == null) {
+            logger.warn("OpprettTilbakekrevingTask ikke utført - tilkjentYtelse er null, Behandling: $behandlingId")
+            return false
+        } else if (finnesÅpenTilbakekrevingsbehandling(iverksett)) {
+            logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=${behandlingId}")
+            return false
+        }
+        return true
     }
 
 
