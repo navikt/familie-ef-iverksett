@@ -38,9 +38,8 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksettinghvisTilbakekreving = hentIverksettinghvisTilbakekreving( behandlingId)
-        if(iverksettinghvisTilbakekreving!=null) {
-            opprettTilbakekreving(behandlingId, iverksettinghvisTilbakekreving)
+        hentIverksettinghvisTilbakekreving( behandlingId)?.let {
+            opprettTilbakekreving(behandlingId, it)
         }
     }
 
