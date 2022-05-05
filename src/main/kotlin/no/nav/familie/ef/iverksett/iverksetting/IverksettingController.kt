@@ -40,6 +40,7 @@ class IverksettingController(
     ) {
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
+        validerSkalHaBrev(iverksett)
         iverksettingService.startIverksetting(iverksett, opprettBrev(iverksettDto, fil))
     }
 
@@ -71,6 +72,13 @@ class IverksettingController(
         if (!iverksett.skalIkkeSendeBrev()) {
             throw ApiFeil("Kan ikke ha iverksetting uten brev når det ikke er en migrering, " +
                           "eller årsak er korrigering uten brev ",
+                          HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    private fun validerSkalHaBrev(iverksett: Iverksett) {
+        if (!iverksett.skalIkkeSendeBrev()) {
+            throw ApiFeil("Kan ikke ha iverksetting med brev når det er migrering eller årsak er korrigering uten brev",
                           HttpStatus.BAD_REQUEST)
         }
     }
