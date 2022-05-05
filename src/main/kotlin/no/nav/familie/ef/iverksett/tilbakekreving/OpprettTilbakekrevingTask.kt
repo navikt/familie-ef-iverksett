@@ -39,16 +39,15 @@ class OpprettTilbakekrevingTask(private val iverksettingRepository: Iverksetting
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
-        if (!skalOppretteTilbakekreving(iverksett, behandlingId)) {
-            return
-        }
-        val nyBeriketSimuleringsresultat = hentBeriketSimulering(iverksett)
-        val nyIverksett = iverksett.oppfriskTilbakekreving(nyBeriketSimuleringsresultat)
-        loggForskjell(nyIverksett, iverksett, behandlingId)
-        if (nyBeriketSimuleringsresultat.harFeilutbetaling()) {
-            opprettTilbakekreving(behandlingId, nyIverksett)
-        } else {
-            logger.info("Behandling=${behandlingId} har ikke (lenger) positiv feilutbetaling i simuleringen")
+        if (skalOppretteTilbakekreving(iverksett, behandlingId)) {
+            val nyBeriketSimuleringsresultat = hentBeriketSimulering(iverksett)
+            val nyIverksett = iverksett.oppfriskTilbakekreving(nyBeriketSimuleringsresultat)
+            loggForskjell(nyIverksett, iverksett, behandlingId)
+            if (nyBeriketSimuleringsresultat.harFeilutbetaling()) {
+                opprettTilbakekreving(behandlingId, nyIverksett)
+            } else {
+                logger.info("Behandling=${behandlingId} har ikke (lenger) positiv feilutbetaling i simuleringen")
+            }
         }
     }
 
