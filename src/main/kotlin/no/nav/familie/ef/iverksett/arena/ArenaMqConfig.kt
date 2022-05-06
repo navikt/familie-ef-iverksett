@@ -38,6 +38,8 @@ class ArenaMqConfig(val arenaMqConfigProperties: ArenaMqConfigProperties) {
         connectionFactory.ccsid = UTF_8_WITH_PUA
         connectionFactory.setIntProperty(WMQConstants.JMS_IBM_ENCODING, CMQC.MQENC_NATIVE)
         connectionFactory.setIntProperty(WMQConstants.JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA)
+        connectionFactory.clientReconnectOptions = WMQConstants.WMQ_CLIENT_RECONNECT // will try to reconnect
+        connectionFactory.clientReconnectTimeout = 600 // reconnection attempts for 10 minutes
         val adapter = UserCredentialsConnectionFactoryAdapter()
         adapter.setTargetConnectionFactory(connectionFactory)
         adapter.setUsername(arenaMqConfigProperties.servicebruker)
