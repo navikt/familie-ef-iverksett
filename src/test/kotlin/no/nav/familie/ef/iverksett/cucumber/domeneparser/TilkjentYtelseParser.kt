@@ -21,7 +21,7 @@ object TilkjentYtelseParser {
         }.map { (_, rader) ->
             val rad = rader.single()
             val behandlingId = behandlingIdTilUUID[parseInt(Domenebegrep.BEHANDLING_ID, rad)]!!
-            behandlingId to parseDato(TilkjentYtelseDomenebegrep.STARTDATO, rad)
+            behandlingId to parseÅrMåned(TilkjentYtelseDomenebegrep.STARTDATO, rad).atDay(1)
         }.toMap()
     }
 
@@ -68,9 +68,9 @@ object TilkjentYtelseParser {
                                 forrigePeriodeId = parseInt(UtbetalingsoppdragDomenebegrep.FORRIGE_PERIODE_ID, it).toLong(),
                                 sats = parseInt(UtbetalingsoppdragDomenebegrep.BELØP, it),
                                 satsType = parseEnum(UtbetalingsoppdragDomenebegrep.TYPE, it),
-                                fom = parseDato(Domenebegrep.FRA_DATO, it),
-                                tom = parseDato(Domenebegrep.TIL_DATO, it),
-                                opphør = parseValgfriDato(UtbetalingsoppdragDomenebegrep.OPPHØRSDATO, it),
+                                fom = parseÅrMåned(Domenebegrep.FRA_DATO, it).atDay(1),
+                                tom = parseÅrMåned(Domenebegrep.TIL_DATO, it).atEndOfMonth(),
+                                opphør = parseValgfriÅrMåned(UtbetalingsoppdragDomenebegrep.OPPHØRSDATO, it)?.atDay(1),
                         )
                     }
             )
@@ -90,8 +90,8 @@ object TilkjentYtelseParser {
             inntekt = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
             inntektsreduksjon = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKTSREDUKSJON, rad) ?: 0,
             samordningsfradrag = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
-            fraOgMed = parseDato(Domenebegrep.FRA_DATO, rad),
-            tilOgMed = parseDato(Domenebegrep.TIL_DATO, rad),
+            fraOgMed = parseÅrMåned(Domenebegrep.FRA_DATO, rad).atDay(1),
+            tilOgMed = parseÅrMåned(Domenebegrep.TIL_DATO, rad).atEndOfMonth(),
             kildeBehandlingId = null // ikke i bruk i iverksett
     )
 

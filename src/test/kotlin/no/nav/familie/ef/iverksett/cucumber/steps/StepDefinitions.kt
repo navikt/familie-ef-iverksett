@@ -40,19 +40,15 @@ class StepDefinitions {
 
     private var beregnedeTilkjentYtelse = mapOf<UUID, TilkjentYtelse>()
 
-    @ParameterType("Overgangsstønad|Barnetilsyn")
-    fun stønadType(stønadType: String): StønadType {
-        return StønadType.valueOf(stønadType)
-    }
-
     @Gitt("følgende startdatoer")
     fun følgende_startdatoer(dataTable: DataTable) {
         startdato = TilkjentYtelseParser.mapStartdatoer(dataTable)
     }
 
-    @Gitt("følgende tilkjente ytelser for {string}")
-    fun følgende_vedtak(stønadType: StønadType, dataTable: DataTable) {
-        tilkjentYtelse = TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato)
+    @Gitt("følgende tilkjente ytelser for {}")
+    fun følgende_vedtak(stønadType: String, dataTable: DataTable) {
+        val stønadstype = StønadType.valueOf(stønadType.uppercase())
+        tilkjentYtelse = TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato, stønadstype)
     }
 
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres")
@@ -78,8 +74,13 @@ class StepDefinitions {
         }
     }
 
-    @Så("forvent følgelse tilkjente ytelser for behandling {int} (med startdato {string})")
-    fun `forvent følgelse tilkjente ytelser`(a: Int, b: String, dataTable: DataTable) {
+    @Så("forvent følgelse tilkjente ytelser for behandling {int}")
+    fun `forvent følgelse tilkjente ytelser`(a: Int, dataTable: DataTable) {
+        `forvent følgelse tilkjente ytelser med startdato`(a, "asd", dataTable)
+    }
+
+    @Så("forvent følgelse tilkjente ytelser for behandling {int} med startdato {}")
+    fun `forvent følgelse tilkjente ytelser med startdato`(a: Int, b: String, dataTable: DataTable) {
         println(a)
         println(b)
     }
