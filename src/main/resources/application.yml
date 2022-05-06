@@ -124,7 +124,7 @@ management:
 arena-mq:
   queueManager: MPLS01
   channel: P_FAMILIE_EF_IVERKS
-  hostname: mpls01.adeo.no
+  hostname: a01apvl247.adeo.no
   port: 1414
   queueName: QA.P475.SOB_VEDTAKHENDELSER_ARE
   servicebruker: ${SERVICEBRUKER}
