@@ -29,7 +29,7 @@
         <familie.kontrakter.version>2.0_20220505111225_1683031</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220505111914_af30184</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220107115927_4388dc5</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <token-validation-spring.version>2.0.15</token-validation-spring.version>
+        <token-validation-spring.version>2.0.16</token-validation-spring.version>
         <ibm-mq-client.version>9.2.5.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
         <unleash.version>4.4.1</unleash.version>
