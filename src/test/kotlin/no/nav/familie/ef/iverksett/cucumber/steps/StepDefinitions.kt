@@ -17,6 +17,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.catchThrowable
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -48,6 +49,11 @@ class StepDefinitions {
     fun følgende_vedtak(stønadTypeArg: String, dataTable: DataTable) {
         stønadType = StønadType.valueOf(stønadTypeArg.uppercase())
         tilkjentYtelse = TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato)
+    }
+
+    @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres kastes exception")
+    fun `lagTilkjentYtelseMedUtbetalingsoppdrag kjøres kastes exception`() {
+        catchThrowable { `andelhistorikk kjøres`() }
     }
 
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres")

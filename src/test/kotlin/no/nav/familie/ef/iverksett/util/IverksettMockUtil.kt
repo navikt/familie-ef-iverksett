@@ -75,7 +75,7 @@ fun opprettIverksettDto(behandlingId: UUID,
     )
     val tilkjentYtelse = TilkjentYtelseDto(
             andelerTilkjentYtelse = listOf(andelTilkjentYtelse),
-            startdato = LocalDate.of(2020, 3, 1)
+            startdato = andelTilkjentYtelse.fraOgMed
     )
 
     return IverksettOvergangsstønadDto(

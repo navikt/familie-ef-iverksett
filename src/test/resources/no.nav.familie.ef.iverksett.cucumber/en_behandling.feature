@@ -1,13 +1,27 @@
 # language: no
 # encoding: UTF-8
 
-Egenskap: Cucumber oppsett
+Egenskap: En enkel behandling
 
-  Scenario: Enkel behandling
+  Scenario: Startdato frem i tiden er ikke gyldig
 
     Gitt følgende startdatoer
       | BehandlingId | Startdato |
-      | 1            | 09.2020   |
+      | 1            | 01.2022   |
+
+    Gitt følgende tilkjente ytelser for Overgangsstønad
+      | BehandlingId | Fra dato | Til dato | Beløp |
+      | 1            | 01.2021  | 01.2021  | 1     |
+
+    Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres kastes exception
+
+
+
+  Scenario: Startdato samme dato som første andelen
+
+    Gitt følgende startdatoer
+      | BehandlingId | Startdato |
+      | 1            | 01.2021   |
 
     Gitt følgende tilkjente ytelser for Overgangsstønad
       | BehandlingId | Fra dato | Til dato | Beløp |
@@ -19,6 +33,6 @@ Egenskap: Cucumber oppsett
       | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id | Type |
       | 1            | 01.2021  | 01.2021  |             | 1     | NY           | Nei        | 1          |                    | MND  |
 
-    Så forvent følgelse tilkjente ytelser for behandling 1 med startdato 09.2020
+    Så forvent følgelse tilkjente ytelser for behandling 1 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Periodetype |
       | 01.2021  | 01.2021  | 1     | 1          |                    | Måned       |
