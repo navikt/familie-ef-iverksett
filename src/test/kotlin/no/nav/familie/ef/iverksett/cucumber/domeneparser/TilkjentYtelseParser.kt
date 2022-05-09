@@ -8,7 +8,7 @@ import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode.SatsType
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
 import java.util.UUID
@@ -16,9 +16,7 @@ import java.util.UUID
 object TilkjentYtelseParser {
 
     fun mapStartdatoer(dataTable: DataTable): Map<UUID, LocalDate> {
-        return dataTable.asMaps().groupBy {
-            it.getValue(Domenebegrep.BEHANDLING_ID.nøkkel)
-        }.map { (_, rader) ->
+        return dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.single()
             val behandlingId = behandlingIdTilUUID[parseInt(Domenebegrep.BEHANDLING_ID, rad)]!!
             behandlingId to parseÅrMåned(TilkjentYtelseDomenebegrep.STARTDATO, rad).atDay(1)
@@ -26,11 +24,8 @@ object TilkjentYtelseParser {
     }
 
     fun mapTilkjentYtelse(dataTable: DataTable,
-                          startdatoer: Map<UUID, LocalDate>,
-                          stønadstype: StønadType): List<TilkjentYtelseHolder> {
-        return dataTable.asMaps().groupBy {
-            it.getValue(Domenebegrep.BEHANDLING_ID.nøkkel)
-        }.map { (_, rader) ->
+                          startdatoer: Map<UUID, LocalDate>): List<TilkjentYtelseHolder> {
+        return dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.first()
             val behandlingIdInt = parseInt(Domenebegrep.BEHANDLING_ID, rad)
             val behandlingId = behandlingIdTilUUID[behandlingIdInt]!!
@@ -44,38 +39,59 @@ object TilkjentYtelseParser {
                     tilkjentYtelse = TilkjentYtelseDto(
                             andelerTilkjentYtelse = andeler,
                             startdato = startdato,
-                    ),
-                    stønadType = stønadstype
+                    )
             )
         }
     }
 
     fun mapForventetUtbetalingsoppdrag(dataTable: DataTable): List<ForventetUtbetalingsoppdrag> {
-        return dataTable.asMaps().groupBy {
-            it.getValue(Domenebegrep.BEHANDLING_ID.nøkkel)
-        }.map { (_, rader) ->
+        return dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.first()
             val behandlingId = behandlingIdTilUUID[parseInt(Domenebegrep.BEHANDLING_ID, rad)]!!
             validerAlleKodeEndringerLike(rader)
             ForventetUtbetalingsoppdrag(
                     behandlingId = behandlingId,
                     kodeEndring = parseEnum(UtbetalingsoppdragDomenebegrep.KODE_ENDRING, rad),
-                    utbetalingsperiode = rader.map {
-                        ForventetUtbetalingsperiode(
-                                erEndringPåEksisterendePeriode = parseBoolean(UtbetalingsoppdragDomenebegrep.ER_ENDRING, it),
-                                klassifisering = parseString(UtbetalingsoppdragDomenebegrep.KLASSIFISERING, it),
-                                periodeId = parseInt(UtbetalingsoppdragDomenebegrep.PERIODE_ID, it).toLong(),
-                                forrigePeriodeId = parseInt(UtbetalingsoppdragDomenebegrep.FORRIGE_PERIODE_ID, it).toLong(),
-                                sats = parseInt(UtbetalingsoppdragDomenebegrep.BELØP, it),
-                                satsType = parseEnum(UtbetalingsoppdragDomenebegrep.TYPE, it),
-                                fom = parseÅrMåned(Domenebegrep.FRA_DATO, it).atDay(1),
-                                tom = parseÅrMåned(Domenebegrep.TIL_DATO, it).atEndOfMonth(),
-                                opphør = parseValgfriÅrMåned(UtbetalingsoppdragDomenebegrep.OPPHØRSDATO, it)?.atDay(1),
-                        )
-                    }
+                    utbetalingsperiode = rader.map { mapForventetUtbetalingsperiode(it) }
             )
         }
     }
+
+    private fun mapForventetUtbetalingsperiode(it: MutableMap<String, String>) =
+            ForventetUtbetalingsperiode(
+                    erEndringPåEksisterendePeriode = parseBoolean(UtbetalingsoppdragDomenebegrep.ER_ENDRING, it),
+                    periodeId = parseInt(UtbetalingsoppdragDomenebegrep.PERIODE_ID, it).toLong(),
+                    forrigePeriodeId = parseValgfriInt(UtbetalingsoppdragDomenebegrep.FORRIGE_PERIODE_ID, it)?.toLong(),
+                    sats = parseInt(UtbetalingsoppdragDomenebegrep.BELØP, it),
+                    satsType = parseValgfriEnum<SatsType>(UtbetalingsoppdragDomenebegrep.TYPE, it) ?: SatsType.MND,
+                    fom = parseÅrMåned(Domenebegrep.FRA_DATO, it).atDay(1),
+                    tom = parseÅrMåned(Domenebegrep.TIL_DATO, it).atEndOfMonth(),
+                    opphør = parseValgfriÅrMåned(UtbetalingsoppdragDomenebegrep.OPPHØRSDATO, it)?.atDay(1),
+            )
+
+    fun mapForventetTilkjentYtelse(dataTable: DataTable, behandlingIdInt: Int, startdato: LocalDate?): ForventetTilkjentYtelse {
+        val andeler = dataTable.asMaps().map { mapForventetAndel(it) }
+        return ForventetTilkjentYtelse(
+                behandlingId = behandlingIdTilUUID[behandlingIdInt]!!,
+                andeler = andeler,
+                startdato = startdato ?: andeler.minOfOrNull { it.fom }
+                            ?: error("Mangler startdato når det ikke finnes noen andeler for behandling=$behandlingIdInt")
+        )
+    }
+
+    private fun mapForventetAndel(rad: MutableMap<String, String>) = ForventetAndelTilkjentYtelse(
+            fom = parseÅrMåned(Domenebegrep.FRA_DATO, rad).atDay(1),
+            tom = parseÅrMåned(Domenebegrep.TIL_DATO, rad).atEndOfMonth(),
+            beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
+            periodeId = parseInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad).toLong(),
+            forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong(),
+            periodeType = parseValgfriEnum<Periodetype>(TilkjentYtelseDomenebegrep.PERIODETYPE, rad) ?: Periodetype.MÅNED
+    )
+
+    private fun DataTable.groupByBehandlingId() =
+            this.asMaps().groupBy {
+                it.getValue(Domenebegrep.BEHANDLING_ID.nøkkel)
+            }
 
     private fun validerAlleKodeEndringerLike(rader: List<MutableMap<String, String>>) {
         rader.map { parseEnum<KodeEndring>(UtbetalingsoppdragDomenebegrep.KODE_ENDRING, it) }.zipWithNext().forEach {
@@ -110,21 +126,28 @@ object TilkjentYtelseParser {
 
     data class ForventetUtbetalingsperiode(
             val erEndringPåEksisterendePeriode: Boolean,
-            val klassifisering: String,
             val periodeId: Long,
             val forrigePeriodeId: Long?,
             val sats: Int,
-            val satsType: Utbetalingsperiode.SatsType,
+            val satsType: SatsType,
             val fom: LocalDate,
             val tom: LocalDate,
             val opphør: LocalDate?,
     )
 
+    data class ForventetTilkjentYtelse(
+            val behandlingId: UUID,
+            val andeler: List<ForventetAndelTilkjentYtelse>,
+            val startdato: LocalDate
+    )
+
     data class ForventetAndelTilkjentYtelse(
-            val periodeId: Long,
-            val forrigePeriodeId: Long?,
             val fom: LocalDate,
             val tom: LocalDate,
+            val periodeId: Long,
+            val forrigePeriodeId: Long?,
+            val beløp: Int,
+            val periodeType: Periodetype,
     )
 
 }
@@ -138,6 +161,9 @@ enum class TilkjentYtelseDomenebegrep(override val nøkkel: String) : Domenenøk
     SAMORDNINGSFRADRAG("Samordningsfradrag"),
     BELØP("Beløp"),
     PERIODETYPE("Periodetype"),
+
+    PERIODE_ID("Periode id"),
+    FORRIGE_PERIODE_ID("Forrige periode id"),
     ;
 
 }
@@ -145,7 +171,6 @@ enum class TilkjentYtelseDomenebegrep(override val nøkkel: String) : Domenenøk
 enum class UtbetalingsoppdragDomenebegrep(override val nøkkel: String) : Domenenøkkel {
     KODE_ENDRING("Kode endring"),
     ER_ENDRING("Er endring"),
-    KLASSIFISERING("Klassifisering"),
     PERIODE_ID("Periode id"),
     FORRIGE_PERIODE_ID("Forrige periode id"),
     BELØP("Beløp"),

@@ -1,13 +1,11 @@
 package no.nav.familie.ef.iverksett.cucumber.steps
 
 import io.cucumber.datatable.DataTable
-import io.cucumber.java.ParameterType
 import io.cucumber.java.no.Gitt
 import io.cucumber.java.no.Når
 import io.cucumber.java.no.Så
+import no.nav.familie.ef.iverksett.cucumber.domeneparser.IdTIlUUIDHolder
 import no.nav.familie.ef.iverksett.cucumber.domeneparser.TilkjentYtelseParser
-import no.nav.familie.ef.iverksett.cucumber.domeneparser.TilkjentYtelseDomenebegrep
-import no.nav.familie.ef.iverksett.cucumber.domeneparser.parseInt
 import no.nav.familie.ef.iverksett.cucumber.domeneparser.parseÅrMåned
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
@@ -17,6 +15,7 @@ import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
+import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import org.assertj.core.api.Assertions.assertThat
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,13 +27,13 @@ data class TilkjentYtelseHolder(
         val behandlingId: UUID,
         val behandlingIdInt: Int,
         val tilkjentYtelse: TilkjentYtelseDto,
-        val stønadType: StønadType
 )
 
 class StepDefinitions {
 
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
+    private lateinit var stønadType: StønadType
     private var tilkjentYtelse = listOf<TilkjentYtelseHolder>()
     private var startdato = mapOf<UUID, LocalDate>()
 
@@ -46,15 +45,15 @@ class StepDefinitions {
     }
 
     @Gitt("følgende tilkjente ytelser for {}")
-    fun følgende_vedtak(stønadType: String, dataTable: DataTable) {
-        val stønadstype = StønadType.valueOf(stønadType.uppercase())
-        tilkjentYtelse = TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato, stønadstype)
+    fun følgende_vedtak(stønadTypeArg: String, dataTable: DataTable) {
+        stønadType = StønadType.valueOf(stønadTypeArg.uppercase())
+        tilkjentYtelse = TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato)
     }
 
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres")
     fun `andelhistorikk kjøres`() {
         beregnedeTilkjentYtelse = tilkjentYtelse.fold(emptyList<Pair<UUID, TilkjentYtelse>>()) { acc, holder ->
-            val nyTilkjentYtelseMedMetaData = toMedMetadata(holder)
+            val nyTilkjentYtelseMedMetaData = toMedMetadata(holder, stønadType)
             val nyTilkjentYtelse = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     nyTilkjentYtelseMedMetaData,
                     acc.lastOrNull()?.second)
@@ -75,14 +74,35 @@ class StepDefinitions {
     }
 
     @Så("forvent følgelse tilkjente ytelser for behandling {int}")
-    fun `forvent følgelse tilkjente ytelser`(a: Int, dataTable: DataTable) {
-        `forvent følgelse tilkjente ytelser med startdato`(a, "asd", dataTable)
+    fun `forvent følgelse tilkjente ytelser`(behandlingId: Int, dataTable: DataTable) {
+        `forvent følgelse tilkjente ytelser med startdato`(behandlingId, null, dataTable)
     }
 
     @Så("forvent følgelse tilkjente ytelser for behandling {int} med startdato {}")
-    fun `forvent følgelse tilkjente ytelser med startdato`(a: Int, b: String, dataTable: DataTable) {
-        println(a)
-        println(b)
+    fun `forvent følgelse tilkjente ytelser med startdato`(behandlingIdInt: Int, startdato: String?, dataTable: DataTable) {
+        val parsedStartdato = startdato?.let { parseÅrMåned(it).atDay(1) }
+        val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
+        val forventetTilkjentYtelse = TilkjentYtelseParser.mapForventetTilkjentYtelse(dataTable, behandlingIdInt, parsedStartdato)
+        val beregnetTilkjentYtelse =
+                beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
+
+        assertTilkjentYtelse(forventetTilkjentYtelse, beregnetTilkjentYtelse)
+    }
+
+    private fun assertTilkjentYtelse(forventetTilkjentYtelse: TilkjentYtelseParser.ForventetTilkjentYtelse,
+                                     beregnetTilkjentYtelse: TilkjentYtelse) {
+        beregnetTilkjentYtelse.andelerTilkjentYtelse.forEachIndexed { index, andel ->
+            val forventetAndel = forventetTilkjentYtelse.andeler[index]
+            assertThat(andel.fraOgMed).isEqualTo(forventetAndel.fom)
+            assertThat(andel.tilOgMed).isEqualTo(forventetAndel.tom)
+            assertThat(andel.beløp).isEqualTo(forventetAndel.beløp)
+            assertThat(andel.periodeId).isEqualTo(forventetAndel.periodeId)
+            assertThat(andel.forrigePeriodeId).isEqualTo(forventetAndel.forrigePeriodeId)
+            assertThat(andel.periodetype).isEqualTo(forventetAndel.periodeType)
+        }
+        assertThat(beregnetTilkjentYtelse.startdato).isEqualTo(forventetTilkjentYtelse.startdato)
+        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(forventetTilkjentYtelse.andeler.size)
+
     }
 
     private fun assertUtbetalingsoppdrag(forventetUtbetalingsoppdrag: TilkjentYtelseParser.ForventetUtbetalingsoppdrag,
@@ -99,7 +119,7 @@ class StepDefinitions {
     private fun assertUtbetalingsperiode(utbetalingsperiode: Utbetalingsperiode,
                                          forventetUtbetalingsperiode: TilkjentYtelseParser.ForventetUtbetalingsperiode) {
         assertThat(utbetalingsperiode.erEndringPåEksisterendePeriode).isEqualTo(forventetUtbetalingsperiode.erEndringPåEksisterendePeriode)
-        assertThat(utbetalingsperiode.klassifisering).isEqualTo(forventetUtbetalingsperiode.klassifisering)
+        assertThat(utbetalingsperiode.klassifisering).isEqualTo(Ytelsestype.valueOf(stønadType.name).kode)
         assertThat(utbetalingsperiode.periodeId).isEqualTo(forventetUtbetalingsperiode.periodeId)
         assertThat(utbetalingsperiode.forrigePeriodeId).isEqualTo(forventetUtbetalingsperiode.forrigePeriodeId)
         assertThat(utbetalingsperiode.sats.toInt()).isEqualTo(forventetUtbetalingsperiode.sats)
@@ -116,12 +136,12 @@ class StepDefinitions {
 }
 
 
-private fun toMedMetadata(holder: TilkjentYtelseHolder): TilkjentYtelseMedMetaData {
+private fun toMedMetadata(holder: TilkjentYtelseHolder, stønadType: StønadType): TilkjentYtelseMedMetaData {
     return holder.tilkjentYtelse.toDomain()
             .toMedMetadata(
                     saksbehandlerId = "",
                     eksternBehandlingId = holder.behandlingIdInt.toLong(),
-                    stønadType = holder.stønadType,
+                    stønadType = stønadType,
                     eksternFagsakId = 1,
                     personIdent = "1",
                     behandlingId = holder.behandlingId,

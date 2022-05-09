@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.cucumber.domeneparser
 
-import io.cucumber.datatable.DataTable
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -165,15 +164,11 @@ fun parsePeriodetype(rad: Map<String, String>): Periodetype? {
     return Periodetype.valueOf(verdi)
 }
 
+inline fun <reified T : Enum<T>> parseValgfriEnum(domenebegrep: Domenenøkkel, rad: Map<String, String>): T? {
+    val verdi = valgfriVerdi(domenebegrep, rad) ?: return null
+    return enumValueOf<T>(verdi.uppercase())
+}
+
 inline fun <reified T : Enum<T>> parseEnum(domenebegrep: Domenenøkkel, rad: Map<String, String>): T {
     return enumValueOf(verdi(domenebegrep, rad))
-}
-
-fun <T> mapDataTable(dataTable: DataTable, radMapper: RadMapper<T>): List<T> {
-    return dataTable.asMaps().map { radMapper.mapRad(it) }
-}
-
-interface RadMapper<T> {
-
-    fun mapRad(rad: Map<String, String>): T
 }
