@@ -40,7 +40,7 @@ internal class TilbakekrevingUtilTest {
     }
 
     @Test
-    fun `oppdaterVarsel skal bare ta med perioder som har feilutbetalinger i varselet`() {
+    fun `oppdaterVarsel skal bare ta med perioder som har feilutbetalinger i varselet - og slå de sammen`() {
         val simuleringsoppsummering =
                 Simuleringsoppsummering(perioder = listOf(Simuleringsperiode(fom = LocalDate.of(2021, 12, 1),
                                                                              tom = LocalDate.of(2021, 12, 31),
@@ -91,7 +91,9 @@ internal class TilbakekrevingUtilTest {
 
         val varsel = tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering)
 
-        assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.size).isEqualTo(2)
+        assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.size).isEqualTo(1)
+        assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.first()?.fom).isEqualTo(LocalDate.of(2022, 1, 1))
+        assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.first()?.tom).isEqualTo(LocalDate.of(2022, 2, 28))
         assertThat(varsel.tilbakekrevingMedVarsel?.sumFeilutbetaling).isEqualTo(BigDecimal(5100.0))
     }
 
