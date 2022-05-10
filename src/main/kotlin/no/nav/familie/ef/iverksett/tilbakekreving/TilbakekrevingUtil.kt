@@ -2,9 +2,9 @@ package no.nav.familie.ef.iverksett.tilbakekreving
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
+import no.nav.familie.ef.iverksett.økonomi.simulering.hentSammenhengendePerioderMedFeilutbetaling
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsoppsummering
-import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
 
@@ -48,10 +48,7 @@ fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringso
 
     return this.copy(tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel
             ?.copy(sumFeilutbetaling = simuleringsoppsummering.feilutbetaling,
-                    // Kjøres ikke konsolidering her. Det (kan hende at det) gjøres i ef-sak
-                   perioder = simuleringsoppsummering.perioder
-                           .filter { it.feilutbetaling.compareTo(BigDecimal.ZERO) != 0 }
-                           .map { Periode(it.fom, it.tom) }
+                   perioder = simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling()
             ))
 
 }
