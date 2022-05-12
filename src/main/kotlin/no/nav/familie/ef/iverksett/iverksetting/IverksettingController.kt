@@ -5,7 +5,6 @@ import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.tilbakekreving.validerTilbakekreving
-import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
@@ -71,14 +70,14 @@ class IverksettingController(
     private fun validerUtenBrev(iverksett: Iverksett) {
         if (!iverksett.skalIkkeSendeBrev()) {
             throw ApiFeil("Kan ikke ha iverksetting uten brev når det ikke er en migrering, " +
-                          "eller årsak er korrigering uten brev ",
+                          "g-omregning eller korrigering uten brev ",
                           HttpStatus.BAD_REQUEST)
         }
     }
 
     private fun validerSkalHaBrev(iverksett: Iverksett) {
         if (iverksett.skalIkkeSendeBrev()) {
-            throw ApiFeil("Kan ikke ha iverksetting med brev når det er migrering eller årsak er korrigering uten brev",
+            throw ApiFeil("Kan ikke ha iverksetting med brev når det er migrering, g-omregning eller korrigering uten brev",
                           HttpStatus.BAD_REQUEST)
         }
     }
