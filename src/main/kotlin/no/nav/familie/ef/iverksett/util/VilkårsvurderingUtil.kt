@@ -23,13 +23,15 @@ object VilkårsvurderingUtil {
         }
     }
 
-    fun hentAktivitetsvilkårBarnetilsyn(vilkårsvurderinger: List<Vilkårsvurdering>): AktivitetsvilkårBarnetilsyn {
-        val test = vilkårsvurderinger.find { it.vilkårType == VilkårType.AKTIVITET_ARBEID }
+    fun hentAktivitetsvilkårBarnetilsyn(vilkårsvurderinger: List<Vilkårsvurdering>): AktivitetsvilkårBarnetilsyn? {
+        val vilkårsvurdering = vilkårsvurderinger.find { it.vilkårType == VilkårType.AKTIVITET_ARBEID }
                                ?: error("Finner ikke vurderingen for arbeid aktivitet barnetilsyn")
-        val svar = test.delvilkårsvurderinger.first().vurderinger.find { it.regelId == RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM }?.svar
-                   ?: error("Finner ikke delvilkårvurderingen for arbeid aktivitet barnetilsyn")
 
-        return AktivitetsvilkårBarnetilsyn.valueOf(svar.name)
+        val delvikår = vilkårsvurdering.delvilkårsvurderinger.first().vurderinger
+                               .find { it.regelId == RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM }
+                       ?: error("Finner ikke delvilkårvurderingen for arbeid aktivitet barnetilsyn")
+
+        return delvikår.svar?.let { AktivitetsvilkårBarnetilsyn.valueOf(it.name) }
     }
 
     private fun harSagtOppEllerRedusertStilling(svarId: SvarId?) = when (svarId) {
