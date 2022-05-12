@@ -89,7 +89,7 @@ internal class VedtakstatistikkMapperTest {
                         vedtak = vedtaksdetaljerBarnetilsyn()
                 ), null)
 
-        assertThat(vedtakBarnetilsynDVH.aktivitetskrav.name).isEqualTo(AktivitetsvilkårBarnetilsyn.ER_I_ARBEID.name)
+        assertThat(vedtakBarnetilsynDVH.aktivitetskrav?.name).isEqualTo(AktivitetsvilkårBarnetilsyn.ER_I_ARBEID.name)
         assertThat(vedtakBarnetilsynDVH.fagsakId).isEqualTo(eksternFagsakId)
         assertThat(vedtakBarnetilsynDVH.behandlingId).isEqualTo(eksternBehandlingId)
         assertThat(vedtakBarnetilsynDVH.funksjonellId).isEqualTo(eksternBehandlingId)
