@@ -28,14 +28,25 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
+    private sealed class Resultat
+    private object OK: Resultat()
+    private data class Dødsbo(val melding: String): Resultat()
+
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
 
-        val journalpostResultat = hentJournalpostResultat(behandlingId)
+        val resultat: Resultat = distribuerVedtaksbrev(behandlingId)
 
+        if (resultat is Dødsbo) {
+            håndterDødsbo(task, resultat)
+        }
+    }
+
+    private fun distribuerVedtaksbrev(behandlingId: UUID): Resultat {
+        val journalpostResultat = hentJournalpostResultat(behandlingId)
         val distribuerteJournalposter = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)?.keys ?: emptySet()
 
-        var dødsbo: String? = null
+        var resultat: Dødsbo? = null
         journalpostResultat.filter { (_, journalpostResultat) ->
             journalpostResultat.journalpostId !in distribuerteJournalposter
         }.forEach { (personIdent, journalpostResultat) ->
@@ -44,16 +55,13 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
             } catch (e: RessursException) {
                 val cause = e.cause
                 if (cause is HttpClientErrorException.Gone) {
-                    dødsbo = "Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}"
+                    resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
                 } else {
                     throw e
                 }
             }
         }
-
-        if (dødsbo != null) {
-            håndterDødsbo(task, dødsbo ?: error("Mangler melding om dødsbo"))
-        }
+        return resultat ?: OK
     }
 
     private fun distribuerBrevOgOppdaterVedtaksbrevResultat(journalpostResultat: JournalpostResultat,
@@ -65,14 +73,14 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
                                                                  DistribuerVedtaksbrevResultat(bestillingId))
     }
 
-    private fun håndterDødsbo(task: Task, dødsbomelding: String) {
+    private fun håndterDødsbo(task: Task, dødsbo: Dødsbo) {
         val antallRekjørSenerePgaDødsbo =
                 task.logg.count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 7) {
             logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
-            throw RekjørSenereException(dødsbomelding, LocalDateTime.now().plusDays(7))
+            throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))
         } else {
-            throw TaskExceptionUtenStackTrace("Er dødsbo og har feilet flere ganger: $dødsbomelding")
+            throw TaskExceptionUtenStackTrace("Er dødsbo og har feilet flere ganger: ${dødsbo.melding}")
         }
     }
 
