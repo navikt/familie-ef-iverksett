@@ -1,13 +1,17 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
+import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.iverksetting.domene.Simulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
+import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import java.time.LocalDate
 
 @Service
@@ -39,6 +43,10 @@ class SimuleringService(
 
             return oppdragKlient.hentSimuleringsresultat(utbetalingsoppdrag)
         } catch (feil: Throwable) {
+            val cause = feil.cause
+            if (feil is RessursException && cause is HttpClientErrorException.BadRequest) {
+                throw ApiFeil(feil.ressurs.melding, HttpStatus.BAD_REQUEST)
+            }
             throw Exception("Henting av simuleringsresultat feilet", feil)
         }
     }
