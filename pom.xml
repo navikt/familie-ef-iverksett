@@ -21,10 +21,10 @@
         <felles.version>1.20220503150007_21cbfef</felles.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <mockk.version>1.12.4</mockk.version>
-        <cucumber.version>7.2.4</cucumber.version>
+        <cucumber.version>7.3.4</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.2.2</dotenv.version>
-        <prosessering.version>1.20220321101749_55e4576</prosessering.version>
+        <prosessering.version>1.20220331123748_03bdb3b</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <familie.kontrakter.version>2.0_20220513154245_fec66c5</familie.kontrakter.version>
