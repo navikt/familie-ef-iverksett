@@ -36,20 +36,12 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
     @Autowired lateinit var journalpostClientMock: JournalpostClientMock
     @Autowired private lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
 
-    private val featureToggleService = mockk<FeatureToggleService>()
-
-
     var distribuerVedtaksbrevTask: DistribuerVedtaksbrevTask? = null
 
     @PostConstruct
     fun init() {
         distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient = journalpostClient,
-                                                              tilstandRepository = tilstandRepository,
-                                                              featureToggleService = featureToggleService)
-
-        every { featureToggleService.isEnabled(any()) } returns true
-
-
+                                                              tilstandRepository = tilstandRepository)
     }
 
     @Test
@@ -112,7 +104,6 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         assertThat(retryResultat?.get(mottakerJournalpostA.second)).isNotNull
         assertThat(retryResultat?.get(gyldigMottakerJournalpostB.second)).isNotNull
         assertThat(retryResultat?.get(mottakerJournalpostC.second)).isNotNull
-
     }
 
     private fun kjørTask(behandlingId: UUID) {

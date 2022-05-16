@@ -44,7 +44,8 @@ class IverksettMotOppdragTask(private val iverksettingRepository: IverksettingRe
                 ) ?: error("Mangler tilkjent ytelse på vedtaket")
 
         val utbetaling = lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelseMedMetaData,
-                                                                forrigeTilkjentYtelse)
+                                                                forrigeTilkjentYtelse,
+                                                                iverksett.erGOmregning())
 
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let {
