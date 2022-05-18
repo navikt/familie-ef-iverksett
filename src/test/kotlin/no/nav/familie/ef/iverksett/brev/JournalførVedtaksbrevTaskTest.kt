@@ -160,4 +160,30 @@ internal class JournalførVedtaksbrevTaskTest {
         assertThat(taskSlot.captured.payload).isEqualTo(behandlingId.toString())
         assertThat(taskSlot.captured.type).isEqualTo(DistribuerVedtaksbrevTask.TYPE)
     }
+
+    @Test
+    internal fun `skal finne journalpostId for eksternReferanseId vid konflikt ved arkivering`() {
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } throws
+                RessursException(Ressurs.failure(""),
+                                 HttpClientErrorException.create(HttpStatus.CONFLICT, "Feil", HttpHeaders(), byteArrayOf(), null))
+        every { journalpostClient.finnJournalposter(any()) } answers {
+            listOf(Journalpost(journalpostId, Journalposttype.U, Journalstatus.JOURNALFOERT,
+                               eksternReferanseId = arkiverDokumentRequestSlot[0].eksternReferanseId))
+        }
+        every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
+
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
+                journalpostId))
+        justRun { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) }
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
+        verify(exactly = 1) { journalpostClient.finnJournalposter(any()) }
+        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
+        assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
+    }
 }
