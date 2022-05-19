@@ -6,17 +6,23 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
 import no.nav.familie.kontrakter.felles.BrukerIdType
+import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.dokarkiv.AvsenderMottaker
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
+import no.nav.familie.kontrakter.felles.journalpost.Bruker
+import no.nav.familie.kontrakter.felles.journalpost.JournalposterForBrukerRequest
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import java.util.UUID
 
 @Service
@@ -34,6 +40,8 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
                                 private val featureToggleService: FeatureToggleService
 ) : AsyncTaskStep {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     override fun doTask(task: Task) {
 
         val behandlingId = UUID.fromString(task.payload)
@@ -49,13 +57,37 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
 
     }
 
-    private fun journalførOgLagreResultat(behandlingId: UUID, arkiverDokumentRequest: ArkiverDokumentRequest, mottakerIdent: String, beslutterId: String) {
-        val journalpostId = journalpostClient.arkiverDokument(arkiverDokumentRequest, beslutterId).journalpostId
+    private fun journalførOgLagreResultat(behandlingId: UUID,
+                                          arkiverDokumentRequest: ArkiverDokumentRequest,
+                                          mottakerIdent: String,
+                                          beslutterId: String) {
+
+        val journalpostId = try {
+            journalpostClient.arkiverDokument(arkiverDokumentRequest, beslutterId).journalpostId
+        } catch (e: RessursException) {
+            if (e.cause is HttpClientErrorException.Conflict) {
+                val eksternReferanseId = arkiverDokumentRequest.eksternReferanseId
+                logger.warn("Konflikt ved arkivering av dokument, " +
+                            "prøver å hente journalpostId med eksternReferanseId=$eksternReferanseId")
+                finnJournalpostIdForEksternReferanseId(mottakerIdent, eksternReferanseId)
+            } else {
+                throw e
+            }
+        }
         tilstandRepository.oppdaterJournalpostResultat(
                 behandlingId = behandlingId,
                 mottakerIdent = mottakerIdent,
                 JournalpostResultat(journalpostId = journalpostId)
         )
+    }
+
+    private fun finnJournalpostIdForEksternReferanseId(mottakerIdent: String,
+                                                       eksternReferanseId: String?): String {
+        val request = JournalposterForBrukerRequest(Bruker(mottakerIdent, BrukerIdType.FNR), 50, listOf(Tema.ENF))
+        return journalpostClient.finnJournalposter(request)
+                       .find { it.eksternReferanseId == eksternReferanseId }
+                       ?.journalpostId
+               ?: error("Finner ikke journalpost med eksternReferanseId=$eksternReferanseId")
     }
 
     private fun journalførVedtaksbrev(behandlingId: UUID,
@@ -79,7 +111,7 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
         val journalførteIdenter: List<String> =
                 tilstandRepository.hentJournalpostResultat(behandlingId)?.keys?.toList() ?: emptyList()
 
-        if(iverksett.vedtak.brevmottakere?.mottakere?.isEmpty() == true){
+        if (iverksett.vedtak.brevmottakere?.mottakere?.isEmpty() == true) {
             journalførVedtaksbrevTilStønadmottaker(arkiverDokumentRequest, iverksett, behandlingId)
         } else {
             journalførVedtaksbrevTilBrevmottakere(iverksett, journalførteIdenter, arkiverDokumentRequest, behandlingId)
@@ -146,9 +178,9 @@ class JournalførVedtaksbrevTask(private val iverksettingRepository: Iverksettin
     }
 
     private fun Brevmottaker.IdentType.tilIdType(): BrukerIdType =
-        when (this) {
-            Brevmottaker.IdentType.ORGANISASJONSNUMMER -> BrukerIdType.ORGNR
-            Brevmottaker.IdentType.PERSONIDENT -> BrukerIdType.FNR
-        }
+            when (this) {
+                Brevmottaker.IdentType.ORGANISASJONSNUMMER -> BrukerIdType.ORGNR
+                Brevmottaker.IdentType.PERSONIDENT -> BrukerIdType.FNR
+            }
 
 }

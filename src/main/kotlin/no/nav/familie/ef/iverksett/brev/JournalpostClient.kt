@@ -9,6 +9,8 @@ import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokdist.DistribuerJournalpostRequest
 import no.nav.familie.kontrakter.felles.getDataOrThrow
+import no.nav.familie.kontrakter.felles.journalpost.Journalpost
+import no.nav.familie.kontrakter.felles.journalpost.JournalposterForBrukerRequest
 import no.nav.familie.log.NavHttpHeaders
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -31,8 +33,14 @@ class JournalpostClient(
 
     override val pingUri: URI = URI("/ping")
     private val dokarkivUri: URI = UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/arkiv").build().toUri()
+    private val journalPostUri: URI = UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/journalpost").build().toUri()
     private val distribuerDokumentUri: URI =
             UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/dist/v1").build().toUri()
+
+    fun finnJournalposter(journalposterForBrukerRequest: JournalposterForBrukerRequest): List<Journalpost> {
+        return postForEntity<Ressurs<List<Journalpost>>>(journalPostUri, journalposterForBrukerRequest).data
+               ?: error("Kunne ikke journalposter for for ${journalposterForBrukerRequest.brukerId.id}")
+    }
 
     fun arkiverDokument(arkiverDokumentRequest: ArkiverDokumentRequest, saksbehandler: String?): ArkiverDokumentResponse {
         return postForEntity<Ressurs<ArkiverDokumentResponse>>(

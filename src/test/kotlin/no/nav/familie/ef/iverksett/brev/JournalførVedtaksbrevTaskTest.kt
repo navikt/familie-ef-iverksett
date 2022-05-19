@@ -3,66 +3,87 @@ package no.nav.familie.ef.iverksett.brev
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
+import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
+import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.ef.StønadType
+import no.nav.familie.kontrakter.felles.journalpost.Journalpost
+import no.nav.familie.kontrakter.felles.journalpost.Journalposttype
+import no.nav.familie.kontrakter.felles.journalpost.Journalstatus
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.web.client.HttpClientErrorException
 import java.util.Properties
 import java.util.UUID
 
 internal class JournalførVedtaksbrevTaskTest {
 
-    val iverksettingRepository = mockk<IverksettingRepository>()
+    private val iverksettingRepository = mockk<IverksettingRepository>()
     private val journalpostClient = mockk<JournalpostClient>()
-    val taskRepository = mockk<TaskRepository>()
-    val tilstandRepository = mockk<TilstandRepository>()
-    val featureToggleService = mockk<FeatureToggleService>()
+    private val taskRepository = mockk<TaskRepository>()
+    private val tilstandRepository = mockk<TilstandRepository>()
     private val journalførVedtaksbrevTask =
-            JournalførVedtaksbrevTask(iverksettingRepository, journalpostClient, taskRepository, tilstandRepository, featureToggleService)
-    val behandlingId: UUID = UUID.randomUUID()
+            JournalførVedtaksbrevTask(iverksettingRepository,
+                                      journalpostClient,
+                                      taskRepository,
+                                      tilstandRepository,
+                                      mockFeatureToggleService())
+    private val behandlingId: UUID = UUID.randomUUID()
+    private val behandlingIdString = behandlingId.toString()
+    private val journalpostId = "123456789"
+    private val arkiverDokumentRequestSlot = mutableListOf<ArkiverDokumentRequest>()
+    private val journalpostResultatSlot = slot<JournalpostResultat>()
+    private val taskSlot = slot<Task>()
 
     @BeforeEach
-    fun setUp(){
-        every { featureToggleService.isEnabled(any()) } returns true
+    fun setUp() {
+        arkiverDokumentRequestSlot.clear()
+        journalpostResultatSlot.clear()
+        taskSlot.clear()
+
+        every { taskRepository.save(capture(taskSlot)) } answers { firstArg() }
+        every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
     }
 
     @Test
     internal fun `skal journalføre brev og opprette ny task`() {
-        val behandlingIdString = behandlingId.toString()
-        val journalpostId = "123456789"
-        val arkiverDokumentRequestSlot = slot<ArkiverDokumentRequest>()
-        val journalpostResultatSlot = slot<JournalpostResultat>()
-
-
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
                 journalpostId,
                 true)
         every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
-        every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(journalpostId))
-        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) } returns Unit
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
+                journalpostId))
+        every {
+            tilstandRepository.oppdaterJournalpostResultat(behandlingId,
+                                                           any(),
+                                                           capture(journalpostResultatSlot))
+        } returns Unit
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
         verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
-        assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
     }
 
@@ -85,17 +106,13 @@ internal class JournalførVedtaksbrevTaskTest {
             it.copy(vedtak = it.vedtak.copy(brevmottakere = brevmottakere)).toDomain()
         }
 
-        val capturedArkiverdokumentRequester = mutableListOf<ArkiverDokumentRequest>()
-
         every { iverksettingRepository.hent(behandlingId) } returns iverksettMedBrevmottakere
-        every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
         every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
                 "journalpostId"), "444" to JournalpostResultat("journalpostId"))
         every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) } just Runs
 
         every {
-            journalpostClient.arkiverDokument(capture(capturedArkiverdokumentRequester),
-                                              any())
+            journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any())
         } returns ArkiverDokumentResponse(journalpostId = UUID.randomUUID().toString(), ferdigstilt = true)
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
@@ -103,24 +120,18 @@ internal class JournalførVedtaksbrevTaskTest {
 
 
         verify(exactly = 2) { journalpostClient.arkiverDokument(any(), any()) }
-        assertThat(capturedArkiverdokumentRequester.size).isEqualTo(2)
-        assertThat(capturedArkiverdokumentRequester.map { it.avsenderMottaker!!.id }).containsAll(brevmottakere.map { it.ident })
+        assertThat(arkiverDokumentRequestSlot).hasSize(2)
+        assertThat(arkiverDokumentRequestSlot.map { it.avsenderMottaker!!.id }).containsAll(brevmottakere.map { it.ident })
 
     }
 
     @Test
     internal fun `Journalføring av barnetilsynbrev og opprette ny task`() {
-        val behandlingIdString = behandlingId.toString()
-        val journalpostId = "123456789"
-        val arkiverDokumentRequestSlot = slot<ArkiverDokumentRequest>()
-        val journalpostResultatSlot = slot<JournalpostResultat>()
-
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
                 journalpostId,
                 true)
         every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId,
                                                                                         stønadType = StønadType.BARNETILSYN).toDomain())
-        every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
         every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
                 "journalpostId"))
         every {
@@ -133,21 +144,46 @@ internal class JournalførVedtaksbrevTaskTest {
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
         verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
-        assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.size).isEqualTo(1)
-        assertThat(arkiverDokumentRequestSlot.captured.hoveddokumentvarianter.first().dokumenttype).isEqualTo(Dokumenttype.VEDTAKSBREV_BARNETILSYN)
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter.first().dokumenttype).isEqualTo(Dokumenttype.VEDTAKSBREV_BARNETILSYN)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
     }
 
 
     @Test
     internal fun `skal opprette ny task når den er ferdig`() {
-        val taskSlot = slot<Task>()
         val task = Task(JournalførVedtaksbrevTask.TYPE, behandlingId.toString(), Properties())
-        every { taskRepository.save(capture(taskSlot)) } returns task
 
         journalførVedtaksbrevTask.onCompletion(task)
 
         assertThat(taskSlot.captured.payload).isEqualTo(behandlingId.toString())
         assertThat(taskSlot.captured.type).isEqualTo(DistribuerVedtaksbrevTask.TYPE)
+    }
+
+    @Test
+    internal fun `skal finne journalpostId for eksternReferanseId vid konflikt ved arkivering`() {
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } throws
+                RessursException(Ressurs.failure(""),
+                                 HttpClientErrorException.create(HttpStatus.CONFLICT, "Feil", HttpHeaders(), byteArrayOf(), null))
+        every { journalpostClient.finnJournalposter(any()) } answers {
+            listOf(Journalpost(journalpostId, Journalposttype.U, Journalstatus.JOURNALFOERT,
+                               eksternReferanseId = arkiverDokumentRequestSlot[0].eksternReferanseId))
+        }
+        every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
+
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
+                journalpostId))
+        justRun { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) }
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
+        verify(exactly = 1) { journalpostClient.finnJournalposter(any()) }
+        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
+        assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
     }
 }
