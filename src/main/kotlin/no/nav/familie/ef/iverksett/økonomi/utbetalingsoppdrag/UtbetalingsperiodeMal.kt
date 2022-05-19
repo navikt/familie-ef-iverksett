@@ -34,7 +34,7 @@ fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                            vedtakdatoFom = andel.fraOgMed,
                            vedtakdatoTom = andel.tilOgMed,
                            sats = BigDecimal(andel.beløp),
-                           satsType = mapSatstype(andel.periodetype),
+                           satsType = mapSatstype(type),
                            utbetalesTil = personIdent,
                            behandlingId = eksternBehandlingId,
                            utbetalingsgrad = andel.utbetalingsgrad())
@@ -51,7 +51,9 @@ fun lagUtbetalingsperiodeForOpphør(sisteAndelIKjede: AndelTilkjentYtelse,
                               erEndringPåEksisterendePeriode = true)
 }
 
-fun mapSatstype(periodetype: Periodetype) = when (periodetype) {
-    Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND
-    else -> error("Støtter ikke periodetype=$periodetype")
+fun mapSatstype(stønadstype: StønadType) = when (stønadstype) {
+    StønadType.OVERGANGSSTØNAD,
+    StønadType.BARNETILSYN -> Utbetalingsperiode.SatsType.MND
+    StønadType.SKOLEPENGER -> Utbetalingsperiode.SatsType.ENG
+    else -> error("Støtter ikke periodetype=$stønadstype")
 }
