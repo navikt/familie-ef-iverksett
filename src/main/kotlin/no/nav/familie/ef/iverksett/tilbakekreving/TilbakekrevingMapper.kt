@@ -86,7 +86,12 @@ private fun BehandlingÅrsak.visningsTekst(): String {
         BehandlingÅrsak.SØKNAD -> "Søknad"
         BehandlingÅrsak.KLAGE -> "Klage"
         BehandlingÅrsak.NYE_OPPLYSNINGER -> "Nye opplysninger"
-        else -> error("Feil årsak for tilbakekreving.")
+        BehandlingÅrsak.KORRIGERING_UTEN_BREV -> "Korrigering uten brev"
+        BehandlingÅrsak.PAPIRSØKNAD -> "Papirsøknad"
+        BehandlingÅrsak.G_OMREGNING -> "G-omregning"
+
+        BehandlingÅrsak.MIGRERING,
+        BehandlingÅrsak.SANKSJON_1_MND -> error("Skal ikke gi tilbakekreving for årsak=$this")
     }
 }
 
