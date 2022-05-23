@@ -25,7 +25,8 @@ object UtbetalingsoppdragGenerator {
      * @return Ny tilkjent ytelse med andeler med id'er, samt utbetalingsoppdrag
      */
     fun lagTilkjentYtelseMedUtbetalingsoppdrag(nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
-                                               forrigeTilkjentYtelse: TilkjentYtelse? = null): TilkjentYtelse {
+                                               forrigeTilkjentYtelse: TilkjentYtelse? = null,
+                                               erGOmregning: Boolean = false): TilkjentYtelse {
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         val andelerNyTilkjentYtelse = andelerUtenNullVerdier(nyTilkjentYtelse)
         val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
@@ -52,7 +53,8 @@ object UtbetalingsoppdragGenerator {
                                    fagSystem = nyTilkjentYtelseMedMetaData.stønadstype.tilKlassifisering(),
                                    saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),
                                    aktoer = nyTilkjentYtelseMedMetaData.personIdent,
-                                   utbetalingsperiode = utbetalingsperioder)
+                                   utbetalingsperiode = utbetalingsperioder,
+                                   gOmregning = erGOmregning)
 
         val gjeldendeAndeler = (beståendeAndeler + andelerTilOpprettelseMedPeriodeId)
                 .ellerNullAndel(nyTilkjentYtelseMedMetaData, sistePeriodeIdIForrigeKjede)
