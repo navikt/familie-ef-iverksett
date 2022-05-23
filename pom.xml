@@ -19,15 +19,17 @@
         <springdoc.version>1.6.8</springdoc.version>
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20220406145421_5f46d64</felles.version>
+        <logback.version>3.3.0</logback.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <mockk.version>1.12.3</mockk.version>
         <cucumber.version>7.2.3</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.2.2</dotenv.version>
-        <prosessering.version>1.20220321101749_55e4576</prosessering.version>
+        <postgresql.version>1.17.1</postgresql.version>
+        <prosessering.version>1.20220518155102_343fcae</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <familie.kontrakter.version>2.0_20220505111225_1683031</familie.kontrakter.version>
+        <familie.kontrakter.version>2.0_20220519202826_5992c71</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220505111914_af30184</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220107115927_4388dc5</familie.eksterne-kontrakter.saksstatistikk-ef>
         <token-validation-spring.version>2.0.15</token-validation-spring.version>
@@ -217,13 +219,13 @@
         <dependency>
             <groupId>dev.akkinoc.spring.boot</groupId>
             <artifactId>logback-access-spring-boot-starter</artifactId>
-            <version>3.2.6</version>
+            <version>${logback.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.17.1</version>
+            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.doyaaaaaken</groupId>
