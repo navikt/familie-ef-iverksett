@@ -101,6 +101,9 @@ class IverksettingService(val taskRepository: TaskRepository,
                 }
             }
             it.tilkjentYtelseForUtbetaling?.let {
+                if (it.utbetalingsoppdrag?.utbetalingsperiode?.isEmpty() == true) {
+                    return IverksettStatus.OK_MOT_OPPDRAG
+                }
                 return IverksettStatus.SENDT_TIL_OPPDRAG
             }
             return IverksettStatus.IKKE_PÅBEGYNT
