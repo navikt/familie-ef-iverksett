@@ -19,17 +19,17 @@ internal class UtbetalingsperiodeMalKtTest {
 
     @Test
     internal fun `skal sette satstype til ENG for skolepenger`() {
-        val utbetalingsperiode = lagUtbetalingsperiiode(StønadType.SKOLEPENGER)
+        val utbetalingsperiode = lagUtbetalingsperiode(StønadType.SKOLEPENGER)
         assertThat(utbetalingsperiode.satsType).isEqualTo(Utbetalingsperiode.SatsType.ENG)
     }
 
     @Test
     internal fun `skal sette satstype til MND for overgangsstønad`() {
-        val utbetalingsperiode = lagUtbetalingsperiiode(StønadType.OVERGANGSSTØNAD)
+        val utbetalingsperiode = lagUtbetalingsperiode(StønadType.OVERGANGSSTØNAD)
         assertThat(utbetalingsperiode.satsType).isEqualTo(Utbetalingsperiode.SatsType.MND)
     }
 
-    private fun lagUtbetalingsperiiode(stønadType: StønadType) =
+    private fun lagUtbetalingsperiode(stønadType: StønadType) =
             lagPeriodeFraAndel(andel = lagAndelTilkjentYtelse(beløp = 10,
                                                               fraOgMed = LocalDate.now(),
                                                               tilOgMed = LocalDate.now(),
