@@ -100,7 +100,6 @@ object TilkjentYtelseParser {
 
     private fun mapAndelTilkjentYtelse(rad: MutableMap<String, String>) = AndelTilkjentYtelseDto(
             beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
-            periodetype = Periodetype.MÅNED,
             inntekt = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
             inntektsreduksjon = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKTSREDUKSJON, rad) ?: 0,
             samordningsfradrag = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
