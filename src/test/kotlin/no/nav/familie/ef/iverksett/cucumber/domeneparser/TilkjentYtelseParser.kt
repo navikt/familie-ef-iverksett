@@ -6,7 +6,6 @@ import no.nav.familie.ef.iverksett.cucumber.steps.TilkjentYtelseHolder
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
-import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode.SatsType
 import org.assertj.core.api.Assertions.assertThat
@@ -84,8 +83,7 @@ object TilkjentYtelseParser {
             tom = parseÅrMåned(Domenebegrep.TIL_DATO, rad).atEndOfMonth(),
             beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
             periodeId = parseInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad).toLong(),
-            forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong(),
-            periodeType = parseValgfriEnum<Periodetype>(TilkjentYtelseDomenebegrep.PERIODETYPE, rad) ?: Periodetype.MÅNED
+            forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong()
     )
 
     private fun DataTable.groupByBehandlingId() =
@@ -102,7 +100,7 @@ object TilkjentYtelseParser {
 
     private fun mapAndelTilkjentYtelse(rad: MutableMap<String, String>) = AndelTilkjentYtelseDto(
             beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
-            periodetype = parsePeriodetype(rad) ?: Periodetype.MÅNED,
+            periodetype = Periodetype.MÅNED,
             inntekt = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
             inntektsreduksjon = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKTSREDUKSJON, rad) ?: 0,
             samordningsfradrag = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
@@ -147,7 +145,6 @@ object TilkjentYtelseParser {
             val periodeId: Long,
             val forrigePeriodeId: Long?,
             val beløp: Int,
-            val periodeType: Periodetype,
     )
 
 }

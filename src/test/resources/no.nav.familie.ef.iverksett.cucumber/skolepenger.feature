@@ -9,7 +9,7 @@ Egenskap: En enkel behandling
       | BehandlingId | Startdato |
       | 1            | 01.2022   |
 
-    Gitt følgende tilkjente ytelser for Overgangsstønad
+    Gitt følgende tilkjente ytelser for Skolepenger
       | BehandlingId | Fra dato | Til dato | Beløp |
       | 1            | 01.2021  | 01.2021  | 1     |
 
@@ -22,7 +22,7 @@ Egenskap: En enkel behandling
       | BehandlingId | Startdato |
       | 1            | 01.2021   |
 
-    Gitt følgende tilkjente ytelser for Overgangsstønad
+    Gitt følgende tilkjente ytelser for Skolepenger
       | BehandlingId | Fra dato | Til dato | Beløp |
       | 1            | 01.2021  | 01.2021  | 1     |
 
@@ -30,7 +30,7 @@ Egenskap: En enkel behandling
 
     Så forvent følgelse utbetalingsoppdrag
       | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id | Type |
-      | 1            | 01.2021  | 01.2021  |             | 1     | NY           | Nei        | 1          |                    | MND  |
+      | 1            | 01.2021  | 01.2021  |             | 1     | NY           | Nei        | 1          |                    | ENG  |
 
     Så forvent følgelse tilkjente ytelser for behandling 1 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id |

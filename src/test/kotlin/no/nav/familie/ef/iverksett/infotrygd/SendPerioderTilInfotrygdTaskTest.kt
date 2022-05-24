@@ -13,7 +13,6 @@ import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.personopplysning.PersonIdentMedHistorikk
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
@@ -51,8 +50,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     @Test
     internal fun `skal sende perioder fra andeler til infotrygd`() {
-        val iverksett = opprettData(lagAndelTilkjentYtelse(
-                2, Periodetype.MÅNED, LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31)))
+        val iverksett = opprettData(lagAndelTilkjentYtelse(2, LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31)))
         every { iverksettingRepository.hent(behandlingId) } returns iverksett
 
 
@@ -67,13 +65,11 @@ internal class SendPerioderTilInfotrygdTaskTest {
     @Test
     internal fun `fullOvergangsstønad er false hvis samordningsfradrag eller inntektsreduksjon ikke er 0`() {
         val andelTilkjentYtelse = lagAndelTilkjentYtelse(beløp = 1,
-                                                         periodetype = Periodetype.MÅNED,
                                                          fraOgMed = LocalDate.of(1901, 1, 1),
                                                          tilOgMed = LocalDate.of(1901, 1, 31),
                                                          samordningsfradrag = 1,
                                                          inntektsreduksjon = 0)
         val andelTilkjentYtelse2 = lagAndelTilkjentYtelse(beløp = 3,
-                                                          periodetype = Periodetype.MÅNED,
                                                           fraOgMed = LocalDate.of(1902, 1, 1),
                                                           tilOgMed = LocalDate.of(1902, 1, 31),
                                                           samordningsfradrag = 0,

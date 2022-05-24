@@ -27,7 +27,6 @@ import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.ef.StønadType
@@ -138,7 +137,6 @@ internal class VedtakstatistikkMapperTest {
                                                 tilOgMed = LocalDate.of(2021,
                                                                         5,
                                                                         31),
-                                                periodetype = Periodetype.MÅNED,
                                                 inntekt = 300000,
                                                 samordningsfradrag = 1000,
                                                 inntektsreduksjon = 11000,
@@ -154,7 +152,6 @@ internal class VedtakstatistikkMapperTest {
                                                 tilOgMed = LocalDate.of(2021,
                                                                         10,
                                                                         31),
-                                                periodetype = Periodetype.MÅNED,
                                                 inntekt = 300000,
                                                 samordningsfradrag = 0,
                                                 inntektsreduksjon = 11000,

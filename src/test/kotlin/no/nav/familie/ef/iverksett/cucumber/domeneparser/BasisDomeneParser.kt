@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.cucumber.domeneparser
 
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
@@ -157,11 +156,6 @@ fun parseValgfriIntRange(domenebegrep: Domenenøkkel, rad: Map<String, String>):
 
     return Pair(Integer.parseInt(verdi.split("-").first()),
                 Integer.parseInt(verdi.split("-").last()))
-}
-
-fun parsePeriodetype(rad: Map<String, String>): Periodetype? {
-    val verdi = valgfriVerdi(TilkjentYtelseDomenebegrep.PERIODETYPE, rad) ?: return null
-    return Periodetype.valueOf(verdi)
 }
 
 inline fun <reified T : Enum<T>> parseValgfriEnum(domenebegrep: Domenenøkkel, rad: Map<String, String>): T? {

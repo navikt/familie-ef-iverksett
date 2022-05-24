@@ -3,7 +3,6 @@ package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
@@ -34,7 +33,7 @@ fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
                            vedtakdatoFom = andel.fraOgMed,
                            vedtakdatoTom = andel.tilOgMed,
                            sats = BigDecimal(andel.beløp),
-                           satsType = mapSatstype(andel.periodetype),
+                           satsType = mapSatstype(type),
                            utbetalesTil = personIdent,
                            behandlingId = eksternBehandlingId,
                            utbetalingsgrad = andel.utbetalingsgrad())
@@ -51,7 +50,9 @@ fun lagUtbetalingsperiodeForOpphør(sisteAndelIKjede: AndelTilkjentYtelse,
                               erEndringPåEksisterendePeriode = true)
 }
 
-fun mapSatstype(periodetype: Periodetype) = when (periodetype) {
-    Periodetype.MÅNED -> Utbetalingsperiode.SatsType.MND
-    else -> error("Støtter ikke periodetype=$periodetype")
+fun mapSatstype(stønadstype: StønadType) = when (stønadstype) {
+    StønadType.OVERGANGSSTØNAD,
+    StønadType.BARNETILSYN -> Utbetalingsperiode.SatsType.MND
+    StønadType.SKOLEPENGER -> Utbetalingsperiode.SatsType.ENG
+    else -> error("Støtter ikke periodetype=$stønadstype")
 }

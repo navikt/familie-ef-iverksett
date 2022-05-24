@@ -7,7 +7,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.PeriodeId
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.nullAndelTilkjentYtelse
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
@@ -56,7 +55,6 @@ data class TestOppdrag(val type: TestOppdragType,
 
         return if (beløp != null && startPeriode != null && sluttPeriode != null)
             lagAndelTilkjentYtelse(beløp = this.beløp,
-                                   periodetype = Periodetype.MÅNED,
                                    fraOgMed = startPeriode,
                                    tilOgMed = sluttPeriode,
                                    periodeId = linjeId,
