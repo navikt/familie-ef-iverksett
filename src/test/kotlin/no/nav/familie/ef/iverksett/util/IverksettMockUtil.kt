@@ -44,7 +44,6 @@ import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
@@ -68,7 +67,6 @@ fun opprettIverksettDto(behandlingId: UUID,
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
             beløp = andelsbeløp,
-            periodetype = Periodetype.MÅNED,
             fraOgMed = LocalDate.of(2021, 1, 1),
             tilOgMed = LocalDate.of(2021, 12, 31),
             kildeBehandlingId = UUID.randomUUID()
@@ -126,7 +124,6 @@ fun opprettAndelTilkjentYtelse(beløp: Int = 5000,
                                fra: LocalDate = LocalDate.of(2021, 1, 1),
                                til: LocalDate = LocalDate.of(2021, 12, 31)) = lagAndelTilkjentYtelse(
         beløp = beløp,
-        periodetype = Periodetype.MÅNED,
         fraOgMed = fra,
         tilOgMed = til,
         inntekt = 100,

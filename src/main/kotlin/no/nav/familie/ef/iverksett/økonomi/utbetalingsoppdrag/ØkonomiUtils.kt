@@ -5,7 +5,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Compa
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Companion.snittAndeler
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.time.LocalDate
 import java.util.UUID
@@ -22,8 +21,6 @@ fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): And
         AndelTilkjentYtelse(beløp = 0,
                             fraOgMed = NULL_DATO,
                             tilOgMed = NULL_DATO,
-                            periodetype = Periodetype.MÅNED,
-
                             inntekt = 0,
                             samordningsfradrag = 0,
                             inntektsreduksjon = 0,

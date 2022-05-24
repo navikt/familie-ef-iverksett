@@ -8,7 +8,6 @@ fun AndelTilkjentYtelseDto.toDomain(): AndelTilkjentYtelse {
             beløp = this.beløp,
             fraOgMed = this.fraOgMed,
             tilOgMed = this.tilOgMed,
-            periodetype = this.periodetype,
             inntekt = this.inntekt,
             samordningsfradrag = this.samordningsfradrag,
             inntektsreduksjon = this.inntektsreduksjon,

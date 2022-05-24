@@ -1,11 +1,9 @@
 package no.nav.familie.ef.iverksett
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
-import no.nav.familie.ef.iverksett.util.startdato
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.ef.iverksett.økonomi.simulering.grupperPosteringerEtterDato
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
@@ -46,7 +44,6 @@ fun simuleringDto(andeler: List<AndelTilkjentYtelseDto> = listOf(lagDefaultAndel
 private fun lagDefaultAndeler() =
         lagAndelTilkjentYtelseDto(
                 beløp = 15000,
-                periodetype = Periodetype.MÅNED,
                 fraOgMed = LocalDate.of(2021, 1, 1),
                 tilOgMed = LocalDate.of(2023, 12, 31),
                 kildeBehandlingId = UUID.randomUUID()

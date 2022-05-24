@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.time.LocalDate
 import java.util.UUID
 import kotlin.math.roundToInt
@@ -8,7 +7,6 @@ import kotlin.math.roundToInt
 data class AndelTilkjentYtelse(val beløp: Int,
                                val fraOgMed: LocalDate,
                                val tilOgMed: LocalDate,
-                               val periodetype: Periodetype,
 
                                val inntekt: Int,
                                val samordningsfradrag: Int,

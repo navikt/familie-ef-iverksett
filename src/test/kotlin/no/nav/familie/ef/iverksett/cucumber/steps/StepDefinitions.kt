@@ -104,7 +104,6 @@ class StepDefinitions {
             assertThat(andel.beløp).isEqualTo(forventetAndel.beløp)
             assertThat(andel.periodeId).isEqualTo(forventetAndel.periodeId)
             assertThat(andel.forrigePeriodeId).isEqualTo(forventetAndel.forrigePeriodeId)
-            assertThat(andel.periodetype).isEqualTo(forventetAndel.periodeType)
         }
         assertThat(beregnetTilkjentYtelse.startdato).isEqualTo(forventetTilkjentYtelse.startdato)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(forventetTilkjentYtelse.andeler.size)

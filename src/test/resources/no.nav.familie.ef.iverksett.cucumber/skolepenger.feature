@@ -33,5 +33,5 @@ Egenskap: En enkel behandling
       | 1            | 01.2021  | 01.2021  |             | 1     | NY           | Nei        | 1          |                    | ENG  |
 
     Så forvent følgelse tilkjente ytelser for behandling 1 med startdato 01.2021
-      | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Periodetype |
-      | 01.2021  | 01.2021  | 1     | 1          |                    | Måned       |
+      | Fra dato | Til dato | Beløp | Periode id | Forrige periode id |
+      | 01.2021  | 01.2021  | 1     | 1          |                    |
