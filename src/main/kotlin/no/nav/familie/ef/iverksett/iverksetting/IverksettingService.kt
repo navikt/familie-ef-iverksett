@@ -10,6 +10,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
+import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
@@ -72,6 +73,7 @@ class IverksettingService(val taskRepository: TaskRepository,
     }
 
     private fun førstePubliseringsflytTask(iverksett: Iverksett) = when {
+        iverksett.erGOmregning() -> VedtakstatistikkTask.TYPE
         erIverksettingUtenVedtaksperioder(iverksett) -> OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE
         else -> publiseringsflyt().first().type
     }
