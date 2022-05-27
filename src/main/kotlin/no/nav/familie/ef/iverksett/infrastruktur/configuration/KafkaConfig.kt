@@ -20,5 +20,4 @@ class KafkaConfig {
             setProducerListener(producerListener)
         }
     }
-
 }

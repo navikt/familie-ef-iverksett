@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 import javax.annotation.PostConstruct
 
-
 internal class IverksettTekniskOpphørTaskTest : ServerTest() {
 
     @Autowired
@@ -38,23 +37,24 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
 
     var iverksettTekniskOpphørTask: IverksettTekniskOpphørTask? = null
 
-
     private val forrigeBehandlingId: UUID = UUID.randomUUID()
     private val tekniskOpphørBehandlingId: UUID = UUID.randomUUID()
 
     private val oppdragClient = mockk<OppdragClient>()
     private val andelTilkjentYtelse = opprettAndelTilkjentYtelse()
     private val tilkjentYtelse =
-            opprettTilkjentYtelse(forrigeBehandlingId, andeler = listOf(andelTilkjentYtelse), startdato = andelTilkjentYtelse.fraOgMed)
+        opprettTilkjentYtelse(forrigeBehandlingId, andeler = listOf(andelTilkjentYtelse), startdato = andelTilkjentYtelse.fraOgMed)
     private val tilkjentYtelseMedUtbetalingsoppdrag =
-            lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(forrigeBehandlingId, 1L, tilkjentYtelse))
+        lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(forrigeBehandlingId, 1L, tilkjentYtelse))
 
     @PostConstruct
     fun init() {
-        iverksettTekniskOpphørTask = IverksettTekniskOpphørTask(iverksettingRepository = iverksettingRepository,
-                                                                oppdragClient,
-                                                                taskRepository = taskRepository,
-                                                                tilstandRepository = tilstandRepository)
+        iverksettTekniskOpphørTask = IverksettTekniskOpphørTask(
+            iverksettingRepository = iverksettingRepository,
+            oppdragClient,
+            taskRepository = taskRepository,
+            tilstandRepository = tilstandRepository
+        )
     }
 
     @Test
@@ -62,21 +62,24 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
         tilstandRepository.opprettTomtResultat(forrigeBehandlingId)
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(forrigeBehandlingId, tilkjentYtelseMedUtbetalingsoppdrag)
 
-
         val utbetalingsoppdrag = slot<Utbetalingsoppdrag>()
 
         every {
             oppdragClient.iverksettOppdrag(capture(utbetalingsoppdrag))
         } returns "En random string"
 
-        tekniskOpphørController.iverksettTekniskOpphor(TekniskOpphørDto(forrigeBehandlingId = forrigeBehandlingId,
-                                                                        saksbehandlerId = "Sakbehandler 007",
-                                                                        eksternBehandlingId = 0,
-                                                                        stønadstype = StønadType.OVERGANGSSTØNAD,
-                                                                        eksternFagsakId = 0,
-                                                                        personIdent = "12345678",
-                                                                        behandlingId = tekniskOpphørBehandlingId,
-                                                                        vedtaksdato = andelTilkjentYtelse.fraOgMed))
+        tekniskOpphørController.iverksettTekniskOpphor(
+            TekniskOpphørDto(
+                forrigeBehandlingId = forrigeBehandlingId,
+                saksbehandlerId = "Sakbehandler 007",
+                eksternBehandlingId = 0,
+                stønadstype = StønadType.OVERGANGSSTØNAD,
+                eksternFagsakId = 0,
+                personIdent = "12345678",
+                behandlingId = tekniskOpphørBehandlingId,
+                vedtaksdato = andelTilkjentYtelse.fraOgMed
+            )
+        )
 
         val iverksettTekniskOpphørTask = taskRepository.findAll().first()
         assertThat(iverksettTekniskOpphørTask.type).isEqualTo(IverksettTekniskOpphørTask.TYPE)
@@ -88,5 +91,4 @@ internal class IverksettTekniskOpphørTaskTest : ServerTest() {
         assertThat(opphør).isNotNull
         assertThat(opphør!!.opphørDatoFom).isEqualTo(tilkjentYtelseMedUtbetalingsoppdrag.andelerTilkjentYtelse.minByOrNull { it.fraOgMed }!!.fraOgMed)
     }
-
 }

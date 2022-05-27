@@ -49,9 +49,11 @@ class VedtakstatistikkServiceTest {
         val iverksettOvergangsstønad = opprettIverksettOvergangsstønad(behandlingId)
         vedtakstatistikkService.sendTilKafka(iverksett = iverksettOvergangsstønad, forrigeIverksett = null)
 
-        val vedtakOvergangsstønad = opprettVedtakstatistikkOvergangsstønad(behandlingId = iverksettOvergangsstønad.behandling.eksternId,
-                                                                           fagsakId = iverksettOvergangsstønad.fagsak.eksternId,
-                                                                           tidspunktVedtak = iverksettOvergangsstønad.vedtak.vedtakstidspunkt.toLocalDate())
+        val vedtakOvergangsstønad = opprettVedtakstatistikkOvergangsstønad(
+            behandlingId = iverksettOvergangsstønad.behandling.eksternId,
+            fagsakId = iverksettOvergangsstønad.fagsak.eksternId,
+            tidspunktVedtak = iverksettOvergangsstønad.vedtak.vedtakstidspunkt.toLocalDate()
+        )
         assertThat(vedtakOvergangsstønad).isEqualTo(vedtakstatistikkJsonSlot.captured)
     }
 
@@ -65,48 +67,67 @@ class VedtakstatistikkServiceTest {
         val vedtakOvergangsstønadDVH = slot<VedtakOvergangsstønadDVH>()
         every { vedtakstatistikkKafkaProducer.sendVedtak(capture(vedtakOvergangsstønadDVH)) } just Runs
         vedtakstatistikkService.sendTilKafka(iverksett, null)
-        //val vedtakOvergangsstønadDVH = objectMapper.readValue(vedtakOvergangsstønadDVHJsonSlot.captured, VedtakOvergangsstønadDVH::class.java)
+        // val vedtakOvergangsstønadDVH = objectMapper.readValue(vedtakOvergangsstønadDVHJsonSlot.captured, VedtakOvergangsstønadDVH::class.java)
         assertThat(vedtakOvergangsstønadDVH).isNotNull
         assertThat(vedtakOvergangsstønadDVH.captured.vilkårsvurderinger.size).isEqualTo(2)
-        //Egen test på vilkårtype, da det er mismatch mellom ekstern kontrakt og ef. F.eks. finnes ikke aktivitet i kontrakt.
+        // Egen test på vilkårtype, da det er mismatch mellom ekstern kontrakt og ef. F.eks. finnes ikke aktivitet i kontrakt.
         assertThat(vedtakOvergangsstønadDVH.captured.vilkårsvurderinger.first().vilkår.name).isEqualTo(VilkårType.AKTIVITET.name)
         assertThat(vedtakOvergangsstønadDVH.captured.vilkårsvurderinger.last().vilkår.name)
-                .isEqualTo(VilkårType.SAGT_OPP_ELLER_REDUSERT.name)
+            .isEqualTo(VilkårType.SAGT_OPP_ELLER_REDUSERT.name)
     }
 
-    private fun opprettVedtakstatistikkOvergangsstønad(behandlingId: Long,
-                                                       fagsakId: Long,
-                                                       tidspunktVedtak: LocalDate): VedtakOvergangsstønadDVH {
-        return VedtakOvergangsstønadDVH(fagsakId = fagsakId,
-                             behandlingId = behandlingId,
-                             relatertBehandlingId = null,
-                             adressebeskyttelse = Adressebeskyttelse.UGRADERT,
-                             tidspunktVedtak = tidspunktVedtak.atStartOfDay(ZoneId.of("Europe/Oslo")),
-                             vilkårsvurderinger = listOf(VilkårsvurderingDto(vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT,
-                                                                             resultat = Vilkårsresultat.OPPFYLT)),
-                             person = Person(personIdent = "12345678910"),
-                             barn = emptyList(),
-                             behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-                             behandlingÅrsak = BehandlingÅrsak.SØKNAD,
-                             vedtak = Vedtak.INNVILGET,
-                             vedtaksperioder = listOf(VedtaksperiodeDto(fraOgMed = LocalDate.now(),
-                                                                        tilOgMed = LocalDate.now(),
-                                                                        aktivitet = AktivitetType.BARNET_ER_SYKT,
-                                                                        periodeType = VedtaksperiodeType.HOVEDPERIODE)),
-                             utbetalinger = listOf(Utbetaling(
-                                     beløp = 5000,
-                                     fraOgMed = LocalDate.parse("2021-01-01"),
-                                     tilOgMed = LocalDate.parse("2021-12-31"),
-                                     inntekt = 100,
-                                     inntektsreduksjon = 5,
-                                     samordningsfradrag = 2,
-                                     utbetalingsdetalj = Utbetalingsdetalj(klassekode = "EFOG",
-                                                                           gjelderPerson = Person(personIdent = "12345678910"),
-                                                                           delytelseId = "1"))),
+    private fun opprettVedtakstatistikkOvergangsstønad(
+        behandlingId: Long,
+        fagsakId: Long,
+        tidspunktVedtak: LocalDate
+    ): VedtakOvergangsstønadDVH {
+        return VedtakOvergangsstønadDVH(
+            fagsakId = fagsakId,
+            behandlingId = behandlingId,
+            relatertBehandlingId = null,
+            adressebeskyttelse = Adressebeskyttelse.UGRADERT,
+            tidspunktVedtak = tidspunktVedtak.atStartOfDay(ZoneId.of("Europe/Oslo")),
+            vilkårsvurderinger = listOf(
+                VilkårsvurderingDto(
+                    vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT,
+                    resultat = Vilkårsresultat.OPPFYLT
+                )
+            ),
+            person = Person(personIdent = "12345678910"),
+            barn = emptyList(),
+            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+            behandlingÅrsak = BehandlingÅrsak.SØKNAD,
+            vedtak = Vedtak.INNVILGET,
+            vedtaksperioder = listOf(
+                VedtaksperiodeDto(
+                    fraOgMed = LocalDate.now(),
+                    tilOgMed = LocalDate.now(),
+                    aktivitet = AktivitetType.BARNET_ER_SYKT,
+                    periodeType = VedtaksperiodeType.HOVEDPERIODE
+                )
+            ),
+            utbetalinger = listOf(
+                Utbetaling(
+                    beløp = 5000,
+                    fraOgMed = LocalDate.parse("2021-01-01"),
+                    tilOgMed = LocalDate.parse("2021-12-31"),
+                    inntekt = 100,
+                    inntektsreduksjon = 5,
+                    samordningsfradrag = 2,
+                    utbetalingsdetalj = Utbetalingsdetalj(
+                        klassekode = "EFOG",
+                        gjelderPerson = Person(personIdent = "12345678910"),
+                        delytelseId = "1"
+                    )
+                )
+            ),
 
-                             aktivitetskrav = Aktivitetskrav(aktivitetspliktInntrefferDato = null,
-                                                             harSagtOppArbeidsforhold = true),
-                             funksjonellId = 9L,
-                             stønadstype = StønadType.OVERGANGSSTØNAD)
+            aktivitetskrav = Aktivitetskrav(
+                aktivitetspliktInntrefferDato = null,
+                harSagtOppArbeidsforhold = true
+            ),
+            funksjonellId = 9L,
+            stønadstype = StønadType.OVERGANGSSTØNAD
+        )
     }
 }

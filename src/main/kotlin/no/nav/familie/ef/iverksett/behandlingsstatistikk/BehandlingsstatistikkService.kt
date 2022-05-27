@@ -20,45 +20,56 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
     private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingsstatistikkDto): BehandlingDVH {
 
         val tekniskTid = ZonedDateTime.now(ZoneId.of("Europe/Oslo"))
-        return BehandlingDVH(behandlingId = behandlingstatistikk.eksternBehandlingId,
-                             sakId = behandlingstatistikk.eksternFagsakId,
-                             personIdent = behandlingstatistikk.personIdent,
-                             registrertTid = behandlingstatistikk.behandlingOpprettetTidspunkt
-                                             ?: behandlingstatistikk.hendelseTidspunkt,
-                             endretTid = behandlingstatistikk.hendelseTidspunkt,
-                             tekniskTid = tekniskTid,
-                             behandlingStatus = behandlingstatistikk.hendelse.name,
-                             opprettetAv = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                           behandlingstatistikk.gjeldendeSaksbehandlerId),
-                             saksnummer = behandlingstatistikk.eksternFagsakId,
-                             mottattTid = behandlingstatistikk.henvendelseTidspunkt,
-                             saksbehandler = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                             behandlingstatistikk.gjeldendeSaksbehandlerId),
-                             opprettetEnhet = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                              behandlingstatistikk.opprettetEnhet),
-                             ansvarligEnhet = maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse,
-                                                                              behandlingstatistikk.ansvarligEnhet),
-                             behandlingMetode = "MANUELL",
-                             avsender = "NAV enslig forelder",
-                             behandlingType = behandlingstatistikk.behandlingstype.name,
-                             sakYtelse = behandlingstatistikk.stønadstype.name,
-                             behandlingResultat = behandlingstatistikk.behandlingResultat,
-                             resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
-                             ansvarligBeslutter = if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty())
-                                 maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse, behandlingstatistikk.beslutterId.toString())
-                                                else null,
-                             vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse)
-                                 behandlingstatistikk.hendelseTidspunkt else null,
-                             ferdigBehandletTid = if (Hendelse.FERDIG == behandlingstatistikk.hendelse)
-                                 behandlingstatistikk.hendelseTidspunkt else null,
-                             totrinnsbehandling = true,
-                             sakUtland = "Nasjonal",
-                             relatertBehandlingId = behandlingstatistikk.relatertEksternBehandlingId)
-
+        return BehandlingDVH(
+            behandlingId = behandlingstatistikk.eksternBehandlingId,
+            sakId = behandlingstatistikk.eksternFagsakId,
+            personIdent = behandlingstatistikk.personIdent,
+            registrertTid = behandlingstatistikk.behandlingOpprettetTidspunkt
+                ?: behandlingstatistikk.hendelseTidspunkt,
+            endretTid = behandlingstatistikk.hendelseTidspunkt,
+            tekniskTid = tekniskTid,
+            behandlingStatus = behandlingstatistikk.hendelse.name,
+            opprettetAv = maskerVerdiHvisStrengtFortrolig(
+                behandlingstatistikk.strengtFortroligAdresse,
+                behandlingstatistikk.gjeldendeSaksbehandlerId
+            ),
+            saksnummer = behandlingstatistikk.eksternFagsakId,
+            mottattTid = behandlingstatistikk.henvendelseTidspunkt,
+            saksbehandler = maskerVerdiHvisStrengtFortrolig(
+                behandlingstatistikk.strengtFortroligAdresse,
+                behandlingstatistikk.gjeldendeSaksbehandlerId
+            ),
+            opprettetEnhet = maskerVerdiHvisStrengtFortrolig(
+                behandlingstatistikk.strengtFortroligAdresse,
+                behandlingstatistikk.opprettetEnhet
+            ),
+            ansvarligEnhet = maskerVerdiHvisStrengtFortrolig(
+                behandlingstatistikk.strengtFortroligAdresse,
+                behandlingstatistikk.ansvarligEnhet
+            ),
+            behandlingMetode = "MANUELL",
+            avsender = "NAV enslig forelder",
+            behandlingType = behandlingstatistikk.behandlingstype.name,
+            sakYtelse = behandlingstatistikk.stønadstype.name,
+            behandlingResultat = behandlingstatistikk.behandlingResultat,
+            resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
+            ansvarligBeslutter = if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty())
+                maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse, behandlingstatistikk.beslutterId.toString())
+            else null,
+            vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse)
+                behandlingstatistikk.hendelseTidspunkt else null,
+            ferdigBehandletTid = if (Hendelse.FERDIG == behandlingstatistikk.hendelse)
+                behandlingstatistikk.hendelseTidspunkt else null,
+            totrinnsbehandling = true,
+            sakUtland = "Nasjonal",
+            relatertBehandlingId = behandlingstatistikk.relatertEksternBehandlingId
+        )
     }
 
-    private fun maskerVerdiHvisStrengtFortrolig(erStrengtFortrolig: Boolean,
-                                                verdi: String): String {
+    private fun maskerVerdiHvisStrengtFortrolig(
+        erStrengtFortrolig: Boolean,
+        verdi: String
+    ): String {
         if (erStrengtFortrolig) {
             return "-5"
         }
@@ -66,5 +77,4 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
     }
 
     fun String?.isNotNullOrEmpty() = this != null && this.isNotEmpty()
-
 }

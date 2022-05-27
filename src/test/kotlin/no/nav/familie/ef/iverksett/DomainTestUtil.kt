@@ -27,103 +27,116 @@ import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as Tilkj
 fun simuleringDto(andeler: List<AndelTilkjentYtelseDto> = listOf(lagDefaultAndeler()), forrigeBehandlingId: UUID? = UUID.randomUUID()): SimuleringDto {
     val behandlingId = UUID.fromString("4b657902-d994-11eb-b8bc-0242ac130003")
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetadataDto(
-            tilkjentYtelse = TilkjentYtelseDto(andelerTilkjentYtelse = andeler,
-                                               startdato = andeler.minOfOrNull { it.fraOgMed } ?: LocalDate.now()),
-            saksbehandlerId = "saksbehandlerId",
-            eksternBehandlingId = 1,
-            stønadstype = StønadType.OVERGANGSSTØNAD,
-            eksternFagsakId = 1,
-            behandlingId = behandlingId,
-            personIdent = "12345611111",
-            vedtaksdato = LocalDate.of(2021, 5, 1)
+        tilkjentYtelse = TilkjentYtelseDto(
+            andelerTilkjentYtelse = andeler,
+            startdato = andeler.minOfOrNull { it.fraOgMed } ?: LocalDate.now()
+        ),
+        saksbehandlerId = "saksbehandlerId",
+        eksternBehandlingId = 1,
+        stønadstype = StønadType.OVERGANGSSTØNAD,
+        eksternFagsakId = 1,
+        behandlingId = behandlingId,
+        personIdent = "12345611111",
+        vedtaksdato = LocalDate.of(2021, 5, 1)
     )
 
     return SimuleringDto(tilkjentYtelseMedMetaData, forrigeBehandlingId)
 }
 
 private fun lagDefaultAndeler() =
-        lagAndelTilkjentYtelseDto(
-                beløp = 15000,
-                fraOgMed = LocalDate.of(2021, 1, 1),
-                tilOgMed = LocalDate.of(2023, 12, 31),
-                kildeBehandlingId = UUID.randomUUID()
-        )
+    lagAndelTilkjentYtelseDto(
+        beløp = 15000,
+        fraOgMed = LocalDate.of(2021, 1, 1),
+        tilOgMed = LocalDate.of(2023, 12, 31),
+        kildeBehandlingId = UUID.randomUUID()
+    )
 
 fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
     return DetaljertSimuleringResultat(
-            simuleringMottaker = listOf(
-                    SimuleringMottaker(
-                            simulertPostering = listOf(
-                                    SimulertPostering(
-                                            fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER,
-                                            fom = LocalDate.of(2021, 1, 1),
-                                            tom = LocalDate.of(2021, 12, 31),
-                                            betalingType = BetalingType.DEBIT,
-                                            beløp = BigDecimal.valueOf(15000),
-                                            posteringType = PosteringType.YTELSE,
-                                            forfallsdato = LocalDate.of(2021, 10, 1),
-                                            utenInntrekk = false
-                                    )
-                            ), mottakerNummer = null, mottakerType = MottakerType.BRUKER
+        simuleringMottaker = listOf(
+            SimuleringMottaker(
+                simulertPostering = listOf(
+                    SimulertPostering(
+                        fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER,
+                        fom = LocalDate.of(2021, 1, 1),
+                        tom = LocalDate.of(2021, 12, 31),
+                        betalingType = BetalingType.DEBIT,
+                        beløp = BigDecimal.valueOf(15000),
+                        posteringType = PosteringType.YTELSE,
+                        forfallsdato = LocalDate.of(2021, 10, 1),
+                        utenInntrekk = false
                     )
+                ),
+                mottakerNummer = null, mottakerType = MottakerType.BRUKER
             )
+        )
     )
 }
 
-fun beriketSimuleringsresultat(feilutbetaling: BigDecimal = BigDecimal.ZERO,
-                               fom: LocalDate = LocalDate.of(2021, 1, 1),
-                               tom: LocalDate = LocalDate.of(2021, 12, 31)) = BeriketSimuleringsresultat(
-        detaljer = detaljertSimuleringResultat(),
-        oppsummering = simuleringsoppsummering(feilutbetaling,fom,tom))
+fun beriketSimuleringsresultat(
+    feilutbetaling: BigDecimal = BigDecimal.ZERO,
+    fom: LocalDate = LocalDate.of(2021, 1, 1),
+    tom: LocalDate = LocalDate.of(2021, 12, 31)
+) = BeriketSimuleringsresultat(
+    detaljer = detaljertSimuleringResultat(),
+    oppsummering = simuleringsoppsummering(feilutbetaling, fom, tom)
+)
 
 fun simuleringsoppsummering(
-        feilutbetaling: BigDecimal = BigDecimal.ZERO,
-        fom: LocalDate = LocalDate.of(2021, 1, 1),
-        tom: LocalDate = LocalDate.of(2021, 12, 31)) =
-        Simuleringsoppsummering(
-                perioder = listOf(Simuleringsperiode(
-                        fom = fom,
-                        tom = tom,
-                        forfallsdato = LocalDate.of(2021, 10, 1),
-                        nyttBeløp = BigDecimal.valueOf(15000),
-                        tidligereUtbetalt = BigDecimal.ZERO,
-                        resultat = BigDecimal.valueOf(15000),
-                        feilutbetaling = feilutbetaling
-                )),
-                etterbetaling = BigDecimal.valueOf(15000),
-                feilutbetaling = feilutbetaling,
+    feilutbetaling: BigDecimal = BigDecimal.ZERO,
+    fom: LocalDate = LocalDate.of(2021, 1, 1),
+    tom: LocalDate = LocalDate.of(2021, 12, 31)
+) =
+    Simuleringsoppsummering(
+        perioder = listOf(
+            Simuleringsperiode(
                 fom = fom,
-                fomDatoNestePeriode = null,
-                tomDatoNestePeriode = null,
-                forfallsdatoNestePeriode = null,
-                tidSimuleringHentet = LocalDate.now(),
-                tomSisteUtbetaling = tom
-        )
+                tom = tom,
+                forfallsdato = LocalDate.of(2021, 10, 1),
+                nyttBeløp = BigDecimal.valueOf(15000),
+                tidligereUtbetalt = BigDecimal.ZERO,
+                resultat = BigDecimal.valueOf(15000),
+                feilutbetaling = feilutbetaling
+            )
+        ),
+        etterbetaling = BigDecimal.valueOf(15000),
+        feilutbetaling = feilutbetaling,
+        fom = fom,
+        fomDatoNestePeriode = null,
+        tomDatoNestePeriode = null,
+        forfallsdatoNestePeriode = null,
+        tidSimuleringHentet = LocalDate.now(),
+        tomSisteUtbetaling = tom
+    )
 
-fun posteringer(måned: YearMonth = januar(2021),
-                antallMåneder: Int = 1,
-                beløp: Int = 5000,
-                posteringstype: PosteringType = PosteringType.YTELSE,
-                betalingstype: BetalingType = if (beløp >=0) BetalingType.DEBIT else BetalingType.KREDIT
+fun posteringer(
+    måned: YearMonth = januar(2021),
+    antallMåneder: Int = 1,
+    beløp: Int = 5000,
+    posteringstype: PosteringType = PosteringType.YTELSE,
+    betalingstype: BetalingType = if (beløp >= 0) BetalingType.DEBIT else BetalingType.KREDIT
 
 ): List<SimulertPostering> = MutableList(antallMåneder) { index ->
-    SimulertPostering(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
-                      fom = måned.plusMonths(index.toLong()).atDay(1),
-                      tom = måned.plusMonths(index.toLong()).atEndOfMonth(),
-                      betalingType = betalingstype,
-                      beløp = beløp.toBigDecimal(),
-                      posteringType = posteringstype,
-                      forfallsdato = måned.plusMonths(index.toLong()).atEndOfMonth(), // Forfallsdato i bank (dagen går til brukeren). Det sendes til banken kanskje en uke i forveien
-                      utenInntrekk = false) // Brukes ikke for EF
+    SimulertPostering(
+        fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
+        fom = måned.plusMonths(index.toLong()).atDay(1),
+        tom = måned.plusMonths(index.toLong()).atEndOfMonth(),
+        betalingType = betalingstype,
+        beløp = beløp.toBigDecimal(),
+        posteringType = posteringstype,
+        forfallsdato = måned.plusMonths(index.toLong()).atEndOfMonth(), // Forfallsdato i bank (dagen går til brukeren). Det sendes til banken kanskje en uke i forveien
+        utenInntrekk = false
+    ) // Brukes ikke for EF
 }
 
 fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, periode: Periode) =
-        this.copy(tilbakekrevingMedVarsel =
-                  this.tilbakekrevingMedVarsel?.copy(
-                          sumFeilutbetaling = feilutbetaling,
-                          perioder = listOf(periode)
-                  )
+    this.copy(
+        tilbakekrevingMedVarsel =
+        this.tilbakekrevingMedVarsel?.copy(
+            sumFeilutbetaling = feilutbetaling,
+            perioder = listOf(periode)
         )
+    )
 
 fun Int.januar(år: Int) = LocalDate.of(år, 1, this)
 fun Int.februar(år: Int) = LocalDate.of(år, 2, this)
@@ -132,15 +145,15 @@ fun Int.november(år: Int) = LocalDate.of(år, 11, this)
 
 fun januar(år: Int) = YearMonth.of(år, 1)
 fun februar(år: Int) = YearMonth.of(år, 2)
-fun mai(år: Int) = YearMonth.of(år,5)
+fun mai(år: Int) = YearMonth.of(år, 5)
 fun juli(år: Int) = YearMonth.of(år, 7)
 fun september(år: Int) = YearMonth.of(år, 9)
 
 fun List<SimulertPostering>.tilSimuleringsperioder() =
-        grupperPosteringerEtterDato(this.tilSimuleringMottakere())
+    grupperPosteringerEtterDato(this.tilSimuleringMottakere())
 
 fun List<SimulertPostering>.tilSimuleringMottakere() =
-        listOf(SimuleringMottaker(this, "12345678901", MottakerType.BRUKER))
+    listOf(SimuleringMottaker(this, "12345678901", MottakerType.BRUKER))
 
 fun List<SimulertPostering>.tilDetaljertSimuleringsresultat() =
-        DetaljertSimuleringResultat(this.tilSimuleringMottakere())
+    DetaljertSimuleringResultat(this.tilSimuleringMottakere())

@@ -38,14 +38,16 @@ internal class VentePåStatusFraØkonomiTaskTest {
     private val taskRepository = mockk<TaskRepository>()
     private val tilstandRepository = mockk<TilstandRepository>()
     private val behandlingId: UUID = UUID.randomUUID()
-    private val iverksettingService = IverksettingService(taskRepository = taskRepository,
-                                                          oppdragClient = oppdragClient,
-                                                          iverksettingRepository = iverksettingRepository,
-                                                          tilstandRepository = tilstandRepository,
-                                                          featureToggleService = mockFeatureToggleService())
+    private val iverksettingService = IverksettingService(
+        taskRepository = taskRepository,
+        oppdragClient = oppdragClient,
+        iverksettingRepository = iverksettingRepository,
+        tilstandRepository = tilstandRepository,
+        featureToggleService = mockFeatureToggleService()
+    )
 
     private val ventePåStatusFraØkonomiTask =
-            VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskRepository, tilstandRepository)
+        VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskRepository, tilstandRepository)
 
     @BeforeEach
     internal fun setUp() {
@@ -94,33 +96,36 @@ internal class VentePåStatusFraØkonomiTaskTest {
     }
 
     private val utbetalingsperiode = Utbetalingsperiode(
-            erEndringPåEksisterendePeriode = false,
-            opphør = null,
-            periodeId = 0,
-            forrigePeriodeId = null,
-            datoForVedtak = LocalDate.now(),
-            klassifisering = "",
-            vedtakdatoFom = LocalDate.of(2021, 1, 1),
-            vedtakdatoTom = LocalDate.of(2021, 6, 1),
-            sats = BigDecimal.TEN,
-            satsType = Utbetalingsperiode.SatsType.MND,
-            utbetalesTil = "x",
-            behandlingId = 0,
-            utbetalingsgrad = null)
-
+        erEndringPåEksisterendePeriode = false,
+        opphør = null,
+        periodeId = 0,
+        forrigePeriodeId = null,
+        datoForVedtak = LocalDate.now(),
+        klassifisering = "",
+        vedtakdatoFom = LocalDate.of(2021, 1, 1),
+        vedtakdatoTom = LocalDate.of(2021, 6, 1),
+        sats = BigDecimal.TEN,
+        satsType = Utbetalingsperiode.SatsType.MND,
+        utbetalesTil = "x",
+        behandlingId = 0,
+        utbetalingsgrad = null
+    )
 
     private fun tilkjentYtelse(utbetalingsperioder: List<Utbetalingsperiode> = listOf()): TilkjentYtelse {
-        return TilkjentYtelse(id = UUID.randomUUID(),
-                              utbetalingsoppdrag = Utbetalingsoppdrag(kodeEndring = NY,
-                                                                      fagSystem = "",
-                                                                      saksnummer = "",
-                                                                      aktoer = "",
-                                                                      saksbehandlerId = "",
-                                                                      avstemmingTidspunkt = LocalDateTime.now(),
-                                                                      utbetalingsperiode = utbetalingsperioder),
-                              status = TilkjentYtelseStatus.SENDT_TIL_IVERKSETTING,
-                              andelerTilkjentYtelse = listOf(),
-                              startdato = LocalDate.now())
+        return TilkjentYtelse(
+            id = UUID.randomUUID(),
+            utbetalingsoppdrag = Utbetalingsoppdrag(
+                kodeEndring = NY,
+                fagSystem = "",
+                saksnummer = "",
+                aktoer = "",
+                saksbehandlerId = "",
+                avstemmingTidspunkt = LocalDateTime.now(),
+                utbetalingsperiode = utbetalingsperioder
+            ),
+            status = TilkjentYtelseStatus.SENDT_TIL_IVERKSETTING,
+            andelerTilkjentYtelse = listOf(),
+            startdato = LocalDate.now()
+        )
     }
-
 }

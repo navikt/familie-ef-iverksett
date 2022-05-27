@@ -15,33 +15,36 @@ import java.time.LocalTime
 import java.time.Month
 import java.util.Locale
 
-
 object OppgaveUtil {
 
     fun opprettBehandlingstema(stønadstype: StønadType): Behandlingstema {
         return Behandlingstema
-                .fromValue(stønadstype.name.lowercase(Locale.getDefault())
-                                   .replaceFirstChar { it.uppercase() })
+            .fromValue(
+                stønadstype.name.lowercase(Locale.getDefault())
+                    .replaceFirstChar { it.uppercase() }
+            )
     }
 
-    fun opprettOppgaveRequest(eksternFagsakId: Long,
-                              personIdent: String,
-                              stønadstype: StønadType,
-                              enhetsnummer: Enhet,
-                              oppgavetype: Oppgavetype,
-                              beskrivelse: String,
-                              fristFerdigstillelse: LocalDate? = null): OpprettOppgaveRequest {
+    fun opprettOppgaveRequest(
+        eksternFagsakId: Long,
+        personIdent: String,
+        stønadstype: StønadType,
+        enhetsnummer: Enhet,
+        oppgavetype: Oppgavetype,
+        beskrivelse: String,
+        fristFerdigstillelse: LocalDate? = null
+    ): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
-                ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
-                saksId = eksternFagsakId.toString(),
-                tema = Tema.ENF,
-                oppgavetype = oppgavetype,
-                fristFerdigstillelse = fristFerdigstillelse(fristFerdigstillelse),
-                beskrivelse = beskrivelse,
-                enhetsnummer = enhetsnummer.enhetId,
-                behandlingstema = opprettBehandlingstema(stønadstype).value,
-                tilordnetRessurs = null,
-                behandlesAvApplikasjon = "familie-ef-sak"
+            ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
+            saksId = eksternFagsakId.toString(),
+            tema = Tema.ENF,
+            oppgavetype = oppgavetype,
+            fristFerdigstillelse = fristFerdigstillelse(fristFerdigstillelse),
+            beskrivelse = beskrivelse,
+            enhetsnummer = enhetsnummer.enhetId,
+            behandlingstema = opprettBehandlingstema(stønadstype).value,
+            tilordnetRessurs = null,
+            behandlesAvApplikasjon = "familie-ef-sak"
         )
     }
 
@@ -76,5 +79,4 @@ object OppgaveUtil {
 
         return date.toLocalDate()
     }
-
 }

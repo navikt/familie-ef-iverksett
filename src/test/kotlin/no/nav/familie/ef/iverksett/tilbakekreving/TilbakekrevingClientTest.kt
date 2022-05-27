@@ -19,31 +19,39 @@ internal class TilbakekrevingClientTest : ServerTest() {
     private lateinit var tilbakekrevingClient: TilbakekrevingClient
 
     @Test
-    fun `hentForhåndsvisningVarselbrev returnere en byteArray med data fra server` () {
+    fun `hentForhåndsvisningVarselbrev returnere en byteArray med data fra server`() {
         val forhåndsvisVarselbrevRequest =
-                ForhåndsvisVarselbrevRequest(ytelsestype = Ytelsestype.OVERGANGSSTØNAD,
-                                             behandlendeEnhetsNavn = "Oslo",
-                                             språkkode = Språkkode.NB,
-                                             feilutbetaltePerioderDto = FeilutbetaltePerioderDto(654654L,
-                                                                                                 listOf(Periode(LocalDate.MIN,
-                                                                                                                LocalDate.MAX))),
-                                             fagsystem = Fagsystem.EF,
-                                             ident = "32165498721",
-                                             eksternFagsakId = "654654")
+            ForhåndsvisVarselbrevRequest(
+                ytelsestype = Ytelsestype.OVERGANGSSTØNAD,
+                behandlendeEnhetsNavn = "Oslo",
+                språkkode = Språkkode.NB,
+                feilutbetaltePerioderDto = FeilutbetaltePerioderDto(
+                    654654L,
+                    listOf(
+                        Periode(
+                            LocalDate.MIN,
+                            LocalDate.MAX
+                        )
+                    )
+                ),
+                fagsystem = Fagsystem.EF,
+                ident = "32165498721",
+                eksternFagsakId = "654654"
+            )
         val hentForhåndsvisningVarselbrev = tilbakekrevingClient.hentForhåndsvisningVarselbrev(forhåndsvisVarselbrevRequest)
 
         assertThat(hentForhåndsvisningVarselbrev.decodeToString()).isEqualTo("Dette er en PDF!")
     }
 
     @Test
-    fun `finnesÅpenBehandling returnerer true hvis server retrurnerer transportobjekt med true` () {
+    fun `finnesÅpenBehandling returnerer true hvis server retrurnerer transportobjekt med true`() {
         val finnesÅpenBehandling = tilbakekrevingClient.finnesÅpenBehandling(1L)
 
         assertThat(finnesÅpenBehandling).isEqualTo(true)
     }
 
     @Test
-    fun `finnBehandlinger returnerer enn liste med behandlinger` () {
+    fun `finnBehandlinger returnerer enn liste med behandlinger`() {
         val finnBehandlinger = tilbakekrevingClient.finnBehandlinger(1L)
 
         assertThat(finnBehandlinger).hasSize(1)
@@ -51,9 +59,9 @@ internal class TilbakekrevingClientTest : ServerTest() {
     }
 
     @Test
-    fun `kanBehandlingOpprettesManuelt returnere transportobjekt far server` () {
+    fun `kanBehandlingOpprettesManuelt returnere transportobjekt far server`() {
         val kanBehandlingOpprettesManuelt =
-                tilbakekrevingClient.kanBehandlingOpprettesManuelt(1L, Ytelsestype.OVERGANGSSTØNAD)
+            tilbakekrevingClient.kanBehandlingOpprettesManuelt(1L, Ytelsestype.OVERGANGSSTØNAD)
 
         assertThat(kanBehandlingOpprettesManuelt.kanBehandlingOpprettes).isEqualTo(true)
     }

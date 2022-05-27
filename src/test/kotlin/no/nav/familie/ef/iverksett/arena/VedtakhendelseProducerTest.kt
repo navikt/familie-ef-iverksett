@@ -39,10 +39,9 @@ private fun forventetXML(hendelsesTidspunkt: String): String {
             <behandlingstema xmlns="">ab0071</behandlingstema>
             <hendelsesprodusentREF xmlns="">EF</hendelsesprodusentREF>
             <applikasjonSakREF xmlns="">1</applikasjonSakREF>
-            <hendelsesTidspunkt xmlns="">${hendelsesTidspunkt}</hendelsesTidspunkt>
+            <hendelsesTidspunkt xmlns="">$hendelsesTidspunkt</hendelsesTidspunkt>
         </vedtakHendelser>
     """.trim()
-            .replace("\n", "")
-            .replace("""> *<""".toRegex(), "><")
-
+        .replace("\n", "")
+        .replace("""> *<""".toRegex(), "><")
 }

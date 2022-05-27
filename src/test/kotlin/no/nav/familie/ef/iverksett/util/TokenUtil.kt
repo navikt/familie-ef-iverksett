@@ -9,18 +9,17 @@ object TokenUtil {
         val thisId = UUID.randomUUID().toString()
 
         val claims = mapOf(
-                "oid" to thisId,
-                "azp" to clientId,
-                "roles" to if (accessAsApplication) listOf("access_as_application") else emptyList()
+            "oid" to thisId,
+            "azp" to clientId,
+            "roles" to if (accessAsApplication) listOf("access_as_application") else emptyList()
         )
 
         return mockOAuth2Server.issueToken(
-                issuerId = "azuread",
-                subject = thisId,
-                audience = "aud-localhost",
-                claims = claims
+            issuerId = "azuread",
+            subject = thisId,
+            audience = "aud-localhost",
+            claims = claims
         ).serialize()
-
     }
 
     fun onBehalfOfToken(mockOAuth2Server: MockOAuth2Server, saksbehandler: String): String {
@@ -28,18 +27,17 @@ object TokenUtil {
         val clientId = UUID.randomUUID().toString()
 
         val claims = mapOf(
-                "oid" to thisId,
-                "azp" to clientId,
-                "name" to saksbehandler,
-                "NAVident" to saksbehandler,
+            "oid" to thisId,
+            "azp" to clientId,
+            "name" to saksbehandler,
+            "NAVident" to saksbehandler,
         )
 
         return mockOAuth2Server.issueToken(
-                issuerId = "azuread",
-                subject = thisId,
-                audience = "aud-localhost",
-                claims = claims
+            issuerId = "azuread",
+            subject = thisId,
+            audience = "aud-localhost",
+            claims = claims
         ).serialize()
     }
-
 }

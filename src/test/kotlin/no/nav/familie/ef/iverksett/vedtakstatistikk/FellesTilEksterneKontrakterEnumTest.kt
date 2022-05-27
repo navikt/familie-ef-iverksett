@@ -35,10 +35,3 @@ class FellesTilEksterneKontrakterEnumTest {
         StønadType.values().forEach { StønadTypeEkstern.valueOf(it.name) }
     }
 }
-
-
-
-
-
-
-

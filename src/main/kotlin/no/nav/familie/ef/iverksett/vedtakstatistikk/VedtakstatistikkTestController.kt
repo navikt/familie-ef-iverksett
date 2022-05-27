@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = "azuread")
 @Profile("dev", "local")
 class VedtakstatistikkTestController(
-        private val vedtakstatistikkService: VedtakstatistikkService,
+    private val vedtakstatistikkService: VedtakstatistikkService,
 ) {
 
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendStatistikk(@RequestBody data: IverksettDto) {
         vedtakstatistikkService.sendTilKafka(data.toDomain(), null)
     }
-
 }

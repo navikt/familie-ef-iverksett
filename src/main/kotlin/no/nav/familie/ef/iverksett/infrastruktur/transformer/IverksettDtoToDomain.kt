@@ -49,118 +49,131 @@ fun VilkårsvurderingDto.toDomain(): Vilkårsvurdering {
 }
 
 fun FagsakdetaljerDto.toDomain(): Fagsakdetaljer {
-    return Fagsakdetaljer(fagsakId = this.fagsakId,
-                          eksternId = this.eksternId,
-                          stønadstype = this.stønadstype)
+    return Fagsakdetaljer(
+        fagsakId = this.fagsakId,
+        eksternId = this.eksternId,
+        stønadstype = this.stønadstype
+    )
 }
 
 fun SøkerDto.toDomain(): Søker {
-    return Søker(personIdent = this.personIdent,
-                 barn = this.barn.map { it.toDomain() },
-                 tilhørendeEnhet = this.tilhørendeEnhet,
-                 adressebeskyttelse = this.adressebeskyttelse)
+    return Søker(
+        personIdent = this.personIdent,
+        barn = this.barn.map { it.toDomain() },
+        tilhørendeEnhet = this.tilhørendeEnhet,
+        adressebeskyttelse = this.adressebeskyttelse
+    )
 }
 
 fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
-    return Behandlingsdetaljer(behandlingId = this.behandlingId,
-                               forrigeBehandlingId = this.forrigeBehandlingId,
-                               eksternId = this.eksternId,
-                               behandlingType = this.behandlingType,
-                               behandlingÅrsak = this.behandlingÅrsak,
-                               vilkårsvurderinger = this.vilkårsvurderinger.map { it.toDomain() },
-                               aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato)
+    return Behandlingsdetaljer(
+        behandlingId = this.behandlingId,
+        forrigeBehandlingId = this.forrigeBehandlingId,
+        eksternId = this.eksternId,
+        behandlingType = this.behandlingType,
+        behandlingÅrsak = this.behandlingÅrsak,
+        vilkårsvurderinger = this.vilkårsvurderinger.map { it.toDomain() },
+        aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato
+    )
 }
 
 fun VedtaksperiodeOvergangsstønadDto.toDomain(): VedtaksperiodeOvergangsstønad {
     return VedtaksperiodeOvergangsstønad(
-            aktivitet = this.aktivitet,
-            fraOgMed = this.fraOgMed,
-            periodeType = this.periodeType,
-            tilOgMed = this.tilOgMed)
+        aktivitet = this.aktivitet,
+        fraOgMed = this.fraOgMed,
+        periodeType = this.periodeType,
+        tilOgMed = this.tilOgMed
+    )
 }
 
 fun VedtaksperiodeBarnetilsynDto.toDomain(): VedtaksperiodeBarnetilsyn {
     return VedtaksperiodeBarnetilsyn(
-            fraOgMed = this.fraOgMed,
-            tilOgMed = this.tilOgMed,
-            utgifter = this.utgifter,
-            antallBarn = this.antallBarn
+        fraOgMed = this.fraOgMed,
+        tilOgMed = this.tilOgMed,
+        utgifter = this.utgifter,
+        antallBarn = this.antallBarn
     )
 }
 
 fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstønad {
     return VedtaksdetaljerOvergangsstønad(
-            vedtaksresultat = this.resultat,
-            vedtakstidspunkt = this.vedtakstidspunkt,
-            opphørÅrsak = this.opphørÅrsak,
-            saksbehandlerId = this.saksbehandlerId,
-            beslutterId = this.beslutterId,
-            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
-            vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
-            tilbakekreving = this.tilbakekreving?.toDomain(),
-            brevmottakere = this.brevmottakere.toDomain())
+        vedtaksresultat = this.resultat,
+        vedtakstidspunkt = this.vedtakstidspunkt,
+        opphørÅrsak = this.opphørÅrsak,
+        saksbehandlerId = this.saksbehandlerId,
+        beslutterId = this.beslutterId,
+        tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
+        vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
+        tilbakekreving = this.tilbakekreving?.toDomain(),
+        brevmottakere = this.brevmottakere.toDomain()
+    )
 }
 
 fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn {
     return VedtaksdetaljerBarnetilsyn(
-            vedtaksresultat = this.resultat,
-            vedtakstidspunkt = this.vedtakstidspunkt,
-            opphørÅrsak = this.opphørÅrsak,
-            saksbehandlerId = this.saksbehandlerId,
-            beslutterId = this.beslutterId,
-            tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
-            vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
-            tilbakekreving = this.tilbakekreving?.toDomain(),
-            brevmottakere = this.brevmottakere.toDomain(),
-            kontantstøtte = this.kontantstøtte.map { it.toDomain() },
-            tilleggsstønad = this.tilleggsstønad.map { it.toDomain() })
+        vedtaksresultat = this.resultat,
+        vedtakstidspunkt = this.vedtakstidspunkt,
+        opphørÅrsak = this.opphørÅrsak,
+        saksbehandlerId = this.saksbehandlerId,
+        beslutterId = this.beslutterId,
+        tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
+        vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
+        tilbakekreving = this.tilbakekreving?.toDomain(),
+        brevmottakere = this.brevmottakere.toDomain(),
+        kontantstøtte = this.kontantstøtte.map { it.toDomain() },
+        tilleggsstønad = this.tilleggsstønad.map { it.toDomain() }
+    )
 }
 
 fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
     return Tilbakekrevingsdetaljer(
-            tilbakekrevingsvalg = this.tilbakekrevingsvalg,
-            this.tilbakekrevingMedVarsel?.toDomain()
+        tilbakekrevingsvalg = this.tilbakekrevingsvalg,
+        this.tilbakekrevingMedVarsel?.toDomain()
     )
 }
 
 fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel {
     return TilbakekrevingMedVarsel(
-            varseltekst = this.varseltekst,
-            sumFeilutbetaling = this.sumFeilutbetaling,
-            perioder = this.perioder,
+        varseltekst = this.varseltekst,
+        sumFeilutbetaling = this.sumFeilutbetaling,
+        perioder = this.perioder,
     )
 }
 
 fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere {
 
-    return Brevmottakere(mottakere = this.map {
-        Brevmottaker(
+    return Brevmottakere(
+        mottakere = this.map {
+            Brevmottaker(
                 ident = it.ident,
                 navn = it.navn,
                 identType = it.identType,
                 mottakerRolle = it.mottakerRolle
-        )
-    })
+            )
+        }
+    )
 }
 
 fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
-        PeriodeMedBeløp(fraOgMed = this.fraOgMed,
-                        tilOgMed = this.tilOgMed,
-                        beløp = this.beløp)
+    PeriodeMedBeløp(
+        fraOgMed = this.fraOgMed,
+        tilOgMed = this.tilOgMed,
+        beløp = this.beløp
+    )
 
 fun IverksettDto.toDomain(): Iverksett {
     return when (this) {
         is IverksettOvergangsstønadDto -> IverksettOvergangsstønad(
-                fagsak = this.fagsak.toDomain(),
-                søker = this.søker.toDomain(),
-                behandling = this.behandling.toDomain(),
-                vedtak = this.vedtak.toDomain()
+            fagsak = this.fagsak.toDomain(),
+            søker = this.søker.toDomain(),
+            behandling = this.behandling.toDomain(),
+            vedtak = this.vedtak.toDomain()
         )
         is IverksettBarnetilsynDto -> IverksettBarnetilsyn(
-                fagsak = this.fagsak.toDomain(),
-                søker = this.søker.toDomain(),
-                behandling = this.behandling.toDomain(),
-                vedtak = this.vedtak.toDomain()
+            fagsak = this.fagsak.toDomain(),
+            søker = this.søker.toDomain(),
+            behandling = this.behandling.toDomain(),
+            vedtak = this.vedtak.toDomain()
         )
         else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
     }

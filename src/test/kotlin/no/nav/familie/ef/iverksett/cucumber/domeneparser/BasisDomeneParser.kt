@@ -154,8 +154,10 @@ fun parseValgfriInt(domenebegrep: Domenenøkkel, rad: Map<String, String>): Int?
 fun parseValgfriIntRange(domenebegrep: Domenenøkkel, rad: Map<String, String>): Pair<Int, Int>? {
     val verdi = valgfriVerdi(domenebegrep, rad) ?: return null
 
-    return Pair(Integer.parseInt(verdi.split("-").first()),
-                Integer.parseInt(verdi.split("-").last()))
+    return Pair(
+        Integer.parseInt(verdi.split("-").first()),
+        Integer.parseInt(verdi.split("-").last())
+    )
 }
 
 inline fun <reified T : Enum<T>> parseValgfriEnum(domenebegrep: Domenenøkkel, rad: Map<String, String>): T? {

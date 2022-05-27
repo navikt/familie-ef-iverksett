@@ -9,8 +9,10 @@ import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.time.LocalDate
 import java.util.UUID
 
-data class PeriodeId(val gjeldende: Long?,
-                     val forrige: Long? = null)
+data class PeriodeId(
+    val gjeldende: Long?,
+    val forrige: Long? = null
+)
 
 fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, this.forrigePeriodeId)
 
@@ -18,21 +20,23 @@ fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, th
 val NULL_DATO: LocalDate = LocalDate.MIN
 
 fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): AndelTilkjentYtelse =
-        AndelTilkjentYtelse(beløp = 0,
-                            fraOgMed = NULL_DATO,
-                            tilOgMed = NULL_DATO,
-                            inntekt = 0,
-                            samordningsfradrag = 0,
-                            inntektsreduksjon = 0,
+    AndelTilkjentYtelse(
+        beløp = 0,
+        fraOgMed = NULL_DATO,
+        tilOgMed = NULL_DATO,
+        inntekt = 0,
+        samordningsfradrag = 0,
+        inntektsreduksjon = 0,
 
-                            periodeId = periodeId?.gjeldende,
-                            kildeBehandlingId = kildeBehandlingId,
-                            forrigePeriodeId = periodeId?.forrige)
+        periodeId = periodeId?.gjeldende,
+        kildeBehandlingId = kildeBehandlingId,
+        forrigePeriodeId = periodeId?.forrige
+    )
 
 object ØkonomiUtils {
 
     fun andelerUtenNullVerdier(tilkjentYtelse: TilkjentYtelse?): List<AndelTilkjentYtelse> =
-            tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.erNull() } ?: emptyList()
+        tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.erNull() } ?: emptyList()
 
     /**
      * Lager oversikt over siste andel i hver kjede som finnes uten endring i oppdatert tilstand.
@@ -43,16 +47,18 @@ object ØkonomiUtils {
      * @param[andelerNyTilkjentYtelse] nåværende tilstand
      * @return liste med bestående andeler
      */
-    fun beståendeAndeler(andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
-                         andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>): List<AndelTilkjentYtelse> {
+    fun beståendeAndeler(
+        andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
+        andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>
+    ): List<AndelTilkjentYtelse> {
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
 
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val består =
-                if (førsteEndring != null)
-                    forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.fraOgMed.isBefore(førsteEndring) }
-                else forrigeAndeler
+            if (førsteEndring != null)
+                forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.fraOgMed.isBefore(førsteEndring) }
+            else forrigeAndeler
         return består.sortedBy { it.periodeId }
     }
 
@@ -63,8 +69,10 @@ object ØkonomiUtils {
      * @param[beståendeAndeler] andeler man må bygge opp etter
      * @return andeler som må opprettes, hvis det ikke er noen beståendeAndeler returneres oppdatertKjede
      */
-    fun andelerTilOpprettelse(andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
-                              beståendeAndeler: List<AndelTilkjentYtelse>): List<AndelTilkjentYtelse> {
+    fun andelerTilOpprettelse(
+        andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
+        beståendeAndeler: List<AndelTilkjentYtelse>
+    ): List<AndelTilkjentYtelse> {
         return beståendeAndeler.maxByOrNull { it.tilOgMed }?.let { sisteBeståendeAndel ->
             andelerNyTilkjentYtelse.filter { it.fraOgMed.isAfter(sisteBeståendeAndel.fraOgMed) }
         } ?: andelerNyTilkjentYtelse
@@ -77,8 +85,10 @@ object ØkonomiUtils {
      * @param[nyTilkjentYtelseMedMetaData] nåværende tilstand
      * @return utbetalingsperiode for opphør, returnerer null hvis det ikke finnes ett opphørsdato
      */
-    fun utbetalingsperiodeForOpphør(forrigeTilkjentYtelse: TilkjentYtelse?,
-                                    nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData): Utbetalingsperiode? {
+    fun utbetalingsperiodeForOpphør(
+        forrigeTilkjentYtelse: TilkjentYtelse?,
+        nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData
+    ): Utbetalingsperiode? {
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         validerStartdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
 
@@ -96,8 +106,9 @@ object ØkonomiUtils {
         val opphørsdato = finnOpphørsdato(forrigeAndeler.toSet(), nyeAndeler.toSet())
 
         return if (harIngenAndelerÅOpphøre(opphørsdato, forrigeTilkjentYtelse, forrigeAndeler) ||
-                   opphørsdato == null ||
-                   erNyPeriode(forrigeMaksDato, opphørsdato)) {
+            opphørsdato == null ||
+            erNyPeriode(forrigeMaksDato, opphørsdato)
+        ) {
             null
         } else {
             lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, opphørsdato, nyTilkjentYtelseMedMetaData)
@@ -107,24 +118,28 @@ object ØkonomiUtils {
     /**
      * Når tidligere andeler er empty, og opphørsdato er etter forrige sitt startdato trenger vi ikke å opphøre noe
      */
-    private fun harIngenAndelerÅOpphøre(opphørsdato: LocalDate?,
-                                        forrigeTilkjentYtelse: TilkjentYtelse,
-                                        forrigeAndeler: List<AndelTilkjentYtelse>) =
-            forrigeAndeler.isEmpty() && opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startdato
+    private fun harIngenAndelerÅOpphøre(
+        opphørsdato: LocalDate?,
+        forrigeTilkjentYtelse: TilkjentYtelse,
+        forrigeAndeler: List<AndelTilkjentYtelse>
+    ) =
+        forrigeAndeler.isEmpty() && opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startdato
 
     /**
      * Nytt opphørsdato må finnes hvis det finnes opphørsdato på tidligere tilkjent ytelse
      * Nytt opphørsdato må være etter forrige opphørsdato, då den inneholder dato for når vi historiskt har første datoet
      * Opphørsdato kan ikke være etter første andel
      */
-    private fun validerStartdato(forrigeTilkjentYtelse: TilkjentYtelse?,
-                                 nyTilkjentYtelse: TilkjentYtelse,
-                                 gammelVersjon: Boolean = false) {
+    private fun validerStartdato(
+        forrigeTilkjentYtelse: TilkjentYtelse?,
+        nyTilkjentYtelse: TilkjentYtelse,
+        gammelVersjon: Boolean = false
+    ) {
         val nyMinDato = nyTilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
         val forrigeStartdato = forrigeTilkjentYtelse?.startdato
         val nyStartdato = nyTilkjentYtelse.startdato
         if (forrigeStartdato != null) {
-             if (nyStartdato > forrigeStartdato) {
+            if (nyStartdato > forrigeStartdato) {
                 error("Nytt opphørsdato=$nyStartdato kan ikke være etter forrigeOpphørsdato=$forrigeStartdato")
             }
         }
@@ -140,13 +155,15 @@ object ØkonomiUtils {
         }
     }
 
-    private fun validerOpphørOg0Andeler(forrigeTilkjentYtelse: TilkjentYtelse?,
-                                        nyOpphørsdato: LocalDate?,
-                                        forrigeOpphørsdato: LocalDate?) {
+    private fun validerOpphørOg0Andeler(
+        forrigeTilkjentYtelse: TilkjentYtelse?,
+        nyOpphørsdato: LocalDate?,
+        forrigeOpphørsdato: LocalDate?
+    ) {
         val harOpphørEllerOpphørFørForrigeTilkjentYtelse =
-                nyOpphørsdato != null && (forrigeOpphørsdato == null || (nyOpphørsdato < forrigeOpphørsdato))
+            nyOpphørsdato != null && (forrigeOpphørsdato == null || (nyOpphørsdato < forrigeOpphørsdato))
         val harForrigeTilkjentYtelseUtenBeløp =
-                forrigeTilkjentYtelse != null && andelerUtenNullVerdier(forrigeTilkjentYtelse).isEmpty()
+            forrigeTilkjentYtelse != null && andelerUtenNullVerdier(forrigeTilkjentYtelse).isEmpty()
         if (harOpphørEllerOpphørFørForrigeTilkjentYtelse && harForrigeTilkjentYtelseUtenBeløp) {
             error("Kan ikke opphøre før tidligere opphør når det finnes en tidligere tilkjent ytelse uten andeler")
         }
@@ -161,27 +178,31 @@ object ØkonomiUtils {
      * Hvis forrige kjede inneholder 2 andeler og den nye kjeden endrer i den andre andelen,
      * så skal opphørsdatoet settes til startdato for andre andelen i forrige kjede
      */
-    private fun finnOpphørsdato(forrigeAndeler: Set<AndelTilkjentYtelse>,
-                                oppdaterteAndeler: Set<AndelTilkjentYtelse>): LocalDate? {
+    private fun finnOpphørsdato(
+        forrigeAndeler: Set<AndelTilkjentYtelse>,
+        oppdaterteAndeler: Set<AndelTilkjentYtelse>
+    ): LocalDate? {
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val førsteDatoIForrigePeriode = forrigeAndeler.minByOrNull { it.fraOgMed }?.fraOgMed
         val førsteDatoNyePerioder = oppdaterteAndeler.minOfOrNull { it.fraOgMed }
         if (førsteDatoNyePerioder != null && førsteDatoIForrigePeriode != null &&
-            førsteDatoNyePerioder.isBefore(førsteDatoIForrigePeriode)) {
+            førsteDatoNyePerioder.isBefore(førsteDatoIForrigePeriode)
+        ) {
             return førsteDatoNyePerioder
         }
         return førsteEndring
     }
 
-    private fun finnDatoForFørsteEndredeAndel(andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
-                                              andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>) =
-            andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse)
-                    .minByOrNull { it.fraOgMed }?.fraOgMed
+    private fun finnDatoForFørsteEndredeAndel(
+        andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
+        andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>
+    ) =
+        andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse)
+            .minByOrNull { it.fraOgMed }?.fraOgMed
 
     /**
      * Sjekker om den nye endringen er etter maks datot for tidligere perioder
      */
     private fun erNyPeriode(forrigeMaksDato: LocalDate?, førsteEndring: LocalDate) =
-            forrigeMaksDato != null && førsteEndring.isAfter(forrigeMaksDato)
+        forrigeMaksDato != null && førsteEndring.isAfter(forrigeMaksDato)
 }
-

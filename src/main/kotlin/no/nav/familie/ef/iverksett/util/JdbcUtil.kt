@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.util
 
 import com.fasterxml.jackson.module.kotlin.readValue
-
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -24,13 +23,14 @@ inline fun <reified T> NamedParameterJdbcTemplate.queryForJson(sql: String, para
     }
 }
 
-inline fun <reified T> NamedParameterJdbcTemplate.queryForNullableObject(sql: String,
-                                                                         paramSource: SqlParameterSource,
-                                                                         rowMapper: RowMapper<T>): T? {
+inline fun <reified T> NamedParameterJdbcTemplate.queryForNullableObject(
+    sql: String,
+    paramSource: SqlParameterSource,
+    rowMapper: RowMapper<T>
+): T? {
     return try {
         this.queryForObject(sql, paramSource, rowMapper)
     } catch (emptyResultDataAccess: EmptyResultDataAccessException) {
         null
     }
 }
-

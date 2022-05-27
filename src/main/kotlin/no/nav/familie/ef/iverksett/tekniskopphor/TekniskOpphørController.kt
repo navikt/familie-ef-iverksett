@@ -17,18 +17,22 @@ class TekniskOpphørController(val tekniskOpphørService: TekniskOpphørService)
 
     @PostMapping
     fun iverksettTekniskOpphor(@RequestBody tekniskOpphørDto: TekniskOpphørDto) {
-        val tekniskOpphør = TekniskOpphør(forrigeBehandlingId = tekniskOpphørDto.forrigeBehandlingId,
-                                          tilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
-                                                  tilkjentYtelse = TilkjentYtelse(
-                                                          andelerTilkjentYtelse = emptyList(),
-                                                          startdato = tekniskOpphørDto.vedtaksdato), // TODO denne må nog fikses
-                                                  saksbehandlerId = tekniskOpphørDto.saksbehandlerId,
-                                                  eksternBehandlingId = tekniskOpphørDto.eksternBehandlingId,
-                                                  stønadstype = tekniskOpphørDto.stønadstype,
-                                                  eksternFagsakId = tekniskOpphørDto.eksternFagsakId,
-                                                  personIdent = tekniskOpphørDto.personIdent,
-                                                  behandlingId = tekniskOpphørDto.behandlingId,
-                                                  vedtaksdato = tekniskOpphørDto.vedtaksdato))
+        val tekniskOpphør = TekniskOpphør(
+            forrigeBehandlingId = tekniskOpphørDto.forrigeBehandlingId,
+            tilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
+                tilkjentYtelse = TilkjentYtelse(
+                    andelerTilkjentYtelse = emptyList(),
+                    startdato = tekniskOpphørDto.vedtaksdato
+                ), // TODO denne må nog fikses
+                saksbehandlerId = tekniskOpphørDto.saksbehandlerId,
+                eksternBehandlingId = tekniskOpphørDto.eksternBehandlingId,
+                stønadstype = tekniskOpphørDto.stønadstype,
+                eksternFagsakId = tekniskOpphørDto.eksternFagsakId,
+                personIdent = tekniskOpphørDto.personIdent,
+                behandlingId = tekniskOpphørDto.behandlingId,
+                vedtaksdato = tekniskOpphørDto.vedtaksdato
+            )
+        )
         tekniskOpphørService.startIverksettingAvTekniskOpphor(tekniskOpphør)
     }
 }

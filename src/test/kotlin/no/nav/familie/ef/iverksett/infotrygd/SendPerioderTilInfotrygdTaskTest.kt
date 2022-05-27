@@ -24,7 +24,6 @@ import java.util.UUID
 
 internal class SendPerioderTilInfotrygdTaskTest {
 
-
     private val infotrygdFeedClient = mockk<InfotrygdFeedClient>(relaxed = true)
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>(relaxed = true)
     private val iverksettingRepository = mockk<IverksettingRepository>()
@@ -32,15 +31,19 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     private val behandlingId = UUID.randomUUID()
 
-    private val identer = listOf(PersonIdentMedHistorikk("1", false),
-                                 PersonIdentMedHistorikk("2", true))
+    private val identer = listOf(
+        PersonIdentMedHistorikk("1", false),
+        PersonIdentMedHistorikk("2", true)
+    )
 
     private val requestSlot = slot<OpprettPeriodeHendelseDto>()
 
-    val task = SendPerioderTilInfotrygdTask(infotrygdFeedClient,
-                                            familieIntegrasjonerClient,
-                                            iverksettingRepository,
-                                            taskRepository)
+    val task = SendPerioderTilInfotrygdTask(
+        infotrygdFeedClient,
+        familieIntegrasjonerClient,
+        iverksettingRepository,
+        taskRepository
+    )
 
     @BeforeEach
     internal fun setUp() {
@@ -53,37 +56,41 @@ internal class SendPerioderTilInfotrygdTaskTest {
         val iverksett = opprettData(lagAndelTilkjentYtelse(2, LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31)))
         every { iverksettingRepository.hent(behandlingId) } returns iverksett
 
-
         task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
 
         assertThat(requestSlot.captured.personIdenter).containsExactlyInAnyOrder("1", "2")
         assertThat(requestSlot.captured.perioder).containsExactly(
-                Periode(LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31), true))
+            Periode(LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31), true)
+        )
         verify(exactly = 1) { infotrygdFeedClient.opprettPeriodeHendelse(any()) }
     }
 
     @Test
     internal fun `fullOvergangsstønad er false hvis samordningsfradrag eller inntektsreduksjon ikke er 0`() {
-        val andelTilkjentYtelse = lagAndelTilkjentYtelse(beløp = 1,
-                                                         fraOgMed = LocalDate.of(1901, 1, 1),
-                                                         tilOgMed = LocalDate.of(1901, 1, 31),
-                                                         samordningsfradrag = 1,
-                                                         inntektsreduksjon = 0)
-        val andelTilkjentYtelse2 = lagAndelTilkjentYtelse(beløp = 3,
-                                                          fraOgMed = LocalDate.of(1902, 1, 1),
-                                                          tilOgMed = LocalDate.of(1902, 1, 31),
-                                                          samordningsfradrag = 0,
-                                                          inntektsreduksjon = 1)
+        val andelTilkjentYtelse = lagAndelTilkjentYtelse(
+            beløp = 1,
+            fraOgMed = LocalDate.of(1901, 1, 1),
+            tilOgMed = LocalDate.of(1901, 1, 31),
+            samordningsfradrag = 1,
+            inntektsreduksjon = 0
+        )
+        val andelTilkjentYtelse2 = lagAndelTilkjentYtelse(
+            beløp = 3,
+            fraOgMed = LocalDate.of(1902, 1, 1),
+            tilOgMed = LocalDate.of(1902, 1, 31),
+            samordningsfradrag = 0,
+            inntektsreduksjon = 1
+        )
         val iverksett = opprettData(andelTilkjentYtelse, andelTilkjentYtelse2)
         every { iverksettingRepository.hent(behandlingId) } returns iverksett
-
 
         task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
 
         assertThat(requestSlot.captured.personIdenter).containsExactlyInAnyOrder("1", "2")
         assertThat(requestSlot.captured.perioder).containsExactly(
-                Periode(LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31), false),
-                Periode(LocalDate.of(1902, 1, 1), LocalDate.of(1902, 1, 31), false))
+            Periode(LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31), false),
+            Periode(LocalDate.of(1902, 1, 1), LocalDate.of(1902, 1, 31), false)
+        )
         verify(exactly = 1) { infotrygdFeedClient.opprettPeriodeHendelse(any()) }
     }
 
@@ -102,7 +109,11 @@ internal class SendPerioderTilInfotrygdTaskTest {
         val iverksett = opprettIverksettOvergangsstønad(behandlingId)
         val vedtak = iverksett.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
-        return iverksett.copy(vedtak = vedtak.copy(tilkjentYtelse =
-                                                   tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelTilkjentYtelse.toList())))
+        return iverksett.copy(
+            vedtak = vedtak.copy(
+                tilkjentYtelse =
+                tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelTilkjentYtelse.toList())
+            )
+        )
     }
 }

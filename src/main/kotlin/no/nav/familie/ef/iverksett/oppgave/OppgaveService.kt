@@ -17,9 +17,9 @@ import java.time.LocalDate
 
 @Service
 class OppgaveService(
-        private val oppgaveClient: OppgaveClient,
-        private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-        private val iverksettingRepository: IverksettingRepository
+    private val oppgaveClient: OppgaveClient,
+    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+    private val iverksettingRepository: IverksettingRepository
 ) {
 
     fun skalOppretteVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Boolean {
@@ -41,28 +41,30 @@ class OppgaveService(
 
     fun opprettVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Long {
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
-                    ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
+            ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
         val opprettOppgaveRequest =
-                OppgaveUtil.opprettOppgaveRequest(iverksett.fagsak.eksternId,
-                                                  iverksett.søker.personIdent,
-                                                  iverksett.fagsak.stønadstype,
-                                                  enhet,
-                                                  Oppgavetype.VurderHenvendelse,
-                                                  beskrivelse)
+            OppgaveUtil.opprettOppgaveRequest(
+                iverksett.fagsak.eksternId,
+                iverksett.søker.personIdent,
+                iverksett.fagsak.stønadstype,
+                enhet,
+                Oppgavetype.VurderHenvendelse,
+                beskrivelse
+            )
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
-               ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
         return when (iverksett.vedtak.vedtaksresultat) {
             Vedtaksresultat.INNVILGET -> beskrivelseFørstegangsbehandlingInnvilget(
-                    iverksett.totalVedtaksperiode(),
-                    iverksett.gjeldendeVedtak()
+                iverksett.totalVedtaksperiode(),
+                iverksett.gjeldendeVedtak()
             )
             Vedtaksresultat.AVSLÅTT -> beskrivelseFørstegangsbehandlingAvslått(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
@@ -74,8 +76,9 @@ class OppgaveService(
             Vedtaksresultat.INNVILGET -> {
                 iverksett.behandling.forrigeBehandlingId?.let {
                     beskrivelseRevurderingInnvilget(
-                            iverksett.totalVedtaksperiode(),
-                            iverksett.gjeldendeVedtak())
+                        iverksett.totalVedtaksperiode(),
+                        iverksett.gjeldendeVedtak()
+                    )
                 } ?: finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             }
             Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(opphørsdato(iverksett))
@@ -112,13 +115,15 @@ class OppgaveService(
     }
 
     private fun IverksettOvergangsstønad.gjeldendeVedtak(): VedtaksperiodeOvergangsstønad =
-            this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed } ?: error("Kunne ikke finne vedtaksperioder")
+        this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed } ?: error("Kunne ikke finne vedtaksperioder")
 
     private fun Iverksett.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate {
         return this.vedtak.vedtaksperioder.maxOf { it.tilOgMed }
     }
 
     private fun Iverksett.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
-            Pair(this.vedtak.vedtaksperioder.minOf { it.fraOgMed },
-                 this.vedtak.vedtaksperioder.maxOf { it.tilOgMed })
+        Pair(
+            this.vedtak.vedtaksperioder.minOf { it.fraOgMed },
+            this.vedtak.vedtaksperioder.maxOf { it.tilOgMed }
+        )
 }

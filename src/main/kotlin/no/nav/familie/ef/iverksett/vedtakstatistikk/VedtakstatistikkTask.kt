@@ -9,12 +9,16 @@ import org.springframework.stereotype.Service
 import java.util.UUID
 
 @Service
-@TaskStepBeskrivelse(taskStepType = VedtakstatistikkTask.TYPE,
-                     beskrivelse = "Sender vedtaksstatistikk til DVH.",
-                     settTilManuellOppfølgning = true)
-class VedtakstatistikkTask(private val iverksettingRepository: IverksettingRepository,
-                           private val vedtakstatistikkService: VedtakstatistikkService,
-                           private val tilstandRepository: TilstandRepository) : AsyncTaskStep {
+@TaskStepBeskrivelse(
+    taskStepType = VedtakstatistikkTask.TYPE,
+    beskrivelse = "Sender vedtaksstatistikk til DVH.",
+    settTilManuellOppfølgning = true
+)
+class VedtakstatistikkTask(
+    private val iverksettingRepository: IverksettingRepository,
+    private val vedtakstatistikkService: VedtakstatistikkService,
+    private val tilstandRepository: TilstandRepository
+) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)

@@ -54,7 +54,7 @@ internal class BehandlingsstatistikkServiceTest {
         val endretTid = ZonedDateTime.now()
         val saksbehandler = "Saksbehandler påbegynt"
         val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.PÅBEGYNT, fortrolig = false)
-                .copy(hendelseTidspunkt = endretTid, gjeldendeSaksbehandlerId = saksbehandler)
+            .copy(hendelseTidspunkt = endretTid, gjeldendeSaksbehandlerId = saksbehandler)
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
@@ -72,10 +72,12 @@ internal class BehandlingsstatistikkServiceTest {
         val behandlingResultat = "Behandlingsresultat fra vedtak"
         val resultatBegrunnelse = "Begrunnelse for vedtak"
         val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.VEDTATT, fortrolig = false)
-                .copy(hendelseTidspunkt = endretTid,
-                      gjeldendeSaksbehandlerId = saksbehandler,
-                      behandlingResultat = behandlingResultat,
-                      resultatBegrunnelse = resultatBegrunnelse)
+            .copy(
+                hendelseTidspunkt = endretTid,
+                gjeldendeSaksbehandlerId = saksbehandler,
+                behandlingResultat = behandlingResultat,
+                resultatBegrunnelse = resultatBegrunnelse
+            )
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
@@ -97,10 +99,12 @@ internal class BehandlingsstatistikkServiceTest {
         val behandlingResultat = "Behandlingsresultat fra beslutter"
         val resultatBegrunnelse = "Begrunnelse for vedtak"
         val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.BESLUTTET, fortrolig = false)
-                .copy(hendelseTidspunkt = endretTid,
-                      gjeldendeSaksbehandlerId = ansvarligBeslutter,
-                      behandlingResultat = behandlingResultat,
-                      resultatBegrunnelse = resultatBegrunnelse)
+            .copy(
+                hendelseTidspunkt = endretTid,
+                gjeldendeSaksbehandlerId = ansvarligBeslutter,
+                behandlingResultat = behandlingResultat,
+                resultatBegrunnelse = resultatBegrunnelse
+            )
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
@@ -118,7 +122,7 @@ internal class BehandlingsstatistikkServiceTest {
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
         val behandlingStatistikkDto =
-                opprettBehandlingsstatistikkDto(uuid, Hendelse.FERDIG, fortrolig = false).copy(hendelseTidspunkt = endretTid)
+            opprettBehandlingsstatistikkDto(uuid, Hendelse.FERDIG, fortrolig = false).copy(hendelseTidspunkt = endretTid)
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
@@ -139,8 +143,5 @@ internal class BehandlingsstatistikkServiceTest {
         assertThat(captureSlot.captured.opprettetAv).isEqualTo("-5")
         assertThat(captureSlot.captured.opprettetEnhet).isEqualTo("-5")
         assertThat(captureSlot.captured.ansvarligEnhet).isEqualTo("-5")
-
     }
-
 }
-

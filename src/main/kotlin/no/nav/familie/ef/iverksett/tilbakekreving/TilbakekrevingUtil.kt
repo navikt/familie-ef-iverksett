@@ -9,9 +9,10 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
 
 private val TILBAKEKREVING_UTEN_VARSEL =
-        Tilbakekrevingsdetaljer(
-                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
-                tilbakekrevingMedVarsel = null)
+    Tilbakekrevingsdetaljer(
+        tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
+        tilbakekrevingMedVarsel = null
+    )
 
 fun Iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleringsresultat): Iverksett {
 
@@ -19,18 +20,20 @@ fun Iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleri
     val simuleringsoppsummering = beriketSimuleringsresultat.oppsummering
 
     val nyTilbakekreving: Tilbakekrevingsdetaljer? =
-            if (tilbakekreving != null  && !simuleringsoppsummering.harFeilutbetaling)
-                null
-            else if (harAvvikIVarsel(tilbakekreving, simuleringsoppsummering))
-                tilbakekreving?.oppdaterVarsel(simuleringsoppsummering)
-            else
-                tilbakekreving
+        if (tilbakekreving != null && !simuleringsoppsummering.harFeilutbetaling)
+            null
+        else if (harAvvikIVarsel(tilbakekreving, simuleringsoppsummering))
+            tilbakekreving?.oppdaterVarsel(simuleringsoppsummering)
+        else
+            tilbakekreving
 
     return this.medNyTilbakekreving(nyTilbakekreving)
 }
 
-private fun harAvvikIVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer?,
-                            simuleringsoppsummering: Simuleringsoppsummering): Boolean {
+private fun harAvvikIVarsel(
+    tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer?,
+    simuleringsoppsummering: Simuleringsoppsummering
+): Boolean {
     // Sjekker ikke periodene fordi de kan være ulikt konsolidert
     // Er jo et spørsmål om evt konsolideringslogikk heller burde ligge her i ef-iverksett i stedet for ef-sak
     // slik at de kan sammenliknes konsistent
@@ -46,9 +49,11 @@ val Simuleringsoppsummering.harFeilutbetaling: Boolean
 
 fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringsoppsummering): Tilbakekrevingsdetaljer {
 
-    return this.copy(tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel
-            ?.copy(sumFeilutbetaling = simuleringsoppsummering.feilutbetaling,
-                   perioder = simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling()
-            ))
-
+    return this.copy(
+        tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel
+            ?.copy(
+                sumFeilutbetaling = simuleringsoppsummering.feilutbetaling,
+                perioder = simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling()
+            )
+    )
 }

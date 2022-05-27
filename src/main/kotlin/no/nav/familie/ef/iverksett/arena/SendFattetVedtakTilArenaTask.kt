@@ -10,16 +10,16 @@ import no.nav.familie.prosessering.domene.TaskRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
 
-
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = SendFattetVedtakTilArenaTask.TYPE,
-        beskrivelse = "Sender hendelse om fattet vedtak til arena"
+    taskStepType = SendFattetVedtakTilArenaTask.TYPE,
+    beskrivelse = "Sender hendelse om fattet vedtak til arena"
 )
-class SendFattetVedtakTilArenaTask(private val vedtakhendelseProducer: VedtakhendelseProducer,
-                                   private val integrasjonerClient: FamilieIntegrasjonerClient,
-                                   private val iverksettingRepository: IverksettingRepository,
-                                   private val taskRepository: TaskRepository
+class SendFattetVedtakTilArenaTask(
+    private val vedtakhendelseProducer: VedtakhendelseProducer,
+    private val integrasjonerClient: FamilieIntegrasjonerClient,
+    private val iverksettingRepository: IverksettingRepository,
+    private val taskRepository: TaskRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {

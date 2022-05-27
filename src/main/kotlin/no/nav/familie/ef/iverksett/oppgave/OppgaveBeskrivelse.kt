@@ -9,7 +9,7 @@ object OppgaveBeskrivelse {
 
     fun beskrivelseFørstegangsbehandlingInnvilget(periode: Pair<LocalDate, LocalDate>, vedtak: VedtaksperiodeOvergangsstønad): String {
         return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
-               "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
+            "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
     }
 
     fun beskrivelseFørstegangsbehandlingAvslått(vedtaksdato: LocalDate): String {
@@ -18,7 +18,7 @@ object OppgaveBeskrivelse {
 
     fun beskrivelseRevurderingInnvilget(vedtaksPeriode: Pair<LocalDate, LocalDate>, gjeldendeVedtak: VedtaksperiodeOvergangsstønad): String {
         return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
-               "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
+            "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
     }
 
     fun beskrivelseRevurderingOpphørt(opphørsdato: LocalDate?): String {
@@ -59,6 +59,4 @@ object OppgaveBeskrivelse {
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_TILSYNSORDNING -> "Stønad i påvente av tilsynsordning (§15-8 femte ledd)"
         }
     }
-
 }
-

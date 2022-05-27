@@ -26,5 +26,4 @@ internal class TilbakekrevingProducerTest {
         every { kafkaProducerService.send(any(), any(), any()) } throws RuntimeException()
         assertThrows(RuntimeException::class.java) { tilbakekrevingProducer.send(behandling, "0") }
     }
-
 }

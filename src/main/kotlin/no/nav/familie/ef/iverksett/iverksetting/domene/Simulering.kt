@@ -5,14 +5,15 @@ import java.util.UUID
 data class Simulering(val nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData, val forrigeBehandlingId: UUID?)
 
 fun Iverksett.tilSimulering() = Simulering(
-        nyTilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
-                tilkjentYtelse = this.vedtak.tilkjentYtelse!!,
-                saksbehandlerId = this.vedtak.saksbehandlerId,
-                eksternBehandlingId = this.behandling.eksternId,
-                stønadstype = this.fagsak.stønadstype,
-                eksternFagsakId = this.fagsak.eksternId,
-                personIdent = this.søker.personIdent,
-                behandlingId = this.behandling.behandlingId,
-                vedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate()
-        ), forrigeBehandlingId = this.behandling.forrigeBehandlingId
+    nyTilkjentYtelseMedMetaData = TilkjentYtelseMedMetaData(
+        tilkjentYtelse = this.vedtak.tilkjentYtelse!!,
+        saksbehandlerId = this.vedtak.saksbehandlerId,
+        eksternBehandlingId = this.behandling.eksternId,
+        stønadstype = this.fagsak.stønadstype,
+        eksternFagsakId = this.fagsak.eksternId,
+        personIdent = this.søker.personIdent,
+        behandlingId = this.behandling.behandlingId,
+        vedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate()
+    ),
+    forrigeBehandlingId = this.behandling.forrigeBehandlingId
 )

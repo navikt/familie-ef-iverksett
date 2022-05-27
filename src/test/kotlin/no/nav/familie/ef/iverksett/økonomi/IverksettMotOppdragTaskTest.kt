@@ -21,19 +21,18 @@ import java.util.UUID
 
 internal class IverksettMotOppdragTaskTest {
 
-
     private val oppdragClient = mockk<OppdragClient>()
     val taskRepository = mockk<TaskRepository>()
     val iverksettingRepository = mockk<IverksettingRepository>()
     val tilstandRepository = mockk<TilstandRepository>()
     val behandlingId: UUID = UUID.randomUUID()
     private val iverksettMotOppdragTask =
-            IverksettMotOppdragTask(
-                    iverksettingRepository = iverksettingRepository,
-                    oppdragClient = oppdragClient,
-                    taskRepository = taskRepository,
-                    tilstandRepository = tilstandRepository
-            )
+        IverksettMotOppdragTask(
+            iverksettingRepository = iverksettingRepository,
+            oppdragClient = oppdragClient,
+            taskRepository = taskRepository,
+            tilstandRepository = tilstandRepository
+        )
 
     @BeforeEach
     internal fun setUp() {
@@ -72,7 +71,4 @@ internal class IverksettMotOppdragTaskTest {
         assertThat(taskSlot.captured.payload).isEqualTo(behandlingId.toString())
         assertThat(taskSlot.captured.type).isEqualTo(VentePåStatusFraØkonomiTask.TYPE)
     }
-
-
-
 }

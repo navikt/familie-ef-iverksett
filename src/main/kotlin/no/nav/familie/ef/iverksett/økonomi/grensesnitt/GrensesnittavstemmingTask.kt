@@ -19,8 +19,10 @@ data class GrensesnittavstemmingPayload(val fraDato: LocalDate, val stønadstype
 
 @Service
 @TaskStepBeskrivelse(taskStepType = GrensesnittavstemmingTask.TYPE, beskrivelse = "Utfører grensesnittavstemming mot økonomi.")
-class GrensesnittavstemmingTask(private val oppdragClient: OppdragClient,
-                                private val taskRepository: TaskRepository) : AsyncTaskStep {
+class GrensesnittavstemmingTask(
+    private val oppdragClient: OppdragClient,
+    private val taskRepository: TaskRepository
+) : AsyncTaskStep {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -30,9 +32,11 @@ class GrensesnittavstemmingTask(private val oppdragClient: OppdragClient,
             val tilTidspunkt = task.triggerTid.toLocalDate().atStartOfDay()
 
             logger.info("Gjør ${task.id} $stønadstype avstemming mot oppdrag fra $fraTidspunkt til $tilTidspunkt")
-            val grensesnittavstemmingRequest = GrensesnittavstemmingRequest(fagsystem = stønadstype.tilKlassifisering(),
-                                                                            fra = fraTidspunkt,
-                                                                            til = tilTidspunkt)
+            val grensesnittavstemmingRequest = GrensesnittavstemmingRequest(
+                fagsystem = stønadstype.tilKlassifisering(),
+                fra = fraTidspunkt,
+                til = tilTidspunkt
+            )
             oppdragClient.grensesnittavstemming(grensesnittavstemmingRequest)
         }
     }
@@ -44,8 +48,8 @@ class GrensesnittavstemmingTask(private val oppdragClient: OppdragClient,
     }
 
     fun opprettGrensesnittavstemmingTask(grensesnittavstemmingDto: GrensesnittavstemmingDto) =
-            grensesnittavstemmingDto.tilTask()
-                    .let { taskRepository.save(it) }
+        grensesnittavstemmingDto.tilTask()
+            .let { taskRepository.save(it) }
 
     companion object {
 

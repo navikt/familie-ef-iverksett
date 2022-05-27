@@ -42,11 +42,13 @@ internal class JournalførVedtaksbrevTaskTest {
     private val taskRepository = mockk<TaskRepository>()
     private val tilstandRepository = mockk<TilstandRepository>()
     private val journalførVedtaksbrevTask =
-            JournalførVedtaksbrevTask(iverksettingRepository,
-                                      journalpostClient,
-                                      taskRepository,
-                                      tilstandRepository,
-                                      mockFeatureToggleService())
+        JournalførVedtaksbrevTask(
+            iverksettingRepository,
+            journalpostClient,
+            taskRepository,
+            tilstandRepository,
+            mockFeatureToggleService()
+        )
     private val behandlingId: UUID = UUID.randomUUID()
     private val behandlingIdString = behandlingId.toString()
     private val journalpostId = "123456789"
@@ -67,15 +69,21 @@ internal class JournalførVedtaksbrevTaskTest {
     @Test
     internal fun `skal journalføre brev og opprette ny task`() {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
-                journalpostId,
-                true)
+            journalpostId,
+            true
+        )
         every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
-                journalpostId))
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
+            "123" to JournalpostResultat(
+                journalpostId
+            )
+        )
         every {
-            tilstandRepository.oppdaterJournalpostResultat(behandlingId,
-                                                           any(),
-                                                           capture(journalpostResultatSlot))
+            tilstandRepository.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot)
+            )
         } returns Unit
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
@@ -90,25 +98,34 @@ internal class JournalførVedtaksbrevTaskTest {
     @Test
     internal fun `skal journalføre brev til alle brevmottakere`() {
 
-        val verge = Brevmottaker("22222222222",
-                                 "Mottaker Navn",
-                                 Brevmottaker.MottakerRolle.VERGE,
-                                 Brevmottaker.IdentType.PERSONIDENT)
-        val fullmektig = Brevmottaker("333333333",
-                                      "Mottaker B Navn",
-                                      Brevmottaker.MottakerRolle.FULLMEKTIG,
-                                      Brevmottaker.IdentType.ORGANISASJONSNUMMER)
+        val verge = Brevmottaker(
+            "22222222222",
+            "Mottaker Navn",
+            Brevmottaker.MottakerRolle.VERGE,
+            Brevmottaker.IdentType.PERSONIDENT
+        )
+        val fullmektig = Brevmottaker(
+            "333333333",
+            "Mottaker B Navn",
+            Brevmottaker.MottakerRolle.FULLMEKTIG,
+            Brevmottaker.IdentType.ORGANISASJONSNUMMER
+        )
 
         val brevmottakere = listOf(
-                verge,
-                fullmektig)
+            verge,
+            fullmektig
+        )
         val iverksettMedBrevmottakere = opprettIverksettDto(behandlingId).let {
             it.copy(vedtak = it.vedtak.copy(brevmottakere = brevmottakere)).toDomain()
         }
 
         every { iverksettingRepository.hent(behandlingId) } returns iverksettMedBrevmottakere
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
-                "journalpostId"), "444" to JournalpostResultat("journalpostId"))
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
+            "123" to JournalpostResultat(
+                "journalpostId"
+            ),
+            "444" to JournalpostResultat("journalpostId")
+        )
         every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) } just Runs
 
         every {
@@ -117,27 +134,34 @@ internal class JournalførVedtaksbrevTaskTest {
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
 
-
-
         verify(exactly = 2) { journalpostClient.arkiverDokument(any(), any()) }
         assertThat(arkiverDokumentRequestSlot).hasSize(2)
         assertThat(arkiverDokumentRequestSlot.map { it.avsenderMottaker!!.id }).containsAll(brevmottakere.map { it.ident })
-
     }
 
     @Test
     internal fun `Journalføring av barnetilsynbrev og opprette ny task`() {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
-                journalpostId,
-                true)
-        every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId,
-                                                                                        stønadType = StønadType.BARNETILSYN).toDomain())
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
-                "journalpostId"))
+            journalpostId,
+            true
+        )
+        every { iverksettingRepository.hent(behandlingId) }.returns(
+            opprettIverksettDto(
+                behandlingId = behandlingId,
+                stønadType = StønadType.BARNETILSYN
+            ).toDomain()
+        )
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
+            "123" to JournalpostResultat(
+                "journalpostId"
+            )
+        )
         every {
-            tilstandRepository.oppdaterJournalpostResultat(behandlingId,
-                                                           any(),
-                                                           capture(journalpostResultatSlot))
+            tilstandRepository.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot)
+            )
         } returns Unit
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
@@ -149,7 +173,6 @@ internal class JournalførVedtaksbrevTaskTest {
         assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter.first().dokumenttype).isEqualTo(Dokumenttype.VEDTAKSBREV_BARNETILSYN)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
     }
-
 
     @Test
     internal fun `skal opprette ny task når den er ferdig`() {
@@ -164,16 +187,25 @@ internal class JournalførVedtaksbrevTaskTest {
     @Test
     internal fun `skal finne journalpostId for eksternReferanseId vid konflikt ved arkivering`() {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } throws
-                RessursException(Ressurs.failure(""),
-                                 HttpClientErrorException.create(HttpStatus.CONFLICT, "Feil", HttpHeaders(), byteArrayOf(), null))
+            RessursException(
+                Ressurs.failure(""),
+                HttpClientErrorException.create(HttpStatus.CONFLICT, "Feil", HttpHeaders(), byteArrayOf(), null)
+            )
         every { journalpostClient.finnJournalposter(any()) } answers {
-            listOf(Journalpost(journalpostId, Journalposttype.U, Journalstatus.JOURNALFOERT,
-                               eksternReferanseId = arkiverDokumentRequestSlot[0].eksternReferanseId))
+            listOf(
+                Journalpost(
+                    journalpostId, Journalposttype.U, Journalstatus.JOURNALFOERT,
+                    eksternReferanseId = arkiverDokumentRequestSlot[0].eksternReferanseId
+                )
+            )
         }
         every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
 
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf("123" to JournalpostResultat(
-                journalpostId))
+        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
+            "123" to JournalpostResultat(
+                journalpostId
+            )
+        )
         justRun { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) }
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))

@@ -12,18 +12,18 @@ class KafkaTopicTest {
     @Test
     internal fun `sjekk att navn på topic ikke finnes flere ganger`() {
         val topicsSomFinnesFlereGanger = getTopics().groupBy { it.isDev }
-                .entries
-                .map { it.value.groupBy(Topic::topic).filter { entry -> entry.value.size > 1 } }
-                .flatMap { it.entries }
+            .entries
+            .map { it.value.groupBy(Topic::topic).filter { entry -> entry.value.size > 1 } }
+            .flatMap { it.entries }
         if (topicsSomFinnesFlereGanger.isNotEmpty()) {
             error(lagFeilmelding(topicsSomFinnesFlereGanger))
         }
     }
 
     private fun lagFeilmelding(topicsDefinedMultipleTimes: List<Map.Entry<String, List<Topic>>>) =
-            topicsDefinedMultipleTimes.joinToString("\n") {
-                "${it.key} finnes i ${it.value.map(Topic::fullFilename)}"
-            }
+        topicsDefinedMultipleTimes.joinToString("\n") {
+            "${it.key} finnes i ${it.value.map(Topic::fullFilename)}"
+        }
 
     private fun getTopics(): List<Topic> {
         val directories = list(Path.of("kafka-aiven"))

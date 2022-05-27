@@ -29,9 +29,12 @@ import java.time.temporal.ChronoUnit
 
 @SpringBootConfiguration
 @ConfigurationPropertiesScan("no.nav.familie.ef.iverksett")
-@ComponentScan("no.nav.familie.ef.iverksett", "no.nav.familie.prosessering", "no.nav.familie.sikkerhet", excludeFilters = [
-    ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class])
-])
+@ComponentScan(
+    "no.nav.familie.ef.iverksett", "no.nav.familie.prosessering", "no.nav.familie.sikkerhet",
+    excludeFilters = [
+        ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class])
+    ]
+)
 @EnableJwtTokenValidation(ignore = ["org.springframework", "org.springdoc"])
 @Import(RestTemplateAzure::class)
 @EnableOAuth2Client(cacheEnabled = true)
@@ -72,9 +75,9 @@ class ApplicationConfig {
     fun restTemplateBuilder(): RestTemplateBuilder {
         val jackson2HttpMessageConverter = MappingJackson2HttpMessageConverter(objectMapper)
         return RestTemplateBuilder()
-                .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
-                .setReadTimeout(Duration.of(30, ChronoUnit.SECONDS))
-                .messageConverters(listOf(jackson2HttpMessageConverter) + RestTemplate().messageConverters)
+            .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
+            .setReadTimeout(Duration.of(30, ChronoUnit.SECONDS))
+            .messageConverters(listOf(jackson2HttpMessageConverter) + RestTemplate().messageConverters)
     }
 
     /**
@@ -85,9 +88,10 @@ class ApplicationConfig {
     @Bean
     @Primary
     fun oAuth2HttpClient(): OAuth2HttpClient {
-        return RetryOAuth2HttpClient(RestTemplateBuilder()
-                                             .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
-                                             .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS)))
+        return RetryOAuth2HttpClient(
+            RestTemplateBuilder()
+                .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
+                .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS))
+        )
     }
-
 }

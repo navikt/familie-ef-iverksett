@@ -47,20 +47,20 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     @Test
     fun `oppdater journalpost, forvent ingen unntak`() {
         tilstandServiceRepository.oppdaterJournalpostResultat(
-                behandlingsId,
-                "123",
-                JournalpostResultat(
-                        journalpostId = journalpostId.toString()
-                )
+            behandlingsId,
+            "123",
+            JournalpostResultat(
+                journalpostId = journalpostId.toString()
+            )
         )
     }
 
     @Test
     fun `oppdater distribuerVedtaksbrev, forvent ingen unntak`() {
         tilstandServiceRepository.oppdaterDistribuerVedtaksbrevResultat(
-                behandlingsId,
-                "123",
-                DistribuerVedtaksbrevResultat(bestillingId = "12345")
+            behandlingsId,
+            "123",
+            DistribuerVedtaksbrevResultat(bestillingId = "12345")
         )
     }
 
@@ -68,9 +68,9 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     fun `oppdater distribuerVedtaksbrev med feil behandlingId, forvent IllegalStateException`() {
         assertThrows<IllegalStateException> {
             tilstandServiceRepository.oppdaterDistribuerVedtaksbrevResultat(
-                    UUID.randomUUID(),
-                    "123",
-                    DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
+                UUID.randomUUID(),
+                "123",
+                DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
             )
         }
     }
@@ -79,12 +79,11 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     fun `oppdater tilbakekrevingsresultat, forvent ingen unntak`() {
 
         val opprettTilbakekrevingRequest = opprettIverksettOvergangsstønad(behandlingsId)
-                .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
+            .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
         tilstandServiceRepository.oppdaterTilbakekrevingResultat(
-                behandlingsId,
-                TilbakekrevingResultat(opprettTilbakekrevingRequest)
+            behandlingsId,
+            TilbakekrevingResultat(opprettTilbakekrevingRequest)
         )
     }
-
 }

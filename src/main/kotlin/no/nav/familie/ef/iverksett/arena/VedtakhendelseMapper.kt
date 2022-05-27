@@ -11,13 +11,15 @@ private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:
 
 fun mapIverksettTilVedtakHendelser(iverksett: Iverksett, aktørId: String): VedtakHendelser {
     return VedtakHendelser(
-            aktoerID = aktørId,
-            avslutningsstatus = mapAvslutningsstatus(iverksett.vedtak.vedtaksresultat),
-            behandlingstema = Behandlingstema.valueOf(iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
-                                                              .replaceFirstChar { it.uppercase() }).value,
-            hendelsesprodusentREF = "EF",
-            applikasjonSakREF = iverksett.fagsak.eksternId.toString(),
-            hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter)
+        aktoerID = aktørId,
+        avslutningsstatus = mapAvslutningsstatus(iverksett.vedtak.vedtaksresultat),
+        behandlingstema = Behandlingstema.valueOf(
+            iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
+                .replaceFirstChar { it.uppercase() }
+        ).value,
+        hendelsesprodusentREF = "EF",
+        applikasjonSakREF = iverksett.fagsak.eksternId.toString(),
+        hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter)
     )
 }
 

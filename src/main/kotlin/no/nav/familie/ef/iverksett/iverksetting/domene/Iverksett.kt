@@ -40,49 +40,46 @@ sealed class Iverksett {
     fun erMigrering(): Boolean = behandling.behandlingÅrsak == BehandlingÅrsak.MIGRERING
 
     fun skalIkkeSendeBrev(): Boolean =
-            erMigrering() || erGOmregning() || behandling.behandlingÅrsak == BehandlingÅrsak.KORRIGERING_UTEN_BREV
+        erMigrering() || erGOmregning() || behandling.behandlingÅrsak == BehandlingÅrsak.KORRIGERING_UTEN_BREV
 
     abstract fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): Iverksett
 }
 
 data class IverksettOvergangsstønad(
-        override val fagsak: Fagsakdetaljer,
-        override val behandling: Behandlingsdetaljer,
-        override val søker: Søker,
-        override val vedtak: VedtaksdetaljerOvergangsstønad,
+    override val fagsak: Fagsakdetaljer,
+    override val behandling: Behandlingsdetaljer,
+    override val søker: Søker,
+    override val vedtak: VedtaksdetaljerOvergangsstønad,
 ) : Iverksett() {
 
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettOvergangsstønad {
         return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
     }
-
-
 }
 
 data class IverksettBarnetilsyn(
-        override val fagsak: Fagsakdetaljer,
-        override val behandling: Behandlingsdetaljer,
-        override val søker: Søker,
-        override val vedtak: VedtaksdetaljerBarnetilsyn,
+    override val fagsak: Fagsakdetaljer,
+    override val behandling: Behandlingsdetaljer,
+    override val søker: Søker,
+    override val vedtak: VedtaksdetaljerBarnetilsyn,
 ) : Iverksett() {
 
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettBarnetilsyn {
         return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
     }
-
 }
 
 data class Fagsakdetaljer(
-        val fagsakId: UUID,
-        val eksternId: Long,
-        val stønadstype: StønadType
+    val fagsakId: UUID,
+    val eksternId: Long,
+    val stønadstype: StønadType
 )
 
 data class Søker(
-        val personIdent: String,
-        val barn: List<Barn> = ArrayList(),
-        val tilhørendeEnhet: String,
-        val adressebeskyttelse: AdressebeskyttelseGradering? = null
+    val personIdent: String,
+    val barn: List<Barn> = ArrayList(),
+    val tilhørendeEnhet: String,
+    val adressebeskyttelse: AdressebeskyttelseGradering? = null
 )
 
 sealed class Vedtaksperiode {
@@ -92,23 +89,23 @@ sealed class Vedtaksperiode {
 }
 
 data class VedtaksperiodeOvergangsstønad(
-        override val fraOgMed: LocalDate,
-        override val tilOgMed: LocalDate,
-        val aktivitet: AktivitetType,
-        val periodeType: VedtaksperiodeType) : Vedtaksperiode() {
-}
+    override val fraOgMed: LocalDate,
+    override val tilOgMed: LocalDate,
+    val aktivitet: AktivitetType,
+    val periodeType: VedtaksperiodeType
+) : Vedtaksperiode()
 
 data class VedtaksperiodeBarnetilsyn(
-        override val fraOgMed: LocalDate,
-        override val tilOgMed: LocalDate,
-        val utgifter: Int,
-        val antallBarn: Int) : Vedtaksperiode() {
-}
+    override val fraOgMed: LocalDate,
+    override val tilOgMed: LocalDate,
+    val utgifter: Int,
+    val antallBarn: Int
+) : Vedtaksperiode()
 
 data class PeriodeMedBeløp(
-        val fraOgMed: LocalDate,
-        val tilOgMed: LocalDate,
-        val beløp: Int
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate,
+    val beløp: Int
 )
 
 sealed class Vedtaksdetaljer {
@@ -125,59 +122,58 @@ sealed class Vedtaksdetaljer {
 }
 
 data class VedtaksdetaljerOvergangsstønad(
-        override val vedtaksresultat: Vedtaksresultat,
-        override val vedtakstidspunkt: LocalDateTime,
-        override val opphørÅrsak: OpphørÅrsak?,
-        override val saksbehandlerId: String,
-        override val beslutterId: String,
-        override val tilkjentYtelse: TilkjentYtelse?,
-        override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
-        override val brevmottakere: Brevmottakere? = null,
-        override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad>
+    override val vedtaksresultat: Vedtaksresultat,
+    override val vedtakstidspunkt: LocalDateTime,
+    override val opphørÅrsak: OpphørÅrsak?,
+    override val saksbehandlerId: String,
+    override val beslutterId: String,
+    override val tilkjentYtelse: TilkjentYtelse?,
+    override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
+    override val brevmottakere: Brevmottakere? = null,
+    override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad>
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(
-        override val vedtaksresultat: Vedtaksresultat,
-        override val vedtakstidspunkt: LocalDateTime,
-        override val opphørÅrsak: OpphørÅrsak?,
-        override val saksbehandlerId: String,
-        override val beslutterId: String,
-        override val tilkjentYtelse: TilkjentYtelse?,
-        override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
-        override val brevmottakere: Brevmottakere? = null,
-        override val vedtaksperioder: List<VedtaksperiodeBarnetilsyn>,
-        val kontantstøtte: List<PeriodeMedBeløp>,
-        val tilleggsstønad: List<PeriodeMedBeløp>
+    override val vedtaksresultat: Vedtaksresultat,
+    override val vedtakstidspunkt: LocalDateTime,
+    override val opphørÅrsak: OpphørÅrsak?,
+    override val saksbehandlerId: String,
+    override val beslutterId: String,
+    override val tilkjentYtelse: TilkjentYtelse?,
+    override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
+    override val brevmottakere: Brevmottakere? = null,
+    override val vedtaksperioder: List<VedtaksperiodeBarnetilsyn>,
+    val kontantstøtte: List<PeriodeMedBeløp>,
+    val tilleggsstønad: List<PeriodeMedBeløp>
 ) : Vedtaksdetaljer()
 
 data class Behandlingsdetaljer(
-        val forrigeBehandlingId: UUID? = null,
-        val behandlingId: UUID,
-        val eksternId: Long,
-        val behandlingType: BehandlingType,
-        val behandlingÅrsak: BehandlingÅrsak,
-        val relatertBehandlingId: UUID? = null,
-        val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
-        val aktivitetspliktInntrefferDato: LocalDate? = null
+    val forrigeBehandlingId: UUID? = null,
+    val behandlingId: UUID,
+    val eksternId: Long,
+    val behandlingType: BehandlingType,
+    val behandlingÅrsak: BehandlingÅrsak,
+    val relatertBehandlingId: UUID? = null,
+    val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
+    val aktivitetspliktInntrefferDato: LocalDate? = null
 )
 
 data class Vilkårsvurdering(
-        val vilkårType: VilkårType,
-        val resultat: Vilkårsresultat,
-        val delvilkårsvurderinger: List<Delvilkårsvurdering> = emptyList()
+    val vilkårType: VilkårType,
+    val resultat: Vilkårsresultat,
+    val delvilkårsvurderinger: List<Delvilkårsvurdering> = emptyList()
 )
 
 data class Delvilkårsvurdering(
-        val resultat: Vilkårsresultat,
-        val vurderinger: List<Vurdering> = emptyList()
+    val resultat: Vilkårsresultat,
+    val vurderinger: List<Vurdering> = emptyList()
 )
 
 data class Vurdering(
-        val regelId: RegelId,
-        val svar: SvarId? = null,
-        val begrunnelse: String? = null
+    val regelId: RegelId,
+    val svar: SvarId? = null,
+    val begrunnelse: String? = null
 )
-
 
 enum class IverksettType {
     VANLIG,
@@ -185,24 +181,23 @@ enum class IverksettType {
 }
 
 data class Tilbakekrevingsdetaljer(
-        val tilbakekrevingsvalg: Tilbakekrevingsvalg,
-        val tilbakekrevingMedVarsel: TilbakekrevingMedVarsel?
+    val tilbakekrevingsvalg: Tilbakekrevingsvalg,
+    val tilbakekrevingMedVarsel: TilbakekrevingMedVarsel?
 )
 
 data class TilbakekrevingMedVarsel(
-        val varseltekst: String,
-        val sumFeilutbetaling: BigDecimal?,
-        val perioder: List<Periode>?
+    val varseltekst: String,
+    val sumFeilutbetaling: BigDecimal?,
+    val perioder: List<Periode>?
 )
 
 data class Brevmottakere(val mottakere: List<Brevmottaker>)
 data class Brevmottaker(
-        val ident: String,
-        val navn: String,
-        val identType: BrevmottakerKontrakter.IdentType,
-        val mottakerRolle: BrevmottakerKontrakter.MottakerRolle
+    val ident: String,
+    val navn: String,
+    val identType: BrevmottakerKontrakter.IdentType,
+    val mottakerRolle: BrevmottakerKontrakter.MottakerRolle
 )
-
 
 private class IverksettDeserializer : StdDeserializer<Iverksett>(Iverksett::class.java) {
 
@@ -233,7 +228,6 @@ class IverksettDtoDeserializer : StdDeserializer<IverksettDto>(IverksettDto::cla
         }
     }
 }
-
 
 class IverksettModule : com.fasterxml.jackson.databind.module.SimpleModule() {
     init {

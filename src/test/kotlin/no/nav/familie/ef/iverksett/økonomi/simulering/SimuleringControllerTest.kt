@@ -49,9 +49,11 @@ class SimuleringControllerTest : ServerTest() {
     internal fun `Hent simulering skal gi 200 OK`() {
 
         val respons = restTemplate
-                .exchange<Ressurs<DetaljertSimuleringResultat>>(localhostUrl("/api/simulering/"),
-                                                                HttpMethod.POST,
-                                                                HttpEntity(simuleringDto(), headers))
+            .exchange<Ressurs<DetaljertSimuleringResultat>>(
+                localhostUrl("/api/simulering/"),
+                HttpMethod.POST,
+                HttpEntity(simuleringDto(), headers)
+            )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
         assertThat(respons.body?.data).isEqualTo(detaljertSimuleringResultat())
@@ -62,9 +64,11 @@ class SimuleringControllerTest : ServerTest() {
     internal fun `Hent simulering v2 skal gi 200 OK`() {
 
         val respons = restTemplate
-                .exchange<Ressurs<BeriketSimuleringsresultat>>(localhostUrl("/api/simulering/v2/"),
-                                                               HttpMethod.POST,
-                                                               HttpEntity(simuleringDto(), headers))
+            .exchange<Ressurs<BeriketSimuleringsresultat>>(
+                localhostUrl("/api/simulering/v2/"),
+                HttpMethod.POST,
+                HttpEntity(simuleringDto(), headers)
+            )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
         assertThat(respons.body?.data).isEqualTo(beriketSimuleringsresultat())
@@ -75,9 +79,11 @@ class SimuleringControllerTest : ServerTest() {
     internal fun `simulering av førstegangsbehandling skal gi tomt svar`() {
         val request = simuleringDto(andeler = emptyList(), forrigeBehandlingId = null)
         val respons = restTemplate
-                .exchange<Ressurs<BeriketSimuleringsresultat>>(localhostUrl("/api/simulering/v2/"),
-                                                               HttpMethod.POST,
-                                                               HttpEntity(request, headers))
+            .exchange<Ressurs<BeriketSimuleringsresultat>>(
+                localhostUrl("/api/simulering/v2/"),
+                HttpMethod.POST,
+                HttpEntity(request, headers)
+            )
 
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
@@ -89,9 +95,11 @@ class SimuleringControllerTest : ServerTest() {
     internal fun `simulering av førstegangsbehandling med kun 0 beløp skal gi tomt svar`() {
         val request = simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 0)), forrigeBehandlingId = null)
         val respons = restTemplate
-                .exchange<Ressurs<BeriketSimuleringsresultat>>(localhostUrl("/api/simulering/v2/"),
-                                                               HttpMethod.POST,
-                                                               HttpEntity(request, headers))
+            .exchange<Ressurs<BeriketSimuleringsresultat>>(
+                localhostUrl("/api/simulering/v2/"),
+                HttpMethod.POST,
+                HttpEntity(request, headers)
+            )
 
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
@@ -105,11 +113,13 @@ class SimuleringControllerTest : ServerTest() {
         lagFørstegangsbehandlingUtenBeløp(behandlingId)
 
         val revurdering =
-                simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 1000)), forrigeBehandlingId = behandlingId)
+            simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 1000)), forrigeBehandlingId = behandlingId)
 
-        val response = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(localhostUrl("/api/simulering/v2/"),
-                                                                                  HttpMethod.POST,
-                                                                                  HttpEntity(revurdering, headers))
+        val response = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
+            localhostUrl("/api/simulering/v2/"),
+            HttpMethod.POST,
+            HttpEntity(revurdering, headers)
+        )
 
         assertThat(response.body?.data?.detaljer?.simuleringMottaker).isNotEmpty
         verify(exactly = 1) { oppdragClient.hentSimuleringsresultat(any()) }
@@ -121,11 +131,13 @@ class SimuleringControllerTest : ServerTest() {
         lagFørstegangsbehandlingUtenBeløp(behandlingId)
 
         val revurdering =
-                simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 0)), forrigeBehandlingId = behandlingId)
+            simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 0)), forrigeBehandlingId = behandlingId)
 
-        val respons = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(localhostUrl("/api/simulering/v2/"),
-                                                                                 HttpMethod.POST,
-                                                                                 HttpEntity(revurdering, headers))
+        val respons = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
+            localhostUrl("/api/simulering/v2/"),
+            HttpMethod.POST,
+            HttpEntity(revurdering, headers)
+        )
 
         assertThat(respons.body?.data).isEqualTo(lagSimuleringsresultatMedTomListe())
         verify(exactly = 0) { oppdragClient.hentSimuleringsresultat(any()) }
@@ -133,10 +145,10 @@ class SimuleringControllerTest : ServerTest() {
 
     private fun lagFørstegangsbehandlingUtenBeløp(behandlingId: UUID) {
         val andelTilkjentYtelse =
-                lagAndelTilkjentYtelse(0, fraOgMed = LocalDate.of(2021, 1, 1), tilOgMed = LocalDate.of(2021, 1, 31))
+            lagAndelTilkjentYtelse(0, fraOgMed = LocalDate.of(2021, 1, 1), tilOgMed = LocalDate.of(2021, 1, 31))
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingId, andeler = listOf(andelTilkjentYtelse))
         val tilkjentYtelseMedUtbetalingsoppdrag =
-                lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(behandlingId, 1L, tilkjentYtelse))
+            lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(behandlingId, 1L, tilkjentYtelse))
 
         tilstandRepository.opprettTomtResultat(behandlingId)
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelseMedUtbetalingsoppdrag)
@@ -147,6 +159,4 @@ class SimuleringControllerTest : ServerTest() {
         val oppsummering = lagSimuleringsoppsummering(defaultSimuleringsresultat, LocalDate.now())
         return BeriketSimuleringsresultat(defaultSimuleringsresultat, oppsummering)
     }
-
-
 }

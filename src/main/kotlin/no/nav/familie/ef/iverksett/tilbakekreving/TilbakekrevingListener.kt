@@ -18,17 +18,19 @@ import java.util.UUID
 
 @Component
 class TilbakekrevingListener(
-        private val iverksettingRepository: IverksettingRepository,
-        private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-        private val tilbakekrevingProducer: TilbakekrevingProducer
+    private val iverksettingRepository: IverksettingRepository,
+    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+    private val tilbakekrevingProducer: TilbakekrevingProducer
 ) : ConsumerSeekAware {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    @KafkaListener(id = "familie-ef-iverksett",
-                   topics = ["teamfamilie.privat-tbk-hentfagsystemsbehandling-request-topic"],
-                   containerFactory = "concurrentTilbakekrevingListenerContainerFactory")
+    @KafkaListener(
+        id = "familie-ef-iverksett",
+        topics = ["teamfamilie.privat-tbk-hentfagsystemsbehandling-request-topic"],
+        containerFactory = "concurrentTilbakekrevingListenerContainerFactory"
+    )
     fun listen(consumerRecord: ConsumerRecord<String, String>) {
         val key: String = consumerRecord.key()
         val data: String = consumerRecord.value()
@@ -47,7 +49,7 @@ class TilbakekrevingListener(
     private fun transformerOgSend(data: String, key: String) {
         try {
             val request: HentFagsystemsbehandlingRequest =
-                    objectMapper.readValue(data)
+                objectMapper.readValue(data)
             if (!request.erEfYtelse()) {
                 return
             }
@@ -58,8 +60,10 @@ class TilbakekrevingListener(
                 tilbakekrevingProducer.send(fagsystemsbehandling, key)
             } ?: error("Kan ikke finne behandlende enhet for søker på behandling ${iverksett.behandling.behandlingId}")
         } catch (ex: Exception) {
-            secureLogger.error("Feil ved sending av melding med key=$key. Forsøker å sende HentFagsystemsbehandlingRespons med feilmelding.",
-                               ex)
+            secureLogger.error(
+                "Feil ved sending av melding med key=$key. Forsøker å sende HentFagsystemsbehandlingRespons med feilmelding.",
+                ex
+            )
             tilbakekrevingProducer.send(HentFagsystemsbehandlingRespons(feilMelding = ex.message), key)
         }
     }

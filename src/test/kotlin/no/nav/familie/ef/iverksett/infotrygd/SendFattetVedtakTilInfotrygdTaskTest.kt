@@ -26,20 +26,22 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
     private val iverksettingRepository = mockk<IverksettingRepository>()
 
     private val task =
-            SendFattetVedtakTilInfotrygdTask(infotrygdFeedClient, familieIntegrasjonerClient, iverksettingRepository, mockk())
+        SendFattetVedtakTilInfotrygdTask(infotrygdFeedClient, familieIntegrasjonerClient, iverksettingRepository, mockk())
 
     private val behandlingId = UUID.randomUUID()
     private val iverksett = opprettIverksettOvergangsstønad(behandlingId)
     private val personIdent = iverksett.søker.personIdent
     private val historiskPersonIdent = "2"
     private val perioder = listOf(
-            Pair(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
-            Pair(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)),
-            Pair(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 31))
+        Pair(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
+        Pair(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)),
+        Pair(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 31))
     )
 
-    private val identer = listOf(PersonIdentMedHistorikk(personIdent, false),
-                                 PersonIdentMedHistorikk(historiskPersonIdent, true))
+    private val identer = listOf(
+        PersonIdentMedHistorikk(personIdent, false),
+        PersonIdentMedHistorikk(historiskPersonIdent, true)
+    )
 
     @Test
     internal fun `skal sende fattet vedtak til infotrygd med første perioden i andelene`() {

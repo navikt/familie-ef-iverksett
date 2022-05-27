@@ -4,22 +4,26 @@ import java.time.LocalDate
 import java.util.UUID
 import kotlin.math.roundToInt
 
-data class AndelTilkjentYtelse(val beløp: Int,
-                               val fraOgMed: LocalDate,
-                               val tilOgMed: LocalDate,
+data class AndelTilkjentYtelse(
+    val beløp: Int,
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate,
 
-                               val inntekt: Int,
-                               val samordningsfradrag: Int,
-                               val inntektsreduksjon: Int,
+    val inntekt: Int,
+    val samordningsfradrag: Int,
+    val inntektsreduksjon: Int,
 
-                               val periodeId: Long? = null,
-                               val forrigePeriodeId: Long? = null,
-                               val kildeBehandlingId: UUID? = null) {
+    val periodeId: Long? = null,
+    val forrigePeriodeId: Long? = null,
+    val kildeBehandlingId: UUID? = null
+) {
 
     private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean {
-        return (this.fraOgMed == other.fraOgMed
-                && this.tilOgMed == other.tilOgMed
-                && this.beløp == other.beløp)
+        return (
+            this.fraOgMed == other.fraOgMed &&
+                this.tilOgMed == other.tilOgMed &&
+                this.beløp == other.beløp
+            )
     }
 
     fun erNull() = this.beløp == 0
@@ -27,7 +31,7 @@ data class AndelTilkjentYtelse(val beløp: Int,
     fun erFullOvergangsstønad() = this.inntektsreduksjon == 0 && this.samordningsfradrag == 0
 
     fun utbetalingsgrad(): Int =
-            (100 * (this.beløp.toDouble() / (this.beløp + this.inntektsreduksjon + this.samordningsfradrag))).roundToInt()
+        (100 * (this.beløp.toDouble() / (this.beløp + this.inntektsreduksjon + this.samordningsfradrag))).roundToInt()
 
     companion object {
 

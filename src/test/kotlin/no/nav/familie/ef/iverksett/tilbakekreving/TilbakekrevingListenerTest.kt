@@ -53,18 +53,24 @@ internal class TilbakekrevingListenerTest {
     }
 
     private fun record(ytelsestype: Ytelsestype): ConsumerRecord<String, String> {
-        val behandling = objectMapper.writeValueAsString(HentFagsystemsbehandling(eksternFagsakId = "0",
-                                                                                  eksternId = "1",
-                                                                                  ytelsestype = ytelsestype,
-                                                                                  personIdent = "12345678910",
-                                                                                  språkkode = Språkkode.NB,
-                                                                                  enhetId = "enhet",
-                                                                                  enhetsnavn = "enhetNavn",
-                                                                                  revurderingsvedtaksdato = LocalDate.EPOCH,
-                                                                                  faktainfo = Faktainfo(revurderingsårsak = "årsak",
-                                                                                                        revurderingsresultat = "resultat",
-                                                                                                        tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
-                                                                                                        konsekvensForYtelser = emptySet())))
+        val behandling = objectMapper.writeValueAsString(
+            HentFagsystemsbehandling(
+                eksternFagsakId = "0",
+                eksternId = "1",
+                ytelsestype = ytelsestype,
+                personIdent = "12345678910",
+                språkkode = Språkkode.NB,
+                enhetId = "enhet",
+                enhetsnavn = "enhetNavn",
+                revurderingsvedtaksdato = LocalDate.EPOCH,
+                faktainfo = Faktainfo(
+                    revurderingsårsak = "årsak",
+                    revurderingsresultat = "resultat",
+                    tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
+                    konsekvensForYtelser = emptySet()
+                )
+            )
+        )
         return ConsumerRecord("topic", 0, 0L, "1", behandling)
     }
 }

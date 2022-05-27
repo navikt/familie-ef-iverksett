@@ -12,10 +12,16 @@ data class GrensesnittavstemmingDto(val stønadstype: StønadType, val fraDato: 
 fun GrensesnittavstemmingDto.tilTask(): Task {
     val nesteVirkedag: LocalDateTime = triggerTid ?: VirkedagerProvider.nesteVirkedag(fraDato).atTime(8, 0)
     val payload =
-            objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = this.fraDato,
-                                                                         stønadstype = this.stønadstype))
+        objectMapper.writeValueAsString(
+            GrensesnittavstemmingPayload(
+                fraDato = this.fraDato,
+                stønadstype = this.stønadstype
+            )
+        )
 
-    return Task(type = GrensesnittavstemmingTask.TYPE,
-                payload = payload,
-                triggerTid = nesteVirkedag)
+    return Task(
+        type = GrensesnittavstemmingTask.TYPE,
+        payload = payload,
+        triggerTid = nesteVirkedag
+    )
 }

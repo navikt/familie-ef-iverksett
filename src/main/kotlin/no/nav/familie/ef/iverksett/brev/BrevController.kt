@@ -15,24 +15,28 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping(path = ["/api/brev"])
 @ProtectedWithClaims(issuer = "azuread")
 class BrevController(
-        private val journalpostClient: JournalpostClient
+    private val journalpostClient: JournalpostClient
 ) {
 
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(@RequestBody data: FrittståendeBrevDto): ResponseEntity<Any> {
 
         val journalpostId = journalpostClient.arkiverDokument(
-                ArkiverDokumentRequest(
-                        fnr = data.personIdent,
-                        forsøkFerdigstill = true,
-                        hoveddokumentvarianter = listOf(Dokument(data.fil,
-                                                                 Filtype.PDFA,
-                                                                 dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
-                                                                 tittel = data.brevtype.tittel)),
-                        fagsakId = data.eksternFagsakId.toString(),
-                        journalførendeEnhet = data.journalførendeEnhet,
+            ArkiverDokumentRequest(
+                fnr = data.personIdent,
+                forsøkFerdigstill = true,
+                hoveddokumentvarianter = listOf(
+                    Dokument(
+                        data.fil,
+                        Filtype.PDFA,
+                        dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
+                        tittel = data.brevtype.tittel
+                    )
                 ),
-                data.saksbehandlerIdent
+                fagsakId = data.eksternFagsakId.toString(),
+                journalførendeEnhet = data.journalførendeEnhet,
+            ),
+            data.saksbehandlerIdent
         ).journalpostId
 
         journalpostClient.distribuerBrev(journalpostId)

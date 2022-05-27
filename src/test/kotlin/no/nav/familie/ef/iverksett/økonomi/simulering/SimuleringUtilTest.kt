@@ -29,14 +29,15 @@ internal class SimuleringUtilTest {
     internal fun `skal ikke mappe simuleringsdata for forskuddskatt, motp, justering og trekk `() {
 
         val posteringer =
-                posteringer(januar(2020), posteringstype = PosteringType.MOTP) +
+            posteringer(januar(2020), posteringstype = PosteringType.MOTP) +
                 posteringer(januar(2020), posteringstype = PosteringType.FORSKUDSSKATT) +
                 posteringer(januar(2020), posteringstype = PosteringType.JUSTERING) +
                 posteringer(januar(2020), posteringstype = PosteringType.TREKK)
 
         val simuleringsoppsummering = lagSimuleringsoppsummering(
-                posteringer.tilDetaljertSimuleringsresultat(),
-                1.januar(2021))
+            posteringer.tilDetaljertSimuleringsresultat(),
+            1.januar(2021)
+        )
 
         assertThat(simuleringsoppsummering.perioder).isEmpty()
         assertThat(simuleringsoppsummering.etterbetaling).isZero
@@ -46,12 +47,13 @@ internal class SimuleringUtilTest {
     @Test
     internal fun `skal mappe simuleringsdata for enkel ytelse`() {
         val posteringer =
-                posteringer(januar(2020), posteringstype = YTELSE, antallMåneder = 36, beløp = 5_000)
+            posteringer(januar(2020), posteringstype = YTELSE, antallMåneder = 36, beløp = 5_000)
 
         val simuleringsoppsummering =
-                lagSimuleringsoppsummering(
-                        posteringer.tilDetaljertSimuleringsresultat(),
-                        1.januar(2021))
+            lagSimuleringsoppsummering(
+                posteringer.tilDetaljertSimuleringsresultat(),
+                1.januar(2021)
+            )
 
         val posteringerGruppert = simuleringsoppsummering.perioder
         assertThat(posteringerGruppert).hasSize(36)
@@ -70,16 +72,17 @@ internal class SimuleringUtilTest {
     @Test
     internal fun `skal mappe simuleringsdata for ytelse hvor bruker har fått for mye i 6 måneder`() {
         val posteringer =
-                posteringer(januar(2020), posteringstype = YTELSE, antallMåneder = 6, beløp = 5_000) +
+            posteringer(januar(2020), posteringstype = YTELSE, antallMåneder = 6, beløp = 5_000) +
                 posteringer(juli(2020), posteringstype = FEILUTBETALING, antallMåneder = 6, beløp = 2_000) +
                 posteringer(juli(2020), posteringstype = YTELSE, antallMåneder = 6, beløp = -5000) +
                 posteringer(juli(2020), posteringstype = YTELSE, antallMåneder = 7, beløp = 3000) +
                 posteringer(juli(2020), posteringstype = YTELSE, antallMåneder = 6, beløp = 2000)
 
         val simuleringsoppsummering =
-                lagSimuleringsoppsummering(
-                        posteringer.tilDetaljertSimuleringsresultat(),
-                        1.januar(2021))
+            lagSimuleringsoppsummering(
+                posteringer.tilDetaljertSimuleringsresultat(),
+                1.januar(2021)
+            )
 
         val posteringerGruppert = simuleringsoppsummering.perioder
 
@@ -100,16 +103,17 @@ internal class SimuleringUtilTest {
     @Test
     fun `skal lage tom liste av simuleringsperioder`() {
         assertThat(emptyList<SimulertPostering>().tilSimuleringsperioder())
-                .isEmpty()
+            .isEmpty()
     }
 
     @Test
     fun `skal gruppere og sortere på fom-dato`() {
 
         val simuleringsperioder =
-                (posteringer(januar(2021), 2, 3_000, YTELSE) +
-                 posteringer(januar(2021), 3, 5_000, YTELSE) +
-                 posteringer(februar(2021), 3, 2_000, YTELSE)
+            (
+                posteringer(januar(2021), 2, 3_000, YTELSE) +
+                    posteringer(januar(2021), 3, 5_000, YTELSE) +
+                    posteringer(februar(2021), 3, 2_000, YTELSE)
                 ).tilSimuleringsperioder()
 
         assertThat(simuleringsperioder.size).isEqualTo(4)
@@ -122,13 +126,14 @@ internal class SimuleringUtilTest {
     @Test
     fun `Test henting av 'nytt beløp ', 'tidligere utbetalt ' og 'resultat ' for simuleringsperiode uten feilutbetaling`() {
         val posteringer =
-                posteringer(juli(2021), beløp = 100, posteringstype = YTELSE) +
+            posteringer(juli(2021), beløp = 100, posteringstype = YTELSE) +
                 posteringer(juli(2021), beløp = 100, posteringstype = YTELSE) +
                 posteringer(juli(2021), beløp = -99, posteringstype = YTELSE) +
                 posteringer(juli(2021), beløp = -99, posteringstype = YTELSE)
 
         val simuleringsperioder = grupperPosteringerEtterDato(
-                posteringer.tilSimuleringMottakere())
+            posteringer.tilSimuleringMottakere()
+        )
 
         Assertions.assertEquals(1, simuleringsperioder.size)
         Assertions.assertEquals(BigDecimal.valueOf(200), simuleringsperioder[0].nyttBeløp)
@@ -139,7 +144,7 @@ internal class SimuleringUtilTest {
     @Test
     fun `Test henting av 'nytt beløp', 'tidligere utbetalt' og 'resultat' for simuleringsperiode med feilutbetaling`() {
         val posteringer =
-                posteringer(juli(2021), beløp = 100, posteringstype = YTELSE) +
+            posteringer(juli(2021), beløp = 100, posteringstype = YTELSE) +
                 posteringer(juli(2021), beløp = 100, posteringstype = YTELSE) +
                 posteringer(juli(2021), beløp = -99, posteringstype = YTELSE) +
                 posteringer(juli(2021), beløp = -99, posteringstype = YTELSE) +
@@ -147,7 +152,8 @@ internal class SimuleringUtilTest {
                 posteringer(juli(2021), beløp = 98, posteringstype = FEILUTBETALING)
 
         val simuleringsperioder = grupperPosteringerEtterDato(
-                posteringer.tilSimuleringMottakere())
+            posteringer.tilSimuleringMottakere()
+        )
 
         Assertions.assertEquals(1, simuleringsperioder.size)
         Assertions.assertEquals(BigDecimal.valueOf(4), simuleringsperioder[0].nyttBeløp)
@@ -156,7 +162,7 @@ internal class SimuleringUtilTest {
     }
 
     val simulertePosteringerMedNegativFeilutbetaling =
-            posteringer(juli(2021), beløp = -500, posteringstype = FEILUTBETALING) +
+        posteringer(juli(2021), beløp = -500, posteringstype = FEILUTBETALING) +
             posteringer(juli(2021), beløp = -2000, posteringstype = YTELSE) +
             posteringer(juli(2021), beløp = 3000, posteringstype = YTELSE) +
             posteringer(juli(2021), beløp = -500, posteringstype = YTELSE)
@@ -164,8 +170,8 @@ internal class SimuleringUtilTest {
     @Test
     fun `Total etterbetaling skal bli summen av ytelsene i periode med negativ feilutbetaling`() {
         val restSimulering = lagSimuleringsoppsummering(
-                simulertePosteringerMedNegativFeilutbetaling.tilDetaljertSimuleringsresultat(),
-                15.august(2021)
+            simulertePosteringerMedNegativFeilutbetaling.tilDetaljertSimuleringsresultat(),
+            15.august(2021)
         )
 
         Assertions.assertEquals(BigDecimal.valueOf(500), restSimulering.etterbetaling)
@@ -174,8 +180,8 @@ internal class SimuleringUtilTest {
     @Test
     fun `Total feilutbetaling skal bli 0 i periode med negativ feilutbetaling`() {
         val restSimulering = lagSimuleringsoppsummering(
-                simulertePosteringerMedNegativFeilutbetaling.tilDetaljertSimuleringsresultat(),
-                15.august(2021)
+            simulertePosteringerMedNegativFeilutbetaling.tilDetaljertSimuleringsresultat(),
+            15.august(2021)
         )
 
         Assertions.assertEquals(BigDecimal.valueOf(0), restSimulering.feilutbetaling)
@@ -184,14 +190,14 @@ internal class SimuleringUtilTest {
     @Test
     fun `Skal gi 0 etterbetaling og sum feilutbetaling ved positiv feilutbetaling`() {
         val posteringer =
-                posteringer(juli(2021), beløp = 500, posteringstype = FEILUTBETALING) +
+            posteringer(juli(2021), beløp = 500, posteringstype = FEILUTBETALING) +
                 posteringer(juli(2021), beløp = -2000, posteringstype = YTELSE) +
                 posteringer(juli(2021), beløp = 3000, posteringstype = YTELSE) +
                 posteringer(juli(2021), beløp = -500, posteringstype = YTELSE)
 
         val restSimulering = lagSimuleringsoppsummering(
-                posteringer.tilDetaljertSimuleringsresultat(),
-                15.august(2021)
+            posteringer.tilDetaljertSimuleringsresultat(),
+            15.august(2021)
         )
 
         Assertions.assertEquals(BigDecimal.valueOf(0), restSimulering.etterbetaling)
@@ -209,9 +215,9 @@ internal class SimuleringUtilTest {
     fun `ytelse på 10000 korrigert til 2000`() {
 
         val redusertYtelseTil2_000 =
-                posteringer(beløp = -10_000, posteringstype = YTELSE, betalingstype = KREDIT) + // Forrige
+            posteringer(beløp = -10_000, posteringstype = YTELSE, betalingstype = KREDIT) + // Forrige
                 posteringer(beløp = 2_000, posteringstype = YTELSE, betalingstype = DEBIT) + // Ny
-                posteringer(beløp = 8_000, posteringstype = FEILUTBETALING, betalingstype = DEBIT) + //Feilutbetaling
+                posteringer(beløp = 8_000, posteringstype = FEILUTBETALING, betalingstype = DEBIT) + // Feilutbetaling
                 posteringer(beløp = -8_000, posteringstype = MOTP, betalingstype = KREDIT) + // "Nuller ut" Feilutbetalingen
                 posteringer(beløp = 8_000, posteringstype = YTELSE, betalingstype = DEBIT) // "Nuller ut" forrige og ny
 
@@ -230,7 +236,7 @@ internal class SimuleringUtilTest {
     fun `ytelse på 2000 korrigert til 3000`() {
 
         val øktYtelseFra2_000Til3_000 =
-                posteringer(beløp = -2_000, posteringstype = YTELSE, betalingstype = KREDIT) +
+            posteringer(beløp = -2_000, posteringstype = YTELSE, betalingstype = KREDIT) +
                 posteringer(beløp = 3_000, posteringstype = YTELSE, betalingstype = DEBIT) +
                 posteringer(beløp = -1_000, posteringstype = FEILUTBETALING, betalingstype = KREDIT) + // Reduser feilutbetaling
                 posteringer(beløp = 1_000, posteringstype = MOTP, betalingstype = DEBIT) +
@@ -238,7 +244,7 @@ internal class SimuleringUtilTest {
 
         val simuleringsperioder = grupperPosteringerEtterDato(øktYtelseFra2_000Til3_000.tilSimuleringMottakere())
         val oppsummering =
-                lagSimuleringsoppsummering(øktYtelseFra2_000Til3_000.tilDetaljertSimuleringsresultat(), 15.februar(2021))
+            lagSimuleringsoppsummering(øktYtelseFra2_000Til3_000.tilDetaljertSimuleringsresultat(), 15.februar(2021))
 
         assertThat(simuleringsperioder.size).isEqualTo(1)
         assertThat(simuleringsperioder[0].tidligereUtbetalt).isEqualTo(2_000.toBigDecimal())
@@ -252,7 +258,7 @@ internal class SimuleringUtilTest {
     fun `ytelse på 3000 korrigert til 12000`() {
 
         val øktYtelseFra3_000Til12_000 =
-                posteringer(beløp = -3_000, posteringstype = YTELSE, betalingstype = KREDIT) +
+            posteringer(beløp = -3_000, posteringstype = YTELSE, betalingstype = KREDIT) +
                 posteringer(beløp = 12_000, posteringstype = YTELSE, betalingstype = DEBIT) +
                 posteringer(beløp = -7_000, posteringstype = FEILUTBETALING, betalingstype = KREDIT) + // Reduser feilutb
                 posteringer(beløp = 7_000, posteringstype = MOTP, betalingstype = DEBIT) +
@@ -260,7 +266,7 @@ internal class SimuleringUtilTest {
 
         val simuleringsperioder = grupperPosteringerEtterDato(øktYtelseFra3_000Til12_000.tilSimuleringMottakere())
         val oppsummering =
-                lagSimuleringsoppsummering(øktYtelseFra3_000Til12_000.tilDetaljertSimuleringsresultat(), 15.februar(2021))
+            lagSimuleringsoppsummering(øktYtelseFra3_000Til12_000.tilDetaljertSimuleringsresultat(), 15.februar(2021))
 
         assertThat(simuleringsperioder.size).isEqualTo(1)
         assertThat(simuleringsperioder[0].tidligereUtbetalt).isEqualTo(3_000.toBigDecimal())
@@ -281,12 +287,14 @@ internal class SimuleringUtilTest {
     @Test
     fun `førstegangsbehandling 18 nov`() {
         val førstegangsbehandling_18_nov =
-                posteringer(februar(2021), 3, 17_153, YTELSE) +
+            posteringer(februar(2021), 3, 17_153, YTELSE) +
                 posteringer(mai(2021), 6, 18_195, YTELSE)
 
         val oppsummering =
-                lagSimuleringsoppsummering(førstegangsbehandling_18_nov.tilDetaljertSimuleringsresultat(),
-                                           18.november(2021))
+            lagSimuleringsoppsummering(
+                førstegangsbehandling_18_nov.tilDetaljertSimuleringsresultat(),
+                18.november(2021)
+            )
 
         assertThat(oppsummering.feilutbetaling).isEqualTo(0.toBigDecimal())
         assertThat(oppsummering.etterbetaling).isEqualTo(160_629.toBigDecimal())
@@ -295,23 +303,25 @@ internal class SimuleringUtilTest {
     @Test
     fun `revurdering 22 nov`() {
         val revurering_22_nov =
-                //Forrige ytelse
-                posteringer(februar(2021), 3, -17_153, YTELSE) +
+            // Forrige ytelse
+            posteringer(februar(2021), 3, -17_153, YTELSE) +
                 posteringer(mai(2021), 6, -18_195, YTELSE) +
-                //Ny ytelse
+                // Ny ytelse
                 posteringer(februar(2021), 3, 17_153, YTELSE) +
                 posteringer(mai(2021), 4, 17_257, YTELSE) +
                 posteringer(september(2021), 2, 18_195, YTELSE) +
-                //Feilutbetaling
+                // Feilutbetaling
                 posteringer(mai(2021), 4, 938, FEILUTBETALING) +
-                //Motpost feilutbetaling
+                // Motpost feilutbetaling
                 posteringer(mai(2021), 4, -938, MOTP) +
-                //Teknisk postering
+                // Teknisk postering
                 posteringer(mai(2021), 4, 938, YTELSE)
 
         val oppsummering =
-                lagSimuleringsoppsummering(revurering_22_nov.tilDetaljertSimuleringsresultat(),
-                                           22.november(2021))
+            lagSimuleringsoppsummering(
+                revurering_22_nov.tilDetaljertSimuleringsresultat(),
+                22.november(2021)
+            )
 
         assertThat(oppsummering.feilutbetaling).isEqualTo(3_752.toBigDecimal())
         assertThat(oppsummering.etterbetaling).isEqualTo(0.toBigDecimal())
@@ -320,27 +330,27 @@ internal class SimuleringUtilTest {
     @Test
     fun `revurdering 23 nov`() {
         val revurdering_23_nov =
-                //Forrige utelse
-                posteringer(februar(2021), 3, -17_153, YTELSE) +
+            // Forrige utelse
+            posteringer(februar(2021), 3, -17_153, YTELSE) +
                 posteringer(mai(2021), 4, -17_257, YTELSE) +
                 posteringer(september(2021), 2, -18_195, YTELSE) +
-                //Ny ytelse
+                // Ny ytelse
                 posteringer(februar(2021), 3, 17_341, YTELSE) +
                 posteringer(mai(2021), 7, 18_382, YTELSE) +
-                //Teknisk postering
+                // Teknisk postering
                 posteringer(mai(2021), 4, -938, YTELSE) +
-                //Reduser feilutbetaling til null
+                // Reduser feilutbetaling til null
                 posteringer(mai(2021), 4, -938, FEILUTBETALING) +
-                //Motpost feilutbetaling
+                // Motpost feilutbetaling
                 posteringer(mai(2021), 4, 938, MOTP)
 
-
         val oppsummering =
-                lagSimuleringsoppsummering(revurdering_23_nov.tilDetaljertSimuleringsresultat(),
-                                           23.november(2021))
+            lagSimuleringsoppsummering(
+                revurdering_23_nov.tilDetaljertSimuleringsresultat(),
+                23.november(2021)
+            )
 
         assertThat(oppsummering.feilutbetaling).isEqualTo(0.toBigDecimal())
         assertThat(oppsummering.etterbetaling).isEqualTo(1_686.toBigDecimal())
     }
-
 }

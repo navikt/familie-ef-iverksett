@@ -18,23 +18,25 @@ import java.net.URI
 import java.util.UUID
 
 @Service
-class OppdragClient(@Value("\${FAMILIE_OPPDRAG_API_URL}")
-                    private val familieOppdragUri: URI,
-                    @Qualifier("azure")
-                    restOperations: RestOperations) : AbstractPingableRestClient(restOperations, "familie.oppdrag") {
+class OppdragClient(
+    @Value("\${FAMILIE_OPPDRAG_API_URL}")
+    private val familieOppdragUri: URI,
+    @Qualifier("azure")
+    restOperations: RestOperations
+) : AbstractPingableRestClient(restOperations, "familie.oppdrag") {
 
     private val postOppdragUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/oppdrag").build().toUri()
 
     private val getStatusUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/status").build().toUri()
 
     private val grensesnittavstemmingUri: URI =
-            UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/grensesnittavstemming").build().toUri()
+        UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/grensesnittavstemming").build().toUri()
 
     private val konsistensavstemmingUri: URI =
-            UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/konsistensavstemming").build().toUri()
+        UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/konsistensavstemming").build().toUri()
 
     private val postSimuleringUri: URI =
-            UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/simulering/v1").build().toUri()
+        UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/simulering/v1").build().toUri()
 
     fun iverksettOppdrag(utbetalingsoppdrag: Utbetalingsoppdrag): String {
         return postForEntity<Ressurs<String>>(postOppdragUri, utbetalingsoppdrag).getDataOrThrow()
@@ -49,15 +51,17 @@ class OppdragClient(@Value("\${FAMILIE_OPPDRAG_API_URL}")
         return postForEntity<Ressurs<String>>(grensesnittavstemmingUri, grensesnittavstemmingRequest).getDataOrThrow()
     }
 
-    fun konsistensavstemming(konsistensavstemmingUtbetalingsoppdrag: KonsistensavstemmingUtbetalingsoppdrag,
-                             sendStartmelding: Boolean = true,
-                             sendAvsluttmelding: Boolean = true,
-                             transaksjonId: UUID? = null): String {
+    fun konsistensavstemming(
+        konsistensavstemmingUtbetalingsoppdrag: KonsistensavstemmingUtbetalingsoppdrag,
+        sendStartmelding: Boolean = true,
+        sendAvsluttmelding: Boolean = true,
+        transaksjonId: UUID? = null
+    ): String {
         val url = UriComponentsBuilder.fromUri(konsistensavstemmingUri)
-                .queryParam("sendStartmelding", sendStartmelding)
-                .queryParam("sendAvsluttmelding", sendAvsluttmelding)
-                .queryParam("transaksjonId", transaksjonId.toString())
-                .build().toUri()
+            .queryParam("sendStartmelding", sendStartmelding)
+            .queryParam("sendAvsluttmelding", sendAvsluttmelding)
+            .queryParam("transaksjonId", transaksjonId.toString())
+            .build().toUri()
         return postForEntity<Ressurs<String>>(url, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
     }
 

@@ -17,9 +17,11 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
-class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
-                                    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-                                    private val taskRepository: TaskRepository) {
+class OpprettOppgaverForBarnService(
+    private val oppgaveClient: OppgaveClient,
+    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+    private val taskRepository: TaskRepository
+) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
@@ -28,9 +30,12 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
     fun opprettTaskerForBarn(oppgaverForBarn: List<OppgaveForBarn>) {
         oppgaverForBarn.forEach {
             try {
-                taskRepository.save(Task(
+                taskRepository.save(
+                    Task(
                         OpprettOppgaveForBarnTask.TYPE,
-                        objectMapper.writeValueAsString(it)))
+                        objectMapper.writeValueAsString(it)
+                    )
+                )
             } catch (ex: Exception) {
                 secureLogger.error("Kunne ikke opprette task for barn som fyller år med OppgaveForBarn=$it")
                 throw ex
@@ -47,34 +52,35 @@ class OpprettOppgaverForBarnService(private val oppgaveClient: OppgaveClient,
         val oppgaveType = if (oppgaveForBarn.aktivFra == null) Oppgavetype.InnhentDokumentasjon else Oppgavetype.Fremlegg
 
         val opprettOppgaveRequest = OppgaveUtil.opprettOppgaveRequest(
-                oppgaveForBarn.eksternFagsakId,
-                oppgaveForBarn.personIdent,
-                oppgaveForBarn.stønadType,
-                enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
-                oppgaveType,
-                oppgaveForBarn.beskrivelse,
-                oppgaveForBarn.aktivFra
+            oppgaveForBarn.eksternFagsakId,
+            oppgaveForBarn.personIdent,
+            oppgaveForBarn.stønadType,
+            enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
+            oppgaveType,
+            oppgaveForBarn.beskrivelse,
+            oppgaveForBarn.aktivFra
         )
         val oppgaveId = oppgaveClient.opprettOppgave(opprettOppgaveRequest)
-                        ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
+            ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId for behandling=${oppgaveForBarn.behandlingId}")
     }
 
     private fun oppgaveFinnesAllerede(oppgaveForBarn: OppgaveForBarn): Boolean {
         val aktørId = familieIntegrasjonerClient.hentAktørId(oppgaveForBarn.personIdent)
         val fristdato = oppgaveForBarn.aktivFra ?: LocalDate.now()
-        val finnOppgaveRequest = FinnOppgaveRequest(tema = Tema.ENF,
-                                                    aktørId = aktørId,
-                                                    fristFomDato = fristdato.minusWeeks(2),
-                                                    fristTomDato = fristdato.plusWeeks(2))
+        val finnOppgaveRequest = FinnOppgaveRequest(
+            tema = Tema.ENF,
+            aktørId = aktørId,
+            fristFomDato = fristdato.minusWeeks(2),
+            fristTomDato = fristdato.plusWeeks(2)
+        )
         val oppgaveBeskrivelser = oppgaveClient.hentOppgaver(finnOppgaveRequest)
-                .mapNotNull { it.beskrivelse }
-                .map { it.trim().lowercase() }
+            .mapNotNull { it.beskrivelse }
+            .map { it.trim().lowercase() }
         return oppgaveBeskrivelser.contains(oppgaveForBarn.beskrivelse.trim().lowercase())
     }
 
     private fun enhetForInnhentDokumentasjon(personIdent: String): Enhet {
         return familieIntegrasjonerClient.hentBehandlendeEnhetForBehandlingMedRelasjoner(personIdent).first()
     }
-
 }
