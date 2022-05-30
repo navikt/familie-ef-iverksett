@@ -13,12 +13,6 @@ class OppdragStepDefinitions {
     lateinit var nyTilkjentYtelse: TilkjentYtelseMedMetaData
     lateinit var forrigeTilkjentYtelse: TilkjentYtelse
 
-    @Gitt("følgende andeler")
-    fun følgendeAndeler(dataTable: DataTable) {
-        // AndelTilkjentYtelseParser
-        // startdato = TilkjentYtelseParser.mapStartdatoer(dataTable)
-    }
-
     @Gitt("følgende oppdrag")
     fun følgende_oppdrag(dataTable: DataTable) {
     }
