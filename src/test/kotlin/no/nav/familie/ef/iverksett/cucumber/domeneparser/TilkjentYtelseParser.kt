@@ -4,7 +4,6 @@ import io.cucumber.datatable.DataTable
 import no.nav.familie.ef.iverksett.cucumber.domeneparser.IdTIlUUIDHolder.behandlingIdTilUUID
 import no.nav.familie.ef.iverksett.cucumber.steps.TilkjentYtelseHolder
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode.SatsType
@@ -79,8 +78,8 @@ object TilkjentYtelseParser {
     }
 
     private fun mapForventetAndel(rad: MutableMap<String, String>) = ForventetAndelTilkjentYtelse(
-            fom = parseÅrMåned(Domenebegrep.FRA_DATO, rad).atDay(1),
-            tom = parseÅrMåned(Domenebegrep.TIL_DATO, rad).atEndOfMonth(),
+            fom = parseValgfriÅrMåned(Domenebegrep.FRA_DATO, rad)?.atDay(1) ?: LocalDate.MIN,
+            tom = parseValgfriÅrMåned(Domenebegrep.TIL_DATO, rad)?.atEndOfMonth() ?: LocalDate.MIN,
             beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
             periodeId = parseInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad).toLong(),
             forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong()
