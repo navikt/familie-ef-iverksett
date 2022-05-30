@@ -1,9 +1,9 @@
 # language: no
 # encoding: UTF-8
 
-Egenskap: Endring i periode
+Egenskap: Opphør
 
-  Scenario: Periode får ett opphør
+  Scenario: Har en periode og får ett opphør
 
     Gitt følgende tilkjente ytelser for Overgangsstønad
       | BehandlingId | Fra dato | Til dato | Beløp |
