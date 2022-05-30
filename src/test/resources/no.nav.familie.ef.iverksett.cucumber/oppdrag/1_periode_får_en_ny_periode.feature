@@ -1,9 +1,9 @@
 # language: no
 # encoding: UTF-8
 
-Egenskap: Endring i periode
+Egenskap: Ny periode
 
-  Scenario: En periode får en ny periode
+  Scenario: Har en periode, legger til en andre
 
     Gitt følgende tilkjente ytelser for Overgangsstønad
       | BehandlingId | Fra dato | Til dato | Beløp |

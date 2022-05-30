@@ -1,9 +1,9 @@
 # language: no
 # encoding: UTF-8
 
-Egenskap: Endring i periode
+Egenskap: Endring midt i periode
 
-  Scenario: Ny periode får endring på beløp
+  Scenario: Har en periode og får en endring midt i perioden
 
     Gitt følgende tilkjente ytelser for Overgangsstønad
       | BehandlingId | Fra dato | Til dato | Beløp |
