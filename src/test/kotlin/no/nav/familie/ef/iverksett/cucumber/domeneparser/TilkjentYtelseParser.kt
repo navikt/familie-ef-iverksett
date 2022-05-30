@@ -4,7 +4,6 @@ import io.cucumber.datatable.DataTable
 import no.nav.familie.ef.iverksett.cucumber.domeneparser.IdTIlUUIDHolder.behandlingIdTilUUID
 import no.nav.familie.ef.iverksett.cucumber.steps.TilkjentYtelseHolder
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode.SatsType

@@ -2,7 +2,6 @@ package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
-import no.nav.familie.kontrakter.ef.iverksett.Periodetype
 import java.time.LocalDate
 import java.util.UUID
 
