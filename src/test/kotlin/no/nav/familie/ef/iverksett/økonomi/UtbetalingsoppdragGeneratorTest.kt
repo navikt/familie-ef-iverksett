@@ -8,7 +8,6 @@ import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
@@ -74,75 +73,8 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
-    fun `Har to perioder og får en endring i første perioden`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_perioder_får_en_endring_i_første_perioden.csv"))
-    }
-
-    @Test
-    fun `Har to perioder og får en endring som har startdato før første perioden`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_perioder_får_ny_periode_før_første_periode.csv"))
-    }
-
-    @Test
-    fun `Har to perioder og får en endring for start og sluttdatot i andre perioden`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_perioder_får_en_endring_i_andre_perioden.csv"))
-    }
-
-    @Test
-    fun `Har tre perioder og får en endring i første perioden`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/3_perioder_får_en_endring_i_første_perioden.csv"))
-    }
-
-    @Test
-    fun `Har tre perioder og får en endring i andre perioden`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/3_perioder_får_en_endring_i_andre_perioden.csv"))
-    }
-
-    @Test
-    fun `Har en perioder, legger til en ny periode som er lik den forrige`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/1_periode_får_en_lik_periode.csv"))
-    }
-
-    @Test
-    fun `Har to perioder, legger til en tredje, endrer på den andre`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_perioder_får_ny_periode_og_endring_i_andre_perioden.csv"))
-    }
-
-    @Test
     fun `revurderer og sletter periode 2, revurdererer på nytt og skal då bygge videre fra andre perioden sin periodeId`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_sletter_periode2_revurderer_på_nytt.csv"))
-    }
-
-    @Test
-    fun `Har 2 perioder og får en endring på andre perioden men har feil behandlingId i testen`() {
-        val catchThrowable = catchThrowable {
-            TestOppdragRunner.run(
-                javaClass.getResource(
-                    "/oppdrag/2_periode_får_en_endring_i_andre_perioden_feiler_pga_feil_behandling_id.csv"
-                )
-            )
-        }
-        assertThat(catchThrowable)
-            .hasMessageContaining("Feiler for gruppe med indeks 1 ==> ")
-            .isInstanceOf(AssertionFailedError::class.java)
-
-        assertExpectedOgActualErLikeUtenomFeltSomFeiler(catchThrowable, "kildeBehandlingId")
-    }
-
-    @Test
-    fun `Har 2 perioder og får en endring på andre perioden men har feil periodeId i testen`() {
-        val catchThrowable = catchThrowable {
-            TestOppdragRunner.run(
-                javaClass.getResource(
-                    "/oppdrag/2_periode_får_en_endring_i_andre_perioden_feiler_pga_feil_periode_id.csv"
-                )
-            )
-        }
-        assertThat(catchThrowable)
-            .hasMessageContaining("Feiler for gruppe med indeks 1 ==> ")
-            .isInstanceOf(AssertionFailedError::class.java)
-
-        assertExpectedOgActualErLikeUtenomFeltSomFeiler(catchThrowable, "periodeId")
     }
 
     @Nested

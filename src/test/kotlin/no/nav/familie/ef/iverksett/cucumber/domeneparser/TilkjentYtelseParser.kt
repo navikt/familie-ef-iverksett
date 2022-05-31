@@ -86,7 +86,8 @@ object TilkjentYtelseParser {
         tom = parseValgfriÅrMåned(Domenebegrep.TIL_DATO, rad)?.atEndOfMonth() ?: LocalDate.MIN,
         beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
         periodeId = parseInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad).toLong(),
-        forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong()
+        forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong(),
+        kildeBehandlingId = behandlingIdTilUUID[parseValgfriInt(TilkjentYtelseDomenebegrep.KILDE_BEHANDLING_ID, rad)]
     )
 
     private fun DataTable.groupByBehandlingId() =
@@ -137,7 +138,7 @@ object TilkjentYtelseParser {
     data class ForventetTilkjentYtelse(
         val behandlingId: UUID,
         val andeler: List<ForventetAndelTilkjentYtelse>,
-        val startdato: LocalDate
+        val startdato: LocalDate,
     )
 
     data class ForventetAndelTilkjentYtelse(
@@ -146,20 +147,20 @@ object TilkjentYtelseParser {
         val periodeId: Long,
         val forrigePeriodeId: Long?,
         val beløp: Int,
+        val kildeBehandlingId: UUID?
     )
 }
 
 enum class TilkjentYtelseDomenebegrep(override val nøkkel: String) : Domenenøkkel {
     STARTDATO("Startdato"),
-
     INNTEKT("INNTEKT"),
     INNTEKTSREDUKSJON("Inntektsreduksjon"),
     SAMORDNINGSFRADRAG("Samordningsfradrag"),
     BELØP("Beløp"),
     PERIODETYPE("Periodetype"),
-
     PERIODE_ID("Periode id"),
     FORRIGE_PERIODE_ID("Forrige periode id"),
+    KILDE_BEHANDLING_ID("Kilde behandling id")
     ;
 }
 

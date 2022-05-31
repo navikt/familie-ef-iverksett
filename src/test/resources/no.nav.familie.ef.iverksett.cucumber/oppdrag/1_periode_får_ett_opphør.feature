@@ -1,7 +1,7 @@
 # language: no
 # encoding: UTF-8
 
-Egenskap: Opphør
+Egenskap: Har en periode og får ett opphør
 
   Scenario: Har en periode og får ett opphør
 
