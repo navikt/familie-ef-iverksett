@@ -24,9 +24,9 @@ class IverksettingRepositoryTest : ServerTest() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagre(
-                iverksett.behandling.behandlingId,
-                iverksett,
-                opprettBrev()
+            iverksett.behandling.behandlingId,
+            iverksett,
+            opprettBrev()
         )
         val iverksettResultat = iverksettingRepository.hent(iverksett.behandling.behandlingId)
         assertThat(iverksett).isEqualTo(iverksettResultat)
@@ -37,9 +37,9 @@ class IverksettingRepositoryTest : ServerTest() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettBarnetilsynDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagre(
-                iverksett.behandling.behandlingId,
-                iverksett,
-                opprettBrev()
+            iverksett.behandling.behandlingId,
+            iverksett,
+            opprettBrev()
         )
         val iverksettResultat = iverksettingRepository.hent(iverksett.behandling.behandlingId)
         assertThat(iverksett).isEqualTo(iverksettResultat)
@@ -50,9 +50,9 @@ class IverksettingRepositoryTest : ServerTest() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagre(
-                iverksett.behandling.behandlingId,
-                iverksett,
-                opprettBrev()
+            iverksett.behandling.behandlingId,
+            iverksett,
+            opprettBrev()
         )
         val iverksettResultat = iverksettingRepository.hentAvEksternId(iverksett.behandling.eksternId)
         assertThat(iverksett).isEqualTo(iverksettResultat)
@@ -63,10 +63,9 @@ class IverksettingRepositoryTest : ServerTest() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
         iverksettingRepository.lagreTekniskOpphør(
-                iverksett.behandling.behandlingId,
-                opprettTekniskOpphør(iverksett.behandling.behandlingId, iverksett.behandling.eksternId)
+            iverksett.behandling.behandlingId,
+            opprettTekniskOpphør(iverksett.behandling.behandlingId, iverksett.behandling.eksternId)
         )
         Assertions.assertThrows(IllegalStateException::class.java) { iverksettingRepository.hentAvEksternId(iverksett.behandling.eksternId) }
     }
-
 }

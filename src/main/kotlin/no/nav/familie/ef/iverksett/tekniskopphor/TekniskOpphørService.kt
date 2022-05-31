@@ -10,9 +10,11 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.Properties
 
 @Service
-class TekniskOpphørService(private val iverksettingRepository: IverksettingRepository,
-                           private val tilstandRepository: TilstandRepository,
-                           private val taskRepository: TaskRepository) {
+class TekniskOpphørService(
+    private val iverksettingRepository: IverksettingRepository,
+    private val tilstandRepository: TilstandRepository,
+    private val taskRepository: TaskRepository
+) {
 
     @Transactional
     fun startIverksettingAvTekniskOpphor(tekniskOpphør: TekniskOpphør) {
@@ -20,13 +22,15 @@ class TekniskOpphørService(private val iverksettingRepository: IverksettingRepo
         iverksettingRepository.lagreTekniskOpphør(behandlingId = behandlingId, tekniskOpphør)
         tilstandRepository.opprettTomtResultat(behandlingId)
 
-        val førsteHovedflytTask = Task(type = IverksettTekniskOpphørTask.TYPE,
-                                       payload = behandlingId.toString(),
-                                       properties = Properties().apply {
-                                           this["personIdent"] = tekniskOpphør.tilkjentYtelseMedMetaData.personIdent
-                                           this["behandlingId"] = tekniskOpphør.tilkjentYtelseMedMetaData.behandlingId.toString()
-                                           this["saksbehandler"] = tekniskOpphør.tilkjentYtelseMedMetaData.saksbehandlerId
-                                       })
+        val førsteHovedflytTask = Task(
+            type = IverksettTekniskOpphørTask.TYPE,
+            payload = behandlingId.toString(),
+            properties = Properties().apply {
+                this["personIdent"] = tekniskOpphør.tilkjentYtelseMedMetaData.personIdent
+                this["behandlingId"] = tekniskOpphør.tilkjentYtelseMedMetaData.behandlingId.toString()
+                this["saksbehandler"] = tekniskOpphør.tilkjentYtelseMedMetaData.saksbehandlerId
+            }
+        )
 
         taskRepository.save(førsteHovedflytTask)
     }

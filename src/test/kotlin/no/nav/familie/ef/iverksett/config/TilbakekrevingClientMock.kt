@@ -15,7 +15,6 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingsstatus
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
 import no.nav.familie.kontrakter.felles.tilbakekreving.FinnesBehandlingResponse
 import no.nav.familie.kontrakter.felles.tilbakekreving.KanBehandlingOpprettesManueltRespons
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
@@ -33,33 +32,41 @@ class TilbakekrevingClientMock {
     private val behandlingId = objectMapper.writeValueAsString(Ressurs.success(UUID.randomUUID().toString()))
     private val finnesBehandlingResponse = objectMapper.writeValueAsString(Ressurs.success(FinnesBehandlingResponse(true)))
     private val behandlinger =
-            objectMapper.writeValueAsString(Ressurs.success(listOf(Behandling(behandlingId = UUID.randomUUID(),
-                                                                              opprettetTidspunkt = LocalDateTime.now(),
-                                                                              aktiv = true,
-                                                                              type = Behandlingstype.TILBAKEKREVING,
-                                                                              status = Behandlingsstatus.UTREDES,
-                                                                              årsak = null,
-                                                                              vedtaksdato = LocalDateTime.now(),
-                                                                              resultat = null))))
+        objectMapper.writeValueAsString(
+            Ressurs.success(
+                listOf(
+                    Behandling(
+                        behandlingId = UUID.randomUUID(),
+                        opprettetTidspunkt = LocalDateTime.now(),
+                        aktiv = true,
+                        type = Behandlingstype.TILBAKEKREVING,
+                        status = Behandlingsstatus.UTREDES,
+                        årsak = null,
+                        vedtaksdato = LocalDateTime.now(),
+                        resultat = null
+                    )
+                )
+            )
+        )
     private val kanOpprettesManuelt =
-            objectMapper.writeValueAsString(Ressurs.success(KanBehandlingOpprettesManueltRespons(true, "Bob")))
+        objectMapper.writeValueAsString(Ressurs.success(KanBehandlingOpprettesManueltRespons(true, "Bob")))
 
-
-    val responses = listOf(get(pingUri.path)
-                                   .willReturn(ResponseDefinitionBuilder.okForEmptyJson<Any>()),
-                           post(urlMatching("/api/dokument/forhandsvis-varselbrev"))
-                                   .willReturn(okForContentType("application/pdf", pdf)),
-                           post(urlMatching("/api/behandling/v1"))
-                                   .willReturn(okJson(behandlingId)),
-                           post(urlMatching("/api/behandling/manuelt/task/v1"))
-                                   .willReturn(okJson(ok)),
-                           get(urlMatching("/api/fagsystem/${Fagsystem.EF}/fagsak/.+/finnesApenBehandling/v1"))
-                                   .willReturn(okJson(finnesBehandlingResponse)),
-                           get(urlMatching("/api/fagsystem/${Fagsystem.EF}/fagsak/.+/behandlinger/v1"))
-                                   .willReturn(okJson(behandlinger)),
-                           get(urlMatching("/api/ytelsestype/.+/fagsak/.+/kanBehandlingOpprettesManuelt/v1"))
-                                   .willReturn(okJson(kanOpprettesManuelt)))
-
+    val responses = listOf(
+        get(pingUri.path)
+            .willReturn(ResponseDefinitionBuilder.okForEmptyJson<Any>()),
+        post(urlMatching("/api/dokument/forhandsvis-varselbrev"))
+            .willReturn(okForContentType("application/pdf", pdf)),
+        post(urlMatching("/api/behandling/v1"))
+            .willReturn(okJson(behandlingId)),
+        post(urlMatching("/api/behandling/manuelt/task/v1"))
+            .willReturn(okJson(ok)),
+        get(urlMatching("/api/fagsystem/${Fagsystem.EF}/fagsak/.+/finnesApenBehandling/v1"))
+            .willReturn(okJson(finnesBehandlingResponse)),
+        get(urlMatching("/api/fagsystem/${Fagsystem.EF}/fagsak/.+/behandlinger/v1"))
+            .willReturn(okJson(behandlinger)),
+        get(urlMatching("/api/ytelsestype/.+/fagsak/.+/kanBehandlingOpprettesManuelt/v1"))
+            .willReturn(okJson(kanOpprettesManuelt))
+    )
 
     @Bean("mock-tilbakekreving")
     @Profile("mock-tilbakekreving")

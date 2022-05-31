@@ -28,21 +28,24 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @Bean
     override fun jdbcCustomConversions(): JdbcCustomConversions {
-        return JdbcCustomConversions(listOf(PropertiesWrapperTilStringConverter(),
-                                            StringTilPropertiesWrapperConverter(),
-                                            BehandlingDVHTilStringConverter(),
-                                            StringTilBehandlingDVHConverter()))
+        return JdbcCustomConversions(
+            listOf(
+                PropertiesWrapperTilStringConverter(),
+                StringTilPropertiesWrapperConverter(),
+                BehandlingDVHTilStringConverter(),
+                StringTilBehandlingDVHConverter()
+            )
+        )
     }
 
     @WritingConverter
     class BehandlingDVHTilStringConverter : Converter<BehandlingDVH, PGobject> {
 
         override fun convert(utbetalingsoppdrag: BehandlingDVH): PGobject =
-                PGobject().apply {
-                    type = "json"
-                    value = objectMapper.writeValueAsString(utbetalingsoppdrag)
-                }
-
+            PGobject().apply {
+                type = "json"
+                value = objectMapper.writeValueAsString(utbetalingsoppdrag)
+            }
     }
 
     @ReadingConverter

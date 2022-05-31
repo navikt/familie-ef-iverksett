@@ -25,11 +25,11 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     override fun handleExceptionInternal(
-            ex: Exception,
-            body: Any?,
-            headers: HttpHeaders,
-            status: HttpStatus,
-            request: WebRequest
+        ex: Exception,
+        body: Any?,
+        headers: HttpHeaders,
+        status: HttpStatus,
+        request: WebRequest
     ): ResponseEntity<Any> {
         secureLogger.error("En feil har oppstått", ex)
         logger.error("En feil har oppstått - throwable=${rootCause(ex)} status=${status.value()}")
@@ -46,14 +46,14 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     private fun håndtertResponseStatusFeil(
-            throwable: Throwable,
-            responseStatus: ResponseStatus
+        throwable: Throwable,
+        responseStatus: ResponseStatus
     ): ResponseEntity<Ressurs<Nothing>> {
         val status = if (responseStatus.value != HttpStatus.INTERNAL_SERVER_ERROR) responseStatus.value else responseStatus.code
         val loggMelding = "En håndtert feil har oppstått" +
-                          " throwable=${rootCause(throwable)}" +
-                          " reason=${responseStatus.reason}" +
-                          " status=$status"
+            " throwable=${rootCause(throwable)}" +
+            " reason=${responseStatus.reason}" +
+            " status=$status"
 
         loggFeil(throwable, loggMelding)
         return ResponseEntity.status(status).body(Ressurs.failure("Håndtert feil"))
@@ -72,8 +72,8 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
         secureLogger.error("En feil har oppstått", throwable)
         logger.error("En feil har oppstått - throwable=${rootCause(throwable)} ")
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Ressurs.failure("Uventet feil"))
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(Ressurs.failure("Uventet feil"))
     }
 
     private fun loggFeil(throwable: Throwable, loggMelding: String) {
@@ -82,5 +82,4 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
             else -> logger.error(loggMelding)
         }
     }
-
 }

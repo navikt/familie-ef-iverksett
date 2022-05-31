@@ -6,5 +6,5 @@ import org.springframework.stereotype.Component
 
 @Component
 @Profile("!local")
-class InfotrygdFeedHealth(infotrygdFeedClient: InfotrygdFeedClient)
-    : AbstractHealthIndicator(infotrygdFeedClient, "infotrygd.feed")
+class InfotrygdFeedHealth(infotrygdFeedClient: InfotrygdFeedClient) :
+    AbstractHealthIndicator(infotrygdFeedClient, "infotrygd.feed")

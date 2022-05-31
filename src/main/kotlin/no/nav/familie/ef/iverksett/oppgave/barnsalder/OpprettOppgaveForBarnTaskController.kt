@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(
-        path = ["/api/oppgave-for-barns-alder"],
-        produces = [MediaType.APPLICATION_JSON_VALUE]
+    path = ["/api/oppgave-for-barns-alder"],
+    produces = [MediaType.APPLICATION_JSON_VALUE]
 )
 @ProtectedWithClaims(issuer = "azuread")
 class OpprettOppgaveForBarnTaskController(
-        private val oppgaveForBarnService: OpprettOppgaverForBarnService
+    private val oppgaveForBarnService: OpprettOppgaverForBarnService
 ) {
 
     @PostMapping("/opprett")

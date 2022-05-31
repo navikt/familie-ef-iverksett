@@ -11,25 +11,25 @@ object VilkårsvurderingUtil {
 
     fun hentHarSagtOppEllerRedusertFraVurderinger(vilkårsvurderinger: List<Vilkårsvurdering>): Boolean? {
         val vilkårsvurdering = vilkårsvurderinger.find { it.vilkårType == VilkårType.SAGT_OPP_ELLER_REDUSERT }
-                               ?: error("Finner ikke vurderingen for sagt opp eller redusert")
+            ?: error("Finner ikke vurderingen for sagt opp eller redusert")
 
         return if (vilkårsvurdering.resultat == Vilkårsresultat.SKAL_IKKE_VURDERES) {
             null
         } else {
             val vurdering = vilkårsvurdering.delvilkårsvurderinger.flatMap { it.vurderinger }
-                                    .firstOrNull { it.regelId == RegelId.SAGT_OPP_ELLER_REDUSERT }
-                            ?: error("Finner ikke delvilkårsvurderingen for sagt opp eller redusert stilling")
+                .firstOrNull { it.regelId == RegelId.SAGT_OPP_ELLER_REDUSERT }
+                ?: error("Finner ikke delvilkårsvurderingen for sagt opp eller redusert stilling")
             harSagtOppEllerRedusertStilling(vurdering.svar)
         }
     }
 
     fun hentAktivitetsvilkårBarnetilsyn(vilkårsvurderinger: List<Vilkårsvurdering>): AktivitetsvilkårBarnetilsyn? {
         val vilkårsvurdering = vilkårsvurderinger.find { it.vilkårType == VilkårType.AKTIVITET_ARBEID }
-                               ?: error("Finner ikke vurderingen for arbeid aktivitet barnetilsyn")
+            ?: error("Finner ikke vurderingen for arbeid aktivitet barnetilsyn")
 
         val delvikår = vilkårsvurdering.delvilkårsvurderinger.first().vurderinger
-                               .find { it.regelId == RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM }
-                       ?: error("Finner ikke delvilkårvurderingen for arbeid aktivitet barnetilsyn")
+            .find { it.regelId == RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM }
+            ?: error("Finner ikke delvilkårvurderingen for arbeid aktivitet barnetilsyn")
 
         return delvikår.svar?.let { AktivitetsvilkårBarnetilsyn.valueOf(it.name) }
     }

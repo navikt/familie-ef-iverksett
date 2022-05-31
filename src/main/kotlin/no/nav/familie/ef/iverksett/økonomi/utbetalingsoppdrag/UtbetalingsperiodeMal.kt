@@ -17,37 +17,45 @@ import java.time.LocalDate
  * @param[erEndringPåEksisterendePeriode] ved true vil oppdrag sette asksjonskode ENDR på linje og ikke referere bakover
  * @return Periode til utbetalingsoppdrag
  */
-fun lagPeriodeFraAndel(andel: AndelTilkjentYtelse,
-                       type: StønadType,
-                       eksternBehandlingId: Long,
-                       vedtaksdato: LocalDate,
-                       personIdent: String,
-                       opphørKjedeFom: LocalDate? = null,
-                       erEndringPåEksisterendePeriode: Boolean = false) =
-        Utbetalingsperiode(erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode,
-                           opphør = if (erEndringPåEksisterendePeriode) Opphør(opphørKjedeFom!!) else null,
-                           forrigePeriodeId = andel.forrigePeriodeId,
-                           periodeId = andel.periodeId!!,
-                           datoForVedtak = vedtaksdato,
-                           klassifisering = type.tilKlassifisering(),
-                           vedtakdatoFom = andel.fraOgMed,
-                           vedtakdatoTom = andel.tilOgMed,
-                           sats = BigDecimal(andel.beløp),
-                           satsType = mapSatstype(type),
-                           utbetalesTil = personIdent,
-                           behandlingId = eksternBehandlingId,
-                           utbetalingsgrad = andel.utbetalingsgrad())
+fun lagPeriodeFraAndel(
+    andel: AndelTilkjentYtelse,
+    type: StønadType,
+    eksternBehandlingId: Long,
+    vedtaksdato: LocalDate,
+    personIdent: String,
+    opphørKjedeFom: LocalDate? = null,
+    erEndringPåEksisterendePeriode: Boolean = false
+) =
+    Utbetalingsperiode(
+        erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode,
+        opphør = if (erEndringPåEksisterendePeriode) Opphør(opphørKjedeFom!!) else null,
+        forrigePeriodeId = andel.forrigePeriodeId,
+        periodeId = andel.periodeId!!,
+        datoForVedtak = vedtaksdato,
+        klassifisering = type.tilKlassifisering(),
+        vedtakdatoFom = andel.fraOgMed,
+        vedtakdatoTom = andel.tilOgMed,
+        sats = BigDecimal(andel.beløp),
+        satsType = mapSatstype(type),
+        utbetalesTil = personIdent,
+        behandlingId = eksternBehandlingId,
+        utbetalingsgrad = andel.utbetalingsgrad()
+    )
 
-fun lagUtbetalingsperiodeForOpphør(sisteAndelIKjede: AndelTilkjentYtelse,
-                                   opphørKjedeFom: LocalDate,
-                                   tilkjentYtelse: TilkjentYtelseMedMetaData): Utbetalingsperiode {
-    return lagPeriodeFraAndel(andel = sisteAndelIKjede,
-                              eksternBehandlingId = tilkjentYtelse.eksternBehandlingId,
-                              type = tilkjentYtelse.stønadstype,
-                              personIdent = tilkjentYtelse.personIdent,
-                              vedtaksdato = tilkjentYtelse.vedtaksdato,
-                              opphørKjedeFom = opphørKjedeFom,
-                              erEndringPåEksisterendePeriode = true)
+fun lagUtbetalingsperiodeForOpphør(
+    sisteAndelIKjede: AndelTilkjentYtelse,
+    opphørKjedeFom: LocalDate,
+    tilkjentYtelse: TilkjentYtelseMedMetaData
+): Utbetalingsperiode {
+    return lagPeriodeFraAndel(
+        andel = sisteAndelIKjede,
+        eksternBehandlingId = tilkjentYtelse.eksternBehandlingId,
+        type = tilkjentYtelse.stønadstype,
+        personIdent = tilkjentYtelse.personIdent,
+        vedtaksdato = tilkjentYtelse.vedtaksdato,
+        opphørKjedeFom = opphørKjedeFom,
+        erEndringPåEksisterendePeriode = true
+    )
 }
 
 fun mapSatstype(stønadstype: StønadType) = when (stønadstype) {

@@ -15,18 +15,18 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = VentePåStatusFraØkonomiTask.TYPE,
-        maxAntallFeil = 50,
-        settTilManuellOppfølgning = true,
-        triggerTidVedFeilISekunder = 30L,
-        beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
+    taskStepType = VentePåStatusFraØkonomiTask.TYPE,
+    maxAntallFeil = 50,
+    settTilManuellOppfølgning = true,
+    triggerTidVedFeilISekunder = 30L,
+    beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
 )
 
 class VentePåStatusFraØkonomiTask(
-        private val iverksettingRepository: IverksettingRepository,
-        private val iverksettingService: IverksettingService,
-        private val taskRepository: TaskRepository,
-        private val tilstandRepository: TilstandRepository
+    private val iverksettingRepository: IverksettingRepository,
+    private val iverksettingService: IverksettingService,
+    private val taskRepository: TaskRepository,
+    private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -35,16 +35,18 @@ class VentePåStatusFraØkonomiTask(
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
         val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingId)
-                             ?: error("Kunne ikke finne tilkjent ytelse for behandling=$behandlingId")
+            ?: error("Kunne ikke finne tilkjent ytelse for behandling=$behandlingId")
 
         if (tilkjentYtelse.harIngenUtbetalingsperioder()) {
             return
         }
 
-        iverksettingService.sjekkStatusPåIverksettOgOppdaterTilstand(stønadstype = iverksett.fagsak.stønadstype,
-                                                                     personIdent = iverksett.søker.personIdent,
-                                                                     eksternBehandlingId = iverksett.behandling.eksternId,
-                                                                     behandlingId = behandlingId)
+        iverksettingService.sjekkStatusPåIverksettOgOppdaterTilstand(
+            stønadstype = iverksett.fagsak.stønadstype,
+            personIdent = iverksett.søker.personIdent,
+            eksternBehandlingId = iverksett.behandling.eksternId,
+            behandlingId = behandlingId
+        )
     }
 
     override fun onCompletion(task: Task) {
@@ -63,9 +65,8 @@ class VentePåStatusFraØkonomiTask(
         const val TYPE = "sjekkStatusPåOppdrag"
     }
 
-    fun TilkjentYtelse.harIngenUtbetalingsperioder() :Boolean {
+    fun TilkjentYtelse.harIngenUtbetalingsperioder(): Boolean {
         return this.utbetalingsoppdrag?.utbetalingsperiode?.isEmpty()
-        ?: error("Kunne ikke finne utbetalingsoppdrag for TilkjentYtelse")
+            ?: error("Kunne ikke finne utbetalingsoppdrag for TilkjentYtelse")
     }
-
 }

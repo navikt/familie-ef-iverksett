@@ -32,7 +32,7 @@ class IverksettJsonTransformTest {
 
         assertThat(iverksett).isNotNull
         assertThat(objectMapper.readTree(json))
-                .isEqualTo(objectMapper.readTree(objectMapper.writeValueAsString(iverksettJson)))
+            .isEqualTo(objectMapper.readTree(objectMapper.writeValueAsString(iverksettJson)))
     }
 
     @Test
@@ -46,7 +46,7 @@ class IverksettJsonTransformTest {
 
         assertThat(iverksett).isNotNull
         assertThat(objectMapper.readTree(json))
-                .isEqualTo(objectMapper.readTree(objectMapper.writeValueAsString(iverksettJson)))
+            .isEqualTo(objectMapper.readTree(objectMapper.writeValueAsString(iverksettJson)))
     }
 
     @Test
@@ -69,7 +69,7 @@ class IverksettJsonTransformTest {
         (tree.get("fagsak") as ObjectNode).put("stønadstype", stønadType.name)
         val jsonMedFeilStønadstype = objectMapper.writeValueAsString(tree)
         assertThatThrownBy { objectMapper.readValue<IverksettDto>(jsonMedFeilStønadstype) }
-                .isInstanceOf(MissingKotlinParameterException::class.java)
+            .isInstanceOf(MissingKotlinParameterException::class.java)
     }
 
     @Test

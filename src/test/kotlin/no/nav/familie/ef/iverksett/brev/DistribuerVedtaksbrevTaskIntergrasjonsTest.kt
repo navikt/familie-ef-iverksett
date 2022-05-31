@@ -2,18 +2,11 @@ package no.nav.familie.ef.iverksett.brev
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
-import io.mockk.every
-import io.mockk.mockk
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.config.JournalpostClientMock
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottaker
-import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
-import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -40,8 +33,10 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 
     @PostConstruct
     fun init() {
-        distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient = journalpostClient,
-                                                              tilstandRepository = tilstandRepository)
+        distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(
+            journalpostClient = journalpostClient,
+            tilstandRepository = tilstandRepository
+        )
     }
 
     @Test
@@ -55,11 +50,13 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 
         settOppTilstandsrepository(behandlingId, listOf(Pair(mottakerA, journalpostA), Pair(mottakerB, journalpostB)))
 
-
-        distribuerVedtaksbrevTask!!.doTask(Task(JournalførVedtaksbrevTask.TYPE,
-                                                behandlingId.toString(),
-                                                Properties()))
-
+        distribuerVedtaksbrevTask!!.doTask(
+            Task(
+                JournalførVedtaksbrevTask.TYPE,
+                behandlingId.toString(),
+                Properties()
+            )
+        )
 
         val distribuerVedtaksbrevResultat = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)
         assertThat(distribuerVedtaksbrevResultat).hasSize(2)
@@ -108,28 +105,35 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 
     private fun kjørTask(behandlingId: UUID) {
         try {
-            distribuerVedtaksbrevTask!!.doTask(Task(JournalførVedtaksbrevTask.TYPE,
-                                                    behandlingId.toString(),
-                                                    Properties()))
+            distribuerVedtaksbrevTask!!.doTask(
+                Task(
+                    JournalførVedtaksbrevTask.TYPE,
+                    behandlingId.toString(),
+                    Properties()
+                )
+            )
         } catch (_: Exception) {
         }
     }
 
     private fun verifiserKallTilDokarkivMedIdent(journalpostId: String, antall: Int = 1) {
-        wireMockServer.verify(antall,
-                              WireMock.postRequestedFor(WireMock.urlMatching(journalpostClientMock.distribuerPath()))
-                                      .withRequestBody(WireMock.matchingJsonPath("$..journalpostId", WireMock.containing(journalpostId))))
+        wireMockServer.verify(
+            antall,
+            WireMock.postRequestedFor(WireMock.urlMatching(journalpostClientMock.distribuerPath()))
+                .withRequestBody(WireMock.matchingJsonPath("$..journalpostId", WireMock.containing(journalpostId)))
+        )
     }
 
-    private fun settOppTilstandsrepository(behandlingId: UUID, mottakereMedJournalpost:List<Pair<String, String>>) {
+    private fun settOppTilstandsrepository(behandlingId: UUID, mottakereMedJournalpost: List<Pair<String, String>>) {
         val resultat = tilstandRepository.hentIverksettResultat(behandlingId)
         if (resultat == null) tilstandRepository.opprettTomtResultat(behandlingId)
 
         mottakereMedJournalpost.forEach {
-            tilstandRepository.oppdaterJournalpostResultat(behandlingId = behandlingId,
-                                                           mottakerIdent = it.first,
-                                                           journalPostResultat = JournalpostResultat(it.second))
-
+            tilstandRepository.oppdaterJournalpostResultat(
+                behandlingId = behandlingId,
+                mottakerIdent = it.first,
+                journalPostResultat = JournalpostResultat(it.second)
+            )
         }
     }
 
@@ -137,8 +141,4 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         val mapSqlParameterSource = MapSqlParameterSource(mapOf("behandlingId" to behandlingId))
         namedParameterJdbcTemplate.update("UPDATE iverksett_resultat SET journalpostresultat = null WHERE behandling_id = :behandlingId", mapSqlParameterSource)
     }
-
-
-
-
 }

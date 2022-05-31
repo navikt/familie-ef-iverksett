@@ -18,9 +18,9 @@ internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
     private val taskRepository = mockk<TaskRepository>()
 
     private val taskService = OpprettOppfølgingsOppgaveForOvergangsstønadTask(
-            oppgaveService,
-            iverksettingRepository,
-            taskRepository
+        oppgaveService,
+        iverksettingRepository,
+        taskRepository
     )
 
     @Test

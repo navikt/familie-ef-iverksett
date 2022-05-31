@@ -18,7 +18,6 @@ import java.util.UUID
 
 class BehandlingsstatistikkControllerTest : ServerTest() {
 
-
     @Autowired
     private lateinit var kafkaProducerPayloadSlot: CapturingSlot<String>
 
@@ -50,11 +49,11 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
         val ferdig = opprettBehandlingsstatistikkDto(behandlingId, Hendelse.FERDIG, false)
         Assertions.assertThat(send(ferdig).statusCode.value()).isEqualTo(200)
         Assertions.assertThat(kafkaProducerPayloadSlot.captured).doesNotContain("Z\",")
-
-
     }
 
     private fun send(behandlingStatistikkDto: BehandlingsstatistikkDto): ResponseEntity<HttpStatus> =
-            restTemplate.exchange(localhostUrl("/api/statistikk/behandlingsstatistikk/"), HttpMethod.POST,
-                                  HttpEntity(behandlingStatistikkDto, headers))
+        restTemplate.exchange(
+            localhostUrl("/api/statistikk/behandlingsstatistikk/"), HttpMethod.POST,
+            HttpEntity(behandlingStatistikkDto, headers)
+        )
 }

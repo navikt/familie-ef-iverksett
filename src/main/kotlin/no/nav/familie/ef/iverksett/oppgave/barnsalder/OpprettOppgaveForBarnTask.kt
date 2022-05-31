@@ -13,10 +13,13 @@ import org.springframework.stereotype.Service
 @Service
 @TaskStepBeskrivelse(
     taskStepType = OpprettOppgaveForBarnTask.TYPE,
-    beskrivelse = "Oppretter oppgave for barn som fyller 1/2 eller 1 år")
-class OpprettOppgaveForBarnTask(val taskRepository: TaskRepository,
-                                val opprettOppgaveForBarnService: OpprettOppgaverForBarnService,
-                                val featureToggleService: FeatureToggleService) : AsyncTaskStep {
+    beskrivelse = "Oppretter oppgave for barn som fyller 1/2 eller 1 år"
+)
+class OpprettOppgaveForBarnTask(
+    val taskRepository: TaskRepository,
+    val opprettOppgaveForBarnService: OpprettOppgaverForBarnService,
+    val featureToggleService: FeatureToggleService
+) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val oppgaveForBarn = objectMapper.readValue<OppgaveForBarn>(task.payload)

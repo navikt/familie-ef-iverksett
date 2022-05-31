@@ -20,36 +20,37 @@ import java.util.UUID
 
 @Service
 class KonsistensavstemmingService(
-        private val oppdragKlient: OppdragClient,
-        private val tilstandRepository: TilstandRepository
+    private val oppdragKlient: OppdragClient,
+    private val tilstandRepository: TilstandRepository
 ) {
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     fun sendKonsistensavstemming(
-            konsistensavstemmingDto: KonsistensavstemmingDto,
-            sendStartmelding: Boolean = true,
-            sendAvsluttmelding: Boolean = true,
-            transaksjonId: UUID? = null
+        konsistensavstemmingDto: KonsistensavstemmingDto,
+        sendStartmelding: Boolean = true,
+        sendAvsluttmelding: Boolean = true,
+        transaksjonId: UUID? = null
     ) {
         try {
             val utbetalingsoppdrag = lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto)
             val konsistensavstemmingUtbetalingsoppdrag = KonsistensavstemmingUtbetalingsoppdrag(
-                    konsistensavstemmingDto.stønadType.tilKlassifisering(),
-                    utbetalingsoppdrag,
-                    konsistensavstemmingDto.avstemmingstidspunkt ?: LocalDateTime.now()
+                konsistensavstemmingDto.stønadType.tilKlassifisering(),
+                utbetalingsoppdrag,
+                konsistensavstemmingDto.avstemmingstidspunkt ?: LocalDateTime.now()
             )
-            oppdragKlient.konsistensavstemming(konsistensavstemmingUtbetalingsoppdrag,
-                                               sendStartmelding,
-                                               sendAvsluttmelding,
-                                               transaksjonId)
+            oppdragKlient.konsistensavstemming(
+                konsistensavstemmingUtbetalingsoppdrag,
+                sendStartmelding,
+                sendAvsluttmelding,
+                transaksjonId
+            )
         } catch (feil: Throwable) {
             throw Exception("Sending av utbetalingsoppdrag til konsistensavtemming feilet", feil)
         }
     }
 
-    private fun lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto: KonsistensavstemmingDto)
-            : List<Utbetalingsoppdrag> {
+    private fun lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto: KonsistensavstemmingDto): List<Utbetalingsoppdrag> {
         if (konsistensavstemmingDto.tilkjenteYtelser.isEmpty()) return emptyList()
 
         val stønadType = konsistensavstemmingDto.stønadType
@@ -57,17 +58,21 @@ class KonsistensavstemmingService(
         val behandlingIdTilkjentYtelseForUtbetalingMap = tilstandRepository.hentTilkjentYtelse(tilkjentYtelsePerBehandlingId.keys)
 
         return behandlingIdTilkjentYtelseForUtbetalingMap.map { (behandlingId, tilkjentYtelse) ->
-            genererUtbetalingsoppdrag(tilkjentYtelsePerBehandlingId[behandlingId]!!,
-                                      tilkjentYtelse,
-                                      behandlingId,
-                                      stønadType)
+            genererUtbetalingsoppdrag(
+                tilkjentYtelsePerBehandlingId[behandlingId]!!,
+                tilkjentYtelse,
+                behandlingId,
+                stønadType
+            )
         }
     }
 
-    private fun genererUtbetalingsoppdrag(konsistensavstemmingTilkjentYtelseDto: KonsistensavstemmingTilkjentYtelseDto,
-                                          tilkjentYtelse: TilkjentYtelse,
-                                          behandlingId: UUID,
-                                          stønadType: StønadType): Utbetalingsoppdrag {
+    private fun genererUtbetalingsoppdrag(
+        konsistensavstemmingTilkjentYtelseDto: KonsistensavstemmingTilkjentYtelseDto,
+        tilkjentYtelse: TilkjentYtelse,
+        behandlingId: UUID,
+        stønadType: StønadType
+    ): Utbetalingsoppdrag {
 
         val personIdent = konsistensavstemmingTilkjentYtelseDto.personIdent
         val eksternBehandlingId = konsistensavstemmingTilkjentYtelseDto.eksternBehandlingId
@@ -83,26 +88,30 @@ class KonsistensavstemmingService(
         }
 
         if (andelerFraRequest.size != andeler.size) {
-            secureLogger.info("Forskjell i andeler for behandling=$behandlingId" +
-                              " request=${andelerFraRequest}" +
-                              " iverksettAndeler=${tilkjentYtelse.andelerTilkjentYtelse}")
+            secureLogger.info(
+                "Forskjell i andeler for behandling=$behandlingId" +
+                    " request=$andelerFraRequest" +
+                    " iverksettAndeler=${tilkjentYtelse.andelerTilkjentYtelse}"
+            )
             error("Finner ikke riktige periodebeløp i det som er lagret for behandling=$behandlingId")
         }
 
         return Utbetalingsoppdrag(
-                kodeEndring = Utbetalingsoppdrag.KodeEndring.NY, // er ikke i bruk ved konsistensavstemming
-                fagSystem = stønadType.tilKlassifisering(),
-                saksnummer = konsistensavstemmingTilkjentYtelseDto.eksternFagsakId.toString(),
-                aktoer = personIdent,
-                saksbehandlerId = tilkjentYtelse.utbetalingsoppdrag.saksbehandlerId,
-                avstemmingTidspunkt = LocalDateTime.now(),
-                utbetalingsperiode = andeler.map {
-                    lagPeriodeFraAndel(andel = it,
-                                       type = stønadType,
-                                       eksternBehandlingId = eksternBehandlingId,
-                                       vedtaksdato = LocalDate.now(), // er ikke i bruk ved konsistensavstemming
-                                       personIdent = personIdent)
-                }
+            kodeEndring = Utbetalingsoppdrag.KodeEndring.NY, // er ikke i bruk ved konsistensavstemming
+            fagSystem = stønadType.tilKlassifisering(),
+            saksnummer = konsistensavstemmingTilkjentYtelseDto.eksternFagsakId.toString(),
+            aktoer = personIdent,
+            saksbehandlerId = tilkjentYtelse.utbetalingsoppdrag.saksbehandlerId,
+            avstemmingTidspunkt = LocalDateTime.now(),
+            utbetalingsperiode = andeler.map {
+                lagPeriodeFraAndel(
+                    andel = it,
+                    type = stønadType,
+                    eksternBehandlingId = eksternBehandlingId,
+                    vedtaksdato = LocalDate.now(), // er ikke i bruk ved konsistensavstemming
+                    personIdent = personIdent
+                )
+            }
         )
     }
 
@@ -110,8 +119,7 @@ class KonsistensavstemmingService(
      * Når vi skal finne finne frem andeler fra databasen som vi har sendt ivei er det tilsrekkelig å kun matche beløp og periode
      */
     private fun beløpOgPeriodeErLik(a: AndelTilkjentYtelse, b: AndelTilkjentYtelse) =
-            a.beløp == b.beløp &&
+        a.beløp == b.beløp &&
             a.fraOgMed == b.fraOgMed &&
             a.tilOgMed == b.tilOgMed
-
 }

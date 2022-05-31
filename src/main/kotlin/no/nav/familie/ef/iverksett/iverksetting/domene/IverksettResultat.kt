@@ -6,17 +6,17 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 data class IverksettResultat(
-        val behandlingId: UUID,
-        val tilkjentYtelseForUtbetaling: TilkjentYtelse?,
-        val oppdragResultat: OppdragResultat? = null,
-        val journalpostResultat: Map<String, JournalpostResultat>? = null,
-        val vedtaksbrevResultat: Map<String, DistribuerVedtaksbrevResultat>? = null,
-        val tilbakekrevingResultat: TilbakekrevingResultat? = null
+    val behandlingId: UUID,
+    val tilkjentYtelseForUtbetaling: TilkjentYtelse?,
+    val oppdragResultat: OppdragResultat? = null,
+    val journalpostResultat: Map<String, JournalpostResultat>? = null,
+    val vedtaksbrevResultat: Map<String, DistribuerVedtaksbrevResultat>? = null,
+    val tilbakekrevingResultat: TilbakekrevingResultat? = null
 )
 
 data class JournalpostResultat(
-        val journalpostId: String,
-        val journalført: LocalDateTime = LocalDateTime.now()
+    val journalpostId: String,
+    val journalført: LocalDateTime = LocalDateTime.now()
 )
 
 data class OppdragResultat(val oppdragStatus: OppdragStatus, val oppdragStatusOppdatert: LocalDateTime = LocalDateTime.now())

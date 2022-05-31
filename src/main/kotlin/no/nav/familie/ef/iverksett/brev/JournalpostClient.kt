@@ -4,7 +4,6 @@ import no.nav.familie.ef.iverksett.util.medContentTypeJsonUTF8
 import no.nav.familie.http.client.AbstractPingableRestClient
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Ressurs
-
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokdist.DistribuerJournalpostRequest
@@ -24,9 +23,9 @@ import java.net.URI
 
 @Component
 class JournalpostClient(
-        @Qualifier("azure") restOperations: RestOperations,
-        @Value("\${FAMILIE_INTEGRASJONER_API_URL}")
-        private val integrasjonUri: URI
+    @Qualifier("azure") restOperations: RestOperations,
+    @Value("\${FAMILIE_INTEGRASJONER_API_URL}")
+    private val integrasjonUri: URI
 ) : AbstractPingableRestClient(restOperations, "journalpost") {
 
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -35,32 +34,36 @@ class JournalpostClient(
     private val dokarkivUri: URI = UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/arkiv").build().toUri()
     private val journalPostUri: URI = UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/journalpost").build().toUri()
     private val distribuerDokumentUri: URI =
-            UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/dist/v1").build().toUri()
+        UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/dist/v1").build().toUri()
 
     fun finnJournalposter(journalposterForBrukerRequest: JournalposterForBrukerRequest): List<Journalpost> {
         return postForEntity<Ressurs<List<Journalpost>>>(journalPostUri, journalposterForBrukerRequest).data
-               ?: error("Kunne ikke journalposter for for ${journalposterForBrukerRequest.brukerId.id}")
+            ?: error("Kunne ikke journalposter for for ${journalposterForBrukerRequest.brukerId.id}")
     }
 
     fun arkiverDokument(arkiverDokumentRequest: ArkiverDokumentRequest, saksbehandler: String?): ArkiverDokumentResponse {
         return postForEntity<Ressurs<ArkiverDokumentResponse>>(
-                URI.create("${dokarkivUri}/v4/"),
-                arkiverDokumentRequest,
-                headerMedSaksbehandler(saksbehandler)
+            URI.create("$dokarkivUri/v4/"),
+            arkiverDokumentRequest,
+            headerMedSaksbehandler(saksbehandler)
         ).data
-               ?: error("Kunne ikke arkivere dokument med fagsakid ${arkiverDokumentRequest.fagsakId}")
+            ?: error("Kunne ikke arkivere dokument med fagsakid ${arkiverDokumentRequest.fagsakId}")
     }
 
     fun distribuerBrev(journalpostId: String): String {
         logger.info("Kaller dokdist-tjeneste for journalpost=$journalpostId")
 
-        val journalpostRequest = DistribuerJournalpostRequest(journalpostId = journalpostId,
-                                                              bestillendeFagsystem = Fagsystem.EF,
-                                                              dokumentProdApp = "FAMILIE_EF_SAK")
+        val journalpostRequest = DistribuerJournalpostRequest(
+            journalpostId = journalpostId,
+            bestillendeFagsystem = Fagsystem.EF,
+            dokumentProdApp = "FAMILIE_EF_SAK"
+        )
 
-        return postForEntity<Ressurs<String>>(distribuerDokumentUri,
-                                              journalpostRequest,
-                                              HttpHeaders().medContentTypeJsonUTF8()).getDataOrThrow()
+        return postForEntity<Ressurs<String>>(
+            distribuerDokumentUri,
+            journalpostRequest,
+            HttpHeaders().medContentTypeJsonUTF8()
+        ).getDataOrThrow()
     }
 
     private fun headerMedSaksbehandler(saksbehandler: String?): HttpHeaders {
@@ -70,6 +73,4 @@ class JournalpostClient(
         }
         return httpHeaders
     }
-
-
 }

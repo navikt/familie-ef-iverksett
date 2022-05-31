@@ -65,9 +65,9 @@ internal class HentTilstandRepositoryTest : ServerTest() {
     fun `lagre tilkjentYtelse, hent IverksettResultat med riktig behandlingsID`() {
 
         val resultat = IverksettResultatMockBuilder.Builder()
-                .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
-                .journalPostResultat()
-                .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
+            .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
+            .journalPostResultat()
+            .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
         tilstandRepository.oppdaterOppdragResultat(behandlingId, resultat.oppdragResultat!!)
         val (mottakerIdent, journalpostresultat) = resultat.journalpostResultat?.entries!!.first()
@@ -98,7 +98,7 @@ internal class HentTilstandRepositoryTest : ServerTest() {
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
 
         assertThat(catchThrowable { tilstandRepository.hentTilkjentYtelse(setOf(behandlingId, behandlingId2)) })
-                .hasMessageContaining("=[$behandlingId2]")
+            .hasMessageContaining("=[$behandlingId2]")
     }
 
     @Test
@@ -106,7 +106,7 @@ internal class HentTilstandRepositoryTest : ServerTest() {
 
         val iverksett = opprettIverksettOvergangsstønad(behandlingId)
         val opprettTilbakekrevingRequest = iverksett
-                .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
+            .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
         val tilbakekrevingResultat = TilbakekrevingResultat(opprettTilbakekrevingRequest)
 
@@ -127,7 +127,7 @@ internal class HentTilstandRepositoryTest : ServerTest() {
         val id = UUID.randomUUID()
         val iverksett = opprettIverksettOvergangsstønad(id)
         val opprettTilbakekrevingRequest = iverksett
-                .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
+            .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
         val tilbakekrevingResultat = TilbakekrevingResultat(opprettTilbakekrevingRequest)
 
@@ -137,7 +137,6 @@ internal class HentTilstandRepositoryTest : ServerTest() {
 
         tilstandRepository.oppdaterTilbakekrevingResultat(id, tilbakekrevingResultat)
         assertThat(tilstandRepository.hentTilbakekrevingResultat(id)!!)
-                .isEqualTo(tilbakekrevingResultat)
+            .isEqualTo(tilbakekrevingResultat)
     }
-
 }

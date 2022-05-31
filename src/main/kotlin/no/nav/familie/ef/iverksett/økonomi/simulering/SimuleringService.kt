@@ -16,9 +16,9 @@ import java.time.LocalDate
 
 @Service
 class SimuleringService(
-        private val oppdragKlient: OppdragClient,
-        private val tilstandRepository: TilstandRepository,
-        private val featureToggleService: FeatureToggleService
+    private val oppdragKlient: OppdragClient,
+    private val tilstandRepository: TilstandRepository,
+    private val featureToggleService: FeatureToggleService
 ) {
 
     fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
@@ -31,11 +31,12 @@ class SimuleringService(
             }
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-                    simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse)
+                simulering.nyTilkjentYtelseMedMetaData,
+                forrigeTilkjentYtelse
+            )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
-                                     ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
+                ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
 
             if (utbetalingsoppdrag.utbetalingsperiode.isEmpty()) {
                 return DetaljertSimuleringResultat(emptyList())
@@ -59,8 +60,8 @@ class SimuleringService(
         val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
 
         return BeriketSimuleringsresultat(
-                detaljer = detaljertSimuleringResultat,
-                oppsummering = simuleringsresultatDto
+            detaljer = detaljertSimuleringResultat,
+            oppsummering = simuleringsresultatDto
         )
     }
 }

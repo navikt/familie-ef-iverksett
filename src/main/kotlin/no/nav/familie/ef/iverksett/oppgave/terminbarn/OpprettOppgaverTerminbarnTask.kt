@@ -13,11 +13,14 @@ import org.springframework.stereotype.Service
 
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = OpprettOppgaverTerminbarnTask.TYPE,
-        beskrivelse = "Oppretter oppgave for terminbarn som ikke er født")
-class OpprettOppgaverTerminbarnTask(val taskRepository: TaskRepository,
-                                    val opprettOppgaverForTerminbarnService: OpprettOppgaverTerminbarnService,
-                                    val featureToggleService: FeatureToggleService) : AsyncTaskStep {
+    taskStepType = OpprettOppgaverTerminbarnTask.TYPE,
+    beskrivelse = "Oppretter oppgave for terminbarn som ikke er født"
+)
+class OpprettOppgaverTerminbarnTask(
+    val taskRepository: TaskRepository,
+    val opprettOppgaverForTerminbarnService: OpprettOppgaverTerminbarnService,
+    val featureToggleService: FeatureToggleService
+) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 

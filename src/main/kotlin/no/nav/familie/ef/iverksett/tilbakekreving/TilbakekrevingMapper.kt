@@ -27,57 +27,61 @@ fun Tilbakekrevingsdetaljer?.validerTilbakekreving(): Boolean {
 }
 
 fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
-        OpprettTilbakekrevingRequest(
-                fagsystem = Fagsystem.EF,
-                ytelsestype = Ytelsestype.valueOf(this.fagsak.stønadstype.name),
-                eksternFagsakId = this.fagsak.eksternId.toString(),
-                personIdent = this.søker.personIdent,
-                eksternId = this.behandling.eksternId.toString(),
-                behandlingstype = Behandlingstype.TILBAKEKREVING, // samme som BAKS gjør
-                manueltOpprettet = false, // manuelt opprettet ennå ikke støttet i familie-tilbake?
-                språkkode = Språkkode.NB, // Bør følge med iverksett.søker
-                enhetId = enhet.enhetId, // iverksett.søker.tilhørendeEnhet?
-                enhetsnavn = ENHETSNAVN_BREV, // Det som kommer etter "Med vennlig hilsen" i tilbakekrevingsbrev.
-                saksbehandlerIdent = this.vedtak.saksbehandlerId,
-                varsel = this.vedtak.tilbakekreving?.let { lagVarsel(it) },
-                revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
-                verge = null, // Verge er per nå ikke støttet i familie-ef-sak.
-                faktainfo = lagFaktainfo(this)
-        )
+    OpprettTilbakekrevingRequest(
+        fagsystem = Fagsystem.EF,
+        ytelsestype = Ytelsestype.valueOf(this.fagsak.stønadstype.name),
+        eksternFagsakId = this.fagsak.eksternId.toString(),
+        personIdent = this.søker.personIdent,
+        eksternId = this.behandling.eksternId.toString(),
+        behandlingstype = Behandlingstype.TILBAKEKREVING, // samme som BAKS gjør
+        manueltOpprettet = false, // manuelt opprettet ennå ikke støttet i familie-tilbake?
+        språkkode = Språkkode.NB, // Bør følge med iverksett.søker
+        enhetId = enhet.enhetId, // iverksett.søker.tilhørendeEnhet?
+        enhetsnavn = ENHETSNAVN_BREV, // Det som kommer etter "Med vennlig hilsen" i tilbakekrevingsbrev.
+        saksbehandlerIdent = this.vedtak.saksbehandlerId,
+        varsel = this.vedtak.tilbakekreving?.let { lagVarsel(it) },
+        revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
+        verge = null, // Verge er per nå ikke støttet i familie-ef-sak.
+        faktainfo = lagFaktainfo(this)
+    )
 
 fun Iverksett.tilFagsystembehandling(enhet: Enhet) =
-        HentFagsystemsbehandlingRespons(
-                hentFagsystemsbehandling =
-                HentFagsystemsbehandling(eksternFagsakId = this.fagsak.eksternId.toString(),
-                                         eksternId = this.behandling.eksternId.toString(),
-                                         ytelsestype = Ytelsestype.valueOf(this.fagsak.stønadstype.name),
-                                         personIdent = this.søker.personIdent,
-                                         språkkode = Språkkode.NB,
-                                         enhetId = enhet.enhetId,
-                                         enhetsnavn = enhet.enhetNavn,
-                                         revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
-                                         faktainfo = lagFaktainfo(this)))
-
+    HentFagsystemsbehandlingRespons(
+        hentFagsystemsbehandling =
+        HentFagsystemsbehandling(
+            eksternFagsakId = this.fagsak.eksternId.toString(),
+            eksternId = this.behandling.eksternId.toString(),
+            ytelsestype = Ytelsestype.valueOf(this.fagsak.stønadstype.name),
+            personIdent = this.søker.personIdent,
+            språkkode = Språkkode.NB,
+            enhetId = enhet.enhetId,
+            enhetsnavn = enhet.enhetNavn,
+            revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
+            faktainfo = lagFaktainfo(this)
+        )
+    )
 
 private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel? {
     return when (tilbakekrevingsdetaljer.tilbakekrevingsvalg) {
         Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL ->
-            Varsel(tilbakekrevingsdetaljer.tilbakekrevingMedVarsel?.varseltekst
-                   ?: error("varseltekst er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
-                   tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.sumFeilutbetaling
-                   ?: error("sumFeilutbetaling er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
-                   tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder
-                   ?: error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"))
+            Varsel(
+                tilbakekrevingsdetaljer.tilbakekrevingMedVarsel?.varseltekst
+                    ?: error("varseltekst er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
+                tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.sumFeilutbetaling
+                    ?: error("sumFeilutbetaling er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
+                tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder
+                    ?: error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel")
+            )
         else -> null
     }
 }
 
 private fun lagFaktainfo(iverksett: Iverksett): Faktainfo {
     return Faktainfo(
-            revurderingsårsak = iverksett.behandling.behandlingÅrsak.visningsTekst(),
-            revurderingsresultat = iverksett.vedtak.vedtaksresultat.visningsnavn,
-            tilbakekrevingsvalg = iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg,
-            konsekvensForYtelser = emptySet() // Settes også empty av ba-sak
+        revurderingsårsak = iverksett.behandling.behandlingÅrsak.visningsTekst(),
+        revurderingsresultat = iverksett.vedtak.vedtaksresultat.visningsnavn,
+        tilbakekrevingsvalg = iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg,
+        konsekvensForYtelser = emptySet() // Settes også empty av ba-sak
     )
 }
 
@@ -94,6 +98,3 @@ private fun BehandlingÅrsak.visningsTekst(): String {
         BehandlingÅrsak.SANKSJON_1_MND -> error("Skal ikke gi tilbakekreving for årsak=$this")
     }
 }
-
-
-

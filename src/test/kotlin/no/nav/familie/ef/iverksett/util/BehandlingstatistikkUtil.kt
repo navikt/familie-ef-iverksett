@@ -10,21 +10,23 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fortrolig: Boolean): BehandlingsstatistikkDto {
-    return BehandlingsstatistikkDto(behandlingId = behandlingId,
-                                    eksternBehandlingId = 654L,
-                                    personIdent = "aktor",
-                                    gjeldendeSaksbehandlerId = "saksbehandler",
-                                    beslutterId = "beslutterId",
-                                    eksternFagsakId = 123L,
-                                    hendelseTidspunkt = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC")),
-                                    hendelse = hendelse,
-                                    behandlingResultat = "",
-                                    resultatBegrunnelse = "",
-                                    ansvarligEnhet = "ansvarligEnhet",
-                                    opprettetEnhet = "opprettetEnhet",
-                                    strengtFortroligAdresse = fortrolig,
-                                    stønadstype = StønadType.OVERGANGSSTØNAD,
-                                    behandlingstype = BehandlingType.FØRSTEGANGSBEHANDLING,
-                                    relatertBehandlingId = UUID.randomUUID(),
-                                    relatertEksternBehandlingId = null)
+    return BehandlingsstatistikkDto(
+        behandlingId = behandlingId,
+        eksternBehandlingId = 654L,
+        personIdent = "aktor",
+        gjeldendeSaksbehandlerId = "saksbehandler",
+        beslutterId = "beslutterId",
+        eksternFagsakId = 123L,
+        hendelseTidspunkt = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC")),
+        hendelse = hendelse,
+        behandlingResultat = "",
+        resultatBegrunnelse = "",
+        ansvarligEnhet = "ansvarligEnhet",
+        opprettetEnhet = "opprettetEnhet",
+        strengtFortroligAdresse = fortrolig,
+        stønadstype = StønadType.OVERGANGSSTØNAD,
+        behandlingstype = BehandlingType.FØRSTEGANGSBEHANDLING,
+        relatertBehandlingId = UUID.randomUUID(),
+        relatertEksternBehandlingId = null
+    )
 }

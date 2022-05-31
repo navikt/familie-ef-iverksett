@@ -23,7 +23,6 @@ import java.util.UUID
 
 internal class KonsistensavstemmingServiceTest {
 
-
     private val oppdragClient = mockk<OppdragClient>()
     private val tilstandRepository = mockk<TilstandRepository>()
 
@@ -36,37 +35,47 @@ internal class KonsistensavstemmingServiceTest {
     private val behandlingId = UUID.randomUUID()
     private val vedtaksdato = LocalDate.of(2021, 6, 1)
 
-    private val andel1 = lagAndelTilkjentYtelse(beløp = 1,
-                                                fraOgMed = LocalDate.of(2021, 1, 1),
-                                                tilOgMed = LocalDate.of(2021, 1, 31),
-                                                kildeBehandlingId = behandlingId)
+    private val andel1 = lagAndelTilkjentYtelse(
+        beløp = 1,
+        fraOgMed = LocalDate.of(2021, 1, 1),
+        tilOgMed = LocalDate.of(2021, 1, 31),
+        kildeBehandlingId = behandlingId
+    )
 
     private val andel2StartDato = LocalDate.of(2021, 3, 1)
     private val andel2Sluttdato = LocalDate.of(2021, 3, 31)
-    private val andel2 = lagAndelTilkjentYtelse(beløp = 2,
-                                                fraOgMed = andel2StartDato,
-                                                tilOgMed = andel2Sluttdato, kildeBehandlingId = behandlingId)
+    private val andel2 = lagAndelTilkjentYtelse(
+        beløp = 2,
+        fraOgMed = andel2StartDato,
+        tilOgMed = andel2Sluttdato, kildeBehandlingId = behandlingId
+    )
 
     private val requestSlot = slot<KonsistensavstemmingUtbetalingsoppdrag>()
 
     @BeforeEach
     internal fun setUp() {
         every { tilstandRepository.hentTilkjentYtelse(setOf(behandlingId)) } returns
-                mapOf(behandlingId to lagTilkjentYtelseMedUtbetalingsoppdrag(lagTilkjentYtelseMedMetadata()))
+            mapOf(behandlingId to lagTilkjentYtelseMedUtbetalingsoppdrag(lagTilkjentYtelseMedMetadata()))
         every { oppdragClient.konsistensavstemming(capture(requestSlot)) } returns ""
     }
 
     @Test
     internal fun `skal lage utbetalingsoppdrag med perioden som er med i requesten`() {
-        val andelerTilkjentYtelse = listOf(lagAndelTilkjentYtelseDto(beløp = 2,
-                                                                     fraOgMed = andel2StartDato,
-                                                                     tilOgMed = andel2Sluttdato,
-                                                                     kildeBehandlingId = behandlingId))
-        val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(behandlingId = behandlingId,
-                                                                      eksternBehandlingId = eksternBehandlingId,
-                                                                      eksternFagsakId = eksternFagsakId,
-                                                                      personIdent = personIdent,
-                                                                      andelerTilkjentYtelse = andelerTilkjentYtelse)
+        val andelerTilkjentYtelse = listOf(
+            lagAndelTilkjentYtelseDto(
+                beløp = 2,
+                fraOgMed = andel2StartDato,
+                tilOgMed = andel2Sluttdato,
+                kildeBehandlingId = behandlingId
+            )
+        )
+        val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(
+            behandlingId = behandlingId,
+            eksternBehandlingId = eksternBehandlingId,
+            eksternFagsakId = eksternFagsakId,
+            personIdent = personIdent,
+            andelerTilkjentYtelse = andelerTilkjentYtelse
+        )
         val konsistensavstemmingDto = KonsistensavstemmingDto(StønadType.OVERGANGSSTØNAD, listOf(tilkjentYtelseDto))
         konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto)
 
@@ -84,28 +93,38 @@ internal class KonsistensavstemmingServiceTest {
 
     @Test
     internal fun `skal kaste feil hvis beløpet er annerledes`() {
-        val andelerTilkjentYtelse = listOf(lagAndelTilkjentYtelseDto(beløp = 1,
-                                                                     fraOgMed = andel2StartDato,
-                                                                     tilOgMed = andel2Sluttdato,
-                                                                     kildeBehandlingId = behandlingId))
-        val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(behandlingId = behandlingId,
-                                                                      eksternBehandlingId = eksternBehandlingId,
-                                                                      eksternFagsakId = eksternFagsakId,
-                                                                      personIdent = personIdent,
-                                                                      andelerTilkjentYtelse = andelerTilkjentYtelse)
+        val andelerTilkjentYtelse = listOf(
+            lagAndelTilkjentYtelseDto(
+                beløp = 1,
+                fraOgMed = andel2StartDato,
+                tilOgMed = andel2Sluttdato,
+                kildeBehandlingId = behandlingId
+            )
+        )
+        val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(
+            behandlingId = behandlingId,
+            eksternBehandlingId = eksternBehandlingId,
+            eksternFagsakId = eksternFagsakId,
+            personIdent = personIdent,
+            andelerTilkjentYtelse = andelerTilkjentYtelse
+        )
         val konsistensavstemmingDto = KonsistensavstemmingDto(StønadType.OVERGANGSSTØNAD, listOf(tilkjentYtelseDto))
         assertThat(catchThrowable { konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto) })
     }
 
     private fun lagTilkjentYtelseMedMetadata(): TilkjentYtelseMedMetaData {
-        return TilkjentYtelseMedMetaData(tilkjentYtelse = TilkjentYtelse(andelerTilkjentYtelse = listOf(andel1, andel2),
-                                                                         startdato = andel1.fraOgMed),
-                                         saksbehandlerId = saksbehandlerId,
-                                         eksternBehandlingId = eksternBehandlingId,
-                                         stønadstype = StønadType.OVERGANGSSTØNAD,
-                                         eksternFagsakId = eksternFagsakId,
-                                         personIdent = personIdent,
-                                         behandlingId = behandlingId,
-                                         vedtaksdato = vedtaksdato)
+        return TilkjentYtelseMedMetaData(
+            tilkjentYtelse = TilkjentYtelse(
+                andelerTilkjentYtelse = listOf(andel1, andel2),
+                startdato = andel1.fraOgMed
+            ),
+            saksbehandlerId = saksbehandlerId,
+            eksternBehandlingId = eksternBehandlingId,
+            stønadstype = StønadType.OVERGANGSSTØNAD,
+            eksternFagsakId = eksternFagsakId,
+            personIdent = personIdent,
+            behandlingId = behandlingId,
+            vedtaksdato = vedtaksdato
+        )
     }
 }

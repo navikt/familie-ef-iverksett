@@ -12,8 +12,10 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 class KafkaConsumerConfig {
 
     @Bean
-    fun concurrentTilbakekrevingListenerContainerFactory(properties: KafkaProperties,
-                                                         kafkaErrorHandler: KafkaErrorHandler): ConcurrentKafkaListenerContainerFactory<String, String> {
+    fun concurrentTilbakekrevingListenerContainerFactory(
+        properties: KafkaProperties,
+        kafkaErrorHandler: KafkaErrorHandler
+    ): ConcurrentKafkaListenerContainerFactory<String, String> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
         factory.consumerFactory = DefaultKafkaConsumerFactory(properties.buildConsumerProperties())
         factory.setErrorHandler(kafkaErrorHandler)

@@ -14,32 +14,36 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class OpprettOppgaverTerminbarnService(private val oppgaveClient: OppgaveClient,
-                                       private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-                                       private val taskRepository: TaskRepository) {
+class OpprettOppgaverTerminbarnService(
+    private val oppgaveClient: OppgaveClient,
+    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+    private val taskRepository: TaskRepository
+) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Transactional
     fun opprettTaskerForTerminbarn(oppgaverForBarn: List<OppgaveForBarn>) {
-        taskRepository.saveAll(oppgaverForBarn.map {
-            Task(OpprettOppgaverTerminbarnTask.TYPE, ObjectMapperProvider.objectMapper.writeValueAsString(it))
-        })
+        taskRepository.saveAll(
+            oppgaverForBarn.map {
+                Task(OpprettOppgaverTerminbarnTask.TYPE, ObjectMapperProvider.objectMapper.writeValueAsString(it))
+            }
+        )
     }
 
     fun opprettOppgaveForTerminbarn(oppgaveForBarn: OppgaveForBarn) {
 
         val opprettOppgaveRequest = OppgaveUtil.opprettOppgaveRequest(
-                oppgaveForBarn.eksternFagsakId,
-                oppgaveForBarn.personIdent,
-                oppgaveForBarn.stønadType,
-                enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
-                Oppgavetype.InnhentDokumentasjon,
-                oppgaveForBarn.beskrivelse,
-                oppgaveForBarn.aktivFra
+            oppgaveForBarn.eksternFagsakId,
+            oppgaveForBarn.personIdent,
+            oppgaveForBarn.stønadType,
+            enhetForInnhentDokumentasjon(oppgaveForBarn.personIdent),
+            Oppgavetype.InnhentDokumentasjon,
+            oppgaveForBarn.beskrivelse,
+            oppgaveForBarn.aktivFra
         )
         val oppgaveId = oppgaveClient.opprettOppgave(opprettOppgaveRequest)
-                        ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
+            ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId for behandling=${oppgaveForBarn.behandlingId}")
     }
 

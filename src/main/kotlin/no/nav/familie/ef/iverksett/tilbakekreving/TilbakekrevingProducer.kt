@@ -18,8 +18,10 @@ class TilbakekrevingProducer(private val kafkaProducerService: KafkaProducerServ
     fun send(behandling: HentFagsystemsbehandlingRespons, key: String) {
         try {
             kafkaProducerService.send(topic, key, behandling.toJson())
-            logger.info("Fagsystembehandling er sent til Kafka. key=${key} " +
-                        "eksternFagsakId=${behandling.hentFagsystemsbehandling?.eksternFagsakId}")
+            logger.info(
+                "Fagsystembehandling er sent til Kafka. key=$key " +
+                    "eksternFagsakId=${behandling.hentFagsystemsbehandling?.eksternFagsakId}"
+            )
         } catch (ex: Exception) {
             val errorMessage = "Kunne ikke sende behandling til Kafka. Se securelogs for mere informasjon. "
             logger.error(errorMessage)

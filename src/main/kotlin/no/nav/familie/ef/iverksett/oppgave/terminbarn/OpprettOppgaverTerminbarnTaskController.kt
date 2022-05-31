@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping(path = ["/api/oppgave-for-terminbarn"])
 class OpprettOppgaverTerminbarnTaskController(
-        private val oppgaverForTerminbarnService: OpprettOppgaverTerminbarnService
+    private val oppgaverForTerminbarnService: OpprettOppgaverTerminbarnService
 ) {
 
     @PostMapping("/")

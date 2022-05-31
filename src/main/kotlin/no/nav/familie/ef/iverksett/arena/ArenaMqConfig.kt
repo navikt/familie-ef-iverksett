@@ -54,7 +54,5 @@ class ArenaMqConfig(val arenaMqConfigProperties: ArenaMqConfigProperties) {
     companion object {
 
         private const val UTF_8_WITH_PUA = 1208
-
     }
-
 }

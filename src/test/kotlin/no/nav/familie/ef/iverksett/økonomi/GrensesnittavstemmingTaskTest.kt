@@ -23,16 +23,19 @@ internal class GrensesnittavstemmingTaskTest {
     val taskRepository = mockk<TaskRepository>()
     private val grensesnittavstemmingTask = GrensesnittavstemmingTask(oppdragClient, taskRepository)
 
-
     @Test
     fun `doTask skal kalle oppdragClient med fradato fra payload og dato for triggerTid som parametere`() {
         val grensesnittavstemmingRequestSlot = slot<GrensesnittavstemmingRequest>()
 
         every { oppdragClient.grensesnittavstemming(any()) }.returns("ok")
 
-        grensesnittavstemmingTask.doTask(Task(type = GrensesnittavstemmingTask.TYPE,
-                                              payload = payload,
-                                              triggerTid = LocalDateTime.of(2018, 4, 19, 8, 0)))
+        grensesnittavstemmingTask.doTask(
+            Task(
+                type = GrensesnittavstemmingTask.TYPE,
+                payload = payload,
+                triggerTid = LocalDateTime.of(2018, 4, 19, 8, 0)
+            )
+        )
         verify(exactly = 1) { oppdragClient.grensesnittavstemming(capture(grensesnittavstemmingRequestSlot)) }
         val capturedGrensesnittRequest = grensesnittavstemmingRequestSlot.captured
         assertThat(capturedGrensesnittRequest.fra).isEqualTo(LocalDate.of(2018, 4, 18).atStartOfDay())
@@ -46,19 +49,31 @@ internal class GrensesnittavstemmingTaskTest {
         val slot = slot<Task>()
         every { taskRepository.save(capture(slot)) } returns mockk()
 
-        grensesnittavstemmingTask.onCompletion(Task(type = GrensesnittavstemmingTask.TYPE,
-                                                    payload = payload,
-                                                    triggerTid = triggeTid))
+        grensesnittavstemmingTask.onCompletion(
+            Task(
+                type = GrensesnittavstemmingTask.TYPE,
+                payload = payload,
+                triggerTid = triggeTid
+            )
+        )
         val forventetPayload =
-                objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 19),
-                                                                             stønadstype = StønadType.OVERGANGSSTØNAD))
+            objectMapper.writeValueAsString(
+                GrensesnittavstemmingPayload(
+                    fraDato = LocalDate.of(2018, 4, 19),
+                    stønadstype = StønadType.OVERGANGSSTØNAD
+                )
+            )
         assertThat(slot.captured.payload).isEqualTo(forventetPayload)
     }
 
     companion object {
 
         val payload: String =
-                objectMapper.writeValueAsString(GrensesnittavstemmingPayload(fraDato = LocalDate.of(2018, 4, 18),
-                                                                             stønadstype = StønadType.OVERGANGSSTØNAD))
+            objectMapper.writeValueAsString(
+                GrensesnittavstemmingPayload(
+                    fraDato = LocalDate.of(2018, 4, 18),
+                    stønadstype = StønadType.OVERGANGSSTØNAD
+                )
+            )
     }
 }

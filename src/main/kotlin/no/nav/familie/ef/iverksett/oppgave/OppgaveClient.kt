@@ -18,8 +18,8 @@ import java.net.URI
 
 @Component
 class OppgaveClient(
-        @Qualifier("azure") restOperations: RestOperations,
-        @Value("\${FAMILIE_INTEGRASJONER_API_URL}") private val integrasjonUrl: String,
+    @Qualifier("azure") restOperations: RestOperations,
+    @Value("\${FAMILIE_INTEGRASJONER_API_URL}") private val integrasjonUrl: String,
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
 
     val oppgaveUrl = "$integrasjonUrl/api/oppgave"
@@ -27,11 +27,11 @@ class OppgaveClient(
     fun hentOppgaver(finnOppgaveRequest: FinnOppgaveRequest): List<Oppgave> {
         val opprettOppgaveUri = URI.create("$oppgaveUrl/v4")
         val response =
-                postForEntity<Ressurs<FinnOppgaveResponseDto>>(
-                        opprettOppgaveUri,
-                        finnOppgaveRequest,
-                        HttpHeaders().medContentTypeJsonUTF8()
-                )
+            postForEntity<Ressurs<FinnOppgaveResponseDto>>(
+                opprettOppgaveUri,
+                finnOppgaveRequest,
+                HttpHeaders().medContentTypeJsonUTF8()
+            )
         return response.getDataOrThrow().oppgaver
     }
 
@@ -39,13 +39,11 @@ class OppgaveClient(
 
         val opprettOppgaveUri = URI.create("$oppgaveUrl/opprett")
         val response =
-                postForEntity<Ressurs<OppgaveResponse>>(
-                        opprettOppgaveUri,
-                        opprettOppgaveRequest,
-                        HttpHeaders().medContentTypeJsonUTF8()
-                )
+            postForEntity<Ressurs<OppgaveResponse>>(
+                opprettOppgaveUri,
+                opprettOppgaveRequest,
+                HttpHeaders().medContentTypeJsonUTF8()
+            )
         return response.data?.oppgaveId
     }
-
 }
-

@@ -14,16 +14,17 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
 
-
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = SendPerioderTilInfotrygdTask.TYPE,
-        beskrivelse = "Sender periodehendelse til infotrygd"
+    taskStepType = SendPerioderTilInfotrygdTask.TYPE,
+    beskrivelse = "Sender periodehendelse til infotrygd"
 )
-class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFeedClient,
-                                   private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-                                   private val iverksettingRepository: IverksettingRepository,
-                                   private val taskRepository: TaskRepository) : AsyncTaskStep {
+class SendPerioderTilInfotrygdTask(
+    private val infotrygdFeedClient: InfotrygdFeedClient,
+    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+    private val iverksettingRepository: IverksettingRepository,
+    private val taskRepository: TaskRepository
+) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -34,11 +35,13 @@ class SendPerioderTilInfotrygdTask(private val infotrygdFeedClient: InfotrygdFee
             return
         }
         val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
-                .map { it.personIdent }.toSet()
+            .map { it.personIdent }.toSet()
         val perioder = iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.map {
-            Periode(startdato = it.fraOgMed,
-                    sluttdato = it.tilOgMed,
-                    fullOvergangsstønad = it.erFullOvergangsstønad())
+            Periode(
+                startdato = it.fraOgMed,
+                sluttdato = it.tilOgMed,
+                fullOvergangsstønad = it.erFullOvergangsstønad()
+            )
         } ?: error("Kan ikke finne tilkjentYtelse for behandling med id=${iverksett.behandling.behandlingId}")
 
         infotrygdFeedClient.opprettPeriodeHendelse(OpprettPeriodeHendelseDto(personIdenter, stønadstype, perioder))

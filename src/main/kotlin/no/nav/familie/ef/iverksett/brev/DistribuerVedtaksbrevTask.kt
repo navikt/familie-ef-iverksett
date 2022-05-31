@@ -18,19 +18,23 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
-@TaskStepBeskrivelse(taskStepType = DistribuerVedtaksbrevTask.TYPE,
-                     maxAntallFeil = 50,
-                     settTilManuellOppfølgning = true,
-                     triggerTidVedFeilISekunder = 15 * 60L,
-                     beskrivelse = "Distribuerer vedtaksbrev.")
-class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient,
-                                private val tilstandRepository: TilstandRepository) : AsyncTaskStep {
+@TaskStepBeskrivelse(
+    taskStepType = DistribuerVedtaksbrevTask.TYPE,
+    maxAntallFeil = 50,
+    settTilManuellOppfølgning = true,
+    triggerTidVedFeilISekunder = 15 * 60L,
+    beskrivelse = "Distribuerer vedtaksbrev."
+)
+class DistribuerVedtaksbrevTask(
+    private val journalpostClient: JournalpostClient,
+    private val tilstandRepository: TilstandRepository
+) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private sealed class Resultat
-    private object OK: Resultat()
-    private data class Dødsbo(val melding: String): Resultat()
+    private object OK : Resultat()
+    private data class Dødsbo(val melding: String) : Resultat()
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
@@ -64,18 +68,22 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
         return resultat ?: OK
     }
 
-    private fun distribuerBrevOgOppdaterVedtaksbrevResultat(journalpostResultat: JournalpostResultat,
-                                                            behandlingId: UUID) {
+    private fun distribuerBrevOgOppdaterVedtaksbrevResultat(
+        journalpostResultat: JournalpostResultat,
+        behandlingId: UUID
+    ) {
         val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId)
         loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
-        tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId,
-                                                                 journalpostResultat.journalpostId,
-                                                                 DistribuerVedtaksbrevResultat(bestillingId))
+        tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
+            behandlingId,
+            journalpostResultat.journalpostId,
+            DistribuerVedtaksbrevResultat(bestillingId)
+        )
     }
 
     private fun håndterDødsbo(task: Task, dødsbo: Dødsbo) {
         val antallRekjørSenerePgaDødsbo =
-                task.logg.count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
+            task.logg.count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 7) {
             logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
             throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))
@@ -93,8 +101,10 @@ class DistribuerVedtaksbrevTask(private val journalpostClient: JournalpostClient
     }
 
     private fun loggBrevDistribuert(journalpostId: String, behandlingId: UUID, bestillingId: String) {
-        logger.info("Distribuer vedtaksbrev journalpost=[${journalpostId}] " +
-                    "for behandling=[${behandlingId}] med bestillingId=[$bestillingId]")
+        logger.info(
+            "Distribuer vedtaksbrev journalpost=[$journalpostId] " +
+                "for behandling=[$behandlingId] med bestillingId=[$bestillingId]"
+        )
     }
 
     companion object {

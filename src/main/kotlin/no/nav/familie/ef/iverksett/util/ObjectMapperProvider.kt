@@ -12,11 +12,14 @@ import java.time.ZonedDateTime
 object ObjectMapperProvider {
 
     val objectMapper: ObjectMapper =
-            no.nav.familie.kontrakter.felles.objectMapper
-                    .registerModule(IverksettModule())
-                    .registerModule(SimpleModule().addDeserializer(ZonedDateTime::class.java,
-                                                                   ZonedDateTimeDeserializer()))
-
+        no.nav.familie.kontrakter.felles.objectMapper
+            .registerModule(IverksettModule())
+            .registerModule(
+                SimpleModule().addDeserializer(
+                    ZonedDateTime::class.java,
+                    ZonedDateTimeDeserializer()
+                )
+            )
 
     /**
      * Vi ønsker å defaulte til Europe/Oslo ved deserialisering, i stedet for automatisk ZoneID-justering til UTC

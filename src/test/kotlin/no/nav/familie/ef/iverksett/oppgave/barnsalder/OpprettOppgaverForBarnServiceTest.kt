@@ -28,7 +28,7 @@ internal class OpprettOppgaverForBarnServiceTest {
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
     private val taskRepository = mockk<TaskRepository>()
     private val opprettOppgaveForBarnService =
-            OpprettOppgaverForBarnService(oppgaveClient, familieIntegrasjonerClient, taskRepository)
+        OpprettOppgaverForBarnService(oppgaveClient, familieIntegrasjonerClient, taskRepository)
 
     private val oppgaveSlot = slot<OpprettOppgaveRequest>()
     private val hentOppgaverSlot = slot<FinnOppgaveRequest>()
@@ -47,7 +47,7 @@ internal class OpprettOppgaverForBarnServiceTest {
     @Test
     fun `innhentDokumentasjon oppgave med samme beskrivelse finnes, forvent at oppgave ikke opprettes`() {
         every { oppgaveClient.hentOppgaver(capture(hentOppgaverSlot)) } returns
-                listOf(Oppgave(oppgavetype = Oppgavetype.InnhentDokumentasjon.name, beskrivelse = "beskrivelse"))
+            listOf(Oppgave(oppgavetype = Oppgavetype.InnhentDokumentasjon.name, beskrivelse = "beskrivelse"))
 
         opprettOppgaveForBarnService.opprettOppgaveForBarnSomFyllerAar(opprettOppgaveForBarn())
         verify(exactly = 0) { oppgaveClient.opprettOppgave(any()) }
@@ -81,13 +81,17 @@ internal class OpprettOppgaverForBarnServiceTest {
         assertThat(hentOppgaverSlot.captured.fristTomDato).isEqualTo(aktivFra.plusWeeks(2))
     }
 
-    private fun opprettOppgaveForBarn(id: UUID = UUID.randomUUID(),
-                                      beskrivelse: String = "beskrivelse",
-                                      aktivFra: LocalDate? = null): OppgaveForBarn {
-        return OppgaveForBarn(behandlingId = id,
-                              eksternFagsakId = 0L,
-                              personIdent = "12345678910",
-                              stønadType = StønadType.OVERGANGSSTØNAD,
-                              beskrivelse = beskrivelse, aktivFra = aktivFra)
+    private fun opprettOppgaveForBarn(
+        id: UUID = UUID.randomUUID(),
+        beskrivelse: String = "beskrivelse",
+        aktivFra: LocalDate? = null
+    ): OppgaveForBarn {
+        return OppgaveForBarn(
+            behandlingId = id,
+            eksternFagsakId = 0L,
+            personIdent = "12345678910",
+            stønadType = StønadType.OVERGANGSSTØNAD,
+            beskrivelse = beskrivelse, aktivFra = aktivFra
+        )
     }
 }

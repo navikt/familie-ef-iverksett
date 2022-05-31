@@ -53,8 +53,10 @@ abstract class ServerTest {
     }
 
     private fun resetDatabase() {
-        namedParameterJdbcTemplate.update("TRUNCATE TABLE brev, iverksett, iverksett_resultat CASCADE",
-                                          MapSqlParameterSource())
+        namedParameterJdbcTemplate.update(
+            "TRUNCATE TABLE brev, iverksett, iverksett_resultat CASCADE",
+            MapSqlParameterSource()
+        )
         namedParameterJdbcTemplate.update("TRUNCATE TABLE task, task_logg CASCADE", MapSqlParameterSource())
     }
 
@@ -71,5 +73,4 @@ abstract class ServerTest {
             @Suppress("SpringJavaInjectionPointsAutowiringInspection")
             return TokenUtil.onBehalfOfToken(mockOAuth2Server, saksbehandler = "julenissen")
         }
-
 }

@@ -13,28 +13,31 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-        taskStepType = IverksettTekniskOpphørTask.TYPE,
-        beskrivelse = "Utfører iverksetting av teknisk opphør mot økonomi."
+    taskStepType = IverksettTekniskOpphørTask.TYPE,
+    beskrivelse = "Utfører iverksetting av teknisk opphør mot økonomi."
 )
-class IverksettTekniskOpphørTask(private val iverksettingRepository: IverksettingRepository,
-                                 private val oppdragClient: OppdragClient,
-                                 private val taskRepository: TaskRepository,
-                                 private val tilstandRepository: TilstandRepository
+class IverksettTekniskOpphørTask(
+    private val iverksettingRepository: IverksettingRepository,
+    private val oppdragClient: OppdragClient,
+    private val taskRepository: TaskRepository,
+    private val tilstandRepository: TilstandRepository
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val tekniskOpphør = iverksettingRepository.hentTekniskOpphør(behandlingId)
         val forrigeTilkjentYtelse = tekniskOpphør.forrigeBehandlingId.let {
-            tilstandRepository.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=${it}")
+            tilstandRepository.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=$it")
         }
         val utbetaling =
-                UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(tekniskOpphør.tilkjentYtelseMedMetaData,
-                                                                                   forrigeTilkjentYtelse)
+            UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
+                tekniskOpphør.tilkjentYtelseMedMetaData,
+                forrigeTilkjentYtelse
+            )
 
         tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let { oppdragClient.iverksettOppdrag(it) }
-        ?: error("Utbetalingsoppdrag mangler for iverksetting")
+            ?: error("Utbetalingsoppdrag mangler for iverksetting")
     }
 
     override fun onCompletion(task: Task) {

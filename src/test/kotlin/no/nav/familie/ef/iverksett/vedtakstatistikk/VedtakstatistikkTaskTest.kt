@@ -15,14 +15,13 @@ import org.junit.jupiter.api.Test
 import java.util.Properties
 import java.util.UUID
 
-
 internal class VedtakstatistikkTaskTest {
 
     val iverksettingRepository = mockk<IverksettingRepository>()
     private val vedtakstatistikkService = mockk<VedtakstatistikkService>()
     val tilstandRepository = mockk<TilstandRepository>()
     private val vedtakstatistikkTask =
-            VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService, tilstandRepository)
+        VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService, tilstandRepository)
     val behandlingId: UUID = UUID.randomUUID()
 
     @Test

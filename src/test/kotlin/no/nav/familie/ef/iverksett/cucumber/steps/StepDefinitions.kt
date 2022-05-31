@@ -23,11 +23,10 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.util.UUID
 
-
 data class TilkjentYtelseHolder(
-        val behandlingId: UUID,
-        val behandlingIdInt: Int,
-        val tilkjentYtelse: TilkjentYtelseDto,
+    val behandlingId: UUID,
+    val behandlingIdInt: Int,
+    val tilkjentYtelse: TilkjentYtelseDto,
 )
 
 class StepDefinitions {
@@ -61,8 +60,9 @@ class StepDefinitions {
         beregnedeTilkjentYtelse = tilkjentYtelse.fold(emptyList<Pair<UUID, TilkjentYtelse>>()) { acc, holder ->
             val nyTilkjentYtelseMedMetaData = toMedMetadata(holder, stønadType)
             val nyTilkjentYtelse = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-                    nyTilkjentYtelseMedMetaData,
-                    acc.lastOrNull()?.second)
+                nyTilkjentYtelseMedMetaData,
+                acc.lastOrNull()?.second
+            )
             acc + (holder.behandlingId to nyTilkjentYtelse)
         }.toMap()
     }
@@ -73,8 +73,10 @@ class StepDefinitions {
         assertSjekkerAlleBehandlingIder(forventedeUtbetalingsoppdrag.map { it.behandlingId })
 
         forventedeUtbetalingsoppdrag.forEach { forventetUtbetalingsoppdrag ->
-            val utbetalingsoppdrag = (beregnedeTilkjentYtelse[forventetUtbetalingsoppdrag.behandlingId]?.utbetalingsoppdrag
-                                      ?: error("Manggler utbetalingsoppdrag for ${forventetUtbetalingsoppdrag.behandlingId}"))
+            val utbetalingsoppdrag = (
+                beregnedeTilkjentYtelse[forventetUtbetalingsoppdrag.behandlingId]?.utbetalingsoppdrag
+                    ?: error("Manggler utbetalingsoppdrag for ${forventetUtbetalingsoppdrag.behandlingId}")
+                )
             assertUtbetalingsoppdrag(forventetUtbetalingsoppdrag, utbetalingsoppdrag)
         }
     }
@@ -90,13 +92,15 @@ class StepDefinitions {
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
         val forventetTilkjentYtelse = TilkjentYtelseParser.mapForventetTilkjentYtelse(dataTable, behandlingIdInt, parsedStartdato)
         val beregnetTilkjentYtelse =
-                beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
+            beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
 
         assertTilkjentYtelse(forventetTilkjentYtelse, beregnetTilkjentYtelse)
     }
 
-    private fun assertTilkjentYtelse(forventetTilkjentYtelse: TilkjentYtelseParser.ForventetTilkjentYtelse,
-                                     beregnetTilkjentYtelse: TilkjentYtelse) {
+    private fun assertTilkjentYtelse(
+        forventetTilkjentYtelse: TilkjentYtelseParser.ForventetTilkjentYtelse,
+        beregnetTilkjentYtelse: TilkjentYtelse
+    ) {
         beregnetTilkjentYtelse.andelerTilkjentYtelse.forEachIndexed { index, andel ->
             val forventetAndel = forventetTilkjentYtelse.andeler[index]
             assertThat(andel.fraOgMed).isEqualTo(forventetAndel.fom)
@@ -107,11 +111,12 @@ class StepDefinitions {
         }
         assertThat(beregnetTilkjentYtelse.startdato).isEqualTo(forventetTilkjentYtelse.startdato)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(forventetTilkjentYtelse.andeler.size)
-
     }
 
-    private fun assertUtbetalingsoppdrag(forventetUtbetalingsoppdrag: TilkjentYtelseParser.ForventetUtbetalingsoppdrag,
-                                         utbetalingsoppdrag: Utbetalingsoppdrag) {
+    private fun assertUtbetalingsoppdrag(
+        forventetUtbetalingsoppdrag: TilkjentYtelseParser.ForventetUtbetalingsoppdrag,
+        utbetalingsoppdrag: Utbetalingsoppdrag
+    ) {
 
         assertThat(utbetalingsoppdrag.kodeEndring).isEqualTo(forventetUtbetalingsoppdrag.kodeEndring)
         assertThat(utbetalingsoppdrag.utbetalingsperiode).hasSize(forventetUtbetalingsoppdrag.utbetalingsperiode.size)
@@ -121,8 +126,10 @@ class StepDefinitions {
         }
     }
 
-    private fun assertUtbetalingsperiode(utbetalingsperiode: Utbetalingsperiode,
-                                         forventetUtbetalingsperiode: TilkjentYtelseParser.ForventetUtbetalingsperiode) {
+    private fun assertUtbetalingsperiode(
+        utbetalingsperiode: Utbetalingsperiode,
+        forventetUtbetalingsperiode: TilkjentYtelseParser.ForventetUtbetalingsperiode
+    ) {
         assertThat(utbetalingsperiode.erEndringPåEksisterendePeriode).isEqualTo(forventetUtbetalingsperiode.erEndringPåEksisterendePeriode)
         assertThat(utbetalingsperiode.klassifisering).isEqualTo(Ytelsestype.valueOf(stønadType.name).kode)
         assertThat(utbetalingsperiode.periodeId).isEqualTo(forventetUtbetalingsperiode.periodeId)
@@ -137,19 +144,17 @@ class StepDefinitions {
     private fun assertSjekkerAlleBehandlingIder(expectedBehandlingIder: List<UUID>) {
         assertThat(expectedBehandlingIder).containsExactlyInAnyOrderElementsOf(beregnedeTilkjentYtelse.keys)
     }
-
 }
-
 
 private fun toMedMetadata(holder: TilkjentYtelseHolder, stønadType: StønadType): TilkjentYtelseMedMetaData {
     return holder.tilkjentYtelse.toDomain()
-            .toMedMetadata(
-                    saksbehandlerId = "",
-                    eksternBehandlingId = holder.behandlingIdInt.toLong(),
-                    stønadType = stønadType,
-                    eksternFagsakId = 1,
-                    personIdent = "1",
-                    behandlingId = holder.behandlingId,
-                    vedtaksdato = LocalDate.now(),
-            )
+        .toMedMetadata(
+            saksbehandlerId = "",
+            eksternBehandlingId = holder.behandlingIdInt.toLong(),
+            stønadType = stønadType,
+            eksternFagsakId = 1,
+            personIdent = "1",
+            behandlingId = holder.behandlingId,
+            vedtaksdato = LocalDate.now(),
+        )
 }

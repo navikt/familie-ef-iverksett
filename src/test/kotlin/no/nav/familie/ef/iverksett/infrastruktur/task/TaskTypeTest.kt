@@ -18,7 +18,6 @@ import org.junit.jupiter.api.assertThrows
 import java.time.LocalDateTime
 import java.util.Properties
 
-
 class TaskTypeTest {
 
     @Test
