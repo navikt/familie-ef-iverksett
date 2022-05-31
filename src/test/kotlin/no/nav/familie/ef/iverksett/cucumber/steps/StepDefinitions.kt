@@ -67,8 +67,8 @@ class StepDefinitions {
         }.toMap()
     }
 
-    @Så("forvent følgelse utbetalingsoppdrag")
-    fun `forvent følgelse utbetalingsoppdrag`(dataTable: DataTable) {
+    @Så("forvent følgende utbetalingsoppdrag")
+    fun `forvent følgende utbetalingsoppdrag`(dataTable: DataTable) {
         val forventedeUtbetalingsoppdrag = TilkjentYtelseParser.mapForventetUtbetalingsoppdrag(dataTable)
         assertSjekkerAlleBehandlingIder(forventedeUtbetalingsoppdrag.map { it.behandlingId })
 
@@ -81,13 +81,13 @@ class StepDefinitions {
         }
     }
 
-    @Så("forvent følgelse tilkjente ytelser for behandling {int}")
-    fun `forvent følgelse tilkjente ytelser`(behandlingId: Int, dataTable: DataTable) {
-        `forvent følgelse tilkjente ytelser med startdato`(behandlingId, null, dataTable)
+    @Så("forvent følgende tilkjente ytelser for behandling {int}")
+    fun `forvent følgende tilkjente ytelser`(behandlingId: Int, dataTable: DataTable) {
+        `forvent følgende tilkjente ytelser med startdato`(behandlingId, null, dataTable)
     }
 
-    @Så("forvent følgelse tilkjente ytelser for behandling {int} med startdato {}")
-    fun `forvent følgelse tilkjente ytelser med startdato`(behandlingIdInt: Int, startdato: String?, dataTable: DataTable) {
+    @Så("forvent følgende tilkjente ytelser for behandling {int} med startdato {}")
+    fun `forvent følgende tilkjente ytelser med startdato`(behandlingIdInt: Int, startdato: String?, dataTable: DataTable) {
         val parsedStartdato = startdato?.let { parseÅrMåned(it).atDay(1) }
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
         val forventetTilkjentYtelse = TilkjentYtelseParser.mapForventetTilkjentYtelse(dataTable, behandlingIdInt, parsedStartdato)

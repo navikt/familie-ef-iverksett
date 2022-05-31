@@ -74,11 +74,6 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
-    fun `Har en periode og får en endring mitt i perioden`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/1_periode_får_en_endring_i_perioden.csv"))
-    }
-
-    @Test
     fun `Har to perioder og får en endring i første perioden`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_perioder_får_en_endring_i_første_perioden.csv"))
     }
@@ -109,18 +104,8 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
-    fun `Har en perioder, legger til en andre`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/1_periode_får_en_ny_perioden.csv"))
-    }
-
-    @Test
     fun `Har to perioder, legger til en tredje, endrer på den andre`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/2_perioder_får_ny_periode_og_endring_i_andre_perioden.csv"))
-    }
-
-    @Test
-    fun `Har en periode og får ett opphør`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/1_periode_får_ett_opphør.csv"))
     }
 
     @Test
