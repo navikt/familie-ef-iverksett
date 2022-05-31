@@ -109,11 +109,6 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
-    fun `Har en periode og får ett opphør`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/1_periode_får_ett_opphør.csv"))
-    }
-
-    @Test
     fun `revurderer og sletter periode 2, revurdererer på nytt og skal då bygge videre fra andre perioden sin periodeId`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_sletter_periode2_revurderer_på_nytt.csv"))
     }
