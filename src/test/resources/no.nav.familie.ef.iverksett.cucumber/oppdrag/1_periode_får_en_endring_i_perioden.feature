@@ -1,7 +1,7 @@
 # language: no
 # encoding: UTF-8
 
-Egenskap: Endring midt i periode
+Egenskap: Har en periode og får en endring midt i perioden
 
   Scenario: Har en periode og får en endring midt i perioden
 
