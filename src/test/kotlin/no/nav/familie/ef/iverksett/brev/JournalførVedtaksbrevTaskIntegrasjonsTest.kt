@@ -3,12 +3,9 @@ package no.nav.familie.ef.iverksett.brev
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
-import io.mockk.every
-import io.mockk.mockk
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.config.JournalpostClientMock
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottaker
@@ -45,7 +42,6 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
     @Autowired @Qualifier("mock-integrasjoner") lateinit var wireMockServer: WireMockServer
     @Autowired lateinit var journalpostClientMock: JournalpostClientMock
 
-    private val featureToggleService = mockk<FeatureToggleService>()
 
     var journalførVedtaksbrevTask: JournalførVedtaksbrevTask? = null
 
@@ -56,10 +52,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
             journalpostClient = journalpostClient,
             taskRepository = taskRepository,
             tilstandRepository = tilstandRepository,
-            featureToggleService = featureToggleService
         )
-
-        every { featureToggleService.isEnabled(any()) } returns true
     }
 
     @Test

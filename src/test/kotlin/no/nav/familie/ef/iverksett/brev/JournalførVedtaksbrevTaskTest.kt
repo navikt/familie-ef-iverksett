@@ -47,7 +47,6 @@ internal class JournalførVedtaksbrevTaskTest {
             journalpostClient,
             taskRepository,
             tilstandRepository,
-            mockFeatureToggleService()
         )
     private val behandlingId: UUID = UUID.randomUUID()
     private val behandlingIdString = behandlingId.toString()

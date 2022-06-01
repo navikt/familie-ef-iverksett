@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.brev
 
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
@@ -38,7 +37,6 @@ class JournalførVedtaksbrevTask(
     private val journalpostClient: JournalpostClient,
     private val taskRepository: TaskRepository,
     private val tilstandRepository: TilstandRepository,
-    private val featureToggleService: FeatureToggleService
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -47,10 +45,6 @@ class JournalførVedtaksbrevTask(
 
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.hent(behandlingId)
-
-        if ((iverksett.vedtak.brevmottakere?.mottakere?.isNotEmpty() == true) && !featureToggleService.isEnabled("familie.ef.iverksett.brevmottakere")) {
-            error("Toggle for journalføring til brevmottakere er ikke påskrudd")
-        }
 
         journalførVedtaksbrev(behandlingId, iverksett)
 
