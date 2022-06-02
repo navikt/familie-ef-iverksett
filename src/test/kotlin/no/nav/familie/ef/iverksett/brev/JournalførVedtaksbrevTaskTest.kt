@@ -12,7 +12,6 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
-import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker

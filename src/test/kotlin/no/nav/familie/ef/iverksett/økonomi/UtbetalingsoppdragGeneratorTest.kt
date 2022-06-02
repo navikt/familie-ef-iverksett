@@ -28,28 +28,8 @@ internal class UtbetalingsoppdragGeneratorTest {
     }
 
     @Test
-    fun `Revurdering bak i tiden før vi hadde beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_bak_i_tiden.csv"))
-    }
-
-    @Test
     fun `Revurdering med 0 beløp beholder periodId når man har flere perioder`() {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder.csv"))
-    }
-
-    @Test
-    fun `Revurdering bak i tiden med beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_bak_i_tiden_med_beløp.csv"))
-    }
-
-    @Test
-    fun `Revurdering frem i tiden med 0-beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_frem_i_tiden_med_0beløp.csv"))
-    }
-
-    @Test
-    fun `Revurdering frem i tiden med beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_frem_i_tiden_med_beløp.csv"))
     }
 
     @Test
@@ -81,13 +61,6 @@ internal class UtbetalingsoppdragGeneratorTest {
     inner class Opphørsdato {
 
         @Test
-        internal fun `opphørsdato etter forrige andel sin opphørsdato er ikke gyldig`() {
-            assertThatThrownBy {
-                TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphør_etter_andel_sitt_dato_feiler.csv"))
-            }.hasMessageContaining("Nytt opphørsdato=2020-03-01 kan ikke være etter")
-        }
-
-        @Test
         fun `opphørsdato etter tidligere opphørsdato er ikke gyldig`() {
             assertThatThrownBy {
                 TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_etter_tidligere.csv"))
@@ -102,11 +75,6 @@ internal class UtbetalingsoppdragGeneratorTest {
         @Test
         fun `kan opphøre når man bare har 0-andeler`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_0andeler.csv"))
-        }
-
-        @Test
-        fun `førstegangsbehandling - kan sende startdato i en førstegangsbehandling`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphørsdato_førstegangsbehandling_samme_som_andel.csv"))
         }
 
         @Test
