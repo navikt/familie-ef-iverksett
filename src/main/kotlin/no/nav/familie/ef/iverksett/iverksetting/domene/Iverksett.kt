@@ -14,13 +14,11 @@ import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
-import no.nav.familie.kontrakter.ef.iverksett.DelårsperiodeSkoleårSkolepengerDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettSkolepengerDto
 import no.nav.familie.kontrakter.ef.iverksett.SkolepengerStudietype
-import no.nav.familie.kontrakter.ef.iverksett.SkolepengerUtgiftDto
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.Utgiftstype
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
@@ -30,7 +28,6 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.YearMonth
 import java.util.UUID
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
 
@@ -102,26 +99,21 @@ data class Søker(
 
 sealed class Vedtaksperiode
 
-sealed class VedtaksperiodeMedPeriode: Vedtaksperiode() {
-    abstract val fraOgMed: LocalDate
-    abstract val tilOgMed: LocalDate
-}
-
 data class VedtaksperiodeOvergangsstønad(
-    override val fraOgMed: LocalDate,
-    override val tilOgMed: LocalDate,
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate,
     val aktivitet: AktivitetType,
     val periodeType: VedtaksperiodeType
-) : VedtaksperiodeMedPeriode()
+) : Vedtaksperiode()
 
 data class VedtaksperiodeBarnetilsyn(
-    override val fraOgMed: LocalDate,
-    override val tilOgMed: LocalDate,
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate,
     val utgifter: Int,
     val antallBarn: Int
-) : VedtaksperiodeMedPeriode()
+) : Vedtaksperiode()
 
-data class SkoleårsperiodeSkolepenger(
+data class VedtaksperiodeSkolepenger(
     val perioder: List<DelårsperiodeSkoleårSkolepenger>,
     val utgiftsperioder: List<SkolepengerUtgift>
 ) : Vedtaksperiode()
@@ -194,7 +186,7 @@ data class VedtaksdetaljerSkolepenger(
     override val tilkjentYtelse: TilkjentYtelse?,
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
-    override val vedtaksperioder: List<SkoleårsperiodeSkolepenger>,
+    override val vedtaksperioder: List<VedtaksperiodeSkolepenger>,
 ) : Vedtaksdetaljer()
 
 data class Behandlingsdetaljer(

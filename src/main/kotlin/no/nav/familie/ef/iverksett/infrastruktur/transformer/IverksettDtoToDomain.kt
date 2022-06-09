@@ -12,7 +12,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.SkolepengerUtgift
-import no.nav.familie.ef.iverksett.iverksetting.domene.SkoleårsperiodeSkolepenger
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
@@ -103,8 +103,8 @@ fun VedtaksperiodeBarnetilsynDto.toDomain(): VedtaksperiodeBarnetilsyn {
     )
 }
 
-fun VedtaksperiodeSkolepengerDto.toDomain(): SkoleårsperiodeSkolepenger {
-    return SkoleårsperiodeSkolepenger(
+fun VedtaksperiodeSkolepengerDto.toDomain(): VedtaksperiodeSkolepenger {
+    return VedtaksperiodeSkolepenger(
         perioder = this.perioder.map {
             DelårsperiodeSkoleårSkolepenger(
                 studietype = it.studietype,
