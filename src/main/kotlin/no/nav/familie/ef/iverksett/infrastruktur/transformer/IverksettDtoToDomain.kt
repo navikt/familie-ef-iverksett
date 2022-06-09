@@ -31,7 +31,6 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettSkolepengerDto
 import no.nav.familie.kontrakter.ef.iverksett.PeriodeMedBeløpDto
-import no.nav.familie.kontrakter.ef.iverksett.SkoleårsperiodeSkolepengerDto
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingMedVarselDto
@@ -40,6 +39,7 @@ import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerSkolepengerDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeOvergangsstønadDto
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeSkolepengerDto
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
@@ -103,7 +103,7 @@ fun VedtaksperiodeBarnetilsynDto.toDomain(): VedtaksperiodeBarnetilsyn {
     )
 }
 
-fun SkoleårsperiodeSkolepengerDto.toDomain(): SkoleårsperiodeSkolepenger {
+fun VedtaksperiodeSkolepengerDto.toDomain(): SkoleårsperiodeSkolepenger {
     return SkoleårsperiodeSkolepenger(
         perioder = this.perioder.map {
             DelårsperiodeSkoleårSkolepenger(
@@ -116,7 +116,7 @@ fun SkoleårsperiodeSkolepengerDto.toDomain(): SkoleårsperiodeSkolepenger {
         utgiftsperioder = this.utgiftsperioder.map {
             SkolepengerUtgift(
                 utgiftstyper = it.utgiftstyper,
-                dato = it.dato,
+                utgiftsdato = it.utgiftsdato,
                 utgifter = it.utgifter,
                 stønad = it.stønad
             )
