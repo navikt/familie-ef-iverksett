@@ -46,7 +46,7 @@ internal class DistribuerVedtaksbrevTaskTest {
             )
         )
         every { tilstandRepository.hentTilbakekrevingResultat(behandlingId) } returns null
-        every { journalpostClient.distribuerBrev(journalpostId) } returns bestillingId
+        every { journalpostClient.distribuerBrev(journalpostId, any()) } returns bestillingId
         every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null andThen mapOf(
             journalpostId to DistribuerVedtaksbrevResultat(
                 bestillingId
@@ -62,7 +62,7 @@ internal class DistribuerVedtaksbrevTaskTest {
 
         distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
 
-        verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostId) }
+        verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostId, any()) }
         verify(exactly = 1) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId, any(), any()) }
         assertThat(distribuerVedtaksbrevResultat.captured.bestillingId).isEqualTo(bestillingId)
         assertThat(distribuerVedtaksbrevResultat.captured.dato).isNotNull()
@@ -79,7 +79,7 @@ internal class DistribuerVedtaksbrevTaskTest {
             "2" to journalpostResultater[1]
         )
         every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
-        every { journalpostClient.distribuerBrev(any()) } returns bestillingIder[0] andThen bestillingIder[1]
+        every { journalpostClient.distribuerBrev(any(), any()) } returns bestillingIder[0] andThen bestillingIder[1]
         every {
             tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
@@ -90,8 +90,8 @@ internal class DistribuerVedtaksbrevTaskTest {
 
         distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
 
-        verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostResultater[0].journalpostId) }
-        verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostResultater[1].journalpostId) }
+        verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostResultater[0].journalpostId, any()) }
+        verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostResultater[1].journalpostId, any()) }
         verify(exactly = 2) {
             tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
@@ -130,7 +130,7 @@ internal class DistribuerVedtaksbrevTaskTest {
 
         every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns journalpostResultater
         every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns distribuerteJournalposter
-        every { journalpostClient.distribuerBrev(capture(journalpostSlot)) } returns ikkeDistrbuertJournalpostBestillingId
+        every { journalpostClient.distribuerBrev(capture(journalpostSlot), any()) } returns ikkeDistrbuertJournalpostBestillingId
         every {
             tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
@@ -141,8 +141,8 @@ internal class DistribuerVedtaksbrevTaskTest {
 
         distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
 
-        verify(exactly = 0) { journalpostClient.distribuerBrev(distribuertJournalpost) }
-        verify(exactly = 1) { journalpostClient.distribuerBrev(ikkeDistribuertJournalpost) }
+        verify(exactly = 0) { journalpostClient.distribuerBrev(distribuertJournalpost, any()) }
+        verify(exactly = 1) { journalpostClient.distribuerBrev(ikkeDistribuertJournalpost, any()) }
         verify(exactly = 0) {
             tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
@@ -170,7 +170,7 @@ internal class DistribuerVedtaksbrevTaskTest {
             every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns
                 mapOf("1" to journalpostResultater[0])
             every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
-            every { journalpostClient.distribuerBrev(any()) } throws ressursExceptionGone()
+            every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionGone()
 
             val throwable = catchThrowable {
                 distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString()))
@@ -181,7 +181,7 @@ internal class DistribuerVedtaksbrevTaskTest {
                 .isBetween(LocalDateTime.now().plusDays(6), LocalDateTime.now().plusDays(8))
             assertThat(rekjørSenereException.årsak).startsWith("Dødsbo")
 
-            verify(exactly = 1) { journalpostClient.distribuerBrev(any()) }
+            verify(exactly = 1) { journalpostClient.distribuerBrev(any(), any()) }
             verify(exactly = 0) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(any(), any(), any()) }
         }
 
@@ -191,7 +191,7 @@ internal class DistribuerVedtaksbrevTaskTest {
 
             every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns mapOf("1" to journalpostResultater[0])
             every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
-            every { journalpostClient.distribuerBrev(any()) } throws ressursExceptionGone()
+            every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionGone()
 
             val throwable = catchThrowable {
                 val task = Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString())
@@ -201,7 +201,7 @@ internal class DistribuerVedtaksbrevTaskTest {
             assertThat(throwable).isInstanceOf(TaskExceptionUtenStackTrace::class.java)
             assertThat(throwable).hasMessageStartingWith("Er dødsbo og har feilet flere ganger")
 
-            verify(exactly = 1) { journalpostClient.distribuerBrev(any()) }
+            verify(exactly = 1) { journalpostClient.distribuerBrev(any(), any()) }
             verify(exactly = 0) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(any(), any(), any()) }
         }
     }

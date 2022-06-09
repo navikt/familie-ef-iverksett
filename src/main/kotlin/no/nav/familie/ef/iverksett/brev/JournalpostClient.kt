@@ -7,6 +7,7 @@ import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokdist.DistribuerJournalpostRequest
+import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.kontrakter.felles.getDataOrThrow
 import no.nav.familie.kontrakter.felles.journalpost.Journalpost
 import no.nav.familie.kontrakter.felles.journalpost.JournalposterForBrukerRequest
@@ -50,14 +51,14 @@ class JournalpostClient(
             ?: error("Kunne ikke arkivere dokument med fagsakid ${arkiverDokumentRequest.fagsakId}")
     }
 
-    fun distribuerBrev(journalpostId: String): String {
+    fun distribuerBrev(journalpostId: String, distribusjonstype: Distribusjonstype): String {
         logger.info("Kaller dokdist-tjeneste for journalpost=$journalpostId")
 
         val journalpostRequest = DistribuerJournalpostRequest(
             journalpostId = journalpostId,
             bestillendeFagsystem = Fagsystem.EF,
             dokumentProdApp = "FAMILIE_EF_SAK",
-            distribusjonstype = null // TODO map riktig her? Måtte legge inn noe pga nytt kontrakt
+            distribusjonstype = distribusjonstype
         )
 
         return postForEntity<Ressurs<String>>(
