@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResu
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.http.client.RessursException
+import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Loggtype
@@ -72,7 +73,7 @@ class DistribuerVedtaksbrevTask(
         journalpostResultat: JournalpostResultat,
         behandlingId: UUID
     ) {
-        val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId)
+        val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VEDTAK)
         loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
         tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
             behandlingId,

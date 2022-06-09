@@ -17,7 +17,10 @@ import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
+import no.nav.familie.kontrakter.ef.iverksett.IverksettSkolepengerDto
+import no.nav.familie.kontrakter.ef.iverksett.SkolepengerStudietype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
+import no.nav.familie.kontrakter.ef.iverksett.Utgiftstype
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
@@ -69,6 +72,18 @@ data class IverksettBarnetilsyn(
     }
 }
 
+data class IverksettSkolepenger(
+    override val fagsak: Fagsakdetaljer,
+    override val behandling: Behandlingsdetaljer,
+    override val søker: Søker,
+    override val vedtak: VedtaksdetaljerSkolepenger,
+) : Iverksett() {
+
+    override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettSkolepenger {
+        return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
+    }
+}
+
 data class Fagsakdetaljer(
     val fagsakId: UUID,
     val eksternId: Long,
@@ -82,25 +97,40 @@ data class Søker(
     val adressebeskyttelse: AdressebeskyttelseGradering? = null
 )
 
-sealed class Vedtaksperiode {
-
-    abstract val fraOgMed: LocalDate
-    abstract val tilOgMed: LocalDate
-}
+sealed class Vedtaksperiode
 
 data class VedtaksperiodeOvergangsstønad(
-    override val fraOgMed: LocalDate,
-    override val tilOgMed: LocalDate,
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate,
     val aktivitet: AktivitetType,
     val periodeType: VedtaksperiodeType
 ) : Vedtaksperiode()
 
 data class VedtaksperiodeBarnetilsyn(
-    override val fraOgMed: LocalDate,
-    override val tilOgMed: LocalDate,
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate,
     val utgifter: Int,
     val antallBarn: Int
 ) : Vedtaksperiode()
+
+data class VedtaksperiodeSkolepenger(
+    val perioder: List<DelårsperiodeSkoleårSkolepenger>,
+    val utgiftsperioder: List<SkolepengerUtgift>
+) : Vedtaksperiode()
+
+data class DelårsperiodeSkoleårSkolepenger(
+    val studietype: SkolepengerStudietype,
+    val fraOgMed: LocalDate,
+    val tilOgMed: LocalDate,
+    val studiebelastning: Int,
+)
+
+data class SkolepengerUtgift(
+    val utgiftstyper: Set<Utgiftstype>,
+    val utgiftsdato: LocalDate,
+    val utgifter: Int,
+    val stønad: Int
+)
 
 data class PeriodeMedBeløp(
     val fraOgMed: LocalDate,
@@ -145,6 +175,18 @@ data class VedtaksdetaljerBarnetilsyn(
     override val vedtaksperioder: List<VedtaksperiodeBarnetilsyn>,
     val kontantstøtte: List<PeriodeMedBeløp>,
     val tilleggsstønad: List<PeriodeMedBeløp>
+) : Vedtaksdetaljer()
+
+data class VedtaksdetaljerSkolepenger(
+    override val vedtaksresultat: Vedtaksresultat,
+    override val vedtakstidspunkt: LocalDateTime,
+    override val opphørÅrsak: OpphørÅrsak?,
+    override val saksbehandlerId: String,
+    override val beslutterId: String,
+    override val tilkjentYtelse: TilkjentYtelse?,
+    override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
+    override val brevmottakere: Brevmottakere? = null,
+    override val vedtaksperioder: List<VedtaksperiodeSkolepenger>,
 ) : Vedtaksdetaljer()
 
 data class Behandlingsdetaljer(
@@ -209,6 +251,7 @@ private class IverksettDeserializer : StdDeserializer<Iverksett>(Iverksett::clas
         return when (StønadType.valueOf(stønadstype)) {
             StønadType.OVERGANGSSTØNAD -> mapper.treeToValue(node, IverksettOvergangsstønad::class.java)
             StønadType.BARNETILSYN -> mapper.treeToValue(node, IverksettBarnetilsyn::class.java)
+            StønadType.SKOLEPENGER -> mapper.treeToValue(node, IverksettSkolepenger::class.java)
             else -> error("Har ikke mapping for $stønadstype")
         }
     }
@@ -224,6 +267,7 @@ class IverksettDtoDeserializer : StdDeserializer<IverksettDto>(IverksettDto::cla
         return when (StønadType.valueOf(stønadstype)) {
             StønadType.OVERGANGSSTØNAD -> mapper.treeToValue(node, IverksettOvergangsstønadDto::class.java)
             StønadType.BARNETILSYN -> mapper.treeToValue(node, IverksettBarnetilsynDto::class.java)
+            StønadType.SKOLEPENGER -> mapper.treeToValue(node, IverksettSkolepengerDto::class.java)
             else -> error("Har ikke mapping for $stønadstype")
         }
     }
