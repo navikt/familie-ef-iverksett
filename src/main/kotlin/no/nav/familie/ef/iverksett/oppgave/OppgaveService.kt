@@ -40,7 +40,7 @@ class OppgaveService(
     }
 
     fun opprettVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Long {
-        val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)?.let { it }
+        val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
             ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
@@ -110,18 +110,18 @@ class OppgaveService(
         return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
     }
 
-    private fun harEndretPeriode(iverksett: Iverksett, forrigeBehandling: Iverksett): Boolean {
+    private fun harEndretPeriode(iverksett: IverksettOvergangsstønad, forrigeBehandling: IverksettOvergangsstønad): Boolean {
         return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
     }
 
     private fun IverksettOvergangsstønad.gjeldendeVedtak(): VedtaksperiodeOvergangsstønad =
         this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed } ?: error("Kunne ikke finne vedtaksperioder")
 
-    private fun Iverksett.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate {
+    private fun IverksettOvergangsstønad.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate {
         return this.vedtak.vedtaksperioder.maxOf { it.tilOgMed }
     }
 
-    private fun Iverksett.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
+    private fun IverksettOvergangsstønad.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
         Pair(
             this.vedtak.vedtaksperioder.minOf { it.fraOgMed },
             this.vedtak.vedtaksperioder.maxOf { it.tilOgMed }

@@ -8,11 +8,13 @@ import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
+import no.nav.familie.kontrakter.ef.iverksett.IverksettSkolepengerDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -50,6 +52,20 @@ class IverksettJsonTransformTest {
     }
 
     @Test
+    fun `deserialiser skolepenger JSON til IverksettDtoJson, kall toDomain, forvent likhet`() {
+        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettSkolepengerDtoEksempel.json")
+        val iverksettJson = objectMapper.readValue<IverksettDto>(json)
+        val iverksett = iverksettJson.toDomain()
+
+        assertThat(iverksettJson).isInstanceOf(IverksettSkolepengerDto::class.java)
+        assertThat(iverksett).isInstanceOf(IverksettSkolepenger::class.java)
+
+        assertThat(iverksett).isNotNull
+        assertThat(objectMapper.readTree(json))
+            .isEqualTo(objectMapper.readTree(objectMapper.writeValueAsString(iverksettJson)))
+    }
+
+    @Test
     fun `deserialiser overgangsstønad JSON med feil stønadtype`() {
         val stønadType = StønadType.BARNETILSYN
         val filnavn = "json/IverksettDtoEksempel.json"
@@ -60,6 +76,13 @@ class IverksettJsonTransformTest {
     fun `deserialiser barnetilsyn JSON med feil stønadtype`() {
         val stønadType = StønadType.OVERGANGSSTØNAD
         val filnavn = "json/IverksettBarnetilsynDtoEksempel.json"
+        parseJsonMedFeilStønadstype(filnavn, stønadType)
+    }
+
+    @Test
+    fun `deserialiser skolepenger JSON med feil stønadtype`() {
+        val stønadType = StønadType.OVERGANGSSTØNAD
+        val filnavn = "json/IverksettSkolepengerDtoEksempel.json"
         parseJsonMedFeilStønadstype(filnavn, stønadType)
     }
 

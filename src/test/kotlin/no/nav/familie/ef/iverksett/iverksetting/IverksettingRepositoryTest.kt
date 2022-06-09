@@ -46,6 +46,19 @@ class IverksettingRepositoryTest : ServerTest() {
     }
 
     @Test
+    fun `lagre og hent iverksett skolepenger, forvent likhet`() {
+        val json: String = ResourceLoaderTestUtil.readResource("json/IverksettSkolepengerDtoEksempel.json")
+        val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
+        iverksettingRepository.lagre(
+            iverksett.behandling.behandlingId,
+            iverksett,
+            opprettBrev()
+        )
+        val iverksettResultat = iverksettingRepository.hent(iverksett.behandling.behandlingId)
+        assertThat(iverksett).isEqualTo(iverksettResultat)
+    }
+
+    @Test
     fun `lagre og hent iverksett av eksternId, forvent likhet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
         val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()

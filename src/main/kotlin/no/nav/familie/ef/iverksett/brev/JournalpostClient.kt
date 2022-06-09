@@ -56,7 +56,8 @@ class JournalpostClient(
         val journalpostRequest = DistribuerJournalpostRequest(
             journalpostId = journalpostId,
             bestillendeFagsystem = Fagsystem.EF,
-            dokumentProdApp = "FAMILIE_EF_SAK"
+            dokumentProdApp = "FAMILIE_EF_SAK",
+            distribusjonstype = null // TODO map riktig her? Måtte legge inn noe pga nytt kontrakt
         )
 
         return postForEntity<Ressurs<String>>(
