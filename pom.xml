@@ -24,7 +24,7 @@
         <cucumber.version>7.3.4</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.2.2</dotenv.version>
-        <prosessering.version>1.20220518155102_343fcae</prosessering.version>
+        <prosessering.version>1.20220608142436_6807720</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <familie.kontrakter.version>2.0_20220609140415_8117e4a</familie.kontrakter.version>
