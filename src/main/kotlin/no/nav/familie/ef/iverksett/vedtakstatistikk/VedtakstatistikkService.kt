@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,8 +17,9 @@ class VedtakstatistikkService(private val vedtakstatistikkKafkaProducer: Vedtaks
         } else if (iverksett is IverksettBarnetilsyn) {
             val vedtakstatistikk = VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(iverksett, forrigeIverksett?.behandling?.eksternId)
             vedtakstatistikkKafkaProducer.sendVedtak(vedtakstatistikk)
-        } else {
-            error("Feil ved mapping til vedtakstatistikk: Støtter ikke skolepenger")
+        } else if (iverksett is IverksettSkolepenger) {
+            val vedtakstatistikk = VedtakstatistikkMapper.mapTilVedtakSkolepengeDVH(iverksett, forrigeIverksett?.behandling?.eksternId)
+            vedtakstatistikkKafkaProducer.sendVedtak(vedtakstatistikk)
         }
     }
 }
