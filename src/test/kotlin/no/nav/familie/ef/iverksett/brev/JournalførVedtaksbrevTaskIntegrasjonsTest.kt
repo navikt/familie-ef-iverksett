@@ -42,7 +42,6 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
     @Autowired @Qualifier("mock-integrasjoner") lateinit var wireMockServer: WireMockServer
     @Autowired lateinit var journalpostClientMock: JournalpostClientMock
 
-
     var journalførVedtaksbrevTask: JournalførVedtaksbrevTask? = null
 
     @PostConstruct

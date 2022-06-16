@@ -22,70 +22,8 @@ internal class UtbetalingsoppdragGeneratorTest {
         TestOppdragRunner.run(javaClass.getResource("/oppdrag/Sekvens1.csv"))
     }
 
-    @Test
-    fun `Revurdering med 0 beløp beholder periodId til neste behandling med periode med beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp.csv"))
-    }
-
-    @Test
-    fun `Revurdering bak i tiden før vi hadde beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_bak_i_tiden.csv"))
-    }
-
-    @Test
-    fun `Revurdering med 0 beløp beholder periodId når man har flere perioder`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder.csv"))
-    }
-
-    @Test
-    fun `Revurdering bak i tiden med beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_bak_i_tiden_med_beløp.csv"))
-    }
-
-    @Test
-    fun `Revurdering frem i tiden med 0-beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_frem_i_tiden_med_0beløp.csv"))
-    }
-
-    @Test
-    fun `Revurdering frem i tiden med beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_frem_i_tiden_med_beløp.csv"))
-    }
-
-    @Test
-    fun `Revurdering med 0 beløp beholder periodId når man har flere perioder, men også endring i tidligere beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder_overlapp.csv"))
-    }
-
-    @Test
-    fun `Revurdering med 0 beløp beholder periodId når man har flere perioder, før tidligere periode`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_med_0beløp_flere_perioder_overlapp_før_tidiligere_periode.csv"))
-    }
-
-    @Test
-    fun `Revurdering med opphør bak i tiden, samt ny periode frem i tiden`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphør_bak_i_tiden_med_periode.csv"))
-    }
-
-    @Test
-    fun `Førstegangsbehandling med 0 i beløp, med revurderinger med 0 i beløp`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/førstegangsbehandling_med_0beløp_revurderinger_med_0beløp.csv"))
-    }
-
-    @Test
-    fun `revurderer og sletter periode 2, revurdererer på nytt og skal då bygge videre fra andre perioden sin periodeId`() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_sletter_periode2_revurderer_på_nytt.csv"))
-    }
-
     @Nested
     inner class Opphørsdato {
-
-        @Test
-        internal fun `opphørsdato etter forrige andel sin opphørsdato er ikke gyldig`() {
-            assertThatThrownBy {
-                TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphør_etter_andel_sitt_dato_feiler.csv"))
-            }.hasMessageContaining("Nytt opphørsdato=2020-03-01 kan ikke være etter")
-        }
 
         @Test
         fun `opphørsdato etter tidligere opphørsdato er ikke gyldig`() {
@@ -102,11 +40,6 @@ internal class UtbetalingsoppdragGeneratorTest {
         @Test
         fun `kan opphøre når man bare har 0-andeler`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_0andeler.csv"))
-        }
-
-        @Test
-        fun `førstegangsbehandling - kan sende startdato i en førstegangsbehandling`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/opphørsdato_førstegangsbehandling_samme_som_andel.csv"))
         }
 
         @Test
@@ -127,11 +60,6 @@ internal class UtbetalingsoppdragGeneratorTest {
         @Test
         fun `opphører vedtak med 0-periode, og sen innvilget ny stønad`() {
             TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_med_0beløp.csv"))
-        }
-
-        @Test
-        fun `revurderer med 0 beløp etter en revurdering med 0 beløp skal sette opphørsdato på riktig plass`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_0beløp_før_tidligere_0beløp.csv"))
         }
     }
 
