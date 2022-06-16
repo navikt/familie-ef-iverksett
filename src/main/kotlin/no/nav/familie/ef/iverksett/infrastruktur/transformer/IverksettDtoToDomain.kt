@@ -12,7 +12,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.SkolepengerUtgift
-import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
@@ -21,6 +20,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangss
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
