@@ -27,7 +27,7 @@ class BrevControllerTest {
             true
         )
 
-        every { journalpostClient.distribuerBrev(journalpostId) } returns "distribuerBrevResponse"
+        every { journalpostClient.distribuerBrev(journalpostId, any()) } returns "distribuerBrevResponse"
 
         val frittståendeBrevDto = opprettFrittståendeBrevDto()
         val response = brevController.distribuerFrittståendeBrev(frittståendeBrevDto)

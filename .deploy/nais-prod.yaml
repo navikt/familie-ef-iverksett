@@ -63,6 +63,10 @@ spec:
       - type: POSTGRES_12 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
         diskAutoresize: true
         cascadingDelete: false
+        pointInTimeRecovery: true
+        maintenance:
+          day: 7
+          hour: 23
         databases:
           - name: familie-ef-iverksett
             envVarPrefix: DB

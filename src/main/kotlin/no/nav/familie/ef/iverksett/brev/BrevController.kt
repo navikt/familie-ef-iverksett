@@ -4,6 +4,7 @@ import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
+import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -39,7 +40,7 @@ class BrevController(
             data.saksbehandlerIdent
         ).journalpostId
 
-        journalpostClient.distribuerBrev(journalpostId)
+        journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
         return ResponseEntity.ok().build()
     }
 }
