@@ -2,7 +2,6 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
