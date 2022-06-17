@@ -18,6 +18,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsst
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetsvilkårBarnetilsyn
+import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.RegelId
@@ -34,20 +35,23 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.UUID
 
 internal class VedtakstatistikkMapperTest {
 
-    val fagsakId: UUID = UUID.randomUUID()
-    val behandlingId: UUID = UUID.randomUUID()
-    val eksternFagsakId = 1L
+    private val fagsakId: UUID = UUID.randomUUID()
+    private val behandlingId: UUID = UUID.randomUUID()
+    private val forrigeBehandlingEksternId = 11L
+    private val eksternFagsakId = 12L
     private val eksternBehandlingId = 13L
+    private val vedtakstidspunkt = LocalDateTime.now()
     private val søker = "01010172272"
     private val barnFnr = "24101576627"
     private val termindato: LocalDate? = LocalDate.now().plusDays(40)
 
     @Test
-    internal fun `skal mappe iverksett til VedtakOvergangsstønadDVH`() {
+    internal fun `skal mappe iverksett til VedtakOvergangsstønadDVH - sjekk alle felter`() {
 
         val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
             IverksettOvergangsstønad(
@@ -56,7 +60,7 @@ internal class VedtakstatistikkMapperTest {
                 søker = Søker(
                     personIdent = søker,
                     barn = listOf(
-                        Barn(personIdent = barnFnr),
+                        Barn(personIdent = barnFnr, termindato = termindato),
                         Barn(termindato = termindato),
                     ),
                     tilhørendeEnhet = "4489",
@@ -64,19 +68,45 @@ internal class VedtakstatistikkMapperTest {
                 ),
                 vedtak = vedtaksdetaljerOvergangsstønad()
             ),
-            null
+            forrigeBehandlingEksternId
         )
         assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
-        assertThat(vedtakOvergangsstønadDVH.fagsakId).isEqualTo(eksternFagsakId)
-        assertThat(vedtakOvergangsstønadDVH.behandlingId).isEqualTo(eksternBehandlingId)
-        assertThat(vedtakOvergangsstønadDVH.funksjonellId).isEqualTo(eksternBehandlingId)
-        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder).hasSize(2)
-        assertThat(vedtakOvergangsstønadDVH.utbetalinger).hasSize(2)
         assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.aktivitetspliktInntrefferDato).isNull()
+        assertThat(vedtakOvergangsstønadDVH.barn).hasSize(2)
+        assertThat(vedtakOvergangsstønadDVH.barn.first().personIdent).isEqualTo(barnFnr)
+        assertThat(vedtakOvergangsstønadDVH.barn.first().termindato).isEqualTo(termindato)
+        assertThat(vedtakOvergangsstønadDVH.behandlingId).isEqualTo(eksternBehandlingId)
+        assertThat(vedtakOvergangsstønadDVH.behandlingType.name).isEqualTo(BehandlingType.REVURDERING.name)
+        assertThat(vedtakOvergangsstønadDVH.behandlingÅrsak.name).isEqualTo(BehandlingÅrsak.SØKNAD.name)
+        assertThat(vedtakOvergangsstønadDVH.fagsakId).isEqualTo(eksternFagsakId)
+        assertThat(vedtakOvergangsstønadDVH.funksjonellId).isEqualTo(eksternBehandlingId)
+        assertThat(vedtakOvergangsstønadDVH.person.personIdent).isEqualTo(søker)
+        assertThat(vedtakOvergangsstønadDVH.relatertBehandlingId).isEqualTo(forrigeBehandlingEksternId)
+        assertThat(vedtakOvergangsstønadDVH.stønadstype.name).isEqualTo(StønadType.OVERGANGSSTØNAD.name)
+        assertThat(vedtakOvergangsstønadDVH.tidspunktVedtak).isEqualTo(vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")))
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger).hasSize(2)
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().fraOgMed).isEqualTo(LocalDate.of(2021, 1, 1))
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().tilOgMed).isEqualTo(LocalDate.of(2021, 5, 31))
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().inntekt).isEqualTo(300000)
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().inntektsreduksjon).isEqualTo(11000)
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().samordningsfradrag).isEqualTo(1000)
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().beløp).isEqualTo(9000)
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().utbetalingsdetalj.delytelseId).isEqualTo("121")
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().utbetalingsdetalj.klassekode).isEqualTo("EFOG")
+        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().utbetalingsdetalj.gjelderPerson.personIdent).isEqualTo(søker)
+        assertThat(vedtakOvergangsstønadDVH.vedtak).isEqualTo(Vedtak.INNVILGET)
+        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder).hasSize(2)
+        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().fraOgMed).isEqualTo(LocalDate.of(2021, 2, 2))
+        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().tilOgMed).isEqualTo(LocalDate.of(2021, 3, 3))
+        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().aktivitet.name).isEqualTo(AktivitetType.IKKE_AKTIVITETSPLIKT.name)
+        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().periodeType.name).isEqualTo(VedtaksperiodeType.PERIODE_FØR_FØDSEL.name)
+        assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger).hasSize(12)
+        assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger.first().vilkår.name).isEqualTo(VilkårType.FORUTGÅENDE_MEDLEMSKAP.name)
+        assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger.first().resultat.name).isEqualTo(Vilkårsresultat.OPPFYLT.name)
     }
 
     @Test
-    internal fun `skal mappe iverksett til VedtakBarnetilsynDVH`() {
+    internal fun `Map iverksett til VedtakBarnetilsynDVH - sjekk alle barnetilsyn-spesifikke felter`() {
 
         val vedtakBarnetilsynDVH = VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(
             IverksettBarnetilsyn(
@@ -128,7 +158,7 @@ internal class VedtakstatistikkMapperTest {
             forrigeBehandlingId = null,
             behandlingId = behandlingId,
             eksternId = eksternBehandlingId,
-            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+            behandlingType = BehandlingType.REVURDERING,
             behandlingÅrsak = BehandlingÅrsak.SØKNAD,
             relatertBehandlingId = null,
             vilkårsvurderinger = lagVilkårsvurderinger(),
@@ -159,7 +189,6 @@ internal class VedtakstatistikkMapperTest {
                     periodeId = 1,
                     forrigePeriodeId = null,
                     kildeBehandlingId = behandlingId
-
                 ),
                 AndelTilkjentYtelse(
                     beløp = 10000,
@@ -210,10 +239,11 @@ internal class VedtakstatistikkMapperTest {
         tilleggsstønad = listOf(PeriodeMedBeløp(LocalDate.of(2021, 6, 1), LocalDate.of(2021, 8, 1), 2000)),
     )
 
-    fun vedtaksdetaljerOvergangsstønad() =
-        VedtaksdetaljerOvergangsstønad(
+    fun vedtaksdetaljerOvergangsstønad(): VedtaksdetaljerOvergangsstønad {
+
+        return VedtaksdetaljerOvergangsstønad(
             vedtaksresultat = Vedtaksresultat.INNVILGET,
-            vedtakstidspunkt = LocalDateTime.now(),
+            vedtakstidspunkt = vedtakstidspunkt,
             opphørÅrsak = null,
             saksbehandlerId = "A123456",
             beslutterId = "B123456",
@@ -221,9 +251,9 @@ internal class VedtakstatistikkMapperTest {
             vedtaksperioder = listOf(
                 VedtaksperiodeOvergangsstønad(
                     aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
-                    fraOgMed = LocalDate.of(2021, 1, 1),
+                    fraOgMed = LocalDate.of(2021, 2, 2),
                     periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL,
-                    tilOgMed = LocalDate.of(2021, 1, 1)
+                    tilOgMed = LocalDate.of(2021, 3, 3)
                 ),
                 VedtaksperiodeOvergangsstønad(
                     aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
@@ -234,6 +264,7 @@ internal class VedtakstatistikkMapperTest {
             ),
             brevmottakere = Brevmottakere(emptyList())
         )
+    }
 
     private fun lagVilkårsvurderinger(): List<Vilkårsvurdering> = listOf(
         Vilkårsvurdering(
