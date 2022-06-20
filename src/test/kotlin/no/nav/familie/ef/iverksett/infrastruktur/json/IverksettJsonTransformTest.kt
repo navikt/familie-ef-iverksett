@@ -22,7 +22,8 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 /**
- * Dersom tester feiler i maven-bygg, men ikke når det kjøres i IntelliJ, så hjelper det sannsynligvis å reloade maven dependencies.
+ * Dersom testene i denne filen feiler i maven-bygg, men ikke når det kjøres i IntelliJ,
+ * så hjelper det sannsynligvis å reloade maven dependencies.
  */
 class IverksettJsonTransformTest {
 
