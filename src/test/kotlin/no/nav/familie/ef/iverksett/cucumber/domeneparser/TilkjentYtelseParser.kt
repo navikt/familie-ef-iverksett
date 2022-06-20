@@ -46,7 +46,10 @@ object TilkjentYtelseParser {
         }
     }
 
-    fun mapForventetUtbetalingsoppdrag(dataTable: DataTable): List<ForventetUtbetalingsoppdrag> {
+    fun mapForventetUtbetalingsoppdrag(
+        dataTable: DataTable,
+        medUtbetalingsperiode: Boolean = true
+    ): List<ForventetUtbetalingsoppdrag> {
         return dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.first()
             val behandlingId = behandlingIdTilUUID[parseInt(Domenebegrep.BEHANDLING_ID, rad)]!!
@@ -54,7 +57,7 @@ object TilkjentYtelseParser {
             ForventetUtbetalingsoppdrag(
                 behandlingId = behandlingId,
                 kodeEndring = parseEnum(UtbetalingsoppdragDomenebegrep.KODE_ENDRING, rad),
-                utbetalingsperiode = rader.map { mapForventetUtbetalingsperiode(it) }
+                utbetalingsperiode = if (medUtbetalingsperiode) rader.map { mapForventetUtbetalingsperiode(it) } else listOf()
             )
         }
     }
