@@ -24,13 +24,13 @@
         <cucumber.version>7.3.4</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.3.1</dotenv.version>
-        <prosessering.version>1.20220608142436_6807720</prosessering.version>
+        <prosessering.version>1.20220615100415_97e6d04</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <familie.kontrakter.version>2.0_20220614112617_0815cc7</familie.kontrakter.version>
+        <familie.kontrakter.version>2.0_20220615165608_348f1f2</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220609214258_f30c3ce</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220609214258_f30c3ce</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <token-validation-spring.version>2.0.21</token-validation-spring.version>
+        <token-validation-spring.version>2.1.0</token-validation-spring.version>
         <ibm-mq-client.version>9.2.5.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
         <unleash.version>4.4.1</unleash.version>
