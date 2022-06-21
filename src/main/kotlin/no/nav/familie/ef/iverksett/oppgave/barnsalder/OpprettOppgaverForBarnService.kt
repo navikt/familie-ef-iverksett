@@ -7,6 +7,7 @@ import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
+import no.nav.familie.kontrakter.felles.oppgave.FinnMappeRequest
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.domene.Task
@@ -25,6 +26,8 @@ class OpprettOppgaverForBarnService(
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
+
+    private val EF_ENHETNUMMER = "4489"
 
     @Transactional
     fun opprettTaskerForBarn(oppgaverForBarn: List<OppgaveForBarn>) {
@@ -63,6 +66,13 @@ class OpprettOppgaverForBarnService(
         val oppgaveId = oppgaveClient.opprettOppgave(opprettOppgaveRequest)
             ?: error("Kunne ikke opprette oppgave for barn med behandlingId=${oppgaveForBarn.behandlingId}")
         logger.info("Opprettet oppgave med oppgaveId=$oppgaveId for behandling=${oppgaveForBarn.behandlingId}")
+
+        try {
+            leggOppgaveIMappe(oppgaveId)
+        } catch (e: Exception) {
+            logger.error("Feil under knytning av mappe til oppgave - se securelogs for stacktrace")
+            secureLogger.error("Feil under knytning av mappe til oppgave", e)
+        }
     }
 
     private fun oppgaveFinnesAllerede(oppgaveForBarn: OppgaveForBarn): Boolean {
@@ -82,5 +92,25 @@ class OpprettOppgaverForBarnService(
 
     private fun enhetForInnhentDokumentasjon(personIdent: String): Enhet {
         return familieIntegrasjonerClient.hentBehandlendeEnhetForBehandlingMedRelasjoner(personIdent).first()
+    }
+
+    fun leggOppgaveIMappe(oppgaveId: Long) {
+        val oppgave = oppgaveClient.finnOppgaveMedId(oppgaveId)
+        if (oppgave.tildeltEnhetsnr == EF_ENHETNUMMER) { // Skjermede personer skal ikke puttes i mappe
+            val finnMappeRequest = FinnMappeRequest(
+                listOf(),
+                oppgave.tildeltEnhetsnr!!,
+                null,
+                1000
+            )
+            val mapperResponse = oppgaveClient.finnMapper(finnMappeRequest)
+            val mappe = mapperResponse.mapper.find {
+                it.navn.contains("EF Sak", true) &&
+                    it.navn.contains("Hendelser") &&
+                    it.navn.contains("62")
+            }
+                ?: error("Fant ikke mappe for uplassert oppgave (EF Sak og 01)")
+            oppgaveClient.oppdaterOppgave(oppgave.copy(mappeId = mappe.id.toLong()))
+        }
     }
 }
