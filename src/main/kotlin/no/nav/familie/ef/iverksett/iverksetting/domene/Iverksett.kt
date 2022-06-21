@@ -20,7 +20,6 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettSkolepengerDto
 import no.nav.familie.kontrakter.ef.iverksett.SkolepengerStudietype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
-import no.nav.familie.kontrakter.ef.iverksett.Utgiftstype
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
@@ -127,7 +126,6 @@ data class DelårsperiodeSkoleårSkolepenger(
 )
 
 data class SkolepengerUtgift(
-    val utgiftstyper: Set<Utgiftstype>,
     val utgiftsdato: LocalDate,
     val utgifter: Int,
     val stønad: Int
