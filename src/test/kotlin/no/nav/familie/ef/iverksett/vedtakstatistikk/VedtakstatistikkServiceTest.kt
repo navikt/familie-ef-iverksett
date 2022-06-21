@@ -37,7 +37,7 @@ import java.util.UUID
 class VedtakstatistikkServiceTest {
 
     private var vedtakstatistikkKafkaProducer: VedtakstatistikkKafkaProducer = mockk(relaxed = true)
-    private var vedtakstatistikkService = VedtakstatistikkService(vedtakstatistikkKafkaProducer)
+    private var vedtakstatistikkService = VedtakstatistikkService(vedtakstatistikkKafkaProducer, mockk(relaxed = true))
 
     @Test
     internal fun `vedtakstatistikk skal kalle kafka producer med riktig data`() {

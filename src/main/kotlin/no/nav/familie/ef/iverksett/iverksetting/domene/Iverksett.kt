@@ -123,6 +123,7 @@ data class DelårsperiodeSkoleårSkolepenger(
     val fraOgMed: LocalDate,
     val tilOgMed: LocalDate,
     val studiebelastning: Int,
+    val makssatsForSkoleår: Int
 )
 
 data class SkolepengerUtgift(
@@ -187,6 +188,7 @@ data class VedtaksdetaljerSkolepenger(
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeSkolepenger>,
+    val begrunnelse: String? = null
 ) : Vedtaksdetaljer()
 
 data class Behandlingsdetaljer(

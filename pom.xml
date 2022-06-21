@@ -28,7 +28,7 @@
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <familie.kontrakter.version>2.0_20220620132905_cd56153</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220609214258_f30c3ce</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220616133213_4b553f3</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220609214258_f30c3ce</familie.eksterne-kontrakter.saksstatistikk-ef>
         <token-validation-spring.version>2.0.21</token-validation-spring.version>
         <ibm-mq-client.version>9.2.5.0</ibm-mq-client.version>

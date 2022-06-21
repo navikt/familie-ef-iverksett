@@ -1,8 +1,11 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
+import no.nav.familie.ef.iverksett.iverksetting.domene.DelårsperiodeSkoleårSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
+import no.nav.familie.ef.iverksett.iverksetting.domene.SkolepengerUtgift
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerBarnetilsyn
@@ -16,20 +19,29 @@ import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
+import no.nav.familie.eksterne.kontrakter.ef.Delårsperiode
 import no.nav.familie.eksterne.kontrakter.ef.PeriodeMedBeløp
 import no.nav.familie.eksterne.kontrakter.ef.Person
+import no.nav.familie.eksterne.kontrakter.ef.Studietype
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
+import no.nav.familie.eksterne.kontrakter.ef.UtgiftSkolepenger
+import no.nav.familie.eksterne.kontrakter.ef.Utgiftstype
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.eksterne.kontrakter.ef.VedtakBarnetilsynDVH
 import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
+import no.nav.familie.eksterne.kontrakter.ef.VedtakSkolepenger
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeBarnetilsynDto
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeOvergangsstønadDto
+import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeSkolepenger
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
+import java.time.LocalDate
+import java.time.Month
+import java.time.Year
 import java.time.ZoneId
 import no.nav.familie.eksterne.kontrakter.ef.Barn as BarnEkstern
 import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
@@ -183,4 +195,65 @@ object VedtakstatistikkMapper {
             )
         }
     }
+
+    fun mapTilVedtakSkolepengeDVH(iverksett: IverksettSkolepenger, forrigeBehandlingId: Long?): VedtakSkolepenger {
+        return VedtakSkolepenger(
+            fagsakId = iverksett.fagsak.eksternId,
+            behandlingId = iverksett.behandling.eksternId,
+            relatertBehandlingId = forrigeBehandlingId,
+            adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let {
+                Adressebeskyttelse.valueOf(it.name)
+            },
+            tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")),
+            vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map {
+                mapTilVilkårsvurderinger(it)
+            },
+            person = mapTilPerson(personIdent = iverksett.søker.personIdent),
+            barn = iverksett.søker.barn.map { mapTilBarn(it) },
+            behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
+            behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
+            vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
+            utbetalinger = iverksett.vedtak.tilkjentYtelse?.let {
+                mapTilUtbetaling(
+                    it,
+                    iverksett.fagsak.stønadstype,
+                    iverksett.fagsak.eksternId,
+                    iverksett.søker
+                )
+            } ?: emptyList(),
+            funksjonellId = iverksett.behandling.eksternId,
+            stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
+            vedtaksperioder = iverksett.vedtak.vedtaksperioder.map {
+                VedtaksperiodeSkolepenger(
+                    skoleår = it.perioder.first().fraOgMed.utledSkoleår().value,
+                    perioder = it.perioder.map { delårsperiode -> mapTilDelårsperiode(delårsperiode) },
+                    utgifter = it.utgiftsperioder.map { utgiftsperiode -> mapTilUtgiftSkolepenger(utgiftsperiode) },
+                    maksSatsForSkoleår = it.perioder.first().makssatsForSkoleår
+                )
+            },
+            vedtaksbegrunnelse = iverksett.vedtak.begrunnelse
+        )
+    }
+
+    private fun mapTilUtgiftSkolepenger(utgiftsperiode: SkolepengerUtgift) =
+        UtgiftSkolepenger(
+            utgiftstype = utgiftsperiode.utgiftstyper.map {
+                Utgiftstype.valueOf(
+                    it.name
+                )
+            },
+            utgiftsdato = utgiftsperiode.utgiftsdato,
+            utgiftsbeløp = utgiftsperiode.utgifter,
+            utbetaltBeløp = utgiftsperiode.stønad
+        )
+
+    private fun mapTilDelårsperiode(delårsperiode: DelårsperiodeSkoleårSkolepenger) =
+        Delårsperiode(
+            studietype = Studietype.valueOf(delårsperiode.studietype.name),
+            datoFra = delårsperiode.fraOgMed,
+            datoTil = delårsperiode.tilOgMed,
+            studiebelastning = delårsperiode.studiebelastning
+        )
+
+    private fun LocalDate.utledSkoleår() = if (this.month > Month.JUNE) Year.of(this.year) else Year.of(this.year - 1)
 }
