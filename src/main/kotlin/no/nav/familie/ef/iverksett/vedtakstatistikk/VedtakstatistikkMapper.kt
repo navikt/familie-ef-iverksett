@@ -26,7 +26,6 @@ import no.nav.familie.eksterne.kontrakter.ef.Studietype
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.UtgiftSkolepenger
-import no.nav.familie.eksterne.kontrakter.ef.Utgiftstype
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.eksterne.kontrakter.ef.VedtakBarnetilsynDVH
 import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
@@ -237,11 +236,6 @@ object VedtakstatistikkMapper {
 
     private fun mapTilUtgiftSkolepenger(utgiftsperiode: SkolepengerUtgift) =
         UtgiftSkolepenger(
-            utgiftstype = utgiftsperiode.utgiftstyper.map {
-                Utgiftstype.valueOf(
-                    it.name
-                )
-            },
             utgiftsdato = utgiftsperiode.utgiftsdato,
             utgiftsbeløp = utgiftsperiode.utgifter,
             utbetaltBeløp = utgiftsperiode.stønad

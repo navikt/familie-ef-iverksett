@@ -91,7 +91,6 @@
         ],
         "utgiftsperioder": [
           {
-            "utgiftstyper": ["SEMESTERAVGIFT"],
             "utgiftsdato": "2021-01-01",
             "utgifter": 200,
             "stønad": 100

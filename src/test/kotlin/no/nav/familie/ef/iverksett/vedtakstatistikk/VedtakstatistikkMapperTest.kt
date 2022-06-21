@@ -24,7 +24,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetsvilkårBarnetilsyn
 import no.nav.familie.eksterne.kontrakter.ef.Studietype
-import no.nav.familie.eksterne.kontrakter.ef.Utgiftstype
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
@@ -46,7 +45,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEksterneKontrakter
-import no.nav.familie.kontrakter.ef.iverksett.Utgiftstype as UtgiftstypeKontrakter
 
 internal class VedtakstatistikkMapperTest {
 
@@ -177,13 +175,6 @@ internal class VedtakstatistikkMapperTest {
         assertThat(mappetUtgiftsperiode.utgiftsdato).isEqualTo(forventetUtgiftsperiode.utgiftsdato)
         assertThat(mappetUtgiftsperiode.utgiftsbeløp).isEqualTo(forventetUtgiftsperiode.utgifter)
         assertThat(mappetUtgiftsperiode.utbetaltBeløp).isEqualTo(forventetUtgiftsperiode.stønad)
-        assertThat(mappetUtgiftsperiode.utgiftstype).hasSameElementsAs(
-            forventetUtgiftsperiode.utgiftstyper.map {
-                Utgiftstype.valueOf(
-                    it.name
-                )
-            }
-        )
     }
 
     fun fagsakdetaljer(stønadstype: StønadType = StønadType.OVERGANGSSTØNAD): Fagsakdetaljer =
@@ -274,7 +265,6 @@ internal class VedtakstatistikkMapperTest {
                 ),
                 utgiftsperioder = listOf(
                     SkolepengerUtgift(
-                        utgiftstyper = setOf(UtgiftstypeKontrakter.EKSAMENSAVGIFT),
                         utgiftsdato = LocalDate.of(2021, 1, 1),
                         utgifter = 5000,
                         stønad = 5000
