@@ -5,19 +5,27 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
+import no.nav.familie.ef.iverksett.iverksetting.domene.DelårsperiodeSkoleårSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
+import no.nav.familie.ef.iverksett.iverksetting.domene.SkolepengerUtgift
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetsvilkårBarnetilsyn
+import no.nav.familie.eksterne.kontrakter.ef.Studietype
+import no.nav.familie.eksterne.kontrakter.ef.Vilkår
+import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
@@ -28,6 +36,7 @@ import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
+import no.nav.familie.kontrakter.ef.iverksett.SkolepengerStudietype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.ef.StønadType
@@ -37,6 +46,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.UUID
+import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEksterneKontrakter
 
 internal class VedtakstatistikkMapperTest {
 
@@ -146,6 +156,57 @@ internal class VedtakstatistikkMapperTest {
         assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad.first().beløp).isEqualTo(2000)
     }
 
+    @Test
+    internal fun `skal mappe iverksett til VedtakSkolepenger`() {
+
+        val vedtakSkolepenger = VedtakstatistikkMapper.mapTilVedtakSkolepengeDVH(
+            IverksettSkolepenger(
+                fagsak = fagsakdetaljer(stønadstype = StønadType.BARNETILSYN),
+                behandling = behandlingsdetaljer(),
+                søker = Søker(
+                    personIdent = søker,
+                    barn = listOf(
+                        Barn(personIdent = barnFnr),
+                        Barn(termindato = termindato),
+                    ),
+                    tilhørendeEnhet = "4489",
+                    adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG
+                ),
+                vedtak = vedtaksdetaljerSkolepenger()
+            ),
+            null
+        )
+
+        assertThat(vedtakSkolepenger.fagsakId).isEqualTo(eksternFagsakId)
+        assertThat(vedtakSkolepenger.behandlingId).isEqualTo(eksternBehandlingId)
+        assertThat(vedtakSkolepenger.funksjonellId).isEqualTo(eksternBehandlingId)
+        assertThat(vedtakSkolepenger.vedtaksperioder).hasSize(1)
+        assertThat(vedtakSkolepenger.utbetalinger).hasSize(2)
+        assertThat(vedtakSkolepenger.vilkårsvurderinger).hasSameElementsAs(
+            lagVilkårsvurderinger().map {
+                VilkårsvurderingDto(
+                    Vilkår.valueOf(it.vilkårType.name),
+                    VilkårsresultatEksterneKontrakter.valueOf(it.resultat.name)
+                )
+            }
+        )
+
+        val forventetSkoleårsperiode = vedtaksdetaljerSkolepenger().vedtaksperioder.first().perioder.first()
+        val mappetSkoleårsperiode = vedtakSkolepenger.vedtaksperioder.first().perioder.first()
+
+        assertThat(mappetSkoleårsperiode.datoTil).isEqualTo(forventetSkoleårsperiode.tilOgMed)
+        assertThat(mappetSkoleårsperiode.datoFra).isEqualTo(forventetSkoleårsperiode.fraOgMed)
+        assertThat(mappetSkoleårsperiode.studiebelastning).isEqualTo(forventetSkoleårsperiode.studiebelastning)
+        assertThat(mappetSkoleårsperiode.studietype).isEqualTo(Studietype.valueOf(forventetSkoleårsperiode.studietype.name))
+
+        val forventetUtgiftsperiode = vedtaksdetaljerSkolepenger().vedtaksperioder.first().utgiftsperioder.first()
+        val mappetUtgiftsperiode = vedtakSkolepenger.vedtaksperioder.first().utgifter.first()
+
+        assertThat(mappetUtgiftsperiode.utgiftsdato).isEqualTo(forventetUtgiftsperiode.utgiftsdato)
+        assertThat(mappetUtgiftsperiode.utgiftsbeløp).isEqualTo(forventetUtgiftsperiode.utgifter)
+        assertThat(mappetUtgiftsperiode.utbetaltBeløp).isEqualTo(forventetUtgiftsperiode.stønad)
+    }
+
     fun fagsakdetaljer(stønadstype: StønadType = StønadType.OVERGANGSSTØNAD): Fagsakdetaljer =
         Fagsakdetaljer(
             fagsakId = fagsakId,
@@ -158,7 +219,7 @@ internal class VedtakstatistikkMapperTest {
             forrigeBehandlingId = null,
             behandlingId = behandlingId,
             eksternId = eksternBehandlingId,
-            behandlingType = BehandlingType.REVURDERING,
+            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
             behandlingÅrsak = BehandlingÅrsak.SØKNAD,
             relatertBehandlingId = null,
             vilkårsvurderinger = lagVilkårsvurderinger(),
@@ -212,6 +273,35 @@ internal class VedtakstatistikkMapperTest {
             ),
             startdato = LocalDate.now()
         )
+
+    fun vedtaksdetaljerSkolepenger() = VedtaksdetaljerSkolepenger(
+        vedtaksresultat = Vedtaksresultat.INNVILGET,
+        vedtakstidspunkt = LocalDateTime.now(),
+        opphørÅrsak = null,
+        saksbehandlerId = "A123456",
+        beslutterId = "B123456",
+        tilkjentYtelse = tilkjentYtelse(),
+        vedtaksperioder = listOf(
+            VedtaksperiodeSkolepenger(
+                perioder = listOf(
+                    DelårsperiodeSkoleårSkolepenger(
+                        studietype = SkolepengerStudietype.HØGSKOLE_UNIVERSITET,
+                        fraOgMed = LocalDate.of(2021, 1, 1),
+                        tilOgMed = LocalDate.of(2021, 1, 1),
+                        studiebelastning = 100,
+                        makssatsForSkoleår = 50000
+                    )
+                ),
+                utgiftsperioder = listOf(
+                    SkolepengerUtgift(
+                        utgiftsdato = LocalDate.of(2021, 1, 1),
+                        utgifter = 5000,
+                        stønad = 5000
+                    )
+                )
+            )
+        ),
+    )
 
     fun vedtaksdetaljerBarnetilsyn() = VedtaksdetaljerBarnetilsyn(
         vedtaksresultat = Vedtaksresultat.INNVILGET,

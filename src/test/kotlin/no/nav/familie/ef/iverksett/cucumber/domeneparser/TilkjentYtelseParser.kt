@@ -23,13 +23,18 @@ object TilkjentYtelseParser {
 
     fun mapTilkjentYtelse(
         dataTable: DataTable,
-        startdatoer: Map<UUID, LocalDate>
+        startdatoer: Map<UUID, LocalDate>,
+        medAndel: Boolean = true
     ): List<TilkjentYtelseHolder> {
         return dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.first()
             val behandlingIdInt = parseInt(Domenebegrep.BEHANDLING_ID, rad)
             val behandlingId = behandlingIdTilUUID[behandlingIdInt]!!
-            val andeler = rader.map { mapAndelTilkjentYtelse(it) }
+            val andeler = if (medAndel) {
+                rader.map { mapAndelTilkjentYtelse(it) }
+            } else {
+                listOf()
+            }
             val startdato = (
                 startdatoer[behandlingId]
                     ?: andeler.minOfOrNull { it.fraOgMed }
