@@ -24,9 +24,9 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetsvilkårBarnetilsyn
 import no.nav.familie.eksterne.kontrakter.ef.Studietype
+import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
-import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.RegelId
@@ -219,7 +219,7 @@ internal class VedtakstatistikkMapperTest {
             forrigeBehandlingId = null,
             behandlingId = behandlingId,
             eksternId = eksternBehandlingId,
-            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+            behandlingType = BehandlingType.REVURDERING,
             behandlingÅrsak = BehandlingÅrsak.SØKNAD,
             relatertBehandlingId = null,
             vilkårsvurderinger = lagVilkårsvurderinger(),
