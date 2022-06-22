@@ -7,8 +7,6 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.Utbetalingsoppdra
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
 import org.opentest4j.ValueWrapper
@@ -16,52 +14,6 @@ import java.time.LocalDate
 import java.util.UUID
 
 internal class UtbetalingsoppdragGeneratorTest {
-
-    @Test
-    fun csvTest() {
-        TestOppdragRunner.run(javaClass.getResource("/oppdrag/Sekvens1.csv"))
-    }
-
-    @Nested
-    inner class Opphørsdato {
-
-        @Test
-        fun `opphørsdato etter tidligere opphørsdato er ikke gyldig`() {
-            assertThatThrownBy {
-                TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_etter_tidligere.csv"))
-            }.hasMessageContaining("kan ikke være etter forrigeOpphørsdato")
-        }
-
-        @Test
-        fun `opphørsdato før tidligere skal sende nytt opphørsdato til oppdrag`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_opphørsdato.csv"))
-        }
-
-        @Test
-        fun `kan opphøre når man bare har 0-andeler`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_før_tidligere_0andeler.csv"))
-        }
-
-        @Test
-        fun `opphørsdato er den samme som tidligere - skal ikke sende opphørsdato på nytt når det finnes endringer senere i tiden`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_endringer_på_andeler.csv"))
-        }
-
-        @Test
-        fun `opphør en tidligere periode, når opphørsdato allerede finnes, men skal då sende opphørsdato till oppdrag for den andelen som opphører`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_samme_med_opphør_senere.csv"))
-        }
-
-        @Test
-        fun `har opphørsdato, sender ny tilkjent ytelse uten andeler - opphører fra første tidligere andelen`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_uten_andeler.csv"))
-        }
-
-        @Test
-        fun `opphører vedtak med 0-periode, og sen innvilget ny stønad`() {
-            TestOppdragRunner.run(javaClass.getResource("/oppdrag/revurdering_opphørsdato_med_0beløp.csv"))
-        }
-    }
 
     @Test
     fun `Andeler med behandlingId, periodeId og forrigePeriodeId blir oppdaterte i lagTilkjentYtelseMedUtbetalingsoppdrag`() {
