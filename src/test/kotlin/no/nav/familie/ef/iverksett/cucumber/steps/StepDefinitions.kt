@@ -34,7 +34,7 @@ class StepDefinitions {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     private lateinit var stønadType: StønadType
-    private var tilkjentYtelse = listOf<TilkjentYtelseHolder>()
+    private var tilkjentYtelse = mutableListOf<TilkjentYtelseHolder>()
     private var startdato = mapOf<UUID, LocalDate>()
 
     private var beregnedeTilkjentYtelse = mapOf<UUID, TilkjentYtelse>()
@@ -47,7 +47,13 @@ class StepDefinitions {
     @Gitt("følgende tilkjente ytelser for {}")
     fun følgende_vedtak(stønadTypeArg: String, dataTable: DataTable) {
         stønadType = StønadType.valueOf(stønadTypeArg.uppercase())
-        tilkjentYtelse = TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato)
+        tilkjentYtelse.addAll(TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato))
+    }
+
+    @Gitt("følgende tilkjente ytelser uten andel for {}")
+    fun `følgende tilkjente ytelser uten andel for`(stønadTypeArg: String, dataTable: DataTable) {
+        stønadType = StønadType.valueOf(stønadTypeArg.uppercase())
+        tilkjentYtelse.addAll(TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato, false))
     }
 
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres kastes exception")
