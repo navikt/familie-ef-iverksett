@@ -110,12 +110,12 @@ fun VedtaksperiodeSkolepengerDto.toDomain(): VedtaksperiodeSkolepenger {
                 studietype = it.studietype,
                 fraOgMed = it.fraOgMed,
                 tilOgMed = it.tilOgMed,
-                studiebelastning = it.studiebelastning
+                studiebelastning = it.studiebelastning,
+                makssatsForSkoleår = it.maksSatsForSkoleår
             )
         },
         utgiftsperioder = this.utgiftsperioder.map {
             SkolepengerUtgift(
-                utgiftstyper = it.utgiftstyper,
                 utgiftsdato = it.utgiftsdato,
                 utgifter = it.utgifter,
                 stønad = it.stønad
@@ -165,6 +165,7 @@ fun VedtaksdetaljerSkolepengerDto.toDomain(): VedtaksdetaljerSkolepenger {
         vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
         tilbakekreving = this.tilbakekreving?.toDomain(),
         brevmottakere = this.brevmottakere.toDomain(),
+        begrunnelse = this.begrunnelse
     )
 }
 

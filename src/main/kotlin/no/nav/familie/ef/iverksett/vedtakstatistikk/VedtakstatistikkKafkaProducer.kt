@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
 import no.nav.familie.eksterne.kontrakter.ef.StønadType
 import no.nav.familie.eksterne.kontrakter.ef.VedtakBarnetilsynDVH
 import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
+import no.nav.familie.eksterne.kontrakter.ef.VedtakSkolepenger
 import no.nav.familie.kontrakter.felles.objectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -23,6 +24,10 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
     }
 
     fun sendVedtak(vedtakstatistikk: VedtakBarnetilsynDVH) {
+        sendVedtak(vedtakstatistikk.behandlingId, vedtakstatistikk.stønadstype, vedtakstatistikk.toJson())
+    }
+
+    fun sendVedtak(vedtakstatistikk: VedtakSkolepenger) {
         sendVedtak(vedtakstatistikk.behandlingId, vedtakstatistikk.stønadstype, vedtakstatistikk.toJson())
     }
 
