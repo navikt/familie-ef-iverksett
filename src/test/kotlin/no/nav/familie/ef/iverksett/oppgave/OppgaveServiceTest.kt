@@ -10,6 +10,7 @@ import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
+import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.util.behandlingsdetaljer
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.vedtaksdetaljerOvergangsstønad
@@ -332,31 +333,6 @@ internal class OppgaveServiceTest {
         assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
 
-    private fun lagIverksett(
-        forrigeBehandlingId: UUID? = null,
-        behandlingType: BehandlingType,
-        vedtaksresultat: Vedtaksresultat,
-        vedtaksperioder: List<VedtaksperiodeOvergangsstønad>,
-        erMigrering: Boolean = false,
-        andelsdatoer: List<LocalDate> = emptyList()
-    ): IverksettOvergangsstønad {
-        val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else BehandlingÅrsak.SØKNAD
-        return opprettIverksettOvergangsstønad(
-            behandlingsdetaljer = behandlingsdetaljer(
-                forrigeBehandlingId = forrigeBehandlingId,
-                behandlingType = behandlingType,
-                behandlingÅrsak = behandlingÅrsak
-            ),
-            vedtaksdetaljer = vedtaksdetaljerOvergangsstønad(
-                vedtaksresultat = vedtaksresultat,
-                vedtaksperioder = vedtaksperioder,
-                andeler = andelsdatoer.map {
-                    lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusDays(1), tilOgMed = it)
-                },
-                startdato = andelsdatoer.minByOrNull { it } ?: LocalDate.now()
-            )
-        )
-    }
 
     private fun vedtaksPeriode(
         aktivitet: AktivitetType,

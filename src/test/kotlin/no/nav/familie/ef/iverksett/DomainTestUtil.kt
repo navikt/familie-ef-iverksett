@@ -1,8 +1,17 @@
 package no.nav.familie.ef.iverksett
 
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
+import no.nav.familie.ef.iverksett.util.behandlingsdetaljer
+import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.util.vedtaksdetaljerOvergangsstønad
+import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.ef.iverksett.økonomi.simulering.grupperPosteringerEtterDato
+import no.nav.familie.kontrakter.ef.felles.BehandlingType
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
@@ -24,7 +33,10 @@ import java.time.YearMonth
 import java.util.UUID
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
 
-fun simuleringDto(andeler: List<AndelTilkjentYtelseDto> = listOf(lagDefaultAndeler()), forrigeBehandlingId: UUID? = UUID.randomUUID()): SimuleringDto {
+fun simuleringDto(
+    andeler: List<AndelTilkjentYtelseDto> = listOf(lagDefaultAndeler()),
+    forrigeBehandlingId: UUID? = UUID.randomUUID()
+): SimuleringDto {
     val behandlingId = UUID.fromString("4b657902-d994-11eb-b8bc-0242ac130003")
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetadataDto(
         tilkjentYtelse = TilkjentYtelseDto(
@@ -124,7 +136,8 @@ fun posteringer(
         betalingType = betalingstype,
         beløp = beløp.toBigDecimal(),
         posteringType = posteringstype,
-        forfallsdato = måned.plusMonths(index.toLong()).atEndOfMonth(), // Forfallsdato i bank (dagen går til brukeren). Det sendes til banken kanskje en uke i forveien
+        forfallsdato = måned.plusMonths(index.toLong())
+            .atEndOfMonth(), // Forfallsdato i bank (dagen går til brukeren). Det sendes til banken kanskje en uke i forveien
         utenInntrekk = false
     ) // Brukes ikke for EF
 }
@@ -157,3 +170,30 @@ fun List<SimulertPostering>.tilSimuleringMottakere() =
 
 fun List<SimulertPostering>.tilDetaljertSimuleringsresultat() =
     DetaljertSimuleringResultat(this.tilSimuleringMottakere())
+
+fun lagIverksett(
+    forrigeBehandlingId: UUID? = null,
+    behandlingType: BehandlingType,
+    vedtaksresultat: Vedtaksresultat,
+    vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = emptyList(),
+    erMigrering: Boolean = false,
+    andelsdatoer: List<LocalDate> = emptyList(),
+    årsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD
+): IverksettOvergangsstønad {
+    val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else årsak
+    return opprettIverksettOvergangsstønad(
+        behandlingsdetaljer = behandlingsdetaljer(
+            forrigeBehandlingId = forrigeBehandlingId,
+            behandlingType = behandlingType,
+            behandlingÅrsak = behandlingÅrsak
+        ),
+        vedtaksdetaljer = vedtaksdetaljerOvergangsstønad(
+            vedtaksresultat = vedtaksresultat,
+            vedtaksperioder = vedtaksperioder,
+            andeler = andelsdatoer.map {
+                lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusDays(1), tilOgMed = it)
+            },
+            startdato = andelsdatoer.minByOrNull { it } ?: LocalDate.now()
+        )
+    )
+}
