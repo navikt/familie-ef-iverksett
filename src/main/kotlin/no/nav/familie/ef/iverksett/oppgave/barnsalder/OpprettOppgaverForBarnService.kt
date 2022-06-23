@@ -99,7 +99,7 @@ class OpprettOppgaverForBarnService(
         if (oppgave.tildeltEnhetsnr == EF_ENHETNUMMER) { // Skjermede personer skal ikke puttes i mappe
             val finnMappeRequest = FinnMappeRequest(
                 listOf(),
-                oppgave.tildeltEnhetsnr!!,
+                oppgave.tildeltEnhetsnr ?: error("Fikk ikke tildelt enhetsnummer for oppgave med id: $oppgaveId"),
                 null,
                 1000
             )
@@ -109,7 +109,7 @@ class OpprettOppgaverForBarnService(
                     it.navn.contains("Hendelser") &&
                     it.navn.contains("62")
             }
-                ?: error("Fant ikke mappe for uplassert oppgave (EF Sak og 01)")
+                ?: error("Fant ikke mappe for hendelser")
             oppgaveClient.oppdaterOppgave(oppgave.copy(mappeId = mappe.id.toLong()))
         }
     }
