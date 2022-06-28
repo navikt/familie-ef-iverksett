@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.0</version>
+        <version>2.7.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -21,17 +21,17 @@
         <felles.version>1.20220610091149_ae616c5</felles.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <mockk.version>1.12.4</mockk.version>
-        <cucumber.version>7.3.4</cucumber.version>
+        <cucumber.version>7.4.1</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.3.1</dotenv.version>
-        <prosessering.version>1.20220615100415_97e6d04</prosessering.version>
+        <prosessering.version>1.20220624132237_7f5ba9c</prosessering.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <familie.kontrakter.version>2.0_20220622102545_00805ef</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220621191109_0ef9b4a</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220609214258_f30c3ce</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <token-validation-spring.version>2.1.0</token-validation-spring.version>
-        <ibm-mq-client.version>9.2.5.0</ibm-mq-client.version>
+        <token-validation-spring.version>2.1.1</token-validation-spring.version>
+        <ibm-mq-client.version>9.3.0.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
         <unleash.version>4.4.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
@@ -217,7 +217,7 @@
         <dependency>
             <groupId>dev.akkinoc.spring.boot</groupId>
             <artifactId>logback-access-spring-boot-starter</artifactId>
-            <version>3.3.0</version>
+            <version>3.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
