@@ -74,7 +74,7 @@ object UtbetalingsoppdragGenerator {
             andelerTilkjentYtelse = gjeldendeAndeler,
             sisteAndelIKjede = sisteAndelIKjede
         )
-        // TODO legge til startperiode, sluttperiode, opphørsdato. Se i BA-sak - legges på i konsistensavstemming?
+        // TODO legge til startperiode, sluttperiode, startdato. Se i BA-sak - legges på i konsistensavstemming?
     }
 
     private fun sisteAndelIKjede(

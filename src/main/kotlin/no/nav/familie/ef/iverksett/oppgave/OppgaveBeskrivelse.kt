@@ -21,9 +21,9 @@ object OppgaveBeskrivelse {
             "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
     }
 
-    fun beskrivelseRevurderingOpphørt(opphørsdato: LocalDate?): String {
-        return opphørsdato?.let {
-            "Overgangsstønad er stanset fra ${opphørsdato.toReadable()}."
+    fun beskrivelseRevurderingOpphørt(startdato: LocalDate?): String {
+        return startdato?.let {
+            "Overgangsstønad er stanset fra ${startdato.toReadable()}."
         } ?: "Overgangsstønad er stanset"
     }
 

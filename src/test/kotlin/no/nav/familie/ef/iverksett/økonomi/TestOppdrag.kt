@@ -47,7 +47,7 @@ data class TestOppdrag(
     val forrigeLinjeId: Long? = null,
     val status110: String? = null,
     val erEndring: Boolean? = null,
-    val opphørsdato: LocalDate?,
+    val startdato: LocalDate?,
     val beløp: Int? = null,
     val startPeriode: LocalDate? = null,
     val sluttPeriode: LocalDate? = null
@@ -78,7 +78,7 @@ data class TestOppdrag(
         return if (startPeriode != null && sluttPeriode != null && linjeId != null)
             Utbetalingsperiode(
                 erEndringPåEksisterendePeriode = erEndring ?: false,
-                opphør = opphørsdato?.let { Opphør(it) },
+                opphør = startdato?.let { Opphør(it) },
                 periodeId = linjeId,
                 forrigePeriodeId = forrigeLinjeId,
                 datoForVedtak = vedtaksdato,
@@ -91,8 +91,8 @@ data class TestOppdrag(
                 behandlingId = 1,
                 utbetalingsgrad = 100
             )
-        else if (opphørsdato != null)
-            error("Kan ikke sette opphørsdato her, mangler start/slutt/linjeId")
+        else if (startdato != null)
+            error("Kan ikke sette startdato her, mangler start/slutt/linjeId")
         else
             null
     }
@@ -100,8 +100,8 @@ data class TestOppdrag(
 
 class TestOppdragGroup {
 
-    private var opphørsdatoInn: LocalDate? = null
-    private var opphørsdatoUt: LocalDate? = null
+    private var startdatoInn: LocalDate? = null
+    private var startdatoUt: LocalDate? = null
     private val andelerTilkjentYtelseInn: MutableList<AndelTilkjentYtelse> = mutableListOf()
     private val andelerTilkjentYtelseUt: MutableList<AndelTilkjentYtelse> = mutableListOf()
     private val utbetalingsperioder: MutableList<Utbetalingsperiode> = mutableListOf()
@@ -115,8 +115,8 @@ class TestOppdragGroup {
             TestOppdragType.Input -> {
                 oppdragId = to.oppdragId
                 personIdent = to.fnr
-                if (to.opphørsdato != null) {
-                    opphørsdatoInn = validerOgGetOpphørsdato(to, opphørsdatoInn)
+                if (to.startdato != null) {
+                    startdatoInn = validerOgGetStartdato(to, startdatoInn)
                 }
                 to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseInn.add(it) }
             }
@@ -125,24 +125,24 @@ class TestOppdragGroup {
                 to.tilUtbetalingsperiode()?.also { utbetalingsperioder.add(it) }
             }
             TestOppdragType.Output -> {
-                opphørsdatoUt = validerOgGetOpphørsdato(to, opphørsdatoUt)
+                startdatoUt = validerOgGetStartdato(to, startdatoUt)
                 // Vi lagrer ned en nullandel for output
                 to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseUt.add(it) }
             }
         }
     }
 
-    private fun validerOgGetOpphørsdato(to: TestOppdrag, tidligereOpphørsdato: LocalDate?): LocalDate? {
-        if (tidligereOpphørsdato != null && to.opphørsdato != null) {
-            error("Kan kun sette 1 opphørsdato på en input/output")
+    private fun validerOgGetStartdato(to: TestOppdrag, tidligereStartdato: LocalDate?): LocalDate? {
+        if (tidligereStartdato != null && to.startdato != null) {
+            error("Kan kun sette 1 startdato på en input/output")
         }
-        return tidligereOpphørsdato ?: to.opphørsdato
+        return tidligereStartdato ?: to.startdato
     }
 
     val input: TilkjentYtelseMedMetaData by lazy {
-        val startdato = opphørsdatoInn
+        val startdato = startdatoInn
             ?: andelerTilkjentYtelseInn.minOfOrNull { it.fraOgMed }
-            ?: error("Input feiler - hvis man ikke har en andel må man sette opphørsdato")
+            ?: error("Input feiler - hvis man ikke har en andel må man sette startdato")
         TilkjentYtelseMedMetaData(
             TilkjentYtelse(
                 andelerTilkjentYtelse = andelerTilkjentYtelseInn,
@@ -159,9 +159,9 @@ class TestOppdragGroup {
     }
 
     val output: TilkjentYtelse by lazy {
-        val startdato = opphørsdatoUt
+        val startdato = startdatoUt
             ?: andelerTilkjentYtelseUt.minOfOrNull { it.fraOgMed }
-            ?: error("Output feiler - hvis man ikke har en andel må man sette opphørsdato")
+            ?: error("Output feiler - hvis man ikke har en andel må man sette startdato")
         val utbetalingsoppdrag =
             Utbetalingsoppdrag(
                 kodeEndring = oppdragKode110,
@@ -248,7 +248,7 @@ object TestOppdragParser {
                 status110 = row[KEY_STATUS_OPPDRAG]?.let { emptyAsNull(it) },
                 erEndring = row[KEY_ER_ENDRING]?.let { it.toBoolean() },
                 beløp = beløp,
-                opphørsdato = opphørYearMonth?.atDay(1),
+                startdato = opphørYearMonth?.atDay(1),
                 startPeriode = firstYearMonth?.atDay(1),
                 sluttPeriode = lastYearMonth?.atEndOfMonth()
             )

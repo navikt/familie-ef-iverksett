@@ -35,20 +35,20 @@ Egenskap: Sekvens
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 08.2021  | 11.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 1            | 12.2021  | 03.2022  |             | 900   | NY           | Nei        | 2          | 1                  |
-      | 1            | 04.2022  | 06.2022  |             | 1100  | NY           | Nei        | 3          | 2                  |
-      | 2            | 04.2022  | 06.2022  | 08.2021     | 1100  | ENDR         | Ja         | 3          | 2                  |
-      | 2            | 09.2021  | 11.2021  |             | 700   | ENDR         | Nei        | 4          | 3                  |
-      | 2            | 12.2021  | 03.2022  |             | 900   | ENDR         | Nei        | 5          | 4                  |
-      | 2            | 04.2022  | 05.2022  |             | 1100  | ENDR         | Nei        | 6          | 5                  |
-      | 3            | 04.2022  | 05.2022  | 12.2021     | 1100  | ENDR         | Ja         | 6          | 5                  |
-      | 3            | 12.2021  | 01.2022  |             | 900   | ENDR         | Nei        | 7          | 6                  |
-      | 3            | 02.2022  | 04.2022  |             | 1200  | ENDR         | Nei        | 8          | 7                  |
-      | 4            | 02.2022  | 04.2022  | 09.2021     | 1200  | ENDR         | Ja         | 8          | 7                  |
-      | 5            | 02.2022  | 04.2022  | 07.2021     | 1200  | ENDR         | Ja         | 8          | 7                  |
-      | 5            | 07.2021  | 01.2022  |             | 900   | ENDR         | Nei        | 9          | 8                  |
+      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 08.2021  | 11.2021  |           | 700   | NY           | Nei        | 1          |                    |
+      | 1            | 12.2021  | 03.2022  |           | 900   | NY           | Nei        | 2          | 1                  |
+      | 1            | 04.2022  | 06.2022  |           | 1100  | NY           | Nei        | 3          | 2                  |
+      | 2            | 04.2022  | 06.2022  | 08.2021   | 1100  | ENDR         | Ja         | 3          | 2                  |
+      | 2            | 09.2021  | 11.2021  |           | 700   | ENDR         | Nei        | 4          | 3                  |
+      | 2            | 12.2021  | 03.2022  |           | 900   | ENDR         | Nei        | 5          | 4                  |
+      | 2            | 04.2022  | 05.2022  |           | 1100  | ENDR         | Nei        | 6          | 5                  |
+      | 3            | 04.2022  | 05.2022  | 12.2021   | 1100  | ENDR         | Ja         | 6          | 5                  |
+      | 3            | 12.2021  | 01.2022  |           | 900   | ENDR         | Nei        | 7          | 6                  |
+      | 3            | 02.2022  | 04.2022  |           | 1200  | ENDR         | Nei        | 8          | 7                  |
+      | 4            | 02.2022  | 04.2022  | 09.2021   | 1200  | ENDR         | Ja         | 8          | 7                  |
+      | 5            | 02.2022  | 04.2022  | 07.2021   | 1200  | ENDR         | Ja         | 8          | 7                  |
+      | 5            | 07.2021  | 01.2022  |           | 900   | ENDR         | Nei        | 9          | 8                  |
 
 
     Og forvent følgende tilkjente ytelser for behandling 1 med startdato 08.2021

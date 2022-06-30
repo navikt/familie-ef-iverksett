@@ -22,8 +22,8 @@ Egenskap: Førstegangsbehandling med 0 beløp
       | 3            | NY           | Nei        |
 
     Og forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 4            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
+      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 4            | 02.2021  | 02.2021  |           | 700   | NY           | Nei        | 1          |                    |
 
     Og forvent følgende tilkjente ytelser med tomme andeler for behandling 1 og startdato 02.2021
     Og forvent følgende tilkjente ytelser med tomme andeler for behandling 2 og startdato 02.2021

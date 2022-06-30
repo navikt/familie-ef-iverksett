@@ -80,12 +80,12 @@ class OppgaveService(
                     )
                 } ?: finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             }
-            Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(opphørsdato(iverksett))
+            Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(startdato(iverksett))
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
         }
     }
 
-    private fun opphørsdato(iverksett: IverksettOvergangsstønad): LocalDate? {
+    private fun startdato(iverksett: IverksettOvergangsstønad): LocalDate? {
         val tilkjentYtelse = iverksett.vedtak.tilkjentYtelse ?: error("TilkjentYtelse er null")
         return tilkjentYtelse.andelerTilkjentYtelse.maxOfOrNull { it.tilOgMed }
     }

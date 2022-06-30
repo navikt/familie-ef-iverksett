@@ -25,8 +25,8 @@ internal class ØkonomiUtilsTest {
     private val start3 = LocalDate.of(2021, 11, 1)
     private val slutt3 = LocalDate.of(2021, 12, 31)
 
-    private val opphørsdatoFørAndeler = LocalDate.of(2021, 1, 1)
-    private val opphørsdatoEtterAndeler = slutt.plusDays(1) // etter andel sitt dato
+    private val startdatoFørAndeler = LocalDate.of(2021, 1, 1)
+    private val startdatoEtterAndeler = slutt.plusDays(1) // etter andel sitt dato
 
     @Nested
     inner class UtbetalingsperiodeForOpphør {
@@ -35,27 +35,27 @@ internal class ØkonomiUtilsTest {
         inner class UtenTidligereTilkjentYtelse {
 
             @Test
-            internal fun `skal ikke få opphørsdato når det ikke finnes tidligere andeler`() {
-                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), startdato = LocalDate.now())).isNull()
-                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelMedBeløp()))).isNull()
-                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelUtenBeløp()))).isNull()
+            internal fun `skal ikke få startdato når det ikke finnes tidligere andeler`() {
+                assertThat(testStartdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), startdato = LocalDate.now())).isNull()
+                assertThat(testStartdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelMedBeløp()))).isNull()
+                assertThat(testStartdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelUtenBeløp()))).isNull()
             }
 
             @Test
-            internal fun `opphørsdato blir null når man ikke har en tidligere behandling`() {
+            internal fun `startdato blir null når man ikke har en tidligere behandling`() {
                 listOf(emptyList(), listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach { andeler ->
-                    assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = andeler, startdato = opphørsdatoFørAndeler))
+                    assertThat(testStartdatoUtenTidligereTilkjentYtelse(andeler = andeler, startdato = startdatoFørAndeler))
                         .isNull()
                 }
             }
 
             @Test
             internal fun `startdato etter andeler sitt startdato er ikke gyldig`() {
-                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), startdato = opphørsdatoEtterAndeler))
+                assertThat(testStartdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), startdato = startdatoEtterAndeler))
                     .isNull()
                 listOf(listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach { andeler ->
                     assertThatThrownBy {
-                        testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = andeler, startdato = opphørsdatoEtterAndeler)
+                        testStartdatoUtenTidligereTilkjentYtelse(andeler = andeler, startdato = startdatoEtterAndeler)
                     }.hasMessageContaining("Kan ikke sette opphør etter dato på første perioden")
                 }
             }
@@ -65,16 +65,16 @@ internal class ØkonomiUtilsTest {
         inner class MedTidligereTilkjentYtelse {
 
             @Test
-            internal fun `opphørsdato etter tidligere opphørsdato er ikke gyldig`() {
+            internal fun `startdato etter tidligere startdato er ikke gyldig`() {
                 listOf(emptyList(), listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach { andeler ->
                     assertThatThrownBy {
                         test(
                             andeler = andeler,
                             tidligereAndeler = andeler,
-                            startdato = opphørsdatoFørAndeler,
+                            startdato = startdatoFørAndeler,
                             tidligereStartDato = LocalDate.MIN
                         )
-                    }.hasMessageContaining("Nytt opphørsdato=2021-01-01 kan ikke være etter")
+                    }.hasMessageContaining("Nytt startdato=2021-01-01 kan ikke være etter")
                 }
             }
 
@@ -101,7 +101,7 @@ internal class ØkonomiUtilsTest {
                         andeler = listOf(andelUtenBeløp()),
                         tidligereAndeler = listOf(andelUtenBeløp()),
                         sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6, forrigePeriodeId = 5)
-                    ).opphørsdato()
+                    ).startdato()
                 )
                     .isNull()
             }
@@ -116,7 +116,7 @@ internal class ØkonomiUtilsTest {
                             periodeId = 6,
                             forrigePeriodeId = 5
                         )
-                    ).opphørsdato()
+                    ).startdato()
                 )
                     .isNull()
             }
@@ -131,7 +131,7 @@ internal class ØkonomiUtilsTest {
                             periodeId = 6,
                             forrigePeriodeId = 5
                         )
-                    ).opphørsdato()
+                    ).startdato()
                 )
                     .isNull()
             }
@@ -146,7 +146,7 @@ internal class ØkonomiUtilsTest {
                             periodeId = 6,
                             forrigePeriodeId = 5
                         )
-                    ).opphørsdato()
+                    ).startdato()
                 )
                     .isNull()
             }
@@ -169,35 +169,35 @@ internal class ØkonomiUtilsTest {
                         andeler = emptyList(),
                         startdato = start,
                         tidligereAndeler = listOf(andelMedBeløp())
-                    ).opphørsdato()
+                    ).startdato()
                 )
                     .isEqualTo(start)
             }
 
             @Test
-            internal fun `beløp endrer seg returnerer opphørsdato`() {
+            internal fun `beløp endrer seg returnerer startdato`() {
                 assertThat(
                     test(
                         andeler = listOf(andelMedBeløp(1)),
                         tidligereAndeler = listOf(andelMedBeløp(2))
-                    ).opphørsdato()
+                    ).startdato()
                 )
                     .isEqualTo(start)
             }
 
             @Test
-            internal fun `fra beløp til uten tolkes som fjerning av andeler og skal returnere opphørsdato`() {
+            internal fun `fra beløp til uten tolkes som fjerning av andeler og skal returnere startdato`() {
                 assertThat(
                     test(
                         andeler = listOf(andelUtenBeløp()),
                         tidligereAndeler = listOf(andelMedBeløp())
-                    ).opphørsdato()
+                    ).startdato()
                 )
                     .isEqualTo(start)
             }
 
             @Test
-            internal fun `ny andel uten beløp før tidligere perioder returnerer opphørsdato`() {
+            internal fun `ny andel uten beløp før tidligere perioder returnerer startdato`() {
                 assertThat(
                     test(
                         andeler = listOf(
@@ -210,45 +210,45 @@ internal class ØkonomiUtilsTest {
                                 til = slutt2
                             )
                         )
-                    ).opphørsdato()
+                    ).startdato()
                 )
                     .isEqualTo(start)
             }
 
             @Test
-            internal fun `opphørsdato før tidligere andeler returnerer opphørsdato`() {
+            internal fun `startdato før tidligere andeler returnerer startdato`() {
                 assertThat(
                     test(
                         andeler = listOf(andelUtenBeløp()),
-                        startdato = opphørsdatoFørAndeler,
+                        startdato = startdatoFørAndeler,
                         tidligereAndeler = listOf(andelMedBeløp())
-                    ).opphørsdato()
+                    ).startdato()
                 )
-                    .isEqualTo(opphørsdatoFørAndeler)
+                    .isEqualTo(startdatoFørAndeler)
             }
 
             @Test
-            internal fun `opphørsdato før tidligere andeler, og før tidligere opphørsdato returnerer opphørsdato`() {
+            internal fun `startdato før tidligere andeler, og før tidligere startdato returnerer startdato`() {
                 assertThat(
                     test(
                         andeler = listOf(andelUtenBeløp()),
-                        startdato = opphørsdatoFørAndeler,
+                        startdato = startdatoFørAndeler,
                         tidligereAndeler = listOf(andelMedBeløp()),
-                        tidligereStartDato = opphørsdatoFørAndeler.plusDays(1)
-                    ).opphørsdato()
+                        tidligereStartDato = startdatoFørAndeler.plusDays(1)
+                    ).startdato()
                 )
-                    .isEqualTo(opphørsdatoFørAndeler)
+                    .isEqualTo(startdatoFørAndeler)
             }
 
             @Test
-            internal fun `opphørsdato før tidligere andeler, men samme som tidligere opphørsdato returnerer null`() {
+            internal fun `startdato før tidligere andeler, men samme som tidligere startdato returnerer null`() {
                 listOf(andelMedBeløp(), andelUtenBeløp()).forEach {
                     assertThat(
                         test(
                             andeler = listOf(it),
-                            startdato = opphørsdatoFørAndeler,
+                            startdato = startdatoFørAndeler,
                             tidligereAndeler = listOf(it),
-                            tidligereStartDato = opphørsdatoFørAndeler
+                            tidligereStartDato = startdatoFørAndeler
                         )
                     )
                         .isNull()
@@ -256,7 +256,7 @@ internal class ØkonomiUtilsTest {
             }
 
             @Test
-            internal fun `fra uten beløp til beløp trenger ikke å trigge opphørsdato`() {
+            internal fun `fra uten beløp til beløp trenger ikke å trigge startdato`() {
                 assertThat(test(andeler = listOf(andelMedBeløp()), tidligereAndeler = listOf(andelUtenBeløp())))
                     .isNull()
             }
@@ -306,7 +306,7 @@ internal class ØkonomiUtilsTest {
                     tidligereAndeler = listOf(førsteAndel),
                     sisteAndelIKjede = sisteAndelIKjede
                 ) ?: error("Burde generert opphørsperiode")
-                assertThat(opphørsperiode.opphørsdato()).isEqualTo(førsteAndel.fraOgMed)
+                assertThat(opphørsperiode.startdato()).isEqualTo(førsteAndel.fraOgMed)
                 assertThat(opphørsperiode.periodeId).isEqualTo(sisteAndelIKjede.periodeId)
                 assertThat(opphørsperiode.forrigePeriodeId).isEqualTo(sisteAndelIKjede.forrigePeriodeId)
             }
@@ -325,23 +325,23 @@ internal class ØkonomiUtilsTest {
                     ),
                     sisteAndelIKjede = sisteAndelIKjede
                 )!!
-                assertThat(opphørsperiode.opphørsdato()).isEqualTo(start2)
+                assertThat(opphørsperiode.startdato()).isEqualTo(start2)
                 assertThat(opphørsperiode.periodeId).isEqualTo(sisteAndelIKjede.periodeId)
                 assertThat(opphørsperiode.forrigePeriodeId).isEqualTo(sisteAndelIKjede.forrigePeriodeId)
             }
 
             @Test
             internal fun `trenger ikke å opphøre når det kun finnes nye perioder som har dato etter forrige sitt startdato`() {
-                val sisteAndelIKjede = andelMedBeløp(fra = opphørsdatoFørAndeler, til = opphørsdatoFørAndeler)
+                val sisteAndelIKjede = andelMedBeløp(fra = startdatoFørAndeler, til = startdatoFørAndeler)
                     .copy(periodeId = 6, forrigePeriodeId = 5)
                 val opphørsperiode = test(
                     andeler = listOf(andelMedBeløp()),
                     tidligereAndeler = listOf(),
                     sisteAndelIKjede = sisteAndelIKjede,
-                    startdato = opphørsdatoFørAndeler,
-                    tidligereStartDato = opphørsdatoFørAndeler
+                    startdato = startdatoFørAndeler,
+                    tidligereStartDato = startdatoFørAndeler
                 )
-                assertThat(opphørsperiode.opphørsdato()).isNull()
+                assertThat(opphørsperiode.startdato()).isNull()
             }
         }
 
@@ -369,9 +369,9 @@ internal class ØkonomiUtilsTest {
             sisteAndelIKjede ?: tidligereAndelerMedPeriodeId.maxByOrNull { it.periodeId!! }
                 ?.takeIf { it.fraOgMed != NULL_DATO }
 
-        fun Utbetalingsperiode?.opphørsdato(): LocalDate? = this?.opphør?.opphørDatoFom
+        fun Utbetalingsperiode?.startdato(): LocalDate? = this?.opphør?.opphørDatoFom
 
-        private fun testOpphørsdatoUtenTidligereTilkjentYtelse(
+        private fun testStartdatoUtenTidligereTilkjentYtelse(
             andeler: List<AndelTilkjentYtelse>,
             startdato: LocalDate = startdato(andeler)
         ) =
