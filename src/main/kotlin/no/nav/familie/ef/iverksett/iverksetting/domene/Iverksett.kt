@@ -217,10 +217,6 @@ data class Vurdering(
     val begrunnelse: String? = null
 )
 
-enum class IverksettType {
-    VANLIG,
-}
-
 data class Tilbakekrevingsdetaljer(
     val tilbakekrevingsvalg: Tilbakekrevingsvalg,
     val tilbakekrevingMedVarsel: TilbakekrevingMedVarsel?
