@@ -14,7 +14,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
-import no.nav.familie.ef.iverksett.iverksetting.domene.TekniskOpphør
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
@@ -168,10 +167,6 @@ fun opprettTilkjentYtelse(
         startdato = startdato,
         sisteAndelIKjede = sisteAndelIKjede
     )
-}
-
-fun opprettTekniskOpphør(behandlingId: UUID, eksternId: Long): TekniskOpphør {
-    return TekniskOpphør(behandlingId, opprettTilkjentYtelseMedMetadata(behandlingId, eksternId))
 }
 
 fun behandlingsdetaljer(

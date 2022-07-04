@@ -219,7 +219,6 @@ data class Vurdering(
 
 enum class IverksettType {
     VANLIG,
-    TEKNISK_OPPHØR
 }
 
 data class Tilbakekrevingsdetaljer(
