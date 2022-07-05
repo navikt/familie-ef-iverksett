@@ -8,15 +8,9 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.lagIverksett
-import no.nav.familie.ef.iverksett.util.behandlingsdetaljer
-import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
-import no.nav.familie.ef.iverksett.util.vedtaksdetaljerOvergangsstønad
-import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
-import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
@@ -272,7 +266,7 @@ internal class OppgaveServiceTest {
 
     @Test
     internal fun `revurdering opphør, forvent at andel med maks tom dato blir sendt som arg til beskrivelse`() {
-        val opphørsdato = slot<LocalDate>()
+        val startdato = slot<LocalDate>()
         val iverksett = lagIverksett(
             UUID.randomUUID(),
             BehandlingType.REVURDERING,
@@ -282,8 +276,8 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
-        verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
-        assertThat(opphørsdato.captured).isEqualTo(LocalDate.now())
+        verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(startdato)) }
+        assertThat(startdato.captured).isEqualTo(LocalDate.now())
     }
 
     @Test
@@ -332,7 +326,6 @@ internal class OppgaveServiceTest {
         every { iverksettRepository.hent(any()) } returns forrigeBehandlingIverksett
         assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
-
 
     private fun vedtaksPeriode(
         aktivitet: AktivitetType,

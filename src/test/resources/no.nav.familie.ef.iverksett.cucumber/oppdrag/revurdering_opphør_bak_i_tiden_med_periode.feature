@@ -17,11 +17,11 @@ Egenskap: Revurdering med opphør bak i tiden, samt ny periode frem i tiden
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 1            | 03.2021  | 03.2021  |             | 800   | NY           | Nei        | 2          | 1                  |
-      | 2            | 03.2021  | 03.2021  | 01.2021     | 800   | ENDR         | Ja         | 2          | 1                  |
-      | 2            | 04.2021  | 04.2021  |             | 800   | ENDR         | Nei        | 3          | 2                  |
+      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 02.2021  | 02.2021  |           | 700   | NY           | Nei        | 1          |                    |
+      | 1            | 03.2021  | 03.2021  |           | 800   | NY           | Nei        | 2          | 1                  |
+      | 2            | 03.2021  | 03.2021  | 01.2021   | 800   | ENDR         | Ja         | 2          | 1                  |
+      | 2            | 04.2021  | 04.2021  |           | 800   | ENDR         | Nei        | 3          | 2                  |
 
     Og forvent følgende tilkjente ytelser for behandling 1 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |

@@ -17,11 +17,11 @@ Egenskap: Revurdering med 0 beløp beholder periodeId når man har flere periode
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 1            | 03.2021  | 03.2021  |             | 800   | NY           | Nei        | 2          | 1                  |
-      | 2            | 03.2021  | 03.2021  | 02.2021     | 800   | ENDR         | Ja         | 2          | 1                  |
-      | 4            | 02.2021  | 02.2021  |             | 700   | ENDR         | Nei        | 3          | 2                  |
+      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 02.2021  | 02.2021  |           | 700   | NY           | Nei        | 1          |                    |
+      | 1            | 03.2021  | 03.2021  |           | 800   | NY           | Nei        | 2          | 1                  |
+      | 2            | 03.2021  | 03.2021  | 02.2021   | 800   | ENDR         | Ja         | 2          | 1                  |
+      | 4            | 02.2021  | 02.2021  |           | 700   | ENDR         | Nei        | 3          | 2                  |
 
 
     Og forvent følgende utbetalingsoppdrag uten utbetalingsperiode
@@ -58,11 +58,11 @@ Egenskap: Revurdering med 0 beløp beholder periodeId når man har flere periode
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 1            | 03.2021  | 03.2021  |             | 800   | NY           | Nei        | 2          | 1                  |
-      | 2            | 03.2021  | 03.2021  | 02.2021     | 800   | ENDR         | Ja         | 2          | 1                  |
-      | 2            | 03.2021  | 03.2021  |             | 800   | ENDR         | Nei        | 3          | 2                  |
+      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 02.2021  | 02.2021  |           | 700   | NY           | Nei        | 1          |                    |
+      | 1            | 03.2021  | 03.2021  |           | 800   | NY           | Nei        | 2          | 1                  |
+      | 2            | 03.2021  | 03.2021  | 02.2021   | 800   | ENDR         | Ja         | 2          | 1                  |
+      | 2            | 03.2021  | 03.2021  |           | 800   | ENDR         | Nei        | 3          | 2                  |
 
 
     Og forvent følgende tilkjente ytelser for behandling 1 med startdato 02.2021
@@ -86,11 +86,11 @@ Egenskap: Revurdering med 0 beløp beholder periodeId når man har flere periode
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 1            | 03.2021  | 03.2021  |             | 800   | NY           | Nei        | 2          | 1                  |
-      | 2            | 03.2021  | 03.2021  | 02.2021     | 800   | ENDR         | Ja         | 2          | 1                  |
-      | 2            | 03.2021  | 03.2021  |             | 800   | ENDR         | Nei        | 3          | 2                  |
+      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 02.2021  | 02.2021  |           | 700   | NY           | Nei        | 1          |                    |
+      | 1            | 03.2021  | 03.2021  |           | 800   | NY           | Nei        | 2          | 1                  |
+      | 2            | 03.2021  | 03.2021  | 02.2021   | 800   | ENDR         | Ja         | 2          | 1                  |
+      | 2            | 03.2021  | 03.2021  |           | 800   | ENDR         | Nei        | 3          | 2                  |
 
 
     Og forvent følgende tilkjente ytelser for behandling 1 med startdato 02.2021
@@ -112,11 +112,11 @@ Egenskap: Revurdering med 0 beløp beholder periodeId når man har flere periode
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 1            | 03.2021  | 03.2021  |             | 800   | NY           | Nei        | 2          | 1                  |
-      | 2            | 03.2021  | 03.2021  | 02.2021     | 800   | ENDR         | Ja         | 2          | 1                  |
-      | 2            | 03.2021  | 03.2021  |             | 800   | ENDR         | Nei        | 3          | 2                  |
+      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 02.2021  | 02.2021  |           | 700   | NY           | Nei        | 1          |                    |
+      | 1            | 03.2021  | 03.2021  |           | 800   | NY           | Nei        | 2          | 1                  |
+      | 2            | 03.2021  | 03.2021  | 02.2021   | 800   | ENDR         | Ja         | 2          | 1                  |
+      | 2            | 03.2021  | 03.2021  |           | 800   | ENDR         | Nei        | 3          | 2                  |
 
 
     Og forvent følgende tilkjente ytelser for behandling 1 med startdato 02.2021

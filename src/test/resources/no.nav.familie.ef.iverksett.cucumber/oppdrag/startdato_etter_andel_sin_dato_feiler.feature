@@ -1,9 +1,9 @@
 # language: no
 # encoding: UTF-8
 
-Egenskap: Ugyldig opphørsdato
+Egenskap: Ugyldig startdato
 
-  Scenario: Opphørsdato etter forrige andel sin opphørsdato er ikke gyldig
+  Scenario: Startdato etter forrige andel sin startdato er ikke gyldig
 
     Gitt følgende tilkjente ytelser for Overgangsstønad
       | BehandlingId | Fra dato | Til dato | Beløp |

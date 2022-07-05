@@ -1,9 +1,9 @@
 # language: no
 # encoding: UTF-8
 
-Egenskap: Opphørsdato etter tidligere opphørsdato er ikke gyldig
+Egenskap: Startdato etter tidligere startdato er ikke gyldig
 
-  Scenario: Opphørsdato etter tidligere opphørsdato er ikke gyldig
+  Scenario: Startdato etter tidligere startdato er ikke gyldig
 
 
     Gitt følgende startdatoer
