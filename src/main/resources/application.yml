@@ -149,6 +149,7 @@ VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-iverksatt-vedtak
 FAGSYSTEMBEHANDLING_RESPONS_TOPIC: teamfamilie.privat-tbk-hentfagsystemsbehandling-respons-topic
 
 prosessering:
+  continuousRunning.enabled: true
   fixedDelayString:
     in:
       milliseconds: 10000
