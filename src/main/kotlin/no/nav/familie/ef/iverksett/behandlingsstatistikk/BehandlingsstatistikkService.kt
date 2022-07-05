@@ -47,7 +47,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                 behandlingstatistikk.strengtFortroligAdresse,
                 behandlingstatistikk.ansvarligEnhet
             ),
-            behandlingMetode = "MANUELL",
+            behandlingMetode = behandlingstatistikk.behandlingMetode?.name ?: "MANUELL",
             avsender = "NAV enslig forelder",
             behandlingType = behandlingstatistikk.behandlingstype.name,
             sakYtelse = behandlingstatistikk.stønadstype.name,
