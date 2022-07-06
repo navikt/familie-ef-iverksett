@@ -1,9 +1,9 @@
 package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
-import no.nav.familie.ef.iverksett.util.opphørsdato
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
+import no.nav.familie.ef.iverksett.util.startdato
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
@@ -36,7 +36,7 @@ internal class ØkonomiUtilsTest {
 
             @Test
             internal fun `skal ikke få startdato når det ikke finnes tidligere andeler`() {
-                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), opphørsdato = LocalDate.now())).isNull()
+                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), startdato = LocalDate.now())).isNull()
                 assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelMedBeløp()))).isNull()
                 assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelUtenBeløp()))).isNull()
             }
@@ -44,18 +44,18 @@ internal class ØkonomiUtilsTest {
             @Test
             internal fun `opphørsdato blir null når man ikke har en tidligere behandling`() {
                 listOf(emptyList(), listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach { andeler ->
-                    assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = andeler, opphørsdato = opphørsdatoFørAndeler))
+                    assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = andeler, startdato = opphørsdatoFørAndeler))
                         .isNull()
                 }
             }
 
             @Test
             internal fun `opphørsdato etter andeler sitt opphørsdato er ikke gyldig`() {
-                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), opphørsdato = opphørsdatoEtterAndeler))
+                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), startdato = opphørsdatoEtterAndeler))
                     .isNull()
                 listOf(listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach { andeler ->
                     assertThatThrownBy {
-                        testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = andeler, opphørsdato = opphørsdatoEtterAndeler)
+                        testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = andeler, startdato = opphørsdatoEtterAndeler)
                     }.hasMessageContaining("Kan ikke sette opphør etter dato på første perioden")
                 }
             }
@@ -348,8 +348,8 @@ internal class ØkonomiUtilsTest {
         private fun test(
             andeler: List<AndelTilkjentYtelse>,
             tidligereAndeler: List<AndelTilkjentYtelse>,
-            startdato: LocalDate = opphørsdato(andeler),
-            tidligereStartDato: LocalDate = opphørsdato(tidligereAndeler),
+            startdato: LocalDate = startdato(andeler),
+            tidligereStartDato: LocalDate = startdato(tidligereAndeler),
             sisteAndelIKjede: AndelTilkjentYtelse? = null
         ): Utbetalingsperiode? {
             val tidligereAndelerMedPeriodeId = leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler)
@@ -373,9 +373,9 @@ internal class ØkonomiUtilsTest {
 
         private fun testOpphørsdatoUtenTidligereTilkjentYtelse(
             andeler: List<AndelTilkjentYtelse>,
-            opphørsdato: LocalDate = opphørsdato(andeler)
+            startdato: LocalDate = startdato(andeler)
         ) =
-            utbetalingsperiodeForOpphør(null, tilkjentYtelseMedMetadata(andeler, opphørsdato))
+            utbetalingsperiodeForOpphør(null, tilkjentYtelseMedMetadata(andeler, startdato))
 
         private fun leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler: List<AndelTilkjentYtelse>): List<AndelTilkjentYtelse> {
             val utenNullandeler = tidligereAndeler.filterNot { it.erNull() }
@@ -392,9 +392,9 @@ internal class ØkonomiUtilsTest {
 
         private fun tilkjentYtelseMedMetadata(
             andeler: List<AndelTilkjentYtelse>,
-            opphørsdato: LocalDate
+            startdato: LocalDate
         ) =
-            opprettTilkjentYtelseMedMetadata(tilkjentYtelse = opprettTilkjentYtelse(andeler = andeler, startdato = opphørsdato))
+            opprettTilkjentYtelseMedMetadata(tilkjentYtelse = opprettTilkjentYtelse(andeler = andeler, startdato = startdato))
 
         fun andelMedBeløp(
             beløp: Int = 1,

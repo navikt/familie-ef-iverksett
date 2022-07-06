@@ -157,7 +157,7 @@ fun opprettTilkjentYtelseMedMetadata(
 fun opprettTilkjentYtelse(
     behandlingId: UUID = UUID.randomUUID(),
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
-    startdato: LocalDate = opphørsdato(andeler),
+    startdato: LocalDate = startdato(andeler),
     sisteAndelIKjede: AndelTilkjentYtelse? = null
 ): TilkjentYtelse {
     return TilkjentYtelse(
@@ -224,7 +224,7 @@ fun vedtaksdetaljerOvergangsstønad(
     vedtaksresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
-    startdato: LocalDate = opphørsdato(andeler),
+    startdato: LocalDate = startdato(andeler),
     vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad())
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
@@ -245,7 +245,7 @@ fun vedtaksdetaljerBarnetilsyn(
     vedtaksresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
-    startdato: LocalDate = opphørsdato(andeler),
+    startdato: LocalDate = startdato(andeler),
     vedtaksperioder: List<VedtaksperiodeBarnetilsyn> = listOf(vedtaksperioderBarnetilsyn())
 ): VedtaksdetaljerBarnetilsyn {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
@@ -313,7 +313,7 @@ fun opprettIverksettOvergangsstønad(
     forrigeBehandlingId: UUID? = null,
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
-    startdato: LocalDate = opphørsdato(andeler)
+    startdato: LocalDate = startdato(andeler)
 ): IverksettOvergangsstønad {
     val behandlingType = forrigeBehandlingId?.let { BehandlingType.REVURDERING } ?: BehandlingType.FØRSTEGANGSBEHANDLING
     return IverksettOvergangsstønad(
@@ -329,7 +329,7 @@ fun opprettIverksettOvergangsstønad(
     )
 }
 
-fun opphørsdato(andeler: List<AndelTilkjentYtelse>) =
+fun startdato(andeler: List<AndelTilkjentYtelse>) =
     andeler.minOfOrNull { it.fraOgMed } ?: error("Trenger å sette startdato hvs det ikke finnes andeler")
 
 fun opprettBrev(): Brev {
