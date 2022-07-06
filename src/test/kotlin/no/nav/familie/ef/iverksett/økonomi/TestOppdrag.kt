@@ -47,7 +47,7 @@ data class TestOppdrag(
     val forrigeLinjeId: Long? = null,
     val status110: String? = null,
     val erEndring: Boolean? = null,
-    val startdato: LocalDate?,
+    val opphørsdato: LocalDate?,
     val beløp: Int? = null,
     val startPeriode: LocalDate? = null,
     val sluttPeriode: LocalDate? = null
@@ -78,7 +78,7 @@ data class TestOppdrag(
         return if (startPeriode != null && sluttPeriode != null && linjeId != null)
             Utbetalingsperiode(
                 erEndringPåEksisterendePeriode = erEndring ?: false,
-                opphør = startdato?.let { Opphør(it) },
+                opphør = opphørsdato?.let { Opphør(it) },
                 periodeId = linjeId,
                 forrigePeriodeId = forrigeLinjeId,
                 datoForVedtak = vedtaksdato,
@@ -91,8 +91,8 @@ data class TestOppdrag(
                 behandlingId = 1,
                 utbetalingsgrad = 100
             )
-        else if (startdato != null)
-            error("Kan ikke sette startdato her, mangler start/slutt/linjeId")
+        else if (opphørsdato != null)
+            error("Kan ikke sette opphørsdato her, mangler start/slutt/linjeId")
         else
             null
     }
@@ -115,7 +115,7 @@ class TestOppdragGroup {
             TestOppdragType.Input -> {
                 oppdragId = to.oppdragId
                 personIdent = to.fnr
-                if (to.startdato != null) {
+                if (to.opphørsdato != null) {
                     startdatoInn = validerOgGetStartdato(to, startdatoInn)
                 }
                 to.tilAndelTilkjentYtelse()?.also { andelerTilkjentYtelseInn.add(it) }
@@ -133,10 +133,10 @@ class TestOppdragGroup {
     }
 
     private fun validerOgGetStartdato(to: TestOppdrag, tidligereStartdato: LocalDate?): LocalDate? {
-        if (tidligereStartdato != null && to.startdato != null) {
+        if (tidligereStartdato != null && to.opphørsdato != null) {
             error("Kan kun sette 1 startdato på en input/output")
         }
-        return tidligereStartdato ?: to.startdato
+        return tidligereStartdato ?: to.opphørsdato
     }
 
     val input: TilkjentYtelseMedMetaData by lazy {
@@ -248,7 +248,7 @@ object TestOppdragParser {
                 status110 = row[KEY_STATUS_OPPDRAG]?.let { emptyAsNull(it) },
                 erEndring = row[KEY_ER_ENDRING]?.let { it.toBoolean() },
                 beløp = beløp,
-                startdato = opphørYearMonth?.atDay(1),
+                opphørsdato = opphørYearMonth?.atDay(1),
                 startPeriode = firstYearMonth?.atDay(1),
                 sluttPeriode = lastYearMonth?.atEndOfMonth()
             )

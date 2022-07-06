@@ -79,11 +79,11 @@ object ØkonomiUtils {
     }
 
     /**
-     * Tar utgangspunkt i forrige tilstand og finner kjede med andeler til opphør og tilhørende startdato
+     * Tar utgangspunkt i forrige tilstand og finner kjede med andeler til opphør og tilhørende opphørsdato
      *
      * @param[forrigeTilkjentYtelse] forrige tilkjente ytelse
      * @param[nyTilkjentYtelseMedMetaData] nåværende tilstand
-     * @return utbetalingsperiode for opphør, returnerer null hvis det ikke finnes ett startdato
+     * @return utbetalingsperiode for opphør, returnerer null hvis det ikke finnes en opphørsdato
      */
     fun utbetalingsperiodeForOpphør(
         forrigeTilkjentYtelse: TilkjentYtelse?,
@@ -103,32 +103,32 @@ object ØkonomiUtils {
             return lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, nyTilkjentYtelse.startdato, nyTilkjentYtelseMedMetaData)
         }
 
-        val startdato = finnStartdato(forrigeAndeler.toSet(), nyeAndeler.toSet())
+        val opphørsdato = finnOpphørsdato(forrigeAndeler.toSet(), nyeAndeler.toSet())
 
-        return if (harIngenAndelerÅOpphøre(startdato, forrigeTilkjentYtelse, forrigeAndeler) ||
-            startdato == null ||
-            erNyPeriode(forrigeMaksDato, startdato)
+        return if (harIngenAndelerÅOpphøre(opphørsdato, forrigeTilkjentYtelse, forrigeAndeler) ||
+            opphørsdato == null ||
+            erNyPeriode(forrigeMaksDato, opphørsdato)
         ) {
             null
         } else {
-            lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, startdato, nyTilkjentYtelseMedMetaData)
+            lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, opphørsdato, nyTilkjentYtelseMedMetaData)
         }
     }
 
     /**
-     * Når tidligere andeler er empty, og startdato er etter forrige sitt startdato trenger vi ikke å opphøre noe
+     * Når tidligere andeler er empty, og opphørsdato er etter forrige sitt opphørsdato trenger vi ikke å opphøre noe
      */
     private fun harIngenAndelerÅOpphøre(
-        startdato: LocalDate?,
+        opphørsdato: LocalDate?,
         forrigeTilkjentYtelse: TilkjentYtelse,
         forrigeAndeler: List<AndelTilkjentYtelse>
     ) =
-        forrigeAndeler.isEmpty() && startdato != null && startdato >= forrigeTilkjentYtelse.startdato
+        forrigeAndeler.isEmpty() && opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startdato
 
     /**
-     * Nytt startdato må finnes hvis det finnes startdato på tidligere tilkjent ytelse
-     * Nytt startdato må være etter forrige startdato, då den inneholder dato for når vi historiskt har første datoet
-     * Startdato kan ikke være etter første andel
+     * Ny opphørsdato må finnes hvis det finnes startdato på tidligere tilkjent ytelse
+     * Ny opphørsdato må være etter forrige opphørsdato, då den inneholder dato for når vi historiskt har første datoet
+     * Opphørsdato kan ikke være etter første andel
      */
     private fun validerStartdato(
         forrigeTilkjentYtelse: TilkjentYtelse?,
@@ -170,15 +170,15 @@ object ØkonomiUtils {
     }
 
     /**
-     * Skal finne startdato til utbetalingsoppdraget
+     * Skal finne opphørsdato til utbetalingsoppdraget
      *
      * Returnerer første endret periode, uavhengig om den er andel med 0-beløp eller ikke
      * Dette for å kunne opphøre perioder bak i tiden, som kan være før perioder som finnes i EF, men som finnes i Infotrygd
      *
      * Hvis forrige kjede inneholder 2 andeler og den nye kjeden endrer i den andre andelen,
-     * så skal startdato settes til startdato for andre andelen i forrige kjede
+     * så skal opphørsdato settes til opphørsdato for andre andelen i forrige kjede
      */
-    private fun finnStartdato(
+    private fun finnOpphørsdato(
         forrigeAndeler: Set<AndelTilkjentYtelse>,
         oppdaterteAndeler: Set<AndelTilkjentYtelse>
     ): LocalDate? {

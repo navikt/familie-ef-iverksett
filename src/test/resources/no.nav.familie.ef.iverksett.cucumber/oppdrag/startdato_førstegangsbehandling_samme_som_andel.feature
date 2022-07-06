@@ -13,8 +13,8 @@ Egenskap: Førstegangsbehandling - kan sende startdato i en førstegangsbehandli
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 03.2021  | 03.2021  |           | 700   | NY           | Nei        | 1          |                    |
+      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 03.2021  | 03.2021  |             | 700   | NY           | Nei        | 1          |                    |
 
     Så forvent følgende tilkjente ytelser for behandling 1 med startdato 03.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |

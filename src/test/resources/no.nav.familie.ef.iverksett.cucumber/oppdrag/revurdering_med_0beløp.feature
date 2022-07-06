@@ -16,10 +16,10 @@ Egenskap: Revurdering med 0 beløp beholder periodeId til neste behandling med p
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 02.2021  |           | 700   | NY           | Nei        | 1          |                    |
-      | 2            | 02.2021  | 02.2021  | 02.2021   | 700   | ENDR         | Ja         | 1          |                    |
-      | 4            | 02.2021  | 02.2021  |           | 700   | ENDR         | Nei        | 2          | 1                  |
+      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
+      | 2            | 02.2021  | 02.2021  | 02.2021     | 700   | ENDR         | Ja         | 1          |                    |
+      | 4            | 02.2021  | 02.2021  |             | 700   | ENDR         | Nei        | 2          | 1                  |
 
     Og forvent følgende utbetalingsoppdrag uten utbetalingsperiode
       | BehandlingId | Kode endring | Er endring |

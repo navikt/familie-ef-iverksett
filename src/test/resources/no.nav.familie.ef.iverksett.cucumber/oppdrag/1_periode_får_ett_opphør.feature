@@ -14,9 +14,9 @@ Egenskap: Har en periode og får ett opphør
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id | Type |
-      | 1            | 02.2021  | 05.2021  |           | 700   | NY           | Nei        | 1          |                    | MND  |
-      | 2            | 02.2021  | 05.2021  | 02.2021   | 700   | ENDR         | Ja         | 1          |                    | MND  |
+      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id | Type |
+      | 1            | 02.2021  | 05.2021  |             | 700   | NY           | Nei        | 1          |                    | MND  |
+      | 2            | 02.2021  | 05.2021  | 02.2021     | 700   | ENDR         | Ja         | 1          |                    | MND  |
 
     Så forvent følgende tilkjente ytelser for behandling 1 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id |
