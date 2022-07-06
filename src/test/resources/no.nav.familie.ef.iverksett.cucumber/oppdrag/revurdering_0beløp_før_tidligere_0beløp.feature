@@ -15,10 +15,10 @@ Egenskap: Revurderer med 0 beløp etter en revurdering med 0 beløp skal sette s
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 03.2021  | 03.2021  |           | 700   | NY           | Nei        | 1          |                    |
-      | 2            | 03.2021  | 03.2021  | 02.2021   | 700   | ENDR         | Ja         | 1          |                    |
-      | 3            | 03.2021  | 03.2021  | 01.2021   | 700   | ENDR         | Ja         | 1          |                    |
+      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 03.2021  | 03.2021  |             | 700   | NY           | Nei        | 1          |                    |
+      | 2            | 03.2021  | 03.2021  | 02.2021     | 700   | ENDR         | Ja         | 1          |                    |
+      | 3            | 03.2021  | 03.2021  | 01.2021     | 700   | ENDR         | Ja         | 1          |                    |
 
 
     Og forvent følgende tilkjente ytelser for behandling 1 med startdato 03.2021

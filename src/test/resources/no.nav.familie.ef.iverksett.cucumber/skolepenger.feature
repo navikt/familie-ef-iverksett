@@ -29,8 +29,8 @@ Egenskap: En enkel behandling
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id | Type |
-      | 1            | 01.2021  | 01.2021  |           | 1     | NY           | Nei        | 1          |                    | ENG  |
+      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id | Type |
+      | 1            | 01.2021  | 01.2021  |             | 1     | NY           | Nei        | 1          |                    | ENG  |
 
     Så forvent følgende tilkjente ytelser for behandling 1 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id |

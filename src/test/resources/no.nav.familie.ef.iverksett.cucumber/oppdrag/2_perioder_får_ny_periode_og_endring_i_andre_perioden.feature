@@ -19,13 +19,13 @@ Egenskap: 2 perioder får en ny periode og en endring
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | Startdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 04.2021  |           | 700   | NY           | Nei        | 1          |                    |
-      | 1            | 05.2021  | 07.2021  |           | 900   | NY           | Nei        | 2          | 1                  |
-      | 2            | 08.2021  | 09.2021  |           | 100   | ENDR         | Nei        | 3          | 2                  |
-      | 3            | 08.2021  | 09.2021  | 05.2021   | 100   | ENDR         | Ja         | 3          | 2                  |
-      | 3            | 05.2021  | 06.2021  |           | 900   | ENDR         | Nei        | 4          | 3                  |
-      | 3            | 08.2021  | 09.2021  |           | 100   | ENDR         | Nei        | 5          | 4                  |
+      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | 1            | 02.2021  | 04.2021  |             | 700   | NY           | Nei        | 1          |                    |
+      | 1            | 05.2021  | 07.2021  |             | 900   | NY           | Nei        | 2          | 1                  |
+      | 2            | 08.2021  | 09.2021  |             | 100   | ENDR         | Nei        | 3          | 2                  |
+      | 3            | 08.2021  | 09.2021  | 05.2021     | 100   | ENDR         | Ja         | 3          | 2                  |
+      | 3            | 05.2021  | 06.2021  |             | 900   | ENDR         | Nei        | 4          | 3                  |
+      | 3            | 08.2021  | 09.2021  |             | 100   | ENDR         | Nei        | 5          | 4                  |
 
     Og forvent følgende tilkjente ytelser for behandling 1 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |

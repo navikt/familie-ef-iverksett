@@ -76,7 +76,7 @@ object TilkjentYtelseParser {
             satsType = parseValgfriEnum<SatsType>(UtbetalingsoppdragDomenebegrep.TYPE, it) ?: SatsType.MND,
             fom = parseÅrMåned(Domenebegrep.FRA_DATO, it).atDay(1),
             tom = parseÅrMåned(Domenebegrep.TIL_DATO, it).atEndOfMonth(),
-            opphør = parseValgfriÅrMåned(UtbetalingsoppdragDomenebegrep.STARTDATO, it)?.atDay(1)
+            opphør = parseValgfriÅrMåned(UtbetalingsoppdragDomenebegrep.OPPHØRSDATO, it)?.atDay(1)
         )
 
     fun mapForventetTilkjentYtelse(dataTable: DataTable, behandlingIdInt: Int, startdato: LocalDate?): ForventetTilkjentYtelse {
@@ -179,5 +179,5 @@ enum class UtbetalingsoppdragDomenebegrep(override val nøkkel: String) : Domene
     FORRIGE_PERIODE_ID("Forrige periode id"),
     BELØP("Beløp"),
     TYPE("Type"),
-    STARTDATO("Startdato")
+    OPPHØRSDATO("Opphørsdato")
 }

@@ -266,7 +266,7 @@ internal class OppgaveServiceTest {
 
     @Test
     internal fun `revurdering opphør, forvent at andel med maks tom dato blir sendt som arg til beskrivelse`() {
-        val startdato = slot<LocalDate>()
+        val opphørsdato = slot<LocalDate>()
         val iverksett = lagIverksett(
             UUID.randomUUID(),
             BehandlingType.REVURDERING,
@@ -276,8 +276,8 @@ internal class OppgaveServiceTest {
         )
 
         oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
-        verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(startdato)) }
-        assertThat(startdato.captured).isEqualTo(LocalDate.now())
+        verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
+        assertThat(opphørsdato.captured).isEqualTo(LocalDate.now())
     }
 
     @Test
