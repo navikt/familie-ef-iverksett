@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.util
 
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingMetode
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
@@ -29,6 +30,7 @@ fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fort
         behandlingstype = BehandlingType.FØRSTEGANGSBEHANDLING,
         relatertBehandlingId = UUID.randomUUID(),
         relatertEksternBehandlingId = null,
-        behandlingMetode = BehandlingMetode.MANUELL
+        behandlingMetode = BehandlingMetode.MANUELL,
+        behandlingÅrsak = BehandlingÅrsak.SØKNAD
     )
 }
