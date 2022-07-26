@@ -16,14 +16,11 @@ data class PeriodeId(
 
 fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, this.forrigePeriodeId)
 
-@Deprecated("Bør erstattes med å gjøre 'stønadFom' og  'stønadTom'  nullable")
-val NULL_DATO: LocalDate = LocalDate.MIN
-
 fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): AndelTilkjentYtelse =
     AndelTilkjentYtelse(
         beløp = 0,
-        fraOgMed = NULL_DATO,
-        tilOgMed = NULL_DATO,
+        fraOgMed = LocalDate.MIN,
+        tilOgMed = LocalDate.MIN,
         inntekt = 0,
         samordningsfradrag = 0,
         inntektsreduksjon = 0,

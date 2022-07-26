@@ -12,6 +12,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.ENDR
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
+import java.time.LocalDate
 import java.util.UUID
 
 object UtbetalingsoppdragGenerator {
@@ -83,7 +84,7 @@ object UtbetalingsoppdragGenerator {
     ) =
         (gjeldendeAndeler + listOfNotNull(forrigeTilkjentYtelse?.sisteAndelIKjede))
             .filter { it.periodeId != null }
-            .filter { it.fraOgMed != NULL_DATO }
+            .filter { it.fraOgMed != LocalDate.MIN }
             .maxByOrNull { it.periodeId ?: error("Mangler periodeId") }
 
     private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
