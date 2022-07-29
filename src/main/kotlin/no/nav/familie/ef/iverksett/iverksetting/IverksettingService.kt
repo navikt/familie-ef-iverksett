@@ -6,9 +6,11 @@ import no.nav.familie.ef.iverksett.infrastruktur.task.hovedflyt
 import no.nav.familie.ef.iverksett.infrastruktur.task.publiseringsflyt
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
@@ -35,14 +37,17 @@ class IverksettingService(
 ) {
 
     @Transactional
-    fun startIverksetting(iverksett: Iverksett, brev: Brev?) {
+    fun startIverksetting(iverksett: IverksettData, brev: Brev?) {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Kan ikke iverksette akkurat nå")
         }
-        iverksettingRepository.lagre(
-            iverksett.behandling.behandlingId,
-            iverksett,
-            brev
+        iverksettingRepository.insert(
+            Iverksett(
+                iverksett.behandling.behandlingId,
+                iverksett,
+                iverksett.behandling.eksternId,
+                brev
+            )
         )
 
         tilstandRepository.opprettTomtResultat(iverksett.behandling.behandlingId)
@@ -63,43 +68,43 @@ class IverksettingService(
 
     @Transactional
     fun publiserVedtak(behandlingId: UUID) {
-        val iverksett = iverksettingRepository.hent(behandlingId)
+        val iverksettDbo = iverksettingRepository.findByIdOrThrow(behandlingId)
 
         taskRepository.save(
             Task(
-                type = førstePubliseringsflytTask(iverksett),
+                type = førstePubliseringsflytTask(iverksettDbo.data),
                 payload = behandlingId.toString(),
                 properties = Properties().apply {
-                    this["personIdent"] = iverksett.søker.personIdent
+                    this["personIdent"] = iverksettDbo.data.søker.personIdent
                     this["behandlingId"] = behandlingId.toString()
-                    this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
-                    this["beslutter"] = iverksett.vedtak.beslutterId
+                    this["saksbehandler"] = iverksettDbo.data.vedtak.saksbehandlerId
+                    this["beslutter"] = iverksettDbo.data.vedtak.beslutterId
                 }
             )
         )
     }
 
-    private fun førstePubliseringsflytTask(iverksett: Iverksett) = when {
+    private fun førstePubliseringsflytTask(iverksett: IverksettData) = when {
         iverksett.erGOmregning() -> VedtakstatistikkTask.TYPE
         erIverksettingUtenVedtaksperioder(iverksett) -> OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE
         else -> publiseringsflyt().first().type
     }
 
-    private fun førsteHovedflytTask(iverksett: Iverksett) = when {
+    private fun førsteHovedflytTask(iverksett: IverksettData) = when {
         erIverksettingUtenVedtaksperioder(iverksett) -> JournalførVedtaksbrevTask.TYPE
         else -> hovedflyt().first().type
     }
 
-    private fun erIverksettingUtenVedtaksperioder(iverksett: Iverksett) =
+    private fun erIverksettingUtenVedtaksperioder(iverksett: IverksettData) =
         iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT
 
     fun utledStatus(behandlingId: UUID): IverksettStatus? {
         val iverksettResultat = tilstandRepository.hentIverksettResultat(behandlingId)
         return iverksettResultat?.let {
-            it.vedtaksbrevResultat?.let {
+            if (it.vedtaksbrevResultat.isNotEmpty()) {
                 return IverksettStatus.OK
             }
-            it.journalpostResultat?.let {
+            if (it.journalpostResultat.isNotEmpty()) {
                 return IverksettStatus.JOURNALFØRT
             }
             it.oppdragResultat?.let { oppdragResultat ->

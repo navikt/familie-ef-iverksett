@@ -12,6 +12,8 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.lagIverksett
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingMedVarsel
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingsdetaljer
@@ -63,7 +65,7 @@ internal class OpprettTilbakekrevingTaskTest {
             tilbakekreving = tilbakekreving,
             forrigeBehandlingId = UUID.randomUUID()
         )
-        every { iverksettingRepository.hent(behandlingsId) } returns iverksett
+        every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
 
         doTask(behandlingsId)
 
@@ -80,7 +82,7 @@ internal class OpprettTilbakekrevingTaskTest {
             tilbakekreving = tilbakekreving,
             forrigeBehandlingId = UUID.randomUUID()
         )
-        every { iverksettingRepository.hent(behandlingsId) } returns iverksett
+        every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
 
         doTask(behandlingsId)
 
@@ -99,7 +101,7 @@ internal class OpprettTilbakekrevingTaskTest {
             tilbakekreving = tilbakekrevingsdetaljer,
             forrigeBehandlingId = UUID.randomUUID()
         )
-        every { iverksettingRepository.hent(behandlingsId) } returns iverksett
+        every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
 
         doTask(behandlingsId)
 
@@ -113,7 +115,7 @@ internal class OpprettTilbakekrevingTaskTest {
         val behandlingsId = UUID.randomUUID()
         val iverksett = opprettIverksettOvergangsstønad(behandlingsId, tilbakekreving = null, forrigeBehandlingId = null)
 
-        every { iverksettingRepository.hent(behandlingsId) } returns iverksett
+        every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
 
         doTask(behandlingsId)
 
@@ -135,7 +137,7 @@ internal class OpprettTilbakekrevingTaskTest {
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(100)
 
-        every { iverksettingRepository.hent(behandlingsId) } returns iverksett
+        every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
         every { simuleringService.hentBeriketSimulering(any()) } returns beriketSimuleringsresultat
         every { tilstandRepository.oppdaterTilbakekrevingResultat(behandlingsId, capture(tilbakekrevingResultatSlot)) } just Runs
 
@@ -161,7 +163,7 @@ internal class OpprettTilbakekrevingTaskTest {
         )
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(0)
 
-        every { iverksettingRepository.hent(behandlingsId) } returns iverksett
+        every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
         every { simuleringService.hentBeriketSimulering(any()) } returns beriketSimuleringsresultat
 
         doTask(behandlingsId)
@@ -182,7 +184,7 @@ internal class OpprettTilbakekrevingTaskTest {
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(200)
 
-        every { iverksettingRepository.hent(behandlingsId) } returns iverksett
+        every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
         every { simuleringService.hentBeriketSimulering(any()) } returns beriketSimuleringsresultat
         every { tilstandRepository.oppdaterTilbakekrevingResultat(behandlingsId, capture(tilbakekrevingResultatSlot)) } just Runs
 

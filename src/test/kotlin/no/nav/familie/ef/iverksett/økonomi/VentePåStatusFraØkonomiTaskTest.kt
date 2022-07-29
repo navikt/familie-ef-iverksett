@@ -12,6 +12,8 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.lagIverksett
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
@@ -52,7 +54,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
     @BeforeEach
     internal fun setUp() {
         every { oppdragClient.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
-        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId).toDomain()
+        every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettDto(behandlingId).toDomain())
         every { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) } just runs
         every { taskRepository.save(any()) } answers { firstArg() }
     }
@@ -82,7 +84,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
     @Test
     internal fun `migrering - skal ikke opprette task for journalføring av vedtaksbrev`() {
         val opprettIverksettDto = opprettIverksettDto(behandlingId, behandlingÅrsak = BehandlingÅrsak.MIGRERING)
-        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto.toDomain()
+        every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettDto.toDomain())
         every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse(listOf(utbetalingsperiode))
 
         runTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))

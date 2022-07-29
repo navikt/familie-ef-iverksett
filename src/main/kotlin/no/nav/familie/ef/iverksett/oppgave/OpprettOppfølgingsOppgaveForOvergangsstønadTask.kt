@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -26,8 +27,8 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
-        if (iverksett !is IverksettOvergangsstønad) {
+        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId)
+        if (iverksett.data !is IverksettOvergangsstønad) {
             logger.info(
                 "Oppretter ikke oppfølgningsoppgave for behandling=$behandlingId" +
                     " då den ikke er overgangsstønad (${iverksett::class.java.simpleName})"
@@ -35,8 +36,8 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
             return
         }
 
-        if (oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)) {
-            val oppgaveId = oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        if (oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett.data)) {
+            val oppgaveId = oppgaveService.opprettVurderHenvendelseOppgave(iverksett.data)
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgaveID=$oppgaveId")
         }
     }

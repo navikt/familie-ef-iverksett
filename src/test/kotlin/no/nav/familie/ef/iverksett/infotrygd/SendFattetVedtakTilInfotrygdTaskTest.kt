@@ -8,6 +8,7 @@ import io.mockk.slot
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
@@ -29,8 +30,8 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
         SendFattetVedtakTilInfotrygdTask(infotrygdFeedClient, familieIntegrasjonerClient, iverksettingRepository, mockk())
 
     private val behandlingId = UUID.randomUUID()
-    private val iverksett = opprettIverksettOvergangsstønad(behandlingId)
-    private val personIdent = iverksett.søker.personIdent
+    private val iverksettData = opprettIverksettOvergangsstønad(behandlingId)
+    private val personIdent = iverksettData.søker.personIdent
     private val historiskPersonIdent = "2"
     private val perioder = listOf(
         Pair(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
@@ -46,7 +47,7 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
     @Test
     internal fun `skal sende fattet vedtak til infotrygd med første perioden i andelene`() {
         val hendelseSlot = slot<OpprettVedtakHendelseDto>()
-        every { iverksettingRepository.hent(behandlingId) } returns opprettIverksettMedTilkjentYtelse()
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns opprettIverksettMedTilkjentYtelse()
         every { infotrygdFeedClient.opprettVedtakHendelse(capture(hendelseSlot)) } just runs
         every { familieIntegrasjonerClient.hentIdenter(any(), any()) } returns identer
 
@@ -58,13 +59,17 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
     }
 
     private fun opprettIverksettMedTilkjentYtelse(): Iverksett {
-        val vedtak = iverksett.vedtak
+        val vedtak = iverksettData.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
         val andelerTilkjentYtelse = perioder.map {
             lagAndelTilkjentYtelse(1, it.first, it.second)
         }
 
         val nyTilkjentYtelse = tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelerTilkjentYtelse)
-        return iverksett.copy(vedtak = vedtak.copy(tilkjentYtelse = nyTilkjentYtelse))
+        return Iverksett(
+            behandlingId,
+            iverksettData.copy(vedtak = vedtak.copy(tilkjentYtelse = nyTilkjentYtelse)),
+            iverksettData.behandling.eksternId
+        )
     }
 }

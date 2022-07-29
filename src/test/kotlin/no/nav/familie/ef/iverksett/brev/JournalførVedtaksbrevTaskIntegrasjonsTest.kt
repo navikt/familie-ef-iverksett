@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottaker
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
@@ -34,13 +35,27 @@ import javax.annotation.PostConstruct
 
 class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
 
-    @Autowired private lateinit var tilstandRepository: TilstandRepository
-    @Autowired private lateinit var iverksettingRepository: IverksettingRepository
-    @Autowired private lateinit var taskRepository: TaskRepository
-    @Autowired private lateinit var journalpostClient: JournalpostClient
-    @Autowired private lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
-    @Autowired @Qualifier("mock-integrasjoner") lateinit var wireMockServer: WireMockServer
-    @Autowired lateinit var journalpostClientMock: JournalpostClientMock
+    @Autowired
+    private lateinit var tilstandRepository: TilstandRepository
+
+    @Autowired
+    private lateinit var iverksettingRepository: IverksettingRepository
+
+    @Autowired
+    private lateinit var taskRepository: TaskRepository
+
+    @Autowired
+    private lateinit var journalpostClient: JournalpostClient
+
+    @Autowired
+    private lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
+
+    @Autowired
+    @Qualifier("mock-integrasjoner")
+    lateinit var wireMockServer: WireMockServer
+
+    @Autowired
+    lateinit var journalpostClientMock: JournalpostClientMock
 
     var journalførVedtaksbrevTask: JournalførVedtaksbrevTask? = null
 
@@ -81,10 +96,13 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
         )
         val behandlingId = iverksettMedBrevmottakere.behandling.behandlingId
         tilstandRepository.opprettTomtResultat(behandlingId)
-        iverksettingRepository.lagre(
-            behandlingId,
-            iverksettMedBrevmottakere,
-            opprettBrev()
+        iverksettingRepository.insert(
+            Iverksett(
+                behandlingId,
+                iverksettMedBrevmottakere,
+                iverksettMedBrevmottakere.behandling.eksternId,
+                opprettBrev()
+            )
         )
 
         journalførVedtaksbrevTask!!.doTask(
@@ -119,7 +137,14 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
 
         // Sett iverksetting i gyldig tilstand
         tilstandRepository.opprettTomtResultat(behandlingId)
-        iverksettingRepository.lagre(behandlingId, iverksettMedBrevmottakere, opprettBrev())
+        iverksettingRepository.insert(
+            Iverksett(
+                behandlingId,
+                iverksettMedBrevmottakere,
+                iverksettMedBrevmottakere.behandling.eksternId,
+                opprettBrev()
+            )
+        )
 
         kjørTask(behandlingId)
 
@@ -161,7 +186,14 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
         namedParameterJdbcTemplate.update("DELETE FROM iverksett WHERE behandling_id = :behandlingId", mapSqlParameterSource)
         val iverksettMedGyldigeBrevmottakere =
             iverksett.copy(vedtak = vedtak.copy(brevmottakere = Brevmottakere(brevmottakere)))
-        iverksettingRepository.lagre(behandlingId, iverksettMedGyldigeBrevmottakere, opprettBrev())
+        iverksettingRepository.insert(
+            Iverksett(
+                behandlingId,
+                iverksettMedGyldigeBrevmottakere,
+                iverksettMedGyldigeBrevmottakere.behandling.eksternId,
+                opprettBrev()
+            )
+        )
     }
 
     private fun kjørTask(behandlingId: UUID) {
@@ -181,6 +213,6 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
 
     companion object {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
-        val iverksett: Iverksett = objectMapper.readValue<IverksettDto>(json).toDomain()
+        val iverksett: IverksettData = objectMapper.readValue<IverksettDto>(json).toDomain()
     }
 }

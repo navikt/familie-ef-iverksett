@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.vedtak
 
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.felles.ef.EnsligForsørgerVedtakhendelse
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -25,7 +26,7 @@ class PubliserVedtakTilKafkaTask(
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
+        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         vedtakKafkaProducer.sendVedtak(
             EnsligForsørgerVedtakhendelse(
                 behandlingId = iverksett.behandling.eksternId,

@@ -3,10 +3,11 @@ package no.nav.familie.ef.iverksett.tilbakekreving
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.tilSimulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
 import no.nav.familie.ef.iverksett.økonomi.simulering.harFeilutbetaling
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
@@ -42,7 +43,7 @@ class OpprettTilbakekrevingTask(
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
+        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         if (skalOppretteTilbakekreving(iverksett, behandlingId)) {
             val nyBeriketSimuleringsresultat = hentBeriketSimulering(iverksett)
             val nyIverksett = iverksett.oppfriskTilbakekreving(nyBeriketSimuleringsresultat)
@@ -57,10 +58,10 @@ class OpprettTilbakekrevingTask(
 
     private fun opprettTilbakekreving(
         behandlingId: UUID,
-        nyIverksett: Iverksett
+        iverksettData: IverksettData
     ) {
         logger.info("Det kreves tilbakekrevingsbehandling for behandling=$behandlingId")
-        val opprettTilbakekrevingRequest = lagTilbakekrevingRequest(nyIverksett)
+        val opprettTilbakekrevingRequest = lagTilbakekrevingRequest(iverksettData)
         tilbakekrevingClient.opprettBehandling(opprettTilbakekrevingRequest)
         tilstandRepository.oppdaterTilbakekrevingResultat(
             behandlingId = behandlingId,
@@ -73,19 +74,19 @@ class OpprettTilbakekrevingTask(
     }
 
     private fun skalOppretteTilbakekreving(
-        iverksett: Iverksett,
+        iverksettData: IverksettData,
         behandlingId: UUID?
     ): Boolean {
-        if (iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
+        if (iverksettData.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
             logger.warn("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
             return false
-        } else if (!iverksett.vedtak.tilbakekreving.skalTilbakekreves) {
+        } else if (!iverksettData.vedtak.tilbakekreving.skalTilbakekreves) {
             logger.info("Tilbakekreving ikke valgt for behandlingId=$behandlingId. Oppretter derfor ikke tilbakekrevingsbehandling.")
             return false
-        } else if (iverksett.vedtak.tilkjentYtelse == null) {
+        } else if (iverksettData.vedtak.tilkjentYtelse == null) {
             logger.warn("OpprettTilbakekrevingTask ikke utført - tilkjentYtelse er null, Behandling: $behandlingId")
             return false
-        } else if (finnesÅpenTilbakekrevingsbehandling(iverksett)) {
+        } else if (finnesÅpenTilbakekrevingsbehandling(iverksettData)) {
             logger.info("Det finnnes allerede tilbakekrevingsbehandling for behandling=$behandlingId")
             return false
         }
@@ -93,11 +94,11 @@ class OpprettTilbakekrevingTask(
     }
 
     private fun loggForskjell(
-        nyIverksett: Iverksett,
-        iverksett: Iverksett,
+        nyIverksettData: IverksettData,
+        iverksettData: IverksettData,
         behandlingId: UUID?
     ) {
-        if (nyIverksett != iverksett) {
+        if (nyIverksettData != iverksettData) {
             logger.info("Grunnlaget for tilbakekreving for behandling=$behandlingId har endret seg siden saksbehandlingen")
         }
     }
@@ -106,18 +107,18 @@ class OpprettTilbakekrevingTask(
         taskRepository.save(task.opprettNesteTask())
     }
 
-    private fun hentBeriketSimulering(originalIverksett: Iverksett): BeriketSimuleringsresultat {
+    private fun hentBeriketSimulering(originalIverksett: IverksettData): BeriketSimuleringsresultat {
         val simuleringRequest = originalIverksett.tilSimulering()
         return simuleringService.hentBeriketSimulering(simuleringRequest)
     }
 
-    private fun lagTilbakekrevingRequest(iverksett: Iverksett): OpprettTilbakekrevingRequest {
+    private fun lagTilbakekrevingRequest(iverksett: IverksettData): OpprettTilbakekrevingRequest {
         // Henter ut på nytt, selv om noe finnes i iverksett-dto'en
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)!!
         return iverksett.tilOpprettTilbakekrevingRequest(enhet)
     }
 
-    private fun finnesÅpenTilbakekrevingsbehandling(nyIverksett: Iverksett): Boolean =
+    private fun finnesÅpenTilbakekrevingsbehandling(nyIverksett: IverksettData): Boolean =
         tilbakekrevingClient.finnesÅpenBehandling(nyIverksett.fagsak.eksternId)
 
     companion object {

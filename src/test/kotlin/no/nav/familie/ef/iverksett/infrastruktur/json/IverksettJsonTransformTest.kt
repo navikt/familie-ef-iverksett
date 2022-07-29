@@ -5,8 +5,8 @@ import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
@@ -102,7 +102,7 @@ class IverksettJsonTransformTest {
     @Test
     fun `deserialiser JSON til Iverksett, forvent ingen unntak`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettEksempel.json")
-        val iverksett = objectMapper.readValue<Iverksett>(json)
+        val iverksett = objectMapper.readValue<IverksettData>(json)
         assertThat(iverksett).isNotNull
     }
 
@@ -110,7 +110,7 @@ class IverksettJsonTransformTest {
     internal fun `deserialiser iverksettOvergangsstønad til json og serialiser tilbake til object, forvent likhet`() {
         val behandlingId = UUID.randomUUID()
         val iverksett = opprettIverksettOvergangsstønad(behandlingId)
-        val parsetIverksett = objectMapper.readValue<Iverksett>(objectMapper.writeValueAsString(iverksett))
+        val parsetIverksett = objectMapper.readValue<IverksettData>(objectMapper.writeValueAsString(iverksett))
         assertThat(iverksett).isEqualTo(parsetIverksett)
     }
 }

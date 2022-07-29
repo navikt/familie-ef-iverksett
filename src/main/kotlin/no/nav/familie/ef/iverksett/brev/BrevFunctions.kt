@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.brev
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
@@ -28,20 +28,20 @@ fun lagStønadtypeTekst(stønadstype: StønadType): String =
         StønadType.SKOLEPENGER -> "stønad til skolepenger"
     }
 
-fun lagVedtakstekst(iverksett: Iverksett): String =
+fun lagVedtakstekst(iverksettData: IverksettData): String =
     when {
-        iverksett.behandling.behandlingType === BehandlingType.FØRSTEGANGSBEHANDLING ->
-            lagVedtakstekstFørstegangsbehandling(iverksett)
-        iverksett.behandling.behandlingÅrsak === BehandlingÅrsak.SANKSJON_1_MND -> "Vedtak om sanksjon av "
-        iverksett.vedtak.vedtaksresultat === Vedtaksresultat.AVSLÅTT -> "Vedtak om avslått "
-        iverksett.vedtak.vedtaksresultat === Vedtaksresultat.OPPHØRT -> "Vedtak om opphørt "
-        iverksett.vedtak.vedtaksresultat === Vedtaksresultat.INNVILGET &&
-            iverksett.behandling.behandlingÅrsak === BehandlingÅrsak.SØKNAD -> "Vedtak om innvilget "
+        iverksettData.behandling.behandlingType === BehandlingType.FØRSTEGANGSBEHANDLING ->
+            lagVedtakstekstFørstegangsbehandling(iverksettData)
+        iverksettData.behandling.behandlingÅrsak === BehandlingÅrsak.SANKSJON_1_MND -> "Vedtak om sanksjon av "
+        iverksettData.vedtak.vedtaksresultat === Vedtaksresultat.AVSLÅTT -> "Vedtak om avslått "
+        iverksettData.vedtak.vedtaksresultat === Vedtaksresultat.OPPHØRT -> "Vedtak om opphørt "
+        iverksettData.vedtak.vedtaksresultat === Vedtaksresultat.INNVILGET &&
+            iverksettData.behandling.behandlingÅrsak === BehandlingÅrsak.SØKNAD -> "Vedtak om innvilget "
         else -> "Vedtak om revurdert "
     }
 
-private fun lagVedtakstekstFørstegangsbehandling(iverksett: Iverksett) =
-    when (iverksett.vedtak.vedtaksresultat) {
+private fun lagVedtakstekstFørstegangsbehandling(iverksettData: IverksettData) =
+    when (iverksettData.vedtak.vedtaksresultat) {
         Vedtaksresultat.INNVILGET -> "Vedtak om innvilget "
         Vedtaksresultat.AVSLÅTT -> "Vedtak om avslått "
         Vedtaksresultat.OPPHØRT -> error("Førstegangsbehandling kan ikke ha resultat Opphørt")

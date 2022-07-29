@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -29,21 +30,21 @@ class SendFattetVedtakTilInfotrygdTask(
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
-        if (iverksett.behandling.forrigeBehandlingId != null) {
+        val iverksettData = iverksettingRepository.findByIdOrThrow(behandlingId).data
+        if (iverksettData.behandling.forrigeBehandlingId != null) {
             logger.info(
-                "Sender ikke ett nytt vedtak til infotrygd for fagsak=${iverksett.fagsak.fagsakId}" +
+                "Sender ikke ett nytt vedtak til infotrygd for fagsak=${iverksettData.fagsak.fagsakId}" +
                     " då det allerede er sendt på forrige behandling"
             )
             return
         }
 
-        val stønadstype = iverksett.fagsak.stønadstype
-        val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
+        val stønadstype = iverksettData.fagsak.stønadstype
+        val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksettData.søker.personIdent, true)
             .map { it.personIdent }.toSet()
         val tilkjentYtelse: TilkjentYtelse =
-            iverksett.vedtak.tilkjentYtelse
-                ?: error("Finner ikke tilkjent ytelse for behandling med id=${iverksett.behandling.behandlingId}")
+            iverksettData.vedtak.tilkjentYtelse
+                ?: error("Finner ikke tilkjent ytelse for behandling med id=${iverksettData.behandling.behandlingId}")
         val startDato = tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
             ?: error("Finner ikke noen andel med fraOgMed for behandling=$behandlingId")
 

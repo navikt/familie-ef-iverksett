@@ -9,6 +9,8 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.lagIverksett
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.prosessering.domene.Task
@@ -36,7 +38,7 @@ internal class IverksettMotOppdragTaskTest {
 
     @BeforeEach
     internal fun setUp() {
-        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId).toDomain()
+        every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettDto(behandlingId).toDomain())
     }
 
     @Test
@@ -56,7 +58,8 @@ internal class IverksettMotOppdragTaskTest {
     internal fun `skal ikke iverksette utbetaling til oppdrag når det ikke er noen utbetalinger`() {
         every { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } just runs
         every { tilstandRepository.hentTilkjentYtelse(any<UUID>()) } returns null
-        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId, andelsbeløp = 0).toDomain()
+        every { iverksettingRepository.findByIdOrThrow(any()) }
+            .returns(lagIverksett(opprettIverksettDto(behandlingId, andelsbeløp = 0).toDomain()))
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
         verify(exactly = 1) { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) }
         verify(exactly = 0) { oppdragClient.iverksettOppdrag(any()) }

@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.iverksetting
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.tilbakekreving.validerTilbakekreving
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
@@ -67,8 +67,8 @@ class IverksettingController(
         return Brev(iverksettDto.behandling.behandlingId, fil.bytes)
     }
 
-    private fun validerUtenBrev(iverksett: Iverksett) {
-        if (!iverksett.skalIkkeSendeBrev()) {
+    private fun validerUtenBrev(iverksettData: IverksettData) {
+        if (!iverksettData.skalIkkeSendeBrev()) {
             throw ApiFeil(
                 "Kan ikke ha iverksetting uten brev når det ikke er en migrering, " +
                     "g-omregning eller korrigering uten brev ",
@@ -77,8 +77,8 @@ class IverksettingController(
         }
     }
 
-    private fun validerSkalHaBrev(iverksett: Iverksett) {
-        if (iverksett.skalIkkeSendeBrev()) {
+    private fun validerSkalHaBrev(iverksettData: IverksettData) {
+        if (iverksettData.skalIkkeSendeBrev()) {
             throw ApiFeil(
                 "Kan ikke ha iverksetting med brev når det er migrering, g-omregning eller korrigering uten brev",
                 HttpStatus.BAD_REQUEST
@@ -86,7 +86,7 @@ class IverksettingController(
         }
     }
 
-    private fun valider(iverksett: Iverksett) {
+    private fun valider(iverksett: IverksettData) {
         if (iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat != Vedtaksresultat.AVSLÅTT) {
             throw ApiFeil(
                 "Kan ikke ha iverksetting uten tilkjentYtelse " +

@@ -9,6 +9,7 @@ import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
@@ -54,7 +55,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
     @Test
     internal fun `skal sende perioder fra andeler til infotrygd`() {
         val iverksett = opprettData(lagAndelTilkjentYtelse(2, LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31)))
-        every { iverksettingRepository.hent(behandlingId) } returns iverksett
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns iverksett
 
         task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
 
@@ -82,7 +83,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
             inntektsreduksjon = 1
         )
         val iverksett = opprettData(andelTilkjentYtelse, andelTilkjentYtelse2)
-        every { iverksettingRepository.hent(behandlingId) } returns iverksett
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns iverksett
 
         task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
 
@@ -96,7 +97,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     @Test
     internal fun `skal sende tom liste med perioder til infotrygd hvis det ikke finnes noen andeler`() {
-        every { iverksettingRepository.hent(behandlingId) } returns opprettData()
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns opprettData()
 
         task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
 
@@ -109,11 +110,12 @@ internal class SendPerioderTilInfotrygdTaskTest {
         val iverksett = opprettIverksettOvergangsstønad(behandlingId)
         val vedtak = iverksett.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
-        return iverksett.copy(
+        val iverksettData = iverksett.copy(
             vedtak = vedtak.copy(
                 tilkjentYtelse =
                 tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelTilkjentYtelse.toList())
             )
         )
+        return Iverksett(behandlingId, iverksettData, iverksettData.behandling.eksternId)
     }
 }

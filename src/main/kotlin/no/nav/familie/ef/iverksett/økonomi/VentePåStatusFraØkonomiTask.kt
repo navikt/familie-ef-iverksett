@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -33,7 +34,7 @@ class VentePåStatusFraØkonomiTask(
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
+        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingId)
             ?: error("Kunne ikke finne tilkjent ytelse for behandling=$behandlingId")
 
@@ -51,7 +52,7 @@ class VentePåStatusFraØkonomiTask(
 
     override fun onCompletion(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
+        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
 
         if (iverksett.skalIkkeSendeBrev()) {
             logger.info("Journalfør ikke vedtaksbrev for behandling=$behandlingId då årsak=${iverksett.behandling.behandlingÅrsak}")

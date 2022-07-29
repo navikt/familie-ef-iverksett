@@ -1,13 +1,13 @@
 package no.nav.familie.ef.iverksett.util
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
 
-fun Iverksett.copy(vedtak: Vedtaksdetaljer): Iverksett {
+fun IverksettData.copy(vedtak: Vedtaksdetaljer): IverksettData {
     return when (this) {
         is IverksettOvergangsstønad -> this.copy(vedtak = vedtak as VedtaksdetaljerOvergangsstønad)
         else -> error("Ingen støtte ennå")

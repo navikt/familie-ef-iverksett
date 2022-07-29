@@ -8,7 +8,9 @@ import io.mockk.runs
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.prosessering.domene.Task
@@ -31,7 +33,8 @@ internal class PubliserVedtakTilKafkaTaskTest {
 
     @BeforeEach
     internal fun setUp() {
-        every { iverksettingRepository.hent(any()) } returns opprettIverksettDto(behandlingId = UUID.randomUUID()).toDomain()
+        every { iverksettingRepository.findByIdOrThrow(any()) }
+            .returns(lagIverksett(opprettIverksettDto(behandlingId = UUID.randomUUID()).toDomain()))
         every { taskRepository.save(capture(taskSlot)) } answers { firstArg() }
     }
 

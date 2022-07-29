@@ -10,8 +10,10 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
@@ -54,6 +56,15 @@ internal class JournalførVedtaksbrevTaskTest {
     private val journalpostResultatSlot = slot<JournalpostResultat>()
     private val taskSlot = slot<Task>()
 
+    private val iverksettDto = opprettIverksettDto(behandlingId = behandlingId)
+
+    private val iverksett = Iverksett(
+        iverksettDto.behandling.behandlingId,
+        iverksettDto.toDomain(),
+        iverksettDto.behandling.eksternId,
+        Brev(behandlingId, ByteArray(256))
+    )
+
     @BeforeEach
     fun setUp() {
         arkiverDokumentRequestSlot.clear()
@@ -61,7 +72,6 @@ internal class JournalførVedtaksbrevTaskTest {
         taskSlot.clear()
 
         every { taskRepository.save(capture(taskSlot)) } answers { firstArg() }
-        every { iverksettingRepository.hentBrev(behandlingId) }.returns(Brev(behandlingId, ByteArray(256)))
     }
 
     @Test
@@ -70,7 +80,7 @@ internal class JournalførVedtaksbrevTaskTest {
             journalpostId,
             true
         )
-        every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
         every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
                 journalpostId
@@ -117,7 +127,7 @@ internal class JournalførVedtaksbrevTaskTest {
             it.copy(vedtak = it.vedtak.copy(brevmottakere = brevmottakere)).toDomain()
         }
 
-        every { iverksettingRepository.hent(behandlingId) } returns iverksettMedBrevmottakere
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns iverksett.copy(data = iverksettMedBrevmottakere)
         every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
                 "journalpostId"
@@ -143,11 +153,13 @@ internal class JournalførVedtaksbrevTaskTest {
             journalpostId,
             true
         )
-        every { iverksettingRepository.hent(behandlingId) }.returns(
-            opprettIverksettDto(
-                behandlingId = behandlingId,
-                stønadType = StønadType.BARNETILSYN
-            ).toDomain()
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(
+            iverksett.copy(
+                data = opprettIverksettDto(
+                    behandlingId = behandlingId,
+                    stønadType = StønadType.BARNETILSYN
+                ).toDomain()
+            )
         )
         every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
@@ -168,7 +180,8 @@ internal class JournalførVedtaksbrevTaskTest {
         verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
         assertThat(arkiverDokumentRequestSlot).hasSize(1)
         assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
-        assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter.first().dokumenttype).isEqualTo(Dokumenttype.VEDTAKSBREV_BARNETILSYN)
+        assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter.first().dokumenttype)
+            .isEqualTo(Dokumenttype.VEDTAKSBREV_BARNETILSYN)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
     }
 
@@ -197,7 +210,7 @@ internal class JournalførVedtaksbrevTaskTest {
                 )
             )
         }
-        every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
 
         every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(

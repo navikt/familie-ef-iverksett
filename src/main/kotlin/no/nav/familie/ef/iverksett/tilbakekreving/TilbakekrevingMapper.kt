@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.felles.Fagsystem
@@ -26,7 +26,7 @@ fun Tilbakekrevingsdetaljer?.validerTilbakekreving(): Boolean {
     return true
 }
 
-fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
+fun IverksettData.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
     OpprettTilbakekrevingRequest(
         fagsystem = Fagsystem.EF,
         ytelsestype = Ytelsestype.valueOf(this.fagsak.stønadstype.name),
@@ -45,7 +45,7 @@ fun Iverksett.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
         faktainfo = lagFaktainfo(this)
     )
 
-fun Iverksett.tilFagsystembehandling(enhet: Enhet) =
+fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
     HentFagsystemsbehandlingRespons(
         hentFagsystemsbehandling =
         HentFagsystemsbehandling(
@@ -76,7 +76,7 @@ private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel?
     }
 }
 
-private fun lagFaktainfo(iverksett: Iverksett): Faktainfo {
+private fun lagFaktainfo(iverksett: IverksettData): Faktainfo {
     return Faktainfo(
         revurderingsårsak = iverksett.behandling.behandlingÅrsak.visningsTekst(),
         revurderingsresultat = iverksett.vedtak.vedtaksresultat.visningsnavn,

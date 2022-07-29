@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
@@ -19,6 +20,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksbrevResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
@@ -378,8 +380,8 @@ class IverksettResultatMockBuilder private constructor(
 
     data class Builder(
         var oppdragResultat: OppdragResultat? = null,
-        var journalpostResultat: Map<String, JournalpostResultat>? = null,
-        var vedtaksbrevResultat: Map<String, DistribuerVedtaksbrevResultat>? = null,
+        var journalpostResultat: Map<String, JournalpostResultat> = mapOf(),
+        var vedtaksbrevResultat: Map<String, DistribuerVedtaksbrevResultat> = mapOf(),
         var tilbakekrevingResultat: TilbakekrevingResultat? = null
     ) {
 
@@ -406,8 +408,8 @@ class IverksettResultatMockBuilder private constructor(
                 behandlingId,
                 tilkjentYtelse,
                 oppdragResultat,
-                journalpostResultat,
-                vedtaksbrevResultat,
+                JournalpostResultatMap(journalpostResultat),
+                VedtaksbrevResultatMap(vedtaksbrevResultat),
                 tilbakekrevingResultat
             )
     }

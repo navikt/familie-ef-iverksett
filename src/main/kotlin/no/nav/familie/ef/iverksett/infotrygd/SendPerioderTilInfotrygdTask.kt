@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.infotrygd
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
 import no.nav.familie.kontrakter.felles.ef.StønadType
@@ -29,7 +30,7 @@ class SendPerioderTilInfotrygdTask(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
-        val iverksett = iverksettingRepository.hent(UUID.fromString(task.payload))
+        val iverksett = iverksettingRepository.findByIdOrThrow(UUID.fromString(task.payload)).data
         val stønadstype = iverksett.fagsak.stønadstype
         if (stønadstype != StønadType.OVERGANGSSTØNAD) {
             return
@@ -49,7 +50,7 @@ class SendPerioderTilInfotrygdTask(
 
     override fun onCompletion(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
+        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         if (iverksett.erMigrering()) {
             logger.info("Siste tasken i publiseringsflyt er SendPerioderTilInfotrygd før vedtakstatistikk sendes for behandling=$behandlingId då årsaken er migrering")
         }
