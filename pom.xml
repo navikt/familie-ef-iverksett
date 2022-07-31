@@ -20,7 +20,7 @@
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20220701144106_918df22</felles.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-        <mockk.version>1.12.4</mockk.version>
+        <mockk.version>1.12.5</mockk.version>
         <cucumber.version>7.4.1</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.3.1</dotenv.version>
