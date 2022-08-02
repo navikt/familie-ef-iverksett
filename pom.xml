@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.1</version>
+        <version>2.7.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -20,8 +20,8 @@
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20220701144106_918df22</felles.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-        <mockk.version>1.12.4</mockk.version>
-        <cucumber.version>7.4.1</cucumber.version>
+        <mockk.version>1.12.5</mockk.version>
+        <cucumber.version>7.5.0</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.3.1</dotenv.version>
         <prosessering.version>1.20220624132237_7f5ba9c</prosessering.version>
@@ -217,7 +217,7 @@
         <dependency>
             <groupId>dev.akkinoc.spring.boot</groupId>
             <artifactId>logback-access-spring-boot-starter</artifactId>
-            <version>3.3.1</version>
+            <version>3.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -228,7 +228,7 @@
         <dependency>
             <groupId>com.github.doyaaaaaken</groupId>
             <artifactId>kotlin-csv-jvm</artifactId>
-            <version>1.4.0</version>
+            <version>1.5.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
