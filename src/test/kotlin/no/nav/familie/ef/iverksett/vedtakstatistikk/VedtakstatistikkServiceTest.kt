@@ -21,7 +21,7 @@ import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
 import no.nav.familie.eksterne.kontrakter.ef.Utbetalingsdetalj
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
-import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeDto
+import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeOvergangsstønadDto
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
@@ -99,7 +99,7 @@ class VedtakstatistikkServiceTest {
             behandlingÅrsak = BehandlingÅrsak.SØKNAD,
             vedtak = Vedtak.INNVILGET,
             vedtaksperioder = listOf(
-                VedtaksperiodeDto(
+                VedtaksperiodeOvergangsstønadDto(
                     fraOgMed = LocalDate.now(),
                     tilOgMed = LocalDate.now(),
                     aktivitet = AktivitetType.BARNET_ER_SYKT,

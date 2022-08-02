@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import no.nav.familie.ef.iverksett.util.ObjectMapperProvider
 import no.nav.familie.http.client.RetryOAuth2HttpClient
 import no.nav.familie.http.config.RestTemplateAzure
+import no.nav.familie.kafka.KafkaErrorHandler
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.log.filter.LogFilter
 import no.nav.familie.log.filter.RequestTimeFilter
@@ -36,7 +37,10 @@ import java.time.temporal.ChronoUnit
     ]
 )
 @EnableJwtTokenValidation(ignore = ["org.springframework", "org.springdoc"])
-@Import(RestTemplateAzure::class)
+@Import(
+    RestTemplateAzure::class,
+    KafkaErrorHandler::class
+)
 @EnableOAuth2Client(cacheEnabled = true)
 @EnableScheduling
 class ApplicationConfig {
@@ -44,7 +48,7 @@ class ApplicationConfig {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
-    fun kotlinModule(): KotlinModule = KotlinModule()
+    fun kotlinModule(): KotlinModule = KotlinModule.Builder().build()
 
     @Bean
     fun logFilter(): FilterRegistrationBean<LogFilter> {
@@ -65,7 +69,8 @@ class ApplicationConfig {
     }
 
     @Bean
-    @Primary fun objectMapper() = ObjectMapperProvider.objectMapper
+    @Primary
+    fun objectMapper() = ObjectMapperProvider.objectMapper
 
     /**
      * Overskrever felles sin som bruker proxy, som ikke skal brukes på gcp

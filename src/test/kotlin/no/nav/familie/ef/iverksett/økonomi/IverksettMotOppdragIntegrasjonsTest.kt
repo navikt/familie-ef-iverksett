@@ -5,7 +5,6 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.NULL_DATO
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -105,7 +104,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     }
 
     @Test
-    internal fun `iverksett med opphør, forventer beløp lik 0 og dato lik NULL_DATO`() {
+    internal fun `iverksett med opphør, forventer beløp lik 0 og dato lik LocalDate MIN`() {
         val opphørBehandlingId = UUID.randomUUID()
         val startdato = førsteAndel.fraOgMed
         val iverksettMedOpphør =
@@ -119,8 +118,8 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
         assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
         assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().beløp).isEqualTo(0)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().fraOgMed).isEqualTo(NULL_DATO)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().tilOgMed).isEqualTo(NULL_DATO)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().fraOgMed).isEqualTo(LocalDate.MIN)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().tilOgMed).isEqualTo(LocalDate.MIN)
     }
 
     private fun iverksettMotOppdrag() {
