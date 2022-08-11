@@ -4,6 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.lagIverksett
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.prosessering.domene.Task
@@ -25,7 +27,7 @@ internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
 
     @Test
     internal fun `skal opprette oppfølgningsoppgave for overgangsstønad`() {
-        every { iverksettingRepository.hent(any()) } returns opprettIverksettOvergangsstønad()
+        every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
         every { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) } returns true
         every { oppgaveService.opprettVurderHenvendelseOppgave(any()) } returns 1
 
@@ -37,7 +39,7 @@ internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
 
     @Test
     internal fun `skal ikke opprette oppfølgningsoppgave for barnetilsyn`() {
-        every { iverksettingRepository.hent(any()) } returns opprettIverksettBarnetilsyn()
+        every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettBarnetilsyn())
 
         taskService.doTask(opprettTask())
 

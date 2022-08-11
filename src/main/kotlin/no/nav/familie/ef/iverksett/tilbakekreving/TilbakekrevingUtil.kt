@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.økonomi.simulering.hentSammenhengendePerioderMedFeilutbetaling
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
@@ -14,7 +14,7 @@ private val TILBAKEKREVING_UTEN_VARSEL =
         tilbakekrevingMedVarsel = null
     )
 
-fun Iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleringsresultat): Iverksett {
+fun IverksettData.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleringsresultat): IverksettData {
 
     val tilbakekreving = this.vedtak.tilbakekreving
     val simuleringsoppsummering = beriketSimuleringsresultat.oppsummering

@@ -20,7 +20,7 @@ import java.util.UUID
 internal class LagreTilstandRepositoryTest : ServerTest() {
 
     @Autowired
-    private lateinit var tilstandServiceRepository: TilstandRepository
+    private lateinit var tilstandRepositoryRepository: TilstandRepository
 
     private val behandlingsId: UUID = UUID.randomUUID()
     private val journalpostId: UUID = UUID.randomUUID()
@@ -29,24 +29,24 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
 
     @BeforeEach
     fun beforeEach() {
-        tilstandServiceRepository.opprettTomtResultat(behandlingsId)
+        tilstandRepositoryRepository.opprettTomtResultat(behandlingsId)
     }
 
     @Test
     fun `oppdater tilkjent ytelse, forvent ingen unntak`() {
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
-        tilstandServiceRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
+        tilstandRepositoryRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
     }
 
     @Test
     fun `oppdater oppdrag, forvent ingen unntak`() {
         val oppdragResultat = OppdragResultat(oppdragStatus = OppdragStatus.KVITTERT_OK)
-        tilstandServiceRepository.oppdaterOppdragResultat(behandlingsId, oppdragResultat)
+        tilstandRepositoryRepository.oppdaterOppdragResultat(behandlingsId, oppdragResultat)
     }
 
     @Test
     fun `oppdater journalpost, forvent ingen unntak`() {
-        tilstandServiceRepository.oppdaterJournalpostResultat(
+        tilstandRepositoryRepository.oppdaterJournalpostResultat(
             behandlingsId,
             "123",
             JournalpostResultat(
@@ -57,7 +57,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
 
     @Test
     fun `oppdater distribuerVedtaksbrev, forvent ingen unntak`() {
-        tilstandServiceRepository.oppdaterDistribuerVedtaksbrevResultat(
+        tilstandRepositoryRepository.oppdaterDistribuerVedtaksbrevResultat(
             behandlingsId,
             "123",
             DistribuerVedtaksbrevResultat(bestillingId = "12345")
@@ -67,7 +67,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     @Test
     fun `oppdater distribuerVedtaksbrev med feil behandlingId, forvent IllegalStateException`() {
         assertThrows<IllegalStateException> {
-            tilstandServiceRepository.oppdaterDistribuerVedtaksbrevResultat(
+            tilstandRepositoryRepository.oppdaterDistribuerVedtaksbrevResultat(
                 UUID.randomUUID(),
                 "123",
                 DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
@@ -81,7 +81,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
         val opprettTilbakekrevingRequest = opprettIverksettOvergangsstønad(behandlingsId)
             .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
-        tilstandServiceRepository.oppdaterTilbakekrevingResultat(
+        tilstandRepositoryRepository.oppdaterTilbakekrevingResultat(
             behandlingsId,
             TilbakekrevingResultat(opprettTilbakekrevingRequest)
         )

@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.arena
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import java.time.LocalDateTime
@@ -9,16 +9,16 @@ import java.util.Locale
 
 private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
-fun mapIverksettTilVedtakHendelser(iverksett: Iverksett, aktørId: String): VedtakHendelser {
+fun mapIverksettTilVedtakHendelser(iverksettData: IverksettData, aktørId: String): VedtakHendelser {
     return VedtakHendelser(
         aktoerID = aktørId,
-        avslutningsstatus = mapAvslutningsstatus(iverksett.vedtak.vedtaksresultat),
+        avslutningsstatus = mapAvslutningsstatus(iverksettData.vedtak.vedtaksresultat),
         behandlingstema = Behandlingstema.valueOf(
-            iverksett.fagsak.stønadstype.name.lowercase(Locale.getDefault())
+            iverksettData.fagsak.stønadstype.name.lowercase(Locale.getDefault())
                 .replaceFirstChar { it.uppercase() }
         ).value,
         hendelsesprodusentREF = "EF",
-        applikasjonSakREF = iverksett.fagsak.eksternId.toString(),
+        applikasjonSakREF = iverksettData.fagsak.eksternId.toString(),
         hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter)
     )
 }

@@ -3,8 +3,10 @@ package no.nav.familie.ef.iverksett.brev
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
 import no.nav.familie.kontrakter.felles.BrukerIdType
@@ -44,11 +46,11 @@ class JournalførVedtaksbrevTask(
     override fun doTask(task: Task) {
 
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
+        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId)
 
         journalførVedtaksbrev(behandlingId, iverksett)
 
-        validerJournalpostResultatErSatt(behandlingId, iverksett)
+        validerJournalpostResultatErSatt(behandlingId, iverksett.data)
     }
 
     private fun journalførOgLagreResultat(
@@ -94,35 +96,35 @@ class JournalførVedtaksbrevTask(
         behandlingId: UUID,
         iverksett: Iverksett
     ) {
-        val vedtaksbrev = iverksettingRepository.hentBrev(behandlingId)
+        val vedtaksbrev = iverksett.brev ?: error("Fant ikke brev for behandlingId : $behandlingId")
         val dokument = Dokument(
             vedtaksbrev.pdf,
             Filtype.PDFA,
-            dokumenttype = vedtaksbrevForStønadType(iverksett.fagsak.stønadstype),
-            tittel = lagDokumentTittel(iverksett)
+            dokumenttype = vedtaksbrevForStønadType(iverksett.data.fagsak.stønadstype),
+            tittel = lagDokumentTittel(iverksett.data)
         )
 
         val arkiverDokumentRequest = ArkiverDokumentRequest(
-            fnr = iverksett.søker.personIdent,
+            fnr = iverksett.data.søker.personIdent,
             forsøkFerdigstill = true,
             hoveddokumentvarianter = listOf(dokument),
-            fagsakId = iverksett.fagsak.eksternId.toString(),
-            journalførendeEnhet = iverksett.søker.tilhørendeEnhet,
+            fagsakId = iverksett.data.fagsak.eksternId.toString(),
+            journalførendeEnhet = iverksett.data.søker.tilhørendeEnhet,
             eksternReferanseId = "$behandlingId-vedtaksbrev"
         )
 
         val journalførteIdenter: List<String> =
             tilstandRepository.hentJournalpostResultat(behandlingId)?.keys?.toList() ?: emptyList()
 
-        if (iverksett.vedtak.brevmottakere?.mottakere?.isEmpty() == true) {
-            journalførVedtaksbrevTilStønadmottaker(arkiverDokumentRequest, iverksett, behandlingId)
+        if (iverksett.data.vedtak.brevmottakere?.mottakere?.isEmpty() == true) {
+            journalførVedtaksbrevTilStønadmottaker(arkiverDokumentRequest, iverksett.data, behandlingId)
         } else {
-            journalførVedtaksbrevTilBrevmottakere(iverksett, journalførteIdenter, arkiverDokumentRequest, behandlingId)
+            journalførVedtaksbrevTilBrevmottakere(iverksett.data, journalførteIdenter, arkiverDokumentRequest, behandlingId)
         }
     }
 
     private fun journalførVedtaksbrevTilBrevmottakere(
-        iverksett: Iverksett,
+        iverksett: IverksettData,
         journalførteIdenter: List<String>,
         arkiverDokumentRequest: ArkiverDokumentRequest,
         behandlingId: UUID
@@ -150,7 +152,7 @@ class JournalførVedtaksbrevTask(
 
     private fun journalførVedtaksbrevTilStønadmottaker(
         arkiverDokumentRequest: ArkiverDokumentRequest,
-        iverksett: Iverksett,
+        iverksett: IverksettData,
         behandlingId: UUID
     ) {
         journalførOgLagreResultat(
@@ -161,7 +163,7 @@ class JournalførVedtaksbrevTask(
         )
     }
 
-    private fun validerJournalpostResultatErSatt(behandlingId: UUID, iverksett: Iverksett) {
+    private fun validerJournalpostResultatErSatt(behandlingId: UUID, iverksett: IverksettData) {
         val antallJournalføringer = tilstandRepository.hentJournalpostResultat(behandlingId)?.size
             ?: error("Ingen journalføringer for behandling=[$behandlingId]")
 
@@ -175,7 +177,7 @@ class JournalførVedtaksbrevTask(
         }
     }
 
-    private fun lagDokumentTittel(iverksett: Iverksett): String =
+    private fun lagDokumentTittel(iverksett: IverksettData): String =
         lagVedtakstekst(iverksett) + lagStønadtypeTekst(iverksett.fagsak.stønadstype)
 
     override fun onCompletion(task: Task) {

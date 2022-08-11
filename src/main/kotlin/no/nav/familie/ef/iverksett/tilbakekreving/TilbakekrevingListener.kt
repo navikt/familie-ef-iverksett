@@ -54,7 +54,7 @@ class TilbakekrevingListener(
                 return
             }
             logger.info("HentFagsystemsbehandlingRequest er mottatt i kafka med key=$key og data=$data")
-            val iverksett = iverksettingRepository.hentAvEksternId(request.eksternId.toLong())
+            val iverksett = iverksettingRepository.findByEksternId(request.eksternId.toLong()).data
             familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)?.let {
                 val fagsystemsbehandling = iverksett.tilFagsystembehandling(it)
                 tilbakekrevingProducer.send(fagsystemsbehandling, key)

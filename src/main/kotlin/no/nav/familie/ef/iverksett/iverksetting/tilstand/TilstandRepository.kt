@@ -6,73 +6,39 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.util.getJson
-import no.nav.familie.ef.iverksett.util.getUUID
-import no.nav.familie.ef.iverksett.util.queryForJson
-import no.nav.familie.ef.iverksett.util.queryForNullableObject
-import no.nav.familie.kontrakter.felles.objectMapper
-import org.springframework.jdbc.core.ResultSetExtractor
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.sql.ResultSet
 import java.util.UUID
 
-@Repository
-class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+@Repository // TODO Rename til Service etter QA.
+class TilstandRepository(private val iverksettResultatRepository: IverksettResultatRepository) {
 
     fun opprettTomtResultat(behandlingId: UUID) {
-        val sql = "INSERT INTO iverksett_resultat VALUES(:behandlingId, NULL, NULL, NULL, NULL, NULL)"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource)
+        iverksettResultatRepository.insert(IverksettResultat(behandlingId))
     }
 
     fun oppdaterTilkjentYtelseForUtbetaling(behandlingId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
-
-        val sql = "UPDATE iverksett_resultat SET tilkjentytelseforutbetaling = :tilkjentYtelseForUtbetaling::JSON " +
-            "WHERE behandling_id = :behandlingId"
-        val tilkjentYtelseForUtbetalingJson = objectMapper.writeValueAsString(tilkjentYtelseForUtbetaling)
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-            .addValue("tilkjentYtelseForUtbetaling", tilkjentYtelseForUtbetalingJson)
-
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-            ?: error("Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = $behandlingId")
+        val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
+        iverksettResultatRepository.update(iverksettResultat.copy(tilkjentYtelseForUtbetaling = tilkjentYtelseForUtbetaling))
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun oppdaterOppdragResultat(behandlingId: UUID, oppdragResultat: OppdragResultat) {
-        val sql = "UPDATE iverksett_resultat SET oppdragresultat = :oppdragResultat::JSON WHERE behandling_id = :behandlingId"
-
-        val oppdragResultatJson = objectMapper.writeValueAsString(oppdragResultat)
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-            .addValue("oppdragResultat", oppdragResultatJson)
-
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-            ?: error(
-                "Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = $behandlingId, " +
-                    "oppdragResultatJson : $oppdragResultatJson"
-            )
+        val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
+        iverksettResultatRepository.update(iverksettResultat.copy(oppdragResultat = oppdragResultat))
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun oppdaterJournalpostResultat(behandlingId: UUID, mottakerIdent: String, journalPostResultat: JournalpostResultat) {
-        val sql = "UPDATE iverksett_resultat SET journalpostresultat = :journalpostResultat::JSON " +
-            "WHERE behandling_id = :behandlingId"
+        val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
 
-        val eksisterendeResultat = hentJournalpostResultat(behandlingId)
-        val resultatermedNyBrevmottaker = (eksisterendeResultat ?: emptyMap()) + mapOf(mottakerIdent to journalPostResultat)
-
-        val journalPostResultatJson = objectMapper.writeValueAsString(resultatermedNyBrevmottaker)
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-            .addValue("journalpostResultat", journalPostResultatJson)
-
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-            ?: error(
-                "Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = $behandlingId," +
-                    "journalPostResultatJson : $journalPostResultatJson"
-            )
+        val oppdatert = iverksettResultat.copy(
+            journalpostResultat = iverksettResultat.journalpostResultat + mapOf(mottakerIdent to journalPostResultat)
+        )
+        iverksettResultatRepository.update(oppdatert)
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -81,98 +47,45 @@ class TilstandRepository(val namedParameterJdbcTemplate: NamedParameterJdbcTempl
         journalpostId: String,
         distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat
     ) {
-        val sql = "UPDATE iverksett_resultat SET vedtaksbrevresultat = :distribuerVedtaksbrevResultatBrevmottakereJson::JSON " +
-            "WHERE behandling_id = :behandlingId"
-
-        val eksisterendeResultat: Map<String, DistribuerVedtaksbrevResultat>? = hentdistribuerVedtaksbrevResultat(behandlingId)
-
-        val resultatermedNyJournalpost = (eksisterendeResultat ?: emptyMap()) + mapOf(journalpostId to distribuerVedtaksbrevResultat)
-
-        val distribuerVedtaksbrevResultatBrevmottakereJson = objectMapper.writeValueAsString(resultatermedNyJournalpost)
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-            .addValue("distribuerVedtaksbrevResultatBrevmottakereJson", distribuerVedtaksbrevResultatBrevmottakereJson)
-
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-            ?: error(
-                "Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = $behandlingId, " +
-                    "distribuerVedtaksbrevResultatBrevmottakereJson : $distribuerVedtaksbrevResultatBrevmottakereJson"
-            )
+        val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
+        val oppdatert = iverksettResultat.copy(
+            vedtaksbrevResultat = iverksettResultat.vedtaksbrevResultat + mapOf(journalpostId to distribuerVedtaksbrevResultat)
+        )
+        iverksettResultatRepository.update(oppdatert)
     }
 
     fun hentdistribuerVedtaksbrevResultat(behandlingId: UUID): Map<String, DistribuerVedtaksbrevResultat>? {
-        val sql = "SELECT vedtaksbrevresultat FROM iverksett_resultat WHERE behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+        return iverksettResultatRepository.findByIdOrThrow(behandlingId).vedtaksbrevResultat.map
     }
 
-    fun oppdaterTilbakekrevingResultat(
-        behandlingId: UUID,
-        tilbakekrevingResultat: TilbakekrevingResultat
-    ) {
-        val sql = "UPDATE iverksett_resultat SET tilbakekrevingresultat = :tilbakekrevingResultatJson::JSON " +
-            "WHERE behandling_id = :behandlingId"
-        val tilbakekrevingResultatJson = objectMapper.writeValueAsString(tilbakekrevingResultat)
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-            .addValue("tilbakekrevingResultatJson", tilbakekrevingResultatJson)
-
-        namedParameterJdbcTemplate.update(sql, mapSqlParameterSource).takeIf { it == 1 }
-            ?: error(
-                "Kunne ikke oppdatere tabell. Skyldes trolig feil behandlingId = $behandlingId, " +
-                    "tilbakekrevingResultatJson : $tilbakekrevingResultatJson"
-            )
+    fun oppdaterTilbakekrevingResultat(behandlingId: UUID, tilbakekrevingResultat: TilbakekrevingResultat) {
+        val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
+        iverksettResultatRepository.update(iverksettResultat.copy(tilbakekrevingResultat = tilbakekrevingResultat))
     }
 
     fun hentTilkjentYtelse(behandlingId: UUID): TilkjentYtelse? {
-        val sql = "SELECT tilkjentytelseforutbetaling FROM iverksett_resultat WHERE behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+        return iverksettResultatRepository.findByIdOrNull(behandlingId)?.tilkjentYtelseForUtbetaling
     }
 
     fun hentTilkjentYtelse(behandlingId: Set<UUID>): Map<UUID, TilkjentYtelse> {
-        val sql =
-            "SELECT behandling_id, tilkjentytelseforutbetaling FROM iverksett_resultat WHERE behandling_id IN (:behandlingId)"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        val resultSetExtractor = ResultSetExtractor { rs ->
-            val result = mutableMapOf<UUID, TilkjentYtelse>()
-            while (rs.next()) {
-                result[rs.getUUID("behandling_id")] =
-                    rs.getJson("tilkjentytelseforutbetaling")!!
-            }
-            result.toMap()
+        val iverksettResultater = iverksettResultatRepository.findAllById(behandlingId)
+        val tilkjenteYtelser = iverksettResultater.filter { it.tilkjentYtelseForUtbetaling != null }
+            .associate { it.behandlingId to it.tilkjentYtelseForUtbetaling!! }
+        if (behandlingId.size > tilkjenteYtelser.size) {
+            error("Finner ikke tilkjent ytelse til behandlingIder=${behandlingId.minus(tilkjenteYtelser.keys)}}")
         }
-        val result = namedParameterJdbcTemplate.query(sql, mapSqlParameterSource, resultSetExtractor)!!
-        if (!result.keys.containsAll(behandlingId)) {
-            val behandlingIdnSomSavnerMatchIResult = behandlingId.toMutableSet()
-            behandlingIdnSomSavnerMatchIResult.removeAll(result.keys)
-            error("Finner ikke tilkjent ytelse til behandlingIdn=$behandlingIdnSomSavnerMatchIResult")
-        }
-        return result
+        return tilkjenteYtelser
     }
 
     fun hentJournalpostResultat(behandlingId: UUID): Map<String, JournalpostResultat>? {
-        val sql = "SELECT journalpostresultat FROM iverksett_resultat WHERE behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+        return iverksettResultatRepository.findByIdOrNull(behandlingId)?.journalpostResultat?.map
     }
 
     fun hentIverksettResultat(behandlingId: UUID): IverksettResultat? {
-        val sql = "SELECT * FROM iverksett_resultat WHERE behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        return namedParameterJdbcTemplate.queryForNullableObject(sql, mapSqlParameterSource) { rs: ResultSet, _: Int ->
-            IverksettResultat(
-                UUID.fromString(rs.getString("behandling_id")),
-                rs.getJson("tilkjentYtelseForUtbetaling"),
-                rs.getJson("oppdragResultat"),
-                rs.getJson("journalpostResultat"),
-                rs.getJson("vedtaksBrevResultat"),
-                rs.getJson("tilbakekrevingResultat")
-            )
-        }
+        return iverksettResultatRepository.findByIdOrNull(behandlingId)
     }
 
     fun hentTilbakekrevingResultat(behandlingId: UUID): TilbakekrevingResultat? {
-        val sql = "SELECT tilbakekrevingresultat FROM iverksett_resultat WHERE behandling_id = :behandlingId"
-        val mapSqlParameterSource = MapSqlParameterSource("behandlingId", behandlingId)
-        return namedParameterJdbcTemplate.queryForJson(sql, mapSqlParameterSource)
+        return iverksettResultatRepository.findByIdOrThrow(behandlingId).tilbakekrevingResultat
     }
 }

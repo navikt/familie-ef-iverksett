@@ -8,8 +8,9 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.lagIverksett
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
-import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.prosessering.domene.Task
 import org.junit.jupiter.api.Test
 import java.util.Properties
@@ -21,15 +22,15 @@ internal class VedtakstatistikkTaskTest {
     private val vedtakstatistikkService = mockk<VedtakstatistikkService>()
     val tilstandRepository = mockk<TilstandRepository>()
     private val vedtakstatistikkTask =
-        VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService, tilstandRepository)
+        VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService)
     val behandlingId: UUID = UUID.randomUUID()
 
     @Test
     fun `skal sende vedtaksstatistikk til DVH`() {
         val behandlingIdString = behandlingId.toString()
         every { vedtakstatistikkService.sendTilKafka(any(), null) } just Runs
-        every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns opprettTilkjentYtelse(behandlingId)
-        every { iverksettingRepository.hent(behandlingId) }.returns(opprettIverksettDto(behandlingId = behandlingId).toDomain())
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }
+            .returns(lagIverksett(opprettIverksettDto(behandlingId = behandlingId).toDomain()))
         vedtakstatistikkTask.doTask(Task(VedtakstatistikkTask.TYPE, behandlingIdString, Properties()))
         verify(exactly = 1) { vedtakstatistikkService.sendTilKafka(any(), null) }
     }

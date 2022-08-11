@@ -5,7 +5,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.oppgave.OppgaveClient
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
@@ -23,7 +23,7 @@ import java.util.UUID
 
 internal class OpprettOppgaverForBarnServiceTest {
 
-    private val iverksett = mockk<Iverksett>()
+    private val iverksett = mockk<IverksettData>()
     private val oppgaveClient = mockk<OppgaveClient>()
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
     private val taskRepository = mockk<TaskRepository>()

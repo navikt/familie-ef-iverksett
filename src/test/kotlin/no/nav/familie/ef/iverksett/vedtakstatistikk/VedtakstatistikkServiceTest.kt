@@ -47,7 +47,7 @@ class VedtakstatistikkServiceTest {
         every { vedtakstatistikkKafkaProducer.sendVedtak(capture(vedtakstatistikkJsonSlot)) } just Runs
 
         val iverksettOvergangsstønad = opprettIverksettOvergangsstønad(behandlingId)
-        vedtakstatistikkService.sendTilKafka(iverksett = iverksettOvergangsstønad, forrigeIverksett = null)
+        vedtakstatistikkService.sendTilKafka(iverksettData = iverksettOvergangsstønad, forrigeIverksett = null)
 
         val vedtakOvergangsstønad = opprettVedtakstatistikkOvergangsstønad(
             behandlingId = iverksettOvergangsstønad.behandling.eksternId,

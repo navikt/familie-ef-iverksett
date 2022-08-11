@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.brev
 
-import no.nav.familie.ef.iverksett.lagIverksett
+import no.nav.familie.ef.iverksett.lagIverksettData
 import no.nav.familie.kontrakter.ef.felles.BehandlingType.FØRSTEGANGSBEHANDLING
 import no.nav.familie.kontrakter.ef.felles.BehandlingType.REVURDERING
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak.NYE_OPPLYSNINGER
@@ -14,17 +14,17 @@ import org.junit.jupiter.api.Test
 internal class BrevFunctionsKtTest {
 
     private val iverksettFørsteGangsbehandlingInnvilget =
-        lagIverksett(behandlingType = FØRSTEGANGSBEHANDLING, vedtaksresultat = INNVILGET)
+        lagIverksettData(behandlingType = FØRSTEGANGSBEHANDLING, vedtaksresultat = INNVILGET)
     private val iverksettFørsteGangsbehandlingAvslått =
-        lagIverksett(behandlingType = FØRSTEGANGSBEHANDLING, vedtaksresultat = AVSLÅTT)
+        lagIverksettData(behandlingType = FØRSTEGANGSBEHANDLING, vedtaksresultat = AVSLÅTT)
     private val iverksettRevurderingAvslått =
-        lagIverksett(behandlingType = REVURDERING, vedtaksresultat = AVSLÅTT)
+        lagIverksettData(behandlingType = REVURDERING, vedtaksresultat = AVSLÅTT)
     private val iverksettRevurderingInnvilgetMedSøknad =
-        lagIverksett(behandlingType = REVURDERING, vedtaksresultat = INNVILGET, årsak = SØKNAD)
+        lagIverksettData(behandlingType = REVURDERING, vedtaksresultat = INNVILGET, årsak = SØKNAD)
     private val iverksettRevurderingInnvilgetUtenSøknad =
-        lagIverksett(behandlingType = REVURDERING, vedtaksresultat = INNVILGET, årsak = NYE_OPPLYSNINGER)
+        lagIverksettData(behandlingType = REVURDERING, vedtaksresultat = INNVILGET, årsak = NYE_OPPLYSNINGER)
     private val iverksettRevurderingOpphørt =
-        lagIverksett(behandlingType = REVURDERING, vedtaksresultat = OPPHØRT)
+        lagIverksettData(behandlingType = REVURDERING, vedtaksresultat = OPPHØRT)
 
     @Test
     internal fun `skal lage riktig brevtekst for riktig vedtak og behandlingstype`() {

@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørste
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingInnvilget
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurderingOpphørt
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
@@ -92,7 +93,7 @@ class OppgaveService(
 
     private fun aktivitetEllerPeriodeEndret(iverksett: IverksettOvergangsstønad): Boolean {
         val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId ?: return true
-        val forrigeBehandling = iverksettingRepository.hent(forrigeBehandlingId)
+        val forrigeBehandling = iverksettingRepository.findByIdOrThrow(forrigeBehandlingId).data
         if (forrigeBehandling !is IverksettOvergangsstønad) {
             error("Forrige behandling er av annen type=${forrigeBehandling::class.java.simpleName}")
         }

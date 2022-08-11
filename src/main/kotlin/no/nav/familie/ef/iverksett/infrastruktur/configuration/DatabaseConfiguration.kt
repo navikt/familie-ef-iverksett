@@ -1,7 +1,19 @@
 package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.treeToValue
+import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
+import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultatMap
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksbrevResultatMap
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.PropertiesWrapperTilStringConverter
 import no.nav.familie.prosessering.StringTilPropertiesWrapperConverter
@@ -33,9 +45,102 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
                 PropertiesWrapperTilStringConverter(),
                 StringTilPropertiesWrapperConverter(),
                 BehandlingDVHTilStringConverter(),
-                StringTilBehandlingDVHConverter()
+                StringTilBehandlingDVHConverter(),
+                TilkjentYtelseTilPGobjectConverter(),
+                PGobjectTilTilkjentYtelseConverter(),
+                OppdragResultatTilPGobjectConverter(),
+                PGobjectTilOppdragResultatConverter(),
+                JournalpostResultatMapTilPGobjectConverter(),
+                PGobjectTilJournalpostResultatMapConverter(),
+                VedtaksbrevResultatMapTilPGobjectConverter(),
+                PGobjectTilVedtaksbrevResultatMapConverter(),
+                TilbakekrevingResultatTilPGobjectConverter(),
+                PGobjectTilTilbakekrevingResultatConverter(),
+                IverksettDataTilPGobjectConverter(),
+                PGobjectConverterTilIverksettData()
             )
         )
+    }
+
+    open class DomainTilPGobjectConverter<T : Any> : Converter<T, PGobject> {
+
+        override fun convert(data: T): PGobject =
+            PGobject().apply {
+                type = "json"
+                value = objectMapper.writeValueAsString(data)
+            }
+    }
+
+    @WritingConverter
+    class IverksettDataTilPGobjectConverter : DomainTilPGobjectConverter<IverksettData>()
+
+    @ReadingConverter
+    class PGobjectConverterTilIverksettData : Converter<PGobject, IverksettData> {
+
+        override fun convert(pGobject: PGobject): IverksettData {
+            val fagsakNode = objectMapper.readTree(pGobject.value).findValue("fagsak")
+            val fagsakdetaljer: Fagsakdetaljer = objectMapper.treeToValue(fagsakNode)
+            return when (fagsakdetaljer.stønadstype) {
+                StønadType.BARNETILSYN -> objectMapper.readValue(pGobject.value, IverksettBarnetilsyn::class.java)
+                StønadType.OVERGANGSSTØNAD -> objectMapper.readValue(pGobject.value, IverksettOvergangsstønad::class.java)
+                StønadType.SKOLEPENGER -> objectMapper.readValue(pGobject.value, IverksettSkolepenger::class.java)
+            }
+        }
+    }
+
+    @WritingConverter
+    class TilkjentYtelseTilPGobjectConverter : DomainTilPGobjectConverter<TilkjentYtelse>()
+
+    @ReadingConverter
+    class PGobjectTilTilkjentYtelseConverter : Converter<PGobject, TilkjentYtelse> {
+
+        override fun convert(pGobject: PGobject): TilkjentYtelse {
+            return objectMapper.readValue(pGobject.value!!)
+        }
+    }
+
+    @WritingConverter
+    class OppdragResultatTilPGobjectConverter : DomainTilPGobjectConverter<OppdragResultat>()
+
+    @ReadingConverter
+    class PGobjectTilOppdragResultatConverter : Converter<PGobject, OppdragResultat> {
+
+        override fun convert(pGobject: PGobject): OppdragResultat {
+            return objectMapper.readValue(pGobject.value!!)
+        }
+    }
+
+    @WritingConverter
+    class JournalpostResultatMapTilPGobjectConverter : DomainTilPGobjectConverter<JournalpostResultatMap>()
+
+    @ReadingConverter
+    class PGobjectTilJournalpostResultatMapConverter : Converter<PGobject, JournalpostResultatMap> {
+
+        override fun convert(pGobject: PGobject): JournalpostResultatMap {
+            return objectMapper.readValue(pGobject.value!!)
+        }
+    }
+
+    @WritingConverter
+    class VedtaksbrevResultatMapTilPGobjectConverter : DomainTilPGobjectConverter<VedtaksbrevResultatMap>()
+
+    @ReadingConverter
+    class PGobjectTilVedtaksbrevResultatMapConverter : Converter<PGobject, VedtaksbrevResultatMap> {
+
+        override fun convert(pGobject: PGobject): VedtaksbrevResultatMap {
+            return objectMapper.readValue(pGobject.value!!)
+        }
+    }
+
+    @WritingConverter
+    class TilbakekrevingResultatTilPGobjectConverter : DomainTilPGobjectConverter<TilbakekrevingResultat>()
+
+    @ReadingConverter
+    class PGobjectTilTilbakekrevingResultatConverter : Converter<PGobject, TilbakekrevingResultat> {
+
+        override fun convert(pGobject: PGobject): TilbakekrevingResultat {
+            return objectMapper.readValue(pGobject.value!!)
+        }
     }
 
     @WritingConverter

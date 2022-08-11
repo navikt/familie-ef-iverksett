@@ -6,8 +6,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.DelårsperiodeSkoleårSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
@@ -205,7 +205,7 @@ fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
         beløp = this.beløp
     )
 
-fun IverksettDto.toDomain(): Iverksett {
+fun IverksettDto.toDomain(): IverksettData {
     return when (this) {
         is IverksettOvergangsstønadDto -> IverksettOvergangsstønad(
             fagsak = this.fagsak.toDomain(),

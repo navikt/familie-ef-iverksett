@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -29,7 +30,7 @@ class IverksettMotOppdragTask(
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.hent(behandlingId)
+        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
             tilstandRepository.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=$it")
         }

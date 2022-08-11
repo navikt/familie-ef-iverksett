@@ -4,11 +4,9 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.config.JournalpostClientMock
-import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,8 +20,6 @@ import javax.annotation.PostConstruct
 class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 
     @Autowired private lateinit var tilstandRepository: TilstandRepository
-    @Autowired private lateinit var iverksettingRepository: IverksettingRepository
-    @Autowired private lateinit var taskRepository: TaskRepository
     @Autowired private lateinit var journalpostClient: JournalpostClient
     @Autowired @Qualifier("mock-integrasjoner") lateinit var wireMockServer: WireMockServer
     @Autowired lateinit var journalpostClientMock: JournalpostClientMock

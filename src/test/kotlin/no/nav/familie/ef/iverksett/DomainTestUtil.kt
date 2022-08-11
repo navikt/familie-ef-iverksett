@@ -1,5 +1,8 @@
 package no.nav.familie.ef.iverksett
 
+import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
+import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
@@ -171,7 +174,7 @@ fun List<SimulertPostering>.tilSimuleringMottakere() =
 fun List<SimulertPostering>.tilDetaljertSimuleringsresultat() =
     DetaljertSimuleringResultat(this.tilSimuleringMottakere())
 
-fun lagIverksett(
+fun lagIverksettData(
     forrigeBehandlingId: UUID? = null,
     behandlingType: BehandlingType,
     vedtaksresultat: Vedtaksresultat,
@@ -197,3 +200,10 @@ fun lagIverksett(
         )
     )
 }
+
+fun lagIverksett(iverksettData: IverksettData, brev: Brev? = null) = Iverksett(
+    iverksettData.behandling.behandlingId,
+    iverksettData,
+    iverksettData.behandling.eksternId,
+    brev
+)
