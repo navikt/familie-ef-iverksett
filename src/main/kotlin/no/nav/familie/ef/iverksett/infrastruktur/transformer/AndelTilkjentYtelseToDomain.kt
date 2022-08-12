@@ -6,8 +6,8 @@ import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 fun AndelTilkjentYtelseDto.toDomain(): AndelTilkjentYtelse {
     return AndelTilkjentYtelse(
         beløp = this.beløp,
-        fraOgMed = this.fraOgMed,
-        tilOgMed = this.tilOgMed,
+        fraOgMed = this.periode.fomDato,
+        tilOgMed = this.periode.tomDato,
         inntekt = this.inntekt,
         samordningsfradrag = this.samordningsfradrag,
         inntektsreduksjon = this.inntektsreduksjon,

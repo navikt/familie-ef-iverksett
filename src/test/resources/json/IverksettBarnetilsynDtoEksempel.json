@@ -12,8 +12,8 @@
     "behandlingÅrsak": "NYE_OPPLYSNINGER",
     "vilkårsvurderinger": [
       {
-        "vilkårType":"AKTIVITET",
-        "resultat":"IKKE_AKTUELL",
+        "vilkårType": "AKTIVITET",
+        "resultat": "IKKE_AKTUELL",
         "delvilkårsvurderinger": [
           {
             "resultat": "IKKE_AKTUELL",
@@ -44,7 +44,7 @@
         ]
       }
     ],
-    "aktivitetspliktInntrefferDato":null,
+    "aktivitetspliktInntrefferDato": null,
     "kravMottatt": null
   },
   "søker": {
@@ -66,6 +66,10 @@
       {
         "fraOgMed": "2021-06-10",
         "tilOgMed": "2021-06-10",
+        "periode": {
+          "fom": "2021-06",
+          "tom": "2021-06"
+        },
         "utgifter": 10,
         "antallBarn": 2
       }
@@ -78,6 +82,10 @@
           "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
           "fraOgMed": "2021-05-10",
           "tilOgMed": "2021-05-10",
+          "periode": {
+            "fom": "2021-05",
+            "tom": "2021-05"
+          },
           "beløp": 0,
           "inntekt": 0,
           "samordningsfradrag": 0,
@@ -96,14 +104,19 @@
             "fom": "2021-01-01",
             "tom": "2021-01-01"
           }
-        ]
+        ],
+        "fellesperioder": []
       }
     },
-    "brevmottakere": [ ],
+    "brevmottakere": [],
     "kontantstøtte": [
       {
         "fraOgMed": "2021-07-10",
         "tilOgMed": "2021-07-10",
+        "periode": {
+          "fom": "2021-07",
+          "tom": "2021-07"
+        },
         "beløp": 11
       }
     ],
@@ -111,6 +124,10 @@
       {
         "fraOgMed": "2021-07-10",
         "tilOgMed": "2021-07-10",
+        "periode": {
+          "fom": "2021-07",
+          "tom": "2021-07"
+        },
         "beløp": 12
       }
     ]

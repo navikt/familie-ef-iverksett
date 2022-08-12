@@ -44,7 +44,7 @@ fun simuleringDto(
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetadataDto(
         tilkjentYtelse = TilkjentYtelseDto(
             andelerTilkjentYtelse = andeler,
-            startdato = andeler.minOfOrNull { it.fraOgMed } ?: LocalDate.now()
+            startdato = andeler.minOfOrNull { it.periode.fomDato } ?: LocalDate.now()
         ),
         saksbehandlerId = "saksbehandlerId",
         eksternBehandlingId = 1,
