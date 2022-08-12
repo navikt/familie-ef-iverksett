@@ -71,10 +71,8 @@
           "fraOgMed": "2021-05-10",
           "tilOgMed": "2021-05-10",
           "periode": {
-            "fomDato": "2021-05-10",
-            "tomDato": "2021-05-10",
-            "fomMåned": "2021-05",
-            "tomMåned": "2021-05"
+            "fom": "2021-05",
+            "tom": "2021-05"
           },
           "beløp": 0,
           "inntekt": 0,
@@ -92,10 +90,8 @@
             "fraOgMed": "2021-01-01",
             "tilOgMed": "2021-01-31",
             "periode": {
-              "fomDato": "2021-01-01",
-              "tomDato": "2021-01-31",
-              "fomMåned": "2021-01",
-              "tomMåned": "2021-01"
+              "fom": "2021-01",
+              "tom": "2021-01"
             },
             "studiebelastning": 50,
             "maksSatsForSkoleår": 0

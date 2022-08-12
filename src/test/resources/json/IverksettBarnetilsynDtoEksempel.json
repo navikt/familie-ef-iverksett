@@ -67,10 +67,8 @@
         "fraOgMed": "2021-06-10",
         "tilOgMed": "2021-06-10",
         "periode": {
-          "fomDato": "2021-06-10",
-          "tomDato": "2021-06-10",
-          "fomMåned": "2021-06",
-          "tomMåned": "2021-06"
+          "fom": "2021-06",
+          "tom": "2021-06"
         },
         "utgifter": 10,
         "antallBarn": 2
@@ -82,13 +80,11 @@
       "andelerTilkjentYtelse": [
         {
           "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "fraOgMed": null,
-          "tilOgMed": null,
+          "fraOgMed": "2021-05-10",
+          "tilOgMed": "2021-05-10",
           "periode": {
-            "fomDato": "2021-05-10",
-            "tomDato": "2021-05-10",
-            "fomMåned": "2021-05",
-            "tomMåned": "2021-05"
+            "fom": "2021-05",
+            "tom": "2021-05"
           },
           "beløp": 0,
           "inntekt": 0,
@@ -118,10 +114,8 @@
         "fraOgMed": "2021-07-10",
         "tilOgMed": "2021-07-10",
         "periode": {
-          "fomDato": "2021-07-10",
-          "tomDato": "2021-07-10",
-          "fomMåned": "2021-07",
-          "tomMåned": "2021-07"
+          "fom": "2021-07",
+          "tom": "2021-07"
         },
         "beløp": 11
       }
@@ -131,10 +125,8 @@
         "fraOgMed": "2021-07-10",
         "tilOgMed": "2021-07-10",
         "periode": {
-          "fomDato": "2021-07-10",
-          "tomDato": "2021-07-10",
-          "fomMåned": "2021-07",
-          "tomMåned": "2021-07"
+          "fom": "2021-07",
+          "tom": "2021-07"
         },
         "beløp": 12
       }

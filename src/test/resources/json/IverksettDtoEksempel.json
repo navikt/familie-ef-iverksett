@@ -64,15 +64,13 @@
     "vedtakstidspunkt": "2021-05-10T01:00:00",
     "vedtaksperioder": [
       {
-        "fraOgMed": null,
-        "tilOgMed": null,
+        "fraOgMed": "2021-06-10",
+        "tilOgMed": "2021-06-10",
         "aktivitet": "BARNET_ER_SYKT",
         "periodeType": "HOVEDPERIODE",
         "periode": {
-          "fomDato": "2021-06-10",
-          "tomDato": "2021-06-10",
-          "fomMåned": "2021-06",
-          "tomMåned": "2021-06"
+          "fom": "2021-06",
+          "tom": "2021-06"
         }
       }
     ],
@@ -82,13 +80,11 @@
       "andelerTilkjentYtelse": [
         {
           "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "fraOgMed": null,
-          "tilOgMed": null,
+          "fraOgMed": "2021-05-10",
+          "tilOgMed": "2021-05-10",
           "periode": {
-            "fomDato": "2021-05-10",
-            "tomDato": "2021-05-10",
-            "fomMåned": "2021-05",
-            "tomMåned": "2021-05"
+            "fom": "2021-05",
+            "tom": "2021-05"
           },
           "beløp": 0,
           "inntekt": 0,
