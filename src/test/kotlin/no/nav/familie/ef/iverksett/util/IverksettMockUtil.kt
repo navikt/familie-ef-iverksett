@@ -76,7 +76,7 @@ fun opprettIverksettDto(
     )
     val tilkjentYtelse = TilkjentYtelseDto(
         andelerTilkjentYtelse = listOf(andelTilkjentYtelse),
-        startdato = andelTilkjentYtelse.fraOgMed
+        startdato = andelTilkjentYtelse.periode.fomDato
     )
 
     return IverksettOvergangsstønadDto(

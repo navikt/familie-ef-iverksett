@@ -37,7 +37,7 @@ object TilkjentYtelseParser {
             }
             val startdato = (
                 startdatoer[behandlingId]
-                    ?: andeler.minOfOrNull { it.fraOgMed }
+                    ?: andeler.minOfOrNull { it.periode.fomDato }
                     ?: error("Mangler startdato eller andel for behandling=$behandlingIdInt")
                 )
             TilkjentYtelseHolder(
