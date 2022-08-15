@@ -5,24 +5,29 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
+import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Service
+@RestController
+@RequestMapping(path = ["/api/jsonUpdate"])
+@Unprotected
 class JsonSchemaService(private val iverksettingRepository: IverksettingRepository) {
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Transactional
-    @Scheduled(initialDelay = 10000L, fixedDelay = 365L * 24L * 3600L * 1000L)
+    @GetMapping
     fun update() {
         val iverksettinger = iverksettingRepository.findAll()
 
         log.info("Starter oppdatering av ${iverksettinger.count()}")
-        iverksettinger.filterNot { it.data.vedtak.tilkjentYtelse?.startdato == null }
         iverksettinger.forEach {
 
             when (it.data) {
