@@ -22,6 +22,7 @@ class JsonSchemaService(private val iverksettingRepository: IverksettingReposito
         val iverksettinger = iverksettingRepository.findAll()
 
         log.info("Starter oppdatering av ${iverksettinger.count()}")
+        iverksettinger.filterNot { it.data.vedtak.tilkjentYtelse?.startdato == null }
         iverksettinger.forEach {
 
             when (it.data) {
