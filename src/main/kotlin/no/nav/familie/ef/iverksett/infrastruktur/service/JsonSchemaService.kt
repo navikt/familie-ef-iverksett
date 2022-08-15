@@ -4,7 +4,9 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatRepository
 import no.nav.security.token.support.core.api.Unprotected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping(path = ["/api/jsonUpdate"])
 @Unprotected
-class JsonSchemaService(private val iverksettingRepository: IverksettingRepository) {
+class JsonSchemaService(
+    private val iverksettingRepository: IverksettingRepository,
+    private val iverksettResultatRepository: IverksettResultatRepository
+) {
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -35,6 +40,23 @@ class JsonSchemaService(private val iverksettingRepository: IverksettingReposito
             }
         }
         log.info("Oppdatering av ${iverksettinger.count()} iverksettinger fullført")
+
+        val iverksettingresultater = iverksettResultatRepository.findAll()
+        log.info("Starter oppdatering av ${iverksettingresultater.count()}")
+        iverksettingresultater.forEach {
+        oppdater(it)
+        }
+
+        log.info("Oppdatering av ${iverksettingresultater.count()} iverksettinger fullført")
+    }
+
+    private fun oppdater(it: IverksettResultat) {
+        val tilkjentYtelse = it.tilkjentYtelseForUtbetaling
+        val oppdatertTilkjentYtelse = tilkjentYtelse?.copy(
+            startdato = null,
+            andelerTilkjentYtelse = tilkjentYtelse.andelerTilkjentYtelse.map { it.copy(fraOgMed = null, tilOgMed = null) }
+        )
+        iverksettResultatRepository.update(it.copy(tilkjentYtelseForUtbetaling = oppdatertTilkjentYtelse))
     }
 
     private fun oppdater(it: Iverksett, data: IverksettOvergangsstønad) {
