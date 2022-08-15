@@ -122,8 +122,8 @@ data class VedtaksperiodeBarnetilsyn(
 ) : Vedtaksperiode()
 
 data class VedtaksperiodeSkolepenger(
-    val perioder: List<DelårsperiodeSkoleårSkolepenger>,
-    val utgiftsperioder: List<SkolepengerUtgift>
+    val perioder: List<DelårsperiodeSkoleårSkolepenger> = listOf(),
+    val utgiftsperioder: List<SkolepengerUtgift> = listOf()
 ) : Vedtaksperiode()
 
 data class DelårsperiodeSkoleårSkolepenger(
@@ -176,7 +176,7 @@ data class VedtaksdetaljerOvergangsstønad(
     override val tilkjentYtelse: TilkjentYtelse?,
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
-    override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad>
+    override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf()
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(
@@ -188,9 +188,9 @@ data class VedtaksdetaljerBarnetilsyn(
     override val tilkjentYtelse: TilkjentYtelse?,
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
-    override val vedtaksperioder: List<VedtaksperiodeBarnetilsyn>,
-    val kontantstøtte: List<PeriodeMedBeløp>,
-    val tilleggsstønad: List<PeriodeMedBeløp>
+    override val vedtaksperioder: List<VedtaksperiodeBarnetilsyn> = listOf(),
+    val kontantstøtte: List<PeriodeMedBeløp> = listOf(),
+    val tilleggsstønad: List<PeriodeMedBeløp> = listOf()
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerSkolepenger(
@@ -202,7 +202,7 @@ data class VedtaksdetaljerSkolepenger(
     override val tilkjentYtelse: TilkjentYtelse?,
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
-    override val vedtaksperioder: List<VedtaksperiodeSkolepenger>,
+    override val vedtaksperioder: List<VedtaksperiodeSkolepenger> = listOf(),
     val begrunnelse: String? = null
 ) : Vedtaksdetaljer()
 

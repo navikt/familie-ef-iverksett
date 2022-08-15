@@ -44,7 +44,7 @@ class JsonSchemaService(
         val iverksettingresultater = iverksettResultatRepository.findAll()
         log.info("Starter oppdatering av ${iverksettingresultater.count()}")
         iverksettingresultater.forEach {
-        oppdater(it)
+            oppdater(it)
         }
 
         log.info("Oppdatering av ${iverksettingresultater.count()} iverksettinger fullført")
