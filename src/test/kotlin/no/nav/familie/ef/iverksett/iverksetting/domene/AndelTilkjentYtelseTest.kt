@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.iverksetting.domene
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
+import java.time.YearMonth
 
 internal class AndelTilkjentYtelseTest {
 
@@ -80,8 +80,8 @@ internal class AndelTilkjentYtelseTest {
     private fun lagTY(beløp: Int, inntektsreduksjon: Int = 0, samordningsfradrag: Int = 0) =
         lagAndelTilkjentYtelse(
             beløp = beløp,
-            fraOgMed = LocalDate.now(),
-            tilOgMed = LocalDate.now(),
+            fraOgMed = YearMonth.now(),
+            tilOgMed = YearMonth.now(),
             inntektsreduksjon = inntektsreduksjon,
             samordningsfradrag = samordningsfradrag
         )

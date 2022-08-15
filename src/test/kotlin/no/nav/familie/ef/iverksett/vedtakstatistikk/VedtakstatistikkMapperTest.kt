@@ -39,11 +39,13 @@ import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.SkolepengerStudietype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.time.ZoneId
 import java.util.UUID
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEksterneKontrakter
@@ -106,8 +108,8 @@ internal class VedtakstatistikkMapperTest {
         assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().utbetalingsdetalj.gjelderPerson.personIdent).isEqualTo(søker)
         assertThat(vedtakOvergangsstønadDVH.vedtak).isEqualTo(Vedtak.INNVILGET)
         assertThat(vedtakOvergangsstønadDVH.vedtaksperioder).hasSize(2)
-        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().fraOgMed).isEqualTo(LocalDate.of(2021, 2, 2))
-        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().tilOgMed).isEqualTo(LocalDate.of(2021, 3, 3))
+        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().fraOgMed).isEqualTo(LocalDate.of(2021, 2, 1))
+        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().tilOgMed).isEqualTo(LocalDate.of(2021, 3, 31))
         assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().aktivitet.name).isEqualTo(AktivitetType.IKKE_AKTIVITETSPLIKT.name)
         assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().periodeType.name).isEqualTo(VedtaksperiodeType.PERIODE_FØR_FØDSEL.name)
         assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger).hasSize(12)
@@ -142,17 +144,17 @@ internal class VedtakstatistikkMapperTest {
         assertThat(vedtakBarnetilsynDVH.funksjonellId).isEqualTo(eksternBehandlingId)
         assertThat(vedtakBarnetilsynDVH.vedtaksperioder).hasSize(2)
         assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().fraOgMed).isEqualTo(LocalDate.of(2021, 1, 1))
-        assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().tilOgMed).isEqualTo(LocalDate.of(2021, 1, 1))
+        assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().tilOgMed).isEqualTo(LocalDate.of(2021, 1, 31))
         assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().utgifter).isEqualTo(1000)
         assertThat(vedtakBarnetilsynDVH.vedtaksperioder.first().antallBarn).isEqualTo(1)
         assertThat(vedtakBarnetilsynDVH.utbetalinger).hasSize(2)
         assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte).hasSize(1)
         assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte.first().fraOgMed).isEqualTo(LocalDate.of(2021, 5, 1))
-        assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte.first().tilOgMed).isEqualTo(LocalDate.of(2021, 7, 1))
+        assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte.first().tilOgMed).isEqualTo(LocalDate.of(2021, 7, 31))
         assertThat(vedtakBarnetilsynDVH.perioderKontantstøtte.first().beløp).isEqualTo(1000)
         assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad).hasSize(1)
         assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad.first().fraOgMed).isEqualTo(LocalDate.of(2021, 6, 1))
-        assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad.first().tilOgMed).isEqualTo(LocalDate.of(2021, 8, 1))
+        assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad.first().tilOgMed).isEqualTo(LocalDate.of(2021, 8, 31))
         assertThat(vedtakBarnetilsynDVH.perioderTilleggsstønad.first().beløp).isEqualTo(2000)
     }
 
@@ -194,8 +196,8 @@ internal class VedtakstatistikkMapperTest {
         val forventetSkoleårsperiode = vedtaksdetaljerSkolepenger().vedtaksperioder.first().perioder.first()
         val mappetSkoleårsperiode = vedtakSkolepenger.vedtaksperioder.first().perioder.first()
 
-        assertThat(mappetSkoleårsperiode.datoTil).isEqualTo(forventetSkoleårsperiode.tilOgMed)
-        assertThat(mappetSkoleårsperiode.datoFra).isEqualTo(forventetSkoleårsperiode.fraOgMed)
+        assertThat(mappetSkoleårsperiode.datoFra).isEqualTo(forventetSkoleårsperiode.periode.fomDato)
+        assertThat(mappetSkoleårsperiode.datoTil).isEqualTo(forventetSkoleårsperiode.periode.tomDato)
         assertThat(mappetSkoleårsperiode.studiebelastning).isEqualTo(forventetSkoleårsperiode.studiebelastning)
         assertThat(mappetSkoleårsperiode.studietype).isEqualTo(Studietype.valueOf(forventetSkoleårsperiode.studietype.name))
 
@@ -234,16 +236,7 @@ internal class VedtakstatistikkMapperTest {
             andelerTilkjentYtelse = listOf(
                 AndelTilkjentYtelse(
                     beløp = 9000,
-                    fraOgMed = LocalDate.of(
-                        2021,
-                        1,
-                        1
-                    ),
-                    tilOgMed = LocalDate.of(
-                        2021,
-                        5,
-                        31
-                    ),
+                    periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 5)),
                     inntekt = 300000,
                     samordningsfradrag = 1000,
                     inntektsreduksjon = 11000,
@@ -253,16 +246,7 @@ internal class VedtakstatistikkMapperTest {
                 ),
                 AndelTilkjentYtelse(
                     beløp = 10000,
-                    fraOgMed = LocalDate.of(
-                        2021,
-                        6,
-                        1
-                    ),
-                    tilOgMed = LocalDate.of(
-                        2021,
-                        10,
-                        31
-                    ),
+                    periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
                     inntekt = 300000,
                     samordningsfradrag = 0,
                     inntektsreduksjon = 11000,
@@ -271,7 +255,7 @@ internal class VedtakstatistikkMapperTest {
                     kildeBehandlingId = behandlingId
                 )
             ),
-            startdato = LocalDate.now()
+            startmåned = YearMonth.now()
         )
 
     fun vedtaksdetaljerSkolepenger() = VedtaksdetaljerSkolepenger(
@@ -286,8 +270,7 @@ internal class VedtakstatistikkMapperTest {
                 perioder = listOf(
                     DelårsperiodeSkoleårSkolepenger(
                         studietype = SkolepengerStudietype.HØGSKOLE_UNIVERSITET,
-                        fraOgMed = LocalDate.of(2021, 1, 1),
-                        tilOgMed = LocalDate.of(2021, 1, 1),
+                        periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
                         studiebelastning = 100,
                         makssatsForSkoleår = 50000
                     )
@@ -312,21 +295,29 @@ internal class VedtakstatistikkMapperTest {
         tilkjentYtelse = tilkjentYtelse(),
         vedtaksperioder = listOf(
             VedtaksperiodeBarnetilsyn(
-                fraOgMed = LocalDate.of(2021, 1, 1),
-                tilOgMed = LocalDate.of(2021, 1, 1),
+                periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
                 utgifter = 1000,
                 antallBarn = 1
             ),
             VedtaksperiodeBarnetilsyn(
-                fraOgMed = LocalDate.of(2021, 6, 1),
-                tilOgMed = LocalDate.of(2021, 10, 31),
+                periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
                 utgifter = 2000,
                 antallBarn = 2
             )
         ),
         brevmottakere = Brevmottakere(emptyList()),
-        kontantstøtte = listOf(PeriodeMedBeløp(LocalDate.of(2021, 5, 1), LocalDate.of(2021, 7, 1), 1000)),
-        tilleggsstønad = listOf(PeriodeMedBeløp(LocalDate.of(2021, 6, 1), LocalDate.of(2021, 8, 1), 2000)),
+        kontantstøtte = listOf(
+            PeriodeMedBeløp(
+                periode = Månedsperiode(YearMonth.of(2021, 5), YearMonth.of(2021, 7)),
+                beløp = 1000
+            )
+        ),
+        tilleggsstønad = listOf(
+            PeriodeMedBeløp(
+                periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 8)),
+                beløp = 2000
+            )
+        ),
     )
 
     fun vedtaksdetaljerOvergangsstønad(): VedtaksdetaljerOvergangsstønad {
@@ -341,15 +332,13 @@ internal class VedtakstatistikkMapperTest {
             vedtaksperioder = listOf(
                 VedtaksperiodeOvergangsstønad(
                     aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
-                    fraOgMed = LocalDate.of(2021, 2, 2),
-                    periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL,
-                    tilOgMed = LocalDate.of(2021, 3, 3)
+                    periode = Månedsperiode(YearMonth.of(2021, 2), YearMonth.of(2021, 3)),
+                    periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL
                 ),
                 VedtaksperiodeOvergangsstønad(
                     aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                    fraOgMed = LocalDate.of(2021, 6, 1),
-                    periodeType = VedtaksperiodeType.HOVEDPERIODE,
-                    tilOgMed = LocalDate.of(2021, 10, 31)
+                    periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
+                    periodeType = VedtaksperiodeType.HOVEDPERIODE
                 )
             ),
             brevmottakere = Brevmottakere(emptyList())

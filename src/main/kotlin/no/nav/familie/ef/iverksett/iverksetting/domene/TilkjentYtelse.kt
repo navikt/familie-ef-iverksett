@@ -4,6 +4,7 @@ import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 data class TilkjentYtelse(
@@ -12,7 +13,8 @@ data class TilkjentYtelse(
     val status: TilkjentYtelseStatus = TilkjentYtelseStatus.IKKE_KLAR,
     val andelerTilkjentYtelse: List<AndelTilkjentYtelse>,
     val sisteAndelIKjede: AndelTilkjentYtelse? = null,
-    val startdato: LocalDate
+    @Deprecated("Bruk startmåned", ReplaceWith("startmåned")) val startdato: LocalDate? = null,
+    val startmåned: YearMonth = startdato?.let { YearMonth.from(startdato) } ?: error("Startdato eller startmåned må ha verdi")
 ) {
 
     fun toMedMetadata(

@@ -88,7 +88,7 @@ class OppgaveService(
 
     private fun opphørsdato(iverksett: IverksettOvergangsstønad): LocalDate? {
         val tilkjentYtelse = iverksett.vedtak.tilkjentYtelse ?: error("TilkjentYtelse er null")
-        return tilkjentYtelse.andelerTilkjentYtelse.maxOfOrNull { it.tilOgMed }
+        return tilkjentYtelse.andelerTilkjentYtelse.maxOfOrNull { it.periode.tomDato }
     }
 
     private fun aktivitetEllerPeriodeEndret(iverksett: IverksettOvergangsstønad): Boolean {
@@ -115,15 +115,15 @@ class OppgaveService(
     }
 
     private fun IverksettOvergangsstønad.gjeldendeVedtak(): VedtaksperiodeOvergangsstønad =
-        this.vedtak.vedtaksperioder.maxByOrNull { it.fraOgMed } ?: error("Kunne ikke finne vedtaksperioder")
+        this.vedtak.vedtaksperioder.maxByOrNull { it.periode } ?: error("Kunne ikke finne vedtaksperioder")
 
     private fun IverksettOvergangsstønad.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate {
-        return this.vedtak.vedtaksperioder.maxOf { it.tilOgMed }
+        return this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
     }
 
     private fun IverksettOvergangsstønad.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
         Pair(
-            this.vedtak.vedtaksperioder.minOf { it.fraOgMed },
-            this.vedtak.vedtaksperioder.maxOf { it.tilOgMed }
+            this.vedtak.vedtaksperioder.minOf { it.periode.fomDato },
+            this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
         )
 }

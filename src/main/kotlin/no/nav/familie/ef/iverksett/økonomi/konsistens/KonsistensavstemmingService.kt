@@ -120,6 +120,5 @@ class KonsistensavstemmingService(
      */
     private fun beløpOgPeriodeErLik(a: AndelTilkjentYtelse, b: AndelTilkjentYtelse) =
         a.beløp == b.beløp &&
-            a.fraOgMed == b.fraOgMed &&
-            a.tilOgMed == b.tilOgMed
+            a.periode == b.periode
 }

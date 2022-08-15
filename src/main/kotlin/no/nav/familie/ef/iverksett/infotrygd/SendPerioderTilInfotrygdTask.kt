@@ -39,8 +39,8 @@ class SendPerioderTilInfotrygdTask(
             .map { it.personIdent }.toSet()
         val perioder = iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.map {
             Periode(
-                startdato = it.fraOgMed,
-                sluttdato = it.tilOgMed,
+                startdato = it.periode.fomDato,
+                sluttdato = it.periode.tomDato,
                 fullOvergangsstønad = it.erFullOvergangsstønad()
             )
         } ?: error("Kan ikke finne tilkjentYtelse for behandling med id=${iverksett.behandling.behandlingId}")

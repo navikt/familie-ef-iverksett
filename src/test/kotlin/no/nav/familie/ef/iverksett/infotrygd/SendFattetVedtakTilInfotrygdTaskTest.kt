@@ -12,6 +12,7 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.personopplysning.PersonIdentMedHistorikk
 import no.nav.familie.prosessering.domene.Task
@@ -34,9 +35,9 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
     private val personIdent = iverksettData.søker.personIdent
     private val historiskPersonIdent = "2"
     private val perioder = listOf(
-        Pair(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
-        Pair(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)),
-        Pair(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 31))
+        Månedsperiode(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
+        Månedsperiode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)),
+        Månedsperiode(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 31))
     )
 
     private val identer = listOf(
@@ -62,7 +63,7 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
         val vedtak = iverksettData.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
         val andelerTilkjentYtelse = perioder.map {
-            lagAndelTilkjentYtelse(1, it.first, it.second)
+            lagAndelTilkjentYtelse(1, it.fom, it.tom)
         }
 
         val nyTilkjentYtelse = tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelerTilkjentYtelse)

@@ -21,6 +21,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 internal class SendPerioderTilInfotrygdTaskTest {
@@ -54,7 +55,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     @Test
     internal fun `skal sende perioder fra andeler til infotrygd`() {
-        val iverksett = opprettData(lagAndelTilkjentYtelse(2, LocalDate.of(1901, 1, 1), LocalDate.of(1901, 1, 31)))
+        val iverksett = opprettData(lagAndelTilkjentYtelse(2, YearMonth.of(1901, 1), YearMonth.of(1901, 1)))
         every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns iverksett
 
         task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
@@ -70,15 +71,15 @@ internal class SendPerioderTilInfotrygdTaskTest {
     internal fun `fullOvergangsstønad er false hvis samordningsfradrag eller inntektsreduksjon ikke er 0`() {
         val andelTilkjentYtelse = lagAndelTilkjentYtelse(
             beløp = 1,
-            fraOgMed = LocalDate.of(1901, 1, 1),
-            tilOgMed = LocalDate.of(1901, 1, 31),
+            fraOgMed = YearMonth.of(1901, 1),
+            tilOgMed = YearMonth.of(1901, 1),
             samordningsfradrag = 1,
             inntektsreduksjon = 0
         )
         val andelTilkjentYtelse2 = lagAndelTilkjentYtelse(
             beløp = 3,
-            fraOgMed = LocalDate.of(1902, 1, 1),
-            tilOgMed = LocalDate.of(1902, 1, 31),
+            fraOgMed = YearMonth.of(1902, 1),
+            tilOgMed = YearMonth.of(1902, 1),
             samordningsfradrag = 0,
             inntektsreduksjon = 1
         )

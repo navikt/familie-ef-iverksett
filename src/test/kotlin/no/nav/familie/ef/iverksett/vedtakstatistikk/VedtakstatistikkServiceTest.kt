@@ -31,6 +31,7 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.ZoneId
 import java.util.UUID
 
@@ -100,8 +101,8 @@ class VedtakstatistikkServiceTest {
             vedtak = Vedtak.INNVILGET,
             vedtaksperioder = listOf(
                 VedtaksperiodeOvergangsstønadDto(
-                    fraOgMed = LocalDate.now(),
-                    tilOgMed = LocalDate.now(),
+                    fraOgMed = YearMonth.now().atDay(1),
+                    tilOgMed = YearMonth.now().atEndOfMonth(),
                     aktivitet = AktivitetType.BARNET_ER_SYKT,
                     periodeType = VedtaksperiodeType.HOVEDPERIODE
                 )

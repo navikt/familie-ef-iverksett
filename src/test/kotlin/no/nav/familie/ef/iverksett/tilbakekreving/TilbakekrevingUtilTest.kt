@@ -6,9 +6,9 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.medFeilutbetaling
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingMedVarsel
+import no.nav.familie.kontrakter.felles.Datoperiode
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsoppsummering
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsperiode
-import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -20,7 +20,7 @@ internal class TilbakekrevingUtilTest {
 
     private val fom: LocalDate = LocalDate.of(2021, 1, 1)
     private val tom: LocalDate = LocalDate.of(2021, 12, 31)
-    val perioder = listOf(Periode(fom = fom, tom = tom))
+    val perioder = listOf(Datoperiode(fom = fom, tom = tom))
 
     @Test
     fun `uendret tilbakekreving med varsel skal opprettholdes i iverksett`() {
@@ -124,7 +124,7 @@ internal class TilbakekrevingUtilTest {
 
         val nyFom = fom.minusMonths(1)
         val nyTom = tom.plusMonths(1)
-        val nyPeriode = Periode(nyFom, nyTom)
+        val nyPeriode = Datoperiode(nyFom, nyTom)
         val beriketSimuleringsresultat = beriketSimuleringsresultat(BigDecimal.ONE, nyFom, nyTom)
 
         val nyTilbakekreving = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat).vedtak.tilbakekreving

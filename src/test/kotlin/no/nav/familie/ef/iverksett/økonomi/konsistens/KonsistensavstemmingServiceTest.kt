@@ -19,6 +19,7 @@ import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 internal class KonsistensavstemmingServiceTest {
@@ -37,13 +38,13 @@ internal class KonsistensavstemmingServiceTest {
 
     private val andel1 = lagAndelTilkjentYtelse(
         beløp = 1,
-        fraOgMed = LocalDate.of(2021, 1, 1),
-        tilOgMed = LocalDate.of(2021, 1, 31),
+        fraOgMed = YearMonth.of(2021, 1),
+        tilOgMed = YearMonth.of(2021, 1),
         kildeBehandlingId = behandlingId
     )
 
-    private val andel2StartDato = LocalDate.of(2021, 3, 1)
-    private val andel2Sluttdato = LocalDate.of(2021, 3, 31)
+    private val andel2StartDato = YearMonth.of(2021, 3)
+    private val andel2Sluttdato = YearMonth.of(2021, 3)
     private val andel2 = lagAndelTilkjentYtelse(
         beløp = 2,
         fraOgMed = andel2StartDato,
@@ -64,8 +65,8 @@ internal class KonsistensavstemmingServiceTest {
         val andelerTilkjentYtelse = listOf(
             lagAndelTilkjentYtelseDto(
                 beløp = 2,
-                fraOgMed = andel2StartDato,
-                tilOgMed = andel2Sluttdato,
+                fraOgMed = andel2StartDato.atDay(1),
+                tilOgMed = andel2Sluttdato.atEndOfMonth(),
                 kildeBehandlingId = behandlingId
             )
         )
@@ -96,8 +97,8 @@ internal class KonsistensavstemmingServiceTest {
         val andelerTilkjentYtelse = listOf(
             lagAndelTilkjentYtelseDto(
                 beløp = 1,
-                fraOgMed = andel2StartDato,
-                tilOgMed = andel2Sluttdato,
+                fraOgMed = andel2StartDato.atDay(1),
+                tilOgMed = andel2Sluttdato.atEndOfMonth(),
                 kildeBehandlingId = behandlingId
             )
         )
@@ -116,7 +117,7 @@ internal class KonsistensavstemmingServiceTest {
         return TilkjentYtelseMedMetaData(
             tilkjentYtelse = TilkjentYtelse(
                 andelerTilkjentYtelse = listOf(andel1, andel2),
-                startdato = andel1.fraOgMed
+                startmåned = andel1.periode.fom
             ),
             saksbehandlerId = saksbehandlerId,
             eksternBehandlingId = eksternBehandlingId,

@@ -84,7 +84,7 @@ object TilkjentYtelseParser {
         return ForventetTilkjentYtelse(
             behandlingId = behandlingIdTilUUID[behandlingIdInt]!!,
             andeler = andeler,
-            startdato = startdato ?: andeler.minOfOrNull { it.fom }
+            startmåned = startdato ?: andeler.minOfOrNull { it.fom }
                 ?: error("Mangler startdato når det ikke finnes noen andeler for behandling=$behandlingIdInt")
         )
     }
@@ -146,7 +146,7 @@ object TilkjentYtelseParser {
     data class ForventetTilkjentYtelse(
         val behandlingId: UUID,
         val andeler: List<ForventetAndelTilkjentYtelse>,
-        val startdato: LocalDate
+        val startmåned: LocalDate
     )
 
     data class ForventetAndelTilkjentYtelse(

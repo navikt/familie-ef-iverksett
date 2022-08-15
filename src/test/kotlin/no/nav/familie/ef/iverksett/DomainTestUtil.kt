@@ -18,6 +18,7 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
+import no.nav.familie.kontrakter.felles.Datoperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.BetalingType
@@ -29,7 +30,6 @@ import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsoppsummering
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsperiode
 import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
-import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
@@ -145,7 +145,7 @@ fun posteringer(
     ) // Brukes ikke for EF
 }
 
-fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, periode: Periode) =
+fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, periode: Datoperiode) =
     this.copy(
         tilbakekrevingMedVarsel =
         this.tilbakekrevingMedVarsel?.copy(
@@ -180,7 +180,7 @@ fun lagIverksettData(
     vedtaksresultat: Vedtaksresultat,
     vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = emptyList(),
     erMigrering: Boolean = false,
-    andelsdatoer: List<LocalDate> = emptyList(),
+    andelsdatoer: List<YearMonth> = emptyList(),
     årsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD
 ): IverksettOvergangsstønad {
     val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else årsak
@@ -194,9 +194,9 @@ fun lagIverksettData(
             vedtaksresultat = vedtaksresultat,
             vedtaksperioder = vedtaksperioder,
             andeler = andelsdatoer.map {
-                lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusDays(1), tilOgMed = it)
+                lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it)
             },
-            startdato = andelsdatoer.minByOrNull { it } ?: LocalDate.now()
+            startdato = andelsdatoer.minByOrNull { it } ?: YearMonth.now()
         )
     )
 }

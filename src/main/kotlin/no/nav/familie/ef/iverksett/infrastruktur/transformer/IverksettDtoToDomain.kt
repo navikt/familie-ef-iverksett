@@ -88,16 +88,14 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
 fun VedtaksperiodeOvergangsstønadDto.toDomain(): VedtaksperiodeOvergangsstønad {
     return VedtaksperiodeOvergangsstønad(
         aktivitet = this.aktivitet,
-        fraOgMed = this.periode.fomDato,
-        tilOgMed = this.periode.tomDato,
+        periode = this.periode,
         periodeType = this.periodeType
     )
 }
 
 fun VedtaksperiodeBarnetilsynDto.toDomain(): VedtaksperiodeBarnetilsyn {
     return VedtaksperiodeBarnetilsyn(
-        fraOgMed = this.periode.fomDato,
-        tilOgMed = this.periode.tomDato,
+        periode = this.periode,
         utgifter = this.utgifter,
         antallBarn = this.antallBarn
     )
@@ -108,8 +106,7 @@ fun VedtaksperiodeSkolepengerDto.toDomain(): VedtaksperiodeSkolepenger {
         perioder = this.perioder.map {
             DelårsperiodeSkoleårSkolepenger(
                 studietype = it.studietype,
-                fraOgMed = it.periode.fomDato,
-                tilOgMed = it.periode.tomDato,
+                periode = it.periode,
                 studiebelastning = it.studiebelastning,
                 makssatsForSkoleår = it.maksSatsForSkoleår
             )
@@ -180,7 +177,7 @@ fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel {
     return TilbakekrevingMedVarsel(
         varseltekst = this.varseltekst,
         sumFeilutbetaling = this.sumFeilutbetaling,
-        perioder = this.perioder,
+        perioder = this.fellesperioder.map { it.toDatoperiode() },
     )
 }
 
@@ -200,8 +197,7 @@ fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere {
 
 fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
     PeriodeMedBeløp(
-        fraOgMed = this.periode.fomDato,
-        tilOgMed = this.periode.tomDato,
+        periode = this.periode,
         beløp = this.beløp
     )
 

@@ -21,8 +21,9 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettSkolepengerDto
 import no.nav.familie.kontrakter.ef.iverksett.SkolepengerStudietype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.Datoperiode
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -99,15 +100,23 @@ data class Søker(
 sealed class Vedtaksperiode
 
 data class VedtaksperiodeOvergangsstønad(
-    val fraOgMed: LocalDate,
-    val tilOgMed: LocalDate,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
+    val periode: Månedsperiode = Månedsperiode(
+        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+    ),
     val aktivitet: AktivitetType,
     val periodeType: VedtaksperiodeType
 ) : Vedtaksperiode()
 
 data class VedtaksperiodeBarnetilsyn(
-    val fraOgMed: LocalDate,
-    val tilOgMed: LocalDate,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
+    val periode: Månedsperiode = Månedsperiode(
+        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+    ),
     val utgifter: Int,
     val antallBarn: Int
 ) : Vedtaksperiode()
@@ -119,8 +128,12 @@ data class VedtaksperiodeSkolepenger(
 
 data class DelårsperiodeSkoleårSkolepenger(
     val studietype: SkolepengerStudietype,
-    val fraOgMed: LocalDate,
-    val tilOgMed: LocalDate,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
+    val periode: Månedsperiode = Månedsperiode(
+        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+    ),
     val studiebelastning: Int,
     val makssatsForSkoleår: Int
 )
@@ -132,8 +145,12 @@ data class SkolepengerUtgift(
 )
 
 data class PeriodeMedBeløp(
-    val fraOgMed: LocalDate,
-    val tilOgMed: LocalDate,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
+    val periode: Månedsperiode = Månedsperiode(
+        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+    ),
     val beløp: Int
 )
 
@@ -225,7 +242,7 @@ data class Tilbakekrevingsdetaljer(
 data class TilbakekrevingMedVarsel(
     val varseltekst: String,
     val sumFeilutbetaling: BigDecimal?,
-    val perioder: List<Periode>?
+    val perioder: List<Datoperiode>?
 )
 
 data class Brevmottakere(val mottakere: List<Brevmottaker>)

@@ -124,12 +124,12 @@ class StepDefinitions {
         assertTilkjentYtelseMed0BeløpAndeler(behandlingId, parsedStartdato, beregnetTilkjentYtelse)
     }
 
-    private fun assertTilkjentYtelseMed0BeløpAndeler(behandlingId: UUID, startdato: LocalDate?, beregnetTilkjentYtelse: TilkjentYtelse) {
-        assertThat(beregnetTilkjentYtelse.startdato).isEqualTo(startdato)
+    private fun assertTilkjentYtelseMed0BeløpAndeler(behandlingId: UUID, startmåned: LocalDate?, beregnetTilkjentYtelse: TilkjentYtelse) {
+        assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(startmåned)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().beløp).isEqualTo(0)
-        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().fraOgMed).isEqualTo(LocalDate.MIN)
-        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().tilOgMed).isEqualTo(LocalDate.MIN)
+        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.fomDato).isEqualTo(LocalDate.MIN)
+        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.tomDato).isEqualTo(LocalDate.MIN)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isNull()
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().kildeBehandlingId).isEqualTo(behandlingId)
     }
@@ -140,14 +140,14 @@ class StepDefinitions {
     ) {
         beregnetTilkjentYtelse.andelerTilkjentYtelse.forEachIndexed { index, andel ->
             val forventetAndel = forventetTilkjentYtelse.andeler[index]
-            assertThat(andel.fraOgMed).isEqualTo(forventetAndel.fom)
-            assertThat(andel.tilOgMed).isEqualTo(forventetAndel.tom)
+            assertThat(andel.periode.fomDato).isEqualTo(forventetAndel.fom)
+            assertThat(andel.periode.tomDato).isEqualTo(forventetAndel.tom)
             assertThat(andel.beløp).isEqualTo(forventetAndel.beløp)
             assertThat(andel.periodeId).isEqualTo(forventetAndel.periodeId)
             assertThat(andel.forrigePeriodeId).isEqualTo(forventetAndel.forrigePeriodeId)
             assertThat(andel.kildeBehandlingId).isEqualTo(forventetAndel.kildeBehandlingId)
         }
-        assertThat(beregnetTilkjentYtelse.startdato).isEqualTo(forventetTilkjentYtelse.startdato)
+        assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(forventetTilkjentYtelse.startmåned)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(forventetTilkjentYtelse.andeler.size)
     }
 

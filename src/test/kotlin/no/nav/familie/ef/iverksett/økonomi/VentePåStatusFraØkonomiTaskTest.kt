@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.util.Properties
 import java.util.UUID
 
@@ -127,7 +128,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
             ),
             status = TilkjentYtelseStatus.SENDT_TIL_IVERKSETTING,
             andelerTilkjentYtelse = listOf(),
-            startdato = LocalDate.now()
+            startmåned = YearMonth.now()
         )
     }
 }

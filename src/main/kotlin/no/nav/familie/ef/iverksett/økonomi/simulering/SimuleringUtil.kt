@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.økonomi.simulering
 
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringsperiodeEtterbetaling.etterbetaling
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringsperiodeEtterbetaling.medEtterbetaling
+import no.nav.familie.kontrakter.felles.Datoperiode
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
@@ -11,7 +12,6 @@ import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsoppsummering
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsperiode
 import no.nav.familie.kontrakter.felles.simulering.SimulertPostering
-import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 import java.time.LocalDate
@@ -125,17 +125,17 @@ fun BeriketSimuleringsresultat.harFeilutbetaling(): Boolean {
     return this.oppsummering.feilutbetaling > ZERO
 }
 
-fun Simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(): List<Periode> {
+fun Simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(): List<Datoperiode> {
     val perioderMedFeilutbetaling =
         perioder.sortedBy { it.fom }.filter { it.feilutbetaling > BigDecimal(0) }.map {
-            Periode(it.fom, it.tom)
+            Datoperiode(it.fom, it.tom)
         }
 
     return perioderMedFeilutbetaling.fold(mutableListOf()) { akkumulatorListe, nestePeriode ->
         val gjeldendePeriode = akkumulatorListe.lastOrNull()
 
         if (gjeldendePeriode != null && erPerioderSammenhengende(gjeldendePeriode, nestePeriode)) {
-            val oppdatertGjeldendePeriode = Periode(fom = gjeldendePeriode.fom, tom = nestePeriode.tom)
+            val oppdatertGjeldendePeriode = Datoperiode(fom = gjeldendePeriode.fom, tom = nestePeriode.tom)
             akkumulatorListe.removeLast()
             akkumulatorListe.add(oppdatertGjeldendePeriode)
         } else {
@@ -144,5 +144,5 @@ fun Simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(): List<
         akkumulatorListe
     }
 }
-private fun erPerioderSammenhengende(gjeldendePeriode: Periode, nestePeriode: Periode) =
+private fun erPerioderSammenhengende(gjeldendePeriode: Datoperiode, nestePeriode: Datoperiode) =
     gjeldendePeriode.tom.plusDays(1) == nestePeriode.fom
