@@ -1,11 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur.service
 
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
-import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
-import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
-import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatRepository
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -70,57 +65,7 @@ class JsonUpdatePeriodeIverksettTask(
     override fun doTask(task: Task) {
 
         val iverksett = iverksettingRepository.findByIdOrThrow(UUID.fromString(task.payload))
-        when (iverksett.data) {
-            is IverksettOvergangsstønad -> oppdater(iverksett, iverksett.data)
-            is IverksettSkolepenger -> oppdater(iverksett, iverksett.data)
-            is IverksettBarnetilsyn -> oppdater(iverksett, iverksett.data)
-        }
-    }
-
-    private fun oppdater(it: Iverksett, data: IverksettOvergangsstønad) {
-        val tilkjentYtelse = data.vedtak.tilkjentYtelse
-        val oppdatertTilkjentYtelse = tilkjentYtelse?.copy(
-            startdato = null,
-            andelerTilkjentYtelse = tilkjentYtelse.andelerTilkjentYtelse.map { it.copy(fraOgMed = null, tilOgMed = null) }
-        )
-        val oppdatertVedtak = data.vedtak.copy(tilkjentYtelse = oppdatertTilkjentYtelse)
-        val oppdaterteData = data.copy(vedtak = oppdatertVedtak)
-        iverksettingRepository.update(it.copy(data = oppdaterteData))
-    }
-
-    private fun oppdater(it: Iverksett, data: IverksettBarnetilsyn) {
-        val tilkjentYtelse = data.vedtak.tilkjentYtelse
-        val oppdatertTilkjentYtelse = tilkjentYtelse?.copy(
-            startdato = null,
-            andelerTilkjentYtelse = tilkjentYtelse.andelerTilkjentYtelse.map { it.copy(fraOgMed = null, tilOgMed = null) }
-        )
-        val oppdaterteKontantstøtter = data.vedtak.kontantstøtte.map { it.copy(fraOgMed = null, tilOgMed = null) }
-        val oppdaterteTilleggsstønander = data.vedtak.tilleggsstønad.map { it.copy(fraOgMed = null, tilOgMed = null) }
-
-        val oppdatertVedtak = data.vedtak.copy(
-            tilkjentYtelse = oppdatertTilkjentYtelse,
-            kontantstøtte = oppdaterteKontantstøtter,
-            tilleggsstønad = oppdaterteTilleggsstønander
-        )
-        val oppdaterteData = data.copy(vedtak = oppdatertVedtak)
-        iverksettingRepository.update(it.copy(data = oppdaterteData))
-    }
-
-    private fun oppdater(it: Iverksett, data: IverksettSkolepenger) {
-        val tilkjentYtelse = data.vedtak.tilkjentYtelse
-        val oppdatertTilkjentYtelse = tilkjentYtelse?.copy(
-            startdato = null,
-            andelerTilkjentYtelse = tilkjentYtelse.andelerTilkjentYtelse.map { it.copy(fraOgMed = null, tilOgMed = null) }
-        )
-        val oppdaterteVedtaksperioder = data.vedtak.vedtaksperioder.map {
-            val oppdatertePerioder = it.perioder.map { periode -> periode.copy(fraOgMed = null, tilOgMed = null) }
-            it.copy(perioder = oppdatertePerioder)
-        }
-
-        val oppdatertVedtak =
-            data.vedtak.copy(tilkjentYtelse = oppdatertTilkjentYtelse, vedtaksperioder = oppdaterteVedtaksperioder)
-        val oppdaterteData = data.copy(vedtak = oppdatertVedtak)
-        iverksettingRepository.update(it.copy(data = oppdaterteData))
+        iverksettingRepository.update(iverksett)
     }
 
     companion object {
@@ -138,17 +83,8 @@ class JsonUpdatePeriodeIverksettTask(
 class JsonUpdatePeriodeIverksettResultatTask(private val iverksettResultatRepository: IverksettResultatRepository) :
     AsyncTaskStep {
     override fun doTask(task: Task) {
-        val it = iverksettResultatRepository.findByIdOrThrow(UUID.fromString(task.payload))
-        oppdater(it)
-    }
-
-    private fun oppdater(it: IverksettResultat) {
-        val tilkjentYtelse = it.tilkjentYtelseForUtbetaling
-        val oppdatertTilkjentYtelse = tilkjentYtelse?.copy(
-            startdato = null,
-            andelerTilkjentYtelse = tilkjentYtelse.andelerTilkjentYtelse.map { it.copy(fraOgMed = null, tilOgMed = null) }
-        )
-        iverksettResultatRepository.update(it.copy(tilkjentYtelseForUtbetaling = oppdatertTilkjentYtelse))
+        val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(UUID.fromString(task.payload))
+        iverksettResultatRepository.update(iverksettResultat)
     }
 
     companion object {
