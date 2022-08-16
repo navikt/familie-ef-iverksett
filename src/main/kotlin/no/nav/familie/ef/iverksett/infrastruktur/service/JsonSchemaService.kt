@@ -30,7 +30,7 @@ class JsonSchemaService(
 
     @Transactional
     @GetMapping
-    fun update() {
+    fun update(): String {
         val iverksettingIder = iverksettingRepository.finnAlleIder()
 
         log.info("Starter oppretting av tasker for oppdatering av json på iverksett. Antall ${iverksettingIder.size}")
@@ -39,16 +39,19 @@ class JsonSchemaService(
         }
         log.info("oppretting av ${iverksettingIder.size} tasker fullført")
 
-        val iverksettingresultater = iverksettResultatRepository.finnAlleIder()
+        val iverksettingresultatIder = iverksettResultatRepository.finnAlleIder()
         log.info(
             "Starter oppretting av tasker for oppdatering av json på iverksettResultat. " +
-                "Antall ${iverksettingresultater.size}"
+                "Antall ${iverksettingresultatIder.size}"
         )
-        iverksettingresultater.forEach {
+        iverksettingresultatIder.forEach {
             taskService.save(Task(JsonUpdatePeriodeIverksettResultatTask.TYPE, it.toString()))
         }
 
-        log.info("oppretting av ${iverksettingresultater.count()} tasker fullført")
+        log.info("oppretting av ${iverksettingresultatIder.size} tasker fullført")
+
+        return "Opprettet ${iverksettingIder.size} tasker for oppdatering av iverksetting " +
+            "og ${iverksettingresultatIder.size} tasker for oppdatering av iverksettResultat."
     }
 }
 
