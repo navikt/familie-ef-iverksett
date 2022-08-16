@@ -6,6 +6,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.YearMonth
 
 internal class UtbetalingsperiodeMalKtTest {
 
@@ -32,8 +33,8 @@ internal class UtbetalingsperiodeMalKtTest {
         lagPeriodeFraAndel(
             andel = lagAndelTilkjentYtelse(
                 beløp = 10,
-                fraOgMed = LocalDate.now(),
-                tilOgMed = LocalDate.now(),
+                fraOgMed = YearMonth.now(),
+                tilOgMed = YearMonth.now(),
                 periodeId = 1
             ),
             type = stønadType,

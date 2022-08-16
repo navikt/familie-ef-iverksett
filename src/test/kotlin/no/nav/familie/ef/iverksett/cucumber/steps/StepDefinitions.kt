@@ -110,26 +110,35 @@ class StepDefinitions {
         val parsedStartdato = startdato?.let { parseÅrMåned(it).atDay(1) }
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
         val forventetTilkjentYtelse = TilkjentYtelseParser.mapForventetTilkjentYtelse(dataTable, behandlingIdInt, parsedStartdato)
-        val beregnetTilkjentYtelse = beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
+        val beregnetTilkjentYtelse =
+            beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
 
         assertTilkjentYtelse(forventetTilkjentYtelse, beregnetTilkjentYtelse)
     }
 
     @Så("forvent følgende tilkjente ytelser med tomme andeler for behandling {int} og startdato {}")
-    fun `forvent følgende tilkjente ytelser med tomme andeler for behandling og startdato`(behandlingIdInt: Int, startdato: String?) {
+    fun `forvent følgende tilkjente ytelser med tomme andeler for behandling og startdato`(
+        behandlingIdInt: Int,
+        startdato: String?
+    ) {
         val parsedStartdato = startdato?.let { parseÅrMåned(it).atDay(1) }
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
-        val beregnetTilkjentYtelse = beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
+        val beregnetTilkjentYtelse =
+            beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
 
         assertTilkjentYtelseMed0BeløpAndeler(behandlingId, parsedStartdato, beregnetTilkjentYtelse)
     }
 
-    private fun assertTilkjentYtelseMed0BeløpAndeler(behandlingId: UUID, startdato: LocalDate?, beregnetTilkjentYtelse: TilkjentYtelse) {
-        assertThat(beregnetTilkjentYtelse.startdato).isEqualTo(startdato)
+    private fun assertTilkjentYtelseMed0BeløpAndeler(
+        behandlingId: UUID,
+        startmåned: LocalDate?,
+        beregnetTilkjentYtelse: TilkjentYtelse
+    ) {
+        assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(startmåned)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().beløp).isEqualTo(0)
-        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().fraOgMed).isEqualTo(LocalDate.MIN)
-        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().tilOgMed).isEqualTo(LocalDate.MIN)
+        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.fomDato).isEqualTo(LocalDate.MIN)
+        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.tomDato).isEqualTo(LocalDate.MIN)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isNull()
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().kildeBehandlingId).isEqualTo(behandlingId)
     }
@@ -140,14 +149,14 @@ class StepDefinitions {
     ) {
         beregnetTilkjentYtelse.andelerTilkjentYtelse.forEachIndexed { index, andel ->
             val forventetAndel = forventetTilkjentYtelse.andeler[index]
-            assertThat(andel.fraOgMed).isEqualTo(forventetAndel.fom)
-            assertThat(andel.tilOgMed).isEqualTo(forventetAndel.tom)
+            assertThat(andel.periode.fomDato).isEqualTo(forventetAndel.fom)
+            assertThat(andel.periode.tomDato).isEqualTo(forventetAndel.tom)
             assertThat(andel.beløp).isEqualTo(forventetAndel.beløp)
             assertThat(andel.periodeId).isEqualTo(forventetAndel.periodeId)
             assertThat(andel.forrigePeriodeId).isEqualTo(forventetAndel.forrigePeriodeId)
             assertThat(andel.kildeBehandlingId).isEqualTo(forventetAndel.kildeBehandlingId)
         }
-        assertThat(beregnetTilkjentYtelse.startdato).isEqualTo(forventetTilkjentYtelse.startdato)
+        assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(forventetTilkjentYtelse.startmåned)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(forventetTilkjentYtelse.andeler.size)
     }
 
@@ -171,7 +180,8 @@ class StepDefinitions {
         utbetalingsperiode: Utbetalingsperiode,
         forventetUtbetalingsperiode: TilkjentYtelseParser.ForventetUtbetalingsperiode
     ) {
-        assertThat(utbetalingsperiode.erEndringPåEksisterendePeriode).isEqualTo(forventetUtbetalingsperiode.erEndringPåEksisterendePeriode)
+        assertThat(utbetalingsperiode.erEndringPåEksisterendePeriode)
+            .isEqualTo(forventetUtbetalingsperiode.erEndringPåEksisterendePeriode)
         assertThat(utbetalingsperiode.klassifisering).isEqualTo(Ytelsestype.valueOf(stønadType.name).kode)
         assertThat(utbetalingsperiode.periodeId).isEqualTo(forventetUtbetalingsperiode.periodeId)
         assertThat(utbetalingsperiode.forrigePeriodeId).isEqualTo(forventetUtbetalingsperiode.forrigePeriodeId)
@@ -183,7 +193,10 @@ class StepDefinitions {
     }
 
     private fun assertSjekkBehandlingIder(expectedBehandlingIder: List<UUID>, medUtbetalingsperiode: Boolean = true) {
-        val list = beregnedeTilkjentYtelse.filter { it.value.utbetalingsoppdrag?.utbetalingsperiode?.isNotEmpty() == medUtbetalingsperiode }.map { it.key }
+        val list =
+            beregnedeTilkjentYtelse.filter {
+                it.value.utbetalingsoppdrag?.utbetalingsperiode?.isNotEmpty() == medUtbetalingsperiode
+            }.map { it.key }
         assertThat(expectedBehandlingIder).containsExactlyInAnyOrderElementsOf(list)
     }
 }

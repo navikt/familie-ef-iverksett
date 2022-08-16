@@ -1,13 +1,18 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import java.time.LocalDate
 import java.util.UUID
 import kotlin.math.roundToInt
 
 data class AndelTilkjentYtelse(
     val beløp: Int,
-    val fraOgMed: LocalDate,
-    val tilOgMed: LocalDate,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
+    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
+    val periode: Månedsperiode = Månedsperiode(
+        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+    ),
 
     val inntekt: Int,
     val samordningsfradrag: Int,
@@ -20,8 +25,7 @@ data class AndelTilkjentYtelse(
 
     private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean {
         return (
-            this.fraOgMed == other.fraOgMed &&
-                this.tilOgMed == other.tilOgMed &&
+            this.periode == other.periode &&
                 this.beløp == other.beløp
             )
     }

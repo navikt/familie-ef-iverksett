@@ -81,15 +81,15 @@ object VedtakstatistikkMapper {
             stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
             perioderKontantstøtte = iverksett.vedtak.kontantstøtte.map {
                 PeriodeMedBeløp(
-                    it.fraOgMed,
-                    it.tilOgMed,
+                    it.periode.fomDato,
+                    it.periode.tomDato,
                     it.beløp
                 )
             },
             perioderTilleggsstønad = iverksett.vedtak.tilleggsstønad.map {
                 PeriodeMedBeløp(
-                    it.fraOgMed,
-                    it.tilOgMed,
+                    it.periode.fomDato,
+                    it.periode.tomDato,
                     it.beløp
                 )
             }
@@ -147,8 +147,8 @@ object VedtakstatistikkMapper {
                 samordningsfradrag = it.samordningsfradrag,
                 inntekt = it.inntekt,
                 inntektsreduksjon = it.inntektsreduksjon,
-                fraOgMed = it.fraOgMed,
-                tilOgMed = it.tilOgMed,
+                fraOgMed = it.periode.fomDato,
+                tilOgMed = it.periode.tomDato,
                 Utbetalingsdetalj(
                     gjelderPerson = mapTilPerson(personIdent = søker.personIdent),
                     klassekode = stønadsType.tilKlassifisering(),
@@ -176,8 +176,8 @@ object VedtakstatistikkMapper {
     private fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerOvergangsstønad): List<VedtaksperiodeOvergangsstønadDto> {
         return vedtaksdetaljer.vedtaksperioder.map {
             VedtaksperiodeOvergangsstønadDto(
-                it.fraOgMed,
-                it.tilOgMed,
+                it.periode.fomDato,
+                it.periode.tomDato,
                 AktivitetType.valueOf(it.aktivitet.name),
                 VedtaksperiodeType.valueOf(it.periodeType.name)
             )
@@ -187,8 +187,8 @@ object VedtakstatistikkMapper {
     private fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerBarnetilsyn): List<VedtaksperiodeBarnetilsynDto> {
         return vedtaksdetaljer.vedtaksperioder.map {
             VedtaksperiodeBarnetilsynDto(
-                it.fraOgMed,
-                it.tilOgMed,
+                it.periode.fomDato,
+                it.periode.tomDato,
                 it.utgifter,
                 it.antallBarn
             )
@@ -224,7 +224,7 @@ object VedtakstatistikkMapper {
             stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
             vedtaksperioder = iverksett.vedtak.vedtaksperioder.map {
                 VedtaksperiodeSkolepenger(
-                    skoleår = it.perioder.first().fraOgMed.utledSkoleår().value,
+                    skoleår = it.perioder.first().periode.fomDato.utledSkoleår().value,
                     perioder = it.perioder.map { delårsperiode -> mapTilDelårsperiode(delårsperiode) },
                     utgifter = it.utgiftsperioder.map { utgiftsperiode -> mapTilUtgiftSkolepenger(utgiftsperiode) },
                     maksSatsForSkoleår = it.perioder.first().makssatsForSkoleår
@@ -244,8 +244,8 @@ object VedtakstatistikkMapper {
     private fun mapTilDelårsperiode(delårsperiode: DelårsperiodeSkoleårSkolepenger) =
         Delårsperiode(
             studietype = Studietype.valueOf(delårsperiode.studietype.name),
-            datoFra = delårsperiode.fraOgMed,
-            datoTil = delårsperiode.tilOgMed,
+            datoFra = delårsperiode.periode.fomDato,
+            datoTil = delårsperiode.periode.tomDato,
             studiebelastning = delårsperiode.studiebelastning
         )
 

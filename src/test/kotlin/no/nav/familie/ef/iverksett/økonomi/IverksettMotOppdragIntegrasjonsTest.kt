@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.prosessering.domene.TaskRepository
@@ -11,12 +11,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
 
     @Autowired
-    lateinit var tilstandRepository: TilstandRepository
+    lateinit var iverksettResultatService: IverksettResultatService
 
     @Autowired
     lateinit var taskRepository: TaskRepository
@@ -30,11 +31,11 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     private val behandlingid: UUID = UUID.randomUUID()
     private val førsteAndel = lagAndelTilkjentYtelse(
         beløp = 1000,
-        fraOgMed = LocalDate.of(2021, 1, 1),
-        tilOgMed = LocalDate.of(2021, 1, 31)
+        fraOgMed = YearMonth.of(2021, 1),
+        tilOgMed = YearMonth.of(2021, 1)
     )
     private val iverksett =
-        opprettIverksettOvergangsstønad(behandlingid, andeler = listOf(førsteAndel), startdato = førsteAndel.fraOgMed)
+        opprettIverksettOvergangsstønad(behandlingid, andeler = listOf(førsteAndel), startmåned = førsteAndel.periode.fom)
 
     @BeforeEach
     internal fun setUp() {
@@ -44,7 +45,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
 
     @Test
     internal fun `start iverksetting, forvent at andelerTilkjentYtelse er lik 1 og har periodeId 1`() {
-        val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingid)!!
+        val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(behandlingid)!!
         assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
         assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
     }
@@ -59,8 +60,8 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                 førsteAndel,
                 lagAndelTilkjentYtelse(
                     beløp = 1000,
-                    fraOgMed = LocalDate.now(),
-                    tilOgMed = LocalDate.now().plusDays(15)
+                    fraOgMed = YearMonth.now(),
+                    tilOgMed = YearMonth.now().plusMonths(1)
                 )
             )
         )
@@ -69,7 +70,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
         iverksettMotOppdrag()
 
-        val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingIdRevurdering)!!
+        val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(behandlingIdRevurdering)!!
         assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(2)
         assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
         assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].periodeId).isEqualTo(2)
@@ -86,8 +87,8 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                 førsteAndel.copy(beløp = 299),
                 lagAndelTilkjentYtelse(
                     beløp = 1000,
-                    fraOgMed = LocalDate.now(),
-                    tilOgMed = LocalDate.now().plusDays(15)
+                    fraOgMed = YearMonth.now(),
+                    tilOgMed = YearMonth.now().plusMonths(1)
                 )
             )
         )
@@ -96,7 +97,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
         iverksettMotOppdrag()
 
-        val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingIdRevurdering)!!
+        val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(behandlingIdRevurdering)!!
         assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(2)
         assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(2)
         assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].periodeId).isEqualTo(3)
@@ -106,20 +107,20 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     @Test
     internal fun `iverksett med opphør, forventer beløp lik 0 og dato lik LocalDate MIN`() {
         val opphørBehandlingId = UUID.randomUUID()
-        val startdato = førsteAndel.fraOgMed
+        val startmåned = førsteAndel.periode.fom
         val iverksettMedOpphør =
-            opprettIverksettOvergangsstønad(opphørBehandlingId, behandlingid, emptyList(), startdato = startdato)
+            opprettIverksettOvergangsstønad(opphørBehandlingId, behandlingid, emptyList(), startmåned = startmåned)
 
         taskRepository.deleteAll()
         iverksettingService.startIverksetting(iverksettMedOpphør, opprettBrev())
         iverksettMotOppdrag()
 
-        val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(opphørBehandlingId)!!
+        val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(opphørBehandlingId)!!
         assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
         assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
         assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().beløp).isEqualTo(0)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().fraOgMed).isEqualTo(LocalDate.MIN)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().tilOgMed).isEqualTo(LocalDate.MIN)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periode.fom).isEqualTo(YearMonth.from(LocalDate.MIN))
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periode.tom).isEqualTo(YearMonth.from(LocalDate.MIN))
     }
 
     private fun iverksettMotOppdrag() {

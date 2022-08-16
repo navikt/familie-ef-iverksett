@@ -84,7 +84,7 @@ object UtbetalingsoppdragGenerator {
     ) =
         (gjeldendeAndeler + listOfNotNull(forrigeTilkjentYtelse?.sisteAndelIKjede))
             .filter { it.periodeId != null }
-            .filter { it.fraOgMed != LocalDate.MIN }
+            .filter { it.periode.fomDato != LocalDate.MIN }
             .maxByOrNull { it.periodeId ?: error("Mangler periodeId") }
 
     private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
@@ -131,7 +131,7 @@ object UtbetalingsoppdragGenerator {
         val forrigePeriodeIdIKjede: Long? = sisteOffsetIKjedeOversikt?.gjeldende
         val nestePeriodeIdIKjede = forrigePeriodeIdIKjede?.plus(1) ?: 1
 
-        return andeler.sortedBy { it.fraOgMed }.mapIndexed { index, andel ->
+        return andeler.sortedBy { it.periode }.mapIndexed { index, andel ->
             andel.copy(
                 periodeId = nestePeriodeIdIKjede + index,
                 kildeBehandlingId = kildeBehandlingId,

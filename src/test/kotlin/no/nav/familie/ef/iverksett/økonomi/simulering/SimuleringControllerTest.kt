@@ -5,7 +5,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
 import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.simuleringDto
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
@@ -25,12 +25,13 @@ import org.springframework.boot.test.web.client.exchange
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 class SimuleringControllerTest : ServerTest() {
 
     @Autowired
-    private lateinit var tilstandRepository: TilstandRepository
+    private lateinit var iverksettResultatService: IverksettResultatService
 
     @Autowired
     private lateinit var oppdragClient: OppdragClient
@@ -145,13 +146,13 @@ class SimuleringControllerTest : ServerTest() {
 
     private fun lagFørstegangsbehandlingUtenBeløp(behandlingId: UUID) {
         val andelTilkjentYtelse =
-            lagAndelTilkjentYtelse(0, fraOgMed = LocalDate.of(2021, 1, 1), tilOgMed = LocalDate.of(2021, 1, 31))
+            lagAndelTilkjentYtelse(0, fraOgMed = YearMonth.of(2021, 1), tilOgMed = YearMonth.of(2021, 1))
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingId, andeler = listOf(andelTilkjentYtelse))
         val tilkjentYtelseMedUtbetalingsoppdrag =
             lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(behandlingId, 1L, tilkjentYtelse))
 
-        tilstandRepository.opprettTomtResultat(behandlingId)
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelseMedUtbetalingsoppdrag)
+        iverksettResultatService.opprettTomtResultat(behandlingId)
+        iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelseMedUtbetalingsoppdrag)
     }
 
     private fun lagSimuleringsresultatMedTomListe(): BeriketSimuleringsresultat {

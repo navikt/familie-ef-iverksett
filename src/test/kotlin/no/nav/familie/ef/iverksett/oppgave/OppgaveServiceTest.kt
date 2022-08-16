@@ -16,11 +16,13 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 internal class OppgaveServiceTest {
@@ -205,7 +207,7 @@ internal class OppgaveServiceTest {
             listOf(
                 vedtaksPeriode(
                     aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                    fraOgMed = LocalDate.now().plusMonths(3)
+                    fraOgMed = LocalDate.now().minusMonths(3)
                 )
             )
         )
@@ -259,7 +261,7 @@ internal class OppgaveServiceTest {
             BehandlingType.REVURDERING,
             Vedtaksresultat.OPPHØRT,
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
-            andelsdatoer = listOf(LocalDate.now())
+            andelsdatoer = listOf(YearMonth.now())
         )
 
         oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
@@ -274,12 +276,12 @@ internal class OppgaveServiceTest {
             BehandlingType.REVURDERING,
             Vedtaksresultat.OPPHØRT,
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
-            andelsdatoer = listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1))
+            andelsdatoer = listOf(YearMonth.now().minusMonths(2), YearMonth.now(), YearMonth.now().minusMonths(1))
         )
 
         oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
         verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
-        assertThat(opphørsdato.captured).isEqualTo(LocalDate.now())
+        assertThat(opphørsdato.captured).isEqualTo(YearMonth.now().atEndOfMonth())
     }
 
     @Test
@@ -310,7 +312,7 @@ internal class OppgaveServiceTest {
             BehandlingType.REVURDERING,
             Vedtaksresultat.INNVILGET,
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
-            andelsdatoer = listOf(LocalDate.now().minusDays(1), LocalDate.now(), LocalDate.now().minusMonths(1))
+            andelsdatoer = listOf(YearMonth.now().minusMonths(2), YearMonth.now(), YearMonth.now().minusMonths(1))
         )
         val forrigeBehandlingIverksett = lagIverksettData(
             UUID.randomUUID(),
@@ -319,7 +321,7 @@ internal class OppgaveServiceTest {
             listOf(
                 vedtaksPeriode(
                     aktivitet = AktivitetType.UTVIDELSE_FORSØRGER_I_UTDANNING,
-                    fraOgMed = LocalDate.now().plusMonths(3)
+                    fraOgMed = LocalDate.now().minusMonths(3)
                 )
             ),
             erMigrering = true
@@ -334,8 +336,7 @@ internal class OppgaveServiceTest {
         tilOgMed: LocalDate = LocalDate.now()
     ): VedtaksperiodeOvergangsstønad {
         return VedtaksperiodeOvergangsstønad(
-            fraOgMed = fraOgMed,
-            tilOgMed = tilOgMed,
+            periode = Månedsperiode(fraOgMed, tilOgMed),
             aktivitet = aktivitet,
             periodeType = VedtaksperiodeType.HOVEDPERIODE
         )

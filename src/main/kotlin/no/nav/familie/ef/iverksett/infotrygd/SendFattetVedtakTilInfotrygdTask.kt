@@ -45,7 +45,7 @@ class SendFattetVedtakTilInfotrygdTask(
         val tilkjentYtelse: TilkjentYtelse =
             iverksettData.vedtak.tilkjentYtelse
                 ?: error("Finner ikke tilkjent ytelse for behandling med id=${iverksettData.behandling.behandlingId}")
-        val startDato = tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.fraOgMed }
+        val startDato = tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.periode.fomDato }
             ?: error("Finner ikke noen andel med fraOgMed for behandling=$behandlingId")
 
         infotrygdFeedClient.opprettVedtakHendelse(OpprettVedtakHendelseDto(personIdenter, stønadstype, startDato))

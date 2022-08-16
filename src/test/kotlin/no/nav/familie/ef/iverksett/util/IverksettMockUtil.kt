@@ -52,12 +52,14 @@ import no.nav.familie.kontrakter.ef.iverksett.VedtaksdetaljerOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
+import no.nav.familie.kontrakter.felles.Datoperiode
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.util.Random
 import java.util.UUID
 
@@ -126,8 +128,8 @@ fun opprettIverksettDto(
 
 fun opprettAndelTilkjentYtelse(
     beløp: Int = 5000,
-    fra: LocalDate = LocalDate.of(2021, 1, 1),
-    til: LocalDate = LocalDate.of(2021, 12, 31)
+    fra: YearMonth = YearMonth.of(2021, 1),
+    til: YearMonth = YearMonth.of(2021, 12)
 ) = lagAndelTilkjentYtelse(
     beløp = beløp,
     fraOgMed = fra,
@@ -159,14 +161,14 @@ fun opprettTilkjentYtelseMedMetadata(
 fun opprettTilkjentYtelse(
     behandlingId: UUID = UUID.randomUUID(),
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
-    startdato: LocalDate = startdato(andeler),
+    startmåned: YearMonth = startmåned(andeler),
     sisteAndelIKjede: AndelTilkjentYtelse? = null
 ): TilkjentYtelse {
     return TilkjentYtelse(
         id = behandlingId,
         utbetalingsoppdrag = null,
         andelerTilkjentYtelse = andeler,
-        startdato = startdato,
+        startmåned = startmåned,
         sisteAndelIKjede = sisteAndelIKjede
     )
 }
@@ -208,16 +210,14 @@ fun behandlingsdetaljer(
 
 fun vedtaksperioderOvergangsstønad() =
     VedtaksperiodeOvergangsstønad(
-        fraOgMed = LocalDate.now(),
-        tilOgMed = LocalDate.now(),
+        periode = lagMånedsperiode(YearMonth.now()),
         aktivitet = AktivitetType.BARNET_ER_SYKT,
         periodeType = VedtaksperiodeType.HOVEDPERIODE
     )
 
 fun vedtaksperioderBarnetilsyn() =
     VedtaksperiodeBarnetilsyn(
-        fraOgMed = LocalDate.now(),
-        tilOgMed = LocalDate.now(),
+        periode = lagMånedsperiode(YearMonth.now()),
         utgifter = 1,
         antallBarn = 10
     )
@@ -226,7 +226,7 @@ fun vedtaksdetaljerOvergangsstønad(
     vedtaksresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
-    startdato: LocalDate = startdato(andeler),
+    startdato: YearMonth = startmåned(andeler),
     vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad())
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
@@ -247,7 +247,7 @@ fun vedtaksdetaljerBarnetilsyn(
     vedtaksresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
-    startdato: LocalDate = startdato(andeler),
+    startdato: YearMonth = startmåned(andeler),
     vedtaksperioder: List<VedtaksperiodeBarnetilsyn> = listOf(vedtaksperioderBarnetilsyn())
 ): VedtaksdetaljerBarnetilsyn {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
@@ -261,21 +261,26 @@ fun vedtaksdetaljerBarnetilsyn(
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
-        kontantstøtte = listOf(PeriodeMedBeløp(LocalDate.of(2022, 1, 1), LocalDate.of(2021, 3, 31), 10)),
-        tilleggsstønad = listOf(PeriodeMedBeløp(LocalDate.of(2022, 2, 1), LocalDate.of(2021, 3, 31), 5))
+        kontantstøtte = listOf(
+            PeriodeMedBeløp(
+                periode = Månedsperiode(YearMonth.of(2022, 1), YearMonth.of(2022, 3)),
+                beløp = 10
+            )
+        ),
+        tilleggsstønad = listOf(PeriodeMedBeløp(periode = Månedsperiode(YearMonth.of(2022, 2), YearMonth.of(2022, 3)), beløp = 5))
     )
 }
 
 private fun lagTilkjentYtelse(
     andeler: List<AndelTilkjentYtelse>,
-    startdato: LocalDate
+    startmåned: YearMonth
 ): TilkjentYtelse =
     TilkjentYtelse(
         id = UUID.randomUUID(),
         utbetalingsoppdrag = null,
         status = TilkjentYtelseStatus.AKTIV,
         andelerTilkjentYtelse = andeler,
-        startdato = startdato
+        startmåned = startmåned
     )
 
 fun opprettIverksettBarnetilsyn(
@@ -315,7 +320,7 @@ fun opprettIverksettOvergangsstønad(
     forrigeBehandlingId: UUID? = null,
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
-    startdato: LocalDate = startdato(andeler)
+    startmåned: YearMonth = startmåned(andeler)
 ): IverksettOvergangsstønad {
     val behandlingType = forrigeBehandlingId?.let { BehandlingType.REVURDERING } ?: BehandlingType.FØRSTEGANGSBEHANDLING
     return IverksettOvergangsstønad(
@@ -327,12 +332,12 @@ fun opprettIverksettOvergangsstønad(
             tilhørendeEnhet = "4489",
             adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
         ),
-        vedtak = vedtaksdetaljerOvergangsstønad(Vedtaksresultat.INNVILGET, andeler, tilbakekreving, startdato)
+        vedtak = vedtaksdetaljerOvergangsstønad(Vedtaksresultat.INNVILGET, andeler, tilbakekreving, startmåned)
     )
 }
 
-fun startdato(andeler: List<AndelTilkjentYtelse>) =
-    andeler.minOfOrNull { it.fraOgMed } ?: error("Trenger å sette startdato hvs det ikke finnes andeler")
+fun startmåned(andeler: List<AndelTilkjentYtelse>) =
+    andeler.minOfOrNull { it.periode.fom } ?: error("Trenger å sette startdato hvs det ikke finnes andeler")
 
 fun opprettBrev(): Brev {
     return Brev(UUID.fromString("234bed7c-b1d3-11eb-8529-0242ac130003"), ByteArray(256))
@@ -358,8 +363,8 @@ fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
 
 fun opprettTilbakekrevingMedVarsel(
     sumFeilutbetaling: BigDecimal = BigDecimal.valueOf(100),
-    perioder: List<Periode> = listOf(
-        Periode(
+    perioder: List<Datoperiode> = listOf(
+        Datoperiode(
             fom = LocalDate.of(2021, 5, 1),
             tom = LocalDate.of(2021, 6, 30)
         )
@@ -414,3 +419,5 @@ class IverksettResultatMockBuilder private constructor(
             )
     }
 }
+
+fun lagMånedsperiode(måned: YearMonth) = Månedsperiode(måned, måned)

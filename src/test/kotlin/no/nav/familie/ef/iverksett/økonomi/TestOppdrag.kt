@@ -49,8 +49,8 @@ data class TestOppdrag(
     val erEndring: Boolean? = null,
     val opphørsdato: LocalDate?,
     val beløp: Int? = null,
-    val startPeriode: LocalDate? = null,
-    val sluttPeriode: LocalDate? = null
+    val startPeriode: YearMonth? = null,
+    val sluttPeriode: YearMonth? = null
 ) {
 
     fun tilAndelTilkjentYtelse(): AndelTilkjentYtelse? {
@@ -83,8 +83,8 @@ data class TestOppdrag(
                 forrigePeriodeId = forrigeLinjeId,
                 datoForVedtak = vedtaksdato,
                 klassifisering = ytelse,
-                vedtakdatoFom = startPeriode,
-                vedtakdatoTom = sluttPeriode,
+                vedtakdatoFom = startPeriode.atDay(1),
+                vedtakdatoTom = sluttPeriode.atEndOfMonth(),
                 sats = beløp?.toBigDecimal() ?: BigDecimal.ZERO,
                 satsType = Utbetalingsperiode.SatsType.MND,
                 utbetalesTil = fnr,
@@ -140,13 +140,13 @@ class TestOppdragGroup {
     }
 
     val input: TilkjentYtelseMedMetaData by lazy {
-        val startdato = startdatoInn
-            ?: andelerTilkjentYtelseInn.minOfOrNull { it.fraOgMed }
+        val startmåned = startdatoInn?.let { YearMonth.from(it) }
+            ?: andelerTilkjentYtelseInn.minOfOrNull { it.periode.fom }
             ?: error("Input feiler - hvis man ikke har en andel må man sette startdato")
         TilkjentYtelseMedMetaData(
             TilkjentYtelse(
                 andelerTilkjentYtelse = andelerTilkjentYtelseInn,
-                startdato = startdato
+                startmåned = startmåned
             ),
             stønadstype = StønadType.OVERGANGSSTØNAD,
             eksternBehandlingId = behandlingEksternId,
@@ -159,8 +159,8 @@ class TestOppdragGroup {
     }
 
     val output: TilkjentYtelse by lazy {
-        val startdato = startdatoUt
-            ?: andelerTilkjentYtelseUt.minOfOrNull { it.fraOgMed }
+        val startmåned = startdatoUt?.let { YearMonth.from(it) }
+            ?: andelerTilkjentYtelseUt.minOfOrNull { it.periode.fom }
             ?: error("Output feiler - hvis man ikke har en andel må man sette startdato")
         val utbetalingsoppdrag =
             Utbetalingsoppdrag(
@@ -178,7 +178,7 @@ class TestOppdragGroup {
             id = input.tilkjentYtelse.id,
             andelerTilkjentYtelse = andelerTilkjentYtelseUt,
             utbetalingsoppdrag = utbetalingsoppdrag,
-            startdato = startdato
+            startmåned = startmåned
         )
     }
 }
@@ -249,8 +249,8 @@ object TestOppdragParser {
                 erEndring = row[KEY_ER_ENDRING]?.let { it.toBoolean() },
                 beløp = beløp,
                 opphørsdato = opphørYearMonth?.atDay(1),
-                startPeriode = firstYearMonth?.atDay(1),
-                sluttPeriode = lastYearMonth?.atEndOfMonth()
+                startPeriode = firstYearMonth,
+                sluttPeriode = lastYearMonth
             )
         }
     }

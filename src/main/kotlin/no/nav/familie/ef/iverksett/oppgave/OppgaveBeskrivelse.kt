@@ -7,7 +7,10 @@ import java.time.format.DateTimeFormatter
 
 object OppgaveBeskrivelse {
 
-    fun beskrivelseFørstegangsbehandlingInnvilget(periode: Pair<LocalDate, LocalDate>, vedtak: VedtaksperiodeOvergangsstønad): String {
+    fun beskrivelseFørstegangsbehandlingInnvilget(
+        periode: Pair<LocalDate, LocalDate>,
+        vedtak: VedtaksperiodeOvergangsstønad
+    ): String {
         return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
     }
@@ -16,7 +19,10 @@ object OppgaveBeskrivelse {
         return "Søknad om overgangsstønad er avslått i vedtak datert ${vedtaksdato.toReadable()}."
     }
 
-    fun beskrivelseRevurderingInnvilget(vedtaksPeriode: Pair<LocalDate, LocalDate>, gjeldendeVedtak: VedtaksperiodeOvergangsstønad): String {
+    fun beskrivelseRevurderingInnvilget(
+        vedtaksPeriode: Pair<LocalDate, LocalDate>,
+        gjeldendeVedtak: VedtaksperiodeOvergangsstønad
+    ): String {
         return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
     }
@@ -54,8 +60,10 @@ object OppgaveBeskrivelse {
             AktivitetType.FORLENGELSE_STØNAD_UT_SKOLEÅRET -> "Stønad ut skoleåret (§15-8 andre ledd)"
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_ARBEID -> "Stønad i påvente av arbeid (§15-8 femte ledd)"
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_UTDANNING -> "Stønad i påvente av utdanning (§15-8 femte ledd)"
-            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_ARBEID_REELL_ARBEIDSSØKER -> "Stønad i påvente av arbeid - reell arnbeidssøker (§15-8 femte ledd)"
-            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_OPPSTART_KVALIFISERINGSPROGRAM -> "Stønad i påvente av oppstart kvalifiseringsprogram"
+            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_ARBEID_REELL_ARBEIDSSØKER ->
+                "Stønad i påvente av arbeid - reell arnbeidssøker (§15-8 femte ledd)"
+            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_OPPSTART_KVALIFISERINGSPROGRAM ->
+                "Stønad i påvente av oppstart kvalifiseringsprogram"
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_TILSYNSORDNING -> "Stønad i påvente av tilsynsordning (§15-8 femte ledd)"
         }
     }

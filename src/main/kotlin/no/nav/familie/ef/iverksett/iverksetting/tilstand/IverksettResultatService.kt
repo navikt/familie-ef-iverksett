@@ -8,13 +8,13 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
-@Repository // TODO Rename til Service etter QA.
-class TilstandRepository(private val iverksettResultatRepository: IverksettResultatRepository) {
+@Service
+class IverksettResultatService(private val iverksettResultatRepository: IverksettResultatRepository) {
 
     fun opprettTomtResultat(behandlingId: UUID) {
         iverksettResultatRepository.insert(IverksettResultat(behandlingId))

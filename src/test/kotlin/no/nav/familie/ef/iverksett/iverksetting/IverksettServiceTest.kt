@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.iverksetting
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
@@ -17,14 +17,14 @@ import java.util.UUID
 
 internal class IverksettServiceTest {
 
-    val tilstandRepository = mockk<TilstandRepository>()
+    val iverksettResultatService = mockk<IverksettResultatService>()
     val taskRepository = mockk<TaskRepository>()
     val iverksettingRepository = mockk<IverksettingRepository>()
     private val oppdragClient = mockk<OppdragClient>()
 
     private var iverksettStatusService: IverksettingService = IverksettingService(
         taskRepository = taskRepository,
-        tilstandRepository = tilstandRepository,
+        iverksettResultatService = iverksettResultatService,
         iverksettingRepository = iverksettingRepository,
         oppdragClient = oppdragClient,
         featureToggleService = mockFeatureToggleService()
@@ -34,7 +34,7 @@ internal class IverksettServiceTest {
     fun `la IverksettResultat ha felt kun satt for tilkjent ytelse, forvent status SENDT_TIL_OPPDRAG`() {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
-        every { tilstandRepository.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
+        every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
             .build(behandlingsId, tilkjentYtelse)
 
         val status = iverksettStatusService.utledStatus(behandlingsId)
@@ -45,7 +45,7 @@ internal class IverksettServiceTest {
     fun `la IverksettResultat ha tilkjent ytelse, oppdrag, og oppdragsresultat satt, forvent status FEILET_MOT_OPPDRAG`() {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
-        every { tilstandRepository.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
+        every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
             .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_FUNKSJONELL_FEIL))
             .build(behandlingsId, tilkjentYtelse)
 
@@ -57,7 +57,7 @@ internal class IverksettServiceTest {
     fun `la IverksettResultat ha felt satt for tilkjent ytelse, oppdrag med kvittert_ok, forvent status OK_MOT_OPPDRAG`() {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
-        every { tilstandRepository.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
+        every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
             .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
             .build(behandlingsId, tilkjentYtelse)
 
@@ -69,7 +69,7 @@ internal class IverksettServiceTest {
     fun `la IverksettResultat ha felt satt for journalføring, forvent status JOURNALFØRT`() {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
-        every { tilstandRepository.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
+        every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
             .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
             .journalPostResultat()
             .build(behandlingsId, tilkjentYtelse)
@@ -82,7 +82,7 @@ internal class IverksettServiceTest {
     fun `la IverksettResultat ha felt for vedktasbrev ulik null, forvent status DISTRIBUERT`() {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
-        every { tilstandRepository.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
+        every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns IverksettResultatMockBuilder.Builder()
             .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
             .journalPostResultat()
             .vedtaksbrevResultat(behandlingsId).build(behandlingsId, tilkjentYtelse)

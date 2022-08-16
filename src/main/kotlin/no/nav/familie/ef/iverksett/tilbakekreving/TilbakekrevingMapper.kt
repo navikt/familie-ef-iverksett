@@ -11,6 +11,7 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
+import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
@@ -69,7 +70,7 @@ private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel?
                     ?: error("varseltekst er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
                 tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.sumFeilutbetaling
                     ?: error("sumFeilutbetaling er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
-                tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder
+                tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder?.map { Periode(it.fom, it.tom) }
                     ?: error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel")
             )
         else -> null

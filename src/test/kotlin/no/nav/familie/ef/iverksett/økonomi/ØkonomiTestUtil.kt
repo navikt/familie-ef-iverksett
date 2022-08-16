@@ -2,13 +2,15 @@ package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 fun lagAndelTilkjentYtelse(
     beløp: Int,
-    fraOgMed: LocalDate,
-    tilOgMed: LocalDate,
+    fraOgMed: YearMonth,
+    tilOgMed: YearMonth,
     periodeId: Long? = null,
     forrigePeriodeId: Long? = null,
     kildeBehandlingId: UUID? = UUID.randomUUID(),
@@ -18,8 +20,7 @@ fun lagAndelTilkjentYtelse(
 ) =
     AndelTilkjentYtelse(
         beløp = beløp,
-        fraOgMed = fraOgMed,
-        tilOgMed = tilOgMed,
+        periode = Månedsperiode(fraOgMed, tilOgMed),
         inntekt = inntekt,
         samordningsfradrag = samordningsfradrag,
         inntektsreduksjon = inntektsreduksjon,

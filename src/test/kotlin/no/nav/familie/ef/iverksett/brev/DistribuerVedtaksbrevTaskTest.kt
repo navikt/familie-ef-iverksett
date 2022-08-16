@@ -6,7 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.prosessering.domene.Loggtype
@@ -28,8 +28,8 @@ import java.util.UUID
 internal class DistribuerVedtaksbrevTaskTest {
 
     private val journalpostClient = mockk<JournalpostClient>()
-    private val tilstandRepository = mockk<TilstandRepository>()
-    private val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, tilstandRepository)
+    private val iverksettResultatService = mockk<IverksettResultatService>()
+    private val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, iverksettResultatService)
 
     private val behandlingId = UUID.randomUUID()
     private val identMottakerA = "123"
@@ -40,20 +40,20 @@ internal class DistribuerVedtaksbrevTaskTest {
         val bestillingId = "111"
         val distribuerVedtaksbrevResultat = slot<DistribuerVedtaksbrevResultat>()
 
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns mapOf(
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns mapOf(
             "123" to JournalpostResultat(
                 journalpostId
             )
         )
-        every { tilstandRepository.hentTilbakekrevingResultat(behandlingId) } returns null
+        every { iverksettResultatService.hentTilbakekrevingResultat(behandlingId) } returns null
         every { journalpostClient.distribuerBrev(journalpostId, any()) } returns bestillingId
-        every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null andThen mapOf(
+        every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null andThen mapOf(
             journalpostId to DistribuerVedtaksbrevResultat(
                 bestillingId
             )
         )
         every {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
+            iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 any(),
                 capture(distribuerVedtaksbrevResultat)
@@ -63,7 +63,7 @@ internal class DistribuerVedtaksbrevTaskTest {
         distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
 
         verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostId, any()) }
-        verify(exactly = 1) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId, any(), any()) }
+        verify(exactly = 1) { iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(behandlingId, any(), any()) }
         assertThat(distribuerVedtaksbrevResultat.captured.bestillingId).isEqualTo(bestillingId)
         assertThat(distribuerVedtaksbrevResultat.captured.dato).isNotNull()
     }
@@ -74,14 +74,14 @@ internal class DistribuerVedtaksbrevTaskTest {
         val bestillingIder = listOf("111", "222")
         val distribuerVedtaksbrevResultatSlots = mutableListOf<DistribuerVedtaksbrevResultat>()
 
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns mapOf(
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns mapOf(
             "1" to journalpostResultater[0],
             "2" to journalpostResultater[1]
         )
-        every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
+        every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
         every { journalpostClient.distribuerBrev(any(), any()) } returns bestillingIder[0] andThen bestillingIder[1]
         every {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
+            iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 any(),
                 capture(distribuerVedtaksbrevResultatSlots)
@@ -93,7 +93,7 @@ internal class DistribuerVedtaksbrevTaskTest {
         verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostResultater[0].journalpostId, any()) }
         verify(exactly = 1) { journalpostClient.distribuerBrev(journalpostResultater[1].journalpostId, any()) }
         verify(exactly = 2) {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
+            iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 any(),
                 any()
@@ -128,11 +128,11 @@ internal class DistribuerVedtaksbrevTaskTest {
         val journalpostSlot = slot<String>()
         val distribuerVedtaksbrevResultatSlot = slot<DistribuerVedtaksbrevResultat>()
 
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns journalpostResultater
-        every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns distribuerteJournalposter
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns journalpostResultater
+        every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns distribuerteJournalposter
         every { journalpostClient.distribuerBrev(capture(journalpostSlot), any()) } returns ikkeDistrbuertJournalpostBestillingId
         every {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
+            iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 ikkeDistribuertJournalpost,
                 capture(distribuerVedtaksbrevResultatSlot)
@@ -144,14 +144,14 @@ internal class DistribuerVedtaksbrevTaskTest {
         verify(exactly = 0) { journalpostClient.distribuerBrev(distribuertJournalpost, any()) }
         verify(exactly = 1) { journalpostClient.distribuerBrev(ikkeDistribuertJournalpost, any()) }
         verify(exactly = 0) {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
+            iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 distribuertJournalpost,
                 any()
             )
         }
         verify(exactly = 1) {
-            tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
+            iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 ikkeDistribuertJournalpost,
                 any()
@@ -167,9 +167,9 @@ internal class DistribuerVedtaksbrevTaskTest {
         internal fun `skal rekjøre senere hvis man får GONE fra dokdist`() {
             val journalpostResultater = listOf(JournalpostResultat("123456789"))
 
-            every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns
+            every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns
                 mapOf("1" to journalpostResultater[0])
-            every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
+            every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
             every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionGone()
 
             val throwable = catchThrowable {
@@ -182,15 +182,16 @@ internal class DistribuerVedtaksbrevTaskTest {
             assertThat(rekjørSenereException.årsak).startsWith("Dødsbo")
 
             verify(exactly = 1) { journalpostClient.distribuerBrev(any(), any()) }
-            verify(exactly = 0) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(any(), any(), any()) }
+            verify(exactly = 0) { iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(any(), any(), any()) }
         }
 
         @Test
         internal fun `skal feile hvis man har blitt kjørt fler enn 7 ganger`() {
             val journalpostResultater = listOf(JournalpostResultat("123456789"))
 
-            every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns mapOf("1" to journalpostResultater[0])
-            every { tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
+            every { iverksettResultatService.hentJournalpostResultat(behandlingId) }
+                .returns(mapOf("1" to journalpostResultater[0]))
+            every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
             every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionGone()
 
             val throwable = catchThrowable {
@@ -202,7 +203,7 @@ internal class DistribuerVedtaksbrevTaskTest {
             assertThat(throwable).hasMessageStartingWith("Er dødsbo og har feilet flere ganger")
 
             verify(exactly = 1) { journalpostClient.distribuerBrev(any(), any()) }
-            verify(exactly = 0) { tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(any(), any(), any()) }
+            verify(exactly = 0) { iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(any(), any(), any()) }
         }
     }
 

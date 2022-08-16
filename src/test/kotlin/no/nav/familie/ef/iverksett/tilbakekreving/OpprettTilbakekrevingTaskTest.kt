@@ -11,7 +11,7 @@ import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
@@ -31,7 +31,7 @@ import java.util.UUID
 
 internal class OpprettTilbakekrevingTaskTest {
 
-    private val tilstandRepository = mockk<TilstandRepository>()
+    private val iverksettResultatService = mockk<IverksettResultatService>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val tilbakekrevingClient = mockk<TilbakekrevingClient>()
     private val simuleringService = mockk<SimuleringService>()
@@ -39,7 +39,7 @@ internal class OpprettTilbakekrevingTaskTest {
     private val taskRepository = mockk<TaskRepository>()
 
     private val opprettTilbakekrevingTask = OpprettTilbakekrevingTask(
-        tilstandRepository = tilstandRepository,
+        iverksettResultatService = iverksettResultatService,
         taskRepository = taskRepository,
         iverksettingRepository = iverksettingRepository,
         tilbakekrevingClient = tilbakekrevingClient,
@@ -120,7 +120,7 @@ internal class OpprettTilbakekrevingTaskTest {
         doTask(behandlingsId)
 
         verify(exactly = 0) { simuleringService.hentBeriketSimulering(any()) }
-        verify(exactly = 0) { tilstandRepository.oppdaterTilbakekrevingResultat(any(), any()) }
+        verify(exactly = 0) { iverksettResultatService.oppdaterTilbakekrevingResultat(any(), any()) }
         verify(exactly = 0) { tilbakekrevingClient.opprettBehandling(any()) }
     }
 
@@ -139,7 +139,12 @@ internal class OpprettTilbakekrevingTaskTest {
 
         every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
         every { simuleringService.hentBeriketSimulering(any()) } returns beriketSimuleringsresultat
-        every { tilstandRepository.oppdaterTilbakekrevingResultat(behandlingsId, capture(tilbakekrevingResultatSlot)) } just Runs
+        every {
+            iverksettResultatService.oppdaterTilbakekrevingResultat(
+                behandlingsId,
+                capture(tilbakekrevingResultatSlot)
+            )
+        } just Runs
 
         doTask(behandlingsId)
 
@@ -186,7 +191,12 @@ internal class OpprettTilbakekrevingTaskTest {
 
         every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
         every { simuleringService.hentBeriketSimulering(any()) } returns beriketSimuleringsresultat
-        every { tilstandRepository.oppdaterTilbakekrevingResultat(behandlingsId, capture(tilbakekrevingResultatSlot)) } just Runs
+        every {
+            iverksettResultatService.oppdaterTilbakekrevingResultat(
+                behandlingsId,
+                capture(tilbakekrevingResultatSlot)
+            )
+        } just Runs
 
         doTask(behandlingsId)
 

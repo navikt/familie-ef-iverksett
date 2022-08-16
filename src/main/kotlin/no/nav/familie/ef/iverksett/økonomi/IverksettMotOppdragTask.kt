@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -23,7 +23,7 @@ class IverksettMotOppdragTask(
     private val iverksettingRepository: IverksettingRepository,
     private val oppdragClient: OppdragClient,
     private val taskRepository: TaskRepository,
-    private val tilstandRepository: TilstandRepository
+    private val iverksettResultatService: IverksettResultatService
 ) : AsyncTaskStep {
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -32,7 +32,7 @@ class IverksettMotOppdragTask(
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
-            tilstandRepository.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=$it")
+            iverksettResultatService.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=$it")
         }
         val nyTilkjentYtelseMedMetaData =
             iverksett.vedtak.tilkjentYtelse?.toMedMetadata(
@@ -51,7 +51,7 @@ class IverksettMotOppdragTask(
             iverksett.erGOmregning()
         )
 
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
+        iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let {
             if (it.utbetalingsperiode.isNotEmpty()) {
                 oppdragClient.iverksettOppdrag(it)

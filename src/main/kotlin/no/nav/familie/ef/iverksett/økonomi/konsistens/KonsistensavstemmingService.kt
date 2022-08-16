@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi.konsistens
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.lagPeriodeFraAndel
@@ -21,7 +21,7 @@ import java.util.UUID
 @Service
 class KonsistensavstemmingService(
     private val oppdragKlient: OppdragClient,
-    private val tilstandRepository: TilstandRepository
+    private val iverksettResultatService: IverksettResultatService
 ) {
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
@@ -55,7 +55,8 @@ class KonsistensavstemmingService(
 
         val stønadType = konsistensavstemmingDto.stønadType
         val tilkjentYtelsePerBehandlingId = konsistensavstemmingDto.tilkjenteYtelser.associateBy { it.behandlingId }
-        val behandlingIdTilkjentYtelseForUtbetalingMap = tilstandRepository.hentTilkjentYtelse(tilkjentYtelsePerBehandlingId.keys)
+        val behandlingIdTilkjentYtelseForUtbetalingMap =
+            iverksettResultatService.hentTilkjentYtelse(tilkjentYtelsePerBehandlingId.keys)
 
         return behandlingIdTilkjentYtelseForUtbetalingMap.map { (behandlingId, tilkjentYtelse) ->
             genererUtbetalingsoppdrag(
@@ -120,6 +121,5 @@ class KonsistensavstemmingService(
      */
     private fun beløpOgPeriodeErLik(a: AndelTilkjentYtelse, b: AndelTilkjentYtelse) =
         a.beløp == b.beløp &&
-            a.fraOgMed == b.fraOgMed &&
-            a.tilOgMed == b.tilOgMed
+            a.periode == b.periode
 }

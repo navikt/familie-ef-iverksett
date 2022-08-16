@@ -5,7 +5,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
@@ -38,7 +38,7 @@ class JournalførVedtaksbrevTask(
     private val iverksettingRepository: IverksettingRepository,
     private val journalpostClient: JournalpostClient,
     private val taskRepository: TaskRepository,
-    private val tilstandRepository: TilstandRepository,
+    private val iverksettResultatService: IverksettResultatService,
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -74,7 +74,7 @@ class JournalførVedtaksbrevTask(
                 throw e
             }
         }
-        tilstandRepository.oppdaterJournalpostResultat(
+        iverksettResultatService.oppdaterJournalpostResultat(
             behandlingId = behandlingId,
             mottakerIdent = mottakerIdent,
             JournalpostResultat(journalpostId = journalpostId)
@@ -114,7 +114,7 @@ class JournalførVedtaksbrevTask(
         )
 
         val journalførteIdenter: List<String> =
-            tilstandRepository.hentJournalpostResultat(behandlingId)?.keys?.toList() ?: emptyList()
+            iverksettResultatService.hentJournalpostResultat(behandlingId)?.keys?.toList() ?: emptyList()
 
         if (iverksett.data.vedtak.brevmottakere?.mottakere?.isEmpty() == true) {
             journalførVedtaksbrevTilStønadmottaker(arkiverDokumentRequest, iverksett.data, behandlingId)
@@ -164,7 +164,7 @@ class JournalførVedtaksbrevTask(
     }
 
     private fun validerJournalpostResultatErSatt(behandlingId: UUID, iverksett: IverksettData) {
-        val antallJournalføringer = tilstandRepository.hentJournalpostResultat(behandlingId)?.size
+        val antallJournalføringer = iverksettResultatService.hentJournalpostResultat(behandlingId)?.size
             ?: error("Ingen journalføringer for behandling=[$behandlingId]")
 
         val satteBrevmottakere = iverksett.vedtak.brevmottakere?.mottakere?.size ?: 0
@@ -173,7 +173,10 @@ class JournalførVedtaksbrevTask(
         val forventetJournalføringer = if (satteBrevmottakere > 0) satteBrevmottakere else 1
 
         if (forventetJournalføringer != antallJournalføringer) {
-            error("Feil ved journalføring av vedtaksbrev. Forventet $forventetJournalføringer journalføringsreultat, fant $antallJournalføringer.")
+            error(
+                "Feil ved journalføring av vedtaksbrev. Forventet $forventetJournalføringer journalføringsreultat, " +
+                    "fant $antallJournalføringer."
+            )
         }
     }
 

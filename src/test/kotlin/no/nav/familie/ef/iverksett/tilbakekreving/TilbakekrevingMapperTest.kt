@@ -7,6 +7,7 @@ import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
+import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
@@ -51,7 +52,8 @@ internal class TilbakekrevingMapperTest {
         assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
         assertThat(request.varsel?.sumFeilutbetaling)
             .isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.sumFeilutbetaling)
-        assertThat(request.varsel?.perioder).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.perioder)
+        assertThat(objectMapper.writeValueAsString(request.varsel?.perioder))
+            .isEqualTo(objectMapper.writeValueAsString(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.perioder))
     }
 
     @Test
