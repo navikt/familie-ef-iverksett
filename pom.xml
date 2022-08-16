@@ -18,7 +18,7 @@
         <kotlin.version>1.6.21</kotlin.version>
         <springdoc.version>1.6.9</springdoc.version>
         <swagger.version>2.9.2</swagger.version>
-        <felles.version>1.20220802121553_b7ac6e6</felles.version>
+        <felles.version>1.20220811104902_c1860ff</felles.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <mockk.version>1.12.5</mockk.version>
         <cucumber.version>7.5.0</cucumber.version>
