@@ -54,8 +54,12 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             sakYtelse = behandlingstatistikk.stønadstype.name,
             behandlingResultat = behandlingstatistikk.behandlingResultat,
             resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
-            ansvarligBeslutter = if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty())
-                maskerVerdiHvisStrengtFortrolig(behandlingstatistikk.strengtFortroligAdresse, behandlingstatistikk.beslutterId.toString())
+            ansvarligBeslutter =
+            if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty())
+                maskerVerdiHvisStrengtFortrolig(
+                    behandlingstatistikk.strengtFortroligAdresse,
+                    behandlingstatistikk.beslutterId.toString()
+                )
             else null,
             vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse)
                 behandlingstatistikk.hendelseTidspunkt else null,

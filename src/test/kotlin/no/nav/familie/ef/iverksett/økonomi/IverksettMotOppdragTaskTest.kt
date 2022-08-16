@@ -8,7 +8,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
@@ -26,14 +26,14 @@ internal class IverksettMotOppdragTaskTest {
     private val oppdragClient = mockk<OppdragClient>()
     val taskRepository = mockk<TaskRepository>()
     val iverksettingRepository = mockk<IverksettingRepository>()
-    val tilstandRepository = mockk<TilstandRepository>()
+    val iverksettResultatService = mockk<IverksettResultatService>()
     val behandlingId: UUID = UUID.randomUUID()
     private val iverksettMotOppdragTask =
         IverksettMotOppdragTask(
             iverksettingRepository = iverksettingRepository,
             oppdragClient = oppdragClient,
             taskRepository = taskRepository,
-            tilstandRepository = tilstandRepository
+            iverksettResultatService = iverksettResultatService
         )
 
     @BeforeEach
@@ -45,23 +45,23 @@ internal class IverksettMotOppdragTaskTest {
     internal fun `skal sende utbetaling til oppdrag`() {
         val oppdragSlot = slot<Utbetalingsoppdrag>()
         every { oppdragClient.iverksettOppdrag(capture(oppdragSlot)) } returns "abc"
-        every { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
-        every { tilstandRepository.hentTilkjentYtelse(any<UUID>()) } returns null
+        every { iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
+        every { iverksettResultatService.hentTilkjentYtelse(any<UUID>()) } returns null
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
         verify(exactly = 1) { oppdragClient.iverksettOppdrag(any()) }
-        verify(exactly = 1) { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) }
+        verify(exactly = 1) { iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) }
         assertThat(oppdragSlot.captured.fagSystem).isEqualTo("EFOG")
         assertThat(oppdragSlot.captured.kodeEndring).isEqualTo(Utbetalingsoppdrag.KodeEndring.NY)
     }
 
     @Test
     internal fun `skal ikke iverksette utbetaling til oppdrag når det ikke er noen utbetalinger`() {
-        every { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } just runs
-        every { tilstandRepository.hentTilkjentYtelse(any<UUID>()) } returns null
+        every { iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } just runs
+        every { iverksettResultatService.hentTilkjentYtelse(any<UUID>()) } returns null
         every { iverksettingRepository.findByIdOrThrow(any()) }
             .returns(lagIverksett(opprettIverksettDto(behandlingId, andelsbeløp = 0).toDomain()))
         iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
-        verify(exactly = 1) { tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) }
+        verify(exactly = 1) { iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) }
         verify(exactly = 0) { oppdragClient.iverksettOppdrag(any()) }
     }
 

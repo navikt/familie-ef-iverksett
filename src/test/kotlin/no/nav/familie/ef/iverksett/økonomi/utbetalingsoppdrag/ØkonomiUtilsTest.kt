@@ -37,7 +37,12 @@ internal class ØkonomiUtilsTest {
 
             @Test
             internal fun `skal ikke få startdato når det ikke finnes tidligere andeler`() {
-                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), startmåned = YearMonth.now())).isNull()
+                assertThat(
+                    testOpphørsdatoUtenTidligereTilkjentYtelse(
+                        andeler = emptyList(),
+                        startmåned = YearMonth.now()
+                    )
+                ).isNull()
                 assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelMedBeløp()))).isNull()
                 assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelUtenBeløp()))).isNull()
             }
@@ -52,7 +57,12 @@ internal class ØkonomiUtilsTest {
 
             @Test
             internal fun `opphørsdato etter andeler sitt opphørsdato er ikke gyldig`() {
-                assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = emptyList(), startmåned = opphørsdatoEtterAndeler))
+                assertThat(
+                    testOpphørsdatoUtenTidligereTilkjentYtelse(
+                        andeler = emptyList(),
+                        startmåned = opphørsdatoEtterAndeler
+                    )
+                )
                     .isNull()
                 listOf(listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach { andeler ->
                     assertThatThrownBy {

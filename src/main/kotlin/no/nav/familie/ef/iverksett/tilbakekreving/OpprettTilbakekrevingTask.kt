@@ -6,7 +6,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.tilSimulering
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
 import no.nav.familie.ef.iverksett.økonomi.simulering.harFeilutbetaling
@@ -34,7 +34,7 @@ class OpprettTilbakekrevingTask(
     private val iverksettingRepository: IverksettingRepository,
     private val taskRepository: TaskRepository,
     private val tilbakekrevingClient: TilbakekrevingClient,
-    private val tilstandRepository: TilstandRepository,
+    private val iverksettResultatService: IverksettResultatService,
     private val simuleringService: SimuleringService,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient
 ) : AsyncTaskStep {
@@ -63,7 +63,7 @@ class OpprettTilbakekrevingTask(
         logger.info("Det kreves tilbakekrevingsbehandling for behandling=$behandlingId")
         val opprettTilbakekrevingRequest = lagTilbakekrevingRequest(iverksettData)
         tilbakekrevingClient.opprettBehandling(opprettTilbakekrevingRequest)
-        tilstandRepository.oppdaterTilbakekrevingResultat(
+        iverksettResultatService.oppdaterTilbakekrevingResultat(
             behandlingId = behandlingId,
             TilbakekrevingResultat(opprettTilbakekrevingRequest)
         )
@@ -81,7 +81,9 @@ class OpprettTilbakekrevingTask(
             logger.warn("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
             return false
         } else if (!iverksettData.vedtak.tilbakekreving.skalTilbakekreves) {
-            logger.info("Tilbakekreving ikke valgt for behandlingId=$behandlingId. Oppretter derfor ikke tilbakekrevingsbehandling.")
+            logger.info(
+                "Tilbakekreving ikke valgt for behandlingId=$behandlingId. Oppretter derfor ikke tilbakekrevingsbehandling."
+            )
             return false
         } else if (iverksettData.vedtak.tilkjentYtelse == null) {
             logger.warn("OpprettTilbakekrevingTask ikke utført - tilkjentYtelse er null, Behandling: $behandlingId")

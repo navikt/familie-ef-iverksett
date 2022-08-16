@@ -13,7 +13,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
 import no.nav.familie.ef.iverksett.util.copy
 import no.nav.familie.ef.iverksett.util.opprettBrev
@@ -36,7 +36,7 @@ import javax.annotation.PostConstruct
 class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
 
     @Autowired
-    private lateinit var tilstandRepository: TilstandRepository
+    private lateinit var iverksettResultatService: IverksettResultatService
 
     @Autowired
     private lateinit var iverksettingRepository: IverksettingRepository
@@ -65,7 +65,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
             iverksettingRepository = iverksettingRepository,
             journalpostClient = journalpostClient,
             taskRepository = taskRepository,
-            tilstandRepository = tilstandRepository,
+            iverksettResultatService = iverksettResultatService,
         )
     }
 
@@ -95,7 +95,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
             )
         )
         val behandlingId = iverksettMedBrevmottakere.behandling.behandlingId
-        tilstandRepository.opprettTomtResultat(behandlingId)
+        iverksettResultatService.opprettTomtResultat(behandlingId)
         iverksettingRepository.insert(
             Iverksett(
                 behandlingId,
@@ -113,7 +113,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
             )
         )
 
-        val journalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId = behandlingId)
+        val journalpostResultat = iverksettResultatService.hentJournalpostResultat(behandlingId = behandlingId)
 
         assertThat(journalpostResultat).hasSize(2)
         assertThat(journalpostResultat?.get(identA)).isNotNull
@@ -136,7 +136,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
         val behandlingId = iverksettMedBrevmottakere.behandling.behandlingId
 
         // Sett iverksetting i gyldig tilstand
-        tilstandRepository.opprettTomtResultat(behandlingId)
+        iverksettResultatService.opprettTomtResultat(behandlingId)
         iverksettingRepository.insert(
             Iverksett(
                 behandlingId,
@@ -151,7 +151,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
         verifiserKallTilDokarkivMedIdent(brevmottakerA.ident, 1)
         verifiserKallTilDokarkivMedIdent(ugyldigBrevmottakerB.ident, 1)
 
-        val journalpostResultatMap = tilstandRepository.hentJournalpostResultat(behandlingId = behandlingId)
+        val journalpostResultatMap = iverksettResultatService.hentJournalpostResultat(behandlingId = behandlingId)
         assertThat(journalpostResultatMap).hasSize(1)
         assertThat(journalpostResultatMap?.get(brevmottakerA.ident)).isNotNull
         assertThat(journalpostResultatMap?.get(ugyldigBrevmottakerB.ident)).isNull()
@@ -160,11 +160,12 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
         // Nullstill iverksett og brev for å kunne rekjøre med gyldige verdier
         resettBrevOgIverksettMedGyldigeBrevmottakere(behandlingId, vedtak, gyldigeBrevmottakere)
 
-        // Retryer, men nå med gyldige brevmottakere og nullstiller wireMockServer sine requests for å verifisere at identA ikke journalføres på nytt
+        // Retryer, men nå med gyldige brevmottakere og nullstiller wireMockServer sine
+        // requests for å verifisere at identA ikke journalføres på nytt
         wireMockServer.resetRequests()
         kjørTask(behandlingId)
 
-        val journalpostResultatMapRetry = tilstandRepository.hentJournalpostResultat(behandlingId = behandlingId)
+        val journalpostResultatMapRetry = iverksettResultatService.hentJournalpostResultat(behandlingId = behandlingId)
 
         assertThat(journalpostResultatMapRetry).hasSize(3)
         assertThat(journalpostResultatMapRetry?.get(brevmottakerA.ident)).isNotNull

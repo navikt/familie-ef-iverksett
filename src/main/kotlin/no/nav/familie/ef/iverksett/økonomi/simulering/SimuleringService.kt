@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi.simulering
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.iverksetting.domene.Simulering
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.http.client.RessursException
@@ -17,7 +17,7 @@ import java.time.LocalDate
 @Service
 class SimuleringService(
     private val oppdragKlient: OppdragClient,
-    private val tilstandRepository: TilstandRepository,
+    private val iverksettResultatService: IverksettResultatService,
     private val featureToggleService: FeatureToggleService
 ) {
 
@@ -27,7 +27,7 @@ class SimuleringService(
         }
         try {
             val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
-                tilstandRepository.hentTilkjentYtelse(simulering.forrigeBehandlingId)
+                iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
             }
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(

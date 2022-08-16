@@ -5,7 +5,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
@@ -25,9 +25,9 @@ import java.util.UUID
 internal class KonsistensavstemmingServiceTest {
 
     private val oppdragClient = mockk<OppdragClient>()
-    private val tilstandRepository = mockk<TilstandRepository>()
+    private val iverksettResultatService = mockk<IverksettResultatService>()
 
-    private val konsistensavstemmingService = KonsistensavstemmingService(oppdragClient, tilstandRepository)
+    private val konsistensavstemmingService = KonsistensavstemmingService(oppdragClient, iverksettResultatService)
 
     private val saksbehandlerId = "1"
     private val eksternBehandlingId = 1L
@@ -55,7 +55,7 @@ internal class KonsistensavstemmingServiceTest {
 
     @BeforeEach
     internal fun setUp() {
-        every { tilstandRepository.hentTilkjentYtelse(setOf(behandlingId)) } returns
+        every { iverksettResultatService.hentTilkjentYtelse(setOf(behandlingId)) } returns
             mapOf(behandlingId to lagTilkjentYtelseMedUtbetalingsoppdrag(lagTilkjentYtelseMedMetadata()))
         every { oppdragClient.konsistensavstemming(capture(requestSlot)) } returns ""
     }

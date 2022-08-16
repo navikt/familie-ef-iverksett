@@ -12,6 +12,4 @@ interface IverksettResultatRepository : RepositoryInterface<IverksettResultat, U
 
     @Query("SELECT behandling_id from iverksett_resultat")
     fun finnAlleIder(): List<UUID>
-
-
 }

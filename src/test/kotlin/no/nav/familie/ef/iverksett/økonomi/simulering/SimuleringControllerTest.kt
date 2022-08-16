@@ -5,7 +5,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
 import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.simuleringDto
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
@@ -31,7 +31,7 @@ import java.util.UUID
 class SimuleringControllerTest : ServerTest() {
 
     @Autowired
-    private lateinit var tilstandRepository: TilstandRepository
+    private lateinit var iverksettResultatService: IverksettResultatService
 
     @Autowired
     private lateinit var oppdragClient: OppdragClient
@@ -151,8 +151,8 @@ class SimuleringControllerTest : ServerTest() {
         val tilkjentYtelseMedUtbetalingsoppdrag =
             lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(behandlingId, 1L, tilkjentYtelse))
 
-        tilstandRepository.opprettTomtResultat(behandlingId)
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelseMedUtbetalingsoppdrag)
+        iverksettResultatService.opprettTomtResultat(behandlingId)
+        iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelseMedUtbetalingsoppdrag)
     }
 
     private fun lagSimuleringsresultatMedTomListe(): BeriketSimuleringsresultat {

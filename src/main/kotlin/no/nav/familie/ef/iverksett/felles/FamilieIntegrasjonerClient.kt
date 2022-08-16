@@ -52,7 +52,8 @@ class FamilieIntegrasjonerClient(
     }
 
     fun hentBehandlendeEnhetForOppfølging(personident: String): Enhet? {
-        val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingOppfølingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))
+        val response =
+            postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingOppfølingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))
         return response.getDataOrThrow().firstOrNull()
     }
 

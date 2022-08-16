@@ -73,7 +73,7 @@ private fun hentResultat(posteringer: List<SimulertPostering>): BigDecimal {
     val positivFeilutbetaling = posteringer.sumBarePositiv(FEILUTBETALING)
 
     return when {
-        positivFeilutbetaling > ZERO -> - positivFeilutbetaling
+        positivFeilutbetaling > ZERO -> -positivFeilutbetaling
         else -> hentNyttBeløp(posteringer) - hentTidligereUtbetalt(posteringer)
     }
 }
@@ -144,5 +144,6 @@ fun Simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(): List<
         akkumulatorListe
     }
 }
+
 private fun erPerioderSammenhengende(gjeldendePeriode: Datoperiode, nestePeriode: Datoperiode) =
     gjeldendePeriode.tom.plusDays(1) == nestePeriode.fom

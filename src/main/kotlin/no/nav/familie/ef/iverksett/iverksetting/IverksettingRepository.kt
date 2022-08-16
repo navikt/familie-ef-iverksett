@@ -10,7 +10,6 @@ import java.util.UUID
 @Repository
 interface IverksettingRepository : RepositoryInterface<Iverksett, UUID>, InsertUpdateRepository<Iverksett> {
 
-
     @Query("SELECT behandling_id from iverksett")
     fun finnAlleIder(): List<UUID>
 

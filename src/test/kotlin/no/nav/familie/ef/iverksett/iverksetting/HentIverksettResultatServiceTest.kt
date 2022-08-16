@@ -4,7 +4,7 @@ import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.tilbakekreving.tilOpprettTilbakekrevingRequest
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
@@ -18,29 +18,29 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
-internal class HentTilstandRepositoryTest : ServerTest() {
+internal class HentIverksettResultatServiceTest : ServerTest() {
 
     @Autowired
-    private lateinit var tilstandRepository: TilstandRepository
+    private lateinit var iverksettResultatService: IverksettResultatService
 
     private val behandlingId: UUID = UUID.randomUUID()
     private val tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId)
 
     @BeforeEach
     fun beforeEach() {
-        tilstandRepository.opprettTomtResultat(behandlingId)
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
+        iverksettResultatService.opprettTomtResultat(behandlingId)
+        iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
     }
 
     @Test
     fun `hent ekisterende tilkjent ytelse, forvent likhet og ingen unntak`() {
-        val hentetTilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingId)
+        val hentetTilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(behandlingId)
         assertThat(hentetTilkjentYtelse).isEqualTo(tilkjentYtelse)
     }
 
     @Test
     fun `hent ikke-eksisterende tilstand, forvent nullverdi i retur og ingen unntak`() {
-        val hentetTilkjentYtelse = tilstandRepository.hentTilkjentYtelse(UUID.randomUUID())
+        val hentetTilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(UUID.randomUUID())
         assertThat(hentetTilkjentYtelse).isEqualTo(null)
     }
 
@@ -50,15 +50,15 @@ internal class HentTilstandRepositoryTest : ServerTest() {
             IverksettResultatMockBuilder.Builder().journalPostResultat().build(behandlingId, tilkjentYtelse).journalpostResultat
 
         val (mottakerIdent, resultat) = journalpostResultat.map.entries.first()
-        tilstandRepository.oppdaterJournalpostResultat(behandlingId, mottakerIdent, resultat)
+        iverksettResultatService.oppdaterJournalpostResultat(behandlingId, mottakerIdent, resultat)
 
-        val hentetJournalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId)
+        val hentetJournalpostResultat = iverksettResultatService.hentJournalpostResultat(behandlingId)
         assertThat(hentetJournalpostResultat).isEqualTo(journalpostResultat.map)
     }
 
     @Test
     fun `hent ikke-eksisterende journalpost resultat, forvent nullverdi i retur og ingen unntak`() {
-        val hentetJournalpostResultat = tilstandRepository.hentJournalpostResultat(UUID.randomUUID())
+        val hentetJournalpostResultat = iverksettResultatService.hentJournalpostResultat(UUID.randomUUID())
         assertThat(hentetJournalpostResultat).isEqualTo(null)
     }
 
@@ -69,26 +69,26 @@ internal class HentTilstandRepositoryTest : ServerTest() {
             .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
             .journalPostResultat()
             .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
-        tilstandRepository.oppdaterOppdragResultat(behandlingId, resultat.oppdragResultat!!)
+        iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
+        iverksettResultatService.oppdaterOppdragResultat(behandlingId, resultat.oppdragResultat!!)
         val (mottakerIdent, journalpostresultat) = resultat.journalpostResultat.map.entries.first()
-        tilstandRepository.oppdaterJournalpostResultat(behandlingId, mottakerIdent, journalpostresultat)
+        iverksettResultatService.oppdaterJournalpostResultat(behandlingId, mottakerIdent, journalpostresultat)
         val (journalpostId, vedtaksbrevResultat) = resultat.vedtaksbrevResultat.map.entries.first()
 
-        tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(behandlingId, journalpostId, vedtaksbrevResultat)
-        val iverksettResultat = tilstandRepository.hentIverksettResultat(behandlingId)
+        iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(behandlingId, journalpostId, vedtaksbrevResultat)
+        val iverksettResultat = iverksettResultatService.hentIverksettResultat(behandlingId)
         assertThat(iverksettResultat).isEqualTo(resultat)
     }
 
     @Test
     internal fun `hent tilkjentytelser for flere oppdragIdn`() {
         val behandlingId2 = UUID.randomUUID()
-        tilstandRepository.opprettTomtResultat(behandlingId2)
+        iverksettResultatService.opprettTomtResultat(behandlingId2)
 
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId2, tilkjentYtelse)
+        iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
+        iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId2, tilkjentYtelse)
 
-        val tilkjentYtelsePåBehandlingId = tilstandRepository.hentTilkjentYtelse(setOf(behandlingId, behandlingId2))
+        val tilkjentYtelsePåBehandlingId = iverksettResultatService.hentTilkjentYtelse(setOf(behandlingId, behandlingId2))
 
         assertThat(tilkjentYtelsePåBehandlingId).containsKeys(behandlingId, behandlingId2)
     }
@@ -96,9 +96,9 @@ internal class HentTilstandRepositoryTest : ServerTest() {
     @Test
     internal fun `hentTilkjentYtelse for flere oppdragIdn kaster feil hvis den ikke finner tilkjent ytelse for en behandling`() {
         val behandlingId2 = UUID.randomUUID()
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
+        iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
 
-        assertThat(catchThrowable { tilstandRepository.hentTilkjentYtelse(setOf(behandlingId, behandlingId2)) })
+        assertThat(catchThrowable { iverksettResultatService.hentTilkjentYtelse(setOf(behandlingId, behandlingId2)) })
             .hasMessageContaining("=[$behandlingId2]")
     }
 
@@ -111,13 +111,13 @@ internal class HentTilstandRepositoryTest : ServerTest() {
 
         val tilbakekrevingResultat = TilbakekrevingResultat(opprettTilbakekrevingRequest)
 
-        tilstandRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingId, iverksett.vedtak.tilkjentYtelse!!)
-        tilstandRepository.oppdaterTilbakekrevingResultat(behandlingId, tilbakekrevingResultat)
+        iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, iverksett.vedtak.tilkjentYtelse!!)
+        iverksettResultatService.oppdaterTilbakekrevingResultat(behandlingId, tilbakekrevingResultat)
 
-        val hentetTilbakekrevingResultat = tilstandRepository.hentTilbakekrevingResultat(behandlingId)
+        val hentetTilbakekrevingResultat = iverksettResultatService.hentTilbakekrevingResultat(behandlingId)
         assertThat(hentetTilbakekrevingResultat!!).isEqualTo(tilbakekrevingResultat)
 
-        val iverksettResultat = tilstandRepository.hentIverksettResultat(behandlingId)
+        val iverksettResultat = iverksettResultatService.hentIverksettResultat(behandlingId)
         assertThat(iverksettResultat!!.tilkjentYtelseForUtbetaling).isNotNull
         assertThat(iverksettResultat.tilbakekrevingResultat).isEqualTo(tilbakekrevingResultat)
     }
@@ -132,12 +132,12 @@ internal class HentTilstandRepositoryTest : ServerTest() {
 
         val tilbakekrevingResultat = TilbakekrevingResultat(opprettTilbakekrevingRequest)
 
-        assertThat(tilstandRepository.hentIverksettResultat(id)).isNull()
-        tilstandRepository.opprettTomtResultat(id)
-        assertThat(tilstandRepository.hentIverksettResultat(id)!!.tilbakekrevingResultat).isNull()
+        assertThat(iverksettResultatService.hentIverksettResultat(id)).isNull()
+        iverksettResultatService.opprettTomtResultat(id)
+        assertThat(iverksettResultatService.hentIverksettResultat(id)!!.tilbakekrevingResultat).isNull()
 
-        tilstandRepository.oppdaterTilbakekrevingResultat(id, tilbakekrevingResultat)
-        assertThat(tilstandRepository.hentTilbakekrevingResultat(id)!!)
+        iverksettResultatService.oppdaterTilbakekrevingResultat(id, tilbakekrevingResultat)
+        assertThat(iverksettResultatService.hentTilbakekrevingResultat(id)!!)
             .isEqualTo(tilbakekrevingResultat)
     }
 }

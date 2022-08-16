@@ -11,7 +11,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
@@ -39,46 +39,46 @@ internal class VentePåStatusFraØkonomiTaskTest {
     private val oppdragClient = mockk<OppdragClient>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val taskRepository = mockk<TaskRepository>()
-    private val tilstandRepository = mockk<TilstandRepository>()
+    private val iverksettResultatService = mockk<IverksettResultatService>()
     private val behandlingId: UUID = UUID.randomUUID()
     private val iverksettingService = IverksettingService(
         taskRepository = taskRepository,
         oppdragClient = oppdragClient,
         iverksettingRepository = iverksettingRepository,
-        tilstandRepository = tilstandRepository,
+        iverksettResultatService = iverksettResultatService,
         featureToggleService = mockFeatureToggleService()
     )
 
     private val ventePåStatusFraØkonomiTask =
-        VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskRepository, tilstandRepository)
+        VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskRepository, iverksettResultatService)
 
     @BeforeEach
     internal fun setUp() {
         every { oppdragClient.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettDto(behandlingId).toDomain())
-        every { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) } just runs
+        every { iverksettResultatService.oppdaterOppdragResultat(behandlingId, any()) } just runs
         every { taskRepository.save(any()) } answers { firstArg() }
     }
 
     @Test
     internal fun `kjør doTask for VentePåStatusFraØkonomiTaskhvis, forvent ingen unntak`() {
         val oppdragResultatSlot = slot<OppdragResultat>()
-        every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse(listOf(utbetalingsperiode))
+        every { iverksettResultatService.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse(listOf(utbetalingsperiode))
 
         runTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
 
-        verify(exactly = 1) { tilstandRepository.oppdaterOppdragResultat(behandlingId, capture(oppdragResultatSlot)) }
+        verify(exactly = 1) { iverksettResultatService.oppdaterOppdragResultat(behandlingId, capture(oppdragResultatSlot)) }
         assertThat(oppdragResultatSlot.captured.oppdragStatus).isEqualTo(OppdragStatus.KVITTERT_OK)
         verify(exactly = 1) { taskRepository.save(any()) }
     }
 
     @Test
     internal fun `Skal ikke gjøre noe hvis ingen utbetalingoppdrag på tilkjent ytelse`() {
-        every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse()
+        every { iverksettResultatService.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse()
 
         runTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
 
-        verify(exactly = 0) { tilstandRepository.oppdaterOppdragResultat(behandlingId, any()) }
+        verify(exactly = 0) { iverksettResultatService.oppdaterOppdragResultat(behandlingId, any()) }
         verify(exactly = 1) { taskRepository.save(any()) }
     }
 
@@ -86,7 +86,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
     internal fun `migrering - skal ikke opprette task for journalføring av vedtaksbrev`() {
         val opprettIverksettDto = opprettIverksettDto(behandlingId, behandlingÅrsak = BehandlingÅrsak.MIGRERING)
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettDto.toDomain())
-        every { tilstandRepository.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse(listOf(utbetalingsperiode))
+        every { iverksettResultatService.hentTilkjentYtelse(behandlingId) } returns tilkjentYtelse(listOf(utbetalingsperiode))
 
         runTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
 

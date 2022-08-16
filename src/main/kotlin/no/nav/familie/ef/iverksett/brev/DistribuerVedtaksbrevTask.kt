@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -28,7 +28,7 @@ import java.util.UUID
 )
 class DistribuerVedtaksbrevTask(
     private val journalpostClient: JournalpostClient,
-    private val tilstandRepository: TilstandRepository
+    private val iverksettResultatService: IverksettResultatService
 ) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -49,7 +49,8 @@ class DistribuerVedtaksbrevTask(
 
     private fun distribuerVedtaksbrev(behandlingId: UUID): Resultat {
         val journalpostResultat = hentJournalpostResultat(behandlingId)
-        val distribuerteJournalposter = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)?.keys ?: emptySet()
+        val distribuerteJournalposter =
+            iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId)?.keys ?: emptySet()
 
         var resultat: Dødsbo? = null
         journalpostResultat.filter { (_, journalpostResultat) ->
@@ -75,7 +76,7 @@ class DistribuerVedtaksbrevTask(
     ) {
         val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VEDTAK)
         loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
-        tilstandRepository.oppdaterDistribuerVedtaksbrevResultat(
+        iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
             behandlingId,
             journalpostResultat.journalpostId,
             DistribuerVedtaksbrevResultat(bestillingId)
@@ -94,7 +95,7 @@ class DistribuerVedtaksbrevTask(
     }
 
     private fun hentJournalpostResultat(behandlingId: UUID): Map<String, JournalpostResultat> {
-        val journalpostResultat = tilstandRepository.hentJournalpostResultat(behandlingId)
+        val journalpostResultat = iverksettResultatService.hentJournalpostResultat(behandlingId)
         if (journalpostResultat.isNullOrEmpty()) {
             error("Fant ingen journalpost for behandling=[$behandlingId]")
         }

@@ -7,7 +7,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
@@ -20,7 +20,7 @@ internal class VedtakstatistikkTaskTest {
 
     val iverksettingRepository = mockk<IverksettingRepository>()
     private val vedtakstatistikkService = mockk<VedtakstatistikkService>()
-    val tilstandRepository = mockk<TilstandRepository>()
+    val iverksettResultatService = mockk<IverksettResultatService>()
     private val vedtakstatistikkTask =
         VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService)
     val behandlingId: UUID = UUID.randomUUID()

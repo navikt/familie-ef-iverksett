@@ -97,7 +97,11 @@ object ØkonomiUtils {
 
         val skalOpphøreFørTidligereStartdato = nyTilkjentYtelse.startmåned < forrigeTilkjentYtelse.startmåned
         if (skalOpphøreFørTidligereStartdato) {
-            return lagUtbetalingsperiodeForOpphør(sisteForrigeAndel, nyTilkjentYtelse.startmåned.atDay(1), nyTilkjentYtelseMedMetaData)
+            return lagUtbetalingsperiodeForOpphør(
+                sisteForrigeAndel,
+                nyTilkjentYtelse.startmåned.atDay(1),
+                nyTilkjentYtelseMedMetaData
+            )
         }
 
         val opphørsdato = finnOpphørsdato(forrigeAndeler.toSet(), nyeAndeler.toSet())

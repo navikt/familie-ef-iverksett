@@ -5,7 +5,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResu
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.tilbakekreving.tilOpprettTilbakekrevingRequest
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
@@ -17,10 +17,10 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
-internal class LagreTilstandRepositoryTest : ServerTest() {
+internal class LagreIverksettResultatServiceTest : ServerTest() {
 
     @Autowired
-    private lateinit var tilstandRepositoryRepository: TilstandRepository
+    private lateinit var tilstandRepositoryService: IverksettResultatService
 
     private val behandlingsId: UUID = UUID.randomUUID()
     private val journalpostId: UUID = UUID.randomUUID()
@@ -29,24 +29,24 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
 
     @BeforeEach
     fun beforeEach() {
-        tilstandRepositoryRepository.opprettTomtResultat(behandlingsId)
+        tilstandRepositoryService.opprettTomtResultat(behandlingsId)
     }
 
     @Test
     fun `oppdater tilkjent ytelse, forvent ingen unntak`() {
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
-        tilstandRepositoryRepository.oppdaterTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
+        tilstandRepositoryService.oppdaterTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
     }
 
     @Test
     fun `oppdater oppdrag, forvent ingen unntak`() {
         val oppdragResultat = OppdragResultat(oppdragStatus = OppdragStatus.KVITTERT_OK)
-        tilstandRepositoryRepository.oppdaterOppdragResultat(behandlingsId, oppdragResultat)
+        tilstandRepositoryService.oppdaterOppdragResultat(behandlingsId, oppdragResultat)
     }
 
     @Test
     fun `oppdater journalpost, forvent ingen unntak`() {
-        tilstandRepositoryRepository.oppdaterJournalpostResultat(
+        tilstandRepositoryService.oppdaterJournalpostResultat(
             behandlingsId,
             "123",
             JournalpostResultat(
@@ -57,7 +57,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
 
     @Test
     fun `oppdater distribuerVedtaksbrev, forvent ingen unntak`() {
-        tilstandRepositoryRepository.oppdaterDistribuerVedtaksbrevResultat(
+        tilstandRepositoryService.oppdaterDistribuerVedtaksbrevResultat(
             behandlingsId,
             "123",
             DistribuerVedtaksbrevResultat(bestillingId = "12345")
@@ -67,7 +67,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
     @Test
     fun `oppdater distribuerVedtaksbrev med feil behandlingId, forvent IllegalStateException`() {
         assertThrows<IllegalStateException> {
-            tilstandRepositoryRepository.oppdaterDistribuerVedtaksbrevResultat(
+            tilstandRepositoryService.oppdaterDistribuerVedtaksbrevResultat(
                 UUID.randomUUID(),
                 "123",
                 DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
@@ -81,7 +81,7 @@ internal class LagreTilstandRepositoryTest : ServerTest() {
         val opprettTilbakekrevingRequest = opprettIverksettOvergangsstønad(behandlingsId)
             .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
-        tilstandRepositoryRepository.oppdaterTilbakekrevingResultat(
+        tilstandRepositoryService.oppdaterTilbakekrevingResultat(
             behandlingsId,
             TilbakekrevingResultat(opprettTilbakekrevingRequest)
         )

@@ -261,7 +261,12 @@ fun vedtaksdetaljerBarnetilsyn(
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
-        kontantstøtte = listOf(PeriodeMedBeløp(periode = Månedsperiode(YearMonth.of(2022, 1), YearMonth.of(2022, 3)), beløp = 10)),
+        kontantstøtte = listOf(
+            PeriodeMedBeløp(
+                periode = Månedsperiode(YearMonth.of(2022, 1), YearMonth.of(2022, 3)),
+                beløp = 10
+            )
+        ),
         tilleggsstønad = listOf(PeriodeMedBeløp(periode = Månedsperiode(YearMonth.of(2022, 2), YearMonth.of(2022, 3)), beløp = 5))
     )
 }

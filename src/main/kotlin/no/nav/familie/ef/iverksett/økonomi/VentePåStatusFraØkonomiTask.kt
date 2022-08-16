@@ -4,7 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -27,7 +27,7 @@ class VentePåStatusFraØkonomiTask(
     private val iverksettingRepository: IverksettingRepository,
     private val iverksettingService: IverksettingService,
     private val taskRepository: TaskRepository,
-    private val tilstandRepository: TilstandRepository
+    private val iverksettResultatService: IverksettResultatService
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -35,7 +35,7 @@ class VentePåStatusFraØkonomiTask(
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        val tilkjentYtelse = tilstandRepository.hentTilkjentYtelse(behandlingId)
+        val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(behandlingId)
             ?: error("Kunne ikke finne tilkjent ytelse for behandling=$behandlingId")
 
         if (tilkjentYtelse.harIngenUtbetalingsperioder()) {
@@ -55,7 +55,9 @@ class VentePåStatusFraØkonomiTask(
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
 
         if (iverksett.skalIkkeSendeBrev()) {
-            logger.info("Journalfør ikke vedtaksbrev for behandling=$behandlingId då årsak=${iverksett.behandling.behandlingÅrsak}")
+            logger.info(
+                "Journalfør ikke vedtaksbrev for behandling=$behandlingId då årsak=${iverksett.behandling.behandlingÅrsak}"
+            )
         } else {
             taskRepository.save(task.opprettNesteTask())
         }

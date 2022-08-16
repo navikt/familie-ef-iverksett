@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.config.JournalpostClientMock
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.prosessering.domene.Task
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -19,11 +19,17 @@ import javax.annotation.PostConstruct
 
 class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 
-    @Autowired private lateinit var tilstandRepository: TilstandRepository
-    @Autowired private lateinit var journalpostClient: JournalpostClient
-    @Autowired @Qualifier("mock-integrasjoner") lateinit var wireMockServer: WireMockServer
-    @Autowired lateinit var journalpostClientMock: JournalpostClientMock
-    @Autowired private lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
+    @Autowired
+    private lateinit var iverksettResultatService: IverksettResultatService
+    @Autowired
+    private lateinit var journalpostClient: JournalpostClient
+    @Autowired
+    @Qualifier("mock-integrasjoner")
+    lateinit var wireMockServer: WireMockServer
+    @Autowired
+    lateinit var journalpostClientMock: JournalpostClientMock
+    @Autowired
+    private lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
 
     var distribuerVedtaksbrevTask: DistribuerVedtaksbrevTask? = null
 
@@ -31,7 +37,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
     fun init() {
         distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(
             journalpostClient = journalpostClient,
-            tilstandRepository = tilstandRepository
+            iverksettResultatService = iverksettResultatService
         )
     }
 
@@ -54,7 +60,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
             )
         )
 
-        val distribuerVedtaksbrevResultat = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)
+        val distribuerVedtaksbrevResultat = iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId)
         assertThat(distribuerVedtaksbrevResultat).hasSize(2)
         assertThat(distribuerVedtaksbrevResultat?.get(journalpostA)).isNotNull
         assertThat(distribuerVedtaksbrevResultat?.get(journalpostB)).isNotNull
@@ -76,7 +82,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         verifiserKallTilDokarkivMedIdent(ugyldigMottakerJournalpostB.second, 1)
         verifiserKallTilDokarkivMedIdent(mottakerJournalpostC.second, 0)
 
-        val distribuerVedtaksbrevResultat = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)
+        val distribuerVedtaksbrevResultat = iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId)
         assertThat(distribuerVedtaksbrevResultat).hasSize(1)
         assertThat(distribuerVedtaksbrevResultat?.get(mottakerJournalpostA.second)).isNotNull
         assertThat(distribuerVedtaksbrevResultat?.get(ugyldigMottakerJournalpostB.second)).isNull()
@@ -92,7 +98,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         verifiserKallTilDokarkivMedIdent(gyldigMottakerJournalpostB.second, 1)
         verifiserKallTilDokarkivMedIdent(mottakerJournalpostC.second, 1)
 
-        val retryResultat = tilstandRepository.hentdistribuerVedtaksbrevResultat(behandlingId)
+        val retryResultat = iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId)
         assertThat(retryResultat).hasSize(3)
         assertThat(retryResultat?.get(mottakerJournalpostA.second)).isNotNull
         assertThat(retryResultat?.get(gyldigMottakerJournalpostB.second)).isNotNull
@@ -121,11 +127,11 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
     }
 
     private fun settOppTilstandsrepository(behandlingId: UUID, mottakereMedJournalpost: List<Pair<String, String>>) {
-        val resultat = tilstandRepository.hentIverksettResultat(behandlingId)
-        if (resultat == null) tilstandRepository.opprettTomtResultat(behandlingId)
+        val resultat = iverksettResultatService.hentIverksettResultat(behandlingId)
+        if (resultat == null) iverksettResultatService.opprettTomtResultat(behandlingId)
 
         mottakereMedJournalpost.forEach {
-            tilstandRepository.oppdaterJournalpostResultat(
+            iverksettResultatService.oppdaterJournalpostResultat(
                 behandlingId = behandlingId,
                 mottakerIdent = it.first,
                 journalPostResultat = JournalpostResultat(it.second)
@@ -135,6 +141,9 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 
     private fun nullstillIverksettResultat(behandlingId: UUID) {
         val mapSqlParameterSource = MapSqlParameterSource(mapOf("behandlingId" to behandlingId))
-        namedParameterJdbcTemplate.update("UPDATE iverksett_resultat SET journalpostresultat = null WHERE behandling_id = :behandlingId", mapSqlParameterSource)
+        namedParameterJdbcTemplate.update(
+            "UPDATE iverksett_resultat SET journalpostresultat = null WHERE behandling_id = :behandlingId",
+            mapSqlParameterSource
+        )
     }
 }

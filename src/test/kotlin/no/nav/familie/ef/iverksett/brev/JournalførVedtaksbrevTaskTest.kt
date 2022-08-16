@@ -12,7 +12,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksetting.tilstand.TilstandRepository
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.http.client.RessursException
@@ -41,13 +41,13 @@ internal class JournalførVedtaksbrevTaskTest {
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val journalpostClient = mockk<JournalpostClient>()
     private val taskRepository = mockk<TaskRepository>()
-    private val tilstandRepository = mockk<TilstandRepository>()
+    private val iverksettResultatService = mockk<IverksettResultatService>()
     private val journalførVedtaksbrevTask =
         JournalførVedtaksbrevTask(
             iverksettingRepository,
             journalpostClient,
             taskRepository,
-            tilstandRepository,
+            iverksettResultatService,
         )
     private val behandlingId: UUID = UUID.randomUUID()
     private val behandlingIdString = behandlingId.toString()
@@ -81,13 +81,13 @@ internal class JournalførVedtaksbrevTaskTest {
             true
         )
         every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
                 journalpostId
             )
         )
         every {
-            tilstandRepository.oppdaterJournalpostResultat(
+            iverksettResultatService.oppdaterJournalpostResultat(
                 behandlingId,
                 any(),
                 capture(journalpostResultatSlot)
@@ -97,7 +97,7 @@ internal class JournalførVedtaksbrevTaskTest {
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
-        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
+        verify(exactly = 1) { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), any()) }
         assertThat(arkiverDokumentRequestSlot).hasSize(1)
         assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
@@ -128,13 +128,13 @@ internal class JournalførVedtaksbrevTaskTest {
         }
 
         every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns iverksett.copy(data = iverksettMedBrevmottakere)
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
                 "journalpostId"
             ),
             "444" to JournalpostResultat("journalpostId")
         )
-        every { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) } just Runs
+        every { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), any()) } just Runs
 
         every {
             journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any())
@@ -161,13 +161,13 @@ internal class JournalførVedtaksbrevTaskTest {
                 ).toDomain()
             )
         )
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
                 "journalpostId"
             )
         )
         every {
-            tilstandRepository.oppdaterJournalpostResultat(
+            iverksettResultatService.oppdaterJournalpostResultat(
                 behandlingId,
                 any(),
                 capture(journalpostResultatSlot)
@@ -177,7 +177,7 @@ internal class JournalførVedtaksbrevTaskTest {
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
-        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
+        verify(exactly = 1) { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), any()) }
         assertThat(arkiverDokumentRequestSlot).hasSize(1)
         assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
         assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter.first().dokumenttype)
@@ -212,18 +212,18 @@ internal class JournalførVedtaksbrevTaskTest {
         }
         every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
 
-        every { tilstandRepository.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
                 journalpostId
             )
         )
-        justRun { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) }
+        justRun { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) }
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
         verify(exactly = 1) { journalpostClient.finnJournalposter(any()) }
-        verify(exactly = 1) { tilstandRepository.oppdaterJournalpostResultat(behandlingId, any(), any()) }
+        verify(exactly = 1) { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), any()) }
 
         assertThat(arkiverDokumentRequestSlot).hasSize(1)
         assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
