@@ -48,6 +48,7 @@ object OppgaveUtil {
         )
     }
 
+    // TODO erstatt logikk med no.nav.familie.util.VirkedagerProvider fra familie-felles
     private fun fristFerdigstillelse(aktivFra: LocalDate?, daysToAdd: Long = 0): LocalDate {
         var date = (aktivFra?.atTime(LocalTime.now()) ?: LocalDateTime.now()).plusDays(daysToAdd)
 

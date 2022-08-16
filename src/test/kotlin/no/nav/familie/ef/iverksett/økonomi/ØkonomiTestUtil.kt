@@ -3,14 +3,11 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.Månedsperiode
-import java.time.LocalDate
-import java.time.YearMonth
 import java.util.UUID
 
 fun lagAndelTilkjentYtelse(
     beløp: Int,
-    fraOgMed: YearMonth,
-    tilOgMed: YearMonth,
+    periode: Månedsperiode,
     periodeId: Long? = null,
     forrigePeriodeId: Long? = null,
     kildeBehandlingId: UUID? = UUID.randomUUID(),
@@ -20,7 +17,7 @@ fun lagAndelTilkjentYtelse(
 ) =
     AndelTilkjentYtelse(
         beløp = beløp,
-        periode = Månedsperiode(fraOgMed, tilOgMed),
+        periode = periode,
         inntekt = inntekt,
         samordningsfradrag = samordningsfradrag,
         inntektsreduksjon = inntektsreduksjon,
@@ -31,8 +28,7 @@ fun lagAndelTilkjentYtelse(
 
 fun lagAndelTilkjentYtelseDto(
     beløp: Int,
-    fraOgMed: LocalDate = LocalDate.of(2021, 1, 1),
-    tilOgMed: LocalDate = LocalDate.of(2021, 1, 31),
+    periode: Månedsperiode = Månedsperiode("2021-01" to "2021-01"),
     kildeBehandlingId: UUID = UUID.randomUUID(),
     inntekt: Int = 0,
     samordningsfradrag: Int = 0,
@@ -40,8 +36,9 @@ fun lagAndelTilkjentYtelseDto(
 ) =
     AndelTilkjentYtelseDto(
         beløp = beløp,
-        fraOgMed = fraOgMed,
-        tilOgMed = tilOgMed,
+        periode = periode,
+        fraOgMed = periode.fomDato,
+        tilOgMed = periode.tomDato,
         inntekt = inntekt,
         samordningsfradrag = samordningsfradrag,
         inntektsreduksjon = inntektsreduksjon,

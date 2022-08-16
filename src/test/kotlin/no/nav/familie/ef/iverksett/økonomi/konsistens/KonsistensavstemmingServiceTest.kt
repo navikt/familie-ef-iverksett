@@ -12,6 +12,7 @@ import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingTilkjentYtelseDto
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingUtbetalingsoppdrag
 import org.assertj.core.api.Assertions.assertThat
@@ -19,7 +20,6 @@ import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.time.YearMonth
 import java.util.UUID
 
 internal class KonsistensavstemmingServiceTest {
@@ -38,17 +38,15 @@ internal class KonsistensavstemmingServiceTest {
 
     private val andel1 = lagAndelTilkjentYtelse(
         beløp = 1,
-        fraOgMed = YearMonth.of(2021, 1),
-        tilOgMed = YearMonth.of(2021, 1),
+        periode = Månedsperiode("2021-01" to "2021-01"),
         kildeBehandlingId = behandlingId
     )
 
-    private val andel2StartDato = YearMonth.of(2021, 3)
-    private val andel2Sluttdato = YearMonth.of(2021, 3)
+    private val andel2Periode = Månedsperiode("2021-03" to "2021-03")
     private val andel2 = lagAndelTilkjentYtelse(
         beløp = 2,
-        fraOgMed = andel2StartDato,
-        tilOgMed = andel2Sluttdato, kildeBehandlingId = behandlingId
+        periode = andel2Periode,
+        kildeBehandlingId = behandlingId
     )
 
     private val requestSlot = slot<KonsistensavstemmingUtbetalingsoppdrag>()
@@ -65,8 +63,7 @@ internal class KonsistensavstemmingServiceTest {
         val andelerTilkjentYtelse = listOf(
             lagAndelTilkjentYtelseDto(
                 beløp = 2,
-                fraOgMed = andel2StartDato.atDay(1),
-                tilOgMed = andel2Sluttdato.atEndOfMonth(),
+                periode = andel2Periode,
                 kildeBehandlingId = behandlingId
             )
         )
@@ -97,8 +94,7 @@ internal class KonsistensavstemmingServiceTest {
         val andelerTilkjentYtelse = listOf(
             lagAndelTilkjentYtelseDto(
                 beløp = 1,
-                fraOgMed = andel2StartDato.atDay(1),
-                tilOgMed = andel2Sluttdato.atEndOfMonth(),
+                periode = andel2Periode,
                 kildeBehandlingId = behandlingId
             )
         )

@@ -1,18 +1,12 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
 import no.nav.familie.kontrakter.felles.Månedsperiode
-import java.time.LocalDate
 import java.util.UUID
 import kotlin.math.roundToInt
 
 data class AndelTilkjentYtelse(
     val beløp: Int,
-    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
-    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
-    val periode: Månedsperiode = Månedsperiode(
-        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
-    ),
+    val periode: Månedsperiode,
 
     val inntekt: Int,
     val samordningsfradrag: Int,

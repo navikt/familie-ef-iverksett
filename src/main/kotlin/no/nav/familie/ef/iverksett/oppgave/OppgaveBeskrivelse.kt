@@ -2,13 +2,14 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 object OppgaveBeskrivelse {
 
     fun beskrivelseFørstegangsbehandlingInnvilget(
-        periode: Pair<LocalDate, LocalDate>,
+        periode: Månedsperiode,
         vedtak: VedtaksperiodeOvergangsstønad
     ): String {
         return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
@@ -20,7 +21,7 @@ object OppgaveBeskrivelse {
     }
 
     fun beskrivelseRevurderingInnvilget(
-        vedtaksPeriode: Pair<LocalDate, LocalDate>,
+        vedtaksPeriode: Månedsperiode,
         gjeldendeVedtak: VedtaksperiodeOvergangsstønad
     ): String {
         return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
@@ -37,8 +38,8 @@ object OppgaveBeskrivelse {
         return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
     }
 
-    private fun Pair<LocalDate, LocalDate>.vedtaksPeriodeToString(): String {
-        return this.first.toReadable() + " - " + this.second.toReadable()
+    private fun Månedsperiode.vedtaksPeriodeToString(): String {
+        return this.fomDato.toReadable() + " - " + this.tomDato.toReadable()
     }
 
     private fun AktivitetType.beskrivelse(): String {

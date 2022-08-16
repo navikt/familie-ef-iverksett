@@ -18,9 +18,9 @@ import java.util.UUID
 
 internal class TilbakekrevingUtilTest {
 
-    private val fom: LocalDate = LocalDate.of(2021, 1, 1)
-    private val tom: LocalDate = LocalDate.of(2021, 12, 31)
-    val perioder = listOf(Datoperiode(fom = fom, tom = tom))
+    val periode = Datoperiode("2021-01-01" to "2021-12-31")
+
+    val perioder = listOf(periode)
 
     @Test
     fun `uendret tilbakekreving med varsel skal opprettholdes i iverksett`() {
@@ -32,7 +32,7 @@ internal class TilbakekrevingUtilTest {
         )
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = tilbakekrevingsdetaljer)
 
-        val beriketSimuleringsresultat = beriketSimuleringsresultat(feilutbetaling, fom, tom)
+        val beriketSimuleringsresultat = beriketSimuleringsresultat(feilutbetaling, periode)
 
         val nyTilbakekreving = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat).vedtak.tilbakekreving
 
@@ -122,10 +122,8 @@ internal class TilbakekrevingUtilTest {
         )
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
 
-        val nyFom = fom.minusMonths(1)
-        val nyTom = tom.plusMonths(1)
-        val nyPeriode = Datoperiode(nyFom, nyTom)
-        val beriketSimuleringsresultat = beriketSimuleringsresultat(BigDecimal.ONE, nyFom, nyTom)
+        val nyPeriode = Datoperiode(periode.fom.minusMonths(1), periode.tom.plusMonths(1))
+        val beriketSimuleringsresultat = beriketSimuleringsresultat(BigDecimal.ONE, nyPeriode)
 
         val nyTilbakekreving = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat).vedtak.tilbakekreving
 
@@ -142,7 +140,7 @@ internal class TilbakekrevingUtilTest {
         )
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
 
-        val beriketSimuleringsresultat = beriketSimuleringsresultat(BigDecimal.ZERO, fom, tom)
+        val beriketSimuleringsresultat = beriketSimuleringsresultat(BigDecimal.ZERO, periode)
 
         val nyTilbakekreving = iverksett.oppfriskTilbakekreving(beriketSimuleringsresultat).vedtak.tilbakekreving
 

@@ -7,6 +7,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.PeriodeId
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.nullAndelTilkjentYtelse
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.oppdrag.Opphør
@@ -47,24 +48,22 @@ data class TestOppdrag(
     val forrigeLinjeId: Long? = null,
     val status110: String? = null,
     val erEndring: Boolean? = null,
-    val opphørsdato: LocalDate?,
+    val opphørsdato: YearMonth?,
     val beløp: Int? = null,
-    val startPeriode: YearMonth? = null,
-    val sluttPeriode: YearMonth? = null
+    val periode: Månedsperiode? = null
 ) {
 
     fun tilAndelTilkjentYtelse(): AndelTilkjentYtelse? {
 
-        return if (beløp != null && startPeriode != null && sluttPeriode != null)
+        return if (beløp != null && periode != null)
             lagAndelTilkjentYtelse(
                 beløp = this.beløp,
-                fraOgMed = startPeriode,
-                tilOgMed = sluttPeriode,
+                periode = periode,
                 periodeId = linjeId,
                 kildeBehandlingId = if (TestOppdragType.Output == type) oppdragId else null,
                 forrigePeriodeId = forrigeLinjeId
             )
-        else if (TestOppdragType.Output == type && beløp == null && startPeriode == null && sluttPeriode == null)
+        else if (TestOppdragType.Output == type && beløp == null && periode == null)
             nullAndelTilkjentYtelse(
                 kildeBehandlingId = oppdragId ?: error("Må ha satt OppdragId på Output"),
                 periodeId = PeriodeId(linjeId, forrigeLinjeId)
@@ -75,16 +74,16 @@ data class TestOppdrag(
 
     fun tilUtbetalingsperiode(): Utbetalingsperiode? {
 
-        return if (startPeriode != null && sluttPeriode != null && linjeId != null)
+        return if (periode != null && linjeId != null)
             Utbetalingsperiode(
                 erEndringPåEksisterendePeriode = erEndring ?: false,
-                opphør = opphørsdato?.let { Opphør(it) },
+                opphør = opphørsdato?.let { Opphør(it.atDay(1)) },
                 periodeId = linjeId,
                 forrigePeriodeId = forrigeLinjeId,
                 datoForVedtak = vedtaksdato,
                 klassifisering = ytelse,
-                vedtakdatoFom = startPeriode.atDay(1),
-                vedtakdatoTom = sluttPeriode.atEndOfMonth(),
+                vedtakdatoFom = periode.fomDato,
+                vedtakdatoTom = periode.tomDato,
                 sats = beløp?.toBigDecimal() ?: BigDecimal.ZERO,
                 satsType = Utbetalingsperiode.SatsType.MND,
                 utbetalesTil = fnr,
@@ -100,8 +99,8 @@ data class TestOppdrag(
 
 class TestOppdragGroup {
 
-    private var startdatoInn: LocalDate? = null
-    private var startdatoUt: LocalDate? = null
+    private var startdatoInn: YearMonth? = null
+    private var startdatoUt: YearMonth? = null
     private val andelerTilkjentYtelseInn: MutableList<AndelTilkjentYtelse> = mutableListOf()
     private val andelerTilkjentYtelseUt: MutableList<AndelTilkjentYtelse> = mutableListOf()
     private val utbetalingsperioder: MutableList<Utbetalingsperiode> = mutableListOf()
@@ -132,7 +131,7 @@ class TestOppdragGroup {
         }
     }
 
-    private fun validerOgGetStartdato(to: TestOppdrag, tidligereStartdato: LocalDate?): LocalDate? {
+    private fun validerOgGetStartdato(to: TestOppdrag, tidligereStartdato: YearMonth?): YearMonth? {
         if (tidligereStartdato != null && to.opphørsdato != null) {
             error("Kan kun sette 1 startdato på en input/output")
         }
@@ -228,6 +227,7 @@ object TestOppdragParser {
             val firstYearMonth = datoKeysMedBeløp.firstOrNull()?.let { YearMonth.parse(it) }
             val lastYearMonth = datoKeysMedBeløp.lastOrNull()?.let { YearMonth.parse(it) }
             val beløp = datoKeysMedBeløp.firstOrNull()?.let { row[it]?.trim('x') }?.toIntOrNull()
+            val periode: Månedsperiode? = firstYearMonth?.let { f -> lastYearMonth?.let { l -> Månedsperiode(f, l) } }
 
             val value = row.getValue(KEY_OPPDRAG)
             val oppdragId: UUID? = if (value.isEmpty()) {
@@ -248,9 +248,8 @@ object TestOppdragParser {
                 status110 = row[KEY_STATUS_OPPDRAG]?.let { emptyAsNull(it) },
                 erEndring = row[KEY_ER_ENDRING]?.let { it.toBoolean() },
                 beløp = beløp,
-                opphørsdato = opphørYearMonth?.atDay(1),
-                startPeriode = firstYearMonth,
-                sluttPeriode = lastYearMonth
+                opphørsdato = opphørYearMonth,
+                periode = periode
             )
         }
     }

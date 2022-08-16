@@ -72,8 +72,7 @@ fun opprettIverksettDto(
 
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
         beløp = andelsbeløp,
-        fraOgMed = LocalDate.of(2021, 1, 1),
-        tilOgMed = LocalDate.of(2021, 12, 31),
+        periode = Månedsperiode("2021-01" to "2021-12"),
         kildeBehandlingId = UUID.randomUUID()
     )
     val tilkjentYtelse = TilkjentYtelseDto(
@@ -128,12 +127,10 @@ fun opprettIverksettDto(
 
 fun opprettAndelTilkjentYtelse(
     beløp: Int = 5000,
-    fra: YearMonth = YearMonth.of(2021, 1),
-    til: YearMonth = YearMonth.of(2021, 12)
+    periode: Månedsperiode = Månedsperiode("2021-01" to "2021-12")
 ) = lagAndelTilkjentYtelse(
     beløp = beløp,
-    fraOgMed = fra,
-    tilOgMed = til,
+    periode = periode,
     inntekt = 100,
     samordningsfradrag = 2,
     inntektsreduksjon = 5
@@ -210,14 +207,14 @@ fun behandlingsdetaljer(
 
 fun vedtaksperioderOvergangsstønad() =
     VedtaksperiodeOvergangsstønad(
-        periode = lagMånedsperiode(YearMonth.now()),
+        periode = Månedsperiode(YearMonth.now()),
         aktivitet = AktivitetType.BARNET_ER_SYKT,
         periodeType = VedtaksperiodeType.HOVEDPERIODE
     )
 
 fun vedtaksperioderBarnetilsyn() =
     VedtaksperiodeBarnetilsyn(
-        periode = lagMånedsperiode(YearMonth.now()),
+        periode = Månedsperiode(YearMonth.now()),
         utgifter = 1,
         antallBarn = 10
     )
@@ -263,11 +260,11 @@ fun vedtaksdetaljerBarnetilsyn(
         brevmottakere = Brevmottakere(emptyList()),
         kontantstøtte = listOf(
             PeriodeMedBeløp(
-                periode = Månedsperiode(YearMonth.of(2022, 1), YearMonth.of(2022, 3)),
+                periode = Månedsperiode("2022-01" to "2022-03"),
                 beløp = 10
             )
         ),
-        tilleggsstønad = listOf(PeriodeMedBeløp(periode = Månedsperiode(YearMonth.of(2022, 2), YearMonth.of(2022, 3)), beløp = 5))
+        tilleggsstønad = listOf(PeriodeMedBeløp(periode = Månedsperiode("2022-02" to "2022-03"), beløp = 5))
     )
 }
 
@@ -363,12 +360,7 @@ fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
 
 fun opprettTilbakekrevingMedVarsel(
     sumFeilutbetaling: BigDecimal = BigDecimal.valueOf(100),
-    perioder: List<Datoperiode> = listOf(
-        Datoperiode(
-            fom = LocalDate.of(2021, 5, 1),
-            tom = LocalDate.of(2021, 6, 30)
-        )
-    )
+    perioder: List<Datoperiode> = listOf(Datoperiode("2021-05-01", "2021-06-30"))
 ) = TilbakekrevingMedVarsel(
     varseltekst = "varseltekst",
     sumFeilutbetaling = sumFeilutbetaling,
@@ -419,5 +411,3 @@ class IverksettResultatMockBuilder private constructor(
             )
     }
 }
-
-fun lagMånedsperiode(måned: YearMonth) = Månedsperiode(måned, måned)

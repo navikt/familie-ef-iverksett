@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import org.assertj.core.api.Assertions.assertThat
@@ -33,8 +34,7 @@ internal class UtbetalingsperiodeMalKtTest {
         lagPeriodeFraAndel(
             andel = lagAndelTilkjentYtelse(
                 beløp = 10,
-                fraOgMed = YearMonth.now(),
-                tilOgMed = YearMonth.now(),
+                periode = Månedsperiode(YearMonth.now()),
                 periodeId = 1
             ),
             type = stønadType,

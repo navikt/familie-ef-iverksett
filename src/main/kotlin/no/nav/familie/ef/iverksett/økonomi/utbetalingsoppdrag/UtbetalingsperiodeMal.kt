@@ -8,6 +8,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.Opphør
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.YearMonth
 
 /**
  * * Lager utbetalingsperioder som legges på utbetalingsoppdrag. En utbetalingsperiode tilsvarer linjer hos økonomi
@@ -23,12 +24,12 @@ fun lagPeriodeFraAndel(
     eksternBehandlingId: Long,
     vedtaksdato: LocalDate,
     personIdent: String,
-    opphørKjedeFom: LocalDate? = null,
+    opphørKjedeFom: YearMonth? = null,
     erEndringPåEksisterendePeriode: Boolean = false
 ) =
     Utbetalingsperiode(
         erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode,
-        opphør = if (erEndringPåEksisterendePeriode) Opphør(opphørKjedeFom!!) else null,
+        opphør = if (erEndringPåEksisterendePeriode) Opphør(opphørKjedeFom!!.atDay(1)) else null,
         forrigePeriodeId = andel.forrigePeriodeId,
         periodeId = andel.periodeId!!,
         datoForVedtak = vedtaksdato,
@@ -44,7 +45,7 @@ fun lagPeriodeFraAndel(
 
 fun lagUtbetalingsperiodeForOpphør(
     sisteAndelIKjede: AndelTilkjentYtelse,
-    opphørKjedeFom: LocalDate,
+    opphørKjedeFom: YearMonth,
     tilkjentYtelse: TilkjentYtelseMedMetaData
 ): Utbetalingsperiode {
     return lagPeriodeFraAndel(

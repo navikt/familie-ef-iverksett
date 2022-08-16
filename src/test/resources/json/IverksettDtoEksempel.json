@@ -92,7 +92,8 @@
           "inntektsreduksjon": 0
         }
       ],
-      "startdato": "2020-03-01"
+      "startdato": null,
+      "startmåned": "2020-03"
     },
     "tilbakekreving": {
       "tilbakekrevingsvalg": "OPPRETT_TILBAKEKREVING_MED_VARSEL",

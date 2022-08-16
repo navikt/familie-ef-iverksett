@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.prosessering.domene.TaskRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -31,8 +32,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     private val behandlingid: UUID = UUID.randomUUID()
     private val førsteAndel = lagAndelTilkjentYtelse(
         beløp = 1000,
-        fraOgMed = YearMonth.of(2021, 1),
-        tilOgMed = YearMonth.of(2021, 1)
+        periode = Månedsperiode("2021-01")
     )
     private val iverksett =
         opprettIverksettOvergangsstønad(behandlingid, andeler = listOf(førsteAndel), startmåned = førsteAndel.periode.fom)
@@ -60,8 +60,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                 førsteAndel,
                 lagAndelTilkjentYtelse(
                     beløp = 1000,
-                    fraOgMed = YearMonth.now(),
-                    tilOgMed = YearMonth.now().plusMonths(1)
+                    periode = Månedsperiode(YearMonth.now(), YearMonth.now().plusMonths(1))
                 )
             )
         )
@@ -87,8 +86,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                 førsteAndel.copy(beløp = 299),
                 lagAndelTilkjentYtelse(
                     beløp = 1000,
-                    fraOgMed = YearMonth.now(),
-                    tilOgMed = YearMonth.now().plusMonths(1)
+                    periode = Månedsperiode(YearMonth.now(), YearMonth.now().plusMonths(1))
                 )
             )
         )

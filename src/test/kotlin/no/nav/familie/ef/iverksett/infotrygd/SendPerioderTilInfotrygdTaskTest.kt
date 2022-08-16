@@ -14,6 +14,7 @@ import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.personopplysning.PersonIdentMedHistorikk
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskRepository
@@ -21,7 +22,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.time.YearMonth
 import java.util.UUID
 
 internal class SendPerioderTilInfotrygdTaskTest {
@@ -55,7 +55,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     @Test
     internal fun `skal sende perioder fra andeler til infotrygd`() {
-        val iverksett = opprettData(lagAndelTilkjentYtelse(2, YearMonth.of(1901, 1), YearMonth.of(1901, 1)))
+        val iverksett = opprettData(lagAndelTilkjentYtelse(2, Månedsperiode("1901-01")))
         every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns iverksett
 
         task.doTask(Task(SendPerioderTilInfotrygdTask.TYPE, behandlingId.toString()))
@@ -71,15 +71,13 @@ internal class SendPerioderTilInfotrygdTaskTest {
     internal fun `fullOvergangsstønad er false hvis samordningsfradrag eller inntektsreduksjon ikke er 0`() {
         val andelTilkjentYtelse = lagAndelTilkjentYtelse(
             beløp = 1,
-            fraOgMed = YearMonth.of(1901, 1),
-            tilOgMed = YearMonth.of(1901, 1),
+            periode = Månedsperiode("1901-01"),
             samordningsfradrag = 1,
             inntektsreduksjon = 0
         )
         val andelTilkjentYtelse2 = lagAndelTilkjentYtelse(
             beløp = 3,
-            fraOgMed = YearMonth.of(1902, 1),
-            tilOgMed = YearMonth.of(1902, 1),
+            periode = Månedsperiode("1902-01"),
             samordningsfradrag = 0,
             inntektsreduksjon = 1
         )

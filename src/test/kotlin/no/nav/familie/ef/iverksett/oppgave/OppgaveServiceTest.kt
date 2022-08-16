@@ -156,8 +156,10 @@ internal class OppgaveServiceTest {
             listOf(
                 vedtaksPeriode(
                     aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
-                    fraOgMed = LocalDate.now().plusMonths(2),
-                    tilOgMed = LocalDate.now().plusMonths(3)
+                    periode = Månedsperiode(
+                        YearMonth.now().plusMonths(2),
+                        YearMonth.now().plusMonths(3)
+                    )
                 )
             )
         )
@@ -183,8 +185,10 @@ internal class OppgaveServiceTest {
             listOf(
                 vedtaksPeriode(
                     aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                    fraOgMed = LocalDate.now().plusMonths(2),
-                    tilOgMed = LocalDate.now().plusMonths(3)
+                    periode = Månedsperiode(
+                        YearMonth.now().plusMonths(2),
+                        YearMonth.now().plusMonths(3)
+                    )
                 )
             )
         )
@@ -207,7 +211,7 @@ internal class OppgaveServiceTest {
             listOf(
                 vedtaksPeriode(
                     aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                    fraOgMed = LocalDate.now().minusMonths(3)
+                    periode = Månedsperiode(YearMonth.now().minusMonths(3), YearMonth.now())
                 )
             )
         )
@@ -321,7 +325,7 @@ internal class OppgaveServiceTest {
             listOf(
                 vedtaksPeriode(
                     aktivitet = AktivitetType.UTVIDELSE_FORSØRGER_I_UTDANNING,
-                    fraOgMed = LocalDate.now().minusMonths(3)
+                    periode = Månedsperiode(YearMonth.now().minusMonths(3), YearMonth.now())
                 )
             ),
             erMigrering = true
@@ -332,11 +336,10 @@ internal class OppgaveServiceTest {
 
     private fun vedtaksPeriode(
         aktivitet: AktivitetType,
-        fraOgMed: LocalDate = LocalDate.now(),
-        tilOgMed: LocalDate = LocalDate.now()
+        periode: Månedsperiode = Månedsperiode(YearMonth.now()),
     ): VedtaksperiodeOvergangsstønad {
         return VedtaksperiodeOvergangsstønad(
-            periode = Månedsperiode(fraOgMed, tilOgMed),
+            periode = periode,
             aktivitet = aktivitet,
             periodeType = VedtaksperiodeType.HOVEDPERIODE
         )

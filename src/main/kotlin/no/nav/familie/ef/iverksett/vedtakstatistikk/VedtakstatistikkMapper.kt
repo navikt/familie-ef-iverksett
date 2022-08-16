@@ -38,9 +38,9 @@ import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import java.time.LocalDate
 import java.time.Month
 import java.time.Year
+import java.time.YearMonth
 import java.time.ZoneId
 import no.nav.familie.eksterne.kontrakter.ef.Barn as BarnEkstern
 import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
@@ -224,7 +224,7 @@ object VedtakstatistikkMapper {
             stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
             vedtaksperioder = iverksett.vedtak.vedtaksperioder.map {
                 VedtaksperiodeSkolepenger(
-                    skoleår = it.perioder.first().periode.fomDato.utledSkoleår().value,
+                    skoleår = it.perioder.first().periode.fom.utledSkoleår().value,
                     perioder = it.perioder.map { delårsperiode -> mapTilDelårsperiode(delårsperiode) },
                     utgifter = it.utgiftsperioder.map { utgiftsperiode -> mapTilUtgiftSkolepenger(utgiftsperiode) },
                     maksSatsForSkoleår = it.perioder.first().makssatsForSkoleår
@@ -249,5 +249,5 @@ object VedtakstatistikkMapper {
             studiebelastning = delårsperiode.studiebelastning
         )
 
-    private fun LocalDate.utledSkoleår() = if (this.month > Month.JUNE) Year.of(this.year) else Year.of(this.year - 1)
+    private fun YearMonth.utledSkoleår() = if (this.month > Month.JUNE) Year.of(this.year) else Year.of(this.year - 1)
 }

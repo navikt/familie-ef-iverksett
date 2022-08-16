@@ -100,23 +100,13 @@ data class Søker(
 sealed class Vedtaksperiode
 
 data class VedtaksperiodeOvergangsstønad(
-    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
-    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
-    val periode: Månedsperiode = Månedsperiode(
-        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
-    ),
+    val periode: Månedsperiode,
     val aktivitet: AktivitetType,
     val periodeType: VedtaksperiodeType
 ) : Vedtaksperiode()
 
 data class VedtaksperiodeBarnetilsyn(
-    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
-    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
-    val periode: Månedsperiode = Månedsperiode(
-        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
-    ),
+    val periode: Månedsperiode,
     val utgifter: Int,
     val antallBarn: Int
 ) : Vedtaksperiode()
@@ -128,12 +118,7 @@ data class VedtaksperiodeSkolepenger(
 
 data class DelårsperiodeSkoleårSkolepenger(
     val studietype: SkolepengerStudietype,
-    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
-    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
-    val periode: Månedsperiode = Månedsperiode(
-        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
-    ),
+    val periode: Månedsperiode,
     val studiebelastning: Int,
     val makssatsForSkoleår: Int
 )
@@ -145,12 +130,7 @@ data class SkolepengerUtgift(
 )
 
 data class PeriodeMedBeløp(
-    @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
-    @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
-    val periode: Månedsperiode = Månedsperiode(
-        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
-    ),
+    val periode: Månedsperiode,
     val beløp: Int
 )
 

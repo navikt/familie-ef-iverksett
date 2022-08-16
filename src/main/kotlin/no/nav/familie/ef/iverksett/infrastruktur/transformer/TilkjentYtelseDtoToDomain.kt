@@ -3,13 +3,12 @@ package no.nav.familie.ef.iverksett.infrastruktur.transformer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
-import java.time.YearMonth
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
 
 fun TilkjentYtelseDto.toDomain(): TilkjentYtelse {
     return TilkjentYtelse(
         andelerTilkjentYtelse = this.andelerTilkjentYtelse.map { it.toDomain() },
-        startmåned = YearMonth.from(this.startdato)
+        startmåned = this.startmåned
     )
 }
 

@@ -236,7 +236,7 @@ internal class VedtakstatistikkMapperTest {
             andelerTilkjentYtelse = listOf(
                 AndelTilkjentYtelse(
                     beløp = 9000,
-                    periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 5)),
+                    periode = Månedsperiode("2021-01" to "2021-05"),
                     inntekt = 300000,
                     samordningsfradrag = 1000,
                     inntektsreduksjon = 11000,
@@ -246,7 +246,7 @@ internal class VedtakstatistikkMapperTest {
                 ),
                 AndelTilkjentYtelse(
                     beløp = 10000,
-                    periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
+                    periode = Månedsperiode("2021-06" to "2021-10"),
                     inntekt = 300000,
                     samordningsfradrag = 0,
                     inntektsreduksjon = 11000,
@@ -270,7 +270,7 @@ internal class VedtakstatistikkMapperTest {
                 perioder = listOf(
                     DelårsperiodeSkoleårSkolepenger(
                         studietype = SkolepengerStudietype.HØGSKOLE_UNIVERSITET,
-                        periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
+                        periode = Månedsperiode("2021-01" to "2021-01"),
                         studiebelastning = 100,
                         makssatsForSkoleår = 50000
                     )
@@ -295,12 +295,12 @@ internal class VedtakstatistikkMapperTest {
         tilkjentYtelse = tilkjentYtelse(),
         vedtaksperioder = listOf(
             VedtaksperiodeBarnetilsyn(
-                periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
+                periode = Månedsperiode("2021-01" to "2021-01"),
                 utgifter = 1000,
                 antallBarn = 1
             ),
             VedtaksperiodeBarnetilsyn(
-                periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
+                periode = Månedsperiode("2021-06" to "2021-10"),
                 utgifter = 2000,
                 antallBarn = 2
             )
@@ -308,13 +308,13 @@ internal class VedtakstatistikkMapperTest {
         brevmottakere = Brevmottakere(emptyList()),
         kontantstøtte = listOf(
             PeriodeMedBeløp(
-                periode = Månedsperiode(YearMonth.of(2021, 5), YearMonth.of(2021, 7)),
+                periode = Månedsperiode("2021-05" to "2021-07"),
                 beløp = 1000
             )
         ),
         tilleggsstønad = listOf(
             PeriodeMedBeløp(
-                periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 8)),
+                periode = Månedsperiode("2021-06" to "2021-08"),
                 beløp = 2000
             )
         ),
@@ -332,12 +332,12 @@ internal class VedtakstatistikkMapperTest {
             vedtaksperioder = listOf(
                 VedtaksperiodeOvergangsstønad(
                     aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
-                    periode = Månedsperiode(YearMonth.of(2021, 2), YearMonth.of(2021, 3)),
+                    periode = Månedsperiode("2021-02" to "2021-03"),
                     periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL
                 ),
                 VedtaksperiodeOvergangsstønad(
                     aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                    periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
+                    periode = Månedsperiode("2021-06" to "2021-10"),
                     periodeType = VedtaksperiodeType.HOVEDPERIODE
                 )
             ),

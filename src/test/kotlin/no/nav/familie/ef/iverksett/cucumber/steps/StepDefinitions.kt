@@ -21,6 +21,7 @@ import org.assertj.core.api.Assertions.catchThrowable
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 data class TilkjentYtelseHolder(
@@ -35,25 +36,25 @@ class StepDefinitions {
 
     private lateinit var stønadType: StønadType
     private var tilkjentYtelse = mutableListOf<TilkjentYtelseHolder>()
-    private var startdato = mapOf<UUID, LocalDate>()
+    private var startmåned = mapOf<UUID, YearMonth>()
 
     private var beregnedeTilkjentYtelse = mapOf<UUID, TilkjentYtelse>()
 
     @Gitt("følgende startdatoer")
     fun følgende_startdatoer(dataTable: DataTable) {
-        startdato = TilkjentYtelseParser.mapStartdatoer(dataTable)
+        startmåned = TilkjentYtelseParser.mapStartmåneder(dataTable)
     }
 
     @Gitt("følgende tilkjente ytelser for {}")
     fun følgende_vedtak(stønadTypeArg: String, dataTable: DataTable) {
         stønadType = StønadType.valueOf(stønadTypeArg.uppercase())
-        tilkjentYtelse.addAll(TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato))
+        tilkjentYtelse.addAll(TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startmåned))
     }
 
     @Gitt("følgende tilkjente ytelser uten andel for {}")
     fun `følgende tilkjente ytelser uten andel for`(stønadTypeArg: String, dataTable: DataTable) {
         stønadType = StønadType.valueOf(stønadTypeArg.uppercase())
-        tilkjentYtelse.addAll(TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato, false))
+        tilkjentYtelse.addAll(TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startmåned, false))
     }
 
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres kastes exception")
@@ -107,7 +108,7 @@ class StepDefinitions {
 
     @Så("forvent følgende tilkjente ytelser for behandling {int} med startdato {}")
     fun `forvent følgende tilkjente ytelser med startdato`(behandlingIdInt: Int, startdato: String?, dataTable: DataTable) {
-        val parsedStartdato = startdato?.let { parseÅrMåned(it).atDay(1) }
+        val parsedStartdato = startdato?.let { parseÅrMåned(it) }
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
         val forventetTilkjentYtelse = TilkjentYtelseParser.mapForventetTilkjentYtelse(dataTable, behandlingIdInt, parsedStartdato)
         val beregnetTilkjentYtelse =
@@ -121,7 +122,7 @@ class StepDefinitions {
         behandlingIdInt: Int,
         startdato: String?
     ) {
-        val parsedStartdato = startdato?.let { parseÅrMåned(it).atDay(1) }
+        val parsedStartdato = startdato?.let { parseÅrMåned(it) }
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
         val beregnetTilkjentYtelse =
             beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
@@ -131,7 +132,7 @@ class StepDefinitions {
 
     private fun assertTilkjentYtelseMed0BeløpAndeler(
         behandlingId: UUID,
-        startmåned: LocalDate?,
+        startmåned: YearMonth?,
         beregnetTilkjentYtelse: TilkjentYtelse
     ) {
         assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(startmåned)
@@ -149,8 +150,8 @@ class StepDefinitions {
     ) {
         beregnetTilkjentYtelse.andelerTilkjentYtelse.forEachIndexed { index, andel ->
             val forventetAndel = forventetTilkjentYtelse.andeler[index]
-            assertThat(andel.periode.fomDato).isEqualTo(forventetAndel.fom)
-            assertThat(andel.periode.tomDato).isEqualTo(forventetAndel.tom)
+            assertThat(andel.periode.fom).isEqualTo(forventetAndel.periode.fom)
+            assertThat(andel.periode.tom).isEqualTo(forventetAndel.periode.tom)
             assertThat(andel.beløp).isEqualTo(forventetAndel.beløp)
             assertThat(andel.periodeId).isEqualTo(forventetAndel.periodeId)
             assertThat(andel.forrigePeriodeId).isEqualTo(forventetAndel.forrigePeriodeId)
@@ -187,8 +188,8 @@ class StepDefinitions {
         assertThat(utbetalingsperiode.forrigePeriodeId).isEqualTo(forventetUtbetalingsperiode.forrigePeriodeId)
         assertThat(utbetalingsperiode.sats.toInt()).isEqualTo(forventetUtbetalingsperiode.sats)
         assertThat(utbetalingsperiode.satsType).isEqualTo(forventetUtbetalingsperiode.satsType)
-        assertThat(utbetalingsperiode.vedtakdatoFom).isEqualTo(forventetUtbetalingsperiode.fom)
-        assertThat(utbetalingsperiode.vedtakdatoTom).isEqualTo(forventetUtbetalingsperiode.tom)
+        assertThat(utbetalingsperiode.vedtakdatoFom).isEqualTo(forventetUtbetalingsperiode.periode.fomDato)
+        assertThat(utbetalingsperiode.vedtakdatoTom).isEqualTo(forventetUtbetalingsperiode.periode.tomDato)
         assertThat(utbetalingsperiode.opphør?.opphørDatoFom).isEqualTo(forventetUtbetalingsperiode.opphør)
     }
 

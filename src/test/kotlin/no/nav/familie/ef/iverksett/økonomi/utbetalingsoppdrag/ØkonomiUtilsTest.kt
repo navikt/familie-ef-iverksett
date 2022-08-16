@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
 import no.nav.familie.ef.iverksett.util.startmåned
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -17,14 +18,9 @@ import java.util.UUID
 
 internal class ØkonomiUtilsTest {
 
-    private val start = YearMonth.of(2021, 3)
-    private val slutt = YearMonth.of(2021, 5)
-
-    private val start2 = YearMonth.of(2021, 8)
-    private val slutt2 = YearMonth.of(2021, 10)
-
-    private val start3 = YearMonth.of(2021, 11)
-    private val slutt3 = YearMonth.of(2021, 12)
+    private val periode1 = Månedsperiode("2021-03" to "2021-05")
+    private val periode2 = Månedsperiode("2021-08" to "2021-10")
+    private val periode3 = Månedsperiode("2021-11" to "2021-12")
 
     private val opphørsdatoFørAndeler = YearMonth.of(2021, 1)
     private val opphørsdatoEtterAndeler = YearMonth.of(2022, 1) // etter andel sitt dato
@@ -94,9 +90,9 @@ internal class ØkonomiUtilsTest {
                 assertThat(
                     test(
                         andeler = emptyList(),
-                        startmåned = start,
+                        startmåned = periode1.fom,
                         tidligereAndeler = emptyList(),
-                        tidligereStartmåned = start
+                        tidligereStartmåned = periode1.fom
                     )
                 ).isNull()
 
@@ -136,8 +132,8 @@ internal class ØkonomiUtilsTest {
             internal fun `andeler er like, med og uten beløp, med tidligere siste andel`() {
                 assertThat(
                     test(
-                        andeler = listOf(andelMedBeløp(), andelUtenBeløp(fra = start2, til = slutt2)),
-                        tidligereAndeler = listOf(andelMedBeløp(), andelUtenBeløp(fra = start2, til = slutt2)),
+                        andeler = listOf(andelMedBeløp(), andelUtenBeløp(periode2)),
+                        tidligereAndeler = listOf(andelMedBeløp(), andelUtenBeløp(periode2)),
                         sisteAndelIKjede = andelMedBeløp().copy(
                             periodeId = 6,
                             forrigePeriodeId = 5
@@ -151,8 +147,8 @@ internal class ØkonomiUtilsTest {
             internal fun `andeler er like, uten og med beløp, med tidligere siste andel`() {
                 assertThat(
                     test(
-                        andeler = listOf(andelUtenBeløp(), andelMedBeløp(fra = start2, til = slutt2)),
-                        tidligereAndeler = listOf(andelUtenBeløp(), andelMedBeløp(fra = start2, til = slutt2)),
+                        andeler = listOf(andelUtenBeløp(), andelMedBeløp(periode = periode2)),
+                        tidligereAndeler = listOf(andelUtenBeløp(), andelMedBeløp(periode = periode2)),
                         sisteAndelIKjede = andelMedBeløp().copy(
                             periodeId = 6,
                             forrigePeriodeId = 5
@@ -167,7 +163,7 @@ internal class ØkonomiUtilsTest {
                 assertThat(
                     test(
                         andeler = emptyList(),
-                        startmåned = start,
+                        startmåned = periode1.fom,
                         tidligereAndeler = listOf(andelUtenBeløp())
                     )
                 ).isNull()
@@ -178,11 +174,11 @@ internal class ØkonomiUtilsTest {
                 assertThat(
                     test(
                         andeler = emptyList(),
-                        startmåned = start,
+                        startmåned = periode1.fom,
                         tidligereAndeler = listOf(andelMedBeløp())
                     ).opphørsdato()
                 )
-                    .isEqualTo(start)
+                    .isEqualTo(periode1.fom)
             }
 
             @Test
@@ -193,7 +189,7 @@ internal class ØkonomiUtilsTest {
                         tidligereAndeler = listOf(andelMedBeløp(2))
                     ).opphørsdato()
                 )
-                    .isEqualTo(start)
+                    .isEqualTo(periode1.fom)
             }
 
             @Test
@@ -204,7 +200,7 @@ internal class ØkonomiUtilsTest {
                         tidligereAndeler = listOf(andelMedBeløp())
                     ).opphørsdato()
                 )
-                    .isEqualTo(start)
+                    .isEqualTo(periode1.fom)
             }
 
             @Test
@@ -213,17 +209,14 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = listOf(
                             andelUtenBeløp(),
-                            andelMedBeløp(fra = start2, til = slutt2)
+                            andelMedBeløp(periode = periode2)
                         ),
                         tidligereAndeler = listOf(
-                            andelMedBeløp(
-                                fra = start2,
-                                til = slutt2
-                            )
+                            andelMedBeløp(periode = periode2)
                         )
                     ).opphørsdato()
                 )
-                    .isEqualTo(start)
+                    .isEqualTo(periode1.fom)
             }
 
             @Test
@@ -278,7 +271,7 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = listOf(
                             andelMedBeløp(),
-                            andelUtenBeløp(fra = start2, til = slutt2)
+                            andelUtenBeløp(periode = periode2)
                         ),
                         tidligereAndeler = listOf(andelMedBeløp())
                     )
@@ -288,7 +281,7 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = listOf(
                             andelUtenBeløp(),
-                            andelMedBeløp(fra = start2, til = slutt2)
+                            andelMedBeløp(periode = periode2)
                         ),
                         tidligereAndeler = listOf(andelUtenBeløp())
                     )
@@ -297,8 +290,8 @@ internal class ØkonomiUtilsTest {
 
                 assertThat(
                     test(
-                        andeler = listOf(andelMedBeløp(fra = start2, til = slutt2)),
-                        startmåned = start,
+                        andeler = listOf(andelMedBeløp(periode = periode2)),
+                        startmåned = periode1.fom,
                         tidligereAndeler = listOf(andelUtenBeløp())
                     )
                 )
@@ -308,7 +301,7 @@ internal class ØkonomiUtilsTest {
             @Test
             internal fun `endringer i periode etter tidligere opphør skal peke til siste andel`() {
                 val sisteAndelIKjede =
-                    andelMedBeløp(3, fra = start2, til = slutt2)
+                    andelMedBeløp(3, periode = periode2)
                         .copy(periodeId = 6, forrigePeriodeId = 5)
                 val førsteAndel = andelMedBeløp(beløp = 1)
                 val nyAndel = førsteAndel.copy(beløp = 2)
@@ -324,26 +317,26 @@ internal class ØkonomiUtilsTest {
 
             @Test
             internal fun `andel uten beløp, og andel med beløp som endrer seg, med tidligere siste andel`() {
-                val sisteAndelIKjede = andelMedBeløp(fra = start3, til = slutt3).copy(periodeId = 6, forrigePeriodeId = 5)
+                val sisteAndelIKjede = andelMedBeløp(periode = periode3).copy(periodeId = 6, forrigePeriodeId = 5)
                 val opphørsperiode = test(
                     andeler = listOf(
                         andelUtenBeløp(),
-                        andelMedBeløp(fra = start2, til = slutt2)
+                        andelMedBeløp(periode = periode2)
                     ),
                     tidligereAndeler = listOf(
                         andelUtenBeløp(),
-                        andelMedBeløp(beløp = 2, fra = start2, til = slutt2)
+                        andelMedBeløp(beløp = 2, periode = periode2)
                     ),
                     sisteAndelIKjede = sisteAndelIKjede
                 )!!
-                assertThat(opphørsperiode.opphørsdato()).isEqualTo(start2)
+                assertThat(opphørsperiode.opphørsdato()).isEqualTo(periode2.fom)
                 assertThat(opphørsperiode.periodeId).isEqualTo(sisteAndelIKjede.periodeId)
                 assertThat(opphørsperiode.forrigePeriodeId).isEqualTo(sisteAndelIKjede.forrigePeriodeId)
             }
 
             @Test
             internal fun `trenger ikke å opphøre når det kun finnes nye perioder som har dato etter forrige sitt startdato`() {
-                val sisteAndelIKjede = andelMedBeløp(fra = opphørsdatoFørAndeler, til = opphørsdatoFørAndeler)
+                val sisteAndelIKjede = andelMedBeløp(periode = Månedsperiode(opphørsdatoFørAndeler, opphørsdatoFørAndeler))
                     .copy(periodeId = 6, forrigePeriodeId = 5)
                 val opphørsperiode = test(
                     andeler = listOf(andelMedBeløp()),
@@ -401,29 +394,13 @@ internal class ØkonomiUtilsTest {
                 }
         }
 
-        private fun tilkjentYtelseMedMetadata(
-            andeler: List<AndelTilkjentYtelse>,
-            startmåned: YearMonth
-        ) =
+        private fun tilkjentYtelseMedMetadata(andeler: List<AndelTilkjentYtelse>, startmåned: YearMonth) =
             opprettTilkjentYtelseMedMetadata(tilkjentYtelse = opprettTilkjentYtelse(andeler = andeler, startmåned = startmåned))
 
-        fun andelMedBeløp(
-            beløp: Int = 1,
-            fra: YearMonth = start,
-            til: YearMonth = slutt
-        ) = lagAndelTilkjentYtelse(
-            beløp = beløp,
-            fraOgMed = fra,
-            tilOgMed = til
-        )
+        fun andelMedBeløp(beløp: Int = 1, periode: Månedsperiode = periode1) =
+            lagAndelTilkjentYtelse(beløp = beløp, periode = periode)
 
-        fun andelUtenBeløp(
-            fra: YearMonth = start,
-            til: YearMonth = slutt
-        ) = lagAndelTilkjentYtelse(
-            beløp = 0,
-            fraOgMed = fra,
-            tilOgMed = til
-        )
+        fun andelUtenBeløp(periode: Månedsperiode = periode1) =
+            lagAndelTilkjentYtelse(beløp = 0, periode = periode)
     }
 }

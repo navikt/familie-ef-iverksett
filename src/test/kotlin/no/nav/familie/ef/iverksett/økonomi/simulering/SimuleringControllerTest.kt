@@ -13,6 +13,7 @@ import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
@@ -25,7 +26,6 @@ import org.springframework.boot.test.web.client.exchange
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import java.time.LocalDate
-import java.time.YearMonth
 import java.util.UUID
 
 class SimuleringControllerTest : ServerTest() {
@@ -145,8 +145,7 @@ class SimuleringControllerTest : ServerTest() {
     }
 
     private fun lagFørstegangsbehandlingUtenBeløp(behandlingId: UUID) {
-        val andelTilkjentYtelse =
-            lagAndelTilkjentYtelse(0, fraOgMed = YearMonth.of(2021, 1), tilOgMed = YearMonth.of(2021, 1))
+        val andelTilkjentYtelse = lagAndelTilkjentYtelse(0, Månedsperiode("2021-01"))
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingId, andeler = listOf(andelTilkjentYtelse))
         val tilkjentYtelseMedUtbetalingsoppdrag =
             lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(behandlingId, 1L, tilkjentYtelse))

@@ -19,6 +19,7 @@ import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.Datoperiode
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.BetalingType
@@ -61,8 +62,7 @@ fun simuleringDto(
 private fun lagDefaultAndeler() =
     lagAndelTilkjentYtelseDto(
         beløp = 15000,
-        fraOgMed = LocalDate.of(2021, 1, 1),
-        tilOgMed = LocalDate.of(2023, 12, 31),
+        periode = Månedsperiode("2021-01" to "2023-12"),
         kildeBehandlingId = UUID.randomUUID()
     )
 
@@ -90,23 +90,27 @@ fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
 
 fun beriketSimuleringsresultat(
     feilutbetaling: BigDecimal = BigDecimal.ZERO,
-    fom: LocalDate = LocalDate.of(2021, 1, 1),
-    tom: LocalDate = LocalDate.of(2021, 12, 31)
+    periode: Datoperiode = Datoperiode(
+        LocalDate.of(2021, 1, 1),
+        LocalDate.of(2021, 12, 31)
+    )
 ) = BeriketSimuleringsresultat(
     detaljer = detaljertSimuleringResultat(),
-    oppsummering = simuleringsoppsummering(feilutbetaling, fom, tom)
+    oppsummering = simuleringsoppsummering(feilutbetaling, periode)
 )
 
 fun simuleringsoppsummering(
     feilutbetaling: BigDecimal = BigDecimal.ZERO,
-    fom: LocalDate = LocalDate.of(2021, 1, 1),
-    tom: LocalDate = LocalDate.of(2021, 12, 31)
+    periode: Datoperiode = Datoperiode(
+        LocalDate.of(2021, 1, 1),
+        LocalDate.of(2021, 12, 31)
+    )
 ) =
     Simuleringsoppsummering(
         perioder = listOf(
             Simuleringsperiode(
-                fom = fom,
-                tom = tom,
+                fom = periode.fom,
+                tom = periode.tom,
                 forfallsdato = LocalDate.of(2021, 10, 1),
                 nyttBeløp = BigDecimal.valueOf(15000),
                 tidligereUtbetalt = BigDecimal.ZERO,
@@ -116,12 +120,12 @@ fun simuleringsoppsummering(
         ),
         etterbetaling = BigDecimal.valueOf(15000),
         feilutbetaling = feilutbetaling,
-        fom = fom,
+        fom = periode.fom,
         fomDatoNestePeriode = null,
         tomDatoNestePeriode = null,
         forfallsdatoNestePeriode = null,
         tidSimuleringHentet = LocalDate.now(),
-        tomSisteUtbetaling = tom
+        tomSisteUtbetaling = periode.tom
     )
 
 fun posteringer(
@@ -194,7 +198,7 @@ fun lagIverksettData(
             vedtaksresultat = vedtaksresultat,
             vedtaksperioder = vedtaksperioder,
             andeler = andelsdatoer.map {
-                lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it)
+                lagAndelTilkjentYtelse(beløp = 0, periode = Månedsperiode(it))
             },
             startdato = andelsdatoer.minByOrNull { it } ?: YearMonth.now()
         )

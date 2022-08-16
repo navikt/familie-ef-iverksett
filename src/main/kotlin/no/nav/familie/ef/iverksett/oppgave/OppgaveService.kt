@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurde
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -121,9 +122,9 @@ class OppgaveService(
         return this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
     }
 
-    private fun IverksettOvergangsstønad.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
-        Pair(
-            this.vedtak.vedtaksperioder.minOf { it.periode.fomDato },
-            this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
+    private fun IverksettOvergangsstønad.totalVedtaksperiode(): Månedsperiode =
+        Månedsperiode(
+            this.vedtak.vedtaksperioder.minOf { it.periode.fom },
+            this.vedtak.vedtaksperioder.maxOf { it.periode.tom }
         )
 }

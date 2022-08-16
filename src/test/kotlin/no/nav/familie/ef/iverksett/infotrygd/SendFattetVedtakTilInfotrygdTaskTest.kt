@@ -35,9 +35,9 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
     private val personIdent = iverksettData.søker.personIdent
     private val historiskPersonIdent = "2"
     private val perioder = listOf(
-        Månedsperiode(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
-        Månedsperiode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)),
-        Månedsperiode(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 31))
+        Månedsperiode("2021-01" to "2021-01"),
+        Månedsperiode("2020-01" to "2020-01"),
+        Månedsperiode("2022-01" to "2022-01")
     )
 
     private val identer = listOf(
@@ -63,7 +63,7 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
         val vedtak = iverksettData.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
         val andelerTilkjentYtelse = perioder.map {
-            lagAndelTilkjentYtelse(1, it.fom, it.tom)
+            lagAndelTilkjentYtelse(1, it)
         }
 
         val nyTilkjentYtelse = tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelerTilkjentYtelse)

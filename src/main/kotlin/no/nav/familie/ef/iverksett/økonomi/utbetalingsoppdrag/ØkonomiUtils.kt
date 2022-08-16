@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 data class PeriodeId(
@@ -51,10 +52,10 @@ object ØkonomiUtils {
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
 
-        val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
+        val førsteEndring = finnMånedForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val består =
             if (førsteEndring != null)
-                forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.periode.fomDato < førsteEndring }
+                forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.periode.fom < førsteEndring }
             else forrigeAndeler
         return består.sortedBy { it.periodeId }
     }
@@ -92,14 +93,14 @@ object ØkonomiUtils {
         // hvis det ikke finnes tidligere andel så kan vi ikke opphøre noe
         val sisteForrigeAndel = forrigeTilkjentYtelse?.sisteAndelIKjede ?: return null
         val forrigeAndeler = andelerUtenNullVerdier(forrigeTilkjentYtelse)
-        val forrigeMaksDato = forrigeAndeler.maxOfOrNull { it.periode.tomDato }
+        val forrigeMaksDato = forrigeAndeler.maxOfOrNull { it.periode.tom }
         val nyeAndeler = andelerUtenNullVerdier(nyTilkjentYtelse)
 
         val skalOpphøreFørTidligereStartdato = nyTilkjentYtelse.startmåned < forrigeTilkjentYtelse.startmåned
         if (skalOpphøreFørTidligereStartdato) {
             return lagUtbetalingsperiodeForOpphør(
                 sisteForrigeAndel,
-                nyTilkjentYtelse.startmåned.atDay(1),
+                nyTilkjentYtelse.startmåned,
                 nyTilkjentYtelseMedMetaData
             )
         }
@@ -120,11 +121,11 @@ object ØkonomiUtils {
      * Når tidligere andeler er empty, og opphørsdato er etter forrige sitt opphørsdato trenger vi ikke å opphøre noe
      */
     private fun harIngenAndelerÅOpphøre(
-        opphørsdato: LocalDate?,
+        opphørsmåned: YearMonth?,
         forrigeTilkjentYtelse: TilkjentYtelse,
         forrigeAndeler: List<AndelTilkjentYtelse>
     ) =
-        forrigeAndeler.isEmpty() && opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startmåned.atDay(1)
+        forrigeAndeler.isEmpty() && opphørsmåned != null && opphørsmåned >= forrigeTilkjentYtelse.startmåned
 
     /**
      * Ny opphørsdato må finnes hvis det finnes startdato på tidligere tilkjent ytelse
@@ -137,32 +138,32 @@ object ØkonomiUtils {
         gammelVersjon: Boolean = false
     ) {
         val nyMinDato = nyTilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.periode.fom }
-        val forrigeStartdato = forrigeTilkjentYtelse?.startmåned
-        val nyStartdato = nyTilkjentYtelse.startmåned
-        if (forrigeStartdato != null) {
-            if (nyStartdato > forrigeStartdato) {
-                error("Nytt startdato=$nyStartdato kan ikke være etter forrigeStartdato=$forrigeStartdato")
+        val forrigeStartmåned = forrigeTilkjentYtelse?.startmåned
+        val nyStartmåned = nyTilkjentYtelse.startmåned
+        if (forrigeStartmåned != null) {
+            if (nyStartmåned > forrigeStartmåned) {
+                error("Nytt startdato=$nyStartmåned kan ikke være etter forrigeStartdato=$forrigeStartmåned")
             }
         }
         if (gammelVersjon && forrigeTilkjentYtelse == null && nyTilkjentYtelse.andelerTilkjentYtelse.isEmpty()) {
             error("Kan ikke opphøre noe når det ikke finnes en tidligere behandling")
         }
-        if (nyMinDato != null && nyMinDato.isBefore(nyStartdato)) {
+        if (nyMinDato != null && nyMinDato.isBefore(nyStartmåned)) {
             error("Kan ikke sette opphør etter dato på første perioden")
         }
 
         if (gammelVersjon) {
-            validerOpphørOg0Andeler(forrigeTilkjentYtelse, nyStartdato.atDay(1), forrigeStartdato?.atDay(1))
+            validerOpphørOg0Andeler(forrigeTilkjentYtelse, nyStartmåned, forrigeStartmåned)
         }
     }
 
     private fun validerOpphørOg0Andeler(
         forrigeTilkjentYtelse: TilkjentYtelse?,
-        nyStartdato: LocalDate?,
-        forrigeStartdato: LocalDate?
+        nyStartmåned: YearMonth?,
+        forrigeStartmåned: YearMonth?
     ) {
         val harOpphørEllerOpphørFørForrigeTilkjentYtelse =
-            nyStartdato != null && (forrigeStartdato == null || (nyStartdato < forrigeStartdato))
+            nyStartmåned != null && (forrigeStartmåned == null || (nyStartmåned < forrigeStartmåned))
         val harForrigeTilkjentYtelseUtenBeløp =
             forrigeTilkjentYtelse != null && andelerUtenNullVerdier(forrigeTilkjentYtelse).isEmpty()
         if (harOpphørEllerOpphørFørForrigeTilkjentYtelse && harForrigeTilkjentYtelseUtenBeløp) {
@@ -182,28 +183,28 @@ object ØkonomiUtils {
     private fun finnOpphørsdato(
         forrigeAndeler: Set<AndelTilkjentYtelse>,
         oppdaterteAndeler: Set<AndelTilkjentYtelse>
-    ): LocalDate? {
-        val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
-        val førsteDatoIForrigePeriode = forrigeAndeler.minOfOrNull { it.periode.fomDato }
-        val førsteDatoNyePerioder = oppdaterteAndeler.minOfOrNull { it.periode.fomDato }
-        if (førsteDatoNyePerioder != null && førsteDatoIForrigePeriode != null &&
-            førsteDatoNyePerioder.isBefore(førsteDatoIForrigePeriode)
+    ): YearMonth? {
+        val førsteEndring = finnMånedForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
+        val førsteMånedIForrigePeriode = forrigeAndeler.minOfOrNull { it.periode.fom }
+        val førsteMånedNyePerioder = oppdaterteAndeler.minOfOrNull { it.periode.fom }
+        if (førsteMånedNyePerioder != null && førsteMånedIForrigePeriode != null &&
+            førsteMånedNyePerioder < førsteMånedIForrigePeriode
         ) {
-            return førsteDatoNyePerioder
+            return førsteMånedNyePerioder
         }
         return førsteEndring
     }
 
-    private fun finnDatoForFørsteEndredeAndel(
+    private fun finnMånedForFørsteEndredeAndel(
         andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
         andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>
     ) =
         andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse)
-            .minOfOrNull { it.periode.fomDato }
+            .minOfOrNull { it.periode.fom }
 
     /**
      * Sjekker om den nye endringen er etter maks datot for tidligere perioder
      */
-    private fun erNyPeriode(forrigeMaksDato: LocalDate?, førsteEndring: LocalDate) =
-        forrigeMaksDato != null && førsteEndring.isAfter(forrigeMaksDato)
+    private fun erNyPeriode(forrigeMaksDato: YearMonth?, førsteEndring: YearMonth) =
+        forrigeMaksDato != null && førsteEndring > forrigeMaksDato
 }
