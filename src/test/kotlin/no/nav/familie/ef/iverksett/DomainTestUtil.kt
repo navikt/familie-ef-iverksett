@@ -72,7 +72,7 @@ fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
             SimuleringMottaker(
                 simulertPostering = listOf(
                     SimulertPostering(
-                        fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER,
+                        fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
                         fom = LocalDate.of(2021, 1, 1),
                         tom = LocalDate.of(2021, 12, 31),
                         betalingType = BetalingType.DEBIT,
