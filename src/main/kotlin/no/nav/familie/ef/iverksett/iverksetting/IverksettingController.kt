@@ -40,7 +40,7 @@ class IverksettingController(
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         validerSkalHaBrev(iverksett)
-        iverksettingService.startIverksetting(iverksett, opprettBrev(iverksettDto, fil))
+        iverksettingService.startIverksetting(iverksett, opprettBrev(fil))
     }
 
     @PostMapping("migrering", "uten-brev")
@@ -63,8 +63,8 @@ class IverksettingController(
         return ResponseEntity.ok().build()
     }
 
-    private fun opprettBrev(iverksettDto: IverksettDto, fil: MultipartFile): Brev {
-        return Brev(iverksettDto.behandling.behandlingId, fil.bytes)
+    private fun opprettBrev(fil: MultipartFile): Brev {
+        return Brev(fil.bytes)
     }
 
     private fun validerUtenBrev(iverksettData: IverksettData) {
