@@ -68,12 +68,17 @@
       "id": "996d4770-3d03-4b16-b78b-227338219b72",
       "utbetalingsoppdrag": null,
       "status": "IKKE_KLAR",
-      "startdato": "2021-01-01",
+      "startdato": null,
+      "startmåned": "2021-01",
       "andelerTilkjentYtelse": [
         {
           "beløp": 0,
-          "fraOgMed": "2021-05-10",
-          "tilOgMed": "2021-05-10",
+          "fraOgMed": null,
+          "tilOgMed": null,
+          "periode": {
+            "fom": "2021-05",
+            "tom": "2021-05"
+          },
           "inntekt": 0,
           "samordningsfradrag": 0,
           "inntektsreduksjon": 0,
@@ -86,9 +91,13 @@
     "vedtaksperioder": [
       {
         "aktivitet": "BARNET_ER_SYKT",
-        "fraOgMed": "2021-06-10",
-        "periodeType": "HOVEDPERIODE",
-        "tilOgMed": "2021-06-10"
+        "fraOgMed": null,
+        "tilOgMed": null,
+        "periode": {
+          "fom": "2021-06",
+          "tom": "2021-06"
+        },
+        "periodeType": "HOVEDPERIODE"
       }
     ],
     "tilbakekreving": {

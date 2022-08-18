@@ -15,10 +15,7 @@ data class TilkjentYtelse(
     val sisteAndelIKjede: AndelTilkjentYtelse? = null,
     @Deprecated("Bruk startmåned", ReplaceWith("startmåned")) val startdato: LocalDate? = null,
     val startmåned: YearMonth = startdato?.let { YearMonth.from(startdato) }
-        ?: andelerTilkjentYtelse.minOfOrNull { it.periode.fom } ?: YearMonth.of(
-        2022,
-        1
-    ) // error("Startdato eller startmåned eller andeler må ha verdi")
+        ?: error("Startdato eller startmåned eller andeler må ha verdi")
 ) {
 
     fun toMedMetadata(
