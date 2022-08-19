@@ -18,9 +18,9 @@ import java.time.LocalDate
 
 @Service
 class SimuleringService(
-        private val oppdragKlient: OppdragClient,
-        private val iverksettResultatService: IverksettResultatService,
-        private val featureToggleService: FeatureToggleService
+    private val oppdragKlient: OppdragClient,
+    private val iverksettResultatService: IverksettResultatService,
+    private val featureToggleService: FeatureToggleService
 ) {
 
     fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
@@ -33,18 +33,20 @@ class SimuleringService(
             }
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-                    simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse
+                simulering.nyTilkjentYtelseMedMetaData,
+                forrigeTilkjentYtelse
             )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
-                                     ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
+                ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
 
             if (utbetalingsoppdrag.utbetalingsperiode.isEmpty()) {
                 return DetaljertSimuleringResultat(emptyList())
             }
-            return hentSimuleringsresultatOgFiltrerPosteringer(utbetalingsoppdrag,
-                                                               simulering.nyTilkjentYtelseMedMetaData.stønadstype)
+            return hentSimuleringsresultatOgFiltrerPosteringer(
+                utbetalingsoppdrag,
+                simulering.nyTilkjentYtelseMedMetaData.stønadstype
+            )
         } catch (feil: Throwable) {
             val cause = feil.cause
             if (feil is RessursException && cause is HttpClientErrorException.BadRequest) {
@@ -62,20 +64,26 @@ class SimuleringService(
         val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
 
         return BeriketSimuleringsresultat(
-                detaljer = detaljertSimuleringResultat,
-                oppsummering = simuleringsresultatDto
+            detaljer = detaljertSimuleringResultat,
+            oppsummering = simuleringsresultatDto
         )
     }
 
-    private fun hentSimuleringsresultatOgFiltrerPosteringer(utbetalingsoppdrag: Utbetalingsoppdrag,
-                                                            stønadType: StønadType): DetaljertSimuleringResultat {
+    private fun hentSimuleringsresultatOgFiltrerPosteringer(
+        utbetalingsoppdrag: Utbetalingsoppdrag,
+        stønadType: StønadType
+    ): DetaljertSimuleringResultat {
         val fagOmrådeKoder = fagområdeKoderForPosteringer(stønadType)
         val simuleringsResultat = oppdragKlient.hentSimuleringsresultat(utbetalingsoppdrag)
-        return simuleringsResultat.copy(simuleringsResultat.simuleringMottaker
-                                                .map {
-                                                    it.copy(simulertPostering = it.simulertPostering.filter {
-                                                        fagOmrådeKoder.contains(it.fagOmrådeKode)
-                                                    })
-                                                })
+        return simuleringsResultat.copy(
+            simuleringsResultat.simuleringMottaker
+                .map {
+                    it.copy(
+                        simulertPostering = it.simulertPostering.filter {
+                            fagOmrådeKoder.contains(it.fagOmrådeKode)
+                        }
+                    )
+                }
+        )
     }
 }
