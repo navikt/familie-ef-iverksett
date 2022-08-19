@@ -7,6 +7,8 @@ import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatServic
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.http.client.RessursException
+import no.nav.familie.kontrakter.felles.ef.StønadType
+import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import org.springframework.http.HttpStatus
@@ -16,9 +18,9 @@ import java.time.LocalDate
 
 @Service
 class SimuleringService(
-    private val oppdragKlient: OppdragClient,
-    private val iverksettResultatService: IverksettResultatService,
-    private val featureToggleService: FeatureToggleService
+        private val oppdragKlient: OppdragClient,
+        private val iverksettResultatService: IverksettResultatService,
+        private val featureToggleService: FeatureToggleService
 ) {
 
     fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
@@ -31,18 +33,18 @@ class SimuleringService(
             }
 
             val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-                simulering.nyTilkjentYtelseMedMetaData,
-                forrigeTilkjentYtelse
+                    simulering.nyTilkjentYtelseMedMetaData,
+                    forrigeTilkjentYtelse
             )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
-                ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
+                                     ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
 
             if (utbetalingsoppdrag.utbetalingsperiode.isEmpty()) {
                 return DetaljertSimuleringResultat(emptyList())
             }
-
-            return oppdragKlient.hentSimuleringsresultat(utbetalingsoppdrag)
+            return hentSimuleringsresultatOgFiltrerPosteringer(utbetalingsoppdrag,
+                                                               simulering.nyTilkjentYtelseMedMetaData.stønadstype)
         } catch (feil: Throwable) {
             val cause = feil.cause
             if (feil is RessursException && cause is HttpClientErrorException.BadRequest) {
@@ -60,8 +62,20 @@ class SimuleringService(
         val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
 
         return BeriketSimuleringsresultat(
-            detaljer = detaljertSimuleringResultat,
-            oppsummering = simuleringsresultatDto
+                detaljer = detaljertSimuleringResultat,
+                oppsummering = simuleringsresultatDto
         )
+    }
+
+    private fun hentSimuleringsresultatOgFiltrerPosteringer(utbetalingsoppdrag: Utbetalingsoppdrag,
+                                                            stønadType: StønadType): DetaljertSimuleringResultat {
+        val fagOmrådeKoder = fagområdeKoderForPosteringer(stønadType)
+        val simuleringsResultat = oppdragKlient.hentSimuleringsresultat(utbetalingsoppdrag)
+        return simuleringsResultat.copy(simuleringsResultat.simuleringMottaker
+                                                .map {
+                                                    it.copy(simulertPostering = it.simulertPostering.filter {
+                                                        fagOmrådeKoder.contains(it.fagOmrådeKode)
+                                                    })
+                                                })
     }
 }
