@@ -66,7 +66,7 @@ fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simul
         }
 }
 
-private fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode> = when (stønadType) {
+fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode> = when (stønadType) {
     StønadType.OVERGANGSSTØNAD -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
