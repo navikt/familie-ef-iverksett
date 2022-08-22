@@ -32,10 +32,11 @@ class SimuleringService(
                 iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
             }
 
-            val tilkjentYtelseMedUtbetalingsoppdrag = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-                simulering.nyTilkjentYtelseMedMetaData,
-                forrigeTilkjentYtelse
-            )
+            val tilkjentYtelseMedUtbetalingsoppdrag =
+                UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
+                    simulering.nyTilkjentYtelseMedMetaData,
+                    forrigeTilkjentYtelse
+                )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
                 ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
@@ -79,8 +80,8 @@ class SimuleringService(
             simuleringsResultat.simuleringMottaker
                 .map {
                     it.copy(
-                        simulertPostering = it.simulertPostering.filter {
-                            fagOmrådeKoder.contains(it.fagOmrådeKode)
+                        simulertPostering = it.simulertPostering.filter { postering ->
+                            fagOmrådeKoder.contains(postering.fagOmrådeKode)
                         }
                     )
                 }
