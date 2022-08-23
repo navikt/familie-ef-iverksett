@@ -78,9 +78,9 @@ class SimuleringService(
         val simuleringsResultat = oppdragKlient.hentSimuleringsresultat(utbetalingsoppdrag)
         return simuleringsResultat.copy(
             simuleringsResultat.simuleringMottaker
-                .map {
-                    it.copy(
-                        simulertPostering = it.simulertPostering.filter { postering ->
+                .map { mottaker ->
+                    mottaker.copy(
+                        simulertPostering = mottaker.simulertPostering.filter { postering ->
                             fagOmrådeKoder.contains(postering.fagOmrådeKode)
                         }
                     )
