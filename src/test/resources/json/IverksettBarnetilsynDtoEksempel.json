@@ -64,8 +64,8 @@
     "vedtakstidspunkt": "2021-05-10T01:00:00",
     "vedtaksperioder": [
       {
-        "fraOgMed": "2021-06-10",
-        "tilOgMed": "2021-06-10",
+        "fraOgMed": null,
+        "tilOgMed": null,
         "periode": {
           "fom": "2021-06",
           "tom": "2021-06"
@@ -80,8 +80,8 @@
       "andelerTilkjentYtelse": [
         {
           "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "fraOgMed": "2021-05-10",
-          "tilOgMed": "2021-05-10",
+          "fraOgMed": null,
+          "tilOgMed": null,
           "periode": {
             "fom": "2021-05",
             "tom": "2021-05"
@@ -92,7 +92,8 @@
           "inntektsreduksjon": 0
         }
       ],
-      "startdato": "2020-03-01"
+      "startdato": null,
+      "startmåned": "2020-03"
     },
     "tilbakekreving": {
       "tilbakekrevingsvalg": "OPPRETT_TILBAKEKREVING_MED_VARSEL",
@@ -111,8 +112,8 @@
     "brevmottakere": [],
     "kontantstøtte": [
       {
-        "fraOgMed": "2021-07-10",
-        "tilOgMed": "2021-07-10",
+        "fraOgMed": null,
+        "tilOgMed": null,
         "periode": {
           "fom": "2021-07",
           "tom": "2021-07"
@@ -122,8 +123,8 @@
     ],
     "tilleggsstønad": [
       {
-        "fraOgMed": "2021-07-10",
-        "tilOgMed": "2021-07-10",
+        "fraOgMed": null,
+        "tilOgMed": null,
         "periode": {
           "fom": "2021-07",
           "tom": "2021-07"
