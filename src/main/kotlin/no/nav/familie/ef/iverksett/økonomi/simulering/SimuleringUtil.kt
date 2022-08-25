@@ -3,8 +3,10 @@ package no.nav.familie.ef.iverksett.økonomi.simulering
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringsperiodeEtterbetaling.etterbetaling
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringsperiodeEtterbetaling.medEtterbetaling
 import no.nav.familie.kontrakter.felles.Datoperiode
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
+import no.nav.familie.kontrakter.felles.simulering.FagOmrådeKode
 import no.nav.familie.kontrakter.felles.simulering.PosteringType
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.FEILUTBETALING
 import no.nav.familie.kontrakter.felles.simulering.PosteringType.YTELSE
@@ -30,7 +32,8 @@ fun lagSimuleringsoppsummering(
         }
 
     val nestePeriode = framtidigePerioder.filter { it.feilutbetaling == ZERO }.minByOrNull { it.fom }
-    val tomSisteUtbetaling = perioder.filter { nestePeriode == null || it.fom < nestePeriode.fom }.maxOfOrNull { it.tom }
+    val tomSisteUtbetaling =
+        perioder.filter { nestePeriode == null || it.fom < nestePeriode.fom }.maxOfOrNull { it.tom }
 
     return Simuleringsoppsummering(
         perioder = perioder,
@@ -61,6 +64,22 @@ fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simul
                 feilutbetaling = posteringListe.sumBarePositiv(FEILUTBETALING)
             ).medEtterbetaling(hentEtterbetaling(posteringListe))
         }
+}
+
+fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode> = when (stønadType) {
+    StønadType.OVERGANGSSTØNAD -> setOf(
+        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
+        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
+        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING
+    )
+    StønadType.BARNETILSYN -> setOf(
+        FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN,
+        FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_INFOTRYGD
+    )
+    StønadType.SKOLEPENGER -> setOf(
+        FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER,
+        FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER_INFOTRYGD
+    )
 }
 
 private fun hentNyttBeløp(posteringer: List<SimulertPostering>) =

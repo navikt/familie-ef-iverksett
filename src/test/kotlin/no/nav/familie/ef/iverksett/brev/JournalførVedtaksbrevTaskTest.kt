@@ -62,7 +62,7 @@ internal class JournalførVedtaksbrevTaskTest {
         iverksettDto.behandling.behandlingId,
         iverksettDto.toDomain(),
         iverksettDto.behandling.eksternId,
-        Brev(behandlingId, ByteArray(256))
+        Brev(ByteArray(256))
     )
 
     @BeforeEach

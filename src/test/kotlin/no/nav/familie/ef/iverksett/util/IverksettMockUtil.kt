@@ -337,7 +337,7 @@ fun startmåned(andeler: List<AndelTilkjentYtelse>) =
     andeler.minOfOrNull { it.periode.fom } ?: error("Trenger å sette startdato hvs det ikke finnes andeler")
 
 fun opprettBrev(): Brev {
-    return Brev(UUID.fromString("234bed7c-b1d3-11eb-8529-0242ac130003"), ByteArray(256))
+    return Brev(ByteArray(256))
 }
 
 fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
