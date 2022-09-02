@@ -11,9 +11,6 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurde
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
-import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
-import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
-import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -129,23 +126,4 @@ class OppgaveService(
             this.vedtak.vedtaksperioder.minOf { it.periode.fomDato },
             this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
         )
-}
-
-fun main() {
-    val vedtaksperiode = VedtaksperiodeOvergangsstønad(
-            periode = Månedsperiode(LocalDate.now().minusMonths(10), LocalDate.now().plusMonths(5)),
-            aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
-            periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL
-    )
-
-    val vedtaksperiode2 = VedtaksperiodeOvergangsstønad(
-            periode = Månedsperiode(LocalDate.now().minusMonths(5), LocalDate.now()),
-            aktivitet = AktivitetType.BARNET_ER_SYKT,
-            periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL
-    )
-
-    val list = listOf(vedtaksperiode, vedtaksperiode2)
-
-    println(list.maxByOrNull { it.periode })
-    // førstegangsbehandling -> G-omregning -> revurdering med endret aktivitet
 }
