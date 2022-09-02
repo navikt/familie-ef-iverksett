@@ -97,7 +97,7 @@ class OppgaveService(
         if (forrigeBehandling !is IverksettOvergangsstønad) {
             error("Forrige behandling er av annen type=${forrigeBehandling::class.java.simpleName}")
         }
-        if (forrigeBehandling.skalIkkeSendeBrev()) {
+        if (forrigeBehandling.erMigrering()) {
             return false
         }
         if (forrigeBehandling.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT) {
