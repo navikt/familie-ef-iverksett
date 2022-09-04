@@ -22,7 +22,6 @@ import java.util.UUID
     triggerTidVedFeilISekunder = 30L,
     beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
 )
-
 class VentePåStatusFraØkonomiTask(
     private val iverksettingRepository: IverksettingRepository,
     private val iverksettingService: IverksettingService,

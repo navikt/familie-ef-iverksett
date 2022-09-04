@@ -47,7 +47,7 @@ internal class JournalførVedtaksbrevTaskTest {
             iverksettingRepository,
             journalpostClient,
             taskRepository,
-            iverksettResultatService,
+            iverksettResultatService
         )
     private val behandlingId: UUID = UUID.randomUUID()
     private val behandlingIdString = behandlingId.toString()
@@ -105,7 +105,6 @@ internal class JournalførVedtaksbrevTaskTest {
 
     @Test
     internal fun `skal journalføre brev til alle brevmottakere`() {
-
         val verge = Brevmottaker(
             "22222222222",
             "Mottaker Navn",
@@ -205,7 +204,9 @@ internal class JournalførVedtaksbrevTaskTest {
         every { journalpostClient.finnJournalposter(any()) } answers {
             listOf(
                 Journalpost(
-                    journalpostId, Journalposttype.U, Journalstatus.JOURNALFOERT,
+                    journalpostId,
+                    Journalposttype.U,
+                    Journalstatus.JOURNALFOERT,
                     eksternReferanseId = arkiverDokumentRequestSlot[0].eksternReferanseId
                 )
             )

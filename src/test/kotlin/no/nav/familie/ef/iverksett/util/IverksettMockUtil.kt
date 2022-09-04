@@ -69,7 +69,6 @@ fun opprettIverksettDto(
     andelsbeløp: Int = 5000,
     stønadType: StønadType = StønadType.OVERGANGSSTØNAD
 ): IverksettOvergangsstønadDto {
-
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
         beløp = andelsbeløp,
         fraOgMed = LocalDate.of(2021, 1, 1),

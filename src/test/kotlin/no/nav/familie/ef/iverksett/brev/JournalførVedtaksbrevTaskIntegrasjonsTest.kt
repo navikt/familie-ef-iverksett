@@ -65,7 +65,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
             iverksettingRepository = iverksettingRepository,
             journalpostClient = journalpostClient,
             taskRepository = taskRepository,
-            iverksettResultatService = iverksettResultatService,
+            iverksettResultatService = iverksettResultatService
         )
     }
 

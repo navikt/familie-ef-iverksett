@@ -15,17 +15,17 @@ private val TILBAKEKREVING_UTEN_VARSEL =
     )
 
 fun IverksettData.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleringsresultat): IverksettData {
-
     val tilbakekreving = this.vedtak.tilbakekreving
     val simuleringsoppsummering = beriketSimuleringsresultat.oppsummering
 
     val nyTilbakekreving: Tilbakekrevingsdetaljer? =
-        if (tilbakekreving != null && !simuleringsoppsummering.harFeilutbetaling)
+        if (tilbakekreving != null && !simuleringsoppsummering.harFeilutbetaling) {
             null
-        else if (harAvvikIVarsel(tilbakekreving, simuleringsoppsummering))
+        } else if (harAvvikIVarsel(tilbakekreving, simuleringsoppsummering)) {
             tilbakekreving?.oppdaterVarsel(simuleringsoppsummering)
-        else
+        } else {
             tilbakekreving
+        }
 
     return this.medNyTilbakekreving(nyTilbakekreving)
 }
@@ -48,7 +48,6 @@ val Simuleringsoppsummering.harFeilutbetaling: Boolean
     get() = this.feilutbetaling > BigDecimal.ZERO
 
 fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringsoppsummering): Tilbakekrevingsdetaljer {
-
     return this.copy(
         tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel
             ?.copy(

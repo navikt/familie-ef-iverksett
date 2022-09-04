@@ -18,7 +18,6 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
     }
 
     private fun mapTilBehandlingDVH(behandlingstatistikk: BehandlingsstatistikkDto): BehandlingDVH {
-
         val tekniskTid = ZonedDateTime.now(ZoneId.of("Europe/Oslo"))
         return BehandlingDVH(
             behandlingId = behandlingstatistikk.eksternBehandlingId,
@@ -55,16 +54,24 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             behandlingResultat = behandlingstatistikk.behandlingResultat,
             resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
             ansvarligBeslutter =
-            if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty())
+            if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty()) {
                 maskerVerdiHvisStrengtFortrolig(
                     behandlingstatistikk.strengtFortroligAdresse,
                     behandlingstatistikk.beslutterId.toString()
                 )
-            else null,
-            vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse)
-                behandlingstatistikk.hendelseTidspunkt else null,
-            ferdigBehandletTid = if (Hendelse.FERDIG == behandlingstatistikk.hendelse)
-                behandlingstatistikk.hendelseTidspunkt else null,
+            } else {
+                null
+            },
+            vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse) {
+                behandlingstatistikk.hendelseTidspunkt
+            } else {
+                null
+            },
+            ferdigBehandletTid = if (Hendelse.FERDIG == behandlingstatistikk.hendelse) {
+                behandlingstatistikk.hendelseTidspunkt
+            } else {
+                null
+            },
             totrinnsbehandling = true,
             sakUtland = "Nasjonal",
             relatertBehandlingId = behandlingstatistikk.relatertEksternBehandlingId

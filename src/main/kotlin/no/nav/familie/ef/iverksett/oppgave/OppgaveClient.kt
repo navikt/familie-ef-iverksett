@@ -22,7 +22,7 @@ import java.net.URI
 @Component
 class OppgaveClient(
     @Qualifier("azure") restOperations: RestOperations,
-    @Value("\${FAMILIE_INTEGRASJONER_API_URL}") private val integrasjonUrl: String,
+    @Value("\${FAMILIE_INTEGRASJONER_API_URL}") private val integrasjonUrl: String
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
 
     val oppgaveUrl = "$integrasjonUrl/api/oppgave"
@@ -39,7 +39,6 @@ class OppgaveClient(
     }
 
     fun opprettOppgave(opprettOppgaveRequest: OpprettOppgaveRequest): Long? {
-
         val opprettOppgaveUri = URI.create("$oppgaveUrl/opprett")
         val response =
             postForEntity<Ressurs<OppgaveResponse>>(

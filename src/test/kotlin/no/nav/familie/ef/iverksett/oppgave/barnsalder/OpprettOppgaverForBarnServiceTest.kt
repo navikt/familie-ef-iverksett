@@ -91,7 +91,8 @@ internal class OpprettOppgaverForBarnServiceTest {
             eksternFagsakId = 0L,
             personIdent = "12345678910",
             stønadType = StønadType.OVERGANGSSTØNAD,
-            beskrivelse = beskrivelse, aktivFra = aktivFra
+            beskrivelse = beskrivelse,
+            aktivFra = aktivFra
         )
     }
 }

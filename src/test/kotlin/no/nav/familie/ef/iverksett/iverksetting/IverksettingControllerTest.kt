@@ -94,7 +94,6 @@ class IverksettingControllerTest : ServerTest() {
 
     @Test
     internal fun `mangler brev, forvent 400`() {
-
         val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
         val request = MultipartBuilder()
             .withJson("data", iverksettJson)

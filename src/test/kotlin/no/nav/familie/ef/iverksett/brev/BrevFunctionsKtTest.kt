@@ -28,7 +28,6 @@ internal class BrevFunctionsKtTest {
 
     @Test
     internal fun `skal lage riktig brevtekst for riktig vedtak og behandlingstype`() {
-
         assertThat(lagVedtakstekst(iverksettFørsteGangsbehandlingInnvilget)).isEqualTo("Vedtak om innvilget ")
         assertThat(lagVedtakstekst(iverksettFørsteGangsbehandlingAvslått)).isEqualTo("Vedtak om avslått ")
         assertThat(lagVedtakstekst(iverksettRevurderingAvslått)).isEqualTo("Vedtak om avslått ")

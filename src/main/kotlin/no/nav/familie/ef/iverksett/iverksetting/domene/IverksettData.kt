@@ -52,7 +52,7 @@ data class IverksettOvergangsstønad(
     override val fagsak: Fagsakdetaljer,
     override val behandling: Behandlingsdetaljer,
     override val søker: Søker,
-    override val vedtak: VedtaksdetaljerOvergangsstønad,
+    override val vedtak: VedtaksdetaljerOvergangsstønad
 ) : IverksettData() {
 
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettOvergangsstønad {
@@ -64,7 +64,7 @@ data class IverksettBarnetilsyn(
     override val fagsak: Fagsakdetaljer,
     override val behandling: Behandlingsdetaljer,
     override val søker: Søker,
-    override val vedtak: VedtaksdetaljerBarnetilsyn,
+    override val vedtak: VedtaksdetaljerBarnetilsyn
 ) : IverksettData() {
 
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettBarnetilsyn {
@@ -76,7 +76,7 @@ data class IverksettSkolepenger(
     override val fagsak: Fagsakdetaljer,
     override val behandling: Behandlingsdetaljer,
     override val søker: Søker,
-    override val vedtak: VedtaksdetaljerSkolepenger,
+    override val vedtak: VedtaksdetaljerSkolepenger
 ) : IverksettData() {
 
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettSkolepenger {

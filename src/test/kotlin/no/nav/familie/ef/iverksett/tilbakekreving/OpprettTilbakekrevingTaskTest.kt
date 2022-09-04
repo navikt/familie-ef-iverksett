@@ -57,7 +57,6 @@ internal class OpprettTilbakekrevingTaskTest {
 
     @Test
     fun `uendret og ingen feilutbetaling - ikke opprett tilbakekreving`() {
-
         val tilbakekreving = null
         val behandlingsId = UUID.randomUUID()
         val iverksett = opprettIverksettOvergangsstønad(
@@ -126,7 +125,6 @@ internal class OpprettTilbakekrevingTaskTest {
 
     @Test
     fun `uendret, postiv feilutbetaling`() {
-
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
         val iverksett = opprettIverksettOvergangsstønad(
@@ -158,7 +156,6 @@ internal class OpprettTilbakekrevingTaskTest {
 
     @Test
     fun `feilutbetaling forsvinner på iverksett`() {
-
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
         val iverksett = opprettIverksettOvergangsstønad(
@@ -178,7 +175,6 @@ internal class OpprettTilbakekrevingTaskTest {
 
     @Test
     fun `feilutbetaling endres`() {
-
         val behandlingsId = UUID.randomUUID()
         val tilbakekreving = opprettTilbakekrevingsdetaljer().medFeilutbetaling(100)
         val iverksett = opprettIverksettOvergangsstønad(

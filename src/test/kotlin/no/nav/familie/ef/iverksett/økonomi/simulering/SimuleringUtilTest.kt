@@ -27,7 +27,6 @@ internal class SimuleringUtilTest {
 
     @Test
     internal fun `skal ikke mappe simuleringsdata for forskuddskatt, motp, justering og trekk `() {
-
         val posteringer =
             posteringer(januar(2020), posteringstype = PosteringType.MOTP) +
                 posteringer(januar(2020), posteringstype = PosteringType.FORSKUDSSKATT) +
@@ -108,7 +107,6 @@ internal class SimuleringUtilTest {
 
     @Test
     fun `skal gruppere og sortere på fom-dato`() {
-
         val simuleringsperioder =
             (
                 posteringer(januar(2021), 2, 3_000, YTELSE) +
@@ -213,7 +211,6 @@ internal class SimuleringUtilTest {
      */
     @Test
     fun `ytelse på 10000 korrigert til 2000`() {
-
         val redusertYtelseTil2_000 =
             posteringer(beløp = -10_000, posteringstype = YTELSE, betalingstype = KREDIT) + // Forrige
                 posteringer(beløp = 2_000, posteringstype = YTELSE, betalingstype = DEBIT) + // Ny
@@ -234,7 +231,6 @@ internal class SimuleringUtilTest {
 
     @Test
     fun `ytelse på 2000 korrigert til 3000`() {
-
         val øktYtelseFra2_000Til3_000 =
             posteringer(beløp = -2_000, posteringstype = YTELSE, betalingstype = KREDIT) +
                 posteringer(beløp = 3_000, posteringstype = YTELSE, betalingstype = DEBIT) +
@@ -256,7 +252,6 @@ internal class SimuleringUtilTest {
 
     @Test
     fun `ytelse på 3000 korrigert til 12000`() {
-
         val øktYtelseFra3_000Til12_000 =
             posteringer(beløp = -3_000, posteringstype = YTELSE, betalingstype = KREDIT) +
                 posteringer(beløp = 12_000, posteringstype = YTELSE, betalingstype = DEBIT) +
