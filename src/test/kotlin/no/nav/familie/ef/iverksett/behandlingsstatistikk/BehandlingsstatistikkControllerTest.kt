@@ -28,7 +28,6 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
 
     @Test
     internal fun `Sende behandlingsstatistikk skal gi 200 OK`() {
-
         val behandlingId = UUID.randomUUID()
         val mottatt = opprettBehandlingsstatistikkDto(behandlingId, Hendelse.MOTTATT, false)
         Assertions.assertThat(send(mottatt).statusCode.value()).isEqualTo(200)
@@ -53,7 +52,8 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
 
     private fun send(behandlingStatistikkDto: BehandlingsstatistikkDto): ResponseEntity<HttpStatus> =
         restTemplate.exchange(
-            localhostUrl("/api/statistikk/behandlingsstatistikk/"), HttpMethod.POST,
+            localhostUrl("/api/statistikk/behandlingsstatistikk/"),
+            HttpMethod.POST,
             HttpEntity(behandlingStatistikkDto, headers)
         )
 }

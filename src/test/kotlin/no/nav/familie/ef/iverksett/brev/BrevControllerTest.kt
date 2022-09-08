@@ -19,7 +19,6 @@ class BrevControllerTest {
 
     @Test
     internal fun `opprett frittstående brev (brev uten behandling) gir 200 OK`() {
-
         val journalpostId = "123456789"
 
         every { journalpostClient.arkiverDokument(any(), any()) } returns ArkiverDokumentResponse(

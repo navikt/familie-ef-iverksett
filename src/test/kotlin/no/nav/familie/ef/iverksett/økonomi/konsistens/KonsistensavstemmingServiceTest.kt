@@ -48,7 +48,8 @@ internal class KonsistensavstemmingServiceTest {
     private val andel2 = lagAndelTilkjentYtelse(
         beløp = 2,
         fraOgMed = andel2StartDato,
-        tilOgMed = andel2Sluttdato, kildeBehandlingId = behandlingId
+        tilOgMed = andel2Sluttdato,
+        kildeBehandlingId = behandlingId
     )
 
     private val requestSlot = slot<KonsistensavstemmingUtbetalingsoppdrag>()

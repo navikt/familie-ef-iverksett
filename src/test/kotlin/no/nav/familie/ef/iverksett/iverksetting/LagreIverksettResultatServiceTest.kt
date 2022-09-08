@@ -77,7 +77,6 @@ internal class LagreIverksettResultatServiceTest : ServerTest() {
 
     @Test
     fun `oppdater tilbakekrevingsresultat, forvent ingen unntak`() {
-
         val opprettTilbakekrevingRequest = opprettIverksettOvergangsstønad(behandlingsId)
             .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 

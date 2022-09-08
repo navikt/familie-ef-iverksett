@@ -64,7 +64,6 @@ internal class HentIverksettResultatServiceTest : ServerTest() {
 
     @Test
     fun `lagre tilkjentYtelse, hent IverksettResultat med riktig behandlingsID`() {
-
         val resultat = IverksettResultatMockBuilder.Builder()
             .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
             .journalPostResultat()
@@ -104,7 +103,6 @@ internal class HentIverksettResultatServiceTest : ServerTest() {
 
     @Test
     fun `lagre tilbakekrevingsresultat, hent IverksettResultat med tilbakekrevingsresultat`() {
-
         val iverksett = opprettIverksettOvergangsstønad(behandlingId)
         val opprettTilbakekrevingRequest = iverksett
             .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
@@ -124,7 +122,6 @@ internal class HentIverksettResultatServiceTest : ServerTest() {
 
     @Test
     fun `overskriv tomt (null) tilbakekrevingsresultat`() {
-
         val id = UUID.randomUUID()
         val iverksett = opprettIverksettOvergangsstønad(id)
         val opprettTilbakekrevingRequest = iverksett

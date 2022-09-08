@@ -54,8 +54,7 @@ data class TestOppdrag(
 ) {
 
     fun tilAndelTilkjentYtelse(): AndelTilkjentYtelse? {
-
-        return if (beløp != null && startPeriode != null && sluttPeriode != null)
+        return if (beløp != null && startPeriode != null && sluttPeriode != null) {
             lagAndelTilkjentYtelse(
                 beløp = this.beløp,
                 fraOgMed = startPeriode,
@@ -64,18 +63,18 @@ data class TestOppdrag(
                 kildeBehandlingId = if (TestOppdragType.Output == type) oppdragId else null,
                 forrigePeriodeId = forrigeLinjeId
             )
-        else if (TestOppdragType.Output == type && beløp == null && startPeriode == null && sluttPeriode == null)
+        } else if (TestOppdragType.Output == type && beløp == null && startPeriode == null && sluttPeriode == null) {
             nullAndelTilkjentYtelse(
                 kildeBehandlingId = oppdragId ?: error("Må ha satt OppdragId på Output"),
                 periodeId = PeriodeId(linjeId, forrigeLinjeId)
             )
-        else
+        } else {
             null
+        }
     }
 
     fun tilUtbetalingsperiode(): Utbetalingsperiode? {
-
-        return if (startPeriode != null && sluttPeriode != null && linjeId != null)
+        return if (startPeriode != null && sluttPeriode != null && linjeId != null) {
             Utbetalingsperiode(
                 erEndringPåEksisterendePeriode = erEndring ?: false,
                 opphør = opphørsdato?.let { Opphør(it) },
@@ -91,10 +90,11 @@ data class TestOppdrag(
                 behandlingId = 1,
                 utbetalingsgrad = 100
             )
-        else if (opphørsdato != null)
+        } else if (opphørsdato != null) {
             error("Kan ikke sette opphørsdato her, mangler start/slutt/linjeId")
-        else
+        } else {
             null
+        }
     }
 }
 
@@ -256,7 +256,6 @@ object TestOppdragParser {
     }
 
     fun parseToTestOppdragGroup(url: URL): List<TestOppdragGroup> {
-
         val result: MutableList<TestOppdragGroup> = mutableListOf()
 
         var newGroup = true

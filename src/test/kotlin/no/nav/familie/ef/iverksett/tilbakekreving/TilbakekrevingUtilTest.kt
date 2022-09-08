@@ -24,7 +24,6 @@ internal class TilbakekrevingUtilTest {
 
     @Test
     fun `uendret tilbakekreving med varsel skal opprettholdes i iverksett`() {
-
         val feilutbetaling = BigDecimal.TEN
         val tilbakekrevingsdetaljer = Tilbakekrevingsdetaljer(
             tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
@@ -115,7 +114,6 @@ internal class TilbakekrevingUtilTest {
 
     @Test
     fun `endret feilutbetaling i iverksett skal tas hensyn til`() {
-
         val originalTilbakekreving = Tilbakekrevingsdetaljer(
             tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
             tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder)
@@ -135,7 +133,6 @@ internal class TilbakekrevingUtilTest {
 
     @Test
     fun `ingen feilutbetaling i iverksett skal fjerne tilbakekreving`() {
-
         val originalTilbakekreving = Tilbakekrevingsdetaljer(
             tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
             tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder)

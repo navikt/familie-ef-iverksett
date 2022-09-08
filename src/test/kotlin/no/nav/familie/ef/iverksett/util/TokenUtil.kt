@@ -30,7 +30,7 @@ object TokenUtil {
             "oid" to thisId,
             "azp" to clientId,
             "name" to saksbehandler,
-            "NAVident" to saksbehandler,
+            "NAVident" to saksbehandler
         )
 
         return mockOAuth2Server.issueToken(

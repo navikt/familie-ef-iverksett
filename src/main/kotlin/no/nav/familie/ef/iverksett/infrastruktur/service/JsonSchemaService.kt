@@ -63,10 +63,9 @@ class JsonSchemaService(
     beskrivelse = "Oppdaterer Json-data."
 )
 class JsonUpdatePeriodeIverksettTask(
-    private val iverksettingRepository: IverksettingRepository,
+    private val iverksettingRepository: IverksettingRepository
 ) : AsyncTaskStep {
     override fun doTask(task: Task) {
-
         val iverksett = iverksettingRepository.findByIdOrThrow(UUID.fromString(task.payload))
         iverksettingRepository.update(iverksett)
     }

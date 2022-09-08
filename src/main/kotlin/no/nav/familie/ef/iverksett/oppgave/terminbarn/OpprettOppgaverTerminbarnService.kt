@@ -32,7 +32,6 @@ class OpprettOppgaverTerminbarnService(
     }
 
     fun opprettOppgaveForTerminbarn(oppgaveForBarn: OppgaveForBarn) {
-
         val opprettOppgaveRequest = OppgaveUtil.opprettOppgaveRequest(
             oppgaveForBarn.eksternFagsakId,
             oppgaveForBarn.personIdent,

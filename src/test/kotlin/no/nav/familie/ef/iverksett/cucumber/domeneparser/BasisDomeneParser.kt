@@ -61,7 +61,6 @@ fun parseBoolean(domenebegrep: Domenenøkkel, rad: Map<String, String>): Boolean
 }
 
 fun parseValgfriBoolean(domenebegrep: Domenenøkkel, rad: Map<String, String?>): Boolean? {
-
     val verdi = rad[domenebegrep.nøkkel]
     if (verdi == null || verdi == "") {
         return null

@@ -64,7 +64,6 @@ internal class VedtakstatistikkMapperTest {
 
     @Test
     internal fun `skal mappe iverksett til VedtakOvergangsstønadDVH - sjekk alle felter`() {
-
         val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
             IverksettOvergangsstønad(
                 fagsak = fagsakdetaljer(),
@@ -73,7 +72,7 @@ internal class VedtakstatistikkMapperTest {
                     personIdent = søker,
                     barn = listOf(
                         Barn(personIdent = barnFnr, termindato = termindato),
-                        Barn(termindato = termindato),
+                        Barn(termindato = termindato)
                     ),
                     tilhørendeEnhet = "4489",
                     adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG
@@ -119,7 +118,6 @@ internal class VedtakstatistikkMapperTest {
 
     @Test
     internal fun `Map iverksett til VedtakBarnetilsynDVH - sjekk alle barnetilsyn-spesifikke felter`() {
-
         val vedtakBarnetilsynDVH = VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(
             IverksettBarnetilsyn(
                 fagsak = fagsakdetaljer(stønadstype = StønadType.BARNETILSYN),
@@ -128,7 +126,7 @@ internal class VedtakstatistikkMapperTest {
                     personIdent = søker,
                     barn = listOf(
                         Barn(personIdent = barnFnr),
-                        Barn(termindato = termindato),
+                        Barn(termindato = termindato)
                     ),
                     tilhørendeEnhet = "4489",
                     adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG
@@ -160,7 +158,6 @@ internal class VedtakstatistikkMapperTest {
 
     @Test
     internal fun `skal mappe iverksett til VedtakSkolepenger`() {
-
         val vedtakSkolepenger = VedtakstatistikkMapper.mapTilVedtakSkolepengeDVH(
             IverksettSkolepenger(
                 fagsak = fagsakdetaljer(stønadstype = StønadType.BARNETILSYN),
@@ -169,7 +166,7 @@ internal class VedtakstatistikkMapperTest {
                     personIdent = søker,
                     barn = listOf(
                         Barn(personIdent = barnFnr),
-                        Barn(termindato = termindato),
+                        Barn(termindato = termindato)
                     ),
                     tilhørendeEnhet = "4489",
                     adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG
@@ -283,7 +280,7 @@ internal class VedtakstatistikkMapperTest {
                     )
                 )
             )
-        ),
+        )
     )
 
     fun vedtaksdetaljerBarnetilsyn() = VedtaksdetaljerBarnetilsyn(
@@ -317,11 +314,10 @@ internal class VedtakstatistikkMapperTest {
                 periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 8)),
                 beløp = 2000
             )
-        ),
+        )
     )
 
     fun vedtaksdetaljerOvergangsstønad(): VedtaksdetaljerOvergangsstønad {
-
         return VedtaksdetaljerOvergangsstønad(
             vedtaksresultat = Vedtaksresultat.INNVILGET,
             vedtakstidspunkt = vedtakstidspunkt,
@@ -494,7 +490,7 @@ internal class VedtakstatistikkMapperTest {
                             begrunnelse = null
                         )
                     )
-                ),
+                )
             )
         ),
         Vilkårsvurdering(

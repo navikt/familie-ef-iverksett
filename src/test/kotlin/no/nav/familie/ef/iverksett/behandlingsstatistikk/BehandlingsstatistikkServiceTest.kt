@@ -30,7 +30,6 @@ internal class BehandlingsstatistikkServiceTest {
 
     @Test
     fun `sendBehandlingsstatistikkDto med hendelsestype MOTTATT, mappes korrekt for sending til DVH`() {
-
         val uuid = UUID.randomUUID()
         val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.MOTTATT, fortrolig = false)
 
@@ -49,7 +48,6 @@ internal class BehandlingsstatistikkServiceTest {
 
     @Test
     fun `sendBehandlingsstatistikkDto med hendelsestype PÅBEGYNT, mappes korrekt for sending til DVH`() {
-
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
         val saksbehandler = "Saksbehandler påbegynt"
@@ -92,7 +90,6 @@ internal class BehandlingsstatistikkServiceTest {
 
     @Test
     fun `sendBehandlingsstatistikkDto med hendelsestype BESLUTTET, mappes korrekt for sending til DVH`() {
-
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
         val ansvarligBeslutter = "beslutterId"
@@ -118,7 +115,6 @@ internal class BehandlingsstatistikkServiceTest {
 
     @Test
     fun `sendBehandlingsstatistikkDto med hendelsestype FERDIG, mappes korrekt for sending til DVH`() {
-
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
         val behandlingStatistikkDto =
@@ -134,7 +130,6 @@ internal class BehandlingsstatistikkServiceTest {
 
     @Test
     fun `opprettet behandlingsstatistikk av behandlingDto med fortrolig lik true, forvent -5 konstant på graderte felter`() {
-
         val uuid = UUID.randomUUID()
         val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.MOTTATT, fortrolig = true)
 

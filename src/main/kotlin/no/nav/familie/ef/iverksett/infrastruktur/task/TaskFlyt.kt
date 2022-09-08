@@ -24,7 +24,7 @@ fun hovedflyt() = listOf(
     TaskType(IverksettMotOppdragTask.TYPE),
     TaskType(VentePåStatusFraØkonomiTask.TYPE, 20), // går ikke videre ved migrering//korrigering_uten_brev
     TaskType(JournalførVedtaksbrevTask.TYPE),
-    TaskType(DistribuerVedtaksbrevTask.TYPE),
+    TaskType(DistribuerVedtaksbrevTask.TYPE)
 )
 
 fun publiseringsflyt() = listOf(

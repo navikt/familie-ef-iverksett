@@ -21,13 +21,17 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 
     @Autowired
     private lateinit var iverksettResultatService: IverksettResultatService
+
     @Autowired
     private lateinit var journalpostClient: JournalpostClient
+
     @Autowired
     @Qualifier("mock-integrasjoner")
     lateinit var wireMockServer: WireMockServer
+
     @Autowired
     lateinit var journalpostClientMock: JournalpostClientMock
+
     @Autowired
     private lateinit var namedParameterJdbcTemplate: NamedParameterJdbcTemplate
 

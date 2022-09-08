@@ -102,7 +102,8 @@ class IverksettingController(
             )
         }
 
-        if (!iverksett.vedtak.tilbakekreving.validerTilbakekreving())
+        if (!iverksett.vedtak.tilbakekreving.validerTilbakekreving()) {
             throw ApiFeil("Tilbakekreving er ikke gyldig", HttpStatus.BAD_REQUEST)
+        }
     }
 }

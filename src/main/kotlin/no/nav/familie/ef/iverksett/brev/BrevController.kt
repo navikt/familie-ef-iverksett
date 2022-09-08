@@ -21,7 +21,6 @@ class BrevController(
 
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(@RequestBody data: FrittståendeBrevDto): ResponseEntity<Any> {
-
         val journalpostId = journalpostClient.arkiverDokument(
             ArkiverDokumentRequest(
                 fnr = data.personIdent,
@@ -35,7 +34,7 @@ class BrevController(
                     )
                 ),
                 fagsakId = data.eksternFagsakId.toString(),
-                journalførendeEnhet = data.journalførendeEnhet,
+                journalførendeEnhet = data.journalførendeEnhet
             ),
             data.saksbehandlerIdent
         ).journalpostId

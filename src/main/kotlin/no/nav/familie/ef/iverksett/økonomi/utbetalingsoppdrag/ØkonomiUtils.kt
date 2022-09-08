@@ -53,9 +53,11 @@ object ØkonomiUtils {
 
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val består =
-            if (førsteEndring != null)
+            if (førsteEndring != null) {
                 forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.periode.fomDato < førsteEndring }
-            else forrigeAndeler
+            } else {
+                forrigeAndeler
+            }
         return består.sortedBy { it.periodeId }
     }
 

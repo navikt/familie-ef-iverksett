@@ -169,7 +169,7 @@ object VedtakstatistikkMapper {
     private fun mapTilVilkårsvurderinger(vilkårsvurdering: Vilkårsvurdering): VilkårsvurderingDto {
         return VilkårsvurderingDto(
             vilkår = Vilkår.valueOf(vilkårsvurdering.vilkårType.name),
-            resultat = Vilkårsresultat.valueOf(vilkårsvurdering.resultat.name),
+            resultat = Vilkårsresultat.valueOf(vilkårsvurdering.resultat.name)
         )
     }
 

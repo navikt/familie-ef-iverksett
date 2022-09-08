@@ -15,7 +15,7 @@ import java.util.UUID
 @ProtectedWithClaims(issuer = "azuread")
 @Validated
 class KonsistensavstemmingController(
-    private val konsistensavstemmingService: KonsistensavstemmingService,
+    private val konsistensavstemmingService: KonsistensavstemmingService
 ) {
 
     @PostMapping
@@ -27,7 +27,9 @@ class KonsistensavstemmingController(
     ) {
         konsistensavstemmingService.sendKonsistensavstemming(
             konsistensavstemmingDto,
-            sendStartmelding, sendAvsluttmelding, transaksjonId
+            sendStartmelding,
+            sendAvsluttmelding,
+            transaksjonId
         )
     }
 }
