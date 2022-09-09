@@ -7,7 +7,7 @@ import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.security.token.support.core.api.Unprotected
+import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -19,7 +19,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping(path = ["/api/jsonUpdate"])
-@Unprotected
+@ProtectedWithClaims(issuer = "azuread")
 class JsonSchemaService(
     private val taskService: TaskService,
     private val iverksettingRepository: IverksettingRepository,
