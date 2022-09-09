@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
+import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
@@ -14,13 +15,14 @@ import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
+import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.util.UUID
 
 internal class TilbakekrevingListenerTest {
 
@@ -29,11 +31,12 @@ internal class TilbakekrevingListenerTest {
     private val tilbakekrevingProducer = mockk<TilbakekrevingProducer>()
 
     private lateinit var listener: TilbakekrevingListener
+    private val behandling = opprettIverksettOvergangsstønad()
 
     @BeforeEach
     internal fun setUp() {
         every { iverksettingRepository.findByEksternId(any()) }
-            .returns(lagIverksett(opprettIverksettOvergangsstønad(behandlingId = UUID.randomUUID())))
+            .returns(lagIverksett(behandling))
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) }
             .returns(Enhet(enhetId = "0", enhetNavn = "navn"))
         every { tilbakekrevingProducer.send(any(), any()) } just runs
@@ -55,7 +58,17 @@ internal class TilbakekrevingListenerTest {
         verify(exactly = 0) { tilbakekrevingProducer.send(any(), any()) }
     }
 
-    private fun record(ytelsestype: Ytelsestype): ConsumerRecord<String, String> {
+    @Test
+    internal fun `kafkamelding med fagsakID forskjellig fra iverksatt fagsakID, forvent feilmelding om inkonsistens`() {
+        val respons = slot<HentFagsystemsbehandlingRespons>()
+        every { tilbakekrevingProducer.send(capture(respons), any()) } just runs
+        every { iverksettingRepository.findByEksternId(any()) }
+            .returns(lagIverksett(behandling.copy(fagsak = behandling.fagsak.copy(eksternId = 11L))))
+        listener.listen(record(Ytelsestype.OVERGANGSSTØNAD))
+        assertThat(respons.captured.feilMelding!!).contains("Inkonsistens. Ekstern fagsakID")
+    }
+
+    private fun record(ytelsestype: Ytelsestype, eksternFagsakId: String = "0"): ConsumerRecord<String, String> {
         val behandling = objectMapper.writeValueAsString(
             HentFagsystemsbehandling(
                 eksternFagsakId = "0",
