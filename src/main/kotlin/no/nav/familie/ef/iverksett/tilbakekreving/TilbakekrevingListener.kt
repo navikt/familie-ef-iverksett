@@ -84,9 +84,9 @@ class TilbakekrevingListener(
     private fun sjekkFagsakIdKonsistens(iverksett: IverksettData, request: HentFagsystemsbehandlingRequest) {
         if (!iverksett.fagsak.eksternId.equals(request.eksternFagsakId.toLong())) {
             error(
-                "Inkonsistens. Ekstern fagsakID mellom iverksatt behandling (ekstern fagsakID=${iverksett.fagsak.eksternId}) og request (ekstern fagsakID=${
-                    request.eksternFagsakId
-                }) er ulike, med eksternID=${request.eksternId.toLong()}"
+                "Inkonsistens. Ekstern fagsakID mellom iverksatt behandling (ekstern fagsakID=" +
+                    "${iverksett.fagsak.eksternId}) og request (ekstern fagsakID=${request.eksternFagsakId}) er ulike, " +
+                    "med eksternID=${request.eksternId.toLong()}"
             )
         }
     }
