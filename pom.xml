@@ -19,17 +19,17 @@
         <springdoc.version>1.6.11</springdoc.version>
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20220901103347_4819e55</felles.version>
-        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-        <mockk.version>1.12.5</mockk.version>
-        <cucumber.version>7.7.0</cucumber.version>
-        <revision>1.0</revision>
-        <dotenv.version>6.3.1</dotenv.version>
-        <prosessering.version>1.20220624132237_7f5ba9c</prosessering.version>
-        <changelist>-SNAPSHOT</changelist>
-        <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <familie.kontrakter.version>2.0_20220908105112_b3b874e</familie.kontrakter.version>
+        <familie.kontrakter.version>2.0_20220916130234_aa8ba65</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220718220344_7c2ed6b</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220706094343_ca44254</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <prosessering.version>1.20220624132237_7f5ba9c</prosessering.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <mockk.version>1.12.5</mockk.version>
+        <cucumber.version>7.8.0</cucumber.version>
+        <revision>1.0</revision>
+        <dotenv.version>6.3.1</dotenv.version>
+        <changelist>-SNAPSHOT</changelist>
+        <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <token-validation-spring.version>2.1.4</token-validation-spring.version>
         <ibm-mq-client.version>9.3.0.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
@@ -239,7 +239,7 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8</artifactId>
-            <version>2.33.2</version>
+            <version>2.34.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
