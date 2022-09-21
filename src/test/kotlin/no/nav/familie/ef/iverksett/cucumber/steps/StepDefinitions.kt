@@ -27,7 +27,7 @@ import java.util.UUID
 data class TilkjentYtelseHolder(
     val behandlingId: UUID,
     val behandlingIdInt: Int,
-    val tilkjentYtelse: TilkjentYtelseDto,
+    val tilkjentYtelse: TilkjentYtelseDto
 )
 
 class StepDefinitions {
@@ -166,7 +166,6 @@ class StepDefinitions {
         utbetalingsoppdrag: Utbetalingsoppdrag,
         medUtbetalingsperiode: Boolean = true
     ) {
-
         assertThat(utbetalingsoppdrag.kodeEndring).isEqualTo(forventetUtbetalingsoppdrag.kodeEndring)
         assertThat(utbetalingsoppdrag.utbetalingsperiode).hasSize(forventetUtbetalingsoppdrag.utbetalingsperiode.size)
         if (medUtbetalingsperiode) {
@@ -211,6 +210,6 @@ private fun toMedMetadata(holder: TilkjentYtelseHolder, stønadType: StønadType
             eksternFagsakId = 1,
             personIdent = "1",
             behandlingId = holder.behandlingId,
-            vedtaksdato = LocalDate.now(),
+            vedtaksdato = LocalDate.now()
         )
 }

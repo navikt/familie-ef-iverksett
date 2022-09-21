@@ -69,7 +69,6 @@ fun opprettIverksettDto(
     andelsbeløp: Int = 5000,
     stønadType: StønadType = StønadType.OVERGANGSSTØNAD
 ): IverksettOvergangsstønadDto {
-
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
         beløp = andelsbeløp,
         periode = Månedsperiode("2021-01" to "2021-12"),

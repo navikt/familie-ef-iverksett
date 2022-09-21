@@ -33,18 +33,16 @@ import java.util.UUID
     triggerTidVedFeilISekunder = 15,
     beskrivelse = "Journalfører vedtaksbrev."
 )
-
 class JournalførVedtaksbrevTask(
     private val iverksettingRepository: IverksettingRepository,
     private val journalpostClient: JournalpostClient,
     private val taskRepository: TaskRepository,
-    private val iverksettResultatService: IverksettResultatService,
+    private val iverksettResultatService: IverksettResultatService
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
-
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId)
 
@@ -59,7 +57,6 @@ class JournalførVedtaksbrevTask(
         mottakerIdent: String,
         beslutterId: String
     ) {
-
         val journalpostId = try {
             journalpostClient.arkiverDokument(arkiverDokumentRequest, beslutterId).journalpostId
         } catch (e: RessursException) {

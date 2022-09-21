@@ -74,7 +74,6 @@ class KonsistensavstemmingService(
         behandlingId: UUID,
         stønadType: StønadType
     ): Utbetalingsoppdrag {
-
         val personIdent = konsistensavstemmingTilkjentYtelseDto.personIdent
         val eksternBehandlingId = konsistensavstemmingTilkjentYtelseDto.eksternBehandlingId
 

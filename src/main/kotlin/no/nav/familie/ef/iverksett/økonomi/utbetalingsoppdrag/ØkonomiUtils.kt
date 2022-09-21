@@ -54,9 +54,11 @@ object ØkonomiUtils {
 
         val førsteEndring = finnMånedForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val består =
-            if (førsteEndring != null)
+            if (førsteEndring != null) {
                 forrigeAndeler.snittAndeler(oppdaterteAndeler).filter { it.periode.fom < førsteEndring }
-            else forrigeAndeler
+            } else {
+                forrigeAndeler
+            }
         return består.sortedBy { it.periodeId }
     }
 

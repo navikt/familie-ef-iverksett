@@ -44,7 +44,7 @@ fun lagSimuleringsoppsummering(
         tomDatoNestePeriode = nestePeriode?.tom,
         forfallsdatoNestePeriode = nestePeriode?.forfallsdato,
         tidSimuleringHentet = tidSimuleringHentet,
-        tomSisteUtbetaling = tomSisteUtbetaling,
+        tomSisteUtbetaling = tomSisteUtbetaling
     )
 }
 

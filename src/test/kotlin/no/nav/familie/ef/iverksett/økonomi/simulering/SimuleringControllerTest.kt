@@ -48,7 +48,6 @@ class SimuleringControllerTest : ServerTest() {
 
     @Test
     internal fun `Hent simulering skal gi 200 OK`() {
-
         val respons = restTemplate
             .exchange<Ressurs<DetaljertSimuleringResultat>>(
                 localhostUrl("/api/simulering/"),
@@ -63,7 +62,6 @@ class SimuleringControllerTest : ServerTest() {
 
     @Test
     internal fun `Hent simulering v2 skal gi 200 OK`() {
-
         val respons = restTemplate
             .exchange<Ressurs<BeriketSimuleringsresultat>>(
                 localhostUrl("/api/simulering/v2/"),

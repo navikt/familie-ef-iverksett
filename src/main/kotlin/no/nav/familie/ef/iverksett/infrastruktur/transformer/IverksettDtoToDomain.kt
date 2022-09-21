@@ -177,12 +177,11 @@ fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel {
     return TilbakekrevingMedVarsel(
         varseltekst = this.varseltekst,
         sumFeilutbetaling = this.sumFeilutbetaling,
-        perioder = this.fellesperioder.map { it.toDatoperiode() },
+        perioder = this.fellesperioder.map { it.toDatoperiode() }
     )
 }
 
 fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere {
-
     return Brevmottakere(
         mottakere = this.map {
             Brevmottaker(

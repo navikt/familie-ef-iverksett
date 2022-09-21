@@ -82,7 +82,8 @@ fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
                         utenInntrekk = false
                     )
                 ),
-                mottakerNummer = null, mottakerType = MottakerType.BRUKER
+                mottakerNummer = null,
+                mottakerType = MottakerType.BRUKER
             )
         )
     )
