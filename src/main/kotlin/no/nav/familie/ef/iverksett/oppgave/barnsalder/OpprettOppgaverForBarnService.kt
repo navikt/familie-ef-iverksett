@@ -105,9 +105,7 @@ class OpprettOppgaverForBarnService(
             )
             val mapperResponse = oppgaveClient.finnMapper(finnMappeRequest)
             val mappe = mapperResponse.mapper.find {
-                it.navn.contains("EF Sak", true) &&
-                    it.navn.contains("Hendelser") &&
-                    it.navn.contains("62")
+                it.navn.contains("62 Hendelser") && !it.navn.contains("EF Sak")
             }
                 ?: error("Fant ikke mappe for hendelser")
             oppgaveClient.oppdaterOppgave(oppgave.copy(mappeId = mappe.id.toLong()))
