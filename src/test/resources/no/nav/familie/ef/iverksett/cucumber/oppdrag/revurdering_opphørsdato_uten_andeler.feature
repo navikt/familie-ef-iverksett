@@ -15,6 +15,7 @@ Egenskap: Har startdato, sender ny tilkjent ytelse uten andeler - opphører fra 
       | BehandlingId | Fra dato | Til dato | Beløp |
       | 1            | 03.2021  | 03.2021  | 700   |
       | 2            | 03.2021  | 03.2021  | 800   |
+      | 3            | 04.2021  | 04.2021  | 900   |
 
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
@@ -23,7 +24,8 @@ Egenskap: Har startdato, sender ny tilkjent ytelse uten andeler - opphører fra 
       | 1            | 03.2021  | 03.2021  |             | 700   | NY           | Nei        | 1          |                    |
       | 2            | 03.2021  | 03.2021  | 02.2021     | 700   | ENDR         | Ja         | 1          |                    |
       | 2            | 03.2021  | 03.2021  |             | 800   | ENDR         | Nei        | 2          | 1                  |
-      | 3            | 03.2021  | 03.2021  | 03.2021     | 800   | ENDR         | Ja         | 3          | 2                  |
+      | 3            | 03.2021  | 03.2021  | 03.2021     | 800   | ENDR         | Ja         | 2          | 1                  |
+      | 3            | 04.2021  | 04.2021  |             | 900   | ENDR         | Nei        | 3          | 2                  |
 
     Og forvent følgende tilkjente ytelser for behandling 1 med startdato 03.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |

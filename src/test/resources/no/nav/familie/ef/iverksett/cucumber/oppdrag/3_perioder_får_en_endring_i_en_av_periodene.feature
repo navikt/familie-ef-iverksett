@@ -54,7 +54,7 @@ Egenskap: 3 perioder og får endring i en av periodene
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
       | 1            | 02.2021  | 04.2021  |             | 700   | NY           | Nei        | 1          |                    |
       | 1            | 05.2021  | 07.2021  |             | 900   | NY           | Nei        | 2          | 1                  |
       | 1            | 08.2021  | 10.2021  |             | 1000  | NY           | Nei        | 3          | 2                  |
