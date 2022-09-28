@@ -24,5 +24,6 @@ Egenskap: Har en periode, legger til en ny
 
     Så forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id |
-      | 02.2021  | 05.2021  | 900   | 2          | 1                  |
+      | 02.2021  | 03.2021  | 700   | 1          |                    |
+      | 04.2021  | 05.2021  | 900   | 2          | 1                  |
 

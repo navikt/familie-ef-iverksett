@@ -39,7 +39,7 @@ Egenskap: Revurdering frem i tid
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
     Så forvent følgende utbetalingsoppdrag
-      | BehandlingId | Fra dato | Til dato | opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
+      | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
       | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
       | 2            | 02.2021  | 02.2021  | 02.2021     | 700   | ENDR         | Ja         | 1          |                    |
       | 2            | 03.2021  | 03.2021  |             | 600   | ENDR         | Nei        | 2          | 1                  |

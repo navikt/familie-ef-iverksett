@@ -9,6 +9,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode.SatsType
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 object TilkjentYtelseParser {
@@ -79,7 +80,7 @@ object TilkjentYtelseParser {
             opphør = parseValgfriÅrMåned(UtbetalingsoppdragDomenebegrep.OPPHØRSDATO, it)?.atDay(1)
         )
 
-    fun mapForventetTilkjentYtelse(dataTable: DataTable, behandlingIdInt: Int, startdato: LocalDate?): ForventetTilkjentYtelse {
+    fun mapForventetTilkjentYtelse(dataTable: DataTable, behandlingIdInt: Int, startdato: YearMonth?): ForventetTilkjentYtelse {
         val andeler = dataTable.asMaps().map { mapForventetAndel(it) }
         return ForventetTilkjentYtelse(
             behandlingId = behandlingIdTilUUID[behandlingIdInt]!!,
@@ -90,8 +91,8 @@ object TilkjentYtelseParser {
     }
 
     private fun mapForventetAndel(rad: MutableMap<String, String>) = ForventetAndelTilkjentYtelse(
-        fom = parseValgfriÅrMåned(Domenebegrep.FRA_DATO, rad)?.atDay(1) ?: LocalDate.MIN,
-        tom = parseValgfriÅrMåned(Domenebegrep.TIL_DATO, rad)?.atEndOfMonth() ?: LocalDate.MIN,
+        fom = parseValgfriÅrMåned(Domenebegrep.FRA_DATO, rad) ?: YearMonth.from(LocalDate.MIN),
+        tom = parseValgfriÅrMåned(Domenebegrep.TIL_DATO, rad) ?: YearMonth.from(LocalDate.MIN),
         beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
         periodeId = parseInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad).toLong(),
         forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong(),
@@ -146,12 +147,12 @@ object TilkjentYtelseParser {
     data class ForventetTilkjentYtelse(
         val behandlingId: UUID,
         val andeler: List<ForventetAndelTilkjentYtelse>,
-        val startmåned: LocalDate
+        val startmåned: YearMonth
     )
 
     data class ForventetAndelTilkjentYtelse(
-        val fom: LocalDate,
-        val tom: LocalDate,
+        val fom: YearMonth,
+        val tom: YearMonth,
         val periodeId: Long,
         val forrigePeriodeId: Long?,
         val beløp: Int,

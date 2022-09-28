@@ -21,6 +21,7 @@ import org.assertj.core.api.Assertions.catchThrowable
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 data class TilkjentYtelseHolder(
@@ -106,10 +107,15 @@ class StepDefinitions {
     }
 
     @Så("forvent følgende tilkjente ytelser for behandling {int} med startdato {}")
-    fun `forvent følgende tilkjente ytelser med startdato`(behandlingIdInt: Int, startdato: String?, dataTable: DataTable) {
-        val parsedStartdato = startdato?.let { parseÅrMåned(it).atDay(1) }
+    fun `forvent følgende tilkjente ytelser med startdato`(
+        behandlingIdInt: Int,
+        startdato: String?,
+        dataTable: DataTable
+    ) {
+        val parsedStartdato = startdato?.let { parseÅrMåned(it) }
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
-        val forventetTilkjentYtelse = TilkjentYtelseParser.mapForventetTilkjentYtelse(dataTable, behandlingIdInt, parsedStartdato)
+        val forventetTilkjentYtelse =
+            TilkjentYtelseParser.mapForventetTilkjentYtelse(dataTable, behandlingIdInt, parsedStartdato)
         val beregnetTilkjentYtelse =
             beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
 
@@ -121,7 +127,7 @@ class StepDefinitions {
         behandlingIdInt: Int,
         startdato: String?
     ) {
-        val parsedStartdato = startdato?.let { parseÅrMåned(it).atDay(1) }
+        val parsedStartdato = startdato?.let { parseÅrMåned(it) }
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
         val beregnetTilkjentYtelse =
             beregnedeTilkjentYtelse[behandlingId] ?: error("Mangler beregnet tilkjent ytelse for $behandlingIdInt")
@@ -131,14 +137,14 @@ class StepDefinitions {
 
     private fun assertTilkjentYtelseMed0BeløpAndeler(
         behandlingId: UUID,
-        startmåned: LocalDate?,
+        startmåned: YearMonth?,
         beregnetTilkjentYtelse: TilkjentYtelse
     ) {
         assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(startmåned)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().beløp).isEqualTo(0)
-        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.fomDato).isEqualTo(LocalDate.MIN)
-        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.tomDato).isEqualTo(LocalDate.MIN)
+        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.fom).isEqualTo(YearMonth.from(LocalDate.MIN))
+        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.tom).isEqualTo(YearMonth.from(LocalDate.MIN))
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isNull()
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().kildeBehandlingId).isEqualTo(behandlingId)
     }
@@ -149,12 +155,14 @@ class StepDefinitions {
     ) {
         beregnetTilkjentYtelse.andelerTilkjentYtelse.forEachIndexed { index, andel ->
             val forventetAndel = forventetTilkjentYtelse.andeler[index]
-            assertThat(andel.periode.fomDato).isEqualTo(forventetAndel.fom)
-            assertThat(andel.periode.tomDato).isEqualTo(forventetAndel.tom)
+            assertThat(andel.periode.fom).isEqualTo(forventetAndel.fom)
+            assertThat(andel.periode.tom).isEqualTo(forventetAndel.tom)
             assertThat(andel.beløp).isEqualTo(forventetAndel.beløp)
             assertThat(andel.periodeId).isEqualTo(forventetAndel.periodeId)
             assertThat(andel.forrigePeriodeId).isEqualTo(forventetAndel.forrigePeriodeId)
-            assertThat(andel.kildeBehandlingId).isEqualTo(forventetAndel.kildeBehandlingId)
+            if (forventetAndel.kildeBehandlingId != null) {
+                assertThat(andel.kildeBehandlingId).isEqualTo(forventetAndel.kildeBehandlingId)
+            }
         }
         assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(forventetTilkjentYtelse.startmåned)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(forventetTilkjentYtelse.andeler.size)
