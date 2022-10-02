@@ -30,7 +30,7 @@
         <dotenv.version>6.3.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>2.1.4</token-validation-spring.version>
+        <token-validation-spring.version>2.1.6</token-validation-spring.version>
         <ibm-mq-client.version>9.2.5.0</ibm-mq-client.version>
         <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
         <unleash.version>4.4.1</unleash.version>
