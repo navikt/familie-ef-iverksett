@@ -37,9 +37,13 @@ class JournalførFrittståendeBrevTask(
         val frittståendeBrevId = UUID.fromString(task.payload)
         var frittståendeBrev = frittståendeBrevRepository.findByIdOrThrow(frittståendeBrevId)
 
+        require(frittståendeBrev.mottakere.mottakere.isNotEmpty()) {
+            "Mottakere forventes å inneholde mottakere"
+        }
+
         frittståendeBrev.mottakere.mottakere
             .forEachIndexed { index, brevmottaker ->
-                if (frittståendeBrev.journalpostResulat.map.containsKey(brevmottaker.ident)) {
+                if (frittståendeBrev.journalpostResultat.map.containsKey(brevmottaker.ident)) {
                     return@forEachIndexed
                 }
                 val journalpostId = journalpostClient.arkiverDokument(
@@ -47,9 +51,9 @@ class JournalførFrittståendeBrevTask(
                     saksbehandler = frittståendeBrev.saksbehandlerIdent
                 ).journalpostId
                 val oppdatertJournalposter =
-                    frittståendeBrev.journalpostResulat.map + mapOf(brevmottaker.ident to JournalpostResultat(journalpostId))
-                frittståendeBrev = frittståendeBrev.copy(journalpostResulat = JournalpostResultatMap(oppdatertJournalposter))
-                frittståendeBrevRepository.oppdaterJournalpostResultat(frittståendeBrevId, frittståendeBrev.journalpostResulat)
+                    frittståendeBrev.journalpostResultat.map + mapOf(brevmottaker.ident to JournalpostResultat(journalpostId))
+                frittståendeBrev = frittståendeBrev.copy(journalpostResultat = JournalpostResultatMap(oppdatertJournalposter))
+                frittståendeBrevRepository.oppdaterJournalpostResultat(frittståendeBrevId, frittståendeBrev.journalpostResultat)
             }
     }
 

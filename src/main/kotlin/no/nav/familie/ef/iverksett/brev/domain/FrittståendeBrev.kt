@@ -4,8 +4,12 @@ import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
+@Table("frittstaende_brev")
 data class FrittståendeBrev(
     @Id
     val id: UUID = UUID.randomUUID(),
@@ -19,6 +23,7 @@ data class FrittståendeBrev(
     val mottakere: Brevmottakere,
     val fil: ByteArray,
     val brevtype: FrittståendeBrevType,
-    val journalpostResulat: JournalpostResultatMap = JournalpostResultatMap(),
-    val distribuerBrevResulat: DistribuerBrevResultatMap = DistribuerBrevResultatMap()
+    val journalpostResultat: JournalpostResultatMap = JournalpostResultatMap(),
+    val distribuerBrevResultat: DistribuerBrevResultatMap = DistribuerBrevResultatMap(),
+    val opprettetTid: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
 )

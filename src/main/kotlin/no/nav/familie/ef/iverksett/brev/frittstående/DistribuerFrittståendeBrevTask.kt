@@ -53,30 +53,21 @@ class DistribuerFrittståendeBrevTask(
     private fun distribuerFrittståendeBrev(frittståendeBrevId: UUID): Resultat {
         var frittståendeBrev = hentFrittståendeBrev(frittståendeBrevId)
 
-        val journalpostResultat = frittståendeBrev.journalpostResulat.map
-        val distribuertBrevResultat = frittståendeBrev.distribuerBrevResulat.map
+        val journalpostResultat = frittståendeBrev.journalpostResultat.map
+        val distribuertBrevResultat = frittståendeBrev.distribuerBrevResultat.map
 
         var resultat: Dødsbo? = null
 
         journalpostResultat.filter { (_, journalpostResultat) ->
             journalpostResultat.journalpostId !in distribuertBrevResultat
         }.forEach { (personIdent, journalpostResultat) ->
-
             try {
                 val bestillingId = distribuerBrev(journalpostResultat)
 
-                val oppdaterteDistribuerBrevResultat =
-                    frittståendeBrev.distribuerBrevResulat.map + mapOf(
-                        journalpostResultat.journalpostId to DistribuerBrevResultat(
-                            bestillingId
-                        )
-                    )
-                frittståendeBrev = frittståendeBrev.copy(
-                    distribuerBrevResulat = DistribuerBrevResultatMap(oppdaterteDistribuerBrevResultat)
-                )
+                frittståendeBrev = oppdaterFrittståendeBrev(frittståendeBrev, journalpostResultat, bestillingId)
                 frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
                     frittståendeBrevId,
-                    frittståendeBrev.distribuerBrevResulat
+                    frittståendeBrev.distribuerBrevResultat
                 )
             } catch (e: RessursException) {
                 val cause = e.cause
@@ -88,6 +79,16 @@ class DistribuerFrittståendeBrevTask(
             }
         }
         return resultat ?: OK
+    }
+
+    private fun oppdaterFrittståendeBrev(
+        frittståendeBrev: FrittståendeBrev,
+        journalpostResultat: JournalpostResultat,
+        bestillingId: String
+    ): FrittståendeBrev {
+        val nyeVerdier = mapOf(journalpostResultat.journalpostId to DistribuerBrevResultat(bestillingId))
+        val oppdaterteDistribuerBrevResultat = frittståendeBrev.distribuerBrevResultat.map + nyeVerdier
+        return frittståendeBrev.copy(distribuerBrevResultat = DistribuerBrevResultatMap(oppdaterteDistribuerBrevResultat))
     }
 
     private fun distribuerBrev(
@@ -111,7 +112,7 @@ class DistribuerFrittståendeBrevTask(
 
     private fun hentFrittståendeBrev(frittståendeBrevId: UUID): FrittståendeBrev {
         val frittståendeBrev = frittståendeBrevRepository.findByIdOrThrow(frittståendeBrevId)
-        if (frittståendeBrev.journalpostResulat.map.isEmpty()) {
+        if (frittståendeBrev.journalpostResultat.map.isEmpty()) {
             error("Fant ingen journalpost for frittståendeBrev=$frittståendeBrevId")
         }
         return frittståendeBrev
