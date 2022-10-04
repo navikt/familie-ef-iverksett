@@ -37,7 +37,6 @@ class JournalførFrittståendeBrevTask(
         val frittståendeBrevId = UUID.fromString(task.payload)
         var frittståendeBrev = frittståendeBrevRepository.findByIdOrThrow(frittståendeBrevId)
 
-        // todo burde vi validere at mottakere inneholder ident på frittstående brev?
         frittståendeBrev.mottakere.mottakere
             .forEachIndexed { index, brevmottaker ->
                 if (frittståendeBrev.journalpostResulat.map.containsKey(brevmottaker.ident)) {

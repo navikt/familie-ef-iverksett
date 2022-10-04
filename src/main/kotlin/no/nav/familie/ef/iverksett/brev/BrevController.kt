@@ -3,9 +3,13 @@ package no.nav.familie.ef.iverksett.brev
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevRepository
 import no.nav.familie.ef.iverksett.brev.frittstående.JournalførFrittståendeBrevTask
-//import no.nav.familie.ef.iverksett.brev.frittstående.JournalførFrittståendeBrevTask
+// import no.nav.familie.ef.iverksett.brev.frittstående.JournalførFrittståendeBrevTask
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
+import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
+import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
+import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
+import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -21,24 +25,55 @@ import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontra
 @ProtectedWithClaims(issuer = "azuread")
 class BrevController(
     private val frittståendeBrevRepository: FrittståendeBrevRepository,
-    private val taskService: TaskService
+    private val taskService: TaskService,
+    private val journalpostClient: JournalpostClient
 ) {
 
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(
         @RequestBody data: FrittståendeBrevDto,
-        mottakere: List<BrevmottakerKontrakter> // TODO flytt til dto
+        mottakere: List<BrevmottakerKontrakter>? // TODO flytt til dto
     ): ResponseEntity<Any> {
-        // TODO legg tillbake forrige kode her for å støtte at man ikke ennå sender inn liste på mottakere?
-        opprettTask(data, mottakere)
+
+        if (mottakere == null) {
+            journalførOgDistribuerBrev(data)
+        } else {
+            opprettTask(data, mottakere)
+        }
 
         return ResponseEntity.ok().build()
+    }
+
+    private fun journalførOgDistribuerBrev(data: FrittståendeBrevDto) {
+        val journalpostId = journalpostClient.arkiverDokument(
+            ArkiverDokumentRequest(
+                fnr = data.personIdent,
+                forsøkFerdigstill = true,
+                hoveddokumentvarianter = listOf(
+                    Dokument(
+                        data.fil,
+                        Filtype.PDFA,
+                        dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
+                        tittel = data.brevtype.tittel
+                    )
+                ),
+                fagsakId = data.eksternFagsakId.toString(),
+                journalførendeEnhet = data.journalførendeEnhet
+            ),
+            data.saksbehandlerIdent
+        ).journalpostId
+
+        journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
     }
 
     private fun opprettTask(
         data: FrittståendeBrevDto,
         mottakere: List<no.nav.familie.kontrakter.ef.iverksett.Brevmottaker>
     ) {
+        require(mottakere.isNotEmpty()){
+            "Liste med brevmottakere kan ikke være tom"
+        }
+
         val brev = frittståendeBrevRepository.insert(
             FrittståendeBrev(
                 personIdent = data.personIdent,

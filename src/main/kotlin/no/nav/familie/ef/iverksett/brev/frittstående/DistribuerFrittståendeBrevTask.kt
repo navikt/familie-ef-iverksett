@@ -1,5 +1,10 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
+import no.nav.familie.ef.iverksett.brev.JournalpostClient
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
+import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
@@ -25,7 +30,8 @@ import java.util.UUID
     beskrivelse = "Distribuerer frittstående brev."
 )
 class DistribuerFrittståendeBrevTask(
-    private val frittståendeBrevRepository: FrittståendeBrevRepository
+    private val frittståendeBrevRepository: FrittståendeBrevRepository,
+    private val journalpostClient: JournalpostClient
 ) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -45,16 +51,33 @@ class DistribuerFrittståendeBrevTask(
     }
 
     private fun distribuerFrittståendeBrev(frittståendeBrevId: UUID): Resultat {
-        val journalpostResultat = hentFrittståendeBrev(frittståendeBrevId)
-        val distribuerteJournalposter =
-            iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId)?.keys ?: emptySet()
+        var frittståendeBrev = hentFrittståendeBrev(frittståendeBrevId)
+
+        val journalpostResultat = frittståendeBrev.journalpostResulat.map
+        val distribuertBrevResultat = frittståendeBrev.distribuerBrevResulat.map
 
         var resultat: Dødsbo? = null
+
         journalpostResultat.filter { (_, journalpostResultat) ->
-            journalpostResultat.journalpostId !in distribuerteJournalposter
+            journalpostResultat.journalpostId !in distribuertBrevResultat
         }.forEach { (personIdent, journalpostResultat) ->
+
             try {
-                distribuerBrevOgOppdaterVedtaksbrevResultat(journalpostResultat, behandlingId)
+                val bestillingId = distribuerBrev(journalpostResultat)
+
+                val oppdaterteDistribuerBrevResultat =
+                    frittståendeBrev.distribuerBrevResulat.map + mapOf(
+                        journalpostResultat.journalpostId to DistribuerBrevResultat(
+                            bestillingId
+                        )
+                    )
+                frittståendeBrev = frittståendeBrev.copy(
+                    distribuerBrevResulat = DistribuerBrevResultatMap(oppdaterteDistribuerBrevResultat)
+                )
+                frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
+                    frittståendeBrevId,
+                    frittståendeBrev.distribuerBrevResulat
+                )
             } catch (e: RessursException) {
                 val cause = e.cause
                 if (cause is HttpClientErrorException.Gone) {
@@ -67,17 +90,12 @@ class DistribuerFrittståendeBrevTask(
         return resultat ?: OK
     }
 
-    private fun distribuerBrevOgOppdaterVedtaksbrevResultat(
-        journalpostResultat: JournalpostResultat,
-        behandlingId: UUID
-    ) {
-        val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VEDTAK)
-        loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
-        iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
-            behandlingId,
-            journalpostResultat.journalpostId,
-            DistribuerVedtaksbrevResultat(bestillingId)
-        )
+    private fun distribuerBrev(
+        journalpostResultat: JournalpostResultat
+    ): String {
+        val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VIKTIG)
+        loggBrevDistribuert(journalpostResultat.journalpostId, bestillingId)
+        return bestillingId
     }
 
     private fun håndterDødsbo(task: Task, dødsbo: Dødsbo) {
@@ -91,18 +109,18 @@ class DistribuerFrittståendeBrevTask(
         }
     }
 
-    private fun hentFrittståendeBrev(frittståendeBrevId: UUID): Map<String, JournalpostResultat> {
+    private fun hentFrittståendeBrev(frittståendeBrevId: UUID): FrittståendeBrev {
         val frittståendeBrev = frittståendeBrevRepository.findByIdOrThrow(frittståendeBrevId)
-        if (frittståendeBrev.journalposter.isEmpty()) {
+        if (frittståendeBrev.journalpostResulat.map.isEmpty()) {
             error("Fant ingen journalpost for frittståendeBrev=$frittståendeBrevId")
         }
-        return frittståendeBrev.journalposter
+        return frittståendeBrev
     }
 
-    private fun loggBrevDistribuert(journalpostId: String, behandlingId: UUID, bestillingId: String) {
+    private fun loggBrevDistribuert(journalpostId: String, bestillingId: String) {
         logger.info(
-            "Distribuer vedtaksbrev journalpost=[$journalpostId] " +
-                "for behandling=[$behandlingId] med bestillingId=[$bestillingId]"
+            "Distribuer frittstående brev journalpost=[$journalpostId] " +
+                "med bestillingId=[$bestillingId]"
         )
     }
 
