@@ -1,14 +1,14 @@
 package no.nav.familie.ef.iverksett.brev
 
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
+import no.nav.familie.ef.iverksett.brev.domain.tilIdType
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.http.client.RessursException
-import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
 import no.nav.familie.kontrakter.felles.BrukerIdType
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.dokarkiv.AvsenderMottaker
@@ -189,9 +189,4 @@ class JournalførVedtaksbrevTask(
         const val TYPE = "journalførVedtaksbrev"
     }
 
-    private fun Brevmottaker.IdentType.tilIdType(): BrukerIdType =
-        when (this) {
-            Brevmottaker.IdentType.ORGANISASJONSNUMMER -> BrukerIdType.ORGNR
-            Brevmottaker.IdentType.PERSONIDENT -> BrukerIdType.FNR
-        }
 }

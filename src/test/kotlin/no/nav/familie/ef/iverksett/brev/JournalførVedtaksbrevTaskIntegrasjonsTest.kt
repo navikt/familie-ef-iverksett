@@ -5,11 +5,11 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.ServerTest
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottaker
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.config.JournalpostClientMock
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
-import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottaker
-import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer

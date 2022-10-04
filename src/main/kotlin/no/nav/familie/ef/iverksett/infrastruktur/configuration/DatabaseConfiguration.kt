@@ -2,16 +2,16 @@ package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.treeToValue
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
-import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksbrevResultatMap
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -122,12 +122,12 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
     }
 
     @WritingConverter
-    class VedtaksbrevResultatMapTilPGobjectConverter : DomainTilPGobjectConverter<VedtaksbrevResultatMap>()
+    class VedtaksbrevResultatMapTilPGobjectConverter : DomainTilPGobjectConverter<DistribuerBrevResultatMap>()
 
     @ReadingConverter
-    class PGobjectTilVedtaksbrevResultatMapConverter : Converter<PGobject, VedtaksbrevResultatMap> {
+    class PGobjectTilVedtaksbrevResultatMapConverter : Converter<PGobject, DistribuerBrevResultatMap> {
 
-        override fun convert(pGobject: PGobject): VedtaksbrevResultatMap {
+        override fun convert(pGobject: PGobject): DistribuerBrevResultatMap {
             return objectMapper.readValue(pGobject.value!!)
         }
     }

@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.infrastruktur.transformer
 
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottaker
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
-import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottaker
-import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.DelårsperiodeSkoleårSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer

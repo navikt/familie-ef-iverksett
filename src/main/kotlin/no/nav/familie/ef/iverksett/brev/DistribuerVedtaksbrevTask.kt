@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.brev
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
@@ -79,7 +79,7 @@ class DistribuerVedtaksbrevTask(
         iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
             behandlingId,
             journalpostResultat.journalpostId,
-            DistribuerVedtaksbrevResultat(bestillingId)
+            DistribuerBrevResultat(bestillingId)
         )
     }
 

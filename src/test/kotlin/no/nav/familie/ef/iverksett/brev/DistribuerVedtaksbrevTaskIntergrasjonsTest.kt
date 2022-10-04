@@ -3,8 +3,8 @@ package no.nav.familie.ef.iverksett.brev
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import no.nav.familie.ef.iverksett.ServerTest
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.config.JournalpostClientMock
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.prosessering.domene.Task
 import org.assertj.core.api.Assertions.assertThat

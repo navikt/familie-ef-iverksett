@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
@@ -60,7 +60,7 @@ internal class LagreIverksettResultatServiceTest : ServerTest() {
         tilstandRepositoryService.oppdaterDistribuerVedtaksbrevResultat(
             behandlingsId,
             "123",
-            DistribuerVedtaksbrevResultat(bestillingId = "12345")
+            DistribuerBrevResultat(bestillingId = "12345")
         )
     }
 
@@ -70,7 +70,7 @@ internal class LagreIverksettResultatServiceTest : ServerTest() {
             tilstandRepositoryService.oppdaterDistribuerVedtaksbrevResultat(
                 UUID.randomUUID(),
                 "123",
-                DistribuerVedtaksbrevResultat(bestillingId = journalpostId.toString())
+                DistribuerBrevResultat(bestillingId = journalpostId.toString())
             )
         }
     }
