@@ -108,7 +108,7 @@ internal class JournalførFrittståendeBrevTaskTest {
         assertThat(entries[0].key).isEqualTo("11")
         assertThat(entries[0].value.journalpostId).isEqualTo("tidligereOpprettetJournalpostId")
 
-        //nytt
+        // nytt
         assertThat(entries[1].key).isEqualTo("22")
         assertThat(entries[1].value.journalpostId).isEqualTo("2222")
     }
