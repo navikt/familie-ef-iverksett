@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
@@ -29,7 +30,6 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
-import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
 
 sealed class IverksettData {
 
@@ -243,14 +243,6 @@ data class TilbakekrevingMedVarsel(
     val varseltekst: String,
     val sumFeilutbetaling: BigDecimal?,
     val perioder: List<Datoperiode>?
-)
-
-data class Brevmottakere(val mottakere: List<Brevmottaker>)
-data class Brevmottaker(
-    val ident: String,
-    val navn: String,
-    val identType: BrevmottakerKontrakter.IdentType,
-    val mottakerRolle: BrevmottakerKontrakter.MottakerRolle
 )
 
 private class IverksettDeserializer : StdDeserializer<IverksettData>(IverksettData::class.java) {

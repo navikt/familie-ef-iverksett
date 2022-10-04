@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.iverksetting.tilstand
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
@@ -45,7 +45,7 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
     fun oppdaterDistribuerVedtaksbrevResultat(
         behandlingId: UUID,
         journalpostId: String,
-        distribuerVedtaksbrevResultat: DistribuerVedtaksbrevResultat
+        distribuerVedtaksbrevResultat: DistribuerBrevResultat
     ) {
         val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
         val oppdatert = iverksettResultat.copy(
@@ -54,7 +54,7 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
         iverksettResultatRepository.update(oppdatert)
     }
 
-    fun hentdistribuerVedtaksbrevResultat(behandlingId: UUID): Map<String, DistribuerVedtaksbrevResultat>? {
+    fun hentdistribuerVedtaksbrevResultat(behandlingId: UUID): Map<String, DistribuerBrevResultat>? {
         return iverksettResultatRepository.findByIdOrThrow(behandlingId).vedtaksbrevResultat.map
     }
 

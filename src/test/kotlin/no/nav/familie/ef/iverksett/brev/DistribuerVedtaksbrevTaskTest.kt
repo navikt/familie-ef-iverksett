@@ -4,8 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.Ressurs
@@ -38,7 +38,7 @@ internal class DistribuerVedtaksbrevTaskTest {
     internal fun `skal distribuere brev`() {
         val journalpostId = "123456789"
         val bestillingId = "111"
-        val distribuerVedtaksbrevResultat = slot<DistribuerVedtaksbrevResultat>()
+        val distribuerVedtaksbrevResultat = slot<DistribuerBrevResultat>()
 
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns mapOf(
             "123" to JournalpostResultat(
@@ -48,7 +48,7 @@ internal class DistribuerVedtaksbrevTaskTest {
         every { iverksettResultatService.hentTilbakekrevingResultat(behandlingId) } returns null
         every { journalpostClient.distribuerBrev(journalpostId, any()) } returns bestillingId
         every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null andThen mapOf(
-            journalpostId to DistribuerVedtaksbrevResultat(
+            journalpostId to DistribuerBrevResultat(
                 bestillingId
             )
         )
@@ -72,7 +72,7 @@ internal class DistribuerVedtaksbrevTaskTest {
     fun `skal distribuere brev med flere mottakere`() {
         val journalpostResultater = listOf(JournalpostResultat("123456789"), JournalpostResultat("987654321"))
         val bestillingIder = listOf("111", "222")
-        val distribuerVedtaksbrevResultatSlots = mutableListOf<DistribuerVedtaksbrevResultat>()
+        val distribuerVedtaksbrevResultatSlots = mutableListOf<DistribuerBrevResultat>()
 
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns mapOf(
             "1" to journalpostResultater[0],
@@ -99,7 +99,7 @@ internal class DistribuerVedtaksbrevTaskTest {
                 any()
             )
         }
-        assertThat(distribuerVedtaksbrevResultatSlots.containsAll(bestillingIder.map { DistribuerVedtaksbrevResultat(it) }))
+        assertThat(distribuerVedtaksbrevResultatSlots.containsAll(bestillingIder.map { DistribuerBrevResultat(it) }))
     }
 
     @Test
@@ -119,14 +119,14 @@ internal class DistribuerVedtaksbrevTaskTest {
             )
         val distribuerteJournalposter =
             mapOf(
-                journalpostResultater[identMottakerA]!!.journalpostId to DistribuerVedtaksbrevResultat(
+                journalpostResultater[identMottakerA]!!.journalpostId to DistribuerBrevResultat(
                     distribuertBestillingId
                 )
             )
         val ikkeDistrbuertJournalpostBestillingId = "ny bestillingId"
 
         val journalpostSlot = slot<String>()
-        val distribuerVedtaksbrevResultatSlot = slot<DistribuerVedtaksbrevResultat>()
+        val distribuerVedtaksbrevResultatSlot = slot<DistribuerBrevResultat>()
 
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns journalpostResultater
         every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns distribuerteJournalposter

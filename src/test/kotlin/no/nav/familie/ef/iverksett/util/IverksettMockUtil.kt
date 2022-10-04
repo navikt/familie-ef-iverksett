@@ -1,17 +1,18 @@
 package no.nav.familie.ef.iverksett.util
 
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
-import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
-import no.nav.familie.ef.iverksett.iverksetting.domene.DistribuerVedtaksbrevResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
@@ -20,7 +21,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksbrevResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
@@ -379,13 +379,13 @@ class IverksettResultatMockBuilder private constructor(
     val tilkjentYtelse: TilkjentYtelse,
     val oppdragResultat: OppdragResultat,
     val journalpostResultat: Map<String, JournalpostResultat>,
-    val vedtaksbrevResultat: Map<String, DistribuerVedtaksbrevResultat>
+    val vedtaksbrevResultat: Map<String, DistribuerBrevResultat>
 ) {
 
     data class Builder(
         var oppdragResultat: OppdragResultat? = null,
         var journalpostResultat: Map<String, JournalpostResultat> = mapOf(),
-        var vedtaksbrevResultat: Map<String, DistribuerVedtaksbrevResultat> = mapOf(),
+        var vedtaksbrevResultat: Map<String, DistribuerBrevResultat> = mapOf(),
         var tilbakekrevingResultat: TilbakekrevingResultat? = null
     ) {
 
@@ -398,7 +398,7 @@ class IverksettResultatMockBuilder private constructor(
             apply {
                 this.vedtaksbrevResultat =
                     mapOf(
-                        this.journalpostResultat!!.entries.first().value.journalpostId to DistribuerVedtaksbrevResultat(
+                        this.journalpostResultat!!.entries.first().value.journalpostId to DistribuerBrevResultat(
                             bestillingId = behandlingId.toString()
                         )
                     )
@@ -413,7 +413,7 @@ class IverksettResultatMockBuilder private constructor(
                 tilkjentYtelse,
                 oppdragResultat,
                 JournalpostResultatMap(journalpostResultat),
-                VedtaksbrevResultatMap(vedtaksbrevResultat),
+                DistribuerBrevResultatMap(vedtaksbrevResultat),
                 tilbakekrevingResultat
             )
     }

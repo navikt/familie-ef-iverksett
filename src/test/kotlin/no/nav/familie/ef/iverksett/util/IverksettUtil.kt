@@ -1,6 +1,6 @@
 package no.nav.familie.ef.iverksett.util
 
-import no.nav.familie.ef.iverksett.iverksetting.domene.Brevmottakere
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
