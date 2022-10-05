@@ -16,7 +16,6 @@ class BrevController(
     private val frittståendeBrevService: FrittståendeBrevService
 ) {
 
-    // TODO flytt til service og @trans
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(
         @RequestBody data: FrittståendeBrevDto,

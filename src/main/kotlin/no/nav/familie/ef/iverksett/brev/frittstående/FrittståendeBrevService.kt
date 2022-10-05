@@ -46,9 +46,9 @@ class FrittståendeBrevService(
             ),
             data.saksbehandlerIdent
         ).journalpostId
-
         try {
-            journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
+            val bestillingId = journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
+            logger.info("Sendt frittstående brev journalpost=$journalpostId bestillingId=$bestillingId")
         } catch (e: Exception) {
             logger.error("Feilet distribuering av $journalpostId")
             secureLogger.error("Feilet distribuering av $journalpostId", e)
