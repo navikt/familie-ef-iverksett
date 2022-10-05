@@ -1,24 +1,81 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
+import no.nav.familie.ef.iverksett.brev.JournalpostClient
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
-import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.ef.iverksett.brev.stønadstypeTilDokumenttype
+import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
+import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
+import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
+import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
+import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
+import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
+import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
+import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
 
 @Service
 class FrittståendeBrevService(
     private val frittståendeBrevRepository: FrittståendeBrevRepository,
-    private val taskService: TaskService
+    private val taskService: TaskService,
+    private val journalpostClient: JournalpostClient
 ) {
 
-    fun hentFrittståendeBrev(id: UUID) =
-        frittståendeBrevRepository.findByIdOrThrow(id)
+    private val logger = LoggerFactory.getLogger(javaClass)
+    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun oppdaterJournalpost(frittståendeBrev: FrittståendeBrev, journalpost: Map<String, String>) {
-        frittståendeBrevRepository.update(frittståendeBrev)
+    fun journalførOgDistribuerBrev(data: FrittståendeBrevDto) {
+        val journalpostId = journalpostClient.arkiverDokument(
+            ArkiverDokumentRequest(
+                fnr = data.personIdent,
+                forsøkFerdigstill = true,
+                hoveddokumentvarianter = listOf(
+                    Dokument(
+                        data.fil,
+                        Filtype.PDFA,
+                        dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
+                        tittel = data.brevtype.tittel
+                    )
+                ),
+                fagsakId = data.eksternFagsakId.toString(),
+                journalførendeEnhet = data.journalførendeEnhet
+            ),
+            data.saksbehandlerIdent
+        ).journalpostId
+
+        try {
+            journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
+        } catch (e: Exception) {
+            logger.error("Feilet distribuering av $journalpostId")
+            secureLogger.error("Feilet distribuering av $journalpostId", e)
+            // kaster ApiFeil som ikke logger då vi allerede logger feilet
+            throw ApiFeil("Feilet journalføring av $journalpostId", HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @Transactional
+    fun opprettTask(data: FrittståendeBrevDto) {
+        val mottakere = data.mottakere
+        if (mottakere == null || mottakere.isEmpty()) {
+            throw IllegalArgumentException("Liste med brevmottakere kan ikke være tom")
+        }
+
+        val brev = frittståendeBrevRepository.insert(
+            FrittståendeBrev(
+                personIdent = data.personIdent,
+                eksternFagsakId = data.eksternFagsakId,
+                journalførendeEnhet = data.journalførendeEnhet,
+                saksbehandlerIdent = data.saksbehandlerIdent,
+                stønadstype = data.stønadType,
+                mottakere = Brevmottakere(mottakere.map { it.toDomain() }),
+                fil = data.fil,
+                brevtype = data.brevtype
+            )
+        )
+        taskService.save(Task(JournalførFrittståendeBrevTask.TYPE, brev.id.toString()))
     }
 }

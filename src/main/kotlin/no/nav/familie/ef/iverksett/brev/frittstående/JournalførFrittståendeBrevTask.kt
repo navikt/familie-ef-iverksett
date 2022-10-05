@@ -41,20 +41,23 @@ class JournalførFrittståendeBrevTask(
             "Mottakere forventes å inneholde mottakere"
         }
 
-        frittståendeBrev.mottakere.mottakere
-            .forEachIndexed { index, brevmottaker ->
-                if (frittståendeBrev.journalpostResultat.map.containsKey(brevmottaker.ident)) {
-                    return@forEachIndexed
-                }
-                val journalpostId = journalpostClient.arkiverDokument(
-                    opprettArkiverDokumentRequest(frittståendeBrev, callId, index, brevmottaker),
-                    saksbehandler = frittståendeBrev.saksbehandlerIdent
-                ).journalpostId
-                val oppdatertJournalposter =
-                    frittståendeBrev.journalpostResultat.map + mapOf(brevmottaker.ident to JournalpostResultat(journalpostId))
-                frittståendeBrev = frittståendeBrev.copy(journalpostResultat = JournalpostResultatMap(oppdatertJournalposter))
-                frittståendeBrevRepository.oppdaterJournalpostResultat(frittståendeBrevId, frittståendeBrev.journalpostResultat)
+        frittståendeBrev.mottakere.mottakere.forEachIndexed { index, brevmottaker ->
+            if (frittståendeBrev.journalpostResultat.map.containsKey(brevmottaker.ident)) {
+                return@forEachIndexed
             }
+            val journalpostId = journalpostClient.arkiverDokument(
+                opprettArkiverDokumentRequest(frittståendeBrev, callId, index, brevmottaker),
+                saksbehandler = frittståendeBrev.saksbehandlerIdent
+            ).journalpostId
+            val oppdatertJournalposter =
+                frittståendeBrev.journalpostResultat.map + mapOf(brevmottaker.ident to JournalpostResultat(journalpostId))
+            frittståendeBrev =
+                frittståendeBrev.copy(journalpostResultat = JournalpostResultatMap(oppdatertJournalposter))
+            frittståendeBrevRepository.oppdaterJournalpostResultat(
+                frittståendeBrevId,
+                frittståendeBrev.journalpostResultat
+            )
+        }
     }
 
     override fun onCompletion(task: Task) {
