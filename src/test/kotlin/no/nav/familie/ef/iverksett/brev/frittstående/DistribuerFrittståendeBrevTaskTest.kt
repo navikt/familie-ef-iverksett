@@ -17,6 +17,7 @@ import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.RekjørSenereException
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
@@ -77,11 +78,11 @@ internal class DistribuerFrittståendeBrevTaskTest {
         val throwable = Assertions.catchThrowable {
             distribuerFrittståendeBrevTask.doTask(Task("", UUID.randomUUID().toString()))
         }
-        Assertions.assertThat(throwable).isInstanceOf(RekjørSenereException::class.java)
+        assertThat(throwable).isInstanceOf(RekjørSenereException::class.java)
         val rekjørSenereException = throwable as RekjørSenereException
-        Assertions.assertThat(rekjørSenereException.triggerTid)
+        assertThat(rekjørSenereException.triggerTid)
             .isBetween(LocalDateTime.now().plusDays(6), LocalDateTime.now().plusDays(8))
-        Assertions.assertThat(rekjørSenereException.årsak).startsWith("Dødsbo")
+        assertThat(rekjørSenereException.årsak).startsWith("Dødsbo")
 
         verify(exactly = 2) { journalpostClient.distribuerBrev(any(), Distribusjonstype.VIKTIG) }
         verify(exactly = 1) { frittståendeBrevRepository.oppdaterDistribuerBrevResultat(any(), any()) }
@@ -89,9 +90,9 @@ internal class DistribuerFrittståendeBrevTaskTest {
         val journalpostresultat = distribuerBrevResultatMapSlot.captured.map
         val entries = journalpostresultat.entries.toList()
 
-        Assertions.assertThat(entries).hasSize(1)
-        Assertions.assertThat(entries[0].key).isEqualTo("journalpostId2")
-        Assertions.assertThat(entries[0].value.bestillingId).isEqualTo("journalpostId2-bestillingId")
+        assertThat(entries).hasSize(1)
+        assertThat(entries[0].key).isEqualTo("journalpostId2")
+        assertThat(entries[0].value.bestillingId).isEqualTo("journalpostId2-bestillingId")
     }
 
     @Test
@@ -115,12 +116,12 @@ internal class DistribuerFrittståendeBrevTaskTest {
         val journalpostresultat = distribuerBrevResultatMapSlot.captured.map
         val entries = journalpostresultat.entries.toList()
 
-        Assertions.assertThat(entries).hasSize(2)
-        Assertions.assertThat(entries[0].key).isEqualTo("journalpostId1")
-        Assertions.assertThat(entries[0].value.bestillingId).isEqualTo("journalpostId1-bestillingId")
+        assertThat(entries).hasSize(2)
+        assertThat(entries[0].key).isEqualTo("journalpostId1")
+        assertThat(entries[0].value.bestillingId).isEqualTo("journalpostId1-bestillingId")
 
-        Assertions.assertThat(entries[1].key).isEqualTo("journalpostId2")
-        Assertions.assertThat(entries[1].value.bestillingId).isEqualTo("journalpostId2-bestillingId")
+        assertThat(entries[1].key).isEqualTo("journalpostId2")
+        assertThat(entries[1].value.bestillingId).isEqualTo("journalpostId2-bestillingId")
     }
 
     @Test
@@ -147,9 +148,9 @@ internal class DistribuerFrittståendeBrevTaskTest {
         val distribuerBrevResultat = distribuerBrevResultatMapSlot.captured.map
         val entries = distribuerBrevResultat.entries.toList()
 
-        Assertions.assertThat(entries).hasSize(1)
-        Assertions.assertThat(entries[0].key).isEqualTo("journalpostId1")
-        Assertions.assertThat(entries[0].value.bestillingId).isEqualTo("journalpostId1-bestillingId")
+        assertThat(entries).hasSize(1)
+        assertThat(entries[0].key).isEqualTo("journalpostId1")
+        assertThat(entries[0].value.bestillingId).isEqualTo("journalpostId1-bestillingId")
     }
 
     @Test
@@ -176,15 +177,15 @@ internal class DistribuerFrittståendeBrevTaskTest {
         val distribuerBrevResultatMapSlot = distribuerBrevResultatMapSlot.captured.map
         val entries = distribuerBrevResultatMapSlot.entries.toList()
 
-        Assertions.assertThat(journalpostIdSlot).hasSize(1)
-        Assertions.assertThat(journalpostIdSlot[0]).isEqualTo("journalpostId2")
+        assertThat(journalpostIdSlot).hasSize(1)
+        assertThat(journalpostIdSlot[0]).isEqualTo("journalpostId2")
 
-        Assertions.assertThat(entries).hasSize(2)
-        Assertions.assertThat(entries[0].key).isEqualTo("tidligereDistribuertJournalpost")
-        Assertions.assertThat(entries[0].value.bestillingId).isEqualTo("alleredeDistribuertBestillingId")
+        assertThat(entries).hasSize(2)
+        assertThat(entries[0].key).isEqualTo("tidligereDistribuertJournalpost")
+        assertThat(entries[0].value.bestillingId).isEqualTo("alleredeDistribuertBestillingId")
 
-        Assertions.assertThat(entries[1].key).isEqualTo("journalpostId2")
-        Assertions.assertThat(entries[1].value.bestillingId).isEqualTo("journalpostId2-bestillingId")
+        assertThat(entries[1].key).isEqualTo("journalpostId2")
+        assertThat(entries[1].value.bestillingId).isEqualTo("journalpostId2-bestillingId")
     }
 
     private fun ressursExceptionGone() =

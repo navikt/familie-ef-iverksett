@@ -3,7 +3,6 @@ package no.nav.familie.ef.iverksett.brev
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevRepository
 import no.nav.familie.ef.iverksett.brev.frittstående.JournalførFrittståendeBrevTask
-// import no.nav.familie.ef.iverksett.brev.frittstående.JournalførFrittståendeBrevTask
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
