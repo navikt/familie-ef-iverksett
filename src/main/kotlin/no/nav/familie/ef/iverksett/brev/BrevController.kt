@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.brev
 
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevRepository
 import no.nav.familie.ef.iverksett.brev.frittstående.JournalførFrittståendeBrevTask
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
 
 @RestController
 @RequestMapping(path = ["/api/brev"])
@@ -31,13 +31,12 @@ class BrevController(
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(
         @RequestBody data: FrittståendeBrevDto,
-        mottakere: List<BrevmottakerKontrakter>? // TODO flytt til dto
     ): ResponseEntity<Any> {
 
-        if (mottakere == null) {
+        if (data.mottakere == null) {
             journalførOgDistribuerBrev(data)
         } else {
-            opprettTask(data, mottakere)
+            opprettTask(data)
         }
 
         return ResponseEntity.ok().build()
@@ -65,12 +64,10 @@ class BrevController(
         journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
     }
 
-    private fun opprettTask(
-        data: FrittståendeBrevDto,
-        mottakere: List<no.nav.familie.kontrakter.ef.iverksett.Brevmottaker>
-    ) {
-        require(mottakere.isNotEmpty()){
-            "Liste med brevmottakere kan ikke være tom"
+    private fun opprettTask(data: FrittståendeBrevDto) {
+        val mottakere = data.mottakere
+        if(mottakere == null || mottakere.isEmpty()) {
+            throw IllegalArgumentException("Liste med brevmottakere kan ikke være tom")
         }
 
         val brev = frittståendeBrevRepository.insert(
@@ -80,7 +77,7 @@ class BrevController(
                 journalførendeEnhet = data.journalførendeEnhet,
                 saksbehandlerIdent = data.saksbehandlerIdent,
                 stønadstype = data.stønadType,
-                mottakere = mottakere.toDomain(),
+                mottakere = Brevmottakere(mottakere.map { it.toDomain() }),
                 fil = data.fil,
                 brevtype = data.brevtype
             )
