@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.treeToValue
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
@@ -57,7 +58,9 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
                 TilbakekrevingResultatTilPGobjectConverter(),
                 PGobjectTilTilbakekrevingResultatConverter(),
                 IverksettDataTilPGobjectConverter(),
-                PGobjectConverterTilIverksettData()
+                PGobjectConverterTilIverksettData(),
+                BrevmottakereTilStringConverter(),
+                StringTilBrevmottakereConverter()
             )
         )
     }
@@ -157,6 +160,24 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
     class StringTilBehandlingDVHConverter : Converter<PGobject, BehandlingDVH> {
 
         override fun convert(pgObject: PGobject): BehandlingDVH {
+            return objectMapper.readValue(pgObject.value!!)
+        }
+    }
+
+    @WritingConverter
+    class BrevmottakereTilStringConverter : Converter<Brevmottakere, PGobject> {
+
+        override fun convert(data: Brevmottakere): PGobject =
+            PGobject().apply {
+                type = "json"
+                value = objectMapper.writeValueAsString(data)
+            }
+    }
+
+    @ReadingConverter
+    class StringTilBrevmottakereConverter : Converter<PGobject, Brevmottakere> {
+
+        override fun convert(pgObject: PGobject): Brevmottakere {
             return objectMapper.readValue(pgObject.value!!)
         }
     }

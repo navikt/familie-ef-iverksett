@@ -181,18 +181,15 @@ fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel {
     )
 }
 
-fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere {
-    return Brevmottakere(
-        mottakere = this.map {
-            Brevmottaker(
-                ident = it.ident,
-                navn = it.navn,
-                identType = it.identType,
-                mottakerRolle = it.mottakerRolle
-            )
-        }
-    )
-}
+fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere =
+    Brevmottakere(mottakere = this.map {it.toDomain()})
+
+fun BrevmottakerKontrakter.toDomain(): Brevmottaker = Brevmottaker(
+    ident = this.ident,
+    navn = this.navn,
+    identType = this.identType,
+    mottakerRolle = this.mottakerRolle
+)
 
 fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
     PeriodeMedBeløp(
