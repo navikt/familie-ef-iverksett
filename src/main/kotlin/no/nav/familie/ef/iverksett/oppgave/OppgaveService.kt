@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseRevurde
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -97,7 +98,7 @@ class OppgaveService(
         if (forrigeBehandling !is IverksettOvergangsstønad) {
             error("Forrige behandling er av annen type=${forrigeBehandling::class.java.simpleName}")
         }
-        if (forrigeBehandling.erMigrering()) {
+        if (forrigeBehandling.gjeldendeVedtak().periodeType == VedtaksperiodeType.MIGRERING) {
             return false
         }
         if (forrigeBehandling.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT) {
@@ -106,11 +107,17 @@ class OppgaveService(
         return harEndretAktivitet(iverksett, forrigeBehandling) || harEndretPeriode(iverksett, forrigeBehandling)
     }
 
-    private fun harEndretAktivitet(iverksett: IverksettOvergangsstønad, forrigeBehandling: IverksettOvergangsstønad): Boolean {
+    private fun harEndretAktivitet(
+        iverksett: IverksettOvergangsstønad,
+        forrigeBehandling: IverksettOvergangsstønad
+    ): Boolean {
         return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
     }
 
-    private fun harEndretPeriode(iverksett: IverksettOvergangsstønad, forrigeBehandling: IverksettOvergangsstønad): Boolean {
+    private fun harEndretPeriode(
+        iverksett: IverksettOvergangsstønad,
+        forrigeBehandling: IverksettOvergangsstønad
+    ): Boolean {
         return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
     }
 
