@@ -19,9 +19,6 @@ spec:
       application: familie-ef-iverksett
       access: read
     - team: teamfamilie
-      application: familie-ba-mottak
-      access: read
-    - team: teamfamilie
       application: familie-baks-mottak
       access: read
     - team: teamfamilie
