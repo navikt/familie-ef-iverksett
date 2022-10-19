@@ -98,11 +98,11 @@ class OppgaveService(
         if (forrigeBehandling !is IverksettOvergangsstønad) {
             error("Forrige behandling er av annen type=${forrigeBehandling::class.java.simpleName}")
         }
-        if (forrigeBehandling.gjeldendeVedtak().periodeType == VedtaksperiodeType.MIGRERING) {
-            return false
-        }
         if (forrigeBehandling.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT) {
             return true
+        }
+        if (forrigeBehandling.gjeldendeVedtak().periodeType == VedtaksperiodeType.MIGRERING) {
+            return false
         }
         return harEndretAktivitet(iverksett, forrigeBehandling) || harEndretPeriode(iverksett, forrigeBehandling)
     }
