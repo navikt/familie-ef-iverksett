@@ -90,11 +90,15 @@ class JournalførFrittståendeBrevTask(
         frittståendeBrev: FrittståendeBrev,
         brevmottaker: Brevmottaker
     ) =
-        if (frittståendeBrev.personIdent != brevmottaker.ident) AvsenderMottaker(
-            brevmottaker.ident,
-            brevmottaker.identType.tilIdType(),
-            brevmottaker.navn
-        ) else null
+        if (frittståendeBrev.personIdent != brevmottaker.ident) {
+            AvsenderMottaker(
+                brevmottaker.ident,
+                brevmottaker.identType.tilIdType(),
+                brevmottaker.navn
+            )
+        } else {
+            null
+        }
 
     companion object {
 

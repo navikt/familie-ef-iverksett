@@ -182,7 +182,7 @@ fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel {
 }
 
 fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere =
-    Brevmottakere(mottakere = this.map {it.toDomain()})
+    Brevmottakere(mottakere = this.map { it.toDomain() })
 
 fun BrevmottakerKontrakter.toDomain(): Brevmottaker = Brevmottaker(
     ident = this.ident,

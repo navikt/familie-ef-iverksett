@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
-import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import org.springframework.data.annotation.Id

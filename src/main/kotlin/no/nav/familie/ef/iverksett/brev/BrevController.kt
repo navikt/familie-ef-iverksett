@@ -18,7 +18,7 @@ class BrevController(
 
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(
-        @RequestBody data: FrittståendeBrevDto,
+        @RequestBody data: FrittståendeBrevDto
     ): ResponseEntity<Any> {
         if (data.mottakere == null) {
             frittståendeBrevService.journalførOgDistribuerBrev(data)
