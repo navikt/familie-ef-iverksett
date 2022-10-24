@@ -61,7 +61,6 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal hoppe over personer som er døde men feile tasken`() {
-
         val dødJournalpostId = "dødPersonJournalpostId"
         every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
             journalpostResultat = JournalpostResultatMap(
@@ -97,7 +96,6 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal distribuere frittstående brev med en mottaker`() {
-
         every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
             journalpostResultat = JournalpostResultatMap(
                 mapOf(
@@ -126,7 +124,6 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal ikke legge inn distribuerBrevResultat som feiler og skal feile tasken`() {
-
         every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
             journalpostResultat = JournalpostResultatMap(
                 mapOf(

@@ -2,9 +2,9 @@ package no.nav.familie.ef.iverksett.util
 
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
+import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
-import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev

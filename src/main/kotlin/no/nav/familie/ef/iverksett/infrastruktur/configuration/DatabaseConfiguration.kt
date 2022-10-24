@@ -3,8 +3,8 @@ package no.nav.familie.ef.iverksett.infrastruktur.configuration
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.treeToValue
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
-import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
+import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData

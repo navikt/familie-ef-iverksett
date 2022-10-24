@@ -188,5 +188,4 @@ class JournalførVedtaksbrevTask(
 
         const val TYPE = "journalførVedtaksbrev"
     }
-
 }
