@@ -5,12 +5,14 @@ import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.brev.BrevdistribusjonConflictExceptionResponseBody
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevUtil.opprettFrittståendeBrev
+import no.nav.familie.ef.iverksett.vedtakstatistikk.toJson
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
@@ -57,6 +59,27 @@ internal class DistribuerFrittståendeBrevTaskTest {
                 capture(distribuerBrevResultatMapSlot)
             )
         }
+    }
+
+    @Test
+    internal fun `skal ferdigstille task med bestillingsid ved Conflict exception`() {
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
+            journalpostResultat = JournalpostResultatMap(
+                mapOf(
+                    "222" to JournalpostResultat("journalpostId2")
+                )
+            )
+        )
+
+        mockDistribuerBrev()
+        every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionConflict("DetteErbestillingsId")
+
+        distribuerFrittståendeBrevTask.doTask((Task("", UUID.randomUUID().toString())))
+
+        val distribuerBrevResultatMapSlot = distribuerBrevResultatMapSlot.captured.map
+        val entries = distribuerBrevResultatMapSlot.entries.toList()
+
+        assertThat(entries[0].value.bestillingId).isEqualTo("DetteErbestillingsId")
     }
 
     @Test
@@ -189,5 +212,19 @@ internal class DistribuerFrittståendeBrevTaskTest {
         RessursException(
             Ressurs.failure(""),
             HttpClientErrorException.create(HttpStatus.GONE, "", HttpHeaders(), byteArrayOf(), null)
+        )
+
+    private fun ressursExceptionConflict(bestillingsId: String) =
+        RessursException(
+            Ressurs.failure(""),
+            HttpClientErrorException.create(
+                HttpStatus.CONFLICT,
+                "",
+                HttpHeaders(),
+                BrevdistribusjonConflictExceptionResponseBody(
+                    bestillingsId
+                ).toJson().toByteArray(),
+                null
+            )
         )
 }

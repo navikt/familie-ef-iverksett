@@ -1,12 +1,14 @@
 package no.nav.familie.ef.iverksett.brev
 
 import io.mockk.every
+import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
+import no.nav.familie.ef.iverksett.vedtakstatistikk.toJson
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.prosessering.domene.Loggtype
@@ -66,6 +68,37 @@ internal class DistribuerVedtaksbrevTaskTest {
         verify(exactly = 1) { iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(behandlingId, any(), any()) }
         assertThat(distribuerVedtaksbrevResultat.captured.bestillingId).isEqualTo(bestillingId)
         assertThat(distribuerVedtaksbrevResultat.captured.dato).isNotNull()
+    }
+
+    @Test
+    internal fun `skal oppdatere resultat med bestillingId når vi får exeption av type conflict - brev distribuert tidligere `() {
+        val journalpostId = "123456789"
+        val bestillingId = "111"
+        val distribuerVedtaksbrevResultat = slot<DistribuerBrevResultat>()
+
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns mapOf(
+            "123" to JournalpostResultat(
+                journalpostId
+            )
+        )
+        every { iverksettResultatService.hentTilbakekrevingResultat(behandlingId) } returns null
+        val bestillingsIdFraConflictException = "BestillingsId"
+        every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionConflict(bestillingsIdFraConflictException)
+        every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null andThen mapOf(
+            journalpostId to DistribuerBrevResultat(
+                bestillingId
+            )
+        )
+        justRun {
+            iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
+                behandlingId,
+                any(),
+                capture(distribuerVedtaksbrevResultat)
+            )
+        }
+        distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
+
+        assertThat(distribuerVedtaksbrevResultat.captured.bestillingId).isEqualTo(bestillingsIdFraConflictException)
     }
 
     @Test
@@ -211,5 +244,19 @@ internal class DistribuerVedtaksbrevTaskTest {
         RessursException(
             Ressurs.failure(""),
             HttpClientErrorException.create(HttpStatus.GONE, "", HttpHeaders(), byteArrayOf(), null)
+        )
+
+    private fun ressursExceptionConflict(bestillingsId: String) =
+        RessursException(
+            Ressurs.failure(""),
+            HttpClientErrorException.create(
+                HttpStatus.CONFLICT,
+                "",
+                HttpHeaders(),
+                BrevdistribusjonConflictExceptionResponseBody(
+                    bestillingsId
+                ).toJson().toByteArray(),
+                null
+            )
         )
 }
