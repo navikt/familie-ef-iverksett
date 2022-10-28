@@ -38,6 +38,7 @@ class DistribuerFrittståendeBrevTask(
 ) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     private sealed class Resultat
     private object OK : Resultat()
@@ -77,18 +78,26 @@ class DistribuerFrittståendeBrevTask(
                     resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
                 } else if (cause is HttpClientErrorException.Conflict) {
                     logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} ")
-                    frittståendeBrev = with(objectMapper.readValue<Brevdistribusjonskonflikt>(cause.responseBodyAsString)) {
-                        val frittståendeBrevOppdatert = oppdaterFrittståendeBrev(
-                            frittståendeBrev,
-                            journalpostResultat,
-                            bestillingsId
-                        )
-                        frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
-                            frittståendeBrevId,
-                            frittståendeBrevOppdatert.distribuerBrevResultat
-                        )
-                        frittståendeBrevOppdatert
-                    }
+                    //TODO fjern logging brukt for debugging
+                    secureLogger.warn("Conflict: Distribuering av frittstående brev e: $e ")
+                    secureLogger.warn("Conflict: Distribuering av frittstående brev cause: $cause ")
+                    secureLogger.warn("Conflict: Distribuering av frittstående brev cause.responseBodyAsString ${cause.responseBodyAsString} ")
+                    secureLogger.warn("Conflict: Distribuering av frittstående e.ressurs ${e.ressurs} ")
+                    secureLogger.warn("Conflict: Distribuering av frittstående e.ressurs.data ${e.ressurs.data} ")
+
+                    throw e
+//                    frittståendeBrev = with(objectMapper.readValue<Brevdistribusjonskonflikt>(e.cause.)) {
+//                        val frittståendeBrevOppdatert = oppdaterFrittståendeBrev(
+//                            frittståendeBrev,
+//                            journalpostResultat,
+//                            bestillingsId
+//                        )
+//                        frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
+//                            frittståendeBrevId,
+//                            frittståendeBrevOppdatert.distribuerBrevResultat
+//                        )
+//                        frittståendeBrevOppdatert
+//                    }
                 } else {
                     throw e
                 }
