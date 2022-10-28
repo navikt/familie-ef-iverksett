@@ -74,25 +74,16 @@ class DistribuerFrittståendeBrevTask(
                 if (cause is HttpClientErrorException.Gone) {
                     resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
                 } else if (cause is HttpClientErrorException.Conflict) {
-                    logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} ")
-                    // TODO fjern logging brukt for debugging
-
-                    secureLogger.warn("Conflict: Distribuering av frittstående e.ressurs.data ${e.ressurs.data} ")
-                    secureLogger.warn("Conflict: Distribuering av frittstående e.ressurs ${e.ressurs} ")
-
-                    throw e
-//                    frittståendeBrev = with(objectMapper.readValue<Brevdistribusjonskonflikt>(e.cause.)) {
-//                        val frittståendeBrevOppdatert = oppdaterFrittståendeBrev(
-//                            frittståendeBrev,
-//                            journalpostResultat,
-//                            bestillingsId
-//                        )
-//                        frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
-//                            frittståendeBrevId,
-//                            frittståendeBrevOppdatert.distribuerBrevResultat
-//                        )
-//                        frittståendeBrevOppdatert
-//                    }
+                    logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.melding}")
+                    frittståendeBrev = oppdaterFrittståendeBrev(
+                            frittståendeBrev,
+                            journalpostResultat,
+                            e.ressurs.melding // TODO oppdater med "noe". Denne er ferdig
+                        )
+                        frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
+                            frittståendeBrevId,
+                            frittståendeBrev.distribuerBrevResultat
+                        )
                 } else {
                     throw e
                 }

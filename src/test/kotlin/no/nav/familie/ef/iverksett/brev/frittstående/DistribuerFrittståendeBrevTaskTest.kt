@@ -20,12 +20,12 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.RekjørSenereException
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.HttpClientErrorException
 import java.time.LocalDateTime
 import java.util.UUID
@@ -81,7 +81,7 @@ internal class DistribuerFrittståendeBrevTaskTest {
 //        val distribuerBrevResultatMapSlot = distribuerBrevResultatMapSlot.captured.map
 //        val entries = distribuerBrevResultatMapSlot.entries.toList()
 //
-//        assertThat(entries[0].value.bestillingId).isEqualTo("DetteErbestillingsId")
+//        assertThat(entries[0].value.bestillingId).contains("DetteErbestillingsId")
     }
 
     @Test
@@ -216,17 +216,21 @@ internal class DistribuerFrittståendeBrevTaskTest {
             HttpClientErrorException.create(HttpStatus.GONE, "", HttpHeaders(), byteArrayOf(), null)
         )
 
-    private fun ressursExceptionConflict(bestillingsId: String) =
-        RessursException(
-            Ressurs.failure(""),
-            HttpClientErrorException.create(
+    private fun ressursExceptionConflict(bestillingsId: String): RessursException {
+        val e = HttpClientErrorException.create(
                 HttpStatus.CONFLICT,
                 "",
                 HttpHeaders(),
                 Brevdistribusjonskonflikt(
-                    bestillingsId
+                        bestillingsId
                 ).toJson().toByteArray(),
                 null
-            )
         )
+
+        return RessursException(
+                Ressurs.failure(e.message, error = e),
+                e
+        )
+    }
+
 }
