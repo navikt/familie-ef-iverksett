@@ -68,8 +68,8 @@ class DistribuerFrittståendeBrevTask(
                 val bestillingId = distribuerBrev(journalpostResultat)
                 frittståendeBrev = oppdaterFrittståendeBrev(frittståendeBrev, journalpostResultat, bestillingId)
                 frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
-                        frittståendeBrevId,
-                        frittståendeBrev.distribuerBrevResultat
+                    frittståendeBrevId,
+                    frittståendeBrev.distribuerBrevResultat
                 )
             } catch (e: RessursException) {
                 val cause = e.cause
@@ -78,12 +78,14 @@ class DistribuerFrittståendeBrevTask(
                 } else if (cause is HttpClientErrorException.Conflict) {
                     logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} ")
                     frittståendeBrev = with(objectMapper.readValue<Brevdistribusjonskonflikt>(cause.responseBodyAsString)) {
-                        val frittståendeBrevOppdatert = oppdaterFrittståendeBrev(frittståendeBrev,
-                                                                                 journalpostResultat,
-                                                                                 bestillingsId)
+                        val frittståendeBrevOppdatert = oppdaterFrittståendeBrev(
+                            frittståendeBrev,
+                            journalpostResultat,
+                            bestillingsId
+                        )
                         frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
-                                frittståendeBrevId,
-                                frittståendeBrevOppdatert.distribuerBrevResultat
+                            frittståendeBrevId,
+                            frittståendeBrevOppdatert.distribuerBrevResultat
                         )
                         frittståendeBrevOppdatert
                     }
