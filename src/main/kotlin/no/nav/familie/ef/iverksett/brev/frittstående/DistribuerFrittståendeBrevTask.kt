@@ -1,7 +1,5 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
-import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.familie.ef.iverksett.brev.Brevdistribusjonskonflikt
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
@@ -10,7 +8,6 @@ import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
-import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Loggtype
@@ -78,7 +75,7 @@ class DistribuerFrittståendeBrevTask(
                     resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
                 } else if (cause is HttpClientErrorException.Conflict) {
                     logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} ")
-                    //TODO fjern logging brukt for debugging
+                    // TODO fjern logging brukt for debugging
                     secureLogger.warn("Conflict: Distribuering av frittstående brev e: $e ")
                     secureLogger.warn("Conflict: Distribuering av frittstående brev cause: $cause ")
                     secureLogger.warn("Conflict: Distribuering av frittstående brev cause.responseBodyAsString ${cause.responseBodyAsString} ")
