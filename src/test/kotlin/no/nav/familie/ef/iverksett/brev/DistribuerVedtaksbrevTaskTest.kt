@@ -253,7 +253,7 @@ internal class DistribuerVedtaksbrevTaskTest {
                 HttpStatus.CONFLICT,
                 "",
                 HttpHeaders(),
-                BrevdistribusjonConflictExceptionResponseBody(
+                Brevdistribusjonskonflikt(
                     bestillingsId
                 ).toJson().toByteArray(),
                 null

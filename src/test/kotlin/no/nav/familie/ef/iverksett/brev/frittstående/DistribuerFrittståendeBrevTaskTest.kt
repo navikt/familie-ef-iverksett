@@ -5,7 +5,7 @@ import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.brev.BrevdistribusjonConflictExceptionResponseBody
+import no.nav.familie.ef.iverksett.brev.Brevdistribusjonskonflikt
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
@@ -221,7 +221,7 @@ internal class DistribuerFrittståendeBrevTaskTest {
                 HttpStatus.CONFLICT,
                 "",
                 HttpHeaders(),
-                BrevdistribusjonConflictExceptionResponseBody(
+                Brevdistribusjonskonflikt(
                     bestillingsId
                 ).toJson().toByteArray(),
                 null

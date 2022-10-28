@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.familie.ef.iverksett.brev.BrevdistribusjonConflictExceptionResponseBody
+import no.nav.familie.ef.iverksett.brev.Brevdistribusjonskonflikt
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
@@ -66,42 +66,33 @@ class DistribuerFrittståendeBrevTask(
         }.forEach { (personIdent, journalpostResultat) ->
             try {
                 val bestillingId = distribuerBrev(journalpostResultat)
-                frittståendeBrev = lagreEndringerPåDistribuerbrevResultat(frittståendeBrev, journalpostResultat, bestillingId, frittståendeBrevId)
+                frittståendeBrev = oppdaterFrittståendeBrev(frittståendeBrev, journalpostResultat, bestillingId)
+                frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
+                        frittståendeBrevId,
+                        frittståendeBrev.distribuerBrevResultat
+                )
             } catch (e: RessursException) {
                 val cause = e.cause
                 if (cause is HttpClientErrorException.Gone) {
                     resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
                 } else if (cause is HttpClientErrorException.Conflict) {
                     logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} ")
-                    with(objectMapper.readValue<BrevdistribusjonConflictExceptionResponseBody>(cause.responseBodyAsString)) {
-                        lagreEndringerPåDistribuerbrevResultat(
-                            frittståendeBrev,
-                            journalpostResultat,
-                            bestillingsId,
-                            frittståendeBrevId
+                    frittståendeBrev = with(objectMapper.readValue<Brevdistribusjonskonflikt>(cause.responseBodyAsString)) {
+                        val frittståendeBrevOppdatert = oppdaterFrittståendeBrev(frittståendeBrev,
+                                                                                 journalpostResultat,
+                                                                                 bestillingsId)
+                        frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
+                                frittståendeBrevId,
+                                frittståendeBrevOppdatert.distribuerBrevResultat
                         )
+                        frittståendeBrevOppdatert
                     }
-                    return OK
                 } else {
                     throw e
                 }
             }
         }
         return resultat ?: OK
-    }
-
-    private fun lagreEndringerPåDistribuerbrevResultat(
-        frittståendeBrev: FrittståendeBrev,
-        journalpostResultat: JournalpostResultat,
-        bestillingId: String,
-        frittståendeBrevId: UUID
-    ): FrittståendeBrev {
-        val frittståendeBrevOppdatert = oppdaterFrittståendeBrev(frittståendeBrev, journalpostResultat, bestillingId)
-        frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
-                frittståendeBrevId,
-                frittståendeBrevOppdatert.distribuerBrevResultat
-        )
-        return frittståendeBrevOppdatert
     }
 
     private fun oppdaterFrittståendeBrev(
