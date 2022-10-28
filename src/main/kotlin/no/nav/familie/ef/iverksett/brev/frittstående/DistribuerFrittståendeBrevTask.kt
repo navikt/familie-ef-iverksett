@@ -76,11 +76,9 @@ class DistribuerFrittståendeBrevTask(
                 } else if (cause is HttpClientErrorException.Conflict) {
                     logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} ")
                     // TODO fjern logging brukt for debugging
-                    secureLogger.warn("Conflict: Distribuering av frittstående brev e: $e ")
-                    secureLogger.warn("Conflict: Distribuering av frittstående brev cause: $cause ")
-                    secureLogger.warn("Conflict: Distribuering av frittstående brev cause.responseBodyAsString ${cause.responseBodyAsString} ")
-                    secureLogger.warn("Conflict: Distribuering av frittstående e.ressurs ${e.ressurs} ")
+
                     secureLogger.warn("Conflict: Distribuering av frittstående e.ressurs.data ${e.ressurs.data} ")
+                    secureLogger.warn("Conflict: Distribuering av frittstående e.ressurs ${e.ressurs} ")
 
                     throw e
 //                    frittståendeBrev = with(objectMapper.readValue<Brevdistribusjonskonflikt>(e.cause.)) {
