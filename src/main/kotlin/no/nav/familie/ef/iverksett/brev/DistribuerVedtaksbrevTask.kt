@@ -1,12 +1,10 @@
 package no.nav.familie.ef.iverksett.brev
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
-import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Loggtype
@@ -82,7 +80,7 @@ class DistribuerVedtaksbrevTask(
             val cause = e.cause
             if (cause is HttpClientErrorException.Conflict) {
                 logger.warn("Conflict: distribuering av brev allerede utført for journalpost: ${journalpostResultat.journalpostId}")
-                objectMapper.readValue<Brevdistribusjonskonflikt>(cause.responseBodyAsString).bestillingsId
+                e.ressurs.melding
             } else {
                 throw e
             }

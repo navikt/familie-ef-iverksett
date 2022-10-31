@@ -5,7 +5,6 @@ import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.brev.Brevdistribusjonskonflikt
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
@@ -25,7 +24,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.client.HttpClientErrorException
 import java.time.LocalDateTime
 import java.util.UUID
@@ -64,24 +62,23 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal ferdigstille task med bestillingsid ved Conflict exception`() {
-        // TODO kommenter inn test når teting er ferdig! (mattis)
-//        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
-//            journalpostResultat = JournalpostResultatMap(
-//                mapOf(
-//                    "222" to JournalpostResultat("journalpostId2")
-//                )
-//            )
-//        )
-//
-//        mockDistribuerBrev()
-//        every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionConflict("DetteErbestillingsId")
-//
-//        distribuerFrittståendeBrevTask.doTask((Task("", UUID.randomUUID().toString())))
-//
-//        val distribuerBrevResultatMapSlot = distribuerBrevResultatMapSlot.captured.map
-//        val entries = distribuerBrevResultatMapSlot.entries.toList()
-//
-//        assertThat(entries[0].value.bestillingId).contains("DetteErbestillingsId")
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
+            journalpostResultat = JournalpostResultatMap(
+                mapOf(
+                    "222" to JournalpostResultat("journalpostId2")
+                )
+            )
+        )
+
+        mockDistribuerBrev()
+        every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionConflict("DetteErbestillingsId")
+
+        distribuerFrittståendeBrevTask.doTask((Task("", UUID.randomUUID().toString())))
+
+        val distribuerBrevResultatMapSlot = distribuerBrevResultatMapSlot.captured.map
+        val entries = distribuerBrevResultatMapSlot.entries.toList()
+
+        assertThat(entries[0].value.bestillingId).contains("DetteErbestillingsId")
     }
 
     @Test
@@ -218,19 +215,16 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     private fun ressursExceptionConflict(bestillingsId: String): RessursException {
         val e = HttpClientErrorException.create(
-                HttpStatus.CONFLICT,
-                "",
-                HttpHeaders(),
-                Brevdistribusjonskonflikt(
-                        bestillingsId
-                ).toJson().toByteArray(),
-                null
+            HttpStatus.CONFLICT,
+            "",
+            HttpHeaders(),
+            bestillingsId.toByteArray(),
+            null
         )
 
         return RessursException(
-                Ressurs.failure(e.message, error = e),
-                e
+            Ressurs.failure(errorMessage = bestillingsId, error = e),
+            e
         )
     }
-
 }

@@ -76,14 +76,14 @@ class DistribuerFrittståendeBrevTask(
                 } else if (cause is HttpClientErrorException.Conflict) {
                     logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.melding}")
                     frittståendeBrev = oppdaterFrittståendeBrev(
-                            frittståendeBrev,
-                            journalpostResultat,
-                            e.ressurs.melding // TODO oppdater med "noe". Denne er ferdig
-                        )
-                        frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
-                            frittståendeBrevId,
-                            frittståendeBrev.distribuerBrevResultat
-                        )
+                        frittståendeBrev,
+                        journalpostResultat,
+                        e.ressurs.melding // TODO oppdater med "noe". Denne er ferdig
+                    )
+                    frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
+                        frittståendeBrevId,
+                        frittståendeBrev.distribuerBrevResultat
+                    )
                 } else {
                     throw e
                 }
