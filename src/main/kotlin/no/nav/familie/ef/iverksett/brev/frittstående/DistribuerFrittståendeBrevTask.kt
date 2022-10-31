@@ -78,7 +78,7 @@ class DistribuerFrittståendeBrevTask(
                     frittståendeBrev = oppdaterFrittståendeBrev(
                         frittståendeBrev,
                         journalpostResultat,
-                        e.ressurs.melding // TODO oppdater med "noe". Denne er ferdig
+                        e.ressurs.melding
                     )
                     frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
                         frittståendeBrevId,
