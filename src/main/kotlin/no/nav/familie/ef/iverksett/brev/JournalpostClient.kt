@@ -68,14 +68,6 @@ class JournalpostClient(
         ).getDataOrThrow()
     }
 
-//    fun <T> Ressurs<T>.getDataOrSomething(): T {
-//        return when (this.status) {
-//            Ressurs.Status.SUKSESS -> data ?: error("Data er null i Ressurs"),
-//            Ressurs.Status.FEILET ->
-//            else -> error(melding)
-//        }
-//    }
-
     private fun headerMedSaksbehandler(saksbehandler: String?): HttpHeaders {
         val httpHeaders = HttpHeaders()
         if (saksbehandler != null) {
