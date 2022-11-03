@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.client.HttpClientErrorException
 import java.time.LocalDateTime
 import java.util.UUID
@@ -225,10 +224,10 @@ internal class DistribuerFrittståendeBrevTaskTest {
         )
 
         val ressurs: Ressurs<Any> = Ressurs(
-                data = e.responseBodyAsString,
-                status = Ressurs.Status.FEILET,
-                melding = e.message.toString(),
-                stacktrace = e.stackTraceToString()
+            data = e.responseBodyAsString,
+            status = Ressurs.Status.FEILET,
+            melding = e.message.toString(),
+            stacktrace = e.stackTraceToString()
         )
 
         return RessursException(

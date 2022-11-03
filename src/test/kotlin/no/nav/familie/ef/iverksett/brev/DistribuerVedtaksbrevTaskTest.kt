@@ -248,23 +248,23 @@ internal class DistribuerVedtaksbrevTaskTest {
 
     private fun ressursExceptionConflict(bestillingsId: String): RessursException {
         val e = HttpClientErrorException.create(
-                HttpStatus.CONFLICT,
-                "",
-                HttpHeaders(),
-                DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
-                null
+            HttpStatus.CONFLICT,
+            "",
+            HttpHeaders(),
+            DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
+            null
         )
 
         val ressurs: Ressurs<Any> = Ressurs(
-                data = e.responseBodyAsString,
-                status = Ressurs.Status.FEILET,
-                melding = e.message.toString(),
-                stacktrace = e.stackTraceToString()
+            data = e.responseBodyAsString,
+            status = Ressurs.Status.FEILET,
+            melding = e.message.toString(),
+            stacktrace = e.stackTraceToString()
         )
 
         return RessursException(
-                ressurs,
-                e
+            ressurs,
+            e
         )
     }
 }
