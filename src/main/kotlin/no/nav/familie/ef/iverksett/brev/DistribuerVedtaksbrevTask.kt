@@ -80,6 +80,8 @@ class DistribuerVedtaksbrevTask(
             val cause = e.cause
             if (cause is HttpClientErrorException.Conflict) {
                 logger.warn("Conflict: distribuering av brev allerede utført for journalpost: ${journalpostResultat.journalpostId}")
+                logger.warn("Conflict-data:  ${e.ressurs.data}")
+
                 e.ressurs.melding
             } else {
                 throw e
