@@ -5,12 +5,14 @@ import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.brev.DistribuerJournalpostResponseTo
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevUtil.opprettFrittståendeBrev
+import no.nav.familie.ef.iverksett.vedtakstatistikk.toJson
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.HttpClientErrorException
 import java.time.LocalDateTime
 import java.util.UUID
@@ -217,12 +220,19 @@ internal class DistribuerFrittståendeBrevTaskTest {
             HttpStatus.CONFLICT,
             "",
             HttpHeaders(),
-            bestillingsId.toByteArray(),
+            DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
             null
         )
 
+        val ressurs: Ressurs<Any> = Ressurs(
+                data = e.responseBodyAsString,
+                status = Ressurs.Status.FEILET,
+                melding = e.message.toString(),
+                stacktrace = e.stackTraceToString()
+        )
+
         return RessursException(
-            Ressurs.failure(errorMessage = bestillingsId, error = e),
+            ressurs,
             e
         )
     }

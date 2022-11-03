@@ -8,6 +8,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
+import no.nav.familie.ef.iverksett.vedtakstatistikk.toJson
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.prosessering.domene.Loggtype
@@ -246,16 +247,24 @@ internal class DistribuerVedtaksbrevTaskTest {
         )
 
     private fun ressursExceptionConflict(bestillingsId: String): RessursException {
-        val cause = HttpClientErrorException.create(
-            HttpStatus.CONFLICT,
-            "",
-            HttpHeaders(),
-            bestillingsId.toByteArray(),
-            null
+        val e = HttpClientErrorException.create(
+                HttpStatus.CONFLICT,
+                "",
+                HttpHeaders(),
+                DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
+                null
         )
+
+        val ressurs: Ressurs<Any> = Ressurs(
+                data = e.responseBodyAsString,
+                status = Ressurs.Status.FEILET,
+                melding = e.message.toString(),
+                stacktrace = e.stackTraceToString()
+        )
+
         return RessursException(
-            Ressurs.failure(bestillingsId, bestillingsId, cause),
-            cause
+                ressurs,
+                e
         )
     }
 }
