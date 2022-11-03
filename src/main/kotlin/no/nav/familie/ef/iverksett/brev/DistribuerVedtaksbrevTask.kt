@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
+import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Loggtype
@@ -80,9 +81,7 @@ class DistribuerVedtaksbrevTask(
             val cause = e.cause
             if (cause is HttpClientErrorException.Conflict) {
                 logger.warn("Conflict: distribuering av brev allerede utført for journalpost: ${journalpostResultat.journalpostId}")
-                logger.warn("Conflict-data:  ${e.ressurs.data}")
-
-                e.ressurs.melding
+                objectMapper.readValue<DistribuerJournalpostResponseTo>(e.ressurs.data.toString(), DistribuerJournalpostResponseTo::class.java).bestillingsId
             } else {
                 throw e
             }

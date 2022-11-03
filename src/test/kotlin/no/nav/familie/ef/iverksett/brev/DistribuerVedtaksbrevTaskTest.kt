@@ -247,15 +247,15 @@ internal class DistribuerVedtaksbrevTaskTest {
 
     private fun ressursExceptionConflict(bestillingsId: String): RessursException {
         val cause = HttpClientErrorException.create(
-                HttpStatus.CONFLICT,
-                "",
-                HttpHeaders(),
-                bestillingsId.toByteArray(),
-                null
+            HttpStatus.CONFLICT,
+            "",
+            HttpHeaders(),
+            bestillingsId.toByteArray(),
+            null
         )
         return RessursException(
-                Ressurs.failure(bestillingsId, bestillingsId, cause),
-                cause
+            Ressurs.failure(bestillingsId, bestillingsId, cause),
+            cause
         )
     }
 }
