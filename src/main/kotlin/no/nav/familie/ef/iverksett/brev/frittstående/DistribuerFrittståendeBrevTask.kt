@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.brev.DistribuerJournalpostResponseTo
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
@@ -73,11 +74,11 @@ class DistribuerFrittståendeBrevTask(
                     resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
                 } else if (cause is HttpClientErrorException.Conflict) {
                     logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}")
-                    val bestillingsId = objectMapper.readValue<DistribuerJournalpostResponseTo>(
-                        e.ressurs.data.toString(),
-                        DistribuerJournalpostResponseTo::class.java
-                    ).bestillingsId
-                    frittståendeBrev = oppdaterOgLagreresultat(frittståendeBrev, journalpostResultat, bestillingsId, frittståendeBrevId)
+                    val response : DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
+                    frittståendeBrev = oppdaterOgLagreresultat(frittståendeBrev,
+                                                               journalpostResultat,
+                                                               response.bestillingsId,
+                                                               frittståendeBrevId)
                 } else {
                     throw e
                 }
