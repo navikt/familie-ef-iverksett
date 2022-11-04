@@ -70,17 +70,19 @@ class DistribuerFrittståendeBrevTask(
                 frittståendeBrev = oppdaterOgLagreresultat(frittståendeBrev, journalpostResultat, bestillingId, frittståendeBrevId)
             } catch (e: RessursException) {
                 val cause = e.cause
-                if (cause is HttpClientErrorException.Gone) {
-                    resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
-                } else if (cause is HttpClientErrorException.Conflict) {
-                    logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}")
-                    val response : DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
-                    frittståendeBrev = oppdaterOgLagreresultat(frittståendeBrev,
-                                                               journalpostResultat,
-                                                               response.bestillingsId,
-                                                               frittståendeBrevId)
-                } else {
-                    throw e
+                when (cause) {
+                    is HttpClientErrorException.Gone -> resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
+                    is HttpClientErrorException.Conflict -> {
+                        logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}")
+                        val response: DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
+                        frittståendeBrev = oppdaterOgLagreresultat(
+                            frittståendeBrev,
+                            journalpostResultat,
+                            response.bestillingsId,
+                            frittståendeBrevId
+                        )
+                    }
+                    else -> throw e
                 }
             }
         }
