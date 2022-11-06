@@ -19,7 +19,7 @@
         <springdoc.version>1.6.12</springdoc.version>
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20221006150009_46021ed</felles.version>
-        <familie.kontrakter.version>2.0_20221027151559_d8da825</familie.kontrakter.version>
+        <familie.kontrakter.version>2.0_20221104115410_3179526</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220718220344_7c2ed6b</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220706094343_ca44254</familie.eksterne-kontrakter.saksstatistikk-ef>
         <prosessering.version>1.20220624132237_7f5ba9c</prosessering.version>
