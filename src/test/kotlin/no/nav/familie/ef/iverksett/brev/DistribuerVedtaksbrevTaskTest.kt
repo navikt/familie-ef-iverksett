@@ -18,11 +18,13 @@ import no.nav.familie.prosessering.error.RekjørSenereException
 import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
+import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Properties
 import java.util.UUID
@@ -219,8 +221,9 @@ internal class DistribuerVedtaksbrevTaskTest {
         }
 
         @Test
-        internal fun `skal feile hvis man har blitt kjørt fler enn 7 ganger`() {
+        internal fun `skal feile hvis man har blitt kjørt fler enn 11 ganger`() {
             val journalpostResultater = listOf(JournalpostResultat("123456789"))
+            val maxKjøringer = 12
 
             every { iverksettResultatService.hentJournalpostResultat(behandlingId) }
                 .returns(mapOf("1" to journalpostResultater[0]))
@@ -229,7 +232,7 @@ internal class DistribuerVedtaksbrevTaskTest {
 
             val throwable = catchThrowable {
                 val task = Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString())
-                val taskLogg = IntRange(1, 8).map { TaskLogg(type = Loggtype.KLAR_TIL_PLUKK, melding = "Dødsbo") }
+                val taskLogg = IntRange(1, maxKjøringer).map { TaskLogg(type = Loggtype.KLAR_TIL_PLUKK, melding = "Dødsbo") }
                 distribuerVedtaksbrevTask.doTask(task.copy(logg = task.logg + taskLogg))
             }
             assertThat(throwable).isInstanceOf(TaskExceptionUtenStackTrace::class.java)
@@ -237,6 +240,53 @@ internal class DistribuerVedtaksbrevTaskTest {
 
             verify(exactly = 1) { journalpostClient.distribuerBrev(any(), any()) }
             verify(exactly = 0) { iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(any(), any(), any()) }
+        }
+
+        @Test
+        internal fun `Triggertid skal være 7 dager når vi har kjørt mindre enn 7 ganger`() {
+            val journalpostResultater = listOf(JournalpostResultat("123456789"))
+            val antallKjøringer = 6
+
+            every { iverksettResultatService.hentJournalpostResultat(behandlingId) }
+                .returns(mapOf("1" to journalpostResultater[0]))
+            every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
+            every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionGone()
+
+            val throwable = catchThrowable {
+                val task = Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString())
+
+                val taskLogg = IntRange(1, antallKjøringer).map { TaskLogg(type = Loggtype.KLAR_TIL_PLUKK, melding = "Dødsbo") }
+                distribuerVedtaksbrevTask.doTask(task.copy(logg = task.logg + taskLogg))
+            }
+
+            if (throwable is RekjørSenereException) {
+                assertThat(throwable.triggerTid.toLocalDate()).isEqualTo(LocalDate.now().plusDays(7))
+            } else {
+                fail("Forventet RekjørSenereException")
+            }
+        }
+
+        @Test
+        internal fun `Triggertid skal være 30 dager når vi har kjørt mer enn 7 ganger`() {
+            val journalpostResultater = listOf(JournalpostResultat("123456789"))
+            val antallKjøringer = 8
+
+            every { iverksettResultatService.hentJournalpostResultat(behandlingId) }
+                .returns(mapOf("1" to journalpostResultater[0]))
+            every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
+            every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionGone()
+
+            val throwable = catchThrowable {
+                val task = Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString())
+                val taskLogg = IntRange(1, antallKjøringer).map { TaskLogg(type = Loggtype.KLAR_TIL_PLUKK, melding = "Dødsbo") }
+                distribuerVedtaksbrevTask.doTask(task.copy(logg = task.logg + taskLogg))
+            }
+
+            if (throwable is RekjørSenereException) {
+                assertThat(throwable.triggerTid.toLocalDate()).isEqualTo(LocalDate.now().plusDays(30))
+            } else {
+                fail("Forventet RekjørSenereException")
+            }
         }
     }
 

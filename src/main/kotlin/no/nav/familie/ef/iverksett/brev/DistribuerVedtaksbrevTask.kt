@@ -100,12 +100,16 @@ class DistribuerVedtaksbrevTask(
     private fun håndterDødsbo(task: Task, dødsbo: Dødsbo) {
         val antallRekjørSenerePgaDødsbo =
             task.logg.count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
-        if (antallRekjørSenerePgaDødsbo < 7) {
-            logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
-            throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))
-        } else {
-            throw TaskExceptionUtenStackTrace("Er dødsbo og har feilet flere ganger: ${dødsbo.melding}")
+
+        when {
+            antallRekjørSenerePgaDødsbo < 7 -> loggOgKastRekjøringsfeilFeil(dødsbo.melding, 7)
+            antallRekjørSenerePgaDødsbo < 12 -> loggOgKastRekjøringsfeilFeil(dødsbo.melding, 30)
+            else -> throw TaskExceptionUtenStackTrace("Er dødsbo og har feilet flere ganger: ${dødsbo.melding}")
         }
+    }
+
+    private fun loggOgKastRekjøringsfeilFeil(dødsbomelding: String, dagerTilNesteTrigger: Long) {
+        throw RekjørSenereException(dødsbomelding, LocalDateTime.now().plusDays(dagerTilNesteTrigger))
     }
 
     private fun hentJournalpostResultat(behandlingId: UUID): Map<String, JournalpostResultat> {
