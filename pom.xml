@@ -19,8 +19,8 @@
         <springdoc.version>1.6.12</springdoc.version>
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20221101085322_cc4d556</felles.version>
-        <familie.kontrakter.version>2.0_20221104115410_3179526</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20220718220344_7c2ed6b</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.kontrakter.version>2.0_20221108132527_9f0a1d4</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20221110094105_9199f88</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220706094343_ca44254</familie.eksterne-kontrakter.saksstatistikk-ef>
         <prosessering.version>1.20220624132237_7f5ba9c</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
