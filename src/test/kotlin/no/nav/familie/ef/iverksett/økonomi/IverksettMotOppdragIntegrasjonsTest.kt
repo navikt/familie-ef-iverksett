@@ -5,7 +5,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingService
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,7 +20,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     lateinit var iverksettResultatService: IverksettResultatService
 
     @Autowired
-    lateinit var taskRepository: TaskRepository
+    lateinit var taskService: TaskService
 
     @Autowired
     lateinit var iverksettingService: IverksettingService
@@ -66,7 +66,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
             )
         )
 
-        taskRepository.deleteAll()
+        taskService.deleteAll(taskService.findAll())
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
         iverksettMotOppdrag()
 
@@ -93,7 +93,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
             )
         )
 
-        taskRepository.deleteAll()
+        taskService.deleteAll(taskService.findAll())
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
         iverksettMotOppdrag()
 
@@ -111,7 +111,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         val iverksettMedOpphør =
             opprettIverksettOvergangsstønad(opphørBehandlingId, behandlingid, emptyList(), startmåned = startmåned)
 
-        taskRepository.deleteAll()
+        taskService.deleteAll(taskService.findAll())
         iverksettingService.startIverksetting(iverksettMedOpphør, opprettBrev())
         iverksettMotOppdrag()
 
@@ -124,7 +124,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     }
 
     private fun iverksettMotOppdrag() {
-        val tasks = taskRepository.findAll()
+        val tasks = taskService.findAll()
         assertThat(tasks).hasSize(1)
         iverksettMotOppdragTask.doTask(tasks.first())
     }

@@ -14,7 +14,7 @@ import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,9 +26,9 @@ internal class OpprettOppgaverForBarnServiceTest {
     private val iverksett = mockk<IverksettData>()
     private val oppgaveClient = mockk<OppgaveClient>()
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
-    private val taskRepository = mockk<TaskRepository>()
+    private val taskService = mockk<TaskService>()
     private val opprettOppgaveForBarnService =
-        OpprettOppgaverForBarnService(oppgaveClient, familieIntegrasjonerClient, taskRepository)
+        OpprettOppgaverForBarnService(oppgaveClient, familieIntegrasjonerClient, taskService)
 
     private val oppgaveSlot = slot<OpprettOppgaveRequest>()
     private val hentOppgaverSlot = slot<FinnOppgaveRequest>()

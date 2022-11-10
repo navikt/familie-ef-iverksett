@@ -10,7 +10,7 @@ import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -24,7 +24,7 @@ class SendPerioderTilInfotrygdTask(
     private val infotrygdFeedClient: InfotrygdFeedClient,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
     private val iverksettingRepository: IverksettingRepository,
-    private val taskRepository: TaskRepository
+    private val taskService: TaskService
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -54,7 +54,7 @@ class SendPerioderTilInfotrygdTask(
         if (iverksett.erMigrering()) {
             logger.info("Siste tasken i publiseringsflyt er SendPerioderTilInfotrygd før vedtakstatistikk sendes for behandling=$behandlingId då årsaken er migrering")
         }
-        taskRepository.save(task.opprettNestePubliseringTask(iverksett.erMigrering()))
+        taskService.save(task.opprettNestePubliseringTask(iverksett.erMigrering()))
     }
 
     companion object {

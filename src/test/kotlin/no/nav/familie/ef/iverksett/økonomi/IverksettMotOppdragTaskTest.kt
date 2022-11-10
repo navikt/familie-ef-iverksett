@@ -14,7 +14,7 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,7 +24,7 @@ import java.util.UUID
 internal class IverksettMotOppdragTaskTest {
 
     private val oppdragClient = mockk<OppdragClient>()
-    val taskRepository = mockk<TaskRepository>()
+    val taskService = mockk<TaskService>()
     val iverksettingRepository = mockk<IverksettingRepository>()
     val iverksettResultatService = mockk<IverksettResultatService>()
     val behandlingId: UUID = UUID.randomUUID()
@@ -32,7 +32,7 @@ internal class IverksettMotOppdragTaskTest {
         IverksettMotOppdragTask(
             iverksettingRepository = iverksettingRepository,
             oppdragClient = oppdragClient,
-            taskRepository = taskRepository,
+            taskService = taskService,
             iverksettResultatService = iverksettResultatService
         )
 
@@ -69,7 +69,7 @@ internal class IverksettMotOppdragTaskTest {
     internal fun `skal opprette ny task når den er ferdig`() {
         val taskSlot = slot<Task>()
         val task = Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties())
-        every { taskRepository.save(capture(taskSlot)) } returns task
+        every { taskService.save(capture(taskSlot)) } returns task
         iverksettMotOppdragTask.onCompletion(task)
         assertThat(taskSlot.captured.payload).isEqualTo(behandlingId.toString())
         assertThat(taskSlot.captured.type).isEqualTo(VentePåStatusFraØkonomiTask.TYPE)

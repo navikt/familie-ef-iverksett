@@ -22,7 +22,7 @@ import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.BRUKER
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.VERGE
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,7 +42,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
     private lateinit var iverksettingRepository: IverksettingRepository
 
     @Autowired
-    private lateinit var taskRepository: TaskRepository
+    private lateinit var taskService: TaskService
 
     @Autowired
     private lateinit var journalpostClient: JournalpostClient
@@ -64,7 +64,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
         journalførVedtaksbrevTask = JournalførVedtaksbrevTask(
             iverksettingRepository = iverksettingRepository,
             journalpostClient = journalpostClient,
-            taskRepository = taskRepository,
+            taskService = taskService,
             iverksettResultatService = iverksettResultatService
         )
     }

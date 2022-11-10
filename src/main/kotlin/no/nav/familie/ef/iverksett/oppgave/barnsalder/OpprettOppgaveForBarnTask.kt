@@ -7,7 +7,7 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
     beskrivelse = "Oppretter oppgave for barn som fyller 1/2 eller 1 år"
 )
 class OpprettOppgaveForBarnTask(
-    val taskRepository: TaskRepository,
+    val taskService: TaskService,
     val opprettOppgaveForBarnService: OpprettOppgaverForBarnService,
     val featureToggleService: FeatureToggleService
 ) : AsyncTaskStep {

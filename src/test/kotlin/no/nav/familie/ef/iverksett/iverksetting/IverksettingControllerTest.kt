@@ -8,7 +8,7 @@ import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
 import no.nav.familie.http.client.MultipartBuilder
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.Ressurs
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,7 +26,7 @@ class IverksettingControllerTest : ServerTest() {
     private val behandlingId = UUID.randomUUID()
 
     @Autowired
-    lateinit var taskRepository: TaskRepository
+    lateinit var taskService: TaskService
 
     @BeforeEach
     fun setUp() {
@@ -48,7 +48,7 @@ class IverksettingControllerTest : ServerTest() {
             HttpEntity(request, headers)
         )
         assertThat(respons.statusCode.value()).isEqualTo(200)
-        val tasker = taskRepository.findAll()
+        val tasker = taskService.findAll()
         assertThat(tasker.map { it.type }).contains(OpprettTilbakekrevingTask.TYPE)
         assertThat(tasker.map { it.type }).doesNotContain(JournalførVedtaksbrevTask.TYPE)
     }
@@ -70,7 +70,7 @@ class IverksettingControllerTest : ServerTest() {
             HttpEntity(request, headers)
         )
         assertThat(respons.statusCode.value()).isEqualTo(200)
-        val tasker = taskRepository.findAll()
+        val tasker = taskService.findAll()
         assertThat(tasker.map { it.type }).doesNotContain(IverksettMotOppdragTask.TYPE)
         assertThat(tasker.map { it.type }).contains(JournalførVedtaksbrevTask.TYPE)
     }

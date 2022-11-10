@@ -16,7 +16,7 @@ import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import no.nav.familie.kontrakter.ef.infotrygd.Periode
 import no.nav.familie.kontrakter.felles.personopplysning.PersonIdentMedHistorikk
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,7 +29,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
     private val infotrygdFeedClient = mockk<InfotrygdFeedClient>(relaxed = true)
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>(relaxed = true)
     private val iverksettingRepository = mockk<IverksettingRepository>()
-    private val taskRepository = mockk<TaskRepository>()
+    private val taskService = mockk<TaskService>()
 
     private val behandlingId = UUID.randomUUID()
 
@@ -44,7 +44,7 @@ internal class SendPerioderTilInfotrygdTaskTest {
         infotrygdFeedClient,
         familieIntegrasjonerClient,
         iverksettingRepository,
-        taskRepository
+        taskService
     )
 
     @BeforeEach

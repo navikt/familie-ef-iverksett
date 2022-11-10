@@ -9,7 +9,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -21,7 +21,7 @@ data class GrensesnittavstemmingPayload(val fraDato: LocalDate, val stønadstype
 @TaskStepBeskrivelse(taskStepType = GrensesnittavstemmingTask.TYPE, beskrivelse = "Utfører grensesnittavstemming mot økonomi.")
 class GrensesnittavstemmingTask(
     private val oppdragClient: OppdragClient,
-    private val taskRepository: TaskRepository
+    private val taskService: TaskService
 ) : AsyncTaskStep {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
@@ -49,7 +49,7 @@ class GrensesnittavstemmingTask(
 
     fun opprettGrensesnittavstemmingTask(grensesnittavstemmingDto: GrensesnittavstemmingDto) =
         grensesnittavstemmingDto.tilTask()
-            .let { taskRepository.save(it) }
+            .let { taskService.save(it) }
 
     companion object {
 

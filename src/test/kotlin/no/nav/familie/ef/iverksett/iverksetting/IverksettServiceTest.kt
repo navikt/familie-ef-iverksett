@@ -10,7 +10,7 @@ import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -18,12 +18,12 @@ import java.util.UUID
 internal class IverksettServiceTest {
 
     val iverksettResultatService = mockk<IverksettResultatService>()
-    val taskRepository = mockk<TaskRepository>()
+    val taskService = mockk<TaskService>()
     val iverksettingRepository = mockk<IverksettingRepository>()
     private val oppdragClient = mockk<OppdragClient>()
 
     private var iverksettStatusService: IverksettingService = IverksettingService(
-        taskRepository = taskRepository,
+        taskService = taskService,
         iverksettResultatService = iverksettResultatService,
         iverksettingRepository = iverksettingRepository,
         oppdragClient = oppdragClient,

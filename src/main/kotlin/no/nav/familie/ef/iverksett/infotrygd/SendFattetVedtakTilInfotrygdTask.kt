@@ -9,7 +9,7 @@ import no.nav.familie.kontrakter.ef.infotrygd.OpprettVedtakHendelseDto
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -23,7 +23,7 @@ class SendFattetVedtakTilInfotrygdTask(
     private val infotrygdFeedClient: InfotrygdFeedClient,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
     private val iverksettingRepository: IverksettingRepository,
-    private val taskRepository: TaskRepository
+    private val taskService: TaskService
 ) : AsyncTaskStep {
 
     private final val logger = LoggerFactory.getLogger(javaClass)
@@ -52,7 +52,7 @@ class SendFattetVedtakTilInfotrygdTask(
     }
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNestePubliseringTask())
+        taskService.save(task.opprettNestePubliseringTask())
     }
 
     companion object {

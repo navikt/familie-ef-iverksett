@@ -22,7 +22,7 @@
         <familie.kontrakter.version>2.0_20221110144342_36a697b</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20221110094105_9199f88</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220706094343_ca44254</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <prosessering.version>1.20220624132237_7f5ba9c</prosessering.version>
+        <prosessering.version>1.20221110194901_e9e0d90</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
         <mockk.version>1.13.1</mockk.version>
         <cucumber.version>7.9.0</cucumber.version>
@@ -140,7 +140,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.familie</groupId>
-            <artifactId>prosessering-jdbc</artifactId>
+            <artifactId>prosessering-core</artifactId>
             <version>${prosessering.version}</version>
         </dependency>
         <dependency>

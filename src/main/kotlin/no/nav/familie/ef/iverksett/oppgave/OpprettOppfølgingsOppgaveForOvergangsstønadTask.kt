@@ -7,7 +7,7 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -20,7 +20,7 @@ import java.util.UUID
 class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
     private val oppgaveService: OppgaveService,
     private val iverksettingRepository: IverksettingRepository,
-    private val taskRepository: TaskRepository
+    private val taskService: TaskService
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -43,7 +43,7 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
     }
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNestePubliseringTask())
+        taskService.save(task.opprettNestePubliseringTask())
     }
 
     companion object {

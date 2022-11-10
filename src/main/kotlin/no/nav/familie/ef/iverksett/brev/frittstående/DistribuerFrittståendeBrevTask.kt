@@ -17,6 +17,7 @@ import no.nav.familie.prosessering.domene.Loggtype
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.RekjørSenereException
 import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -34,7 +35,8 @@ import java.util.UUID
 )
 class DistribuerFrittståendeBrevTask(
     private val frittståendeBrevRepository: FrittståendeBrevRepository,
-    private val journalpostClient: JournalpostClient
+    private val journalpostClient: JournalpostClient,
+    private val taskService: TaskService
 ) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -123,8 +125,8 @@ class DistribuerFrittståendeBrevTask(
     }
 
     private fun håndterDødsbo(task: Task, dødsbo: Dødsbo) {
-        val antallRekjørSenerePgaDødsbo =
-            task.logg.count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
+        val antallRekjørSenerePgaDødsbo = taskService.findTaskLoggByTaskId(task.id)
+            .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 7) {
             logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
             throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))

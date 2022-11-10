@@ -7,7 +7,7 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service
     beskrivelse = "Oppretter oppgave for terminbarn som ikke er født"
 )
 class OpprettOppgaverTerminbarnTask(
-    val taskRepository: TaskRepository,
+    val taskService: TaskService,
     val opprettOppgaverForTerminbarnService: OpprettOppgaverTerminbarnService,
     val featureToggleService: FeatureToggleService
 ) : AsyncTaskStep {

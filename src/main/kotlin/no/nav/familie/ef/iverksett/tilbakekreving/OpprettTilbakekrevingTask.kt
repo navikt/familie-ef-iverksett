@@ -16,7 +16,7 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequ
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -32,7 +32,7 @@ import java.util.UUID
 )
 class OpprettTilbakekrevingTask(
     private val iverksettingRepository: IverksettingRepository,
-    private val taskRepository: TaskRepository,
+    private val taskService: TaskService,
     private val tilbakekrevingClient: TilbakekrevingClient,
     private val iverksettResultatService: IverksettResultatService,
     private val simuleringService: SimuleringService,
@@ -106,7 +106,7 @@ class OpprettTilbakekrevingTask(
     }
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNesteTask())
+        taskService.save(task.opprettNesteTask())
     }
 
     private fun hentBeriketSimulering(originalIverksett: IverksettData): BeriketSimuleringsresultat {

@@ -18,6 +18,7 @@ import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.RekjørSenereException
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -33,9 +34,10 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     private val journalpostClient = mockk<JournalpostClient>()
     private val frittståendeBrevRepository = mockk<FrittståendeBrevRepository>()
+    private val taskService = mockk<TaskService>()
 
     private val distribuerFrittståendeBrevTask =
-        DistribuerFrittståendeBrevTask(frittståendeBrevRepository, journalpostClient)
+        DistribuerFrittståendeBrevTask(frittståendeBrevRepository, journalpostClient, taskService)
 
     private val journalpostIdSlot = mutableListOf<String>()
     private val distribuerBrevResultatMapSlot = slot<DistribuerBrevResultatMap>()
@@ -59,6 +61,7 @@ internal class DistribuerFrittståendeBrevTaskTest {
                 capture(distribuerBrevResultatMapSlot)
             )
         }
+        every { taskService.findTaskLoggByTaskId(any()) } returns emptyList()
     }
 
     @Test

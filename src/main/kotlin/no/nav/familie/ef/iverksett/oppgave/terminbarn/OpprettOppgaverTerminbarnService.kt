@@ -8,7 +8,7 @@ import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,14 +17,14 @@ import org.springframework.transaction.annotation.Transactional
 class OpprettOppgaverTerminbarnService(
     private val oppgaveClient: OppgaveClient,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-    private val taskRepository: TaskRepository
+    private val taskService: TaskService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Transactional
     fun opprettTaskerForTerminbarn(oppgaverForBarn: List<OppgaveForBarn>) {
-        taskRepository.saveAll(
+        taskService.saveAll(
             oppgaverForBarn.map {
                 Task(OpprettOppgaverTerminbarnTask.TYPE, ObjectMapperProvider.objectMapper.writeValueAsString(it))
             }

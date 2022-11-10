@@ -23,7 +23,7 @@ import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -38,11 +38,11 @@ internal class VentePåStatusFraØkonomiTaskTest {
 
     private val oppdragClient = mockk<OppdragClient>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
-    private val taskRepository = mockk<TaskRepository>()
+    private val taskService = mockk<TaskService>()
     private val iverksettResultatService = mockk<IverksettResultatService>()
     private val behandlingId: UUID = UUID.randomUUID()
     private val iverksettingService = IverksettingService(
-        taskRepository = taskRepository,
+        taskService = taskService,
         oppdragClient = oppdragClient,
         iverksettingRepository = iverksettingRepository,
         iverksettResultatService = iverksettResultatService,
@@ -50,14 +50,14 @@ internal class VentePåStatusFraØkonomiTaskTest {
     )
 
     private val ventePåStatusFraØkonomiTask =
-        VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskRepository, iverksettResultatService)
+        VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskService, iverksettResultatService)
 
     @BeforeEach
     internal fun setUp() {
         every { oppdragClient.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettDto(behandlingId).toDomain())
         every { iverksettResultatService.oppdaterOppdragResultat(behandlingId, any()) } just runs
-        every { taskRepository.save(any()) } answers { firstArg() }
+        every { taskService.save(any()) } answers { firstArg() }
     }
 
     @Test
@@ -69,7 +69,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
 
         verify(exactly = 1) { iverksettResultatService.oppdaterOppdragResultat(behandlingId, capture(oppdragResultatSlot)) }
         assertThat(oppdragResultatSlot.captured.oppdragStatus).isEqualTo(OppdragStatus.KVITTERT_OK)
-        verify(exactly = 1) { taskRepository.save(any()) }
+        verify(exactly = 1) { taskService.save(any()) }
     }
 
     @Test
@@ -79,7 +79,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
         runTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
 
         verify(exactly = 0) { iverksettResultatService.oppdaterOppdragResultat(behandlingId, any()) }
-        verify(exactly = 1) { taskRepository.save(any()) }
+        verify(exactly = 1) { taskService.save(any()) }
     }
 
     @Test
@@ -90,7 +90,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
 
         runTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
 
-        verify(exactly = 0) { taskRepository.save(any()) }
+        verify(exactly = 0) { taskService.save(any()) }
     }
 
     private fun runTask(task: Task) {

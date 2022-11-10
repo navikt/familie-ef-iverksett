@@ -23,7 +23,7 @@ import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -36,11 +36,11 @@ internal class OpprettTilbakekrevingTaskTest {
     private val tilbakekrevingClient = mockk<TilbakekrevingClient>()
     private val simuleringService = mockk<SimuleringService>()
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
-    private val taskRepository = mockk<TaskRepository>()
+    private val taskService = mockk<TaskService>()
 
     private val opprettTilbakekrevingTask = OpprettTilbakekrevingTask(
         iverksettResultatService = iverksettResultatService,
-        taskRepository = taskRepository,
+        taskService = taskService,
         iverksettingRepository = iverksettingRepository,
         tilbakekrevingClient = tilbakekrevingClient,
         simuleringService = simuleringService,
@@ -209,7 +209,7 @@ internal class OpprettTilbakekrevingTaskTest {
         val taskSlot = slot<Task>()
         val behandlingId = UUID.randomUUID().toString()
         val task = Task(OpprettTilbakekrevingTask.TYPE, payload = behandlingId)
-        every { taskRepository.save(capture(taskSlot)) } returns task
+        every { taskService.save(capture(taskSlot)) } returns task
         opprettTilbakekrevingTask.onCompletion(task)
         assertThat(taskSlot.captured.payload).isEqualTo(behandlingId)
         assertThat(taskSlot.captured.type).isEqualTo(IverksettMotOppdragTask.TYPE)
