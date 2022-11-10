@@ -85,7 +85,7 @@ class IverksettingService(
     }
 
     private fun førstePubliseringsflytTask(iverksett: IverksettData) = when {
-        iverksett.erGOmregning() -> VedtakstatistikkTask.TYPE
+        iverksett.erGOmregning() || iverksett.erSatsendring() -> VedtakstatistikkTask.TYPE
         erIverksettingUtenVedtaksperioder(iverksett) -> OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE
         else -> publiseringsflyt().first().type
     }

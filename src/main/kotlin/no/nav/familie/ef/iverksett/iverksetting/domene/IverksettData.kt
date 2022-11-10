@@ -38,12 +38,15 @@ sealed class IverksettData {
     abstract val søker: Søker
     abstract val vedtak: Vedtaksdetaljer
 
-    fun erGOmregning(): Boolean = behandling.behandlingÅrsak == BehandlingÅrsak.G_OMREGNING
+    fun erGOmregning() = behandling.behandlingÅrsak == BehandlingÅrsak.G_OMREGNING
 
-    fun erMigrering(): Boolean = behandling.behandlingÅrsak == BehandlingÅrsak.MIGRERING
+    fun erMigrering() = behandling.behandlingÅrsak == BehandlingÅrsak.MIGRERING
 
-    fun skalIkkeSendeBrev(): Boolean =
-        erMigrering() || erGOmregning() || behandling.behandlingÅrsak == BehandlingÅrsak.KORRIGERING_UTEN_BREV
+    fun erKorrigeringUtenBrev() = behandling.behandlingÅrsak == BehandlingÅrsak.KORRIGERING_UTEN_BREV
+
+    fun erSatsendring() = behandling.behandlingÅrsak == BehandlingÅrsak.SATSENDRING
+
+    fun skalIkkeSendeBrev() = erMigrering() || erGOmregning() || erKorrigeringUtenBrev() || erSatsendring()
 
     abstract fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettData
 }
