@@ -74,11 +74,13 @@ fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode>
     )
     StønadType.BARNETILSYN -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN,
-        FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_INFOTRYGD
+        FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_INFOTRYGD,
+        FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING
     )
     StønadType.SKOLEPENGER -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER,
-        FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER_INFOTRYGD
+        FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER_INFOTRYGD,
+        FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING
     )
 }
 
