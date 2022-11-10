@@ -70,8 +70,7 @@ fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode>
     StønadType.OVERGANGSSTØNAD -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
-        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING,
-        FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING
+        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING
     )
     StønadType.BARNETILSYN -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN,
