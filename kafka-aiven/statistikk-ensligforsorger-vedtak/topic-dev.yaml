@@ -21,6 +21,9 @@ spec:
     - team: dv-familie
       application: dvh-famef-konsumer
       access: read
+    - team: dv-familie
+      application: dvh-familie-konsument
+      access: read
     - team: teamfamilie
       application: ef-aiven-test
       access: read
