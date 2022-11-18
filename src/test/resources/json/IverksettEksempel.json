@@ -45,7 +45,12 @@
         ]
       }
     ],
-    "aktivitetspliktInntrefferDato": null
+    "aktivitetspliktInntrefferDato": null,
+    "kravMottatt": "2021-01-01",
+    "årsakRevurdering": {
+      "opplysningskilde": "MELDING_MODIA",
+      "årsak": "ENDRING_INNTEKT"
+    }
   },
   "søker": {
     "personIdent": "12345678901",

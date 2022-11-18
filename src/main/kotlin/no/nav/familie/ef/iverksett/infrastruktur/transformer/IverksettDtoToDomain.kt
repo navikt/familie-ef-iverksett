@@ -23,6 +23,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsst
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
+import no.nav.familie.ef.iverksett.iverksetting.domene.ÅrsakRevurdering
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
@@ -81,7 +82,9 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
         behandlingType = this.behandlingType,
         behandlingÅrsak = this.behandlingÅrsak,
         vilkårsvurderinger = this.vilkårsvurderinger.map { it.toDomain() },
-        aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato
+        aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato,
+        kravMottatt = this.kravMottatt,
+        årsakRevurdering = this.årsakRevurdering?.let { ÅrsakRevurdering(it.opplysningskilde, it.årsak) }
     )
 }
 
