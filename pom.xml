@@ -20,8 +20,8 @@
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20221101085322_cc4d556</felles.version>
         <familie.kontrakter.version>2.0_20221118154109_cefc994</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20221110094105_9199f88</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20220706094343_ca44254</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20221118161019_038c51f</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20221118161019_038c51f</familie.eksterne-kontrakter.saksstatistikk-ef>
         <prosessering.version>1.20220624132237_7f5ba9c</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
         <mockk.version>1.13.1</mockk.version>
@@ -224,7 +224,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.17.5</version>
+            <version>1.17.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
