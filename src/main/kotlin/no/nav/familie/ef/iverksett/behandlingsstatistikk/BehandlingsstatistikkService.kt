@@ -74,7 +74,10 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             },
             totrinnsbehandling = true,
             sakUtland = "Nasjonal",
-            relatertBehandlingId = behandlingstatistikk.relatertEksternBehandlingId
+            relatertBehandlingId = behandlingstatistikk.relatertEksternBehandlingId,
+            kravMottatt = behandlingstatistikk.kravMottatt,
+            revurderingÅrsak = behandlingstatistikk.årsakRevurdering?.årsak?.name,
+            revurderingOopplysningskilde = behandlingstatistikk.årsakRevurdering?.opplysningskilde?.name
         )
     }
 
