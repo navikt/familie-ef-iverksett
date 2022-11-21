@@ -77,7 +77,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             relatertBehandlingId = behandlingstatistikk.relatertEksternBehandlingId,
             kravMottatt = behandlingstatistikk.kravMottatt,
             revurderingÅrsak = behandlingstatistikk.årsakRevurdering?.årsak?.name,
-            revurderingOopplysningskilde = behandlingstatistikk.årsakRevurdering?.opplysningskilde?.name
+            revurderingOpplysningskilde = behandlingstatistikk.årsakRevurdering?.opplysningskilde?.name
         )
     }
 

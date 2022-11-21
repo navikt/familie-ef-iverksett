@@ -92,7 +92,7 @@ internal class BehandlingsstatistikkServiceTest {
         assertThat(dvhDto.resultatBegrunnelse).isEqualTo(behandlingStatistikkDto.resultatBegrunnelse)
 
         assertThat(dvhDto.kravMottatt).isEqualTo(LocalDate.of(2021, 3, 1))
-        assertThat(dvhDto.revurderingOopplysningskilde).isEqualTo(Opplysningskilde.MELDING_MODIA.name)
+        assertThat(dvhDto.revurderingOpplysningskilde).isEqualTo(Opplysningskilde.MELDING_MODIA.name)
         assertThat(dvhDto.revurderingÅrsak).isEqualTo(Revurderingsårsak.ENDRING_INNTEKT.name)
     }
 
