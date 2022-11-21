@@ -26,6 +26,9 @@ import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
+import no.nav.familie.eksterne.kontrakter.ef.ÅrsakRevurdering
+import no.nav.familie.kontrakter.ef.felles.Opplysningskilde
+import no.nav.familie.kontrakter.ef.felles.Revurderingsårsak
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import org.assertj.core.api.Assertions.assertThat
@@ -128,7 +131,12 @@ class VedtakstatistikkServiceTest {
                 harSagtOppArbeidsforhold = true
             ),
             funksjonellId = 9L,
-            stønadstype = StønadType.OVERGANGSSTØNAD
+            stønadstype = StønadType.OVERGANGSSTØNAD,
+            kravMottatt = LocalDate.of(2021, 3, 3),
+            årsakRevurdering = ÅrsakRevurdering(
+                Opplysningskilde.MELDING_MODIA.name,
+                Revurderingsårsak.ENDRING_INNTEKT.name
+            )
         )
     }
 }

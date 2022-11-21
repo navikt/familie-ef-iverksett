@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
+import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.DelårsperiodeSkoleårSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
@@ -37,6 +38,7 @@ import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
+import no.nav.familie.eksterne.kontrakter.ef.ÅrsakRevurdering
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import java.time.LocalDate
 import java.time.Month
@@ -92,9 +94,19 @@ object VedtakstatistikkMapper {
                     it.periode.tomDato,
                     it.beløp
                 )
-            }
+            },
+            kravMottatt = iverksett.behandling.kravMottatt,
+            årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling)
         )
     }
+
+    private fun mapÅrsakRevurdering(behandlingsdetaljer: Behandlingsdetaljer): ÅrsakRevurdering? =
+        behandlingsdetaljer.årsakRevurdering?.let {
+            ÅrsakRevurdering(
+                opplysningskilde = it.opplysningskilde.name,
+                årsak = it.årsak.name
+            )
+        }
 
     fun mapTilVedtakOvergangsstønadDVH(
         iverksett: IverksettOvergangsstønad,
@@ -131,7 +143,9 @@ object VedtakstatistikkMapper {
                     .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger)
             ),
             funksjonellId = iverksett.behandling.eksternId,
-            stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name)
+            stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
+            kravMottatt = iverksett.behandling.kravMottatt,
+            årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling)
         )
     }
 
@@ -230,7 +244,9 @@ object VedtakstatistikkMapper {
                     maksSatsForSkoleår = it.perioder.first().makssatsForSkoleår
                 )
             },
-            vedtaksbegrunnelse = iverksett.vedtak.begrunnelse
+            vedtaksbegrunnelse = iverksett.vedtak.begrunnelse,
+            kravMottatt = iverksett.behandling.kravMottatt,
+            årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling)
         )
     }
 

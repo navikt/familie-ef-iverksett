@@ -8,10 +8,13 @@ import io.mockk.slot
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettBehandlingsstatistikkDto
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
+import no.nav.familie.kontrakter.ef.felles.Opplysningskilde
+import no.nav.familie.kontrakter.ef.felles.Revurderingsårsak
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -79,13 +82,18 @@ internal class BehandlingsstatistikkServiceTest {
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
-        assertThat(captureSlot.captured.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
-        assertThat(captureSlot.captured.vedtakTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
-        assertThat(captureSlot.captured.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
-        assertThat(captureSlot.captured.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
-        assertThat(captureSlot.captured.behandlingStatus).isEqualTo(Hendelse.VEDTATT.name)
-        assertThat(captureSlot.captured.behandlingResultat).isEqualTo(behandlingStatistikkDto.behandlingResultat)
-        assertThat(captureSlot.captured.resultatBegrunnelse).isEqualTo(behandlingStatistikkDto.resultatBegrunnelse)
+        val dvhDto = captureSlot.captured
+        assertThat(dvhDto.endretTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
+        assertThat(dvhDto.vedtakTid).isEqualTo(behandlingStatistikkDto.hendelseTidspunkt)
+        assertThat(dvhDto.saksbehandler).isEqualTo(behandlingStatistikkDto.gjeldendeSaksbehandlerId)
+        assertThat(dvhDto.tekniskTid).isAfter(ZonedDateTime.now().minusSeconds(1))
+        assertThat(dvhDto.behandlingStatus).isEqualTo(Hendelse.VEDTATT.name)
+        assertThat(dvhDto.behandlingResultat).isEqualTo(behandlingStatistikkDto.behandlingResultat)
+        assertThat(dvhDto.resultatBegrunnelse).isEqualTo(behandlingStatistikkDto.resultatBegrunnelse)
+
+        assertThat(dvhDto.kravMottatt).isEqualTo(LocalDate.of(2021, 3, 1))
+        assertThat(dvhDto.revurderingOpplysningskilde).isEqualTo(Opplysningskilde.MELDING_MODIA.name)
+        assertThat(dvhDto.revurderingÅrsak).isEqualTo(Revurderingsårsak.ENDRING_INNTEKT.name)
     }
 
     @Test
