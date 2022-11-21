@@ -9,7 +9,9 @@ import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
+import no.nav.familie.kontrakter.ef.felles.Opplysningskilde
 import no.nav.familie.kontrakter.ef.felles.RegelId
+import no.nav.familie.kontrakter.ef.felles.Revurderingsårsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
@@ -217,7 +219,14 @@ data class Behandlingsdetaljer(
     val behandlingÅrsak: BehandlingÅrsak,
     val relatertBehandlingId: UUID? = null,
     val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
-    val aktivitetspliktInntrefferDato: LocalDate? = null
+    val aktivitetspliktInntrefferDato: LocalDate? = null,
+    val kravMottatt: LocalDate? = null,
+    val årsakRevurdering: ÅrsakRevurdering? = null
+)
+
+data class ÅrsakRevurdering(
+    val opplysningskilde: Opplysningskilde,
+    val årsak: Revurderingsårsak
 )
 
 data class Vilkårsvurdering(

@@ -45,7 +45,11 @@
       }
     ],
     "aktivitetspliktInntrefferDato": null,
-    "kravMottatt": null
+    "kravMottatt": null,
+    "årsakRevurdering": {
+      "opplysningskilde": "MELDING_MODIA",
+      "årsak": "ENDRING_INNTEKT"
+    }
   },
   "søker": {
     "barn": [
