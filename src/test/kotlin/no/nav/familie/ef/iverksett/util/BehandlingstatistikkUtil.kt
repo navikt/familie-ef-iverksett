@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.util
 
+import no.nav.familie.kontrakter.ef.felles.AvslagÅrsak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Opplysningskilde
@@ -37,6 +38,7 @@ fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fort
         behandlingMetode = BehandlingMetode.MANUELL,
         behandlingÅrsak = BehandlingÅrsak.SØKNAD,
         kravMottatt = LocalDate.of(2021, 3, 1),
-        årsakRevurdering = ÅrsakRevurderingDto(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT)
+        årsakRevurdering = ÅrsakRevurderingDto(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
+        avslagÅrsak = AvslagÅrsak.BARN_OVER_ÅTTE_ÅR
     )
 }

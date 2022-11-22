@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
+import no.nav.familie.kontrakter.ef.felles.AvslagÅrsak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.OpphørÅrsak
@@ -181,7 +182,8 @@ data class VedtaksdetaljerOvergangsstønad(
     override val tilkjentYtelse: TilkjentYtelse?,
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
-    override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf()
+    override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(),
+    val avslagÅrsak: AvslagÅrsak? = null
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(

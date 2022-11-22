@@ -134,7 +134,8 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
         tilkjentYtelse = this.tilkjentYtelse?.toDomain(),
         vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
         tilbakekreving = this.tilbakekreving?.toDomain(),
-        brevmottakere = this.brevmottakere.toDomain()
+        brevmottakere = this.brevmottakere.toDomain(),
+        avslagÅrsak = this.avslagÅrsak
     )
 }
 
