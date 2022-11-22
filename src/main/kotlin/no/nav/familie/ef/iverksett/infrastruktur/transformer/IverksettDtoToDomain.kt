@@ -151,7 +151,9 @@ fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn {
         tilbakekreving = this.tilbakekreving?.toDomain(),
         brevmottakere = this.brevmottakere.toDomain(),
         kontantstøtte = this.kontantstøtte.map { it.toDomain() },
-        tilleggsstønad = this.tilleggsstønad.map { it.toDomain() }
+        tilleggsstønad = this.tilleggsstønad.map { it.toDomain() },
+        avslagÅrsak = this.avslagÅrsak
+
     )
 }
 
@@ -166,7 +168,8 @@ fun VedtaksdetaljerSkolepengerDto.toDomain(): VedtaksdetaljerSkolepenger {
         vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
         tilbakekreving = this.tilbakekreving?.toDomain(),
         brevmottakere = this.brevmottakere.toDomain(),
-        begrunnelse = this.begrunnelse
+        begrunnelse = this.begrunnelse,
+        avslagÅrsak = this.avslagÅrsak
     )
 }
 

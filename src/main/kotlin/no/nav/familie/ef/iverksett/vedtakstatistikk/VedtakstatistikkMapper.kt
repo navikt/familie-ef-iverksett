@@ -96,7 +96,8 @@ object VedtakstatistikkMapper {
                 )
             },
             kravMottatt = iverksett.behandling.kravMottatt,
-            årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling)
+            årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
+            avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name
         )
     }
 
@@ -247,7 +248,8 @@ object VedtakstatistikkMapper {
             },
             vedtaksbegrunnelse = iverksett.vedtak.begrunnelse,
             kravMottatt = iverksett.behandling.kravMottatt,
-            årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling)
+            årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
+            avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name
         )
     }
 

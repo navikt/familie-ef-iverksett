@@ -171,6 +171,7 @@ sealed class Vedtaksdetaljer {
     abstract val tilbakekreving: Tilbakekrevingsdetaljer?
     abstract val brevmottakere: Brevmottakere?
     abstract val vedtaksperioder: List<Vedtaksperiode>
+    abstract val avslagÅrsak: AvslagÅrsak?
 }
 
 data class VedtaksdetaljerOvergangsstønad(
@@ -183,7 +184,7 @@ data class VedtaksdetaljerOvergangsstønad(
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(),
-    val avslagÅrsak: AvslagÅrsak? = null
+    override val avslagÅrsak: AvslagÅrsak? = null
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(
@@ -196,6 +197,7 @@ data class VedtaksdetaljerBarnetilsyn(
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeBarnetilsyn> = listOf(),
+    override val avslagÅrsak: AvslagÅrsak? = null,
     val kontantstøtte: List<PeriodeMedBeløp> = listOf(),
     val tilleggsstønad: List<PeriodeMedBeløp> = listOf()
 ) : Vedtaksdetaljer()
@@ -210,6 +212,7 @@ data class VedtaksdetaljerSkolepenger(
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeSkolepenger> = listOf(),
+    override val avslagÅrsak: AvslagÅrsak? = null,
     val begrunnelse: String? = null
 ) : Vedtaksdetaljer()
 

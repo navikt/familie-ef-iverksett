@@ -112,7 +112,7 @@ internal class VedtakstatistikkMapperTest {
     }
 
     @Test
-    internal fun `skal mappe iverksett til VedtakOvergangsstønadDVH med avslagsårsak`() {
+    internal fun `skal mappe iverksett med avslagsårsak`() {
         val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
             iverksettOvergangsstønad().copy(
                 vedtak = vedtaksdetaljerOvergangsstønad(
