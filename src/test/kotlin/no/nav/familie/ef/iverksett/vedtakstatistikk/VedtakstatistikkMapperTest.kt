@@ -28,6 +28,7 @@ import no.nav.familie.eksterne.kontrakter.ef.Studietype
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
 import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
+import no.nav.familie.kontrakter.ef.felles.AvslagÅrsak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Opplysningskilde
@@ -68,20 +69,7 @@ internal class VedtakstatistikkMapperTest {
     @Test
     internal fun `skal mappe iverksett til VedtakOvergangsstønadDVH - sjekk alle felter`() {
         val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
-            IverksettOvergangsstønad(
-                fagsak = fagsakdetaljer(),
-                behandling = behandlingsdetaljer(),
-                søker = Søker(
-                    personIdent = søker,
-                    barn = listOf(
-                        Barn(personIdent = barnFnr, termindato = termindato),
-                        Barn(termindato = termindato)
-                    ),
-                    tilhørendeEnhet = "4489",
-                    adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG
-                ),
-                vedtak = vedtaksdetaljerOvergangsstønad()
-            ),
+            iverksettOvergangsstønad(),
             forrigeBehandlingEksternId
         )
         assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
@@ -122,6 +110,36 @@ internal class VedtakstatistikkMapperTest {
         assertThat(vedtakOvergangsstønadDVH.årsakRevurdering?.opplysningskilde).isEqualTo(Opplysningskilde.MELDING_MODIA.name)
         assertThat(vedtakOvergangsstønadDVH.årsakRevurdering?.årsak).isEqualTo(Revurderingsårsak.ENDRING_INNTEKT.name)
     }
+
+    @Test
+    internal fun `skal mappe iverksett med avslagsårsak`() {
+        val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
+            iverksettOvergangsstønad().copy(
+                vedtak = vedtaksdetaljerOvergangsstønad(
+                    Vedtaksresultat.AVSLÅTT,
+                    AvslagÅrsak.MINDRE_INNTEKTSENDRINGER
+                )
+            ),
+            forrigeBehandlingEksternId
+        )
+        assertThat(vedtakOvergangsstønadDVH.vedtak).isEqualTo(Vedtak.AVSLÅTT)
+        assertThat(vedtakOvergangsstønadDVH.avslagÅrsak).isEqualTo("MINDRE_INNTEKTSENDRINGER")
+    }
+
+    private fun iverksettOvergangsstønad() = IverksettOvergangsstønad(
+        fagsak = fagsakdetaljer(),
+        behandling = behandlingsdetaljer(),
+        søker = Søker(
+            personIdent = søker,
+            barn = listOf(
+                Barn(personIdent = barnFnr, termindato = termindato),
+                Barn(termindato = termindato)
+            ),
+            tilhørendeEnhet = "4489",
+            adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG
+        ),
+        vedtak = vedtaksdetaljerOvergangsstønad()
+    )
 
     @Test
     internal fun `Map iverksett til VedtakBarnetilsynDVH - sjekk alle barnetilsyn-spesifikke felter`() {
@@ -334,9 +352,13 @@ internal class VedtakstatistikkMapperTest {
         )
     )
 
-    fun vedtaksdetaljerOvergangsstønad(): VedtaksdetaljerOvergangsstønad {
+    fun vedtaksdetaljerOvergangsstønad(
+        resultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
+        avslagÅrsak: AvslagÅrsak? = null
+    ): VedtaksdetaljerOvergangsstønad {
         return VedtaksdetaljerOvergangsstønad(
-            vedtaksresultat = Vedtaksresultat.INNVILGET,
+            vedtaksresultat = resultat,
+            avslagÅrsak = avslagÅrsak,
             vedtakstidspunkt = vedtakstidspunkt,
             opphørÅrsak = null,
             saksbehandlerId = "A123456",

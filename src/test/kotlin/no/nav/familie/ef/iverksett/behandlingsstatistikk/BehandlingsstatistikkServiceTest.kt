@@ -94,6 +94,7 @@ internal class BehandlingsstatistikkServiceTest {
         assertThat(dvhDto.kravMottatt).isEqualTo(LocalDate.of(2021, 3, 1))
         assertThat(dvhDto.revurderingOpplysningskilde).isEqualTo(Opplysningskilde.MELDING_MODIA.name)
         assertThat(dvhDto.revurderingÅrsak).isEqualTo(Revurderingsårsak.ENDRING_INNTEKT.name)
+        assertThat(dvhDto.avslagAarsak).isEqualTo("BARN_OVER_ÅTTE_ÅR")
     }
 
     @Test
