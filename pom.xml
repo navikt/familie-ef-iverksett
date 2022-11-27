@@ -27,7 +27,7 @@
         <mockk.version>1.13.1</mockk.version>
         <cucumber.version>7.9.0</cucumber.version>
         <revision>1.0</revision>
-        <dotenv.version>6.3.1</dotenv.version>
+        <dotenv.version>6.4.0</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <token-validation-spring.version>2.1.6</token-validation-spring.version>
