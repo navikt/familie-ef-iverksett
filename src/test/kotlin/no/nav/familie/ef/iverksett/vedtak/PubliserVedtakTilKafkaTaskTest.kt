@@ -14,7 +14,7 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -23,11 +23,11 @@ import no.nav.familie.kontrakter.felles.ef.StønadType as EksternStønadType
 
 internal class PubliserVedtakTilKafkaTaskTest {
 
-    private val taskRepository = mockk<TaskRepository>()
+    private val taskService = mockk<TaskService>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val vedtakKafkaProducer = mockk<VedtakKafkaProducer>()
 
-    private val task = PubliserVedtakTilKafkaTask(taskRepository, iverksettingRepository, vedtakKafkaProducer)
+    private val task = PubliserVedtakTilKafkaTask(taskService, iverksettingRepository, vedtakKafkaProducer)
 
     private val taskSlot = CapturingSlot<Task>()
 
@@ -35,7 +35,7 @@ internal class PubliserVedtakTilKafkaTaskTest {
     internal fun setUp() {
         every { iverksettingRepository.findByIdOrThrow(any()) }
             .returns(lagIverksett(opprettIverksettDto(behandlingId = UUID.randomUUID()).toDomain()))
-        every { taskRepository.save(capture(taskSlot)) } answers { firstArg() }
+        every { taskService.save(capture(taskSlot)) } answers { firstArg() }
     }
 
     @Test
@@ -50,7 +50,7 @@ internal class PubliserVedtakTilKafkaTaskTest {
     internal fun `onCompletion - skal opprette neste task`() {
         task.onCompletion(lagTask())
 
-        verify(exactly = 1) { taskRepository.save(any()) }
+        verify(exactly = 1) { taskService.save(any()) }
         assertThat(taskSlot.captured.type).isEqualTo(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE)
     }
 

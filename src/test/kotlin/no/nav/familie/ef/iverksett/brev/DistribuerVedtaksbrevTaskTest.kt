@@ -16,8 +16,10 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.domene.TaskLogg
 import no.nav.familie.prosessering.error.RekjørSenereException
 import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpHeaders
@@ -31,10 +33,17 @@ internal class DistribuerVedtaksbrevTaskTest {
 
     private val journalpostClient = mockk<JournalpostClient>()
     private val iverksettResultatService = mockk<IverksettResultatService>()
-    private val distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(journalpostClient, iverksettResultatService)
+    private val taskService = mockk<TaskService>()
+    private val distribuerVedtaksbrevTask =
+        DistribuerVedtaksbrevTask(journalpostClient, iverksettResultatService, taskService)
 
     private val behandlingId = UUID.randomUUID()
     private val identMottakerA = "123"
+
+    @BeforeEach
+    internal fun setUp() {
+        every { taskService.findTaskLoggByTaskId(any()) } returns emptyList()
+    }
 
     @Test
     internal fun `skal distribuere brev`() {
@@ -222,16 +231,18 @@ internal class DistribuerVedtaksbrevTaskTest {
         internal fun `skal feile hvis man har blitt kjørt fler enn 7 ganger`() {
             val journalpostResultater = listOf(JournalpostResultat("123456789"))
 
+            val task = Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString())
+            val taskLogg =
+                IntRange(1, 8).map { TaskLogg(taskId = task.id, type = Loggtype.KLAR_TIL_PLUKK, melding = "Dødsbo") }
+
             every { iverksettResultatService.hentJournalpostResultat(behandlingId) }
                 .returns(mapOf("1" to journalpostResultater[0]))
             every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
             every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionGone()
+            every { taskService.findTaskLoggByTaskId(any()) } returns taskLogg
 
-            val throwable = catchThrowable {
-                val task = Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString())
-                val taskLogg = IntRange(1, 8).map { TaskLogg(type = Loggtype.KLAR_TIL_PLUKK, melding = "Dødsbo") }
-                distribuerVedtaksbrevTask.doTask(task.copy(logg = task.logg + taskLogg))
-            }
+
+            val throwable = catchThrowable { distribuerVedtaksbrevTask.doTask(task) }
             assertThat(throwable).isInstanceOf(TaskExceptionUtenStackTrace::class.java)
             assertThat(throwable).hasMessageStartingWith("Er dødsbo og har feilet flere ganger")
 

@@ -9,7 +9,7 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -25,7 +25,7 @@ import java.util.UUID
 class VentePåStatusFraØkonomiTask(
     private val iverksettingRepository: IverksettingRepository,
     private val iverksettingService: IverksettingService,
-    private val taskRepository: TaskRepository,
+    private val taskService: TaskService,
     private val iverksettResultatService: IverksettResultatService
 ) : AsyncTaskStep {
 
@@ -58,7 +58,7 @@ class VentePåStatusFraØkonomiTask(
                 "Journalfør ikke vedtaksbrev for behandling=$behandlingId då årsak=${iverksett.behandling.behandlingÅrsak}"
             )
         } else {
-            taskRepository.save(task.opprettNesteTask())
+            taskService.save(task.opprettNesteTask())
         }
     }
 

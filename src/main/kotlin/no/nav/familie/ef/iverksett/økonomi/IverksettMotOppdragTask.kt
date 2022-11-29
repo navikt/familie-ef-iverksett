@@ -8,7 +8,7 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.Utbetalingsoppdra
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -22,7 +22,7 @@ import java.util.UUID
 class IverksettMotOppdragTask(
     private val iverksettingRepository: IverksettingRepository,
     private val oppdragClient: OppdragClient,
-    private val taskRepository: TaskRepository,
+    private val taskService: TaskService,
     private val iverksettResultatService: IverksettResultatService
 ) : AsyncTaskStep {
 
@@ -63,7 +63,7 @@ class IverksettMotOppdragTask(
     }
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNesteTask())
+        taskService.save(task.opprettNesteTask())
     }
 
     companion object {

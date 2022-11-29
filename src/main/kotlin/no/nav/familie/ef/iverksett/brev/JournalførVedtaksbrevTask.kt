@@ -20,7 +20,7 @@ import no.nav.familie.kontrakter.felles.journalpost.JournalposterForBrukerReques
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -36,7 +36,7 @@ import java.util.UUID
 class JournalførVedtaksbrevTask(
     private val iverksettingRepository: IverksettingRepository,
     private val journalpostClient: JournalpostClient,
-    private val taskRepository: TaskRepository,
+    private val taskService: TaskService,
     private val iverksettResultatService: IverksettResultatService
 ) : AsyncTaskStep {
 
@@ -181,7 +181,7 @@ class JournalførVedtaksbrevTask(
         lagVedtakstekst(iverksett) + lagStønadtypeTekst(iverksett.fagsak.stønadstype)
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNesteTask())
+        taskService.save(task.opprettNesteTask())
     }
 
     companion object {

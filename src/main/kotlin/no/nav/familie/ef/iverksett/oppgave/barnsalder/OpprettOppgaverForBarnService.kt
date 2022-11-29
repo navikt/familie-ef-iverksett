@@ -11,7 +11,7 @@ import no.nav.familie.kontrakter.felles.oppgave.FinnMappeRequest
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -21,7 +21,7 @@ import java.time.LocalDate
 class OpprettOppgaverForBarnService(
     private val oppgaveClient: OppgaveClient,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-    private val taskRepository: TaskRepository
+    private val taskService: TaskService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -33,7 +33,7 @@ class OpprettOppgaverForBarnService(
     fun opprettTaskerForBarn(oppgaverForBarn: List<OppgaveForBarn>) {
         oppgaverForBarn.forEach {
             try {
-                taskRepository.save(
+                taskService.save(
                     Task(
                         OpprettOppgaveForBarnTask.TYPE,
                         objectMapper.writeValueAsString(it)

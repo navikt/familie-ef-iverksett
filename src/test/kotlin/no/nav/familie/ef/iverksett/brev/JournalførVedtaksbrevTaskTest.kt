@@ -26,7 +26,7 @@ import no.nav.familie.kontrakter.felles.journalpost.Journalpost
 import no.nav.familie.kontrakter.felles.journalpost.Journalposttype
 import no.nav.familie.kontrakter.felles.journalpost.Journalstatus
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,13 +40,13 @@ internal class JournalførVedtaksbrevTaskTest {
 
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val journalpostClient = mockk<JournalpostClient>()
-    private val taskRepository = mockk<TaskRepository>()
+    private val taskService = mockk<TaskService>()
     private val iverksettResultatService = mockk<IverksettResultatService>()
     private val journalførVedtaksbrevTask =
         JournalførVedtaksbrevTask(
             iverksettingRepository,
             journalpostClient,
-            taskRepository,
+            taskService,
             iverksettResultatService
         )
     private val behandlingId: UUID = UUID.randomUUID()
@@ -71,7 +71,7 @@ internal class JournalførVedtaksbrevTaskTest {
         journalpostResultatSlot.clear()
         taskSlot.clear()
 
-        every { taskRepository.save(capture(taskSlot)) } answers { firstArg() }
+        every { taskService.save(capture(taskSlot)) } answers { firstArg() }
     }
 
     @Test

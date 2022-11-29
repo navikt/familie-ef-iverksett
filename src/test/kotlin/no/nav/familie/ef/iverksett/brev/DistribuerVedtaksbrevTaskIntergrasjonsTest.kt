@@ -7,6 +7,7 @@ import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.config.JournalpostClientMock
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,6 +27,9 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
     private lateinit var journalpostClient: JournalpostClient
 
     @Autowired
+    private lateinit var taskService: TaskService
+
+    @Autowired
     @Qualifier("mock-integrasjoner")
     lateinit var wireMockServer: WireMockServer
 
@@ -41,7 +45,8 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
     fun init() {
         distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(
             journalpostClient = journalpostClient,
-            iverksettResultatService = iverksettResultatService
+            iverksettResultatService = iverksettResultatService,
+            taskService = taskService
         )
     }
 

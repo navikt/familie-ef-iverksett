@@ -7,7 +7,7 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
+import no.nav.familie.prosessering.internal.TaskService
 import org.springframework.stereotype.Service
 import java.util.UUID
 
@@ -20,7 +20,7 @@ class SendFattetVedtakTilArenaTask(
     private val vedtakhendelseProducer: VedtakhendelseProducer,
     private val integrasjonerClient: FamilieIntegrasjonerClient,
     private val iverksettingRepository: IverksettingRepository,
-    private val taskRepository: TaskRepository
+    private val taskService: TaskService
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
@@ -31,7 +31,7 @@ class SendFattetVedtakTilArenaTask(
     }
 
     override fun onCompletion(task: Task) {
-        taskRepository.save(task.opprettNestePubliseringTask())
+        taskService.save(task.opprettNestePubliseringTask())
     }
 
     companion object {

@@ -20,8 +20,8 @@ import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.domene.Task
-import no.nav.familie.prosessering.domene.TaskRepository
 import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
+import no.nav.familie.prosessering.internal.TaskService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.Properties
@@ -29,7 +29,7 @@ import java.util.UUID
 
 @Service
 class IverksettingService(
-    val taskRepository: TaskRepository,
+    val taskService: TaskService,
     val oppdragClient: OppdragClient,
     val iverksettingRepository: IverksettingRepository,
     val iverksettResultatService: IverksettResultatService,
@@ -52,7 +52,7 @@ class IverksettingService(
 
         iverksettResultatService.opprettTomtResultat(iverksett.behandling.behandlingId)
 
-        taskRepository.save(
+        taskService.save(
             Task(
                 type = førsteHovedflytTask(iverksett),
                 payload = iverksett.behandling.behandlingId.toString(),
@@ -70,7 +70,7 @@ class IverksettingService(
     fun publiserVedtak(behandlingId: UUID) {
         val iverksettDbo = iverksettingRepository.findByIdOrThrow(behandlingId)
 
-        taskRepository.save(
+        taskService.save(
             Task(
                 type = førstePubliseringsflytTask(iverksettDbo.data),
                 payload = behandlingId.toString(),
