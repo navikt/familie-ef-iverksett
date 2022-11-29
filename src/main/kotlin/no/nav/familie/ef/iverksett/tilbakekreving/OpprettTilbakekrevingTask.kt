@@ -78,7 +78,7 @@ class OpprettTilbakekrevingTask(
         behandlingId: UUID?
     ): Boolean {
         if (iverksettData.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
-            logger.warn("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
+            logger.info("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
             return false
         } else if (!iverksettData.vedtak.tilbakekreving.skalTilbakekreves) {
             logger.info(
