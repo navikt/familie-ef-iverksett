@@ -16,10 +16,10 @@
     <properties>
         <java.version>17</java.version>
         <kotlin.version>1.6.21</kotlin.version>
-        <springdoc.version>1.6.12</springdoc.version>
+        <springdoc.version>1.6.13</springdoc.version>
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20221101085322_cc4d556</felles.version>
-        <familie.kontrakter.version>2.0_20221122130123_cc25a9a</familie.kontrakter.version>
+        <familie.kontrakter.version>2.0_20221123155307_3c1a789</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20221122145156_a922c71</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20221122130110_53c42d4</familie.eksterne-kontrakter.saksstatistikk-ef>
         <prosessering.version>1.20221110194901_e9e0d90</prosessering.version>
@@ -27,7 +27,7 @@
         <mockk.version>1.13.1</mockk.version>
         <cucumber.version>7.9.0</cucumber.version>
         <revision>1.0</revision>
-        <dotenv.version>6.3.1</dotenv.version>
+        <dotenv.version>6.4.0</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <token-validation-spring.version>2.1.6</token-validation-spring.version>
