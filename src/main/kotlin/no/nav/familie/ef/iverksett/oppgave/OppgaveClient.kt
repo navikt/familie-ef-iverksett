@@ -4,7 +4,6 @@ import no.nav.familie.ef.iverksett.util.medContentTypeJsonUTF8
 import no.nav.familie.http.client.AbstractRestClient
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.getDataOrThrow
-import no.nav.familie.kontrakter.felles.oppgave.FinnMappeRequest
 import no.nav.familie.kontrakter.felles.oppgave.FinnMappeResponseDto
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveResponseDto
@@ -57,10 +56,11 @@ class OppgaveClient(
         return response.getDataOrThrow()
     }
 
-    fun finnMapper(finnMappeRequest: FinnMappeRequest): FinnMappeResponseDto {
+    fun finnMapper(enhetsnummer: String, limit: Long): FinnMappeResponseDto {
         val response = getForEntity<Ressurs<FinnMappeResponseDto>>(
             UriComponentsBuilder.fromUri(URI.create("$oppgaveUrl/mappe/sok"))
-                .queryParams(finnMappeRequest.toQueryParams())
+                .queryParam("enhetsnr", enhetsnummer)
+                .queryParam("limit", limit)
                 .build()
                 .toUri()
         )

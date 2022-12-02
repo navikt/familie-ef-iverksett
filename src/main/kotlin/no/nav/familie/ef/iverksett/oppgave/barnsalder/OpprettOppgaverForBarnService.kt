@@ -7,7 +7,6 @@ import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForBarn
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
-import no.nav.familie.kontrakter.felles.oppgave.FinnMappeRequest
 import no.nav.familie.kontrakter.felles.oppgave.FinnOppgaveRequest
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.domene.Task
@@ -97,13 +96,10 @@ class OpprettOppgaverForBarnService(
     fun leggOppgaveIMappe(oppgaveId: Long) {
         val oppgave = oppgaveClient.finnOppgaveMedId(oppgaveId)
         if (oppgave.tildeltEnhetsnr == EF_ENHETNUMMER) { // Skjermede personer skal ikke puttes i mappe
-            val finnMappeRequest = FinnMappeRequest(
-                listOf(),
-                oppgave.tildeltEnhetsnr ?: error("Fikk ikke tildelt enhetsnummer for oppgave med id: $oppgaveId"),
-                null,
-                1000
+            val mapperResponse = oppgaveClient.finnMapper(
+                enhetsnummer = oppgave.tildeltEnhetsnr ?: error("Fikk ikke tildelt enhetsnummer for oppgave med id: $oppgaveId"),
+                limit = 1000
             )
-            val mapperResponse = oppgaveClient.finnMapper(finnMappeRequest)
             val mappe = mapperResponse.mapper.find {
                 it.navn.contains("62 Hendelser") && !it.navn.contains("EF Sak")
             }
