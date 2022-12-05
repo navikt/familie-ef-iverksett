@@ -241,7 +241,6 @@ internal class DistribuerVedtaksbrevTaskTest {
             every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionGone()
             every { taskService.findTaskLoggByTaskId(any()) } returns taskLogg
 
-
             val throwable = catchThrowable { distribuerVedtaksbrevTask.doTask(task) }
             assertThat(throwable).isInstanceOf(TaskExceptionUtenStackTrace::class.java)
             assertThat(throwable).hasMessageStartingWith("Er dødsbo og har feilet flere ganger")
