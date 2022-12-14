@@ -39,7 +39,7 @@ internal class OppgaveServiceTest {
         mockkObject(OppgaveBeskrivelse)
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns mockk()
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any(), any()) } returns mockk()
     }
 
     @AfterEach
