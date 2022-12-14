@@ -32,6 +32,7 @@ object OppgaveUtil {
         enhetsnummer: Enhet,
         oppgavetype: Oppgavetype,
         beskrivelse: String,
+        settBehandlesAvApplikasjon: Boolean,
         fristFerdigstillelse: LocalDate? = null
     ): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
@@ -44,7 +45,7 @@ object OppgaveUtil {
             enhetsnummer = enhetsnummer.enhetId,
             behandlingstema = opprettBehandlingstema(stønadstype).value,
             tilordnetRessurs = null,
-            behandlesAvApplikasjon = "familie-ef-sak"
+            behandlesAvApplikasjon = if (settBehandlesAvApplikasjon) "familie-ef-sak" else null
         )
     }
 

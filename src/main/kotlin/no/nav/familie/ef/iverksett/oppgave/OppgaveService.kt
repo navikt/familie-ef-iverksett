@@ -55,7 +55,8 @@ class OppgaveService(
                 iverksett.fagsak.stønadstype,
                 enhet,
                 Oppgavetype.VurderHenvendelse,
-                beskrivelse
+                beskrivelse,
+                settBehandlesAvApplikasjon = false
             )
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
             ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
@@ -122,15 +123,18 @@ class OppgaveService(
     }
 
     private fun IverksettOvergangsstønad.gjeldendeVedtak(): VedtaksperiodeOvergangsstønad =
-        this.vedtak.vedtaksperioder.maxByOrNull { it.periode } ?: error("Kunne ikke finne vedtaksperioder")
+        this.vedtaksperioderUtenSanksjon().maxByOrNull { it.periode } ?: error("Kunne ikke finne vedtaksperioder")
 
     private fun IverksettOvergangsstønad.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate {
-        return this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
+        return this.vedtaksperioderUtenSanksjon().maxOf { it.periode.tomDato }
     }
 
     private fun IverksettOvergangsstønad.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
         Pair(
-            this.vedtak.vedtaksperioder.minOf { it.periode.fomDato },
-            this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
+            this.vedtaksperioderUtenSanksjon().minOf { it.periode.fomDato },
+            this.vedtaksperioderUtenSanksjon().maxOf { it.periode.tomDato }
         )
+
+    private fun IverksettOvergangsstønad.vedtaksperioderUtenSanksjon(): List<VedtaksperiodeOvergangsstønad> =
+        this.vedtak.vedtaksperioder.filter { it.periodeType != VedtaksperiodeType.SANKSJON }
 }
