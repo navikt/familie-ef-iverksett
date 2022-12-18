@@ -16,7 +16,7 @@
     <properties>
         <java.version>17</java.version>
         <kotlin.version>1.6.21</kotlin.version>
-        <springdoc.version>1.6.13</springdoc.version>
+        <springdoc.version>1.6.14</springdoc.version>
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20221101085322_cc4d556</felles.version>
         <familie.kontrakter.version>2.0_20221213103954_b3f2d13</familie.kontrakter.version>
