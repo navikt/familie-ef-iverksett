@@ -123,18 +123,15 @@ class OppgaveService(
     }
 
     private fun IverksettOvergangsstønad.gjeldendeVedtak(): VedtaksperiodeOvergangsstønad =
-        this.vedtaksperioderUtenSanksjon().maxByOrNull { it.periode } ?: error("Kunne ikke finne vedtaksperioder")
+        this.vedtak.vedtaksperioder.maxByOrNull { it.periode } ?: error("Kunne ikke finne vedtaksperioder")
 
     private fun IverksettOvergangsstønad.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate {
-        return this.vedtaksperioderUtenSanksjon().maxOf { it.periode.tomDato }
+        return this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
     }
 
     private fun IverksettOvergangsstønad.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
         Pair(
-            this.vedtaksperioderUtenSanksjon().minOf { it.periode.fomDato },
-            this.vedtaksperioderUtenSanksjon().maxOf { it.periode.tomDato }
+            this.vedtak.vedtaksperioder.minOf { it.periode.fomDato },
+            this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
         )
-
-    private fun IverksettOvergangsstønad.vedtaksperioderUtenSanksjon(): List<VedtaksperiodeOvergangsstønad> =
-        this.vedtak.vedtaksperioder.filter { it.periodeType != VedtaksperiodeType.SANKSJON }
 }
