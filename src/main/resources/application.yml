@@ -139,13 +139,16 @@ funksjonsbrytere:
 
 DEPLOY_ENV: prod
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.${DEPLOY_ENV}-fss-pub.nais.io
-ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-v1
-ENSLIG_FORSORGER_BEHANDLING_TOPIC: teamfamilie.aapen-ensligforsorger-behandling-v1
+FAMILIE_OPPDRAG_SCOPE: api://${DEPLOY_ENV}-fss.teamfamilie.familie-integrasjoner/.default
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.${DEPLOY_ENV}-fss-pub.nais.io
 FAMILIE_INTEGRASJONER_SCOPE: api://${DEPLOY_ENV}-fss.teamfamilie.familie-integrasjoner/.default
 INFOTRYGD_FEED_API_URL: https://familie-ef-infotrygd-feed.${DEPLOY_ENV}-fss-pub.nais.io
+EF_INFOTRYGD_FEED_SCOPE: api://${DEPLOY_ENV}-fss.teamfamilie.familie-ef-infotrygd-feed/.default
 FAMILIE_TILBAKE_URL: http://familie-tilbake
 FAMILIE_TILBAKE_SCOPE: api://${DEPLOY_ENV}-gcp.teamfamilie.familie-tilbake/.default
+
+ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-v1
+ENSLIG_FORSORGER_BEHANDLING_TOPIC: teamfamilie.aapen-ensligforsorger-behandling-v1
 VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-iverksatt-vedtak
 FAGSYSTEMBEHANDLING_RESPONS_TOPIC: teamfamilie.privat-tbk-hentfagsystemsbehandling-respons-topic
 
