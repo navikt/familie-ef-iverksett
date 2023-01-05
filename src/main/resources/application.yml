@@ -139,7 +139,7 @@ funksjonsbrytere:
 
 DEPLOY_ENV: prod
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.${DEPLOY_ENV}-fss-pub.nais.io
-FAMILIE_OPPDRAG_SCOPE: api://${DEPLOY_ENV}-fss.teamfamilie.familie-integrasjoner/.default
+FAMILIE_OPPDRAG_SCOPE: api://${DEPLOY_ENV}-fss.teamfamilie.familie-oppdrag/.default
 FAMILIE_INTEGRASJONER_API_URL: https://familie-integrasjoner.${DEPLOY_ENV}-fss-pub.nais.io
 FAMILIE_INTEGRASJONER_SCOPE: api://${DEPLOY_ENV}-fss.teamfamilie.familie-integrasjoner/.default
 INFOTRYGD_FEED_API_URL: https://familie-ef-infotrygd-feed.${DEPLOY_ENV}-fss-pub.nais.io
