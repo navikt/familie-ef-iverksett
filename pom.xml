@@ -23,7 +23,7 @@
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20221122145156_a922c71</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20221122130110_53c42d4</familie.eksterne-kontrakter.saksstatistikk-ef>
         <prosessering.version>1.20221110194901_e9e0d90</prosessering.version>
-        <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
         <mockk.version>1.13.1</mockk.version>
         <cucumber.version>7.10.1</cucumber.version>
         <revision>1.0</revision>
