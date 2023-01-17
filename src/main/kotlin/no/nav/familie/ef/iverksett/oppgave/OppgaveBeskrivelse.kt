@@ -3,13 +3,15 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object OppgaveBeskrivelse {
 
     fun beskrivelseFørstegangsbehandlingInnvilget(
-        periode: Pair<LocalDate, LocalDate>,
-        vedtak: VedtaksperiodeOvergangsstønad
+            periode: Pair<LocalDate, LocalDate>,
+            vedtak: VedtaksperiodeOvergangsstønad
     ): String {
         return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
@@ -20,8 +22,8 @@ object OppgaveBeskrivelse {
     }
 
     fun beskrivelseRevurderingInnvilget(
-        vedtaksPeriode: Pair<LocalDate, LocalDate>,
-        gjeldendeVedtak: VedtaksperiodeOvergangsstønad
+            vedtaksPeriode: Pair<LocalDate, LocalDate>,
+            gjeldendeVedtak: VedtaksperiodeOvergangsstønad
     ): String {
         return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
@@ -40,6 +42,11 @@ object OppgaveBeskrivelse {
     private fun Pair<LocalDate, LocalDate>.vedtaksPeriodeToString(): String {
         return this.first.toReadable() + " - " + this.second.toReadable()
     }
+
+    fun YearMonth.tilTekst(): String {
+        return this.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale("nb")))
+    }
+
 
     private fun AktivitetType.beskrivelse(): String {
         return when (this) {
