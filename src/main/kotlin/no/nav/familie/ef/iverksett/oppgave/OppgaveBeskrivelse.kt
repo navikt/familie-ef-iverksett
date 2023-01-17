@@ -47,7 +47,6 @@ object OppgaveBeskrivelse {
         return this.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale("nb")))
     }
 
-
     private fun AktivitetType.beskrivelse(): String {
         return when (this) {
             AktivitetType.MIGRERING -> error("Skal ikke opprette oppfølgningsoppgave for migrering")
