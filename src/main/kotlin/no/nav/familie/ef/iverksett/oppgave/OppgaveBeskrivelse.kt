@@ -3,7 +3,9 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object OppgaveBeskrivelse {
 
@@ -41,6 +43,11 @@ object OppgaveBeskrivelse {
         return this.first.toReadable() + " - " + this.second.toReadable()
     }
 
+    fun YearMonth.tilTekst(): String {
+        val månedÅrSomTekst = DateTimeFormatter.ofPattern("MMMM yyyy", Locale("nb"))
+        return this.format(månedÅrSomTekst)
+    }
+
     private fun AktivitetType.beskrivelse(): String {
         return when (this) {
             AktivitetType.MIGRERING -> error("Skal ikke opprette oppfølgningsoppgave for migrering")
@@ -62,8 +69,10 @@ object OppgaveBeskrivelse {
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_UTDANNING -> "Stønad i påvente av utdanning (§15-8 femte ledd)"
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_ARBEID_REELL_ARBEIDSSØKER ->
                 "Stønad i påvente av arbeid - reell arnbeidssøker (§15-8 femte ledd)"
+
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_OPPSTART_KVALIFISERINGSPROGRAM ->
                 "Stønad i påvente av oppstart kvalifiseringsprogram"
+
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_TILSYNSORDNING -> "Stønad i påvente av tilsynsordning (§15-8 femte ledd)"
         }
     }

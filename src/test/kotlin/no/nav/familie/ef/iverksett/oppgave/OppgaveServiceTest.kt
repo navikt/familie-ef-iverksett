@@ -8,6 +8,7 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.lagIverksettData
@@ -274,6 +275,16 @@ internal class OppgaveServiceTest {
     }
 
     @Test
+    internal fun `Hvis iverksetting av sanksjon, lag sanksjonsbeskrivelse på oppgave`() {
+        val februar23 = YearMonth.of(2023, 2)
+        val iverksett = lagIverksettOvergangsstønadSanksjon(februar23)
+
+        val oppgavebeskrivelse = oppgaveService.lagOppgavebeskrivelse(iverksett)
+
+        assertThat(oppgavebeskrivelse).isEqualTo("Bruker har fått vedtak om sanksjon 1 mnd: februar 2023")
+    }
+
+    @Test
     internal fun `opphørt revurdering, forvent kall til beskrivelseRevurderingOpphørt`() {
         val iverksett = lagIverksettData(
             UUID.randomUUID(),
@@ -390,20 +401,50 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
             andelsdatoer = listOf(YearMonth.now().minusMonths(2), YearMonth.now(), YearMonth.now().minusMonths(1))
         )
-        val forrigeBehandlingIverksett = lagIverksettData(
+        val forrigeBehandlingIverksett = lagMigreringsIverksetting()
+        every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
+    }
+
+    @Test
+    internal fun `Forrige behandling er migreringssak, iverksettbehandling er av type sanksjon - skal opprette vurder hendelse oppgave`() {
+        val iverksett = lagIverksettOvergangsstønadSanksjon()
+        val forrigeBehandlingIverksett = lagMigreringsIverksetting()
+
+        every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
+
+        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue
+    }
+
+    private fun lagMigreringsIverksetting() = lagIverksettData(
+        UUID.randomUUID(),
+        BehandlingType.REVURDERING,
+        Vedtaksresultat.INNVILGET,
+        listOf(
+            vedtaksPeriode(
+                aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
+                fraOgMed = LocalDate.now().minusMonths(3),
+                periodeType = VedtaksperiodeType.MIGRERING
+            )
+        )
+    )
+
+    private fun lagIverksettOvergangsstønadSanksjon(sanksjonsmåned: YearMonth = YearMonth.now()): IverksettOvergangsstønad {
+        val månedsperiode = Månedsperiode(fom = sanksjonsmåned, tom = sanksjonsmåned)
+        val vedtaksPeriode = VedtaksperiodeOvergangsstønad(
+            periode = månedsperiode,
+            periodeType = VedtaksperiodeType.SANKSJON,
+            aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT
+        )
+        val andeler = listOf(sanksjonsmåned.minusMonths(1), sanksjonsmåned.plusMonths(1))
+        return lagIverksettData(
             UUID.randomUUID(),
             BehandlingType.REVURDERING,
             Vedtaksresultat.INNVILGET,
-            listOf(
-                vedtaksPeriode(
-                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                    fraOgMed = LocalDate.now().minusMonths(3),
-                    periodeType = VedtaksperiodeType.MIGRERING
-                )
-            )
+            listOf(vedtaksPeriode),
+            andelsdatoer = andeler,
+            årsak = BehandlingÅrsak.SANKSJON_1_MND
         )
-        every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
     }
 
     private fun vedtaksPeriode(
