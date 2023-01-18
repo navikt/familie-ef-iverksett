@@ -10,8 +10,8 @@ import java.util.Locale
 object OppgaveBeskrivelse {
 
     fun beskrivelseFørstegangsbehandlingInnvilget(
-            periode: Pair<LocalDate, LocalDate>,
-            vedtak: VedtaksperiodeOvergangsstønad
+        periode: Pair<LocalDate, LocalDate>,
+        vedtak: VedtaksperiodeOvergangsstønad
     ): String {
         return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
@@ -22,8 +22,8 @@ object OppgaveBeskrivelse {
     }
 
     fun beskrivelseRevurderingInnvilget(
-            vedtaksPeriode: Pair<LocalDate, LocalDate>,
-            gjeldendeVedtak: VedtaksperiodeOvergangsstønad
+        vedtaksPeriode: Pair<LocalDate, LocalDate>,
+        gjeldendeVedtak: VedtaksperiodeOvergangsstønad
     ): String {
         return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
@@ -44,7 +44,8 @@ object OppgaveBeskrivelse {
     }
 
     fun YearMonth.tilTekst(): String {
-        return this.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale("nb")))
+        val månedÅrSomTekst = DateTimeFormatter.ofPattern("MMMM yyyy", Locale("nb"))
+        return this.format(månedÅrSomTekst)
     }
 
     private fun AktivitetType.beskrivelse(): String {
@@ -68,8 +69,10 @@ object OppgaveBeskrivelse {
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_UTDANNING -> "Stønad i påvente av utdanning (§15-8 femte ledd)"
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_ARBEID_REELL_ARBEIDSSØKER ->
                 "Stønad i påvente av arbeid - reell arnbeidssøker (§15-8 femte ledd)"
+
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_OPPSTART_KVALIFISERINGSPROGRAM ->
                 "Stønad i påvente av oppstart kvalifiseringsprogram"
+
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_TILSYNSORDNING -> "Stønad i påvente av tilsynsordning (§15-8 femte ledd)"
         }
     }

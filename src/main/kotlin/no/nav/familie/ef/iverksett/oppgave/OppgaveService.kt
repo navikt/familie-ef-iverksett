@@ -31,7 +31,7 @@ class OppgaveService(
             return false
         }
 
-        if(iverksett.behandling.behandlingÅrsak==BehandlingÅrsak.SANKSJON_1_MND){
+        if (iverksett.behandling.behandlingÅrsak == BehandlingÅrsak.SANKSJON_1_MND) {
             return true
         }
         return when (iverksett.behandling.behandlingType) {
@@ -49,7 +49,7 @@ class OppgaveService(
 
     fun opprettVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Long {
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
-                    ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
+            ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
         val beskrivelse = lagOppgavebeskrivelse(iverksett)
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
@@ -66,11 +66,11 @@ class OppgaveService(
     }
 
     fun lagOppgavebeskrivelse(iverksett: IverksettOvergangsstønad) =
-            when (iverksett.behandling.behandlingType) {
-                BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
-                BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
-                else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
-            }
+        when (iverksett.behandling.behandlingType) {
+            BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
+            BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
+            else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
+        }
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
         return when (iverksett.vedtak.vedtaksresultat) {
@@ -78,15 +78,15 @@ class OppgaveService(
                 iverksett.totalVedtaksperiode(),
                 iverksett.gjeldendeVedtak()
             )
+
             Vedtaksresultat.AVSLÅTT -> beskrivelseFørstegangsbehandlingAvslått(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
         }
     }
 
     private fun finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
-
-        if(iverksett.behandling.behandlingÅrsak==BehandlingÅrsak.SANKSJON_1_MND){
-            val sanksjonsvedtakMåned :String = iverksett.finnSanksjonsvedtakMåned().tilTekst()
+        if (iverksett.behandling.behandlingÅrsak == BehandlingÅrsak.SANKSJON_1_MND) {
+            val sanksjonsvedtakMåned: String = iverksett.finnSanksjonsvedtakMåned().tilTekst()
             return "Bruker har fått vedtak om sanksjon 1 mnd: $sanksjonsvedtakMåned"
         }
 
@@ -99,6 +99,7 @@ class OppgaveService(
                     )
                 } ?: finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             }
+
             Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(opphørsdato(iverksett))
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
         }
@@ -154,6 +155,6 @@ class OppgaveService(
     private fun IverksettOvergangsstønad.finnSanksjonsvedtakMåned(): YearMonth {
         val yearMonth = this.vedtak.vedtaksperioder.findLast { it.periodeType == VedtaksperiodeType.SANKSJON }?.periode?.fom
         return yearMonth
-               ?: error("Finner ikke periode for iversetting av sanksjon. Behandling: (${this.behandling.behandlingId})")
+            ?: error("Finner ikke periode for iversetting av sanksjon. Behandling: (${this.behandling.behandlingId})")
     }
 }

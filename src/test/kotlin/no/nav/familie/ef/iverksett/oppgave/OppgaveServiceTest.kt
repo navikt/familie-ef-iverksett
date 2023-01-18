@@ -418,29 +418,33 @@ internal class OppgaveServiceTest {
     }
 
     private fun lagMigreringsIverksetting() = lagIverksettData(
+        UUID.randomUUID(),
+        BehandlingType.REVURDERING,
+        Vedtaksresultat.INNVILGET,
+        listOf(
+            vedtaksPeriode(
+                aktivitet = FORSØRGER_I_ARBEID,
+                fraOgMed = LocalDate.now().minusMonths(3),
+                periodeType = VedtaksperiodeType.MIGRERING
+            )
+        )
+    )
+
+    private fun lagIverksettOvergangsstønadSanksjon(sanksjonsmåned: YearMonth = YearMonth.now()): IverksettOvergangsstønad {
+        val månedsperiode = Månedsperiode(fom = sanksjonsmåned, tom = sanksjonsmåned)
+        val vedtaksPeriode = VedtaksperiodeOvergangsstønad(
+            periode = månedsperiode,
+            periodeType = VedtaksperiodeType.SANKSJON,
+            aktivitet = IKKE_AKTIVITETSPLIKT
+        )
+        val andeler = listOf(sanksjonsmåned.minusMonths(1), sanksjonsmåned.plusMonths(1))
+        return lagIverksettData(
             UUID.randomUUID(),
             BehandlingType.REVURDERING,
             Vedtaksresultat.INNVILGET,
-            listOf(
-                    vedtaksPeriode(
-                            aktivitet = FORSØRGER_I_ARBEID,
-                            fraOgMed = LocalDate.now().minusMonths(3),
-                            periodeType = VedtaksperiodeType.MIGRERING
-                    )
-            )
-    )
-
-    private fun lagIverksettOvergangsstønadSanksjon(sanksjonsmåned : YearMonth = YearMonth.now()) : IverksettOvergangsstønad {
-        val månedsperiode = Månedsperiode(fom = sanksjonsmåned, tom = sanksjonsmåned)
-        val vedtaksPeriode = VedtaksperiodeOvergangsstønad(periode=månedsperiode, periodeType = VedtaksperiodeType.SANKSJON, aktivitet=IKKE_AKTIVITETSPLIKT)
-        val andeler = listOf(sanksjonsmåned.minusMonths(1), sanksjonsmåned.plusMonths(1))
-        return lagIverksettData(
-                UUID.randomUUID(),
-                BehandlingType.REVURDERING,
-                Vedtaksresultat.INNVILGET,
-                listOf(vedtaksPeriode),
-                andelsdatoer = andeler,
-                årsak = BehandlingÅrsak.SANKSJON_1_MND
+            listOf(vedtaksPeriode),
+            andelsdatoer = andeler,
+            årsak = BehandlingÅrsak.SANKSJON_1_MND
         )
     }
 
