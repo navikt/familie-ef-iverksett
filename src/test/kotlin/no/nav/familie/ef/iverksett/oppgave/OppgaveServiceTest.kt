@@ -17,7 +17,6 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
-import no.nav.familie.kontrakter.ef.iverksett.AktivitetType.*
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.Månedsperiode
 import org.assertj.core.api.Assertions.assertThat
@@ -423,7 +422,7 @@ internal class OppgaveServiceTest {
         Vedtaksresultat.INNVILGET,
         listOf(
             vedtaksPeriode(
-                aktivitet = FORSØRGER_I_ARBEID,
+                aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
                 fraOgMed = LocalDate.now().minusMonths(3),
                 periodeType = VedtaksperiodeType.MIGRERING
             )
@@ -435,7 +434,7 @@ internal class OppgaveServiceTest {
         val vedtaksPeriode = VedtaksperiodeOvergangsstønad(
             periode = månedsperiode,
             periodeType = VedtaksperiodeType.SANKSJON,
-            aktivitet = IKKE_AKTIVITETSPLIKT
+            aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT
         )
         val andeler = listOf(sanksjonsmåned.minusMonths(1), sanksjonsmåned.plusMonths(1))
         return lagIverksettData(
