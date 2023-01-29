@@ -17,13 +17,13 @@ import java.util.UUID
 @Service
 @TaskStepBeskrivelse(
     taskStepType = SendFattetVedtakTilInfotrygdTask.TYPE,
-    beskrivelse = "Sender hendelse om fattet vedtak til infotrygd"
+    beskrivelse = "Sender hendelse om fattet vedtak til infotrygd",
 )
 class SendFattetVedtakTilInfotrygdTask(
     private val infotrygdFeedClient: InfotrygdFeedClient,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
     private val iverksettingRepository: IverksettingRepository,
-    private val taskService: TaskService
+    private val taskService: TaskService,
 ) : AsyncTaskStep {
 
     private final val logger = LoggerFactory.getLogger(javaClass)
@@ -34,7 +34,7 @@ class SendFattetVedtakTilInfotrygdTask(
         if (iverksettData.behandling.forrigeBehandlingId != null) {
             logger.info(
                 "Sender ikke ett nytt vedtak til infotrygd for fagsak=${iverksettData.fagsak.fagsakId}" +
-                    " då det allerede er sendt på forrige behandling"
+                    " då det allerede er sendt på forrige behandling",
             )
             return
         }

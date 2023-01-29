@@ -56,7 +56,7 @@ class VedtakstatistikkServiceTest {
         val vedtakOvergangsstønad = opprettVedtakstatistikkOvergangsstønad(
             behandlingId = iverksettOvergangsstønad.behandling.eksternId,
             fagsakId = iverksettOvergangsstønad.fagsak.eksternId,
-            tidspunktVedtak = iverksettOvergangsstønad.vedtak.vedtakstidspunkt.toLocalDate()
+            tidspunktVedtak = iverksettOvergangsstønad.vedtak.vedtakstidspunkt.toLocalDate(),
         )
         assertThat(vedtakOvergangsstønad).isEqualTo(vedtakstatistikkJsonSlot.captured)
     }
@@ -83,7 +83,7 @@ class VedtakstatistikkServiceTest {
     private fun opprettVedtakstatistikkOvergangsstønad(
         behandlingId: Long,
         fagsakId: Long,
-        tidspunktVedtak: LocalDate
+        tidspunktVedtak: LocalDate,
     ): VedtakOvergangsstønadDVH {
         return VedtakOvergangsstønadDVH(
             fagsakId = fagsakId,
@@ -94,8 +94,8 @@ class VedtakstatistikkServiceTest {
             vilkårsvurderinger = listOf(
                 VilkårsvurderingDto(
                     vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT,
-                    resultat = Vilkårsresultat.OPPFYLT
-                )
+                    resultat = Vilkårsresultat.OPPFYLT,
+                ),
             ),
             person = Person(personIdent = "12345678910"),
             barn = emptyList(),
@@ -107,8 +107,8 @@ class VedtakstatistikkServiceTest {
                     fraOgMed = YearMonth.now().atDay(1),
                     tilOgMed = YearMonth.now().atEndOfMonth(),
                     aktivitet = AktivitetType.BARNET_ER_SYKT,
-                    periodeType = VedtaksperiodeType.HOVEDPERIODE
-                )
+                    periodeType = VedtaksperiodeType.HOVEDPERIODE,
+                ),
             ),
             utbetalinger = listOf(
                 Utbetaling(
@@ -121,22 +121,22 @@ class VedtakstatistikkServiceTest {
                     utbetalingsdetalj = Utbetalingsdetalj(
                         klassekode = "EFOG",
                         gjelderPerson = Person(personIdent = "12345678910"),
-                        delytelseId = "1"
-                    )
-                )
+                        delytelseId = "1",
+                    ),
+                ),
             ),
 
             aktivitetskrav = Aktivitetskrav(
                 aktivitetspliktInntrefferDato = null,
-                harSagtOppArbeidsforhold = true
+                harSagtOppArbeidsforhold = true,
             ),
             funksjonellId = 9L,
             stønadstype = StønadType.OVERGANGSSTØNAD,
             kravMottatt = LocalDate.of(2021, 3, 3),
             årsakRevurdering = ÅrsakRevurdering(
                 Opplysningskilde.MELDING_MODIA.name,
-                Revurderingsårsak.ENDRING_INNTEKT.name
-            )
+                Revurderingsårsak.ENDRING_INNTEKT.name,
+            ),
         )
     }
 }

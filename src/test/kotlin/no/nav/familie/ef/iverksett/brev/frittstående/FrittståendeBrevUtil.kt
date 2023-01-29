@@ -20,17 +20,17 @@ object FrittståendeBrevUtil {
                     "11",
                     "navn1",
                     Brevmottaker.IdentType.PERSONIDENT,
-                    Brevmottaker.MottakerRolle.BRUKER
+                    Brevmottaker.MottakerRolle.BRUKER,
                 ),
                 no.nav.familie.ef.iverksett.brev.domain.Brevmottaker(
                     "22",
                     "navn2",
                     Brevmottaker.IdentType.PERSONIDENT,
-                    Brevmottaker.MottakerRolle.BRUKER
-                )
-            )
+                    Brevmottaker.MottakerRolle.BRUKER,
+                ),
+            ),
         ),
         fil = byteArrayOf(13),
-        brevtype = FrittståendeBrevType.INFORMASJONSBREV
+        brevtype = FrittståendeBrevType.INFORMASJONSBREV,
     )
 }

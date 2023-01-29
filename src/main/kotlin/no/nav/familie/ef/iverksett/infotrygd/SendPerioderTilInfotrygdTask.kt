@@ -18,13 +18,13 @@ import java.util.UUID
 @Service
 @TaskStepBeskrivelse(
     taskStepType = SendPerioderTilInfotrygdTask.TYPE,
-    beskrivelse = "Sender periodehendelse til infotrygd"
+    beskrivelse = "Sender periodehendelse til infotrygd",
 )
 class SendPerioderTilInfotrygdTask(
     private val infotrygdFeedClient: InfotrygdFeedClient,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
     private val iverksettingRepository: IverksettingRepository,
-    private val taskService: TaskService
+    private val taskService: TaskService,
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -41,7 +41,7 @@ class SendPerioderTilInfotrygdTask(
             Periode(
                 startdato = it.periode.fomDato,
                 sluttdato = it.periode.tomDato,
-                fullOvergangsstønad = it.erFullOvergangsstønad()
+                fullOvergangsstønad = it.erFullOvergangsstønad(),
             )
         } ?: error("Kan ikke finne tilkjentYtelse for behandling med id=${iverksett.behandling.behandlingId}")
 

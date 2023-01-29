@@ -22,7 +22,7 @@ import java.net.URI
 @Component
 class TilbakekrevingClient(
     @Qualifier("azure") restOperations: RestOperations,
-    @Value("\${FAMILIE_TILBAKE_URL}") private val familieTilbakeUri: URI
+    @Value("\${FAMILIE_TILBAKE_URL}") private val familieTilbakeUri: URI,
 ) :
     AbstractRestClient(restOperations, "familie.tilbakekreving") {
 
@@ -50,7 +50,7 @@ class TilbakekrevingClient(
         .toUri()
 
     private fun kanBehandlingOpprettesManueltUri(fagsakId: Long, ytelsestype: Ytelsestype) = UriComponentsBuilder.fromUri(
-        familieTilbakeUri
+        familieTilbakeUri,
     )
         .pathSegment("api/ytelsestype/$ytelsestype/fagsak/$fagsakId/kanBehandlingOpprettesManuelt/v1")
         .build()
@@ -60,7 +60,7 @@ class TilbakekrevingClient(
         return postForEntity(
             hentForhåndsvisningVarselbrevUri,
             forhåndsvisVarselbrevRequest,
-            HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_PDF) }
+            HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_PDF) },
         )
     }
 

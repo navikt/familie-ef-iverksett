@@ -33,7 +33,7 @@ internal class IverksettMotOppdragTaskTest {
             iverksettingRepository = iverksettingRepository,
             oppdragClient = oppdragClient,
             taskService = taskService,
-            iverksettResultatService = iverksettResultatService
+            iverksettResultatService = iverksettResultatService,
         )
 
     @BeforeEach

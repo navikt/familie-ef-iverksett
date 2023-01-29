@@ -11,14 +11,14 @@ object TokenUtil {
         val claims = mapOf(
             "oid" to thisId,
             "azp" to clientId,
-            "roles" to if (accessAsApplication) listOf("access_as_application") else emptyList()
+            "roles" to if (accessAsApplication) listOf("access_as_application") else emptyList(),
         )
 
         return mockOAuth2Server.issueToken(
             issuerId = "azuread",
             subject = thisId,
             audience = "aud-localhost",
-            claims = claims
+            claims = claims,
         ).serialize()
     }
 
@@ -30,14 +30,14 @@ object TokenUtil {
             "oid" to thisId,
             "azp" to clientId,
             "name" to saksbehandler,
-            "NAVident" to saksbehandler
+            "NAVident" to saksbehandler,
         )
 
         return mockOAuth2Server.issueToken(
             issuerId = "azuread",
             subject = thisId,
             audience = "aud-localhost",
-            claims = claims
+            claims = claims,
         ).serialize()
     }
 }

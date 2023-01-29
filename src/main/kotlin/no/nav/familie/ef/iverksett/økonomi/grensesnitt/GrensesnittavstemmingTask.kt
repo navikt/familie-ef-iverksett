@@ -21,7 +21,7 @@ data class GrensesnittavstemmingPayload(val fraDato: LocalDate, val stønadstype
 @TaskStepBeskrivelse(taskStepType = GrensesnittavstemmingTask.TYPE, beskrivelse = "Utfører grensesnittavstemming mot økonomi.")
 class GrensesnittavstemmingTask(
     private val oppdragClient: OppdragClient,
-    private val taskService: TaskService
+    private val taskService: TaskService,
 ) : AsyncTaskStep {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
@@ -35,7 +35,7 @@ class GrensesnittavstemmingTask(
             val grensesnittavstemmingRequest = GrensesnittavstemmingRequest(
                 fagsystem = stønadstype.tilKlassifisering(),
                 fra = fraTidspunkt,
-                til = tilTidspunkt
+                til = tilTidspunkt,
             )
             oppdragClient.grensesnittavstemming(grensesnittavstemmingRequest)
         }

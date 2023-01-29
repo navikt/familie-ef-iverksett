@@ -12,5 +12,5 @@ data class TilkjentYtelseMedMetaData(
     val eksternFagsakId: Long,
     val personIdent: String,
     val behandlingId: UUID,
-    val vedtaksdato: LocalDate
+    val vedtaksdato: LocalDate,
 )

@@ -12,11 +12,11 @@ import java.util.UUID
 @TaskStepBeskrivelse(
     taskStepType = VedtakstatistikkTask.TYPE,
     beskrivelse = "Sender vedtaksstatistikk til DVH.",
-    settTilManuellOppfølgning = true
+    settTilManuellOppfølgning = true,
 )
 class VedtakstatistikkTask(
     private val iverksettingRepository: IverksettingRepository,
-    private val vedtakstatistikkService: VedtakstatistikkService
+    private val vedtakstatistikkService: VedtakstatistikkService,
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {

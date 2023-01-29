@@ -54,6 +54,6 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
         restTemplate.exchange(
             localhostUrl("/api/statistikk/behandlingsstatistikk/"),
             HttpMethod.POST,
-            HttpEntity(behandlingStatistikkDto, headers)
+            HttpEntity(behandlingStatistikkDto, headers),
         )
 }

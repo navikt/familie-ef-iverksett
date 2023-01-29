@@ -70,7 +70,7 @@ internal class VedtakstatistikkMapperTest {
     internal fun `skal mappe iverksett til VedtakOvergangsstønadDVH - sjekk alle felter`() {
         val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
             iverksettOvergangsstønad(),
-            forrigeBehandlingEksternId
+            forrigeBehandlingEksternId,
         )
         assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
         assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.aktivitetspliktInntrefferDato).isNull()
@@ -117,10 +117,10 @@ internal class VedtakstatistikkMapperTest {
             iverksettOvergangsstønad().copy(
                 vedtak = vedtaksdetaljerOvergangsstønad(
                     Vedtaksresultat.AVSLÅTT,
-                    AvslagÅrsak.MINDRE_INNTEKTSENDRINGER
-                )
+                    AvslagÅrsak.MINDRE_INNTEKTSENDRINGER,
+                ),
             ),
-            forrigeBehandlingEksternId
+            forrigeBehandlingEksternId,
         )
         assertThat(vedtakOvergangsstønadDVH.vedtak).isEqualTo(Vedtak.AVSLÅTT)
         assertThat(vedtakOvergangsstønadDVH.avslagÅrsak).isEqualTo("MINDRE_INNTEKTSENDRINGER")
@@ -133,12 +133,12 @@ internal class VedtakstatistikkMapperTest {
             personIdent = søker,
             barn = listOf(
                 Barn(personIdent = barnFnr, termindato = termindato),
-                Barn(termindato = termindato)
+                Barn(termindato = termindato),
             ),
             tilhørendeEnhet = "4489",
-            adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG
+            adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
         ),
-        vedtak = vedtaksdetaljerOvergangsstønad()
+        vedtak = vedtaksdetaljerOvergangsstønad(),
     )
 
     @Test
@@ -151,14 +151,14 @@ internal class VedtakstatistikkMapperTest {
                     personIdent = søker,
                     barn = listOf(
                         Barn(personIdent = barnFnr),
-                        Barn(termindato = termindato)
+                        Barn(termindato = termindato),
                     ),
                     tilhørendeEnhet = "4489",
-                    adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG
+                    adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
                 ),
-                vedtak = vedtaksdetaljerBarnetilsyn()
+                vedtak = vedtaksdetaljerBarnetilsyn(),
             ),
-            null
+            null,
         )
 
         assertThat(vedtakBarnetilsynDVH.aktivitetskrav?.name).isEqualTo(AktivitetsvilkårBarnetilsyn.ER_I_ARBEID.name)
@@ -195,14 +195,14 @@ internal class VedtakstatistikkMapperTest {
                     personIdent = søker,
                     barn = listOf(
                         Barn(personIdent = barnFnr),
-                        Barn(termindato = termindato)
+                        Barn(termindato = termindato),
                     ),
                     tilhørendeEnhet = "4489",
-                    adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG
+                    adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
                 ),
-                vedtak = vedtaksdetaljerSkolepenger()
+                vedtak = vedtaksdetaljerSkolepenger(),
             ),
-            null
+            null,
         )
 
         assertThat(vedtakSkolepenger.fagsakId).isEqualTo(eksternFagsakId)
@@ -214,9 +214,9 @@ internal class VedtakstatistikkMapperTest {
             lagVilkårsvurderinger().map {
                 VilkårsvurderingDto(
                     Vilkår.valueOf(it.vilkårType.name),
-                    VilkårsresultatEksterneKontrakter.valueOf(it.resultat.name)
+                    VilkårsresultatEksterneKontrakter.valueOf(it.resultat.name),
                 )
-            }
+            },
         )
 
         val forventetSkoleårsperiode = vedtaksdetaljerSkolepenger().vedtaksperioder.first().perioder.first()
@@ -243,7 +243,7 @@ internal class VedtakstatistikkMapperTest {
         Fagsakdetaljer(
             fagsakId = fagsakId,
             eksternId = eksternFagsakId,
-            stønadstype = stønadstype
+            stønadstype = stønadstype,
         )
 
     fun behandlingsdetaljer(): Behandlingsdetaljer =
@@ -257,7 +257,7 @@ internal class VedtakstatistikkMapperTest {
             vilkårsvurderinger = lagVilkårsvurderinger(),
             aktivitetspliktInntrefferDato = null,
             kravMottatt = LocalDate.of(2021, 3, 1),
-            årsakRevurdering = ÅrsakRevurdering(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT)
+            årsakRevurdering = ÅrsakRevurdering(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
         )
 
     fun tilkjentYtelse(): TilkjentYtelse =
@@ -274,7 +274,7 @@ internal class VedtakstatistikkMapperTest {
                     inntektsreduksjon = 11000,
                     periodeId = 1,
                     forrigePeriodeId = null,
-                    kildeBehandlingId = behandlingId
+                    kildeBehandlingId = behandlingId,
                 ),
                 AndelTilkjentYtelse(
                     beløp = 10000,
@@ -284,10 +284,10 @@ internal class VedtakstatistikkMapperTest {
                     inntektsreduksjon = 11000,
                     periodeId = 2,
                     forrigePeriodeId = 1,
-                    kildeBehandlingId = behandlingId
-                )
+                    kildeBehandlingId = behandlingId,
+                ),
             ),
-            startmåned = YearMonth.now()
+            startmåned = YearMonth.now(),
         )
 
     fun vedtaksdetaljerSkolepenger() = VedtaksdetaljerSkolepenger(
@@ -304,18 +304,18 @@ internal class VedtakstatistikkMapperTest {
                         studietype = SkolepengerStudietype.HØGSKOLE_UNIVERSITET,
                         periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
                         studiebelastning = 100,
-                        makssatsForSkoleår = 50000
-                    )
+                        makssatsForSkoleår = 50000,
+                    ),
                 ),
                 utgiftsperioder = listOf(
                     SkolepengerUtgift(
                         utgiftsdato = LocalDate.of(2021, 1, 1),
                         utgifter = 5000,
-                        stønad = 5000
-                    )
-                )
-            )
-        )
+                        stønad = 5000,
+                    ),
+                ),
+            ),
+        ),
     )
 
     fun vedtaksdetaljerBarnetilsyn() = VedtaksdetaljerBarnetilsyn(
@@ -329,32 +329,32 @@ internal class VedtakstatistikkMapperTest {
             VedtaksperiodeBarnetilsyn(
                 periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
                 utgifter = 1000,
-                antallBarn = 1
+                antallBarn = 1,
             ),
             VedtaksperiodeBarnetilsyn(
                 periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
                 utgifter = 2000,
-                antallBarn = 2
-            )
+                antallBarn = 2,
+            ),
         ),
         brevmottakere = Brevmottakere(emptyList()),
         kontantstøtte = listOf(
             PeriodeMedBeløp(
                 periode = Månedsperiode(YearMonth.of(2021, 5), YearMonth.of(2021, 7)),
-                beløp = 1000
-            )
+                beløp = 1000,
+            ),
         ),
         tilleggsstønad = listOf(
             PeriodeMedBeløp(
                 periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 8)),
-                beløp = 2000
-            )
-        )
+                beløp = 2000,
+            ),
+        ),
     )
 
     fun vedtaksdetaljerOvergangsstønad(
         resultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
-        avslagÅrsak: AvslagÅrsak? = null
+        avslagÅrsak: AvslagÅrsak? = null,
     ): VedtaksdetaljerOvergangsstønad {
         return VedtaksdetaljerOvergangsstønad(
             vedtaksresultat = resultat,
@@ -368,15 +368,15 @@ internal class VedtakstatistikkMapperTest {
                 VedtaksperiodeOvergangsstønad(
                     aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
                     periode = Månedsperiode(YearMonth.of(2021, 2), YearMonth.of(2021, 3)),
-                    periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL
+                    periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL,
                 ),
                 VedtaksperiodeOvergangsstønad(
                     aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
                     periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
-                    periodeType = VedtaksperiodeType.HOVEDPERIODE
-                )
+                    periodeType = VedtaksperiodeType.HOVEDPERIODE,
+                ),
             ),
-            brevmottakere = Brevmottakere(emptyList())
+            brevmottakere = Brevmottakere(emptyList()),
         )
     }
 
@@ -391,9 +391,9 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.SØKER_MEDLEM_I_FOLKETRYGDEN,
                             SvarId.JA,
-                            null
-                        )
-                    )
+                            null,
+                        ),
+                    ),
                 ),
                 Delvilkårsvurdering(
                     resultat = Vilkårsresultat.OPPFYLT,
@@ -401,11 +401,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.MEDLEMSKAP_UNNTAK,
                             SvarId.NEI,
-                            null
-                        )
-                    )
-                )
-            )
+                            null,
+                        ),
+                    ),
+                ),
+            ),
         ),
 
         Vilkårsvurdering(
@@ -418,9 +418,9 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.BOR_OG_OPPHOLDER_SEG_I_NORGE,
                             SvarId.JA,
-                            null
-                        )
-                    )
+                            null,
+                        ),
+                    ),
                 ),
                 Delvilkårsvurdering(
                     resultat = Vilkårsresultat.OPPFYLT,
@@ -428,11 +428,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.OPPHOLD_UNNTAK,
                             SvarId.NEI,
-                            null
-                        )
-                    )
-                )
-            )
+                            null,
+                        ),
+                    ),
+                ),
+            ),
         ),
 
         Vilkårsvurdering(
@@ -445,11 +445,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.OMSORG_FOR_EGNE_ELLER_ADOPTERTE_BARN,
                             SvarId.JA,
-                            null
-                        )
-                    )
-                )
-            )
+                            null,
+                        ),
+                    ),
+                ),
+            ),
         ),
 
         Vilkårsvurdering(
@@ -462,11 +462,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.KRAV_SIVILSTAND_UTEN_PÅKREVD_BEGRUNNELSE,
                             SvarId.JA,
-                            null
-                        )
-                    )
-                )
-            )
+                            null,
+                        ),
+                    ),
+                ),
+            ),
         ),
 
         Vilkårsvurdering(
@@ -479,9 +479,9 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.LEVER_IKKE_I_EKTESKAPLIGNENDE_FORHOLD,
                             SvarId.JA,
-                            null
-                        )
-                    )
+                            null,
+                        ),
+                    ),
                 ),
                 Delvilkårsvurdering(
                     resultat = Vilkårsresultat.OPPFYLT,
@@ -489,11 +489,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.LEVER_IKKE_MED_ANNEN_FORELDER,
                             SvarId.JA,
-                            null
-                        )
-                    )
-                )
-            )
+                            null,
+                        ),
+                    ),
+                ),
+            ),
         ),
 
         Vilkårsvurdering(
@@ -506,9 +506,9 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.SKRIFTLIG_AVTALE_OM_DELT_BOSTED,
                             SvarId.NEI,
-                            null
-                        )
-                    )
+                            null,
+                        ),
+                    ),
                 ),
                 Delvilkårsvurdering(
                     resultat = Vilkårsresultat.OPPFYLT,
@@ -516,9 +516,9 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             regelId = RegelId.NÆRE_BOFORHOLD,
                             svar = SvarId.NEI,
-                            begrunnelse = null
-                        )
-                    )
+                            begrunnelse = null,
+                        ),
+                    ),
                 ),
                 Delvilkårsvurdering(
                     resultat = Vilkårsresultat.OPPFYLT,
@@ -526,11 +526,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             regelId = RegelId.MER_AV_DAGLIG_OMSORG,
                             svar = SvarId.JA,
-                            begrunnelse = null
-                        )
-                    )
-                )
-            )
+                            begrunnelse = null,
+                        ),
+                    ),
+                ),
+            ),
         ),
         Vilkårsvurdering(
             vilkårType = VilkårType.ALENEOMSORG,
@@ -538,9 +538,9 @@ internal class VedtakstatistikkMapperTest {
             delvilkårsvurderinger = listOf(
                 Delvilkårsvurdering(
                     resultat = Vilkårsresultat.SKAL_IKKE_VURDERES,
-                    vurderinger = listOf()
-                )
-            )
+                    vurderinger = listOf(),
+                ),
+            ),
         ),
 
         Vilkårsvurdering(
@@ -553,11 +553,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.HAR_FÅTT_ELLER_VENTER_NYTT_BARN_MED_SAMME_PARTNER,
                             SvarId.NEI,
-                            null
-                        )
-                    )
-                )
-            )
+                            null,
+                        ),
+                    ),
+                ),
+            ),
         ),
 
         Vilkårsvurdering(
@@ -570,11 +570,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
                             svar = SvarId.NEI,
-                            begrunnelse = null
-                        )
-                    )
-                )
-            )
+                            begrunnelse = null,
+                        ),
+                    ),
+                ),
+            ),
         ),
 
         Vilkårsvurdering(
@@ -587,11 +587,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.FYLLER_BRUKER_AKTIVITETSPLIKT,
                             SvarId.JA,
-                            null
-                        )
-                    )
-                )
-            )
+                            null,
+                        ),
+                    ),
+                ),
+            ),
         ),
         Vilkårsvurdering(
             vilkårType = VilkårType.TIDLIGERE_VEDTAKSPERIODER,
@@ -603,9 +603,9 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.HAR_TIDLIGERE_ANDRE_STØNADER_SOM_HAR_BETYDNING,
                             SvarId.NEI,
-                            null
-                        )
-                    )
+                            null,
+                        ),
+                    ),
                 ),
                 Delvilkårsvurdering(
                     Vilkårsresultat.OPPFYLT,
@@ -613,11 +613,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.HAR_TIDLIGERE_MOTTATT_OVERGANSSTØNAD,
                             SvarId.NEI,
-                            null
-                        )
-                    )
-                )
-            )
+                            null,
+                        ),
+                    ),
+                ),
+            ),
         ),
         Vilkårsvurdering(
             vilkårType = VilkårType.AKTIVITET_ARBEID,
@@ -629,11 +629,11 @@ internal class VedtakstatistikkMapperTest {
                         Vurdering(
                             RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM,
                             SvarId.ER_I_ARBEID,
-                            null
-                        )
-                    )
-                )
-            )
-        )
+                            null,
+                        ),
+                    ),
+                ),
+            ),
+        ),
     )
 }

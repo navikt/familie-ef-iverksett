@@ -79,7 +79,7 @@ internal class TilbakekrevingMapperTest {
     fun `skal validere at tilbakekreving med varsel ikker gyldig uten varseltekst`() {
         val tilbakekreving = Tilbakekrevingsdetaljer(
             tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-            tilbakekrevingMedVarsel = null
+            tilbakekrevingMedVarsel = null,
         )
         assertThat(tilbakekreving.validerTilbakekreving()).isFalse
     }
@@ -91,8 +91,8 @@ internal class TilbakekrevingMapperTest {
             tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
                 varseltekst = "",
                 perioder = emptyList(),
-                sumFeilutbetaling = null
-            )
+                sumFeilutbetaling = null,
+            ),
         )
         assertThat(tilbakekreving.validerTilbakekreving()).isFalse
     }
@@ -104,8 +104,8 @@ internal class TilbakekrevingMapperTest {
             tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
                 varseltekst = "",
                 perioder = null,
-                sumFeilutbetaling = BigDecimal.ZERO
-            )
+                sumFeilutbetaling = BigDecimal.ZERO,
+            ),
         )
         assertThat(tilbakekreving.validerTilbakekreving()).isFalse
     }
@@ -115,14 +115,14 @@ internal class TilbakekrevingMapperTest {
         assertThat(
             Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
-                tilbakekrevingMedVarsel = null
-            ).validerTilbakekreving()
+                tilbakekrevingMedVarsel = null,
+            ).validerTilbakekreving(),
         ).isTrue
         assertThat(
             Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.IGNORER_TILBAKEKREVING,
-                tilbakekrevingMedVarsel = null
-            ).validerTilbakekreving()
+                tilbakekrevingMedVarsel = null,
+            ).validerTilbakekreving(),
         ).isTrue
     }
 
@@ -132,20 +132,20 @@ internal class TilbakekrevingMapperTest {
             tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
                 varseltekst = "",
                 sumFeilutbetaling = null,
-                perioder = null
+                perioder = null,
             ),
-            tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL
+            tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
         )
 
         assertThat(
             tilbakekrevingsdetaljer
                 .copy(tilbakekrevingsvalg = Tilbakekrevingsvalg.IGNORER_TILBAKEKREVING)
-                .validerTilbakekreving()
+                .validerTilbakekreving(),
         ).isTrue
         assertThat(
             tilbakekrevingsdetaljer
                 .copy(tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL)
-                .validerTilbakekreving()
+                .validerTilbakekreving(),
         ).isTrue
     }
 }

@@ -47,7 +47,7 @@ internal class JournalførVedtaksbrevTaskTest {
             iverksettingRepository,
             journalpostClient,
             taskService,
-            iverksettResultatService
+            iverksettResultatService,
         )
     private val behandlingId: UUID = UUID.randomUUID()
     private val behandlingIdString = behandlingId.toString()
@@ -62,7 +62,7 @@ internal class JournalførVedtaksbrevTaskTest {
         iverksettDto.behandling.behandlingId,
         iverksettDto.toDomain(),
         iverksettDto.behandling.eksternId,
-        Brev(ByteArray(256))
+        Brev(ByteArray(256)),
     )
 
     @BeforeEach
@@ -78,19 +78,19 @@ internal class JournalførVedtaksbrevTaskTest {
     internal fun `skal journalføre brev og opprette ny task`() {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
             journalpostId,
-            true
+            true,
         )
         every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
-                journalpostId
-            )
+                journalpostId,
+            ),
         )
         every {
             iverksettResultatService.oppdaterJournalpostResultat(
                 behandlingId,
                 any(),
-                capture(journalpostResultatSlot)
+                capture(journalpostResultatSlot),
             )
         } returns Unit
 
@@ -109,18 +109,18 @@ internal class JournalførVedtaksbrevTaskTest {
             "22222222222",
             "Mottaker Navn",
             Brevmottaker.MottakerRolle.VERGE,
-            Brevmottaker.IdentType.PERSONIDENT
+            Brevmottaker.IdentType.PERSONIDENT,
         )
         val fullmektig = Brevmottaker(
             "333333333",
             "Mottaker B Navn",
             Brevmottaker.MottakerRolle.FULLMEKTIG,
-            Brevmottaker.IdentType.ORGANISASJONSNUMMER
+            Brevmottaker.IdentType.ORGANISASJONSNUMMER,
         )
 
         val brevmottakere = listOf(
             verge,
-            fullmektig
+            fullmektig,
         )
         val iverksettMedBrevmottakere = opprettIverksettDto(behandlingId).let {
             it.copy(vedtak = it.vedtak.copy(brevmottakere = brevmottakere)).toDomain()
@@ -129,9 +129,9 @@ internal class JournalførVedtaksbrevTaskTest {
         every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns iverksett.copy(data = iverksettMedBrevmottakere)
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
-                "journalpostId"
+                "journalpostId",
             ),
-            "444" to JournalpostResultat("journalpostId")
+            "444" to JournalpostResultat("journalpostId"),
         )
         every { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), any()) } just Runs
 
@@ -150,26 +150,26 @@ internal class JournalførVedtaksbrevTaskTest {
     internal fun `Journalføring av barnetilsynbrev og opprette ny task`() {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
             journalpostId,
-            true
+            true,
         )
         every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(
             iverksett.copy(
                 data = opprettIverksettDto(
                     behandlingId = behandlingId,
-                    stønadType = StønadType.BARNETILSYN
-                ).toDomain()
-            )
+                    stønadType = StønadType.BARNETILSYN,
+                ).toDomain(),
+            ),
         )
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
-                "journalpostId"
-            )
+                "journalpostId",
+            ),
         )
         every {
             iverksettResultatService.oppdaterJournalpostResultat(
                 behandlingId,
                 any(),
-                capture(journalpostResultatSlot)
+                capture(journalpostResultatSlot),
             )
         } returns Unit
 
@@ -199,7 +199,7 @@ internal class JournalførVedtaksbrevTaskTest {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } throws
             RessursException(
                 Ressurs.failure(""),
-                HttpClientErrorException.create(HttpStatus.CONFLICT, "Feil", HttpHeaders(), byteArrayOf(), null)
+                HttpClientErrorException.create(HttpStatus.CONFLICT, "Feil", HttpHeaders(), byteArrayOf(), null),
             )
         every { journalpostClient.finnJournalposter(any()) } answers {
             listOf(
@@ -207,16 +207,16 @@ internal class JournalførVedtaksbrevTaskTest {
                     journalpostId,
                     Journalposttype.U,
                     Journalstatus.JOURNALFOERT,
-                    eksternReferanseId = arkiverDokumentRequestSlot[0].eksternReferanseId
-                )
+                    eksternReferanseId = arkiverDokumentRequestSlot[0].eksternReferanseId,
+                ),
             )
         }
         every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
 
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
             "123" to JournalpostResultat(
-                journalpostId
-            )
+                journalpostId,
+            ),
         )
         justRun { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) }
 

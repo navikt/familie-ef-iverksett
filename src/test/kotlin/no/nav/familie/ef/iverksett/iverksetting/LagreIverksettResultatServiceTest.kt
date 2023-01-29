@@ -50,8 +50,8 @@ internal class LagreIverksettResultatServiceTest : ServerTest() {
             behandlingsId,
             "123",
             JournalpostResultat(
-                journalpostId = journalpostId.toString()
-            )
+                journalpostId = journalpostId.toString(),
+            ),
         )
     }
 
@@ -60,7 +60,7 @@ internal class LagreIverksettResultatServiceTest : ServerTest() {
         tilstandRepositoryService.oppdaterDistribuerVedtaksbrevResultat(
             behandlingsId,
             "123",
-            DistribuerBrevResultat(bestillingId = "12345")
+            DistribuerBrevResultat(bestillingId = "12345"),
         )
     }
 
@@ -70,7 +70,7 @@ internal class LagreIverksettResultatServiceTest : ServerTest() {
             tilstandRepositoryService.oppdaterDistribuerVedtaksbrevResultat(
                 UUID.randomUUID(),
                 "123",
-                DistribuerBrevResultat(bestillingId = journalpostId.toString())
+                DistribuerBrevResultat(bestillingId = journalpostId.toString()),
             )
         }
     }
@@ -82,7 +82,7 @@ internal class LagreIverksettResultatServiceTest : ServerTest() {
 
         tilstandRepositoryService.oppdaterTilbakekrevingResultat(
             behandlingsId,
-            TilbakekrevingResultat(opprettTilbakekrevingRequest)
+            TilbakekrevingResultat(opprettTilbakekrevingRequest),
         )
     }
 }

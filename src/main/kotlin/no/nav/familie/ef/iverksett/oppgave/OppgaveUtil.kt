@@ -21,7 +21,7 @@ object OppgaveUtil {
         return Behandlingstema
             .fromValue(
                 stønadstype.name.lowercase(Locale.getDefault())
-                    .replaceFirstChar { it.uppercase() }
+                    .replaceFirstChar { it.uppercase() },
             )
     }
 
@@ -33,7 +33,7 @@ object OppgaveUtil {
         oppgavetype: Oppgavetype,
         beskrivelse: String,
         settBehandlesAvApplikasjon: Boolean,
-        fristFerdigstillelse: LocalDate? = null
+        fristFerdigstillelse: LocalDate? = null,
     ): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
             ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
@@ -45,7 +45,7 @@ object OppgaveUtil {
             enhetsnummer = enhetsnummer.enhetId,
             behandlingstema = opprettBehandlingstema(stønadstype).value,
             tilordnetRessurs = null,
-            behandlesAvApplikasjon = if (settBehandlesAvApplikasjon) "familie-ef-sak" else null
+            behandlesAvApplikasjon = if (settBehandlesAvApplikasjon) "familie-ef-sak" else null,
         )
     }
 

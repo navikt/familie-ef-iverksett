@@ -10,5 +10,5 @@ data class Iverksett(
     val data: IverksettData,
     val eksternId: Long,
     @MappedCollection(idColumn = "behandling_id")
-    val brev: Brev? = null
+    val brev: Brev? = null,
 )

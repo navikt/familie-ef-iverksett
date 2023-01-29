@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = "azuread")
 @Validated
 class SimuleringController(
-    private val simuleringService: SimuleringService
+    private val simuleringService: SimuleringService,
 ) {
 
     @PostMapping

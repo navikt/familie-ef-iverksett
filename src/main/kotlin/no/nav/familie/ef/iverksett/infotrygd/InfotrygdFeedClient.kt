@@ -16,7 +16,7 @@ class InfotrygdFeedClient(
     @Value("\${INFOTRYGD_FEED_API_URL}")
     private val infotrygdFeedUri: URI,
     @Qualifier("azure")
-    restOperations: RestOperations
+    restOperations: RestOperations,
 ) :
     AbstractPingableRestClient(restOperations, "infotrygd.feed") {
 

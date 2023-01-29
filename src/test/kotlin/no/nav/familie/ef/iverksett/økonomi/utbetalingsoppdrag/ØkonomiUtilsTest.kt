@@ -40,8 +40,8 @@ internal class ØkonomiUtilsTest {
                 assertThat(
                     testOpphørsdatoUtenTidligereTilkjentYtelse(
                         andeler = emptyList(),
-                        startmåned = YearMonth.now()
-                    )
+                        startmåned = YearMonth.now(),
+                    ),
                 ).isNull()
                 assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelMedBeløp()))).isNull()
                 assertThat(testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = listOf(andelUtenBeløp()))).isNull()
@@ -60,8 +60,8 @@ internal class ØkonomiUtilsTest {
                 assertThat(
                     testOpphørsdatoUtenTidligereTilkjentYtelse(
                         andeler = emptyList(),
-                        startmåned = opphørsdatoEtterAndeler
-                    )
+                        startmåned = opphørsdatoEtterAndeler,
+                    ),
                 )
                     .isNull()
                 listOf(listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach { andeler ->
@@ -83,7 +83,7 @@ internal class ØkonomiUtilsTest {
                             andeler = andeler,
                             tidligereAndeler = andeler,
                             startmåned = opphørsdatoFørAndeler,
-                            tidligereStartmåned = YearMonth.from(LocalDate.MIN)
+                            tidligereStartmåned = YearMonth.from(LocalDate.MIN),
                         )
                     }.hasMessageContaining("Nytt startdato=2021-01 kan ikke være etter")
                 }
@@ -96,8 +96,8 @@ internal class ØkonomiUtilsTest {
                         andeler = emptyList(),
                         startmåned = start,
                         tidligereAndeler = emptyList(),
-                        tidligereStartmåned = start
-                    )
+                        tidligereStartmåned = start,
+                    ),
                 ).isNull()
 
                 listOf(listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach {
@@ -111,8 +111,8 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = listOf(andelUtenBeløp()),
                         tidligereAndeler = listOf(andelUtenBeløp()),
-                        sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6, forrigePeriodeId = 5)
-                    ).opphørsdato()
+                        sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6, forrigePeriodeId = 5),
+                    ).opphørsdato(),
                 )
                     .isNull()
             }
@@ -125,9 +125,9 @@ internal class ØkonomiUtilsTest {
                         tidligereAndeler = listOf(andelMedBeløp()),
                         sisteAndelIKjede = andelMedBeløp().copy(
                             periodeId = 6,
-                            forrigePeriodeId = 5
-                        )
-                    ).opphørsdato()
+                            forrigePeriodeId = 5,
+                        ),
+                    ).opphørsdato(),
                 )
                     .isNull()
             }
@@ -140,9 +140,9 @@ internal class ØkonomiUtilsTest {
                         tidligereAndeler = listOf(andelMedBeløp(), andelUtenBeløp(fra = start2, til = slutt2)),
                         sisteAndelIKjede = andelMedBeløp().copy(
                             periodeId = 6,
-                            forrigePeriodeId = 5
-                        )
-                    ).opphørsdato()
+                            forrigePeriodeId = 5,
+                        ),
+                    ).opphørsdato(),
                 )
                     .isNull()
             }
@@ -155,9 +155,9 @@ internal class ØkonomiUtilsTest {
                         tidligereAndeler = listOf(andelUtenBeløp(), andelMedBeløp(fra = start2, til = slutt2)),
                         sisteAndelIKjede = andelMedBeløp().copy(
                             periodeId = 6,
-                            forrigePeriodeId = 5
-                        )
-                    ).opphørsdato()
+                            forrigePeriodeId = 5,
+                        ),
+                    ).opphørsdato(),
                 )
                     .isNull()
             }
@@ -168,8 +168,8 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = emptyList(),
                         startmåned = start,
-                        tidligereAndeler = listOf(andelUtenBeløp())
-                    )
+                        tidligereAndeler = listOf(andelUtenBeløp()),
+                    ),
                 ).isNull()
             }
 
@@ -179,8 +179,8 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = emptyList(),
                         startmåned = start,
-                        tidligereAndeler = listOf(andelMedBeløp())
-                    ).opphørsdato()
+                        tidligereAndeler = listOf(andelMedBeløp()),
+                    ).opphørsdato(),
                 )
                     .isEqualTo(start)
             }
@@ -190,8 +190,8 @@ internal class ØkonomiUtilsTest {
                 assertThat(
                     test(
                         andeler = listOf(andelMedBeløp(1)),
-                        tidligereAndeler = listOf(andelMedBeløp(2))
-                    ).opphørsdato()
+                        tidligereAndeler = listOf(andelMedBeløp(2)),
+                    ).opphørsdato(),
                 )
                     .isEqualTo(start)
             }
@@ -201,8 +201,8 @@ internal class ØkonomiUtilsTest {
                 assertThat(
                     test(
                         andeler = listOf(andelUtenBeløp()),
-                        tidligereAndeler = listOf(andelMedBeløp())
-                    ).opphørsdato()
+                        tidligereAndeler = listOf(andelMedBeløp()),
+                    ).opphørsdato(),
                 )
                     .isEqualTo(start)
             }
@@ -213,15 +213,15 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = listOf(
                             andelUtenBeløp(),
-                            andelMedBeløp(fra = start2, til = slutt2)
+                            andelMedBeløp(fra = start2, til = slutt2),
                         ),
                         tidligereAndeler = listOf(
                             andelMedBeløp(
                                 fra = start2,
-                                til = slutt2
-                            )
-                        )
-                    ).opphørsdato()
+                                til = slutt2,
+                            ),
+                        ),
+                    ).opphørsdato(),
                 )
                     .isEqualTo(start)
             }
@@ -232,8 +232,8 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = listOf(andelUtenBeløp()),
                         startmåned = opphørsdatoFørAndeler,
-                        tidligereAndeler = listOf(andelMedBeløp())
-                    ).opphørsdato()
+                        tidligereAndeler = listOf(andelMedBeløp()),
+                    ).opphørsdato(),
                 )
                     .isEqualTo(opphørsdatoFørAndeler)
             }
@@ -245,8 +245,8 @@ internal class ØkonomiUtilsTest {
                         andeler = listOf(andelUtenBeløp()),
                         startmåned = opphørsdatoFørAndeler,
                         tidligereAndeler = listOf(andelMedBeløp()),
-                        tidligereStartmåned = opphørsdatoFørAndeler.plusMonths(1)
-                    ).opphørsdato()
+                        tidligereStartmåned = opphørsdatoFørAndeler.plusMonths(1),
+                    ).opphørsdato(),
                 )
                     .isEqualTo(opphørsdatoFørAndeler)
             }
@@ -259,8 +259,8 @@ internal class ØkonomiUtilsTest {
                             andeler = listOf(it),
                             startmåned = opphørsdatoFørAndeler,
                             tidligereAndeler = listOf(it),
-                            tidligereStartmåned = opphørsdatoFørAndeler
-                        )
+                            tidligereStartmåned = opphørsdatoFørAndeler,
+                        ),
                     )
                         .isNull()
                 }
@@ -278,20 +278,20 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = listOf(
                             andelMedBeløp(),
-                            andelUtenBeløp(fra = start2, til = slutt2)
+                            andelUtenBeløp(fra = start2, til = slutt2),
                         ),
-                        tidligereAndeler = listOf(andelMedBeløp())
-                    )
+                        tidligereAndeler = listOf(andelMedBeløp()),
+                    ),
                 )
                     .isNull()
                 assertThat(
                     test(
                         andeler = listOf(
                             andelUtenBeløp(),
-                            andelMedBeløp(fra = start2, til = slutt2)
+                            andelMedBeløp(fra = start2, til = slutt2),
                         ),
-                        tidligereAndeler = listOf(andelUtenBeløp())
-                    )
+                        tidligereAndeler = listOf(andelUtenBeløp()),
+                    ),
                 )
                     .isNull()
 
@@ -299,8 +299,8 @@ internal class ØkonomiUtilsTest {
                     test(
                         andeler = listOf(andelMedBeløp(fra = start2, til = slutt2)),
                         startmåned = start,
-                        tidligereAndeler = listOf(andelUtenBeløp())
-                    )
+                        tidligereAndeler = listOf(andelUtenBeløp()),
+                    ),
                 )
                     .isNull()
             }
@@ -315,7 +315,7 @@ internal class ØkonomiUtilsTest {
                 val opphørsperiode = test(
                     andeler = listOf(førsteAndel, nyAndel),
                     tidligereAndeler = listOf(førsteAndel),
-                    sisteAndelIKjede = sisteAndelIKjede
+                    sisteAndelIKjede = sisteAndelIKjede,
                 ) ?: error("Burde generert opphørsperiode")
                 assertThat(opphørsperiode.opphørsdato()).isEqualTo(førsteAndel.periode.fom)
                 assertThat(opphørsperiode.periodeId).isEqualTo(sisteAndelIKjede.periodeId)
@@ -328,13 +328,13 @@ internal class ØkonomiUtilsTest {
                 val opphørsperiode = test(
                     andeler = listOf(
                         andelUtenBeløp(),
-                        andelMedBeløp(fra = start2, til = slutt2)
+                        andelMedBeløp(fra = start2, til = slutt2),
                     ),
                     tidligereAndeler = listOf(
                         andelUtenBeløp(),
-                        andelMedBeløp(beløp = 2, fra = start2, til = slutt2)
+                        andelMedBeløp(beløp = 2, fra = start2, til = slutt2),
                     ),
-                    sisteAndelIKjede = sisteAndelIKjede
+                    sisteAndelIKjede = sisteAndelIKjede,
                 )!!
                 assertThat(opphørsperiode.opphørsdato()).isEqualTo(start2)
                 assertThat(opphørsperiode.periodeId).isEqualTo(sisteAndelIKjede.periodeId)
@@ -350,7 +350,7 @@ internal class ØkonomiUtilsTest {
                     tidligereAndeler = listOf(),
                     sisteAndelIKjede = sisteAndelIKjede,
                     startmåned = opphørsdatoFørAndeler,
-                    tidligereStartmåned = opphørsdatoFørAndeler
+                    tidligereStartmåned = opphørsdatoFørAndeler,
                 )
                 assertThat(opphørsperiode.opphørsdato()).isNull()
             }
@@ -361,13 +361,13 @@ internal class ØkonomiUtilsTest {
             tidligereAndeler: List<AndelTilkjentYtelse>,
             startmåned: YearMonth = startmåned(andeler),
             tidligereStartmåned: YearMonth = startmåned(tidligereAndeler),
-            sisteAndelIKjede: AndelTilkjentYtelse? = null
+            sisteAndelIKjede: AndelTilkjentYtelse? = null,
         ): Utbetalingsperiode? {
             val tidligereAndelerMedPeriodeId = leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler)
             val forrigeTilkjentYtelse = opprettTilkjentYtelse(
                 andeler = tidligereAndelerMedPeriodeId,
                 startmåned = tidligereStartmåned,
-                sisteAndelIKjede = sisteAndel(sisteAndelIKjede, tidligereAndelerMedPeriodeId)
+                sisteAndelIKjede = sisteAndel(sisteAndelIKjede, tidligereAndelerMedPeriodeId),
             )
             val nyTilkjentYtelseMedMetaData = tilkjentYtelseMedMetadata(andeler, startmåned)
             return utbetalingsperiodeForOpphør(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
@@ -375,7 +375,7 @@ internal class ØkonomiUtilsTest {
 
         private fun sisteAndel(
             sisteAndelIKjede: AndelTilkjentYtelse?,
-            tidligereAndelerMedPeriodeId: List<AndelTilkjentYtelse>
+            tidligereAndelerMedPeriodeId: List<AndelTilkjentYtelse>,
         ) =
             sisteAndelIKjede ?: tidligereAndelerMedPeriodeId.maxByOrNull { it.periodeId!! }
                 ?.takeIf { it.periode.fomDato != LocalDate.MIN }
@@ -384,7 +384,7 @@ internal class ØkonomiUtilsTest {
 
         private fun testOpphørsdatoUtenTidligereTilkjentYtelse(
             andeler: List<AndelTilkjentYtelse>,
-            startmåned: YearMonth = startmåned(andeler)
+            startmåned: YearMonth = startmåned(andeler),
         ) =
             utbetalingsperiodeForOpphør(null, tilkjentYtelseMedMetadata(andeler, startmåned))
 
@@ -396,34 +396,34 @@ internal class ØkonomiUtilsTest {
                 .mapIndexed { index, andel ->
                     andel.copy(
                         periodeId = index + 1L,
-                        forrigePeriodeId = if (index == 0) null else index.toLong()
+                        forrigePeriodeId = if (index == 0) null else index.toLong(),
                     )
                 }
         }
 
         private fun tilkjentYtelseMedMetadata(
             andeler: List<AndelTilkjentYtelse>,
-            startmåned: YearMonth
+            startmåned: YearMonth,
         ) =
             opprettTilkjentYtelseMedMetadata(tilkjentYtelse = opprettTilkjentYtelse(andeler = andeler, startmåned = startmåned))
 
         fun andelMedBeløp(
             beløp: Int = 1,
             fra: YearMonth = start,
-            til: YearMonth = slutt
+            til: YearMonth = slutt,
         ) = lagAndelTilkjentYtelse(
             beløp = beløp,
             fraOgMed = fra,
-            tilOgMed = til
+            tilOgMed = til,
         )
 
         fun andelUtenBeløp(
             fra: YearMonth = start,
-            til: YearMonth = slutt
+            til: YearMonth = slutt,
         ) = lagAndelTilkjentYtelse(
             beløp = 0,
             fraOgMed = fra,
-            tilOgMed = til
+            tilOgMed = til,
         )
     }
 }

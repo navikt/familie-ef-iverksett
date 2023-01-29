@@ -28,7 +28,7 @@ import java.util.UUID
     maxAntallFeil = 50,
     settTilManuellOppfølgning = true,
     triggerTidVedFeilISekunder = 15 * 60L,
-    beskrivelse = "Opprett tilbakekrevingsbehandling"
+    beskrivelse = "Opprett tilbakekrevingsbehandling",
 )
 class OpprettTilbakekrevingTask(
     private val iverksettingRepository: IverksettingRepository,
@@ -36,7 +36,7 @@ class OpprettTilbakekrevingTask(
     private val tilbakekrevingClient: TilbakekrevingClient,
     private val iverksettResultatService: IverksettResultatService,
     private val simuleringService: SimuleringService,
-    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient
+    private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
 ) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -58,14 +58,14 @@ class OpprettTilbakekrevingTask(
 
     private fun opprettTilbakekreving(
         behandlingId: UUID,
-        iverksettData: IverksettData
+        iverksettData: IverksettData,
     ) {
         logger.info("Det kreves tilbakekrevingsbehandling for behandling=$behandlingId")
         val opprettTilbakekrevingRequest = lagTilbakekrevingRequest(iverksettData)
         tilbakekrevingClient.opprettBehandling(opprettTilbakekrevingRequest)
         iverksettResultatService.oppdaterTilbakekrevingResultat(
             behandlingId = behandlingId,
-            TilbakekrevingResultat(opprettTilbakekrevingRequest)
+            TilbakekrevingResultat(opprettTilbakekrevingRequest),
         )
 
         // Burde iverksett oppdateres i DBen, siden tilbakekreving potensielt er endret?
@@ -75,14 +75,14 @@ class OpprettTilbakekrevingTask(
 
     private fun skalOppretteTilbakekreving(
         iverksettData: IverksettData,
-        behandlingId: UUID?
+        behandlingId: UUID?,
     ): Boolean {
         if (iverksettData.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING) {
             logger.info("Førstegangsbehandling trenger ikke tilbakekreving behandlingId=$behandlingId")
             return false
         } else if (!iverksettData.vedtak.tilbakekreving.skalTilbakekreves) {
             logger.info(
-                "Tilbakekreving ikke valgt for behandlingId=$behandlingId. Oppretter derfor ikke tilbakekrevingsbehandling."
+                "Tilbakekreving ikke valgt for behandlingId=$behandlingId. Oppretter derfor ikke tilbakekrevingsbehandling.",
             )
             return false
         } else if (iverksettData.vedtak.tilkjentYtelse == null) {
@@ -98,7 +98,7 @@ class OpprettTilbakekrevingTask(
     private fun loggForskjell(
         nyIverksettData: IverksettData,
         iverksettData: IverksettData,
-        behandlingId: UUID?
+        behandlingId: UUID?,
     ) {
         if (nyIverksettData != iverksettData) {
             logger.info("Grunnlaget for tilbakekreving for behandling=$behandlingId har endret seg siden saksbehandlingen")

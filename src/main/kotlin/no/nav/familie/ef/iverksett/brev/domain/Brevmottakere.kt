@@ -9,7 +9,7 @@ data class Brevmottaker(
     val ident: String,
     val navn: String,
     val identType: IdentType,
-    val mottakerRolle: MottakerRolle
+    val mottakerRolle: MottakerRolle,
 )
 
 fun IdentType.tilIdType(): BrukerIdType =

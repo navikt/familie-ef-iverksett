@@ -15,7 +15,7 @@ class KafkaConsumerConfig {
     @Bean
     fun concurrentTilbakekrevingListenerContainerFactory(
         properties: KafkaProperties,
-        kafkaErrorHandler: KafkaErrorHandler
+        kafkaErrorHandler: KafkaErrorHandler,
     ): ConcurrentKafkaListenerContainerFactory<String, String> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
         factory.consumerFactory = DefaultKafkaConsumerFactory(properties.buildConsumerProperties())

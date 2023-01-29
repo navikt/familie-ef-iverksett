@@ -60,8 +60,8 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
                 IverksettDataTilPGobjectConverter(),
                 PGobjectConverterTilIverksettData(),
                 BrevmottakereTilStringConverter(),
-                StringTilBrevmottakereConverter()
-            )
+                StringTilBrevmottakereConverter(),
+            ),
         )
     }
 

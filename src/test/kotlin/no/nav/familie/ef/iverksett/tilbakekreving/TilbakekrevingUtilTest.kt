@@ -27,7 +27,7 @@ internal class TilbakekrevingUtilTest {
         val feilutbetaling = BigDecimal.TEN
         val tilbakekrevingsdetaljer = Tilbakekrevingsdetaljer(
             tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-            tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(feilutbetaling, perioder)
+            tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(feilutbetaling, perioder),
         )
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = tilbakekrevingsdetaljer)
 
@@ -50,7 +50,7 @@ internal class TilbakekrevingUtilTest {
                         nyttBeløp = BigDecimal(11295.0),
                         tidligereUtbetalt = BigDecimal(11295.0),
                         resultat = BigDecimal(0.0),
-                        feilutbetaling = BigDecimal(0)
+                        feilutbetaling = BigDecimal(0),
                     ),
                     Simuleringsperiode(
                         fom = LocalDate.of(2022, 1, 1),
@@ -59,7 +59,7 @@ internal class TilbakekrevingUtilTest {
                         nyttBeløp = BigDecimal(8745.0),
                         tidligereUtbetalt = BigDecimal(11295.0),
                         resultat = BigDecimal(-2550.0),
-                        feilutbetaling = BigDecimal(2550.0)
+                        feilutbetaling = BigDecimal(2550.0),
                     ),
                     Simuleringsperiode(
                         fom = LocalDate.of(2022, 2, 1),
@@ -68,7 +68,7 @@ internal class TilbakekrevingUtilTest {
                         nyttBeløp = BigDecimal(8745.0),
                         tidligereUtbetalt = BigDecimal(11295.0),
                         resultat = BigDecimal(-2550.0),
-                        feilutbetaling = BigDecimal(2550.0)
+                        feilutbetaling = BigDecimal(2550.0),
                     ),
                     Simuleringsperiode(
                         fom = LocalDate.of(2022, 3, 1),
@@ -77,7 +77,7 @@ internal class TilbakekrevingUtilTest {
                         nyttBeløp = BigDecimal(4620.0),
                         tidligereUtbetalt = BigDecimal(0),
                         resultat = BigDecimal(4620.0),
-                        feilutbetaling = BigDecimal(0)
+                        feilutbetaling = BigDecimal(0),
                     ),
                     Simuleringsperiode(
                         fom = LocalDate.of(2022, 4, 1),
@@ -86,8 +86,8 @@ internal class TilbakekrevingUtilTest {
                         nyttBeløp = BigDecimal(4620.0),
                         tidligereUtbetalt = BigDecimal(0),
                         resultat = BigDecimal(4620.0),
-                        feilutbetaling = BigDecimal(0)
-                    )
+                        feilutbetaling = BigDecimal(0),
+                    ),
                 ),
                 fomDatoNestePeriode = LocalDate.of(2022, 3, 1),
                 etterbetaling = BigDecimal(0.0),
@@ -96,12 +96,12 @@ internal class TilbakekrevingUtilTest {
                 tomDatoNestePeriode = LocalDate.of(2022, 3, 31),
                 forfallsdatoNestePeriode = LocalDate.of(2022, 3, 17),
                 tidSimuleringHentet = LocalDate.of(2022, 3, 10),
-                tomSisteUtbetaling = LocalDate.of(2022, 2, 28)
+                tomSisteUtbetaling = LocalDate.of(2022, 2, 28),
             )
         val tilbakekrevingsdetaljer =
             Tilbakekrevingsdetaljer(
                 Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-                TilbakekrevingMedVarsel("varseltekst", BigDecimal.ZERO, listOf())
+                TilbakekrevingMedVarsel("varseltekst", BigDecimal.ZERO, listOf()),
             )
 
         val varsel = tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering)
@@ -116,7 +116,7 @@ internal class TilbakekrevingUtilTest {
     fun `endret feilutbetaling i iverksett skal tas hensyn til`() {
         val originalTilbakekreving = Tilbakekrevingsdetaljer(
             tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-            tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder)
+            tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder),
         )
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
 
@@ -135,7 +135,7 @@ internal class TilbakekrevingUtilTest {
     fun `ingen feilutbetaling i iverksett skal fjerne tilbakekreving`() {
         val originalTilbakekreving = Tilbakekrevingsdetaljer(
             tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-            tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder)
+            tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder),
         )
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
 

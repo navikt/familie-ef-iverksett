@@ -37,12 +37,12 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
     private val perioder = listOf(
         Månedsperiode(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
         Månedsperiode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)),
-        Månedsperiode(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 31))
+        Månedsperiode(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 31)),
     )
 
     private val identer = listOf(
         PersonIdentMedHistorikk(personIdent, false),
-        PersonIdentMedHistorikk(historiskPersonIdent, true)
+        PersonIdentMedHistorikk(historiskPersonIdent, true),
     )
 
     @Test
@@ -70,7 +70,7 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
         return Iverksett(
             behandlingId,
             iverksettData.copy(vedtak = vedtak.copy(tilkjentYtelse = nyTilkjentYtelse)),
-            iverksettData.behandling.eksternId
+            iverksettData.behandling.eksternId,
         )
     }
 }

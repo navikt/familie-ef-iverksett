@@ -30,13 +30,13 @@ internal class TilbakekrevingClientTest : ServerTest() {
                     listOf(
                         Periode(
                             LocalDate.MIN,
-                            LocalDate.MAX
-                        )
-                    )
+                            LocalDate.MAX,
+                        ),
+                    ),
                 ),
                 fagsystem = Fagsystem.EF,
                 ident = "32165498721",
-                eksternFagsakId = "654654"
+                eksternFagsakId = "654654",
             )
         val hentForhåndsvisningVarselbrev = tilbakekrevingClient.hentForhåndsvisningVarselbrev(forhåndsvisVarselbrevRequest)
 

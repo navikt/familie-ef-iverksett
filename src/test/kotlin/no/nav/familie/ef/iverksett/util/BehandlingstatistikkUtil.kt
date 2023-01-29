@@ -39,6 +39,6 @@ fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fort
         behandlingÅrsak = BehandlingÅrsak.SØKNAD,
         kravMottatt = LocalDate.of(2021, 3, 1),
         årsakRevurdering = ÅrsakRevurderingDto(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
-        avslagÅrsak = AvslagÅrsak.BARN_OVER_ÅTTE_ÅR
+        avslagÅrsak = AvslagÅrsak.BARN_OVER_ÅTTE_ÅR,
     )
 }

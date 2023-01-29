@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
 @JacksonXmlRootElement(
     localName = "vedtakHendelser",
-    namespace = "http://nav.no/melding/virksomhet/vedtakHendelser/v1/vedtakHendelser"
+    namespace = "http://nav.no/melding/virksomhet/vedtakHendelser/v1/vedtakHendelser",
 )
 data class VedtakHendelser(
     val aktoerID: String,
@@ -12,5 +12,5 @@ data class VedtakHendelser(
     val behandlingstema: String,
     val hendelsesprodusentREF: String,
     val applikasjonSakREF: String,
-    val hendelsesTidspunkt: String
+    val hendelsesTidspunkt: String,
 )

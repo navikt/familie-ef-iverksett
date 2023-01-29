@@ -23,7 +23,7 @@ import java.time.YearMonth
 class OppgaveService(
     private val oppgaveClient: OppgaveClient,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-    private val iverksettingRepository: IverksettingRepository
+    private val iverksettingRepository: IverksettingRepository,
 ) {
 
     fun skalOppretteVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Boolean {
@@ -59,7 +59,7 @@ class OppgaveService(
                 enhet,
                 Oppgavetype.VurderHenvendelse,
                 beskrivelse,
-                settBehandlesAvApplikasjon = false
+                settBehandlesAvApplikasjon = false,
             )
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
             ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
@@ -76,7 +76,7 @@ class OppgaveService(
         return when (iverksett.vedtak.vedtaksresultat) {
             Vedtaksresultat.INNVILGET -> beskrivelseFørstegangsbehandlingInnvilget(
                 iverksett.totalVedtaksperiode(),
-                iverksett.gjeldendeVedtak()
+                iverksett.gjeldendeVedtak(),
             )
 
             Vedtaksresultat.AVSLÅTT -> beskrivelseFørstegangsbehandlingAvslått(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
@@ -95,7 +95,7 @@ class OppgaveService(
                 iverksett.behandling.forrigeBehandlingId?.let {
                     beskrivelseRevurderingInnvilget(
                         iverksett.totalVedtaksperiode(),
-                        iverksett.gjeldendeVedtak()
+                        iverksett.gjeldendeVedtak(),
                     )
                 } ?: finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             }
@@ -127,14 +127,14 @@ class OppgaveService(
 
     private fun harEndretAktivitet(
         iverksett: IverksettOvergangsstønad,
-        forrigeBehandling: IverksettOvergangsstønad
+        forrigeBehandling: IverksettOvergangsstønad,
     ): Boolean {
         return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
     }
 
     private fun harEndretPeriode(
         iverksett: IverksettOvergangsstønad,
-        forrigeBehandling: IverksettOvergangsstønad
+        forrigeBehandling: IverksettOvergangsstønad,
     ): Boolean {
         return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
     }
@@ -149,7 +149,7 @@ class OppgaveService(
     private fun IverksettOvergangsstønad.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
         Pair(
             this.vedtak.vedtaksperioder.minOf { it.periode.fomDato },
-            this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
+            this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato },
         )
 
     private fun IverksettOvergangsstønad.finnSanksjonsvedtakMåned(): YearMonth {

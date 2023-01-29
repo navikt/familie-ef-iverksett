@@ -21,7 +21,7 @@ import java.util.UUID
 @Service
 class KonsistensavstemmingService(
     private val oppdragKlient: OppdragClient,
-    private val iverksettResultatService: IverksettResultatService
+    private val iverksettResultatService: IverksettResultatService,
 ) {
 
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
@@ -30,20 +30,20 @@ class KonsistensavstemmingService(
         konsistensavstemmingDto: KonsistensavstemmingDto,
         sendStartmelding: Boolean = true,
         sendAvsluttmelding: Boolean = true,
-        transaksjonId: UUID? = null
+        transaksjonId: UUID? = null,
     ) {
         try {
             val utbetalingsoppdrag = lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto)
             val konsistensavstemmingUtbetalingsoppdrag = KonsistensavstemmingUtbetalingsoppdrag(
                 konsistensavstemmingDto.stønadType.tilKlassifisering(),
                 utbetalingsoppdrag,
-                konsistensavstemmingDto.avstemmingstidspunkt ?: LocalDateTime.now()
+                konsistensavstemmingDto.avstemmingstidspunkt ?: LocalDateTime.now(),
             )
             oppdragKlient.konsistensavstemming(
                 konsistensavstemmingUtbetalingsoppdrag,
                 sendStartmelding,
                 sendAvsluttmelding,
-                transaksjonId
+                transaksjonId,
             )
         } catch (feil: Throwable) {
             throw Exception("Sending av utbetalingsoppdrag til konsistensavtemming feilet", feil)
@@ -63,7 +63,7 @@ class KonsistensavstemmingService(
                 tilkjentYtelsePerBehandlingId[behandlingId]!!,
                 tilkjentYtelse,
                 behandlingId,
-                stønadType
+                stønadType,
             )
         }
     }
@@ -72,7 +72,7 @@ class KonsistensavstemmingService(
         konsistensavstemmingTilkjentYtelseDto: KonsistensavstemmingTilkjentYtelseDto,
         tilkjentYtelse: TilkjentYtelse,
         behandlingId: UUID,
-        stønadType: StønadType
+        stønadType: StønadType,
     ): Utbetalingsoppdrag {
         val personIdent = konsistensavstemmingTilkjentYtelseDto.personIdent
         val eksternBehandlingId = konsistensavstemmingTilkjentYtelseDto.eksternBehandlingId
@@ -91,7 +91,7 @@ class KonsistensavstemmingService(
             secureLogger.info(
                 "Forskjell i andeler for behandling=$behandlingId" +
                     " request=$andelerFraRequest" +
-                    " iverksettAndeler=${tilkjentYtelse.andelerTilkjentYtelse}"
+                    " iverksettAndeler=${tilkjentYtelse.andelerTilkjentYtelse}",
             )
             error("Finner ikke riktige periodebeløp i det som er lagret for behandling=$behandlingId")
         }
@@ -109,9 +109,9 @@ class KonsistensavstemmingService(
                     type = stønadType,
                     eksternBehandlingId = eksternBehandlingId,
                     vedtaksdato = LocalDate.now(), // er ikke i bruk ved konsistensavstemming
-                    personIdent = personIdent
+                    personIdent = personIdent,
                 )
-            }
+            },
         )
     }
 

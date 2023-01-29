@@ -40,7 +40,7 @@ internal class KonsistensavstemmingServiceTest {
         beløp = 1,
         fraOgMed = YearMonth.of(2021, 1),
         tilOgMed = YearMonth.of(2021, 1),
-        kildeBehandlingId = behandlingId
+        kildeBehandlingId = behandlingId,
     )
 
     private val andel2StartDato = YearMonth.of(2021, 3)
@@ -49,7 +49,7 @@ internal class KonsistensavstemmingServiceTest {
         beløp = 2,
         fraOgMed = andel2StartDato,
         tilOgMed = andel2Sluttdato,
-        kildeBehandlingId = behandlingId
+        kildeBehandlingId = behandlingId,
     )
 
     private val requestSlot = slot<KonsistensavstemmingUtbetalingsoppdrag>()
@@ -68,15 +68,15 @@ internal class KonsistensavstemmingServiceTest {
                 beløp = 2,
                 fraOgMed = andel2StartDato.atDay(1),
                 tilOgMed = andel2Sluttdato.atEndOfMonth(),
-                kildeBehandlingId = behandlingId
-            )
+                kildeBehandlingId = behandlingId,
+            ),
         )
         val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(
             behandlingId = behandlingId,
             eksternBehandlingId = eksternBehandlingId,
             eksternFagsakId = eksternFagsakId,
             personIdent = personIdent,
-            andelerTilkjentYtelse = andelerTilkjentYtelse
+            andelerTilkjentYtelse = andelerTilkjentYtelse,
         )
         val konsistensavstemmingDto = KonsistensavstemmingDto(StønadType.OVERGANGSSTØNAD, listOf(tilkjentYtelseDto))
         konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto)
@@ -100,15 +100,15 @@ internal class KonsistensavstemmingServiceTest {
                 beløp = 1,
                 fraOgMed = andel2StartDato.atDay(1),
                 tilOgMed = andel2Sluttdato.atEndOfMonth(),
-                kildeBehandlingId = behandlingId
-            )
+                kildeBehandlingId = behandlingId,
+            ),
         )
         val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(
             behandlingId = behandlingId,
             eksternBehandlingId = eksternBehandlingId,
             eksternFagsakId = eksternFagsakId,
             personIdent = personIdent,
-            andelerTilkjentYtelse = andelerTilkjentYtelse
+            andelerTilkjentYtelse = andelerTilkjentYtelse,
         )
         val konsistensavstemmingDto = KonsistensavstemmingDto(StønadType.OVERGANGSSTØNAD, listOf(tilkjentYtelseDto))
         assertThat(catchThrowable { konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto) })
@@ -118,7 +118,7 @@ internal class KonsistensavstemmingServiceTest {
         return TilkjentYtelseMedMetaData(
             tilkjentYtelse = TilkjentYtelse(
                 andelerTilkjentYtelse = listOf(andel1, andel2),
-                startmåned = andel1.periode.fom
+                startmåned = andel1.periode.fom,
             ),
             saksbehandlerId = saksbehandlerId,
             eksternBehandlingId = eksternBehandlingId,
@@ -126,7 +126,7 @@ internal class KonsistensavstemmingServiceTest {
             eksternFagsakId = eksternFagsakId,
             personIdent = personIdent,
             behandlingId = behandlingId,
-            vedtaksdato = vedtaksdato
+            vedtaksdato = vedtaksdato,
         )
     }
 }

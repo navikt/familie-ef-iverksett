@@ -25,7 +25,7 @@ object TilkjentYtelseParser {
     fun mapTilkjentYtelse(
         dataTable: DataTable,
         startdatoer: Map<UUID, LocalDate>,
-        medAndel: Boolean = true
+        medAndel: Boolean = true,
     ): List<TilkjentYtelseHolder> {
         return dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.first()
@@ -46,15 +46,15 @@ object TilkjentYtelseParser {
                 behandlingIdInt = behandlingIdInt,
                 tilkjentYtelse = TilkjentYtelseDto(
                     andelerTilkjentYtelse = andeler,
-                    startdato = startdato
-                )
+                    startdato = startdato,
+                ),
             )
         }
     }
 
     fun mapForventetUtbetalingsoppdrag(
         dataTable: DataTable,
-        medUtbetalingsperiode: Boolean = true
+        medUtbetalingsperiode: Boolean = true,
     ): List<ForventetUtbetalingsoppdrag> {
         return dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.first()
@@ -63,7 +63,7 @@ object TilkjentYtelseParser {
             ForventetUtbetalingsoppdrag(
                 behandlingId = behandlingId,
                 kodeEndring = parseEnum(UtbetalingsoppdragDomenebegrep.KODE_ENDRING, rad),
-                utbetalingsperiode = if (medUtbetalingsperiode) rader.map { mapForventetUtbetalingsperiode(it) } else listOf()
+                utbetalingsperiode = if (medUtbetalingsperiode) rader.map { mapForventetUtbetalingsperiode(it) } else listOf(),
             )
         }
     }
@@ -77,7 +77,7 @@ object TilkjentYtelseParser {
             satsType = parseValgfriEnum<SatsType>(UtbetalingsoppdragDomenebegrep.TYPE, it) ?: SatsType.MND,
             fom = parseÅrMåned(Domenebegrep.FRA_DATO, it).atDay(1),
             tom = parseÅrMåned(Domenebegrep.TIL_DATO, it).atEndOfMonth(),
-            opphør = parseValgfriÅrMåned(UtbetalingsoppdragDomenebegrep.OPPHØRSDATO, it)?.atDay(1)
+            opphør = parseValgfriÅrMåned(UtbetalingsoppdragDomenebegrep.OPPHØRSDATO, it)?.atDay(1),
         )
 
     fun mapForventetTilkjentYtelse(dataTable: DataTable, behandlingIdInt: Int, startdato: YearMonth?): ForventetTilkjentYtelse {
@@ -86,7 +86,7 @@ object TilkjentYtelseParser {
             behandlingId = behandlingIdTilUUID[behandlingIdInt]!!,
             andeler = andeler,
             startmåned = startdato ?: andeler.minOfOrNull { it.fom }
-                ?: error("Mangler startdato når det ikke finnes noen andeler for behandling=$behandlingIdInt")
+                ?: error("Mangler startdato når det ikke finnes noen andeler for behandling=$behandlingIdInt"),
         )
     }
 
@@ -96,7 +96,7 @@ object TilkjentYtelseParser {
         beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
         periodeId = parseInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad).toLong(),
         forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong(),
-        kildeBehandlingId = behandlingIdTilUUID[parseValgfriInt(TilkjentYtelseDomenebegrep.KILDE_BEHANDLING_ID, rad)]
+        kildeBehandlingId = behandlingIdTilUUID[parseValgfriInt(TilkjentYtelseDomenebegrep.KILDE_BEHANDLING_ID, rad)],
     )
 
     private fun DataTable.groupByBehandlingId() =
@@ -118,7 +118,7 @@ object TilkjentYtelseParser {
         samordningsfradrag = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
         fraOgMed = parseÅrMåned(Domenebegrep.FRA_DATO, rad).atDay(1),
         tilOgMed = parseÅrMåned(Domenebegrep.TIL_DATO, rad).atEndOfMonth(),
-        kildeBehandlingId = null // ikke i bruk i iverksett
+        kildeBehandlingId = null, // ikke i bruk i iverksett
     )
 
     /**
@@ -130,7 +130,7 @@ object TilkjentYtelseParser {
     data class ForventetUtbetalingsoppdrag(
         val behandlingId: UUID,
         val kodeEndring: KodeEndring,
-        val utbetalingsperiode: List<ForventetUtbetalingsperiode>
+        val utbetalingsperiode: List<ForventetUtbetalingsperiode>,
     )
 
     data class ForventetUtbetalingsperiode(
@@ -141,13 +141,13 @@ object TilkjentYtelseParser {
         val satsType: SatsType,
         val fom: LocalDate,
         val tom: LocalDate,
-        val opphør: LocalDate?
+        val opphør: LocalDate?,
     )
 
     data class ForventetTilkjentYtelse(
         val behandlingId: UUID,
         val andeler: List<ForventetAndelTilkjentYtelse>,
-        val startmåned: YearMonth
+        val startmåned: YearMonth,
     )
 
     data class ForventetAndelTilkjentYtelse(
@@ -156,7 +156,7 @@ object TilkjentYtelseParser {
         val periodeId: Long,
         val forrigePeriodeId: Long?,
         val beløp: Int,
-        val kildeBehandlingId: UUID?
+        val kildeBehandlingId: UUID?,
     )
 }
 
@@ -169,8 +169,7 @@ enum class TilkjentYtelseDomenebegrep(override val nøkkel: String) : Domenenøk
     PERIODETYPE("Periodetype"),
     PERIODE_ID("Periode id"),
     FORRIGE_PERIODE_ID("Forrige periode id"),
-    KILDE_BEHANDLING_ID("Kilde behandling id")
-    ;
+    KILDE_BEHANDLING_ID("Kilde behandling id"),
 }
 
 enum class UtbetalingsoppdragDomenebegrep(override val nøkkel: String) : Domenenøkkel {
@@ -180,5 +179,5 @@ enum class UtbetalingsoppdragDomenebegrep(override val nøkkel: String) : Domene
     FORRIGE_PERIODE_ID("Forrige periode id"),
     BELØP("Beløp"),
     TYPE("Type"),
-    OPPHØRSDATO("Opphørsdato")
+    OPPHØRSDATO("Opphørsdato"),
 }

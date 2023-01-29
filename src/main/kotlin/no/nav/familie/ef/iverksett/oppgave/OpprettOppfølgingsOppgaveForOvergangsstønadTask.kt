@@ -15,12 +15,12 @@ import java.util.UUID
 @Service
 @TaskStepBeskrivelse(
     taskStepType = OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE,
-    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad"
+    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad",
 )
 class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
     private val oppgaveService: OppgaveService,
     private val iverksettingRepository: IverksettingRepository,
-    private val taskService: TaskService
+    private val taskService: TaskService,
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -31,7 +31,7 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
         if (iverksett.data !is IverksettOvergangsstønad) {
             logger.info(
                 "Oppretter ikke oppfølgningsoppgave for behandling=$behandlingId" +
-                    " då den ikke er overgangsstønad (${iverksett::class.java.simpleName})"
+                    " då den ikke er overgangsstønad (${iverksett::class.java.simpleName})",
             )
             return
         }

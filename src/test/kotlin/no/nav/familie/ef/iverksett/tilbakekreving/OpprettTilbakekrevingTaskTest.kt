@@ -44,7 +44,7 @@ internal class OpprettTilbakekrevingTaskTest {
         iverksettingRepository = iverksettingRepository,
         tilbakekrevingClient = tilbakekrevingClient,
         simuleringService = simuleringService,
-        familieIntegrasjonerClient = familieIntegrasjonerClient
+        familieIntegrasjonerClient = familieIntegrasjonerClient,
     )
 
     @BeforeEach
@@ -62,7 +62,7 @@ internal class OpprettTilbakekrevingTaskTest {
         val iverksett = opprettIverksettOvergangsstønad(
             behandlingsId,
             tilbakekreving = tilbakekreving,
-            forrigeBehandlingId = UUID.randomUUID()
+            forrigeBehandlingId = UUID.randomUUID(),
         )
         every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
 
@@ -79,7 +79,7 @@ internal class OpprettTilbakekrevingTaskTest {
         val iverksett = opprettIverksettOvergangsstønad(
             behandlingsId,
             tilbakekreving = tilbakekreving,
-            forrigeBehandlingId = UUID.randomUUID()
+            forrigeBehandlingId = UUID.randomUUID(),
         )
         every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
 
@@ -93,12 +93,12 @@ internal class OpprettTilbakekrevingTaskTest {
         val behandlingsId = UUID.randomUUID()
         val tilbakekrevingsdetaljer = Tilbakekrevingsdetaljer(
             tilbakekrevingsvalg = Tilbakekrevingsvalg.IGNORER_TILBAKEKREVING,
-            tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel()
+            tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(),
         )
         val iverksett = opprettIverksettOvergangsstønad(
             behandlingsId,
             tilbakekreving = tilbakekrevingsdetaljer,
-            forrigeBehandlingId = UUID.randomUUID()
+            forrigeBehandlingId = UUID.randomUUID(),
         )
         every { iverksettingRepository.findByIdOrThrow(behandlingsId) } returns lagIverksett(iverksett)
 
@@ -130,7 +130,7 @@ internal class OpprettTilbakekrevingTaskTest {
         val iverksett = opprettIverksettOvergangsstønad(
             behandlingsId,
             tilbakekreving = tilbakekreving,
-            forrigeBehandlingId = UUID.randomUUID()
+            forrigeBehandlingId = UUID.randomUUID(),
         )
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(100)
@@ -140,7 +140,7 @@ internal class OpprettTilbakekrevingTaskTest {
         every {
             iverksettResultatService.oppdaterTilbakekrevingResultat(
                 behandlingsId,
-                capture(tilbakekrevingResultatSlot)
+                capture(tilbakekrevingResultatSlot),
             )
         } just Runs
 
@@ -161,7 +161,7 @@ internal class OpprettTilbakekrevingTaskTest {
         val iverksett = opprettIverksettOvergangsstønad(
             behandlingsId,
             tilbakekreving = tilbakekreving,
-            forrigeBehandlingId = UUID.randomUUID()
+            forrigeBehandlingId = UUID.randomUUID(),
         )
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(0)
 
@@ -180,7 +180,7 @@ internal class OpprettTilbakekrevingTaskTest {
         val iverksett = opprettIverksettOvergangsstønad(
             behandlingsId,
             tilbakekreving = tilbakekreving,
-            forrigeBehandlingId = UUID.randomUUID()
+            forrigeBehandlingId = UUID.randomUUID(),
         )
         val tilbakekrevingResultatSlot = slot<TilbakekrevingResultat>()
         val beriketSimuleringsresultat = beriketSimuleringsresultat().medFeilutbetaling(200)
@@ -190,7 +190,7 @@ internal class OpprettTilbakekrevingTaskTest {
         every {
             iverksettResultatService.oppdaterTilbakekrevingResultat(
                 behandlingsId,
-                capture(tilbakekrevingResultatSlot)
+                capture(tilbakekrevingResultatSlot),
             )
         } just Runs
 

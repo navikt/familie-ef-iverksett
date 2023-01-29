@@ -35,7 +35,7 @@ class JournalpostClientMock(@Value("\${FAMILIE_INTEGRASJONER_API_URL}") private 
             .willReturn(WireMock.okJson(objectMapper.writeValueAsString(bestillingId))),
         WireMock.post(WireMock.urlEqualTo(distribuerDokumentUri.path)).atPriority(1)
             .withRequestBody(WireMock.matchingJsonPath("$..journalpostId", WireMock.containing("SkalFeile")))
-            .willReturn(WireMock.serverError())
+            .willReturn(WireMock.serverError()),
     )
 
     fun journalføringPath(): String = "${dokarkivUri.path}.*"

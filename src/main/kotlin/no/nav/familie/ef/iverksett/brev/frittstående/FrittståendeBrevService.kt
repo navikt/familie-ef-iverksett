@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
 class FrittståendeBrevService(
     private val frittståendeBrevRepository: FrittståendeBrevRepository,
     private val taskService: TaskService,
-    private val journalpostClient: JournalpostClient
+    private val journalpostClient: JournalpostClient,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -38,13 +38,13 @@ class FrittståendeBrevService(
                         data.fil,
                         Filtype.PDFA,
                         dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
-                        tittel = data.brevtype.tittel
-                    )
+                        tittel = data.brevtype.tittel,
+                    ),
                 ),
                 fagsakId = data.eksternFagsakId.toString(),
-                journalførendeEnhet = data.journalførendeEnhet
+                journalførendeEnhet = data.journalførendeEnhet,
             ),
-            data.saksbehandlerIdent
+            data.saksbehandlerIdent,
         ).journalpostId
         try {
             val bestillingId = journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
@@ -73,8 +73,8 @@ class FrittståendeBrevService(
                 stønadstype = data.stønadType,
                 mottakere = Brevmottakere(mottakere.map { it.toDomain() }),
                 fil = data.fil,
-                brevtype = data.brevtype
-            )
+                brevtype = data.brevtype,
+            ),
         )
         taskService.save(Task(JournalførFrittståendeBrevTask.TYPE, brev.id.toString()))
     }

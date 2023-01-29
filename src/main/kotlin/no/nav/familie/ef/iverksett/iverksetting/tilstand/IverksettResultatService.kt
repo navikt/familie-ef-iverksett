@@ -36,7 +36,7 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
         val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
 
         val oppdatert = iverksettResultat.copy(
-            journalpostResultat = iverksettResultat.journalpostResultat + mapOf(mottakerIdent to journalPostResultat)
+            journalpostResultat = iverksettResultat.journalpostResultat + mapOf(mottakerIdent to journalPostResultat),
         )
         iverksettResultatRepository.update(oppdatert)
     }
@@ -45,11 +45,11 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
     fun oppdaterDistribuerVedtaksbrevResultat(
         behandlingId: UUID,
         journalpostId: String,
-        distribuerVedtaksbrevResultat: DistribuerBrevResultat
+        distribuerVedtaksbrevResultat: DistribuerBrevResultat,
     ) {
         val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
         val oppdatert = iverksettResultat.copy(
-            vedtaksbrevResultat = iverksettResultat.vedtaksbrevResultat + mapOf(journalpostId to distribuerVedtaksbrevResultat)
+            vedtaksbrevResultat = iverksettResultat.vedtaksbrevResultat + mapOf(journalpostId to distribuerVedtaksbrevResultat),
         )
         iverksettResultatRepository.update(oppdatert)
     }

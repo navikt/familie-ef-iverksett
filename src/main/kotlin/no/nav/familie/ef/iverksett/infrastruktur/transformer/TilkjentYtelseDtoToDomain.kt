@@ -8,7 +8,7 @@ import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as Tilkj
 fun TilkjentYtelseDto.toDomain(): TilkjentYtelse {
     return TilkjentYtelse(
         andelerTilkjentYtelse = this.andelerTilkjentYtelse.map { it.toDomain() },
-        startmåned = this.startmåned
+        startmåned = this.startmåned,
     )
 }
 
@@ -21,6 +21,6 @@ fun TilkjentYtelseMedMetadataDto.toDomain(): TilkjentYtelseMedMetaData {
         eksternFagsakId = this.eksternFagsakId,
         personIdent = this.personIdent,
         behandlingId = this.behandlingId,
-        vedtaksdato = this.vedtaksdato
+        vedtaksdato = this.vedtaksdato,
     )
 }

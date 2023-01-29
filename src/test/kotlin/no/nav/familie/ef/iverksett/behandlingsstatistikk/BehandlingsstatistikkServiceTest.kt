@@ -77,7 +77,7 @@ internal class BehandlingsstatistikkServiceTest {
                 hendelseTidspunkt = endretTid,
                 gjeldendeSaksbehandlerId = saksbehandler,
                 behandlingResultat = behandlingResultat,
-                resultatBegrunnelse = resultatBegrunnelse
+                resultatBegrunnelse = resultatBegrunnelse,
             )
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
@@ -109,7 +109,7 @@ internal class BehandlingsstatistikkServiceTest {
                 hendelseTidspunkt = endretTid,
                 gjeldendeSaksbehandlerId = ansvarligBeslutter,
                 behandlingResultat = behandlingResultat,
-                resultatBegrunnelse = resultatBegrunnelse
+                resultatBegrunnelse = resultatBegrunnelse,
             )
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)

@@ -20,7 +20,7 @@ import java.time.LocalDate
 class SimuleringService(
     private val oppdragKlient: OppdragClient,
     private val iverksettResultatService: IverksettResultatService,
-    private val featureToggleService: FeatureToggleService
+    private val featureToggleService: FeatureToggleService,
 ) {
 
     fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
@@ -35,7 +35,7 @@ class SimuleringService(
             val tilkjentYtelseMedUtbetalingsoppdrag =
                 UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse
+                    forrigeTilkjentYtelse,
                 )
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
@@ -46,7 +46,7 @@ class SimuleringService(
             }
             return hentSimuleringsresultatOgFiltrerPosteringer(
                 utbetalingsoppdrag,
-                simulering.nyTilkjentYtelseMedMetaData.stønadstype
+                simulering.nyTilkjentYtelseMedMetaData.stønadstype,
             )
         } catch (feil: Throwable) {
             val cause = feil.cause
@@ -66,13 +66,13 @@ class SimuleringService(
 
         return BeriketSimuleringsresultat(
             detaljer = detaljertSimuleringResultat,
-            oppsummering = simuleringsresultatDto
+            oppsummering = simuleringsresultatDto,
         )
     }
 
     private fun hentSimuleringsresultatOgFiltrerPosteringer(
         utbetalingsoppdrag: Utbetalingsoppdrag,
-        stønadType: StønadType
+        stønadType: StønadType,
     ): DetaljertSimuleringResultat {
         val fagOmrådeKoder = fagområdeKoderForPosteringer(stønadType)
         val simuleringsResultat = oppdragKlient.hentSimuleringsresultat(utbetalingsoppdrag)
@@ -82,9 +82,9 @@ class SimuleringService(
                     mottaker.copy(
                         simulertPostering = mottaker.simulertPostering.filter { postering ->
                             fagOmrådeKoder.contains(postering.fagOmrådeKode)
-                        }
+                        },
                     )
-                }
+                },
         )
     }
 }

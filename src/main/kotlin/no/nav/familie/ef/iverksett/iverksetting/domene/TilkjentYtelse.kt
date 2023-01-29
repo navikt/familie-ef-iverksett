@@ -15,7 +15,7 @@ data class TilkjentYtelse(
     val sisteAndelIKjede: AndelTilkjentYtelse? = null,
     @Deprecated("Bruk startmåned", ReplaceWith("startmåned")) val startdato: LocalDate? = null,
     val startmåned: YearMonth = startdato?.let { YearMonth.from(startdato) }
-        ?: error("Startdato eller startmåned må ha verdi")
+        ?: error("Startdato eller startmåned må ha verdi"),
 ) {
 
     fun toMedMetadata(
@@ -25,7 +25,7 @@ data class TilkjentYtelse(
         eksternFagsakId: Long,
         personIdent: String,
         behandlingId: UUID,
-        vedtaksdato: LocalDate
+        vedtaksdato: LocalDate,
     ): TilkjentYtelseMedMetaData {
         return TilkjentYtelseMedMetaData(
             tilkjentYtelse = this,
@@ -35,7 +35,7 @@ data class TilkjentYtelse(
             eksternFagsakId = eksternFagsakId,
             personIdent = personIdent,
             behandlingId = behandlingId,
-            vedtaksdato = vedtaksdato
+            vedtaksdato = vedtaksdato,
         )
     }
 }

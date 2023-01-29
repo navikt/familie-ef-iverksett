@@ -27,12 +27,12 @@ import java.util.UUID
     maxAntallFeil = 50,
     settTilManuellOppfølgning = true,
     triggerTidVedFeilISekunder = 15 * 60L,
-    beskrivelse = "Distribuerer vedtaksbrev."
+    beskrivelse = "Distribuerer vedtaksbrev.",
 )
 class DistribuerVedtaksbrevTask(
     private val journalpostClient: JournalpostClient,
     private val iverksettResultatService: IverksettResultatService,
-    private val taskService: TaskService
+    private val taskService: TaskService,
 ) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -76,7 +76,7 @@ class DistribuerVedtaksbrevTask(
 
     private fun distribuerBrevOgOppdaterVedtaksbrevResultat(
         journalpostResultat: JournalpostResultat,
-        behandlingId: UUID
+        behandlingId: UUID,
     ) {
         val bestillingId = try {
             journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VEDTAK)
@@ -95,7 +95,7 @@ class DistribuerVedtaksbrevTask(
         iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
             behandlingId,
             journalpostResultat.journalpostId,
-            DistribuerBrevResultat(bestillingId)
+            DistribuerBrevResultat(bestillingId),
         )
     }
 
@@ -121,7 +121,7 @@ class DistribuerVedtaksbrevTask(
     private fun loggBrevDistribuert(journalpostId: String, behandlingId: UUID, bestillingId: String) {
         logger.info(
             "Distribuer vedtaksbrev journalpost=[$journalpostId] " +
-                "for behandling=[$behandlingId] med bestillingId=[$bestillingId]"
+                "for behandling=[$behandlingId] med bestillingId=[$bestillingId]",
         )
     }
 

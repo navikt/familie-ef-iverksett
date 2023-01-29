@@ -43,7 +43,7 @@ fun IverksettData.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
         varsel = this.vedtak.tilbakekreving?.let { lagVarsel(it) },
         revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
         verge = null, // Verge er per nå ikke støttet i familie-ef-sak.
-        faktainfo = lagFaktainfo(this)
+        faktainfo = lagFaktainfo(this),
     )
 
 fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
@@ -58,8 +58,8 @@ fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
             enhetId = enhet.enhetId,
             enhetsnavn = enhet.enhetNavn,
             revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
-            faktainfo = lagFaktainfo(this)
-        )
+            faktainfo = lagFaktainfo(this),
+        ),
     )
 
 private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel? {
@@ -71,7 +71,7 @@ private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel?
                 tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.sumFeilutbetaling
                     ?: error("sumFeilutbetaling er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
                 tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder?.map { Periode(it.fom, it.tom) }
-                    ?: error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel")
+                    ?: error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
             )
         else -> null
     }
@@ -82,7 +82,7 @@ private fun lagFaktainfo(iverksett: IverksettData): Faktainfo {
         revurderingsårsak = iverksett.behandling.behandlingÅrsak.visningsTekst(),
         revurderingsresultat = iverksett.vedtak.vedtaksresultat.visningsnavn,
         tilbakekrevingsvalg = iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg,
-        konsekvensForYtelser = emptySet() // Settes også empty av ba-sak
+        konsekvensForYtelser = emptySet(), // Settes også empty av ba-sak
     )
 }
 
@@ -97,6 +97,7 @@ private fun BehandlingÅrsak.visningsTekst(): String {
         BehandlingÅrsak.SATSENDRING -> "Satsendring"
 
         BehandlingÅrsak.MIGRERING,
-        BehandlingÅrsak.SANKSJON_1_MND -> error("Skal ikke gi tilbakekreving for årsak=$this")
+        BehandlingÅrsak.SANKSJON_1_MND,
+        -> error("Skal ikke gi tilbakekreving for årsak=$this")
     }
 }

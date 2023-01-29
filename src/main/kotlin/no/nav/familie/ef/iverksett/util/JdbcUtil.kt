@@ -26,7 +26,7 @@ inline fun <reified T> NamedParameterJdbcTemplate.queryForJson(sql: String, para
 inline fun <reified T> NamedParameterJdbcTemplate.queryForNullableObject(
     sql: String,
     paramSource: SqlParameterSource,
-    rowMapper: RowMapper<T>
+    rowMapper: RowMapper<T>,
 ): T? {
     return try {
         this.queryForObject(sql, paramSource, rowMapper)

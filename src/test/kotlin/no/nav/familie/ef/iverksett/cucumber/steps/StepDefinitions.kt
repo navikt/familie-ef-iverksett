@@ -27,7 +27,7 @@ import java.util.UUID
 data class TilkjentYtelseHolder(
     val behandlingId: UUID,
     val behandlingIdInt: Int,
-    val tilkjentYtelse: TilkjentYtelseDto
+    val tilkjentYtelse: TilkjentYtelseDto,
 )
 
 class StepDefinitions {
@@ -68,7 +68,7 @@ class StepDefinitions {
             val nyTilkjentYtelseMedMetaData = toMedMetadata(holder, stønadType)
             val nyTilkjentYtelse = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                 nyTilkjentYtelseMedMetaData,
-                acc.lastOrNull()?.second
+                acc.lastOrNull()?.second,
             )
             acc + (holder.behandlingId to nyTilkjentYtelse)
         }.toMap()
@@ -110,7 +110,7 @@ class StepDefinitions {
     fun `forvent følgende tilkjente ytelser med startdato`(
         behandlingIdInt: Int,
         startdato: String?,
-        dataTable: DataTable
+        dataTable: DataTable,
     ) {
         val parsedStartdato = startdato?.let { parseÅrMåned(it) }
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
@@ -125,7 +125,7 @@ class StepDefinitions {
     @Så("forvent følgende tilkjente ytelser med tomme andeler for behandling {int} og startdato {}")
     fun `forvent følgende tilkjente ytelser med tomme andeler for behandling og startdato`(
         behandlingIdInt: Int,
-        startdato: String?
+        startdato: String?,
     ) {
         val parsedStartdato = startdato?.let { parseÅrMåned(it) }
         val behandlingId = IdTIlUUIDHolder.behandlingIdTilUUID[behandlingIdInt]!!
@@ -138,7 +138,7 @@ class StepDefinitions {
     private fun assertTilkjentYtelseMed0BeløpAndeler(
         behandlingId: UUID,
         startmåned: YearMonth?,
-        beregnetTilkjentYtelse: TilkjentYtelse
+        beregnetTilkjentYtelse: TilkjentYtelse,
     ) {
         assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(startmåned)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
@@ -151,7 +151,7 @@ class StepDefinitions {
 
     private fun assertTilkjentYtelse(
         forventetTilkjentYtelse: TilkjentYtelseParser.ForventetTilkjentYtelse,
-        beregnetTilkjentYtelse: TilkjentYtelse
+        beregnetTilkjentYtelse: TilkjentYtelse,
     ) {
         beregnetTilkjentYtelse.andelerTilkjentYtelse.forEachIndexed { index, andel ->
             val forventetAndel = forventetTilkjentYtelse.andeler[index]
@@ -171,7 +171,7 @@ class StepDefinitions {
     private fun assertUtbetalingsoppdrag(
         forventetUtbetalingsoppdrag: TilkjentYtelseParser.ForventetUtbetalingsoppdrag,
         utbetalingsoppdrag: Utbetalingsoppdrag,
-        medUtbetalingsperiode: Boolean = true
+        medUtbetalingsperiode: Boolean = true,
     ) {
         assertThat(utbetalingsoppdrag.kodeEndring).isEqualTo(forventetUtbetalingsoppdrag.kodeEndring)
         assertThat(utbetalingsoppdrag.utbetalingsperiode).hasSize(forventetUtbetalingsoppdrag.utbetalingsperiode.size)
@@ -185,7 +185,7 @@ class StepDefinitions {
 
     private fun assertUtbetalingsperiode(
         utbetalingsperiode: Utbetalingsperiode,
-        forventetUtbetalingsperiode: TilkjentYtelseParser.ForventetUtbetalingsperiode
+        forventetUtbetalingsperiode: TilkjentYtelseParser.ForventetUtbetalingsperiode,
     ) {
         assertThat(utbetalingsperiode.erEndringPåEksisterendePeriode)
             .isEqualTo(forventetUtbetalingsperiode.erEndringPåEksisterendePeriode)
@@ -217,6 +217,6 @@ private fun toMedMetadata(holder: TilkjentYtelseHolder, stønadType: StønadType
             eksternFagsakId = 1,
             personIdent = "1",
             behandlingId = holder.behandlingId,
-            vedtaksdato = LocalDate.now()
+            vedtaksdato = LocalDate.now(),
         )
 }

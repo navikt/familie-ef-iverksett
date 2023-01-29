@@ -45,7 +45,7 @@ class IverksettingControllerTest : ServerTest() {
         val respons: ResponseEntity<Any> = restTemplate.exchange(
             localhostUrl("/api/iverksett"),
             HttpMethod.POST,
-            HttpEntity(request, headers)
+            HttpEntity(request, headers),
         )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         val tasker = taskService.findAll()
@@ -67,7 +67,7 @@ class IverksettingControllerTest : ServerTest() {
         val respons: ResponseEntity<Any> = restTemplate.exchange(
             localhostUrl("/api/iverksett"),
             HttpMethod.POST,
-            HttpEntity(request, headers)
+            HttpEntity(request, headers),
         )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         val tasker = taskService.findAll()
@@ -87,7 +87,7 @@ class IverksettingControllerTest : ServerTest() {
         val respons: ResponseEntity<Ressurs<Nothing>> = restTemplate.exchange(
             localhostUrl("/api/iverksett"),
             HttpMethod.POST,
-            HttpEntity(request, headers)
+            HttpEntity(request, headers),
         )
         assertThat(respons.statusCode.value()).isEqualTo(400)
     }
@@ -102,7 +102,7 @@ class IverksettingControllerTest : ServerTest() {
         val respons: ResponseEntity<String> = restTemplate.exchange(
             localhostUrl("/api/iverksett"),
             HttpMethod.POST,
-            HttpEntity(request, headers)
+            HttpEntity(request, headers),
         )
 
         assertThat(respons.statusCode.value()).isEqualTo(400)

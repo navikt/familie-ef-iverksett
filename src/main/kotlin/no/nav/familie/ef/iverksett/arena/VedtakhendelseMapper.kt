@@ -15,11 +15,11 @@ fun mapIverksettTilVedtakHendelser(iverksettData: IverksettData, aktørId: Strin
         avslutningsstatus = mapAvslutningsstatus(iverksettData.vedtak.vedtaksresultat),
         behandlingstema = Behandlingstema.valueOf(
             iverksettData.fagsak.stønadstype.name.lowercase(Locale.getDefault())
-                .replaceFirstChar { it.uppercase() }
+                .replaceFirstChar { it.uppercase() },
         ).value,
         hendelsesprodusentREF = "EF",
         applikasjonSakREF = iverksettData.fagsak.eksternId.toString(),
-        hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter)
+        hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter),
     )
 }
 

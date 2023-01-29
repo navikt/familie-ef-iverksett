@@ -17,8 +17,8 @@ object ObjectMapperProvider {
             .registerModule(
                 SimpleModule().addDeserializer(
                     ZonedDateTime::class.java,
-                    ZonedDateTimeDeserializer()
-                )
+                    ZonedDateTimeDeserializer(),
+                ),
             )
 
     /**

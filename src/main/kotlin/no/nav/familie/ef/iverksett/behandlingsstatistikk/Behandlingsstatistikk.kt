@@ -10,5 +10,5 @@ data class Behandlingsstatistikk(
     val id: UUID = UUID.randomUUID(),
     val behandlingId: UUID,
     val behandlingDvh: BehandlingDVH,
-    val hendelse: Hendelse
+    val hendelse: Hendelse,
 )

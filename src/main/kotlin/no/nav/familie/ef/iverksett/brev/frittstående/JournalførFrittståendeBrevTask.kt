@@ -24,12 +24,12 @@ import java.util.UUID
     taskStepType = JournalførFrittståendeBrevTask.TYPE,
     maxAntallFeil = 5,
     triggerTidVedFeilISekunder = 15,
-    beskrivelse = "Journalfører frittstående brev."
+    beskrivelse = "Journalfører frittstående brev.",
 )
 class JournalførFrittståendeBrevTask(
     private val journalpostClient: JournalpostClient,
     private val taskService: TaskService,
-    private val frittståendeBrevRepository: FrittståendeBrevRepository
+    private val frittståendeBrevRepository: FrittståendeBrevRepository,
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
@@ -47,7 +47,7 @@ class JournalførFrittståendeBrevTask(
             }
             val journalpostId = journalpostClient.arkiverDokument(
                 opprettArkiverDokumentRequest(frittståendeBrev, callId, index, brevmottaker),
-                saksbehandler = frittståendeBrev.saksbehandlerIdent
+                saksbehandler = frittståendeBrev.saksbehandlerIdent,
             ).journalpostId
             val oppdatertJournalposter =
                 frittståendeBrev.journalpostResultat.map + mapOf(brevmottaker.ident to JournalpostResultat(journalpostId))
@@ -55,7 +55,7 @@ class JournalførFrittståendeBrevTask(
                 frittståendeBrev.copy(journalpostResultat = JournalpostResultatMap(oppdatertJournalposter))
             frittståendeBrevRepository.oppdaterJournalpostResultat(
                 frittståendeBrevId,
-                frittståendeBrev.journalpostResultat
+                frittståendeBrev.journalpostResultat,
             )
         }
     }
@@ -68,7 +68,7 @@ class JournalførFrittståendeBrevTask(
         frittståendeBrev: FrittståendeBrev,
         callId: String,
         index: Int,
-        brevmottaker: Brevmottaker
+        brevmottaker: Brevmottaker,
     ) = ArkiverDokumentRequest(
         fnr = frittståendeBrev.personIdent,
         forsøkFerdigstill = true,
@@ -77,24 +77,24 @@ class JournalførFrittståendeBrevTask(
                 frittståendeBrev.fil,
                 Filtype.PDFA,
                 dokumenttype = stønadstypeTilDokumenttype(frittståendeBrev.stønadstype),
-                tittel = frittståendeBrev.brevtype.tittel
-            )
+                tittel = frittståendeBrev.brevtype.tittel,
+            ),
         ),
         fagsakId = frittståendeBrev.eksternFagsakId.toString(),
         journalførendeEnhet = frittståendeBrev.journalførendeEnhet,
         eksternReferanseId = "$callId-$index",
-        avsenderMottaker = avsenderMottaker(frittståendeBrev, brevmottaker)
+        avsenderMottaker = avsenderMottaker(frittståendeBrev, brevmottaker),
     )
 
     private fun avsenderMottaker(
         frittståendeBrev: FrittståendeBrev,
-        brevmottaker: Brevmottaker
+        brevmottaker: Brevmottaker,
     ) =
         if (frittståendeBrev.personIdent != brevmottaker.ident) {
             AvsenderMottaker(
                 brevmottaker.ident,
                 brevmottaker.identType.tilIdType(),
-                brevmottaker.navn
+                brevmottaker.navn,
             )
         } else {
             null

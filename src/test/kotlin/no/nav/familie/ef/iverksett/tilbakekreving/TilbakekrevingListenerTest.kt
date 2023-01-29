@@ -83,9 +83,9 @@ internal class TilbakekrevingListenerTest {
                     revurderingsårsak = "årsak",
                     revurderingsresultat = "resultat",
                     tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
-                    konsekvensForYtelser = emptySet()
-                )
-            )
+                    konsekvensForYtelser = emptySet(),
+                ),
+            ),
         )
         return ConsumerRecord("topic", 0, 0L, "1", behandling)
     }

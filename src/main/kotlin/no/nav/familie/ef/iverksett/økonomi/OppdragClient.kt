@@ -22,7 +22,7 @@ class OppdragClient(
     @Value("\${FAMILIE_OPPDRAG_API_URL}")
     private val familieOppdragUri: URI,
     @Qualifier("azure")
-    restOperations: RestOperations
+    restOperations: RestOperations,
 ) : AbstractPingableRestClient(restOperations, "familie.oppdrag") {
 
     private val postOppdragUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/oppdrag").build().toUri()
@@ -55,7 +55,7 @@ class OppdragClient(
         konsistensavstemmingUtbetalingsoppdrag: KonsistensavstemmingUtbetalingsoppdrag,
         sendStartmelding: Boolean = true,
         sendAvsluttmelding: Boolean = true,
-        transaksjonId: UUID? = null
+        transaksjonId: UUID? = null,
     ): String {
         val url = UriComponentsBuilder.fromUri(konsistensavstemmingUri)
             .queryParam("sendStartmelding", sendStartmelding)
