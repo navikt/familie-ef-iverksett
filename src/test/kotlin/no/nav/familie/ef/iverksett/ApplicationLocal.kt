@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
             "local",
             "mock-integrasjoner",
             "mock-oppdrag",
-            "mock-kafkatemplate"
+            "mock-kafkatemplate",
         )
         .run(*args)
 }

@@ -65,7 +65,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
             iverksettingRepository = iverksettingRepository,
             journalpostClient = journalpostClient,
             taskService = taskService,
-            iverksettResultatService = iverksettResultatService
+            iverksettResultatService = iverksettResultatService,
         )
     }
 
@@ -82,17 +82,17 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
                             ident = identA,
                             navn = "Navn",
                             identType = PERSONIDENT,
-                            mottakerRolle = BRUKER
+                            mottakerRolle = BRUKER,
                         ),
                         Brevmottaker(
                             ident = identB,
                             navn = "Navn",
                             identType = PERSONIDENT,
-                            mottakerRolle = VERGE
-                        )
-                    )
-                )
-            )
+                            mottakerRolle = VERGE,
+                        ),
+                    ),
+                ),
+            ),
         )
         val behandlingId = iverksettMedBrevmottakere.behandling.behandlingId
         iverksettResultatService.opprettTomtResultat(behandlingId)
@@ -101,16 +101,16 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
                 behandlingId,
                 iverksettMedBrevmottakere,
                 iverksettMedBrevmottakere.behandling.eksternId,
-                opprettBrev()
-            )
+                opprettBrev(),
+            ),
         )
 
         journalførVedtaksbrevTask!!.doTask(
             Task(
                 JournalførVedtaksbrevTask.TYPE,
                 behandlingId.toString(),
-                Properties()
-            )
+                Properties(),
+            ),
         )
 
         val journalpostResultat = iverksettResultatService.hentJournalpostResultat(behandlingId = behandlingId)
@@ -142,8 +142,8 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
                 behandlingId,
                 iverksettMedBrevmottakere,
                 iverksettMedBrevmottakere.behandling.eksternId,
-                opprettBrev()
-            )
+                opprettBrev(),
+            ),
         )
 
         kjørTask(behandlingId)
@@ -180,7 +180,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
     private fun resettBrevOgIverksettMedGyldigeBrevmottakere(
         behandlingId: UUID,
         vedtak: Vedtaksdetaljer,
-        brevmottakere: List<Brevmottaker>
+        brevmottakere: List<Brevmottaker>,
     ) {
         val mapSqlParameterSource = MapSqlParameterSource(mapOf("behandlingId" to behandlingId))
         namedParameterJdbcTemplate.update("DELETE FROM brev WHERE behandling_id = :behandlingId", mapSqlParameterSource)
@@ -192,8 +192,8 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
                 behandlingId,
                 iverksettMedGyldigeBrevmottakere,
                 iverksettMedGyldigeBrevmottakere.behandling.eksternId,
-                opprettBrev()
-            )
+                opprettBrev(),
+            ),
         )
     }
 
@@ -208,7 +208,7 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
         wireMockServer.verify(
             antall,
             WireMock.postRequestedFor(WireMock.urlMatching(journalpostClientMock.journalføringPath()))
-                .withRequestBody(WireMock.matchingJsonPath("$..id", WireMock.containing(ident)))
+                .withRequestBody(WireMock.matchingJsonPath("$..id", WireMock.containing(ident))),
         )
     }
 

@@ -33,7 +33,7 @@ class IverksettingService(
     val oppdragClient: OppdragClient,
     val iverksettingRepository: IverksettingRepository,
     val iverksettResultatService: IverksettResultatService,
-    val featureToggleService: FeatureToggleService
+    val featureToggleService: FeatureToggleService,
 ) {
 
     @Transactional
@@ -46,8 +46,8 @@ class IverksettingService(
                 iverksett.behandling.behandlingId,
                 iverksett,
                 iverksett.behandling.eksternId,
-                brev
-            )
+                brev,
+            ),
         )
 
         iverksettResultatService.opprettTomtResultat(iverksett.behandling.behandlingId)
@@ -61,8 +61,8 @@ class IverksettingService(
                     this["behandlingId"] = iverksett.behandling.behandlingId.toString()
                     this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
                     this["beslutter"] = iverksett.vedtak.beslutterId
-                }
-            )
+                },
+            ),
         )
     }
 
@@ -79,8 +79,8 @@ class IverksettingService(
                     this["behandlingId"] = behandlingId.toString()
                     this["saksbehandler"] = iverksettDbo.data.vedtak.saksbehandlerId
                     this["beslutter"] = iverksettDbo.data.vedtak.beslutterId
-                }
-            )
+                },
+            ),
         )
     }
 
@@ -128,12 +128,12 @@ class IverksettingService(
         stønadstype: StønadType,
         personIdent: String,
         eksternBehandlingId: Long,
-        behandlingId: UUID
+        behandlingId: UUID,
     ) {
         val oppdragId = OppdragId(
             fagsystem = stønadstype.tilKlassifisering(),
             personIdent = personIdent,
-            behandlingsId = eksternBehandlingId.toString()
+            behandlingsId = eksternBehandlingId.toString(),
         )
 
         val (status, melding) = oppdragClient.hentStatus(oppdragId)
@@ -144,7 +144,7 @@ class IverksettingService(
 
         iverksettResultatService.oppdaterOppdragResultat(
             behandlingId = behandlingId,
-            OppdragResultat(oppdragStatus = status)
+            OppdragResultat(oppdragStatus = status),
         )
     }
 }

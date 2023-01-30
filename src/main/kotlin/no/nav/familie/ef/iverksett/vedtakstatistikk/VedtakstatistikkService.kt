@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class VedtakstatistikkService(
-    private val vedtakstatistikkKafkaProducer: VedtakstatistikkKafkaProducer
+    private val vedtakstatistikkKafkaProducer: VedtakstatistikkKafkaProducer,
 ) {
 
     fun sendTilKafka(iverksettData: IverksettData, forrigeIverksett: IverksettData?) {
@@ -17,20 +17,20 @@ class VedtakstatistikkService(
             is IverksettOvergangsstønad -> vedtakstatistikkKafkaProducer.sendVedtak(
                 VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
                     iverksettData,
-                    forrigeIverksett?.behandling?.eksternId
-                )
+                    forrigeIverksett?.behandling?.eksternId,
+                ),
             )
             is IverksettBarnetilsyn -> vedtakstatistikkKafkaProducer.sendVedtak(
                 VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(
                     iverksettData,
-                    forrigeIverksett?.behandling?.eksternId
-                )
+                    forrigeIverksett?.behandling?.eksternId,
+                ),
             )
             is IverksettSkolepenger -> vedtakstatistikkKafkaProducer.sendVedtak(
                 VedtakstatistikkMapper.mapTilVedtakSkolepengeDVH(
                     iverksettData,
-                    forrigeIverksett?.behandling?.eksternId
-                )
+                    forrigeIverksett?.behandling?.eksternId,
+                ),
             )
         }
     }

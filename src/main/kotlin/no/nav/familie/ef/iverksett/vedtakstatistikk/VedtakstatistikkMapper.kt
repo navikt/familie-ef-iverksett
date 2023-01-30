@@ -51,7 +51,7 @@ object VedtakstatistikkMapper {
 
     fun mapTilVedtakBarnetilsynDVH(
         iverksett: IverksettBarnetilsyn,
-        forrigeIverksettBehandlingEksternId: Long?
+        forrigeIverksettBehandlingEksternId: Long?,
     ): VedtakBarnetilsynDVH {
         return VedtakBarnetilsynDVH(
             fagsakId = iverksett.fagsak.eksternId,
@@ -75,7 +75,7 @@ object VedtakstatistikkMapper {
                     it,
                     iverksett.fagsak.stønadstype,
                     iverksett.fagsak.eksternId,
-                    iverksett.søker
+                    iverksett.søker,
                 )
             } ?: emptyList(),
             aktivitetskrav = hentAktivitetsvilkårBarnetilsyn(iverksett.behandling.vilkårsvurderinger),
@@ -85,19 +85,19 @@ object VedtakstatistikkMapper {
                 PeriodeMedBeløp(
                     it.periode.fomDato,
                     it.periode.tomDato,
-                    it.beløp
+                    it.beløp,
                 )
             },
             perioderTilleggsstønad = iverksett.vedtak.tilleggsstønad.map {
                 PeriodeMedBeløp(
                     it.periode.fomDato,
                     it.periode.tomDato,
-                    it.beløp
+                    it.beløp,
                 )
             },
             kravMottatt = iverksett.behandling.kravMottatt,
             årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
-            avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name
+            avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
         )
     }
 
@@ -105,13 +105,13 @@ object VedtakstatistikkMapper {
         behandlingsdetaljer.årsakRevurdering?.let {
             ÅrsakRevurdering(
                 opplysningskilde = it.opplysningskilde.name,
-                årsak = it.årsak.name
+                årsak = it.årsak.name,
             )
         }
 
     fun mapTilVedtakOvergangsstønadDVH(
         iverksett: IverksettOvergangsstønad,
-        forrigeIverksettBehandlingEksternId: Long?
+        forrigeIverksettBehandlingEksternId: Long?,
     ): VedtakOvergangsstønadDVH {
         return VedtakOvergangsstønadDVH(
             fagsakId = iverksett.fagsak.eksternId,
@@ -135,19 +135,19 @@ object VedtakstatistikkMapper {
                     it,
                     iverksett.fagsak.stønadstype,
                     iverksett.fagsak.eksternId,
-                    iverksett.søker
+                    iverksett.søker,
                 )
             } ?: emptyList(),
             aktivitetskrav = Aktivitetskrav(
                 aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
                 harSagtOppArbeidsforhold = VilkårsvurderingUtil
-                    .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger)
+                    .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger),
             ),
             funksjonellId = iverksett.behandling.eksternId,
             stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
             kravMottatt = iverksett.behandling.kravMottatt,
             årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
-            avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name
+            avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
         )
     }
 
@@ -155,7 +155,7 @@ object VedtakstatistikkMapper {
         tilkjentYtelse: TilkjentYtelse,
         stønadsType: StønadType,
         eksternFagsakId: Long,
-        søker: Søker
+        søker: Søker,
     ): List<Utbetaling> {
         return tilkjentYtelse.andelerTilkjentYtelse.map {
             Utbetaling(
@@ -168,8 +168,8 @@ object VedtakstatistikkMapper {
                 Utbetalingsdetalj(
                     gjelderPerson = mapTilPerson(personIdent = søker.personIdent),
                     klassekode = stønadsType.tilKlassifisering(),
-                    delytelseId = eksternFagsakId.toString() + (it.periodeId ?: "")
-                )
+                    delytelseId = eksternFagsakId.toString() + (it.periodeId ?: ""),
+                ),
             )
         }
     }
@@ -185,7 +185,7 @@ object VedtakstatistikkMapper {
     private fun mapTilVilkårsvurderinger(vilkårsvurdering: Vilkårsvurdering): VilkårsvurderingDto {
         return VilkårsvurderingDto(
             vilkår = Vilkår.valueOf(vilkårsvurdering.vilkårType.name),
-            resultat = Vilkårsresultat.valueOf(vilkårsvurdering.resultat.name)
+            resultat = Vilkårsresultat.valueOf(vilkårsvurdering.resultat.name),
         )
     }
 
@@ -195,7 +195,7 @@ object VedtakstatistikkMapper {
                 it.periode.fomDato,
                 it.periode.tomDato,
                 AktivitetType.valueOf(it.aktivitet.name),
-                VedtaksperiodeType.valueOf(it.periodeType.name)
+                VedtaksperiodeType.valueOf(it.periodeType.name),
             )
         }
     }
@@ -206,7 +206,7 @@ object VedtakstatistikkMapper {
                 it.periode.fomDato,
                 it.periode.tomDato,
                 it.utgifter,
-                it.antallBarn
+                it.antallBarn,
             )
         }
     }
@@ -233,7 +233,7 @@ object VedtakstatistikkMapper {
                     it,
                     iverksett.fagsak.stønadstype,
                     iverksett.fagsak.eksternId,
-                    iverksett.søker
+                    iverksett.søker,
                 )
             } ?: emptyList(),
             funksjonellId = iverksett.behandling.eksternId,
@@ -243,13 +243,13 @@ object VedtakstatistikkMapper {
                     skoleår = it.perioder.first().periode.fomDato.utledSkoleår().value,
                     perioder = it.perioder.map { delårsperiode -> mapTilDelårsperiode(delårsperiode) },
                     utgifter = it.utgiftsperioder.map { utgiftsperiode -> mapTilUtgiftSkolepenger(utgiftsperiode) },
-                    maksSatsForSkoleår = it.perioder.first().makssatsForSkoleår
+                    maksSatsForSkoleår = it.perioder.first().makssatsForSkoleår,
                 )
             },
             vedtaksbegrunnelse = iverksett.vedtak.begrunnelse,
             kravMottatt = iverksett.behandling.kravMottatt,
             årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
-            avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name
+            avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
         )
     }
 
@@ -257,7 +257,7 @@ object VedtakstatistikkMapper {
         UtgiftSkolepenger(
             utgiftsdato = utgiftsperiode.utgiftsdato,
             utgiftsbeløp = utgiftsperiode.utgifter,
-            utbetaltBeløp = utgiftsperiode.stønad
+            utbetaltBeløp = utgiftsperiode.stønad,
         )
 
     private fun mapTilDelårsperiode(delårsperiode: DelårsperiodeSkoleårSkolepenger) =
@@ -265,7 +265,7 @@ object VedtakstatistikkMapper {
             studietype = Studietype.valueOf(delårsperiode.studietype.name),
             datoFra = delårsperiode.periode.fomDato,
             datoTil = delårsperiode.periode.tomDato,
-            studiebelastning = delårsperiode.studiebelastning
+            studiebelastning = delårsperiode.studiebelastning,
         )
 
     private fun LocalDate.utledSkoleår() = if (this.month > Month.JUNE) Year.of(this.year) else Year.of(this.year - 1)

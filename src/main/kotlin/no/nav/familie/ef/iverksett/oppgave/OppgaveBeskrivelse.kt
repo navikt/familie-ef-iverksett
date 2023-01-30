@@ -11,7 +11,7 @@ object OppgaveBeskrivelse {
 
     fun beskrivelseFørstegangsbehandlingInnvilget(
         periode: Pair<LocalDate, LocalDate>,
-        vedtak: VedtaksperiodeOvergangsstønad
+        vedtak: VedtaksperiodeOvergangsstønad,
     ): String {
         return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
@@ -23,7 +23,7 @@ object OppgaveBeskrivelse {
 
     fun beskrivelseRevurderingInnvilget(
         vedtaksPeriode: Pair<LocalDate, LocalDate>,
-        gjeldendeVedtak: VedtaksperiodeOvergangsstønad
+        gjeldendeVedtak: VedtaksperiodeOvergangsstønad,
     ): String {
         return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."

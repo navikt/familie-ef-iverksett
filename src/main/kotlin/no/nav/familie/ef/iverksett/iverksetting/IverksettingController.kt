@@ -25,17 +25,17 @@ import java.util.UUID
 @RestController
 @RequestMapping(
     path = ["/api/iverksett"],
-    produces = [MediaType.APPLICATION_JSON_VALUE]
+    produces = [MediaType.APPLICATION_JSON_VALUE],
 )
 @ProtectedWithClaims(issuer = "azuread")
 class IverksettingController(
-    private val iverksettingService: IverksettingService
+    private val iverksettingService: IverksettingService,
 ) {
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun iverksett(
         @RequestPart("data") iverksettDto: IverksettDto,
-        @RequestPart("fil") fil: MultipartFile
+        @RequestPart("fil") fil: MultipartFile,
     ) {
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
@@ -72,7 +72,7 @@ class IverksettingController(
             throw ApiFeil(
                 "Kan ikke ha iverksetting uten brev når det ikke er en migrering, " +
                     "g-omregning eller korrigering uten brev ",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.BAD_REQUEST,
             )
         }
     }
@@ -81,7 +81,7 @@ class IverksettingController(
         if (iverksettData.skalIkkeSendeBrev()) {
             throw ApiFeil(
                 "Kan ikke ha iverksetting med brev når det er migrering, g-omregning eller korrigering uten brev",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.BAD_REQUEST,
             )
         }
     }
@@ -91,14 +91,14 @@ class IverksettingController(
             throw ApiFeil(
                 "Kan ikke ha iverksetting uten tilkjentYtelse " +
                     "for vedtak med resultat=${iverksett.vedtak.vedtaksresultat}",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.BAD_REQUEST,
             )
         }
         if (iverksett.vedtak.tilkjentYtelse != null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT) {
             throw ApiFeil(
                 "Kan ikke ha iverksetting med tilkjentYtelse " +
                     "for vedtak med resultat=${iverksett.vedtak.vedtaksresultat}",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.BAD_REQUEST,
             )
         }
 

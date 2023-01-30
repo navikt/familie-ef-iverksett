@@ -11,7 +11,7 @@ import java.math.BigDecimal
 private val TILBAKEKREVING_UTEN_VARSEL =
     Tilbakekrevingsdetaljer(
         tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
-        tilbakekrevingMedVarsel = null
+        tilbakekrevingMedVarsel = null,
     )
 
 fun IverksettData.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleringsresultat): IverksettData {
@@ -32,7 +32,7 @@ fun IverksettData.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimu
 
 private fun harAvvikIVarsel(
     tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer?,
-    simuleringsoppsummering: Simuleringsoppsummering
+    simuleringsoppsummering: Simuleringsoppsummering,
 ): Boolean {
     // Sjekker ikke periodene fordi de kan være ulikt konsolidert
     // Er jo et spørsmål om evt konsolideringslogikk heller burde ligge her i ef-iverksett i stedet for ef-sak
@@ -52,7 +52,7 @@ fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringso
         tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel
             ?.copy(
                 sumFeilutbetaling = simuleringsoppsummering.feilutbetaling,
-                perioder = simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling()
-            )
+                perioder = simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(),
+            ),
     )
 }

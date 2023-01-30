@@ -27,7 +27,7 @@ internal class IverksettServiceTest {
         iverksettResultatService = iverksettResultatService,
         iverksettingRepository = iverksettingRepository,
         oppdragClient = oppdragClient,
-        featureToggleService = mockFeatureToggleService()
+        featureToggleService = mockFeatureToggleService(),
     )
 
     @Test

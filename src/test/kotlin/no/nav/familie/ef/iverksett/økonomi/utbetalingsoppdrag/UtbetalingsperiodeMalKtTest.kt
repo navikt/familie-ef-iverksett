@@ -35,11 +35,11 @@ internal class UtbetalingsperiodeMalKtTest {
                 beløp = 10,
                 fraOgMed = YearMonth.now(),
                 tilOgMed = YearMonth.now(),
-                periodeId = 1
+                periodeId = 1,
             ),
             type = stønadType,
             eksternBehandlingId = 1,
             vedtaksdato = LocalDate.now(),
-            personIdent = ""
+            personIdent = "",
         )
 }

@@ -24,7 +24,7 @@ fun lagPeriodeFraAndel(
     vedtaksdato: LocalDate,
     personIdent: String,
     opphørKjedeFom: LocalDate? = null,
-    erEndringPåEksisterendePeriode: Boolean = false
+    erEndringPåEksisterendePeriode: Boolean = false,
 ) =
     Utbetalingsperiode(
         erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode,
@@ -39,13 +39,13 @@ fun lagPeriodeFraAndel(
         satsType = mapSatstype(type),
         utbetalesTil = personIdent,
         behandlingId = eksternBehandlingId,
-        utbetalingsgrad = andel.utbetalingsgrad()
+        utbetalingsgrad = andel.utbetalingsgrad(),
     )
 
 fun lagUtbetalingsperiodeForOpphør(
     sisteAndelIKjede: AndelTilkjentYtelse,
     opphørKjedeFom: LocalDate,
-    tilkjentYtelse: TilkjentYtelseMedMetaData
+    tilkjentYtelse: TilkjentYtelseMedMetaData,
 ): Utbetalingsperiode {
     return lagPeriodeFraAndel(
         andel = sisteAndelIKjede,
@@ -54,13 +54,14 @@ fun lagUtbetalingsperiodeForOpphør(
         personIdent = tilkjentYtelse.personIdent,
         vedtaksdato = tilkjentYtelse.vedtaksdato,
         opphørKjedeFom = opphørKjedeFom,
-        erEndringPåEksisterendePeriode = true
+        erEndringPåEksisterendePeriode = true,
     )
 }
 
 fun mapSatstype(stønadstype: StønadType) = when (stønadstype) {
     StønadType.OVERGANGSSTØNAD,
-    StønadType.BARNETILSYN -> Utbetalingsperiode.SatsType.MND
+    StønadType.BARNETILSYN,
+    -> Utbetalingsperiode.SatsType.MND
     StønadType.SKOLEPENGER -> Utbetalingsperiode.SatsType.ENG
     else -> error("Støtter ikke periodetype=$stønadstype")
 }

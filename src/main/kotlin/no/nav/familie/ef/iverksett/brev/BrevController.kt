@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping(path = ["/api/brev"])
 @ProtectedWithClaims(issuer = "azuread")
 class BrevController(
-    private val frittståendeBrevService: FrittståendeBrevService
+    private val frittståendeBrevService: FrittståendeBrevService,
 ) {
 
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(
-        @RequestBody data: FrittståendeBrevDto
+        @RequestBody data: FrittståendeBrevDto,
     ): ResponseEntity<Any> {
         if (data.mottakere == null) {
             frittståendeBrevService.journalførOgDistribuerBrev(data)

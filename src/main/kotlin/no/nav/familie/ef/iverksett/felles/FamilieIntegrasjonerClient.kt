@@ -19,7 +19,7 @@ import java.net.URI
 class FamilieIntegrasjonerClient(
     @Qualifier("azure") restOperations: RestOperations,
     @Value("\${FAMILIE_INTEGRASJONER_API_URL}")
-    private val integrasjonUri: URI
+    private val integrasjonUri: URI,
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
 
     private val hentIdenterURI =

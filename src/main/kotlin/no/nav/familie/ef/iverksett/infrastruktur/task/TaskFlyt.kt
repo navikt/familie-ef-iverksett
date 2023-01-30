@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 
 class TaskType(
     val type: String,
-    val triggerTidAntallSekunderFrem: Long? = null
+    val triggerTidAntallSekunderFrem: Long? = null,
 )
 
 fun hovedflyt() = listOf(
@@ -24,7 +24,7 @@ fun hovedflyt() = listOf(
     TaskType(IverksettMotOppdragTask.TYPE),
     TaskType(VentePåStatusFraØkonomiTask.TYPE, 20), // går ikke videre ved migrering//korrigering_uten_brev
     TaskType(JournalførVedtaksbrevTask.TYPE),
-    TaskType(DistribuerVedtaksbrevTask.TYPE)
+    TaskType(DistribuerVedtaksbrevTask.TYPE),
 )
 
 fun publiseringsflyt() = listOf(
@@ -33,7 +33,7 @@ fun publiseringsflyt() = listOf(
     TaskType(SendFattetVedtakTilArenaTask.TYPE),
     TaskType(PubliserVedtakTilKafkaTask.TYPE),
     TaskType(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE),
-    TaskType(VedtakstatistikkTask.TYPE)
+    TaskType(VedtakstatistikkTask.TYPE),
 )
 
 fun TaskType.nesteHovedflytTask() = hovedflyt().zipWithNext().first { this.type == it.first.type }.second
@@ -58,16 +58,16 @@ private fun Task.lagTask(nesteTask: TaskType): Task {
         Task(
             type = nesteTask.type,
             payload = this.payload,
-            properties = this.metadata
+            properties = this.metadata,
         ).copy(
             triggerTid = LocalDateTime.now()
-                .plusSeconds(nesteTask.triggerTidAntallSekunderFrem)
+                .plusSeconds(nesteTask.triggerTidAntallSekunderFrem),
         )
     } else {
         Task(
             type = nesteTask.type,
             payload = this.payload,
-            properties = this.metadata
+            properties = this.metadata,
         )
     }
 }

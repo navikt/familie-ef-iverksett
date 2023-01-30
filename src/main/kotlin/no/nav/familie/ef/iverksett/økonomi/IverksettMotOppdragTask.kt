@@ -17,13 +17,13 @@ import java.util.UUID
 @Service
 @TaskStepBeskrivelse(
     taskStepType = IverksettMotOppdragTask.TYPE,
-    beskrivelse = "Utfører iverksetting av utbetalning mot økonomi."
+    beskrivelse = "Utfører iverksetting av utbetalning mot økonomi.",
 )
 class IverksettMotOppdragTask(
     private val iverksettingRepository: IverksettingRepository,
     private val oppdragClient: OppdragClient,
     private val taskService: TaskService,
-    private val iverksettResultatService: IverksettResultatService
+    private val iverksettResultatService: IverksettResultatService,
 ) : AsyncTaskStep {
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -42,13 +42,13 @@ class IverksettMotOppdragTask(
                 eksternFagsakId = iverksett.fagsak.eksternId,
                 personIdent = iverksett.søker.personIdent,
                 behandlingId = iverksett.behandling.behandlingId,
-                vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate()
+                vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate(),
             ) ?: error("Mangler tilkjent ytelse på vedtaket")
 
         val utbetaling = lagTilkjentYtelseMedUtbetalingsoppdrag(
             nyTilkjentYtelseMedMetaData,
             forrigeTilkjentYtelse,
-            iverksett.erGOmregning()
+            iverksett.erGOmregning(),
         )
 
         iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)

@@ -12,7 +12,7 @@ import java.util.UUID
 
 data class PeriodeId(
     val gjeldende: Long?,
-    val forrige: Long? = null
+    val forrige: Long? = null,
 )
 
 fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, this.forrigePeriodeId)
@@ -27,7 +27,7 @@ fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): And
 
         periodeId = periodeId?.gjeldende,
         kildeBehandlingId = kildeBehandlingId,
-        forrigePeriodeId = periodeId?.forrige
+        forrigePeriodeId = periodeId?.forrige,
     )
 
 object ØkonomiUtils {
@@ -46,7 +46,7 @@ object ØkonomiUtils {
      */
     fun beståendeAndeler(
         andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
-        andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>
+        andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
     ): List<AndelTilkjentYtelse> {
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
@@ -70,7 +70,7 @@ object ØkonomiUtils {
      */
     fun andelerTilOpprettelse(
         andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
-        beståendeAndeler: List<AndelTilkjentYtelse>
+        beståendeAndeler: List<AndelTilkjentYtelse>,
     ): List<AndelTilkjentYtelse> {
         return beståendeAndeler.maxByOrNull { it.periode }?.let { sisteBeståendeAndel ->
             andelerNyTilkjentYtelse.filter { it.periode.fom > sisteBeståendeAndel.periode.fom }
@@ -86,7 +86,7 @@ object ØkonomiUtils {
      */
     fun utbetalingsperiodeForOpphør(
         forrigeTilkjentYtelse: TilkjentYtelse?,
-        nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData
+        nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
     ): Utbetalingsperiode? {
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         validerStartdato(forrigeTilkjentYtelse, nyTilkjentYtelse)
@@ -102,7 +102,7 @@ object ØkonomiUtils {
             return lagUtbetalingsperiodeForOpphør(
                 sisteForrigeAndel,
                 nyTilkjentYtelse.startmåned.atDay(1),
-                nyTilkjentYtelseMedMetaData
+                nyTilkjentYtelseMedMetaData,
             )
         }
 
@@ -124,7 +124,7 @@ object ØkonomiUtils {
     private fun harIngenAndelerÅOpphøre(
         opphørsdato: LocalDate?,
         forrigeTilkjentYtelse: TilkjentYtelse,
-        forrigeAndeler: List<AndelTilkjentYtelse>
+        forrigeAndeler: List<AndelTilkjentYtelse>,
     ) =
         forrigeAndeler.isEmpty() && opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startmåned.atDay(1)
 
@@ -136,7 +136,7 @@ object ØkonomiUtils {
     private fun validerStartdato(
         forrigeTilkjentYtelse: TilkjentYtelse?,
         nyTilkjentYtelse: TilkjentYtelse,
-        gammelVersjon: Boolean = false
+        gammelVersjon: Boolean = false,
     ) {
         val nyMinDato = nyTilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.periode.fom }
         val forrigeStartdato = forrigeTilkjentYtelse?.startmåned
@@ -161,7 +161,7 @@ object ØkonomiUtils {
     private fun validerOpphørOg0Andeler(
         forrigeTilkjentYtelse: TilkjentYtelse?,
         nyStartdato: LocalDate?,
-        forrigeStartdato: LocalDate?
+        forrigeStartdato: LocalDate?,
     ) {
         val harOpphørEllerOpphørFørForrigeTilkjentYtelse =
             nyStartdato != null && (forrigeStartdato == null || (nyStartdato < forrigeStartdato))
@@ -183,7 +183,7 @@ object ØkonomiUtils {
      */
     private fun finnOpphørsdato(
         forrigeAndeler: Set<AndelTilkjentYtelse>,
-        oppdaterteAndeler: Set<AndelTilkjentYtelse>
+        oppdaterteAndeler: Set<AndelTilkjentYtelse>,
     ): LocalDate? {
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val førsteDatoIForrigePeriode = forrigeAndeler.minOfOrNull { it.periode.fomDato }
@@ -198,7 +198,7 @@ object ØkonomiUtils {
 
     private fun finnDatoForFørsteEndredeAndel(
         andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
-        andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>
+        andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>,
     ) =
         andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse)
             .minOfOrNull { it.periode.fomDato }

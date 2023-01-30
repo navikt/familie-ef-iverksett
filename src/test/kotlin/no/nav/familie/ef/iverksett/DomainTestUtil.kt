@@ -38,13 +38,13 @@ import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as Tilkj
 
 fun simuleringDto(
     andeler: List<AndelTilkjentYtelseDto> = listOf(lagDefaultAndeler()),
-    forrigeBehandlingId: UUID? = UUID.randomUUID()
+    forrigeBehandlingId: UUID? = UUID.randomUUID(),
 ): SimuleringDto {
     val behandlingId = UUID.fromString("4b657902-d994-11eb-b8bc-0242ac130003")
     val tilkjentYtelseMedMetaData = TilkjentYtelseMedMetadataDto(
         tilkjentYtelse = TilkjentYtelseDto(
             andelerTilkjentYtelse = andeler,
-            startdato = andeler.minOfOrNull { it.periode.fomDato } ?: LocalDate.now()
+            startdato = andeler.minOfOrNull { it.periode.fomDato } ?: LocalDate.now(),
         ),
         saksbehandlerId = "saksbehandlerId",
         eksternBehandlingId = 1,
@@ -52,7 +52,7 @@ fun simuleringDto(
         eksternFagsakId = 1,
         behandlingId = behandlingId,
         personIdent = "12345611111",
-        vedtaksdato = LocalDate.of(2021, 5, 1)
+        vedtaksdato = LocalDate.of(2021, 5, 1),
     )
 
     return SimuleringDto(tilkjentYtelseMedMetaData, forrigeBehandlingId)
@@ -63,7 +63,7 @@ private fun lagDefaultAndeler() =
         beløp = 15000,
         fraOgMed = LocalDate.of(2021, 1, 1),
         tilOgMed = LocalDate.of(2023, 12, 31),
-        kildeBehandlingId = UUID.randomUUID()
+        kildeBehandlingId = UUID.randomUUID(),
     )
 
 fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
@@ -79,29 +79,29 @@ fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
                         beløp = BigDecimal.valueOf(15000),
                         posteringType = PosteringType.YTELSE,
                         forfallsdato = LocalDate.of(2021, 10, 1),
-                        utenInntrekk = false
-                    )
+                        utenInntrekk = false,
+                    ),
                 ),
                 mottakerNummer = null,
-                mottakerType = MottakerType.BRUKER
-            )
-        )
+                mottakerType = MottakerType.BRUKER,
+            ),
+        ),
     )
 }
 
 fun beriketSimuleringsresultat(
     feilutbetaling: BigDecimal = BigDecimal.ZERO,
     fom: LocalDate = LocalDate.of(2021, 1, 1),
-    tom: LocalDate = LocalDate.of(2021, 12, 31)
+    tom: LocalDate = LocalDate.of(2021, 12, 31),
 ) = BeriketSimuleringsresultat(
     detaljer = detaljertSimuleringResultat(),
-    oppsummering = simuleringsoppsummering(feilutbetaling, fom, tom)
+    oppsummering = simuleringsoppsummering(feilutbetaling, fom, tom),
 )
 
 fun simuleringsoppsummering(
     feilutbetaling: BigDecimal = BigDecimal.ZERO,
     fom: LocalDate = LocalDate.of(2021, 1, 1),
-    tom: LocalDate = LocalDate.of(2021, 12, 31)
+    tom: LocalDate = LocalDate.of(2021, 12, 31),
 ) =
     Simuleringsoppsummering(
         perioder = listOf(
@@ -112,8 +112,8 @@ fun simuleringsoppsummering(
                 nyttBeløp = BigDecimal.valueOf(15000),
                 tidligereUtbetalt = BigDecimal.ZERO,
                 resultat = BigDecimal.valueOf(15000),
-                feilutbetaling = feilutbetaling
-            )
+                feilutbetaling = feilutbetaling,
+            ),
         ),
         etterbetaling = BigDecimal.valueOf(15000),
         feilutbetaling = feilutbetaling,
@@ -122,7 +122,7 @@ fun simuleringsoppsummering(
         tomDatoNestePeriode = null,
         forfallsdatoNestePeriode = null,
         tidSimuleringHentet = LocalDate.now(),
-        tomSisteUtbetaling = tom
+        tomSisteUtbetaling = tom,
     )
 
 fun posteringer(
@@ -130,7 +130,7 @@ fun posteringer(
     antallMåneder: Int = 1,
     beløp: Int = 5000,
     posteringstype: PosteringType = PosteringType.YTELSE,
-    betalingstype: BetalingType = if (beløp >= 0) BetalingType.DEBIT else BetalingType.KREDIT
+    betalingstype: BetalingType = if (beløp >= 0) BetalingType.DEBIT else BetalingType.KREDIT,
 
 ): List<SimulertPostering> = MutableList(antallMåneder) { index ->
     SimulertPostering(
@@ -142,7 +142,7 @@ fun posteringer(
         posteringType = posteringstype,
         forfallsdato = måned.plusMonths(index.toLong())
             .atEndOfMonth(), // Forfallsdato i bank (dagen går til brukeren). Det sendes til banken kanskje en uke i forveien
-        utenInntrekk = false
+        utenInntrekk = false,
     ) // Brukes ikke for EF
 }
 
@@ -151,8 +151,8 @@ fun Tilbakekrevingsdetaljer.medFeilutbetaling(feilutbetaling: BigDecimal, period
         tilbakekrevingMedVarsel =
         this.tilbakekrevingMedVarsel?.copy(
             sumFeilutbetaling = feilutbetaling,
-            perioder = listOf(periode)
-        )
+            perioder = listOf(periode),
+        ),
     )
 
 fun Int.januar(år: Int) = LocalDate.of(år, 1, this)
@@ -182,14 +182,14 @@ fun lagIverksettData(
     vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = emptyList(),
     erMigrering: Boolean = false,
     andelsdatoer: List<YearMonth> = emptyList(),
-    årsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD
+    årsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
 ): IverksettOvergangsstønad {
     val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else årsak
     return opprettIverksettOvergangsstønad(
         behandlingsdetaljer = behandlingsdetaljer(
             forrigeBehandlingId = forrigeBehandlingId,
             behandlingType = behandlingType,
-            behandlingÅrsak = behandlingÅrsak
+            behandlingÅrsak = behandlingÅrsak,
         ),
         vedtaksdetaljer = vedtaksdetaljerOvergangsstønad(
             vedtaksresultat = vedtaksresultat,
@@ -197,8 +197,8 @@ fun lagIverksettData(
             andeler = andelsdatoer.map {
                 lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it)
             },
-            startdato = andelsdatoer.minByOrNull { it } ?: YearMonth.now()
-        )
+            startdato = andelsdatoer.minByOrNull { it } ?: YearMonth.now(),
+        ),
     )
 }
 
@@ -206,5 +206,5 @@ fun lagIverksett(iverksettData: IverksettData, brev: Brev? = null) = Iverksett(
     iverksettData.behandling.behandlingId,
     iverksettData,
     iverksettData.behandling.eksternId,
-    brev
+    brev,
 )

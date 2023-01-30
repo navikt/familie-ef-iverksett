@@ -20,13 +20,13 @@ import java.util.UUID
     maxAntallFeil = 50,
     settTilManuellOppfølgning = true,
     triggerTidVedFeilISekunder = 30L,
-    beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi."
+    beskrivelse = "Sjekker status på utbetalningsoppdraget mot økonomi.",
 )
 class VentePåStatusFraØkonomiTask(
     private val iverksettingRepository: IverksettingRepository,
     private val iverksettingService: IverksettingService,
     private val taskService: TaskService,
-    private val iverksettResultatService: IverksettResultatService
+    private val iverksettResultatService: IverksettResultatService,
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -45,7 +45,7 @@ class VentePåStatusFraØkonomiTask(
             stønadstype = iverksett.fagsak.stønadstype,
             personIdent = iverksett.søker.personIdent,
             eksternBehandlingId = iverksett.behandling.eksternId,
-            behandlingId = behandlingId
+            behandlingId = behandlingId,
         )
     }
 
@@ -55,7 +55,7 @@ class VentePåStatusFraØkonomiTask(
 
         if (iverksett.skalIkkeSendeBrev()) {
             logger.info(
-                "Journalfør ikke vedtaksbrev for behandling=$behandlingId då årsak=${iverksett.behandling.behandlingÅrsak}"
+                "Journalfør ikke vedtaksbrev for behandling=$behandlingId då årsak=${iverksett.behandling.behandlingÅrsak}",
             )
         } else {
             taskService.save(task.opprettNesteTask())

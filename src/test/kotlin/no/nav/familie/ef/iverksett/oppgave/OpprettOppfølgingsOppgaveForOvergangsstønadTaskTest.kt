@@ -22,7 +22,7 @@ internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
     private val taskStegService = OpprettOppfølgingsOppgaveForOvergangsstønadTask(
         oppgaveService,
         iverksettingRepository,
-        taskService
+        taskService,
     )
 
     @Test

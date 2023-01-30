@@ -21,7 +21,7 @@ import java.util.UUID
 class TilbakekrevingListener(
     private val iverksettingRepository: IverksettingRepository,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
-    private val tilbakekrevingProducer: TilbakekrevingProducer
+    private val tilbakekrevingProducer: TilbakekrevingProducer,
 ) : ConsumerSeekAware {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -30,7 +30,7 @@ class TilbakekrevingListener(
     @KafkaListener(
         id = "familie-ef-iverksett",
         topics = ["teamfamilie.privat-tbk-hentfagsystemsbehandling-request-topic"],
-        containerFactory = "concurrentTilbakekrevingListenerContainerFactory"
+        containerFactory = "concurrentTilbakekrevingListenerContainerFactory",
     )
     fun listen(consumerRecord: ConsumerRecord<String, String>) {
         val key: String = consumerRecord.key()
@@ -42,7 +42,7 @@ class TilbakekrevingListener(
             logger.error("Feil ved håndtering av HentFagsystemsbehandlingRequest med eksternId=$key")
             secureLogger.error(
                 "Feil ved håndtering av HentFagsystemsbehandlingRequest med consumerRecord=$consumerRecord",
-                ex
+                ex,
             )
             throw ex
         } finally {
@@ -67,7 +67,7 @@ class TilbakekrevingListener(
         } catch (ex: Exception) {
             secureLogger.error(
                 "Feil ved sending av melding med key=$key. Forsøker å sende HentFagsystemsbehandlingRespons med feilmelding.",
-                ex
+                ex,
             )
             tilbakekrevingProducer.send(HentFagsystemsbehandlingRespons(feilMelding = ex.message), key)
         }
@@ -77,7 +77,7 @@ class TilbakekrevingListener(
         return listOf(
             Ytelsestype.OVERGANGSSTØNAD,
             Ytelsestype.SKOLEPENGER,
-            Ytelsestype.BARNETILSYN
+            Ytelsestype.BARNETILSYN,
         ).contains(this.ytelsestype)
     }
 
@@ -86,7 +86,7 @@ class TilbakekrevingListener(
             error(
                 "Inkonsistens. Ekstern fagsakID mellom iverksatt behandling (ekstern fagsakID=" +
                     "${iverksett.fagsak.eksternId}) og request (ekstern fagsakID=${request.eksternFagsakId}) er ulike, " +
-                    "med eksternID=${request.eksternId.toLong()}"
+                    "med eksternID=${request.eksternId.toLong()}",
             )
         }
     }

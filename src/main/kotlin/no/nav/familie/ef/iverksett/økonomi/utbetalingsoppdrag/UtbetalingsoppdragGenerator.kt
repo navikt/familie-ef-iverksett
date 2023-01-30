@@ -28,7 +28,7 @@ object UtbetalingsoppdragGenerator {
     fun lagTilkjentYtelseMedUtbetalingsoppdrag(
         nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
         forrigeTilkjentYtelse: TilkjentYtelse? = null,
-        erGOmregning: Boolean = false
+        erGOmregning: Boolean = false,
     ): TilkjentYtelse {
         val nyTilkjentYtelse = nyTilkjentYtelseMedMetaData.tilkjentYtelse
         val andelerNyTilkjentYtelse = andelerUtenNullVerdier(nyTilkjentYtelse)
@@ -41,12 +41,12 @@ object UtbetalingsoppdragGenerator {
         val andelerTilOpprettelseMedPeriodeId = lagAndelerMedPeriodeId(
             andelerTilOpprettelse,
             sistePeriodeIdIForrigeKjede,
-            nyTilkjentYtelseMedMetaData.behandlingId
+            nyTilkjentYtelseMedMetaData.behandlingId,
         )
 
         val utbetalingsperioderSomOpprettes = lagUtbetalingsperioderForOpprettelse(
             andeler = andelerTilOpprettelseMedPeriodeId,
-            tilkjentYtelse = nyTilkjentYtelseMedMetaData
+            tilkjentYtelse = nyTilkjentYtelseMedMetaData,
         )
 
         val utbetalingsperiodeSomOpphøres = utbetalingsperiodeForOpphør(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
@@ -62,7 +62,7 @@ object UtbetalingsoppdragGenerator {
                 saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),
                 aktoer = nyTilkjentYtelseMedMetaData.personIdent,
                 utbetalingsperiode = utbetalingsperioder,
-                gOmregning = erGOmregning
+                gOmregning = erGOmregning,
             )
 
         val gjeldendeAndeler = (beståendeAndeler + andelerTilOpprettelseMedPeriodeId)
@@ -73,14 +73,14 @@ object UtbetalingsoppdragGenerator {
         return nyTilkjentYtelse.copy(
             utbetalingsoppdrag = utbetalingsoppdrag,
             andelerTilkjentYtelse = gjeldendeAndeler,
-            sisteAndelIKjede = sisteAndelIKjede
+            sisteAndelIKjede = sisteAndelIKjede,
         )
         // TODO legge til startperiode, sluttperiode, opphørsdato. Se i BA-sak - legges på i konsistensavstemming?
     }
 
     private fun sisteAndelIKjede(
         gjeldendeAndeler: List<AndelTilkjentYtelse>,
-        forrigeTilkjentYtelse: TilkjentYtelse?
+        forrigeTilkjentYtelse: TilkjentYtelse?,
     ) =
         (gjeldendeAndeler + listOfNotNull(forrigeTilkjentYtelse?.sisteAndelIKjede))
             .filter { it.periodeId != null }
@@ -101,7 +101,7 @@ object UtbetalingsoppdragGenerator {
      */
     private fun List<AndelTilkjentYtelse>.ellerNullAndel(
         nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
-        sistePeriodeIdIForrigeKjede: PeriodeId?
+        sistePeriodeIdIForrigeKjede: PeriodeId?,
     ): List<AndelTilkjentYtelse> {
         return this.ifEmpty {
             listOf(nullAndelTilkjentYtelse(nyTilkjentYtelseMedMetaData.behandlingId, sistePeriodeIdIForrigeKjede))
@@ -110,7 +110,7 @@ object UtbetalingsoppdragGenerator {
 
     private fun lagUtbetalingsperioderForOpprettelse(
         andeler: List<AndelTilkjentYtelse>,
-        tilkjentYtelse: TilkjentYtelseMedMetaData
+        tilkjentYtelse: TilkjentYtelseMedMetaData,
     ): List<Utbetalingsperiode> {
         return andeler.map {
             lagPeriodeFraAndel(
@@ -118,7 +118,7 @@ object UtbetalingsoppdragGenerator {
                 type = tilkjentYtelse.stønadstype,
                 eksternBehandlingId = tilkjentYtelse.eksternBehandlingId,
                 vedtaksdato = tilkjentYtelse.vedtaksdato,
-                personIdent = tilkjentYtelse.personIdent
+                personIdent = tilkjentYtelse.personIdent,
             )
         }
     }
@@ -126,7 +126,7 @@ object UtbetalingsoppdragGenerator {
     private fun lagAndelerMedPeriodeId(
         andeler: List<AndelTilkjentYtelse>,
         sisteOffsetIKjedeOversikt: PeriodeId?,
-        kildeBehandlingId: UUID
+        kildeBehandlingId: UUID,
     ): List<AndelTilkjentYtelse> {
         val forrigePeriodeIdIKjede: Long? = sisteOffsetIKjedeOversikt?.gjeldende
         val nestePeriodeIdIKjede = forrigePeriodeIdIKjede?.plus(1) ?: 1
@@ -135,7 +135,7 @@ object UtbetalingsoppdragGenerator {
             andel.copy(
                 periodeId = nestePeriodeIdIKjede + index,
                 kildeBehandlingId = kildeBehandlingId,
-                forrigePeriodeId = if (index == 0) forrigePeriodeIdIKjede else nestePeriodeIdIKjede + index - 1
+                forrigePeriodeId = if (index == 0) forrigePeriodeIdIKjede else nestePeriodeIdIKjede + index - 1,
             )
         }
     }

@@ -71,17 +71,17 @@ fun opprettIverksettDto(
     behandlingId: UUID,
     behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
     andelsbeløp: Int = 5000,
-    stønadType: StønadType = StønadType.OVERGANGSSTØNAD
+    stønadType: StønadType = StønadType.OVERGANGSSTØNAD,
 ): IverksettOvergangsstønadDto {
     val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
         beløp = andelsbeløp,
         fraOgMed = LocalDate.of(2021, 1, 1),
         tilOgMed = LocalDate.of(2021, 12, 31),
-        kildeBehandlingId = UUID.randomUUID()
+        kildeBehandlingId = UUID.randomUUID(),
     )
     val tilkjentYtelse = TilkjentYtelseDto(
         andelerTilkjentYtelse = listOf(andelTilkjentYtelse),
-        startdato = andelTilkjentYtelse.periode.fomDato
+        startdato = andelTilkjentYtelse.periode.fomDato,
     )
 
     return IverksettOvergangsstønadDto(
@@ -103,21 +103,21 @@ fun opprettIverksettDto(
                                 VurderingDto(
                                     regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
                                     svar = SvarId.JA,
-                                    begrunnelse = "Nei"
-                                )
-                            )
-                        )
-                    )
-                )
+                                    begrunnelse = "Nei",
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
             ),
             kravMottatt = LocalDate.of(2021, 3, 3),
-            årsakRevurdering = ÅrsakRevurderingDto(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT)
+            årsakRevurdering = ÅrsakRevurderingDto(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
         ),
         søker = SøkerDto(
             personIdent = "12345678910",
             barn = emptyList(),
             tilhørendeEnhet = "4489",
-            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
+            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
         ),
         vedtak = VedtaksdetaljerOvergangsstønadDto(
             resultat = Vedtaksresultat.INNVILGET,
@@ -126,22 +126,22 @@ fun opprettIverksettDto(
             saksbehandlerId = "A12345",
             beslutterId = "B23456",
             tilkjentYtelse = tilkjentYtelse,
-            vedtaksperioder = emptyList()
-        )
+            vedtaksperioder = emptyList(),
+        ),
     )
 }
 
 fun opprettAndelTilkjentYtelse(
     beløp: Int = 5000,
     fra: YearMonth = YearMonth.of(2021, 1),
-    til: YearMonth = YearMonth.of(2021, 12)
+    til: YearMonth = YearMonth.of(2021, 12),
 ) = lagAndelTilkjentYtelse(
     beløp = beløp,
     fraOgMed = fra,
     tilOgMed = til,
     inntekt = 100,
     samordningsfradrag = 2,
-    inntektsreduksjon = 5
+    inntektsreduksjon = 5,
 )
 
 private val eksternIdGenerator = Random()
@@ -149,7 +149,7 @@ private val eksternIdGenerator = Random()
 fun opprettTilkjentYtelseMedMetadata(
     behandlingId: UUID = UUID.randomUUID(),
     eksternId: Long = eksternIdGenerator.nextLong(10_000),
-    tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId)
+    tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId),
 ): TilkjentYtelseMedMetaData {
     return TilkjentYtelseMedMetaData(
         tilkjentYtelse = tilkjentYtelse,
@@ -159,7 +159,7 @@ fun opprettTilkjentYtelseMedMetadata(
         eksternFagsakId = 0,
         personIdent = "12345678910",
         behandlingId = behandlingId,
-        vedtaksdato = LocalDate.of(2021, 1, 1)
+        vedtaksdato = LocalDate.of(2021, 1, 1),
     )
 }
 
@@ -167,14 +167,14 @@ fun opprettTilkjentYtelse(
     behandlingId: UUID = UUID.randomUUID(),
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     startmåned: YearMonth = startmåned(andeler),
-    sisteAndelIKjede: AndelTilkjentYtelse? = null
+    sisteAndelIKjede: AndelTilkjentYtelse? = null,
 ): TilkjentYtelse {
     return TilkjentYtelse(
         id = behandlingId,
         utbetalingsoppdrag = null,
         andelerTilkjentYtelse = andeler,
         startmåned = startmåned,
-        sisteAndelIKjede = sisteAndelIKjede
+        sisteAndelIKjede = sisteAndelIKjede,
     )
 }
 
@@ -182,7 +182,7 @@ fun behandlingsdetaljer(
     behandlingId: UUID = UUID.randomUUID(),
     forrigeBehandlingId: UUID? = null,
     behandlingType: BehandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-    behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD
+    behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
 ): Behandlingsdetaljer {
     return Behandlingsdetaljer(
         behandlingId = behandlingId,
@@ -202,15 +202,15 @@ fun behandlingsdetaljer(
                             Vurdering(
                                 regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
                                 svar = SvarId.JA,
-                                begrunnelse = "Nei"
-                            )
-                        )
-                    )
-                )
-            )
+                                begrunnelse = "Nei",
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         ),
         kravMottatt = LocalDate.of(2021, 3, 3),
-        årsakRevurdering = ÅrsakRevurdering(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT)
+        årsakRevurdering = ÅrsakRevurdering(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
 
     )
 }
@@ -219,14 +219,14 @@ fun vedtaksperioderOvergangsstønad() =
     VedtaksperiodeOvergangsstønad(
         periode = lagMånedsperiode(YearMonth.now()),
         aktivitet = AktivitetType.BARNET_ER_SYKT,
-        periodeType = VedtaksperiodeType.HOVEDPERIODE
+        periodeType = VedtaksperiodeType.HOVEDPERIODE,
     )
 
 fun vedtaksperioderBarnetilsyn() =
     VedtaksperiodeBarnetilsyn(
         periode = lagMånedsperiode(YearMonth.now()),
         utgifter = 1,
-        antallBarn = 10
+        antallBarn = 10,
     )
 
 fun vedtaksdetaljerOvergangsstønad(
@@ -234,7 +234,7 @@ fun vedtaksdetaljerOvergangsstønad(
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
     startdato: YearMonth = startmåned(andeler),
-    vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad())
+    vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad()),
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerOvergangsstønad(
@@ -246,7 +246,7 @@ fun vedtaksdetaljerOvergangsstønad(
         tilkjentYtelse = tilkjentYtelse,
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
-        brevmottakere = Brevmottakere(emptyList())
+        brevmottakere = Brevmottakere(emptyList()),
     )
 }
 
@@ -255,7 +255,7 @@ fun vedtaksdetaljerBarnetilsyn(
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
     startdato: YearMonth = startmåned(andeler),
-    vedtaksperioder: List<VedtaksperiodeBarnetilsyn> = listOf(vedtaksperioderBarnetilsyn())
+    vedtaksperioder: List<VedtaksperiodeBarnetilsyn> = listOf(vedtaksperioderBarnetilsyn()),
 ): VedtaksdetaljerBarnetilsyn {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerBarnetilsyn(
@@ -271,28 +271,28 @@ fun vedtaksdetaljerBarnetilsyn(
         kontantstøtte = listOf(
             PeriodeMedBeløp(
                 periode = Månedsperiode(YearMonth.of(2022, 1), YearMonth.of(2022, 3)),
-                beløp = 10
-            )
+                beløp = 10,
+            ),
         ),
-        tilleggsstønad = listOf(PeriodeMedBeløp(periode = Månedsperiode(YearMonth.of(2022, 2), YearMonth.of(2022, 3)), beløp = 5))
+        tilleggsstønad = listOf(PeriodeMedBeløp(periode = Månedsperiode(YearMonth.of(2022, 2), YearMonth.of(2022, 3)), beløp = 5)),
     )
 }
 
 private fun lagTilkjentYtelse(
     andeler: List<AndelTilkjentYtelse>,
-    startmåned: YearMonth
+    startmåned: YearMonth,
 ): TilkjentYtelse =
     TilkjentYtelse(
         id = UUID.randomUUID(),
         utbetalingsoppdrag = null,
         status = TilkjentYtelseStatus.AKTIV,
         andelerTilkjentYtelse = andeler,
-        startmåned = startmåned
+        startmåned = startmåned,
     )
 
 fun opprettIverksettBarnetilsyn(
     behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetaljer(),
-    vedtaksdetaljer: VedtaksdetaljerBarnetilsyn = vedtaksdetaljerBarnetilsyn()
+    vedtaksdetaljer: VedtaksdetaljerBarnetilsyn = vedtaksdetaljerBarnetilsyn(),
 ) =
     IverksettBarnetilsyn(
         fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
@@ -301,14 +301,14 @@ fun opprettIverksettBarnetilsyn(
             personIdent = "12345678910",
             barn = emptyList(),
             tilhørendeEnhet = "4489",
-            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
+            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
         ),
-        vedtak = vedtaksdetaljer
+        vedtak = vedtaksdetaljer,
     )
 
 fun opprettIverksettOvergangsstønad(
     behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetaljer(),
-    vedtaksdetaljer: VedtaksdetaljerOvergangsstønad = vedtaksdetaljerOvergangsstønad()
+    vedtaksdetaljer: VedtaksdetaljerOvergangsstønad = vedtaksdetaljerOvergangsstønad(),
 ) =
     IverksettOvergangsstønad(
         fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
@@ -317,9 +317,9 @@ fun opprettIverksettOvergangsstønad(
             personIdent = "12345678910",
             barn = emptyList(),
             tilhørendeEnhet = "4489",
-            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
+            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
         ),
-        vedtak = vedtaksdetaljer
+        vedtak = vedtaksdetaljer,
     )
 
 fun opprettIverksettOvergangsstønad(
@@ -327,7 +327,7 @@ fun opprettIverksettOvergangsstønad(
     forrigeBehandlingId: UUID? = null,
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
-    startmåned: YearMonth = startmåned(andeler)
+    startmåned: YearMonth = startmåned(andeler),
 ): IverksettOvergangsstønad {
     val behandlingType = forrigeBehandlingId?.let { BehandlingType.REVURDERING } ?: BehandlingType.FØRSTEGANGSBEHANDLING
     return IverksettOvergangsstønad(
@@ -337,9 +337,9 @@ fun opprettIverksettOvergangsstønad(
             personIdent = "12345678910",
             barn = emptyList(),
             tilhørendeEnhet = "4489",
-            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT
+            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
         ),
-        vedtak = vedtaksdetaljerOvergangsstønad(Vedtaksresultat.INNVILGET, andeler, tilbakekreving, startmåned)
+        vedtak = vedtaksdetaljerOvergangsstønad(Vedtaksresultat.INNVILGET, andeler, tilbakekreving, startmåned),
     )
 }
 
@@ -358,14 +358,14 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
         fil = "fil.pdf".toByteArray(),
         journalførendeEnhet = "4489",
         saksbehandlerIdent = "saksbehandlerIdent",
-        stønadType = StønadType.OVERGANGSSTØNAD
+        stønadType = StønadType.OVERGANGSSTØNAD,
     )
 }
 
 fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
     Tilbakekrevingsdetaljer(
         tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-        tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel()
+        tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(),
     )
 
 fun opprettTilbakekrevingMedVarsel(
@@ -373,13 +373,13 @@ fun opprettTilbakekrevingMedVarsel(
     perioder: List<Datoperiode> = listOf(
         Datoperiode(
             fom = LocalDate.of(2021, 5, 1),
-            tom = LocalDate.of(2021, 6, 30)
-        )
-    )
+            tom = LocalDate.of(2021, 6, 30),
+        ),
+    ),
 ) = TilbakekrevingMedVarsel(
     varseltekst = "varseltekst",
     sumFeilutbetaling = sumFeilutbetaling,
-    perioder = perioder
+    perioder = perioder,
 )
 
 class IverksettResultatMockBuilder private constructor(
@@ -387,14 +387,14 @@ class IverksettResultatMockBuilder private constructor(
     val tilkjentYtelse: TilkjentYtelse,
     val oppdragResultat: OppdragResultat,
     val journalpostResultat: Map<String, JournalpostResultat>,
-    val vedtaksbrevResultat: Map<String, DistribuerBrevResultat>
+    val vedtaksbrevResultat: Map<String, DistribuerBrevResultat>,
 ) {
 
     data class Builder(
         var oppdragResultat: OppdragResultat? = null,
         var journalpostResultat: Map<String, JournalpostResultat> = mapOf(),
         var vedtaksbrevResultat: Map<String, DistribuerBrevResultat> = mapOf(),
-        var tilbakekrevingResultat: TilbakekrevingResultat? = null
+        var tilbakekrevingResultat: TilbakekrevingResultat? = null,
     ) {
 
         fun oppdragResultat(oppdragResultat: OppdragResultat) = apply { this.oppdragResultat = oppdragResultat }
@@ -407,8 +407,8 @@ class IverksettResultatMockBuilder private constructor(
                 this.vedtaksbrevResultat =
                     mapOf(
                         this.journalpostResultat!!.entries.first().value.journalpostId to DistribuerBrevResultat(
-                            bestillingId = behandlingId.toString()
-                        )
+                            bestillingId = behandlingId.toString(),
+                        ),
                     )
             }
 
@@ -422,7 +422,7 @@ class IverksettResultatMockBuilder private constructor(
                 oppdragResultat,
                 JournalpostResultatMap(journalpostResultat),
                 DistribuerBrevResultatMap(vedtaksbrevResultat),
-                tilbakekrevingResultat
+                tilbakekrevingResultat,
             )
     }
 }

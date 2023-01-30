@@ -15,5 +15,5 @@ data class JournalpostResultatMap(val map: Map<String, JournalpostResultat> = em
 
 data class JournalpostResultat(
     val journalpostId: String,
-    val journalført: LocalDateTime = LocalDateTime.now()
+    val journalført: LocalDateTime = LocalDateTime.now(),
 )

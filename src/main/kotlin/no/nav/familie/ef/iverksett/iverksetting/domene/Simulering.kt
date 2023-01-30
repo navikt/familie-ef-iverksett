@@ -13,7 +13,7 @@ fun IverksettData.tilSimulering() = Simulering(
         eksternFagsakId = this.fagsak.eksternId,
         personIdent = this.søker.personIdent,
         behandlingId = this.behandling.behandlingId,
-        vedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate()
+        vedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
     ),
-    forrigeBehandlingId = this.behandling.forrigeBehandlingId
+    forrigeBehandlingId = this.behandling.forrigeBehandlingId,
 )

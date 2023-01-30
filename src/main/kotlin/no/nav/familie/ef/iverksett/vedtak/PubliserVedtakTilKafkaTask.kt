@@ -16,12 +16,12 @@ import no.nav.familie.kontrakter.felles.ef.StønadType as EksternStønadType
 @TaskStepBeskrivelse(
     taskStepType = PubliserVedtakTilKafkaTask.TYPE,
     beskrivelse = "Publiserer vedtak på kafka.",
-    settTilManuellOppfølgning = true
+    settTilManuellOppfølgning = true,
 )
 class PubliserVedtakTilKafkaTask(
     private val taskService: TaskService,
     private val iverksettingRepository: IverksettingRepository,
-    private val vedtakKafkaProducer: VedtakKafkaProducer
+    private val vedtakKafkaProducer: VedtakKafkaProducer,
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
@@ -31,8 +31,8 @@ class PubliserVedtakTilKafkaTask(
             EnsligForsørgerVedtakhendelse(
                 behandlingId = iverksett.behandling.eksternId,
                 personIdent = iverksett.søker.personIdent,
-                stønadType = EksternStønadType.valueOf(iverksett.fagsak.stønadstype.name)
-            )
+                stønadType = EksternStønadType.valueOf(iverksett.fagsak.stønadstype.name),
+            ),
         )
     }
 

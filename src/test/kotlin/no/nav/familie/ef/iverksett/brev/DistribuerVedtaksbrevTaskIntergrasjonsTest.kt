@@ -46,7 +46,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(
             journalpostClient = journalpostClient,
             iverksettResultatService = iverksettResultatService,
-            taskService = taskService
+            taskService = taskService,
         )
     }
 
@@ -65,8 +65,8 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
             Task(
                 JournalførVedtaksbrevTask.TYPE,
                 behandlingId.toString(),
-                Properties()
-            )
+                Properties(),
+            ),
         )
 
         val distribuerVedtaksbrevResultat = iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId)
@@ -120,8 +120,8 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
                 Task(
                     JournalførVedtaksbrevTask.TYPE,
                     behandlingId.toString(),
-                    Properties()
-                )
+                    Properties(),
+                ),
             )
         } catch (_: Exception) {
         }
@@ -131,7 +131,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         wireMockServer.verify(
             antall,
             WireMock.postRequestedFor(WireMock.urlMatching(journalpostClientMock.distribuerPath()))
-                .withRequestBody(WireMock.matchingJsonPath("$..journalpostId", WireMock.containing(journalpostId)))
+                .withRequestBody(WireMock.matchingJsonPath("$..journalpostId", WireMock.containing(journalpostId))),
         )
     }
 
@@ -143,7 +143,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
             iverksettResultatService.oppdaterJournalpostResultat(
                 behandlingId = behandlingId,
                 mottakerIdent = it.first,
-                journalPostResultat = JournalpostResultat(it.second)
+                journalPostResultat = JournalpostResultat(it.second),
             )
         }
     }
@@ -152,7 +152,7 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         val mapSqlParameterSource = MapSqlParameterSource(mapOf("behandlingId" to behandlingId))
         namedParameterJdbcTemplate.update(
             "UPDATE iverksett_resultat SET journalpostresultat = null WHERE behandling_id = :behandlingId",
-            mapSqlParameterSource
+            mapSqlParameterSource,
         )
     }
 }

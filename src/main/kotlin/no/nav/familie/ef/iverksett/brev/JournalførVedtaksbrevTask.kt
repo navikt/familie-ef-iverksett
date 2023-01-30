@@ -31,13 +31,13 @@ import java.util.UUID
     taskStepType = JournalførVedtaksbrevTask.TYPE,
     maxAntallFeil = 5,
     triggerTidVedFeilISekunder = 15,
-    beskrivelse = "Journalfører vedtaksbrev."
+    beskrivelse = "Journalfører vedtaksbrev.",
 )
 class JournalførVedtaksbrevTask(
     private val iverksettingRepository: IverksettingRepository,
     private val journalpostClient: JournalpostClient,
     private val taskService: TaskService,
-    private val iverksettResultatService: IverksettResultatService
+    private val iverksettResultatService: IverksettResultatService,
 ) : AsyncTaskStep {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -55,7 +55,7 @@ class JournalførVedtaksbrevTask(
         behandlingId: UUID,
         arkiverDokumentRequest: ArkiverDokumentRequest,
         mottakerIdent: String,
-        beslutterId: String
+        beslutterId: String,
     ) {
         val journalpostId = try {
             journalpostClient.arkiverDokument(arkiverDokumentRequest, beslutterId).journalpostId
@@ -64,7 +64,7 @@ class JournalførVedtaksbrevTask(
                 val eksternReferanseId = arkiverDokumentRequest.eksternReferanseId
                 logger.warn(
                     "Konflikt ved arkivering av dokument, " +
-                        "prøver å hente journalpostId med eksternReferanseId=$eksternReferanseId"
+                        "prøver å hente journalpostId med eksternReferanseId=$eksternReferanseId",
                 )
                 finnJournalpostIdForEksternReferanseId(mottakerIdent, eksternReferanseId)
             } else {
@@ -74,13 +74,13 @@ class JournalførVedtaksbrevTask(
         iverksettResultatService.oppdaterJournalpostResultat(
             behandlingId = behandlingId,
             mottakerIdent = mottakerIdent,
-            JournalpostResultat(journalpostId = journalpostId)
+            JournalpostResultat(journalpostId = journalpostId),
         )
     }
 
     private fun finnJournalpostIdForEksternReferanseId(
         mottakerIdent: String,
-        eksternReferanseId: String?
+        eksternReferanseId: String?,
     ): String {
         val request = JournalposterForBrukerRequest(Bruker(mottakerIdent, BrukerIdType.FNR), 50, listOf(Tema.ENF))
         return journalpostClient.finnJournalposter(request)
@@ -91,14 +91,14 @@ class JournalførVedtaksbrevTask(
 
     private fun journalførVedtaksbrev(
         behandlingId: UUID,
-        iverksett: Iverksett
+        iverksett: Iverksett,
     ) {
         val vedtaksbrev = iverksett.brev ?: error("Fant ikke brev for behandlingId : $behandlingId")
         val dokument = Dokument(
             vedtaksbrev.pdf,
             Filtype.PDFA,
             dokumenttype = vedtaksbrevForStønadType(iverksett.data.fagsak.stønadstype),
-            tittel = lagDokumentTittel(iverksett.data)
+            tittel = lagDokumentTittel(iverksett.data),
         )
 
         val arkiverDokumentRequest = ArkiverDokumentRequest(
@@ -107,7 +107,7 @@ class JournalførVedtaksbrevTask(
             hoveddokumentvarianter = listOf(dokument),
             fagsakId = iverksett.data.fagsak.eksternId.toString(),
             journalførendeEnhet = iverksett.data.søker.tilhørendeEnhet,
-            eksternReferanseId = "$behandlingId-vedtaksbrev"
+            eksternReferanseId = "$behandlingId-vedtaksbrev",
         )
 
         val journalførteIdenter: List<String> =
@@ -124,7 +124,7 @@ class JournalførVedtaksbrevTask(
         iverksett: IverksettData,
         journalførteIdenter: List<String>,
         arkiverDokumentRequest: ArkiverDokumentRequest,
-        behandlingId: UUID
+        behandlingId: UUID,
     ) {
         iverksett.vedtak.brevmottakere?.mottakere?.mapIndexed { indeks, mottaker ->
             if (!journalførteIdenter.contains(mottaker.ident)) {
@@ -133,15 +133,15 @@ class JournalførVedtaksbrevTask(
                     avsenderMottaker = AvsenderMottaker(
                         id = mottaker.ident,
                         idType = mottaker.identType.tilIdType(),
-                        navn = mottaker.navn
-                    )
+                        navn = mottaker.navn,
+                    ),
                 )
 
                 journalførOgLagreResultat(
                     behandlingId = behandlingId,
                     arkiverDokumentRequest = arkiverDokumentRequestForMottaker,
                     mottakerIdent = mottaker.ident,
-                    beslutterId = iverksett.vedtak.beslutterId
+                    beslutterId = iverksett.vedtak.beslutterId,
                 )
             }
         }
@@ -150,13 +150,13 @@ class JournalførVedtaksbrevTask(
     private fun journalførVedtaksbrevTilStønadmottaker(
         arkiverDokumentRequest: ArkiverDokumentRequest,
         iverksett: IverksettData,
-        behandlingId: UUID
+        behandlingId: UUID,
     ) {
         journalførOgLagreResultat(
             behandlingId = behandlingId,
             arkiverDokumentRequest = arkiverDokumentRequest,
             mottakerIdent = iverksett.søker.personIdent,
-            beslutterId = iverksett.vedtak.beslutterId
+            beslutterId = iverksett.vedtak.beslutterId,
         )
     }
 
@@ -172,7 +172,7 @@ class JournalførVedtaksbrevTask(
         if (forventetJournalføringer != antallJournalføringer) {
             error(
                 "Feil ved journalføring av vedtaksbrev. Forventet $forventetJournalføringer journalføringsreultat, " +
-                    "fant $antallJournalføringer."
+                    "fant $antallJournalføringer.",
             )
         }
     }

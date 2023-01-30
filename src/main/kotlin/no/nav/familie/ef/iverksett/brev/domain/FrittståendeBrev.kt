@@ -25,5 +25,5 @@ data class FrittståendeBrev(
     val brevtype: FrittståendeBrevType,
     val journalpostResultat: JournalpostResultatMap = JournalpostResultatMap(),
     val distribuerBrevResultat: DistribuerBrevResultatMap = DistribuerBrevResultatMap(),
-    val opprettetTid: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
+    val opprettetTid: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
 )

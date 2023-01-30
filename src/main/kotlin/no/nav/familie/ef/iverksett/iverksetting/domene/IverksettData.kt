@@ -58,7 +58,7 @@ data class IverksettOvergangsstønad(
     override val fagsak: Fagsakdetaljer,
     override val behandling: Behandlingsdetaljer,
     override val søker: Søker,
-    override val vedtak: VedtaksdetaljerOvergangsstønad
+    override val vedtak: VedtaksdetaljerOvergangsstønad,
 ) : IverksettData() {
 
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettOvergangsstønad {
@@ -70,7 +70,7 @@ data class IverksettBarnetilsyn(
     override val fagsak: Fagsakdetaljer,
     override val behandling: Behandlingsdetaljer,
     override val søker: Søker,
-    override val vedtak: VedtaksdetaljerBarnetilsyn
+    override val vedtak: VedtaksdetaljerBarnetilsyn,
 ) : IverksettData() {
 
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettBarnetilsyn {
@@ -82,7 +82,7 @@ data class IverksettSkolepenger(
     override val fagsak: Fagsakdetaljer,
     override val behandling: Behandlingsdetaljer,
     override val søker: Søker,
-    override val vedtak: VedtaksdetaljerSkolepenger
+    override val vedtak: VedtaksdetaljerSkolepenger,
 ) : IverksettData() {
 
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettSkolepenger {
@@ -93,14 +93,14 @@ data class IverksettSkolepenger(
 data class Fagsakdetaljer(
     val fagsakId: UUID,
     val eksternId: Long,
-    val stønadstype: StønadType
+    val stønadstype: StønadType,
 )
 
 data class Søker(
     val personIdent: String,
     val barn: List<Barn> = ArrayList(),
     val tilhørendeEnhet: String,
-    val adressebeskyttelse: AdressebeskyttelseGradering? = null
+    val adressebeskyttelse: AdressebeskyttelseGradering? = null,
 )
 
 sealed class Vedtaksperiode
@@ -110,10 +110,10 @@ data class VedtaksperiodeOvergangsstønad(
     @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
     val periode: Månedsperiode = Månedsperiode(
         fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
     ),
     val aktivitet: AktivitetType,
-    val periodeType: VedtaksperiodeType
+    val periodeType: VedtaksperiodeType,
 ) : Vedtaksperiode()
 
 data class VedtaksperiodeBarnetilsyn(
@@ -121,15 +121,15 @@ data class VedtaksperiodeBarnetilsyn(
     @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
     val periode: Månedsperiode = Månedsperiode(
         fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
     ),
     val utgifter: Int,
-    val antallBarn: Int
+    val antallBarn: Int,
 ) : Vedtaksperiode()
 
 data class VedtaksperiodeSkolepenger(
     val perioder: List<DelårsperiodeSkoleårSkolepenger> = listOf(),
-    val utgiftsperioder: List<SkolepengerUtgift> = listOf()
+    val utgiftsperioder: List<SkolepengerUtgift> = listOf(),
 ) : Vedtaksperiode()
 
 data class DelårsperiodeSkoleårSkolepenger(
@@ -138,16 +138,16 @@ data class DelårsperiodeSkoleårSkolepenger(
     @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
     val periode: Månedsperiode = Månedsperiode(
         fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
     ),
     val studiebelastning: Int,
-    val makssatsForSkoleår: Int
+    val makssatsForSkoleår: Int,
 )
 
 data class SkolepengerUtgift(
     val utgiftsdato: LocalDate,
     val utgifter: Int,
-    val stønad: Int
+    val stønad: Int,
 )
 
 data class PeriodeMedBeløp(
@@ -155,9 +155,9 @@ data class PeriodeMedBeløp(
     @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
     val periode: Månedsperiode = Månedsperiode(
         fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
     ),
-    val beløp: Int
+    val beløp: Int,
 )
 
 sealed class Vedtaksdetaljer {
@@ -184,7 +184,7 @@ data class VedtaksdetaljerOvergangsstønad(
     override val tilbakekreving: Tilbakekrevingsdetaljer? = null,
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(),
-    override val avslagÅrsak: AvslagÅrsak? = null
+    override val avslagÅrsak: AvslagÅrsak? = null,
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(
@@ -199,7 +199,7 @@ data class VedtaksdetaljerBarnetilsyn(
     override val vedtaksperioder: List<VedtaksperiodeBarnetilsyn> = listOf(),
     override val avslagÅrsak: AvslagÅrsak? = null,
     val kontantstøtte: List<PeriodeMedBeløp> = listOf(),
-    val tilleggsstønad: List<PeriodeMedBeløp> = listOf()
+    val tilleggsstønad: List<PeriodeMedBeløp> = listOf(),
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerSkolepenger(
@@ -213,7 +213,7 @@ data class VedtaksdetaljerSkolepenger(
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeSkolepenger> = listOf(),
     override val avslagÅrsak: AvslagÅrsak? = null,
-    val begrunnelse: String? = null
+    val begrunnelse: String? = null,
 ) : Vedtaksdetaljer()
 
 data class Behandlingsdetaljer(
@@ -226,40 +226,40 @@ data class Behandlingsdetaljer(
     val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
     val aktivitetspliktInntrefferDato: LocalDate? = null,
     val kravMottatt: LocalDate? = null,
-    val årsakRevurdering: ÅrsakRevurdering? = null
+    val årsakRevurdering: ÅrsakRevurdering? = null,
 )
 
 data class ÅrsakRevurdering(
     val opplysningskilde: Opplysningskilde,
-    val årsak: Revurderingsårsak
+    val årsak: Revurderingsårsak,
 )
 
 data class Vilkårsvurdering(
     val vilkårType: VilkårType,
     val resultat: Vilkårsresultat,
-    val delvilkårsvurderinger: List<Delvilkårsvurdering> = emptyList()
+    val delvilkårsvurderinger: List<Delvilkårsvurdering> = emptyList(),
 )
 
 data class Delvilkårsvurdering(
     val resultat: Vilkårsresultat,
-    val vurderinger: List<Vurdering> = emptyList()
+    val vurderinger: List<Vurdering> = emptyList(),
 )
 
 data class Vurdering(
     val regelId: RegelId,
     val svar: SvarId? = null,
-    val begrunnelse: String? = null
+    val begrunnelse: String? = null,
 )
 
 data class Tilbakekrevingsdetaljer(
     val tilbakekrevingsvalg: Tilbakekrevingsvalg,
-    val tilbakekrevingMedVarsel: TilbakekrevingMedVarsel?
+    val tilbakekrevingMedVarsel: TilbakekrevingMedVarsel?,
 )
 
 data class TilbakekrevingMedVarsel(
     val varseltekst: String,
     val sumFeilutbetaling: BigDecimal?,
-    val perioder: List<Datoperiode>?
+    val perioder: List<Datoperiode>?,
 )
 
 private class IverksettDeserializer : StdDeserializer<IverksettData>(IverksettData::class.java) {

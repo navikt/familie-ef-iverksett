@@ -21,7 +21,7 @@ import java.util.WeakHashMap
 
 fun lagSimuleringsoppsummering(
     detaljertSimuleringResultat: DetaljertSimuleringResultat,
-    tidSimuleringHentet: LocalDate
+    tidSimuleringHentet: LocalDate,
 ): Simuleringsoppsummering {
     val perioder = grupperPosteringerEtterDato(detaljertSimuleringResultat.simuleringMottaker)
 
@@ -44,7 +44,7 @@ fun lagSimuleringsoppsummering(
         tomDatoNestePeriode = nestePeriode?.tom,
         forfallsdatoNestePeriode = nestePeriode?.forfallsdato,
         tidSimuleringHentet = tidSimuleringHentet,
-        tomSisteUtbetaling = tomSisteUtbetaling
+        tomSisteUtbetaling = tomSisteUtbetaling,
     )
 }
 
@@ -61,7 +61,7 @@ fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simul
                 nyttBeløp = hentNyttBeløp(posteringListe),
                 tidligereUtbetalt = hentTidligereUtbetalt(posteringListe),
                 resultat = hentResultat(posteringListe),
-                feilutbetaling = posteringListe.sumBarePositiv(FEILUTBETALING)
+                feilutbetaling = posteringListe.sumBarePositiv(FEILUTBETALING),
             ).medEtterbetaling(hentEtterbetaling(posteringListe))
         }
 }
@@ -70,17 +70,17 @@ fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode>
     StønadType.OVERGANGSSTØNAD -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
-        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING
+        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING,
     )
     StønadType.BARNETILSYN -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN,
         FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_INFOTRYGD,
-        FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING
+        FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
     )
     StønadType.SKOLEPENGER -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER,
         FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER_INFOTRYGD,
-        FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING
+        FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
     )
 }
 
@@ -125,7 +125,7 @@ private fun List<SimulertPostering>.sumBareNegativ(type: PosteringType) =
 private data class PeriodeMedForfall(
     val fom: LocalDate,
     val tom: LocalDate,
-    val forfallsdato: LocalDate
+    val forfallsdato: LocalDate,
 )
 
 private object SimuleringsperiodeEtterbetaling {

@@ -30,21 +30,21 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             behandlingStatus = behandlingstatistikk.hendelse.name,
             opprettetAv = maskerVerdiHvisStrengtFortrolig(
                 behandlingstatistikk.strengtFortroligAdresse,
-                behandlingstatistikk.gjeldendeSaksbehandlerId
+                behandlingstatistikk.gjeldendeSaksbehandlerId,
             ),
             saksnummer = behandlingstatistikk.eksternFagsakId,
             mottattTid = behandlingstatistikk.henvendelseTidspunkt,
             saksbehandler = maskerVerdiHvisStrengtFortrolig(
                 behandlingstatistikk.strengtFortroligAdresse,
-                behandlingstatistikk.gjeldendeSaksbehandlerId
+                behandlingstatistikk.gjeldendeSaksbehandlerId,
             ),
             opprettetEnhet = maskerVerdiHvisStrengtFortrolig(
                 behandlingstatistikk.strengtFortroligAdresse,
-                behandlingstatistikk.opprettetEnhet
+                behandlingstatistikk.opprettetEnhet,
             ),
             ansvarligEnhet = maskerVerdiHvisStrengtFortrolig(
                 behandlingstatistikk.strengtFortroligAdresse,
-                behandlingstatistikk.ansvarligEnhet
+                behandlingstatistikk.ansvarligEnhet,
             ),
             behandlingMetode = behandlingstatistikk.behandlingMetode?.name ?: "MANUELL",
             behandlingÅrsak = behandlingstatistikk.behandlingÅrsak?.name,
@@ -57,7 +57,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty()) {
                 maskerVerdiHvisStrengtFortrolig(
                     behandlingstatistikk.strengtFortroligAdresse,
-                    behandlingstatistikk.beslutterId.toString()
+                    behandlingstatistikk.beslutterId.toString(),
                 )
             } else {
                 null
@@ -78,13 +78,13 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             kravMottatt = behandlingstatistikk.kravMottatt,
             revurderingÅrsak = behandlingstatistikk.årsakRevurdering?.årsak?.name,
             revurderingOpplysningskilde = behandlingstatistikk.årsakRevurdering?.opplysningskilde?.name,
-            avslagAarsak = behandlingstatistikk.avslagÅrsak?.name
+            avslagAarsak = behandlingstatistikk.avslagÅrsak?.name,
         )
     }
 
     private fun maskerVerdiHvisStrengtFortrolig(
         erStrengtFortrolig: Boolean,
-        verdi: String
+        verdi: String,
     ): String {
         if (erStrengtFortrolig) {
             return "-5"

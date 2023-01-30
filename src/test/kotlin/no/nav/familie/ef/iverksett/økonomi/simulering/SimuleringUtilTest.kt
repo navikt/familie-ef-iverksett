@@ -35,7 +35,7 @@ internal class SimuleringUtilTest {
 
         val simuleringsoppsummering = lagSimuleringsoppsummering(
             posteringer.tilDetaljertSimuleringsresultat(),
-            1.januar(2021)
+            1.januar(2021),
         )
 
         assertThat(simuleringsoppsummering.perioder).isEmpty()
@@ -51,7 +51,7 @@ internal class SimuleringUtilTest {
         val simuleringsoppsummering =
             lagSimuleringsoppsummering(
                 posteringer.tilDetaljertSimuleringsresultat(),
-                1.januar(2021)
+                1.januar(2021),
             )
 
         val posteringerGruppert = simuleringsoppsummering.perioder
@@ -80,7 +80,7 @@ internal class SimuleringUtilTest {
         val simuleringsoppsummering =
             lagSimuleringsoppsummering(
                 posteringer.tilDetaljertSimuleringsresultat(),
-                1.januar(2021)
+                1.januar(2021),
             )
 
         val posteringerGruppert = simuleringsoppsummering.perioder
@@ -130,7 +130,7 @@ internal class SimuleringUtilTest {
                 posteringer(juli(2021), beløp = -99, posteringstype = YTELSE)
 
         val simuleringsperioder = grupperPosteringerEtterDato(
-            posteringer.tilSimuleringMottakere()
+            posteringer.tilSimuleringMottakere(),
         )
 
         Assertions.assertEquals(1, simuleringsperioder.size)
@@ -150,7 +150,7 @@ internal class SimuleringUtilTest {
                 posteringer(juli(2021), beløp = 98, posteringstype = FEILUTBETALING)
 
         val simuleringsperioder = grupperPosteringerEtterDato(
-            posteringer.tilSimuleringMottakere()
+            posteringer.tilSimuleringMottakere(),
         )
 
         Assertions.assertEquals(1, simuleringsperioder.size)
@@ -169,7 +169,7 @@ internal class SimuleringUtilTest {
     fun `Total etterbetaling skal bli summen av ytelsene i periode med negativ feilutbetaling`() {
         val restSimulering = lagSimuleringsoppsummering(
             simulertePosteringerMedNegativFeilutbetaling.tilDetaljertSimuleringsresultat(),
-            15.august(2021)
+            15.august(2021),
         )
 
         Assertions.assertEquals(BigDecimal.valueOf(500), restSimulering.etterbetaling)
@@ -179,7 +179,7 @@ internal class SimuleringUtilTest {
     fun `Total feilutbetaling skal bli 0 i periode med negativ feilutbetaling`() {
         val restSimulering = lagSimuleringsoppsummering(
             simulertePosteringerMedNegativFeilutbetaling.tilDetaljertSimuleringsresultat(),
-            15.august(2021)
+            15.august(2021),
         )
 
         Assertions.assertEquals(BigDecimal.valueOf(0), restSimulering.feilutbetaling)
@@ -195,7 +195,7 @@ internal class SimuleringUtilTest {
 
         val restSimulering = lagSimuleringsoppsummering(
             posteringer.tilDetaljertSimuleringsresultat(),
-            15.august(2021)
+            15.august(2021),
         )
 
         Assertions.assertEquals(BigDecimal.valueOf(0), restSimulering.etterbetaling)
@@ -288,7 +288,7 @@ internal class SimuleringUtilTest {
         val oppsummering =
             lagSimuleringsoppsummering(
                 førstegangsbehandling_18_nov.tilDetaljertSimuleringsresultat(),
-                18.november(2021)
+                18.november(2021),
             )
 
         assertThat(oppsummering.feilutbetaling).isEqualTo(0.toBigDecimal())
@@ -315,7 +315,7 @@ internal class SimuleringUtilTest {
         val oppsummering =
             lagSimuleringsoppsummering(
                 revurering_22_nov.tilDetaljertSimuleringsresultat(),
-                22.november(2021)
+                22.november(2021),
             )
 
         assertThat(oppsummering.feilutbetaling).isEqualTo(3_752.toBigDecimal())
@@ -342,7 +342,7 @@ internal class SimuleringUtilTest {
         val oppsummering =
             lagSimuleringsoppsummering(
                 revurdering_23_nov.tilDetaljertSimuleringsresultat(),
-                23.november(2021)
+                23.november(2021),
             )
 
         assertThat(oppsummering.feilutbetaling).isEqualTo(0.toBigDecimal())

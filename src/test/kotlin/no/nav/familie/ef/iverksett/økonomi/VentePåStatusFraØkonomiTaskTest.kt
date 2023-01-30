@@ -46,7 +46,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
         oppdragClient = oppdragClient,
         iverksettingRepository = iverksettingRepository,
         iverksettResultatService = iverksettResultatService,
-        featureToggleService = mockFeatureToggleService()
+        featureToggleService = mockFeatureToggleService(),
     )
 
     private val ventePåStatusFraØkonomiTask =
@@ -111,7 +111,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
         satsType = Utbetalingsperiode.SatsType.MND,
         utbetalesTil = "x",
         behandlingId = 0,
-        utbetalingsgrad = null
+        utbetalingsgrad = null,
     )
 
     private fun tilkjentYtelse(utbetalingsperioder: List<Utbetalingsperiode> = listOf()): TilkjentYtelse {
@@ -124,11 +124,11 @@ internal class VentePåStatusFraØkonomiTaskTest {
                 aktoer = "",
                 saksbehandlerId = "",
                 avstemmingTidspunkt = LocalDateTime.now(),
-                utbetalingsperiode = utbetalingsperioder
+                utbetalingsperiode = utbetalingsperioder,
             ),
             status = TilkjentYtelseStatus.SENDT_TIL_IVERKSETTING,
             andelerTilkjentYtelse = listOf(),
-            startmåned = YearMonth.now()
+            startmåned = YearMonth.now(),
         )
     }
 }

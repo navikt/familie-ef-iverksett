@@ -26,7 +26,7 @@ import java.net.URI
 class JournalpostClient(
     @Qualifier("azure") restOperations: RestOperations,
     @Value("\${FAMILIE_INTEGRASJONER_API_URL}")
-    private val integrasjonUri: URI
+    private val integrasjonUri: URI,
 ) : AbstractPingableRestClient(restOperations, "journalpost") {
 
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -46,7 +46,7 @@ class JournalpostClient(
         return postForEntity<Ressurs<ArkiverDokumentResponse>>(
             URI.create("$dokarkivUri/v4/"),
             arkiverDokumentRequest,
-            headerMedSaksbehandler(saksbehandler)
+            headerMedSaksbehandler(saksbehandler),
         ).data
             ?: error("Kunne ikke arkivere dokument med fagsakid ${arkiverDokumentRequest.fagsakId}")
     }
@@ -58,13 +58,13 @@ class JournalpostClient(
             journalpostId = journalpostId,
             bestillendeFagsystem = Fagsystem.EF,
             dokumentProdApp = "FAMILIE_EF_SAK",
-            distribusjonstype = distribusjonstype
+            distribusjonstype = distribusjonstype,
         )
 
         return postForEntity<Ressurs<String>>(
             distribuerDokumentUri,
             journalpostRequest,
-            HttpHeaders().medContentTypeJsonUTF8()
+            HttpHeaders().medContentTypeJsonUTF8(),
         ).getDataOrThrow()
     }
 

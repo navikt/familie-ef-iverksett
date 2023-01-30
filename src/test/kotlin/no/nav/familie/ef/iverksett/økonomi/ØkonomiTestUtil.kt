@@ -16,7 +16,7 @@ fun lagAndelTilkjentYtelse(
     kildeBehandlingId: UUID? = UUID.randomUUID(),
     inntekt: Int = 0,
     samordningsfradrag: Int = 0,
-    inntektsreduksjon: Int = 0
+    inntektsreduksjon: Int = 0,
 ) =
     AndelTilkjentYtelse(
         beløp = beløp,
@@ -26,7 +26,7 @@ fun lagAndelTilkjentYtelse(
         inntektsreduksjon = inntektsreduksjon,
         periodeId = periodeId,
         forrigePeriodeId = forrigePeriodeId,
-        kildeBehandlingId = kildeBehandlingId
+        kildeBehandlingId = kildeBehandlingId,
     )
 
 fun lagAndelTilkjentYtelseDto(
@@ -36,7 +36,7 @@ fun lagAndelTilkjentYtelseDto(
     kildeBehandlingId: UUID = UUID.randomUUID(),
     inntekt: Int = 0,
     samordningsfradrag: Int = 0,
-    inntektsreduksjon: Int = 0
+    inntektsreduksjon: Int = 0,
 ) =
     AndelTilkjentYtelseDto(
         beløp = beløp,
@@ -45,5 +45,5 @@ fun lagAndelTilkjentYtelseDto(
         inntekt = inntekt,
         samordningsfradrag = samordningsfradrag,
         inntektsreduksjon = inntektsreduksjon,
-        kildeBehandlingId = kildeBehandlingId
+        kildeBehandlingId = kildeBehandlingId,
     )

@@ -61,7 +61,7 @@ fun FagsakdetaljerDto.toDomain(): Fagsakdetaljer {
     return Fagsakdetaljer(
         fagsakId = this.fagsakId,
         eksternId = this.eksternId,
-        stønadstype = this.stønadstype
+        stønadstype = this.stønadstype,
     )
 }
 
@@ -70,7 +70,7 @@ fun SøkerDto.toDomain(): Søker {
         personIdent = this.personIdent,
         barn = this.barn.map { it.toDomain() },
         tilhørendeEnhet = this.tilhørendeEnhet,
-        adressebeskyttelse = this.adressebeskyttelse
+        adressebeskyttelse = this.adressebeskyttelse,
     )
 }
 
@@ -84,7 +84,7 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
         vilkårsvurderinger = this.vilkårsvurderinger.map { it.toDomain() },
         aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato,
         kravMottatt = this.kravMottatt,
-        årsakRevurdering = this.årsakRevurdering?.let { ÅrsakRevurdering(it.opplysningskilde, it.årsak) }
+        årsakRevurdering = this.årsakRevurdering?.let { ÅrsakRevurdering(it.opplysningskilde, it.årsak) },
     )
 }
 
@@ -92,7 +92,7 @@ fun VedtaksperiodeOvergangsstønadDto.toDomain(): VedtaksperiodeOvergangsstønad
     return VedtaksperiodeOvergangsstønad(
         aktivitet = this.aktivitet,
         periode = this.periode,
-        periodeType = this.periodeType
+        periodeType = this.periodeType,
     )
 }
 
@@ -100,7 +100,7 @@ fun VedtaksperiodeBarnetilsynDto.toDomain(): VedtaksperiodeBarnetilsyn {
     return VedtaksperiodeBarnetilsyn(
         periode = this.periode,
         utgifter = this.utgifter,
-        antallBarn = this.antallBarn
+        antallBarn = this.antallBarn,
     )
 }
 
@@ -111,16 +111,16 @@ fun VedtaksperiodeSkolepengerDto.toDomain(): VedtaksperiodeSkolepenger {
                 studietype = it.studietype,
                 periode = it.periode,
                 studiebelastning = it.studiebelastning,
-                makssatsForSkoleår = it.maksSatsForSkoleår
+                makssatsForSkoleår = it.maksSatsForSkoleår,
             )
         },
         utgiftsperioder = this.utgiftsperioder.map {
             SkolepengerUtgift(
                 utgiftsdato = it.utgiftsdato,
                 utgifter = it.utgifter,
-                stønad = it.stønad
+                stønad = it.stønad,
             )
-        }
+        },
     )
 }
 
@@ -135,7 +135,7 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
         vedtaksperioder = this.vedtaksperioder.map { it.toDomain() },
         tilbakekreving = this.tilbakekreving?.toDomain(),
         brevmottakere = this.brevmottakere.toDomain(),
-        avslagÅrsak = this.avslagÅrsak
+        avslagÅrsak = this.avslagÅrsak,
     )
 }
 
@@ -152,7 +152,7 @@ fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn {
         brevmottakere = this.brevmottakere.toDomain(),
         kontantstøtte = this.kontantstøtte.map { it.toDomain() },
         tilleggsstønad = this.tilleggsstønad.map { it.toDomain() },
-        avslagÅrsak = this.avslagÅrsak
+        avslagÅrsak = this.avslagÅrsak,
 
     )
 }
@@ -169,14 +169,14 @@ fun VedtaksdetaljerSkolepengerDto.toDomain(): VedtaksdetaljerSkolepenger {
         tilbakekreving = this.tilbakekreving?.toDomain(),
         brevmottakere = this.brevmottakere.toDomain(),
         begrunnelse = this.begrunnelse,
-        avslagÅrsak = this.avslagÅrsak
+        avslagÅrsak = this.avslagÅrsak,
     )
 }
 
 fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
     return Tilbakekrevingsdetaljer(
         tilbakekrevingsvalg = this.tilbakekrevingsvalg,
-        this.tilbakekrevingMedVarsel?.toDomain()
+        this.tilbakekrevingMedVarsel?.toDomain(),
     )
 }
 
@@ -184,7 +184,7 @@ fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel {
     return TilbakekrevingMedVarsel(
         varseltekst = this.varseltekst,
         sumFeilutbetaling = this.sumFeilutbetaling,
-        perioder = this.fellesperioder.map { it.toDatoperiode() }
+        perioder = this.fellesperioder.map { it.toDatoperiode() },
     )
 }
 
@@ -195,13 +195,13 @@ fun BrevmottakerKontrakter.toDomain(): Brevmottaker = Brevmottaker(
     ident = this.ident,
     navn = this.navn,
     identType = this.identType,
-    mottakerRolle = this.mottakerRolle
+    mottakerRolle = this.mottakerRolle,
 )
 
 fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
     PeriodeMedBeløp(
         periode = this.periode,
-        beløp = this.beløp
+        beløp = this.beløp,
     )
 
 fun IverksettDto.toDomain(): IverksettData {
@@ -210,19 +210,19 @@ fun IverksettDto.toDomain(): IverksettData {
             fagsak = this.fagsak.toDomain(),
             søker = this.søker.toDomain(),
             behandling = this.behandling.toDomain(),
-            vedtak = this.vedtak.toDomain()
+            vedtak = this.vedtak.toDomain(),
         )
         is IverksettBarnetilsynDto -> IverksettBarnetilsyn(
             fagsak = this.fagsak.toDomain(),
             søker = this.søker.toDomain(),
             behandling = this.behandling.toDomain(),
-            vedtak = this.vedtak.toDomain()
+            vedtak = this.vedtak.toDomain(),
         )
         is IverksettSkolepengerDto -> IverksettSkolepenger(
             fagsak = this.fagsak.toDomain(),
             søker = this.søker.toDomain(),
             behandling = this.behandling.toDomain(),
-            vedtak = this.vedtak.toDomain()
+            vedtak = this.vedtak.toDomain(),
         )
         else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
     }

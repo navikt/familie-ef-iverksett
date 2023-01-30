@@ -21,12 +21,12 @@ data class IverksettResultat(
     @Column("vedtaksbrevresultat")
     val vedtaksbrevResultat: DistribuerBrevResultatMap = DistribuerBrevResultatMap(),
     @Column("tilbakekrevingresultat")
-    val tilbakekrevingResultat: TilbakekrevingResultat? = null
+    val tilbakekrevingResultat: TilbakekrevingResultat? = null,
 )
 
 data class OppdragResultat(val oppdragStatus: OppdragStatus, val oppdragStatusOppdatert: LocalDateTime = LocalDateTime.now())
 
 data class TilbakekrevingResultat(
     val opprettTilbakekrevingRequest: OpprettTilbakekrevingRequest,
-    val tilbakekrevingOppdatert: LocalDateTime = LocalDateTime.now()
+    val tilbakekrevingOppdatert: LocalDateTime = LocalDateTime.now(),
 )

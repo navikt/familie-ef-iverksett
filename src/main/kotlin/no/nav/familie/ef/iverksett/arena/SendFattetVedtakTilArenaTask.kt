@@ -14,13 +14,13 @@ import java.util.UUID
 @Service
 @TaskStepBeskrivelse(
     taskStepType = SendFattetVedtakTilArenaTask.TYPE,
-    beskrivelse = "Sender hendelse om fattet vedtak til arena"
+    beskrivelse = "Sender hendelse om fattet vedtak til arena",
 )
 class SendFattetVedtakTilArenaTask(
     private val vedtakhendelseProducer: VedtakhendelseProducer,
     private val integrasjonerClient: FamilieIntegrasjonerClient,
     private val iverksettingRepository: IverksettingRepository,
-    private val taskService: TaskService
+    private val taskService: TaskService,
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {

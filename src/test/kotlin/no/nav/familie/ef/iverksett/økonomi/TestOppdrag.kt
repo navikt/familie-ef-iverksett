@@ -29,7 +29,7 @@ private val vedtaksdato = LocalDate.of(2021, 5, 12)
 enum class TestOppdragType {
     Input,
     Output,
-    Oppdrag
+    Oppdrag,
 }
 
 /**
@@ -50,7 +50,7 @@ data class TestOppdrag(
     val opphørsdato: LocalDate?,
     val beløp: Int? = null,
     val startPeriode: YearMonth? = null,
-    val sluttPeriode: YearMonth? = null
+    val sluttPeriode: YearMonth? = null,
 ) {
 
     fun tilAndelTilkjentYtelse(): AndelTilkjentYtelse? {
@@ -61,12 +61,12 @@ data class TestOppdrag(
                 tilOgMed = sluttPeriode,
                 periodeId = linjeId,
                 kildeBehandlingId = if (TestOppdragType.Output == type) oppdragId else null,
-                forrigePeriodeId = forrigeLinjeId
+                forrigePeriodeId = forrigeLinjeId,
             )
         } else if (TestOppdragType.Output == type && beløp == null && startPeriode == null && sluttPeriode == null) {
             nullAndelTilkjentYtelse(
                 kildeBehandlingId = oppdragId ?: error("Må ha satt OppdragId på Output"),
-                periodeId = PeriodeId(linjeId, forrigeLinjeId)
+                periodeId = PeriodeId(linjeId, forrigeLinjeId),
             )
         } else {
             null
@@ -88,7 +88,7 @@ data class TestOppdrag(
                 satsType = Utbetalingsperiode.SatsType.MND,
                 utbetalesTil = fnr,
                 behandlingId = 1,
-                utbetalingsgrad = 100
+                utbetalingsgrad = 100,
             )
         } else if (opphørsdato != null) {
             error("Kan ikke sette opphørsdato her, mangler start/slutt/linjeId")
@@ -146,7 +146,7 @@ class TestOppdragGroup {
         TilkjentYtelseMedMetaData(
             TilkjentYtelse(
                 andelerTilkjentYtelse = andelerTilkjentYtelseInn,
-                startmåned = startmåned
+                startmåned = startmåned,
             ),
             stønadstype = StønadType.OVERGANGSSTØNAD,
             eksternBehandlingId = behandlingEksternId,
@@ -154,7 +154,7 @@ class TestOppdragGroup {
             saksbehandlerId = saksbehandlerId,
             personIdent = personIdent!!,
             behandlingId = oppdragId!!,
-            vedtaksdato = vedtaksdato
+            vedtaksdato = vedtaksdato,
         )
     }
 
@@ -171,14 +171,14 @@ class TestOppdragGroup {
                 saksbehandlerId = saksbehandlerId,
                 avstemmingTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS),
                 utbetalingsperiode = utbetalingsperioder
-                    .map { it.copy(behandlingId = behandlingEksternId) }
+                    .map { it.copy(behandlingId = behandlingEksternId) },
             )
 
         TilkjentYtelse(
             id = input.tilkjentYtelse.id,
             andelerTilkjentYtelse = andelerTilkjentYtelseUt,
             utbetalingsoppdrag = utbetalingsoppdrag,
-            startmåned = startmåned
+            startmåned = startmåned,
         )
     }
 }
@@ -203,7 +203,7 @@ object TestOppdragParser {
             KEY_LINJE_ID,
             KEY_FORRIGE_LINJE_ID,
             KEY_STATUS_OPPDRAG,
-            KEY_ER_ENDRING
+            KEY_ER_ENDRING,
         )
 
     private val oppdragIdn = mutableMapOf<Int, UUID>()
@@ -250,7 +250,7 @@ object TestOppdragParser {
                 beløp = beløp,
                 opphørsdato = opphørYearMonth?.atDay(1),
                 startPeriode = firstYearMonth,
-                sluttPeriode = lastYearMonth
+                sluttPeriode = lastYearMonth,
             )
         }
     }
@@ -306,7 +306,7 @@ object TestOppdragRunner {
             Assertions.assertEquals(
                 om.writeValueAsString(truncateAvstemmingDato(gruppe.output)),
                 om.writeValueAsString(truncateAvstemmingDato(faktisk)),
-                "Feiler for gruppe med indeks $indeks"
+                "Feiler for gruppe med indeks $indeks",
             )
             forrigeTilkjentYtelse = faktisk
         }
@@ -317,17 +317,17 @@ object TestOppdragRunner {
         val nyAvstemmingsitdspunkt = utbetalingsoppdrag.avstemmingTidspunkt.truncatedTo(ChronoUnit.HOURS)
         return tilkjentYtelse.copy(
             utbetalingsoppdrag = utbetalingsoppdrag.copy(avstemmingTidspunkt = nyAvstemmingsitdspunkt),
-            sisteAndelIKjede = null
+            sisteAndelIKjede = null,
         )
     }
 
     private fun lagTilkjentYtelseMedUtbetalingsoppdrag(
         nyTilkjentYtelse: TilkjentYtelseMedMetaData,
-        forrigeTilkjentYtelse: TilkjentYtelse? = null
+        forrigeTilkjentYtelse: TilkjentYtelse? = null,
     ) =
         UtbetalingsoppdragGenerator
             .lagTilkjentYtelseMedUtbetalingsoppdrag(
                 nyTilkjentYtelse,
-                forrigeTilkjentYtelse
+                forrigeTilkjentYtelse,
             )
 }

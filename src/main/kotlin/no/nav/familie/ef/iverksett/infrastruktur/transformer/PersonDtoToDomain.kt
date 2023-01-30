@@ -12,6 +12,6 @@ fun PersonDto.toDomain(): Person {
 fun BarnDto.toDomain(): Barn {
     return Barn(
         personIdent = this.personIdent,
-        termindato = this.termindato
+        termindato = this.termindato,
     )
 }

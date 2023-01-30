@@ -10,6 +10,6 @@ fun AndelTilkjentYtelseDto.toDomain(): AndelTilkjentYtelse {
         inntekt = this.inntekt,
         samordningsfradrag = this.samordningsfradrag,
         inntektsreduksjon = this.inntektsreduksjon,
-        kildeBehandlingId = this.kildeBehandlingId
+        kildeBehandlingId = this.kildeBehandlingId,
     )
 }

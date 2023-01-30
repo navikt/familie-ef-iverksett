@@ -15,13 +15,13 @@ fun GrensesnittavstemmingDto.tilTask(): Task {
         objectMapper.writeValueAsString(
             GrensesnittavstemmingPayload(
                 fraDato = this.fraDato,
-                stønadstype = this.stønadstype
-            )
+                stønadstype = this.stønadstype,
+            ),
         )
 
     return Task(
         type = GrensesnittavstemmingTask.TYPE,
         payload = payload,
-        triggerTid = nesteVirkedag
+        triggerTid = nesteVirkedag,
     )
 }

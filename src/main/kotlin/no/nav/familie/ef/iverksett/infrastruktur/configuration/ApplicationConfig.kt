@@ -35,13 +35,13 @@ import java.time.temporal.ChronoUnit
     "no.nav.familie.prosessering",
     "no.nav.familie.sikkerhet",
     excludeFilters = [
-        ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class])
-    ]
+        ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class]),
+    ],
 )
 @EnableJwtTokenValidation(ignore = ["org.springframework", "org.springdoc"])
 @Import(
     RestTemplateAzure::class,
-    KafkaErrorHandler::class
+    KafkaErrorHandler::class,
 )
 @EnableOAuth2Client(cacheEnabled = true)
 @EnableScheduling
@@ -98,7 +98,7 @@ class ApplicationConfig {
         return RetryOAuth2HttpClient(
             RestTemplateBuilder()
                 .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
-                .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS))
+                .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS)),
         )
     }
 }

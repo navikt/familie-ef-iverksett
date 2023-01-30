@@ -58,7 +58,7 @@ internal class DistribuerFrittståendeBrevTaskTest {
         justRun {
             frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
                 any(),
-                capture(distribuerBrevResultatMapSlot)
+                capture(distribuerBrevResultatMapSlot),
             )
         }
         every { taskService.findTaskLoggByTaskId(any()) } returns emptyList()
@@ -69,9 +69,9 @@ internal class DistribuerFrittståendeBrevTaskTest {
         every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
             journalpostResultat = JournalpostResultatMap(
                 mapOf(
-                    "222" to JournalpostResultat("journalpostId2")
-                )
-            )
+                    "222" to JournalpostResultat("journalpostId2"),
+                ),
+            ),
         )
 
         mockDistribuerBrev()
@@ -92,9 +92,9 @@ internal class DistribuerFrittståendeBrevTaskTest {
             journalpostResultat = JournalpostResultatMap(
                 mapOf(
                     "dødPersonId" to JournalpostResultat(dødJournalpostId),
-                    "222" to JournalpostResultat("journalpostId2")
-                )
-            )
+                    "222" to JournalpostResultat("journalpostId2"),
+                ),
+            ),
         )
 
         mockDistribuerBrev()
@@ -126,9 +126,9 @@ internal class DistribuerFrittståendeBrevTaskTest {
             journalpostResultat = JournalpostResultatMap(
                 mapOf(
                     "111" to JournalpostResultat("journalpostId1"),
-                    "222" to JournalpostResultat("journalpostId2")
-                )
-            )
+                    "222" to JournalpostResultat("journalpostId2"),
+                ),
+            ),
         )
         mockDistribuerBrev()
 
@@ -154,9 +154,9 @@ internal class DistribuerFrittståendeBrevTaskTest {
             journalpostResultat = JournalpostResultatMap(
                 mapOf(
                     "111" to JournalpostResultat("journalpostId1"),
-                    "222" to JournalpostResultat("journalpostId2")
-                )
-            )
+                    "222" to JournalpostResultat("journalpostId2"),
+                ),
+            ),
         )
 
         mockDistribuerBrev(medFeil = true)
@@ -182,12 +182,12 @@ internal class DistribuerFrittståendeBrevTaskTest {
             journalpostResultat = JournalpostResultatMap(
                 mapOf(
                     "111" to JournalpostResultat("tidligereDistribuertJournalpost"),
-                    "222" to JournalpostResultat("journalpostId2")
-                )
+                    "222" to JournalpostResultat("journalpostId2"),
+                ),
             ),
             distribuerBrevResultat = DistribuerBrevResultatMap(
-                map = mapOf("tidligereDistribuertJournalpost" to DistribuerBrevResultat("alleredeDistribuertBestillingId"))
-            )
+                map = mapOf("tidligereDistribuertJournalpost" to DistribuerBrevResultat("alleredeDistribuertBestillingId")),
+            ),
         )
 
         mockDistribuerBrev()
@@ -214,7 +214,7 @@ internal class DistribuerFrittståendeBrevTaskTest {
     private fun ressursExceptionGone() =
         RessursException(
             Ressurs.failure(""),
-            HttpClientErrorException.create(HttpStatus.GONE, "", HttpHeaders(), byteArrayOf(), null)
+            HttpClientErrorException.create(HttpStatus.GONE, "", HttpHeaders(), byteArrayOf(), null),
         )
 
     private fun ressursExceptionConflict(bestillingsId: String): RessursException {
@@ -223,19 +223,19 @@ internal class DistribuerFrittståendeBrevTaskTest {
             "",
             HttpHeaders(),
             DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
-            null
+            null,
         )
 
         val ressurs: Ressurs<Any> = Ressurs(
             data = e.responseBodyAsString,
             status = Ressurs.Status.FEILET,
             melding = e.message.toString(),
-            stacktrace = e.stackTraceToString()
+            stacktrace = e.stackTraceToString(),
         )
 
         return RessursException(
             ressurs,
-            e
+            e,
         )
     }
 }

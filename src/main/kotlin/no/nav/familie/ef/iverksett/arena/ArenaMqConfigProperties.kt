@@ -12,5 +12,5 @@ class ArenaMqConfigProperties(
     val port: String,
     val queueName: String,
     val servicebruker: String,
-    val servicebrukerPassord: String
+    val servicebrukerPassord: String,
 )

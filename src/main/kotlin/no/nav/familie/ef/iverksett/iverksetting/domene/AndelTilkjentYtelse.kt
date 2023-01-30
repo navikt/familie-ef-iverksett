@@ -11,7 +11,7 @@ data class AndelTilkjentYtelse(
     @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
     val periode: Månedsperiode = Månedsperiode(
         fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi.")
+        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
     ),
 
     val inntekt: Int,
@@ -20,7 +20,7 @@ data class AndelTilkjentYtelse(
 
     val periodeId: Long? = null,
     val forrigePeriodeId: Long? = null,
-    val kildeBehandlingId: UUID? = null
+    val kildeBehandlingId: UUID? = null,
 ) {
 
     private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean {

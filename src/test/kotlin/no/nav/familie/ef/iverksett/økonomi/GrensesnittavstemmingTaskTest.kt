@@ -33,8 +33,8 @@ internal class GrensesnittavstemmingTaskTest {
             Task(
                 type = GrensesnittavstemmingTask.TYPE,
                 payload = payload,
-                triggerTid = LocalDateTime.of(2018, 4, 19, 8, 0)
-            )
+                triggerTid = LocalDateTime.of(2018, 4, 19, 8, 0),
+            ),
         )
         verify(exactly = 1) { oppdragClient.grensesnittavstemming(capture(grensesnittavstemmingRequestSlot)) }
         val capturedGrensesnittRequest = grensesnittavstemmingRequestSlot.captured
@@ -53,15 +53,15 @@ internal class GrensesnittavstemmingTaskTest {
             Task(
                 type = GrensesnittavstemmingTask.TYPE,
                 payload = payload,
-                triggerTid = triggeTid
-            )
+                triggerTid = triggeTid,
+            ),
         )
         val forventetPayload =
             objectMapper.writeValueAsString(
                 GrensesnittavstemmingPayload(
                     fraDato = LocalDate.of(2018, 4, 19),
-                    stønadstype = StønadType.OVERGANGSSTØNAD
-                )
+                    stønadstype = StønadType.OVERGANGSSTØNAD,
+                ),
             )
         assertThat(slot.captured.payload).isEqualTo(forventetPayload)
     }
@@ -72,8 +72,8 @@ internal class GrensesnittavstemmingTaskTest {
             objectMapper.writeValueAsString(
                 GrensesnittavstemmingPayload(
                     fraDato = LocalDate.of(2018, 4, 18),
-                    stønadstype = StønadType.OVERGANGSSTØNAD
-                )
+                    stønadstype = StønadType.OVERGANGSSTØNAD,
+                ),
             )
     }
 }

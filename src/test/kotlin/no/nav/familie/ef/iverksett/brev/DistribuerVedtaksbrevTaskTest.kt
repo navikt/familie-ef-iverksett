@@ -53,21 +53,21 @@ internal class DistribuerVedtaksbrevTaskTest {
 
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns mapOf(
             "123" to JournalpostResultat(
-                journalpostId
-            )
+                journalpostId,
+            ),
         )
         every { iverksettResultatService.hentTilbakekrevingResultat(behandlingId) } returns null
         every { journalpostClient.distribuerBrev(journalpostId, any()) } returns bestillingId
         every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null andThen mapOf(
             journalpostId to DistribuerBrevResultat(
-                bestillingId
-            )
+                bestillingId,
+            ),
         )
         every {
             iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 any(),
-                capture(distribuerVedtaksbrevResultat)
+                capture(distribuerVedtaksbrevResultat),
             )
         } returns Unit
 
@@ -87,22 +87,22 @@ internal class DistribuerVedtaksbrevTaskTest {
 
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns mapOf(
             "123" to JournalpostResultat(
-                journalpostId
-            )
+                journalpostId,
+            ),
         )
         every { iverksettResultatService.hentTilbakekrevingResultat(behandlingId) } returns null
         val bestillingsIdFraConflictException = "BestillingsId"
         every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionConflict(bestillingsIdFraConflictException)
         every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null andThen mapOf(
             journalpostId to DistribuerBrevResultat(
-                bestillingId
-            )
+                bestillingId,
+            ),
         )
         justRun {
             iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 any(),
-                capture(distribuerVedtaksbrevResultat)
+                capture(distribuerVedtaksbrevResultat),
             )
         }
         distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
@@ -118,7 +118,7 @@ internal class DistribuerVedtaksbrevTaskTest {
 
         every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns mapOf(
             "1" to journalpostResultater[0],
-            "2" to journalpostResultater[1]
+            "2" to journalpostResultater[1],
         )
         every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
         every { journalpostClient.distribuerBrev(any(), any()) } returns bestillingIder[0] andThen bestillingIder[1]
@@ -126,7 +126,7 @@ internal class DistribuerVedtaksbrevTaskTest {
             iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 any(),
-                capture(distribuerVedtaksbrevResultatSlots)
+                capture(distribuerVedtaksbrevResultatSlots),
             )
         } returns Unit
 
@@ -138,7 +138,7 @@ internal class DistribuerVedtaksbrevTaskTest {
             iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 any(),
-                any()
+                any(),
             )
         }
         assertThat(distribuerVedtaksbrevResultatSlots.containsAll(bestillingIder.map { DistribuerBrevResultat(it) }))
@@ -156,14 +156,14 @@ internal class DistribuerVedtaksbrevTaskTest {
             mapOf(
                 identMottakerA to JournalpostResultat(distribuertJournalpost),
                 "456" to JournalpostResultat(
-                    ikkeDistribuertJournalpost
-                )
+                    ikkeDistribuertJournalpost,
+                ),
             )
         val distribuerteJournalposter =
             mapOf(
                 journalpostResultater[identMottakerA]!!.journalpostId to DistribuerBrevResultat(
-                    distribuertBestillingId
-                )
+                    distribuertBestillingId,
+                ),
             )
         val ikkeDistrbuertJournalpostBestillingId = "ny bestillingId"
 
@@ -177,7 +177,7 @@ internal class DistribuerVedtaksbrevTaskTest {
             iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 ikkeDistribuertJournalpost,
-                capture(distribuerVedtaksbrevResultatSlot)
+                capture(distribuerVedtaksbrevResultatSlot),
             )
         } returns Unit
 
@@ -189,14 +189,14 @@ internal class DistribuerVedtaksbrevTaskTest {
             iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 distribuertJournalpost,
-                any()
+                any(),
             )
         }
         verify(exactly = 1) {
             iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
                 behandlingId,
                 ikkeDistribuertJournalpost,
-                any()
+                any(),
             )
         }
         assertThat(distribuerVedtaksbrevResultatSlot.captured.bestillingId).isEqualTo(ikkeDistrbuertJournalpostBestillingId)
@@ -253,7 +253,7 @@ internal class DistribuerVedtaksbrevTaskTest {
     private fun ressursExceptionGone() =
         RessursException(
             Ressurs.failure(""),
-            HttpClientErrorException.create(HttpStatus.GONE, "", HttpHeaders(), byteArrayOf(), null)
+            HttpClientErrorException.create(HttpStatus.GONE, "", HttpHeaders(), byteArrayOf(), null),
         )
 
     private fun ressursExceptionConflict(bestillingsId: String): RessursException {
@@ -262,19 +262,19 @@ internal class DistribuerVedtaksbrevTaskTest {
             "",
             HttpHeaders(),
             DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
-            null
+            null,
         )
 
         val ressurs: Ressurs<Any> = Ressurs(
             data = e.responseBodyAsString,
             status = Ressurs.Status.FEILET,
             melding = e.message.toString(),
-            stacktrace = e.stackTraceToString()
+            stacktrace = e.stackTraceToString(),
         )
 
         return RessursException(
             ressurs,
-            e
+            e,
         )
     }
 }

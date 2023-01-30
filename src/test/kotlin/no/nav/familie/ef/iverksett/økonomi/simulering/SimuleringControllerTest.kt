@@ -52,7 +52,7 @@ class SimuleringControllerTest : ServerTest() {
             .exchange<Ressurs<DetaljertSimuleringResultat>>(
                 localhostUrl("/api/simulering/"),
                 HttpMethod.POST,
-                HttpEntity(simuleringDto(), headers)
+                HttpEntity(simuleringDto(), headers),
             )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
@@ -66,7 +66,7 @@ class SimuleringControllerTest : ServerTest() {
             .exchange<Ressurs<BeriketSimuleringsresultat>>(
                 localhostUrl("/api/simulering/v2/"),
                 HttpMethod.POST,
-                HttpEntity(simuleringDto(), headers)
+                HttpEntity(simuleringDto(), headers),
             )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
@@ -81,7 +81,7 @@ class SimuleringControllerTest : ServerTest() {
             .exchange<Ressurs<BeriketSimuleringsresultat>>(
                 localhostUrl("/api/simulering/v2/"),
                 HttpMethod.POST,
-                HttpEntity(request, headers)
+                HttpEntity(request, headers),
             )
 
         assertThat(respons.statusCode.value()).isEqualTo(200)
@@ -97,7 +97,7 @@ class SimuleringControllerTest : ServerTest() {
             .exchange<Ressurs<BeriketSimuleringsresultat>>(
                 localhostUrl("/api/simulering/v2/"),
                 HttpMethod.POST,
-                HttpEntity(request, headers)
+                HttpEntity(request, headers),
             )
 
         assertThat(respons.statusCode.value()).isEqualTo(200)
@@ -117,7 +117,7 @@ class SimuleringControllerTest : ServerTest() {
         val response = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
             localhostUrl("/api/simulering/v2/"),
             HttpMethod.POST,
-            HttpEntity(revurdering, headers)
+            HttpEntity(revurdering, headers),
         )
 
         assertThat(response.body?.data?.detaljer?.simuleringMottaker).isNotEmpty
@@ -135,7 +135,7 @@ class SimuleringControllerTest : ServerTest() {
         val respons = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
             localhostUrl("/api/simulering/v2/"),
             HttpMethod.POST,
-            HttpEntity(revurdering, headers)
+            HttpEntity(revurdering, headers),
         )
 
         assertThat(respons.body?.data).isEqualTo(lagSimuleringsresultatMedTomListe())

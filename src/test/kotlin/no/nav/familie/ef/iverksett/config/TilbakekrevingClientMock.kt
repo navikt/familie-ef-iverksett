@@ -43,10 +43,10 @@ class TilbakekrevingClientMock {
                         status = Behandlingsstatus.UTREDES,
                         årsak = null,
                         vedtaksdato = LocalDateTime.now(),
-                        resultat = null
-                    )
-                )
-            )
+                        resultat = null,
+                    ),
+                ),
+            ),
         )
     private val kanOpprettesManuelt =
         objectMapper.writeValueAsString(Ressurs.success(KanBehandlingOpprettesManueltRespons(true, "Bob")))
@@ -65,7 +65,7 @@ class TilbakekrevingClientMock {
         get(urlMatching("/api/fagsystem/${Fagsystem.EF}/fagsak/.+/behandlinger/v1"))
             .willReturn(okJson(behandlinger)),
         get(urlMatching("/api/ytelsestype/.+/fagsak/.+/kanBehandlingOpprettesManuelt/v1"))
-            .willReturn(okJson(kanOpprettesManuelt))
+            .willReturn(okJson(kanOpprettesManuelt)),
     )
 
     @Bean("mock-tilbakekreving")

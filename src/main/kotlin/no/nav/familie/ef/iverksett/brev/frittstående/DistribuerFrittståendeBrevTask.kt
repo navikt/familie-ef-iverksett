@@ -31,12 +31,12 @@ import java.util.UUID
     maxAntallFeil = 50,
     settTilManuellOppfølgning = true,
     triggerTidVedFeilISekunder = 15 * 60L,
-    beskrivelse = "Distribuerer frittstående brev."
+    beskrivelse = "Distribuerer frittstående brev.",
 )
 class DistribuerFrittståendeBrevTask(
     private val frittståendeBrevRepository: FrittståendeBrevRepository,
     private val journalpostClient: JournalpostClient,
-    private val taskService: TaskService
+    private val taskService: TaskService,
 ) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -81,7 +81,7 @@ class DistribuerFrittståendeBrevTask(
                             frittståendeBrev,
                             journalpostResultat,
                             response.bestillingsId,
-                            frittståendeBrevId
+                            frittståendeBrevId,
                         )
                     }
                     else -> throw e
@@ -95,13 +95,13 @@ class DistribuerFrittståendeBrevTask(
         frittståendeBrev: FrittståendeBrev,
         journalpostResultat: JournalpostResultat,
         bestillingId: String,
-        frittståendeBrevId: UUID
+        frittståendeBrevId: UUID,
     ): FrittståendeBrev {
         var frittståendeBrevOppdatert = frittståendeBrev
         frittståendeBrevOppdatert = oppdaterFrittståendeBrev(frittståendeBrevOppdatert, journalpostResultat, bestillingId)
         frittståendeBrevRepository.oppdaterDistribuerBrevResultat(
             frittståendeBrevId,
-            frittståendeBrevOppdatert.distribuerBrevResultat
+            frittståendeBrevOppdatert.distribuerBrevResultat,
         )
         return frittståendeBrevOppdatert
     }
@@ -109,7 +109,7 @@ class DistribuerFrittståendeBrevTask(
     private fun oppdaterFrittståendeBrev(
         frittståendeBrev: FrittståendeBrev,
         journalpostResultat: JournalpostResultat,
-        bestillingId: String
+        bestillingId: String,
     ): FrittståendeBrev {
         val nyeVerdier = mapOf(journalpostResultat.journalpostId to DistribuerBrevResultat(bestillingId))
         val oppdaterteDistribuerBrevResultat = frittståendeBrev.distribuerBrevResultat.map + nyeVerdier
@@ -117,7 +117,7 @@ class DistribuerFrittståendeBrevTask(
     }
 
     private fun distribuerBrev(
-        journalpostResultat: JournalpostResultat
+        journalpostResultat: JournalpostResultat,
     ): String {
         val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VIKTIG)
         loggBrevDistribuert(journalpostResultat.journalpostId, bestillingId)
@@ -146,7 +146,7 @@ class DistribuerFrittståendeBrevTask(
     private fun loggBrevDistribuert(journalpostId: String, bestillingId: String) {
         logger.info(
             "Distribuer frittstående brev journalpost=[$journalpostId] " +
-                "med bestillingId=[$bestillingId]"
+                "med bestillingId=[$bestillingId]",
         )
     }
 

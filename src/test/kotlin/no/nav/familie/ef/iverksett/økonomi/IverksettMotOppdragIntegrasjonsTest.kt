@@ -32,7 +32,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     private val førsteAndel = lagAndelTilkjentYtelse(
         beløp = 1000,
         fraOgMed = YearMonth.of(2021, 1),
-        tilOgMed = YearMonth.of(2021, 1)
+        tilOgMed = YearMonth.of(2021, 1),
     )
     private val iverksett =
         opprettIverksettOvergangsstønad(behandlingid, andeler = listOf(førsteAndel), startmåned = førsteAndel.periode.fom)
@@ -61,9 +61,9 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                 lagAndelTilkjentYtelse(
                     beløp = 1000,
                     fraOgMed = YearMonth.now(),
-                    tilOgMed = YearMonth.now().plusMonths(1)
-                )
-            )
+                    tilOgMed = YearMonth.now().plusMonths(1),
+                ),
+            ),
         )
 
         taskService.deleteAll(taskService.findAll())
@@ -88,9 +88,9 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
                 lagAndelTilkjentYtelse(
                     beløp = 1000,
                     fraOgMed = YearMonth.now(),
-                    tilOgMed = YearMonth.now().plusMonths(1)
-                )
-            )
+                    tilOgMed = YearMonth.now().plusMonths(1),
+                ),
+            ),
         )
 
         taskService.deleteAll(taskService.findAll())
