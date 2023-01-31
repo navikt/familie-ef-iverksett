@@ -58,7 +58,7 @@ spec:
         - host: familie-ef-infotrygd-feed.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
-      - type: POSTGRES_12 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
+      - type: POSTGRES_14 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
         diskAutoresize: true
         cascadingDelete: false
         pointInTimeRecovery: true
