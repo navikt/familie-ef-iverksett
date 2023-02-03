@@ -22,12 +22,12 @@ class ArbeidsoppfølgingKafkaProducer(private val kafkaProducerService: KafkaPro
         sendVedtak(vedtakOvergangsstønadArbeidsoppfølging.vedtakId, vedtakOvergangsstønadArbeidsoppfølging.stønadstype, vedtakOvergangsstønadArbeidsoppfølging.toJson())
     }
 
-    fun sendVedtak(behandlingId: Long, stønadstype: Stønadstype, vedtakStatistikk: String) {
+    fun sendVedtak(behandlingId: Long, stønadstype: Stønadstype, vedtakArbeidsoppfølging: String) {
         logger.info("Sending to Kafka topic: {}", topic)
-        secureLogger.debug("Sending to Kafka topic: {}\nArbeidsoppfølging: {}", topic, vedtakStatistikk)
+        secureLogger.debug("Sending to Kafka topic: {}\nArbeidsoppfølging: {}", topic, vedtakArbeidsoppfølging)
 
         runCatching {
-            kafkaProducerService.sendMedStønadstypeIHeader(topic, StønadType.valueOf(stønadstype.name), behandlingId.toString(), vedtakStatistikk)
+            kafkaProducerService.sendMedStønadstypeIHeader(topic, StønadType.valueOf(stønadstype.name), behandlingId.toString(), vedtakArbeidsoppfølging)
             logger.info("Arbeidsoppfølging for behandling=$behandlingId sent til Kafka")
         }.onFailure {
             val errorMessage = "Kunne ikke sende vedtak til arbeidsoppfølging topic. Se securelogs for mer informasjon."

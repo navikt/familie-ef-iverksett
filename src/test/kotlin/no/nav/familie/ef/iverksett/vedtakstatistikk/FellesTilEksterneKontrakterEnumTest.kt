@@ -19,6 +19,10 @@ import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak as BehandlingÅrsa
 import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType as VedtakPeriodeTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEkstern
+import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Vedtaksresultat as VedtaksresultatEkstern
+import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Periodetype as PeriodetypeEkstern
+import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Aktivitetstype as AktivitetstypeEkstern
+import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Stønadstype as StønadstypeEkstern
 
 class FellesTilEksterneKontrakterEnumTest {
 
@@ -33,5 +37,13 @@ class FellesTilEksterneKontrakterEnumTest {
         AktivitetType.values().forEach { AktivitetTypeEkstern.valueOf(it.name) }
         AdressebeskyttelseGradering.values().forEach { AdresseBeskyttelseEkstern.valueOf(it.name) }
         StønadType.values().forEach { StønadTypeEkstern.valueOf(it.name) }
+    }
+
+    @Test
+    fun `for alle arbeidsoppfølging enums i eksterne kontrakter, forvent mapping fra domene`() {
+        Vedtaksresultat.values().forEach { VedtaksresultatEkstern.valueOf(it.name) }
+        VedtaksperiodeType.values().forEach { PeriodetypeEkstern.valueOf(it.name) }
+        AktivitetType.values().forEach { AktivitetstypeEkstern.valueOf(it.name) }
+        StønadType.values().forEach { StønadstypeEkstern.valueOf(it.name) }
     }
 }
