@@ -149,6 +149,7 @@ FAMILIE_TILBAKE_SCOPE: api://${DEPLOY_ENV}-gcp.teamfamilie.familie-tilbake/.defa
 
 ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-v1
 ENSLIG_FORSORGER_BEHANDLING_TOPIC: teamfamilie.aapen-ensligforsorger-behandling-v1
+ARBEIDSOPPFOLGING_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-arbeidsoppfolging
 VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-iverksatt-vedtak
 FAGSYSTEMBEHANDLING_RESPONS_TOPIC: teamfamilie.privat-tbk-hentfagsystemsbehandling-respons-topic
 

@@ -13,6 +13,7 @@ import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
 import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
+import no.nav.familie.eksterne.kontrakter.ef.Barn
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
 import no.nav.familie.eksterne.kontrakter.ef.Person
@@ -57,6 +58,7 @@ class VedtakstatistikkServiceTest {
             behandlingId = iverksettOvergangsstønad.behandling.eksternId,
             fagsakId = iverksettOvergangsstønad.fagsak.eksternId,
             tidspunktVedtak = iverksettOvergangsstønad.vedtak.vedtakstidspunkt.toLocalDate(),
+            barn = iverksettOvergangsstønad.søker.barn.map { Barn(it.personIdent, it.termindato) },
         )
         assertThat(vedtakOvergangsstønad).isEqualTo(vedtakstatistikkJsonSlot.captured)
     }
@@ -84,6 +86,7 @@ class VedtakstatistikkServiceTest {
         behandlingId: Long,
         fagsakId: Long,
         tidspunktVedtak: LocalDate,
+        barn: List<Barn> = emptyList(),
     ): VedtakOvergangsstønadDVH {
         return VedtakOvergangsstønadDVH(
             fagsakId = fagsakId,
@@ -98,7 +101,7 @@ class VedtakstatistikkServiceTest {
                 ),
             ),
             person = Person(personIdent = "12345678910"),
-            barn = emptyList(),
+            barn = barn,
             behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
             behandlingÅrsak = BehandlingÅrsak.SØKNAD,
             vedtak = Vedtak.INNVILGET,

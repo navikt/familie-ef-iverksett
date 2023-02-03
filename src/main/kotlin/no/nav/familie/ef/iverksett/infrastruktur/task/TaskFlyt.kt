@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
+import no.nav.familie.ef.iverksett.arbeidsoppfolging.SendVedtakTilArbeidsoppfølgingTask
 import no.nav.familie.ef.iverksett.arena.SendFattetVedtakTilArenaTask
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
@@ -32,6 +33,7 @@ fun publiseringsflyt() = listOf(
     TaskType(SendPerioderTilInfotrygdTask.TYPE), // Hopper til vedtakstatistikk ved migrering
     TaskType(SendFattetVedtakTilArenaTask.TYPE),
     TaskType(PubliserVedtakTilKafkaTask.TYPE),
+    TaskType(SendVedtakTilArbeidsoppfølgingTask.TYPE),
     TaskType(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE),
     TaskType(VedtakstatistikkTask.TYPE),
 )

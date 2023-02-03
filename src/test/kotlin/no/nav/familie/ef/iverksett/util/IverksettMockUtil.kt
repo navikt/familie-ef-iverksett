@@ -6,6 +6,7 @@ import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
+import no.nav.familie.ef.iverksett.iverksetting.domene.Barn
 import no.nav.familie.ef.iverksett.iverksetting.domene.Behandlingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Delvilkårsvurdering
@@ -335,7 +336,7 @@ fun opprettIverksettOvergangsstønad(
         behandling = behandlingsdetaljer(behandlingId, forrigeBehandlingId, behandlingType),
         søker = Søker(
             personIdent = "12345678910",
-            barn = emptyList(),
+            barn = listOf(Barn("01010199999"), Barn(null, LocalDate.of(2023, 1, 1))),
             tilhørendeEnhet = "4489",
             adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
         ),
