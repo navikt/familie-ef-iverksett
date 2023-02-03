@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 @Component
 class ArbeidsoppfølgingKafkaProducer(private val kafkaProducerService: KafkaProducerService) {
 
-    @Value("\${ENSLIG_FORSORGER_VEDTAK_TOPIC}")
+    @Value("\${ARBEIDSOPPFOLGING_VEDTAK_TOPIC}")
     lateinit var topic: String
 
     private val logger = LoggerFactory.getLogger(javaClass)
