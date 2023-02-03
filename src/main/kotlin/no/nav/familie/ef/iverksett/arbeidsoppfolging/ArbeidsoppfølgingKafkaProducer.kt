@@ -17,9 +17,11 @@ class ArbeidsoppfølgingKafkaProducer(private val kafkaProducerService: KafkaPro
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
+
     fun sendVedtak(vedtakOvergangsstønadArbeidsoppfølging: VedtakOvergangsstønadArbeidsoppfølging) {
         sendVedtak(vedtakOvergangsstønadArbeidsoppfølging.vedtakId, vedtakOvergangsstønadArbeidsoppfølging.stønadstype, vedtakOvergangsstønadArbeidsoppfølging.toJson())
     }
+
     fun sendVedtak(behandlingId: Long, stønadstype: Stønadstype, vedtakStatistikk: String) {
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nArbeidsoppfølging: {}", topic, vedtakStatistikk)
