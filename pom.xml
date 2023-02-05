@@ -25,7 +25,7 @@
         <prosessering.version>1.20221110194901_e9e0d90</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
         <mockk.version>1.13.4</mockk.version>
-        <cucumber.version>7.11.0</cucumber.version>
+        <cucumber.version>7.11.1</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
