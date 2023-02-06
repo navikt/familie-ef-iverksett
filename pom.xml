@@ -15,7 +15,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>1.8.0</kotlin.version>
+        <kotlin.version>1.8.10</kotlin.version>
         <springdoc.version>1.6.14</springdoc.version>
         <swagger.version>2.9.2</swagger.version>
         <felles.version>1.20221101085322_cc4d556</felles.version>
@@ -25,7 +25,7 @@
         <prosessering.version>1.20221110194901_e9e0d90</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
         <mockk.version>1.13.4</mockk.version>
-        <cucumber.version>7.11.0</cucumber.version>
+        <cucumber.version>7.11.1</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
@@ -230,7 +230,7 @@
         <dependency>
             <groupId>com.github.doyaaaaaken</groupId>
             <artifactId>kotlin-csv-jvm</artifactId>
-            <version>1.7.0</version>
+            <version>1.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
