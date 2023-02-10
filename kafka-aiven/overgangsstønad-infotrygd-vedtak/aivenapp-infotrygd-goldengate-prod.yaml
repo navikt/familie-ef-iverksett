@@ -8,5 +8,5 @@ metadata:
 spec:
   kafka:
     pool: nav-prod
-  secretName: kafka-infotrygd-goldengate-nav
+  secretName: kafka-infotrygd-goldengate-nav2
   protected: true
