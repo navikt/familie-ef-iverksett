@@ -228,12 +228,12 @@ internal class DistribuerVedtaksbrevTaskTest {
         }
 
         @Test
-        internal fun `skal feile hvis man har blitt kjørt fler enn 7 ganger`() {
+        internal fun `skal feile hvis man har blitt kjørt fler enn 26 ganger`() {
             val journalpostResultater = listOf(JournalpostResultat("123456789"))
 
             val task = Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString())
             val taskLogg =
-                IntRange(1, 8).map { TaskLogg(taskId = task.id, type = Loggtype.KLAR_TIL_PLUKK, melding = "Dødsbo") }
+                IntRange(1, 27).map { TaskLogg(taskId = task.id, type = Loggtype.KLAR_TIL_PLUKK, melding = "Dødsbo") }
 
             every { iverksettResultatService.hentJournalpostResultat(behandlingId) }
                 .returns(mapOf("1" to journalpostResultater[0]))
