@@ -102,7 +102,7 @@ class DistribuerVedtaksbrevTask(
     private fun håndterDødsbo(task: Task, dødsbo: Dødsbo) {
         val antallRekjørSenerePgaDødsbo = taskService.findTaskLoggByTaskId(task.id)
             .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
-        if (antallRekjørSenerePgaDødsbo < 7) {
+        if (antallRekjørSenerePgaDødsbo < 26) {
             logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
             throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))
         } else {
