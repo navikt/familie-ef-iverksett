@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
+import no.nav.familie.ef.iverksett.arbeidsoppfolging.SendVedtakTilArbeidsoppfølgingTask
 import no.nav.familie.ef.iverksett.arena.SendFattetVedtakTilArenaTask
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
@@ -59,7 +60,11 @@ class TaskTypeTest {
         assertThat(publiserVedtakTilKafkaTask.type).isEqualTo(PubliserVedtakTilKafkaTask.TYPE)
         assertThat(publiserVedtakTilKafkaTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
-        val opprettOppgaveTask = publiserVedtakTilKafkaTask.opprettNestePubliseringTask()
+        val sendVedtakTilArbeidsoppfølgingTask = publiserVedtakTilKafkaTask.opprettNestePubliseringTask()
+        assertThat(sendVedtakTilArbeidsoppfølgingTask.type).isEqualTo(SendVedtakTilArbeidsoppfølgingTask.TYPE)
+        assertThat(sendVedtakTilArbeidsoppfølgingTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+
+        val opprettOppgaveTask = sendVedtakTilArbeidsoppfølgingTask.opprettNestePubliseringTask()
         assertThat(opprettOppgaveTask.type).isEqualTo(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE)
         assertThat(opprettOppgaveTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 

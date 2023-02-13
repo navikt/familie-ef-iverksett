@@ -22,6 +22,7 @@
         <familie.kontrakter.version>2.0_20230207163828_02a596c</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20221122145156_a922c71</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20221122130110_53c42d4</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230203094245_a4a6d4d</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>1.20221110194901_e9e0d90</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
         <mockk.version>1.13.4</mockk.version>
@@ -162,6 +163,11 @@
             <groupId>no.nav.familie.eksterne.kontrakter</groupId>
             <artifactId>saksstatistikk-ef</artifactId>
             <version>${familie.eksterne-kontrakter.saksstatistikk-ef}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.familie.eksterne.kontrakter</groupId>
+            <artifactId>arbeidsoppfolging</artifactId>
+            <version>${familie.eksterne-kontrakter.arbeidsoppfolging}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
