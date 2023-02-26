@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
+        <version>3.0.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -18,12 +18,12 @@
         <kotlin.version>1.8.10</kotlin.version>
         <springdoc.version>1.6.14</springdoc.version>
         <swagger.version>2.9.2</swagger.version>
-        <felles.version>1.20221101085322_cc4d556</felles.version>
-        <familie.kontrakter.version>2.0_20230214140648_f5fa479</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20221122145156_a922c71</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20221122130110_53c42d4</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230203094245_a4a6d4d</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>1.20221110194901_e9e0d90</prosessering.version>
+        <felles.version>2.20230210162649_a258d57-SPRING_BOOT_3</felles.version>
+        <familie.kontrakter.version>3.0_20230220145739_44aff8c-JAKARTA</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
+        <prosessering.version>2.20230214102837_4b63c2e-SPRING_BOOT_3</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
         <mockk.version>1.13.4</mockk.version>
         <cucumber.version>7.11.1</cucumber.version>
@@ -31,9 +31,8 @@
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>2.1.9</token-validation-spring.version>
-        <ibm-mq-client.version>9.2.5.0</ibm-mq-client.version>
-        <arena-vedtakhendelser.version>2560.d18f9c7</arena-vedtakhendelser.version>
+        <token-validation-spring.version>3.0.3</token-validation-spring.version>
+        <ibm-mq-client.version>9.3.2.0</ibm-mq-client.version>
         <unleash.version>7.1.0</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
     </properties>
@@ -68,6 +67,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jetty</artifactId>
+        </dependency>
+        <!-- https://github.com/spring-projects/spring-boot/issues/33044#issuecomment-1379812611 -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -207,12 +211,12 @@
 
         <!-- MQ / JMS -->
         <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>javax.jms-api</artifactId>
+            <groupId>jakarta.jms</groupId>
+            <artifactId>jakarta.jms-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.ibm.mq</groupId>
-            <artifactId>com.ibm.mq.allclient</artifactId>
+            <artifactId>com.ibm.mq.jakarta.client</artifactId>
             <version>${ibm-mq-client.version}</version>
         </dependency>
         <dependency>
@@ -241,7 +245,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock-jre8</artifactId>
+            <artifactId>wiremock-jre8-standalone</artifactId>
             <version>2.35.0</version>
             <scope>test</scope>
         </dependency>
