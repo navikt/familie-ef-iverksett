@@ -52,7 +52,7 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
 
     private fun send(behandlingStatistikkDto: BehandlingsstatistikkDto): ResponseEntity<HttpStatus> =
         restTemplate.exchange(
-            localhostUrl("/api/statistikk/behandlingsstatistikk/"),
+            localhostUrl("/api/statistikk/behandlingsstatistikk"),
             HttpMethod.POST,
             HttpEntity(behandlingStatistikkDto, headers),
         )
