@@ -99,7 +99,7 @@ class IverksettingControllerTest : ServerTest() {
             .withJson("data", iverksettJson)
             .build()
 
-        val respons: ResponseEntity<String> = restTemplate.exchange(
+        val respons: ResponseEntity<Any> = restTemplate.exchange(
             localhostUrl("/api/iverksett"),
             HttpMethod.POST,
             HttpEntity(request, headers),
