@@ -254,6 +254,12 @@
             <artifactId>token-validation-spring-test</artifactId>
             <version>${token-validation-spring.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcpkix-jdk15on</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.mockk</groupId>
