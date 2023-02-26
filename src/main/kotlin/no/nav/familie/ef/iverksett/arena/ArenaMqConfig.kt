@@ -1,9 +1,11 @@
 package no.nav.familie.ef.iverksett.arena
 
 import com.ibm.mq.constants.CMQC
-import com.ibm.mq.jms.MQConnectionFactory
-import com.ibm.mq.jms.MQQueueConnectionFactory
-import com.ibm.msg.client.wmq.WMQConstants
+import com.ibm.mq.jakarta.jms.MQConnectionFactory
+import com.ibm.mq.jakarta.jms.MQQueueConnectionFactory
+import com.ibm.msg.client.jakarta.wmq.WMQConstants
+import jakarta.jms.ConnectionFactory
+import jakarta.jms.JMSException
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,8 +13,6 @@ import org.springframework.jms.annotation.EnableJms
 import org.springframework.jms.connection.CachingConnectionFactory
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter
 import org.springframework.jms.core.JmsTemplate
-import javax.jms.ConnectionFactory
-import javax.jms.JMSException
 
 @Configuration
 @EnableJms
