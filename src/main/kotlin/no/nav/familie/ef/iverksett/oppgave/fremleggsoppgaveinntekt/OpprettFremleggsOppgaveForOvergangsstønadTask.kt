@@ -3,13 +3,21 @@ package no.nav.familie.ef.iverksett.oppgave.fremleggsoppgaveinntekt
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.prosessering.AsyncTaskStep
+import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
 import java.util.UUID
 
+@Service
+@TaskStepBeskrivelse(
+    taskStepType = OpprettFremleggsOppgaveForOvergangsstønadTask.TYPE,
+    beskrivelse = "Oppretter fremleggsoppgave om kontroll av inntekt",
+)
 class OpprettFremleggsOppgaveForOvergangsstønadTask(
     private val fremleggsoppgaveService: FremleggsoppgaveService,
     private val iverksettingRepository: IverksettingRepository,

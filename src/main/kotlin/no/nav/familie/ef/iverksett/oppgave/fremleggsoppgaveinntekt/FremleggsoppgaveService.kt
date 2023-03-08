@@ -7,7 +7,9 @@ import no.nav.familie.ef.iverksett.oppgave.OppgaveUtil
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
+import org.springframework.stereotype.Service
 
+@Service
 class FremleggsoppgaveService(
     private val oppgaveClient: OppgaveClient,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
