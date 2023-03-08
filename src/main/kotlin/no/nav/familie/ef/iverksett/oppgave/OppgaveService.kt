@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget
@@ -48,6 +49,7 @@ class OppgaveService(
     }
 
     fun skalOppretteFremleggsoppgave(iverksett: IverksettOvergangsstønad): Boolean =
+        harAndelTilkjentYtelseMedBeløp(iverksett.vedtak.tilkjentYtelse) &&
         iverksett.vedtak.vedtaksresultat == Vedtaksresultat.INNVILGET &&
             iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING &&
             iverksett.vedtak.vedtaksperioder.any {
@@ -77,6 +79,10 @@ class OppgaveService(
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
+
+    private fun harAndelTilkjentYtelseMedBeløp(tilkjentYtelse: TilkjentYtelse?) : Boolean {
+        return tilkjentYtelse?.let { it.andelerTilkjentYtelse.any { it.beløp > 0 } } ?: false
+    }
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
         return when (iverksett.vedtak.vedtaksresultat) {

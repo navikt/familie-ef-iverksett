@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett
 
+import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
@@ -185,6 +186,9 @@ fun lagIverksettData(
     andelsdatoer: List<YearMonth> = emptyList(),
     årsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
     vedtakstidspunkt: LocalDateTime = LocalDateTime.of(2021, 5, 12, 0, 0),
+    andeler: List<AndelTilkjentYtelse> = andelsdatoer.map {
+        lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it)
+    },
 ): IverksettOvergangsstønad {
     val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else årsak
     return opprettIverksettOvergangsstønad(
@@ -196,9 +200,7 @@ fun lagIverksettData(
         vedtaksdetaljer = vedtaksdetaljerOvergangsstønad(
             vedtaksresultat = vedtaksresultat,
             vedtaksperioder = vedtaksperioder,
-            andeler = andelsdatoer.map {
-                lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it)
-            },
+            andeler = andeler,
             startdato = andelsdatoer.minByOrNull { it } ?: YearMonth.now(),
             vedtaksTidspunkt = vedtakstidspunkt,
         ),

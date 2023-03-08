@@ -40,7 +40,7 @@ internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
             oppgaveService.opprettOppgave(
                 any(),
                 Oppgavetype.VurderHenvendelse,
-                any()
+                any(),
             )
         }
     }
