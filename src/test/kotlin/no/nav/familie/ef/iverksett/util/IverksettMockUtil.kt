@@ -236,11 +236,12 @@ fun vedtaksdetaljerOvergangsstønad(
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
     startdato: YearMonth = startmåned(andeler),
     vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad()),
+    vedtaksTidspunkt: LocalDateTime = LocalDateTime.of(2021, 5, 12, 0, 0),
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerOvergangsstønad(
         vedtaksresultat = vedtaksresultat,
-        vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
+        vedtakstidspunkt = vedtaksTidspunkt,
         opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
         saksbehandlerId = "A12345",
         beslutterId = "B23456",
