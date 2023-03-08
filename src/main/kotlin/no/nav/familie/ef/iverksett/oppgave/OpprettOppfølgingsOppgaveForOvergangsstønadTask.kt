@@ -32,7 +32,7 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
         if (iverksett.data !is IverksettOvergangsstønad) {
             logger.info(
                 "Oppretter ikke oppfølgningsoppgave for behandling=$behandlingId" +
-                    " då den ikke er overgangsstønad (${iverksett::class.java.simpleName})",
+                    " da det ikke er en overgangsstønad (${iverksett::class.java.simpleName})",
             )
             return
         }
@@ -43,7 +43,7 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
                 Oppgavetype.VurderHenvendelse,
                 oppgaveService.lagOppgavebeskrivelse(iverksett.data)
             )
-            logger.info("Opprettet oppgave for behandling=$behandlingId oppgaveID=$oppgaveId")
+            logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
         }
     }
 
