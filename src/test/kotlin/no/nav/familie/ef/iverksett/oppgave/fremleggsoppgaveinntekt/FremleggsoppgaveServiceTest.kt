@@ -45,10 +45,10 @@ class FremleggsoppgaveServiceTest {
             vedtaksperioder = listOf(
                 vedtaksPeriode(
                     tilOgMed = LocalDate.now().plusMonths(13),
-                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID
-                )
+                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
+                ),
             ),
-            vedtakstidspunkt = LocalDateTime.now()
+            vedtakstidspunkt = LocalDateTime.now(),
         )
         assertThat(fremleggsoppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
     }
@@ -62,10 +62,10 @@ class FremleggsoppgaveServiceTest {
             vedtaksperioder = listOf(
                 vedtaksPeriode(
                     tilOgMed = LocalDate.now().plusMonths(13),
-                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID
-                )
+                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
+                ),
             ),
-            vedtakstidspunkt = LocalDateTime.now()
+            vedtakstidspunkt = LocalDateTime.now(),
         )
         assertThat(fremleggsoppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
     }
@@ -78,9 +78,9 @@ class FremleggsoppgaveServiceTest {
             vedtaksresultat = Vedtaksresultat.INNVILGET,
             vedtaksperioder = listOf(
                 vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(11), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
-                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(10), aktivitet = AktivitetType.FORSØRGER_I_ARBEID)
+                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(10), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
             ),
-            vedtakstidspunkt = LocalDateTime.now()
+            vedtakstidspunkt = LocalDateTime.now(),
         )
         assertThat(fremleggsoppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
     }
@@ -93,9 +93,9 @@ class FremleggsoppgaveServiceTest {
             vedtaksresultat = Vedtaksresultat.INNVILGET,
             vedtaksperioder = listOf(
                 vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(13), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
-                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(9), aktivitet = AktivitetType.FORSØRGER_I_ARBEID)
+                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(9), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
             ),
-            vedtakstidspunkt = LocalDateTime.now()
+            vedtakstidspunkt = LocalDateTime.now(),
         )
         assertThat(fremleggsoppgaveService.skalOppretteFremleggsoppgave(iverksett)).isTrue()
     }

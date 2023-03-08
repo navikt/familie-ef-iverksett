@@ -200,7 +200,7 @@ fun lagIverksettData(
                 lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it)
             },
             startdato = andelsdatoer.minByOrNull { it } ?: YearMonth.now(),
-            vedtaksTidspunkt = vedtakstidspunkt
+            vedtaksTidspunkt = vedtakstidspunkt,
         ),
     )
 }
