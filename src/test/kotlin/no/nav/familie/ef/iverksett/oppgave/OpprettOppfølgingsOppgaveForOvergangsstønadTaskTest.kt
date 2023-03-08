@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
+import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import org.junit.jupiter.api.Test
@@ -29,12 +30,18 @@ internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
     internal fun `skal opprette oppfølgningsoppgave for overgangsstønad`() {
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
         every { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) } returns true
-        every { oppgaveService.opprettVurderHenvendelseOppgave(any()) } returns 1
+        every { oppgaveService.opprettOppgave(any(), Oppgavetype.VurderHenvendelse, any()) } returns 1
 
         taskStegService.doTask(opprettTask())
 
         verify(exactly = 1) { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) }
-        verify(exactly = 1) { oppgaveService.opprettVurderHenvendelseOppgave(any()) }
+        verify(exactly = 1) {
+            oppgaveService.opprettOppgave(
+                any(),
+                Oppgavetype.VurderHenvendelse,
+                any()
+            )
+        }
     }
 
     @Test

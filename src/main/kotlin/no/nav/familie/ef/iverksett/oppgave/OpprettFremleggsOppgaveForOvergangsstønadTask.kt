@@ -1,10 +1,10 @@
-package no.nav.familie.ef.iverksett.oppgave.fremleggsoppgaveinntekt
+package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
-import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -19,7 +19,7 @@ import java.util.UUID
     beskrivelse = "Oppretter fremleggsoppgave om kontroll av inntekt",
 )
 class OpprettFremleggsOppgaveForOvergangsstønadTask(
-    private val fremleggsoppgaveService: FremleggsoppgaveService,
+    private val oppgaveService: OppgaveService,
     private val iverksettingRepository: IverksettingRepository,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
@@ -36,8 +36,8 @@ class OpprettFremleggsOppgaveForOvergangsstønadTask(
             )
             return
         }
-        if (fremleggsoppgaveService.skalOppretteFremleggsoppgave(iverksett.data)) {
-            val oppgaveId = fremleggsoppgaveService.opprettFremleggsoppgave(iverksett.data)
+        if (oppgaveService.skalOppretteFremleggsoppgave(iverksett.data)) {
+            val oppgaveId = oppgaveService.opprettOppgave(iverksett.data, Oppgavetype.Fremlegg, "Inntekt")
             logger.info("Opprettet fremleggsoppgave for behandling=$behandlingId oppgaveID=$oppgaveId")
         }
     }
@@ -48,6 +48,6 @@ class OpprettFremleggsOppgaveForOvergangsstønadTask(
 
     companion object {
 
-        const val TYPE = "opprettFremleggsOppgaveForOvergangsstønadTask"
+        const val TYPE = "opprettFremleggsOppgaveForOvergangsstønad"
     }
 }

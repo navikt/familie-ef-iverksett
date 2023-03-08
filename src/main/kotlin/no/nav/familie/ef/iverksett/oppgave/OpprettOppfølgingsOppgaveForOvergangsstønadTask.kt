@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTas
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -37,7 +38,11 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
         }
 
         if (oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett.data)) {
-            val oppgaveId = oppgaveService.opprettVurderHenvendelseOppgave(iverksett.data)
+            val oppgaveId = oppgaveService.opprettOppgave(
+                iverksett.data,
+                Oppgavetype.VurderHenvendelse,
+                oppgaveService.lagOppgavebeskrivelse(iverksett.data)
+            )
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgaveID=$oppgaveId")
         }
     }

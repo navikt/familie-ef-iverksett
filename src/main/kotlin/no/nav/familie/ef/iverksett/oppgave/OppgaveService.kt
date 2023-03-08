@@ -47,17 +47,23 @@ class OppgaveService(
         }
     }
 
-    fun opprettVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Long {
+    fun skalOppretteFremleggsoppgave(iverksett: IverksettOvergangsstønad): Boolean =
+        iverksett.vedtak.vedtaksresultat == Vedtaksresultat.INNVILGET &&
+            iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING &&
+            iverksett.vedtak.vedtaksperioder.any {
+                it.periode.tomDato >= iverksett.vedtak.vedtakstidspunkt.toLocalDate().plusYears(1)
+            }
+
+    fun opprettOppgave(iverksett: IverksettOvergangsstønad, oppgaveType: Oppgavetype, beskrivelse: String): Long {
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
             ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
-        val beskrivelse = lagOppgavebeskrivelse(iverksett)
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 iverksett.fagsak.eksternId,
                 iverksett.søker.personIdent,
                 iverksett.fagsak.stønadstype,
                 enhet,
-                Oppgavetype.VurderHenvendelse,
+                oppgaveType,
                 beskrivelse,
                 settBehandlesAvApplikasjon = false,
             )

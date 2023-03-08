@@ -19,11 +19,13 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.Månedsperiode
+import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.UUID
 
@@ -156,7 +158,11 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelse(iverksett)
+        )
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
         verify(exactly = 0) { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
@@ -182,7 +188,9 @@ internal class OppgaveServiceTest {
             ),
         )
         val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId!!
-        every { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) } returns lagIverksett(forrigeBehandlingIverksett)
+        every { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) } returns lagIverksett(
+            forrigeBehandlingIverksett
+        )
         assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
 
         verify(exactly = 1) { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) }
@@ -244,7 +252,11 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelse(iverksett)
+        )
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
     }
 
@@ -257,7 +269,11 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelse(iverksett)
+        )
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
     }
 
@@ -270,7 +286,11 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelse(iverksett)
+        )
         verify { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
 
@@ -294,7 +314,11 @@ internal class OppgaveServiceTest {
             andelsdatoer = listOf(YearMonth.now()),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelse(iverksett)
+        )
         verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
     }
 
@@ -309,7 +333,11 @@ internal class OppgaveServiceTest {
             andelsdatoer = listOf(YearMonth.now().minusMonths(2), YearMonth.now(), YearMonth.now().minusMonths(1)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelse(iverksett)
+        )
         verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
         assertThat(opphørsdato.captured).isEqualTo(YearMonth.now().atEndOfMonth())
     }
@@ -428,6 +456,70 @@ internal class OppgaveServiceTest {
             ),
         ),
     )
+
+    @Test
+    internal fun `skal ikke opprette fremleggsoppgave når en førstegangsbehandling er avslått`() {
+        val iverksett = lagIverksettData(
+            forrigeBehandlingId = UUID.randomUUID(),
+            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+            vedtaksresultat = Vedtaksresultat.AVSLÅTT,
+            vedtaksperioder = listOf(
+                vedtaksPeriode(
+                    tilOgMed = LocalDate.now().plusMonths(13),
+                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
+                ),
+            ),
+            vedtakstidspunkt = LocalDateTime.now(),
+        )
+        assertThat(oppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
+    }
+
+    @Test
+    internal fun `skal ikke opprette en fremleggsoppgave ved en revurdering`() {
+        val iverksett = lagIverksettData(
+            forrigeBehandlingId = UUID.randomUUID(),
+            behandlingType = BehandlingType.REVURDERING,
+            vedtaksresultat = Vedtaksresultat.INNVILGET,
+            vedtaksperioder = listOf(
+                vedtaksPeriode(
+                    tilOgMed = LocalDate.now().plusMonths(13),
+                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
+                ),
+            ),
+            vedtakstidspunkt = LocalDateTime.now(),
+        )
+        assertThat(oppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
+    }
+
+    @Test
+    internal fun `skal ikke opprette fremleggsoppgave hvis den seneste vedtaksperioden ender før det har gått ett år`() {
+        val iverksett = lagIverksettData(
+            forrigeBehandlingId = UUID.randomUUID(),
+            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+            vedtaksresultat = Vedtaksresultat.INNVILGET,
+            vedtaksperioder = listOf(
+                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(11), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
+                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(10), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
+            ),
+            vedtakstidspunkt = LocalDateTime.now(),
+        )
+        assertThat(oppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
+    }
+
+    @Test
+    internal fun `skal opprette fremleggsoppgave hvis den seneste vedtaksperioden er over ett år frem i tid`() {
+        val iverksett = lagIverksettData(
+            forrigeBehandlingId = UUID.randomUUID(),
+            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+            vedtaksresultat = Vedtaksresultat.INNVILGET,
+            vedtaksperioder = listOf(
+                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(13), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
+                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(9), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
+            ),
+            vedtakstidspunkt = LocalDateTime.now(),
+        )
+        assertThat(oppgaveService.skalOppretteFremleggsoppgave(iverksett)).isTrue()
+    }
 
     private fun lagIverksettOvergangsstønadSanksjon(sanksjonsmåned: YearMonth = YearMonth.now()): IverksettOvergangsstønad {
         val månedsperiode = Månedsperiode(fom = sanksjonsmåned, tom = sanksjonsmåned)
