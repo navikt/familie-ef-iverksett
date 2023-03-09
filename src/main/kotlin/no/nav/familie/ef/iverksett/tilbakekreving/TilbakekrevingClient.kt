@@ -52,7 +52,8 @@ class TilbakekrevingClient(
     private fun kanBehandlingOpprettesManueltUri(fagsakId: Long, ytelsestype: Ytelsestype) = UriComponentsBuilder.fromUri(
         familieTilbakeUri,
     )
-        .pathSegment("api/ytelsestype/$ytelsestype/fagsak/$fagsakId/kanBehandlingOpprettesManuelt/v1")
+        .pathSegment("api", "ytelsestype", ytelsestype.name, "fagsak", fagsakId.toString(), "kanBehandlingOpprettesManuelt", "v1")
+        .encode()
         .build()
         .toUri()
 
