@@ -31,7 +31,7 @@ internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
         every { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) } returns true
         every { oppgaveService.opprettOppgave(any(), Oppgavetype.VurderHenvendelse, any()) } returns 1
-        every { oppgaveService.lagOppgavebeskrivelse(any()) } returns "Beskrivelse"
+        every { oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(any()) } returns "Beskrivelse"
 
         taskStegService.doTask(opprettTask())
 

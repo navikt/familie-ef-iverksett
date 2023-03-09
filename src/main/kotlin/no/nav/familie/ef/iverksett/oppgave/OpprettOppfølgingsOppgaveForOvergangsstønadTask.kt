@@ -41,7 +41,7 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
             val oppgaveId = oppgaveService.opprettOppgave(
                 iverksett.data,
                 Oppgavetype.VurderHenvendelse,
-                oppgaveService.lagOppgavebeskrivelse(iverksett.data),
+                oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett.data),
             )
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
         }
