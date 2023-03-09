@@ -81,7 +81,7 @@ class OppgaveService(
         }
 
     private fun harAndelTilkjentYtelseMedBeløp(tilkjentYtelse: TilkjentYtelse?) : Boolean {
-        return tilkjentYtelse?.let { it.andelerTilkjentYtelse.any { it.beløp > 0 } } ?: false
+        return tilkjentYtelse?.andelerTilkjentYtelse?.any { it.beløp > 0 } ?: false
     }
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
