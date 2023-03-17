@@ -12,6 +12,10 @@ import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.junit.jupiter.api.Test
+import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Aktivitetstype as AktivitetstypeEkstern
+import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Periodetype as PeriodetypeEkstern
+import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Stønadstype as StønadstypeEkstern
+import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Vedtaksresultat as VedtaksresultatEkstern
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse as AdresseBeskyttelseEkstern
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType as AktivitetTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType as BehandlingTypeEkstern
@@ -19,10 +23,6 @@ import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak as BehandlingÅrsa
 import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType as VedtakPeriodeTypeEkstern
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEkstern
-import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Vedtaksresultat as VedtaksresultatEkstern
-import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Periodetype as PeriodetypeEkstern
-import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Aktivitetstype as AktivitetstypeEkstern
-import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Stønadstype as StønadstypeEkstern
 
 class FellesTilEksterneKontrakterEnumTest {
 

@@ -8,7 +8,6 @@ import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Periode
 import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Periodetype
 import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Stønadstype
 import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Vedtaksresultat
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.LocalDate
