@@ -22,7 +22,7 @@ class PatchArbeidsoppfølgingController(
 
     @PostMapping("/patch/{behandlingId}")
     fun publiserVedtakshendelser(@PathVariable behandlingId: UUID): ResponseEntity<Any> {
-        val iverksettData = iverksettingRepository.findByIdOrThrow(behandlingId).data
+        val iverksettData = iverksettingRepository.findByIdOrThrow(behandlingId).data //Kall fra ef-sak kommer fra task
         arbeidsoppfølgingService.sendTilKafka(iverksettData)
         return ResponseEntity.ok().build()
     }
