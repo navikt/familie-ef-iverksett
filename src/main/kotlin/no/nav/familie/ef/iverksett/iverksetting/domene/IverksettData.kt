@@ -185,6 +185,7 @@ data class VedtaksdetaljerOvergangsstønad(
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(),
     override val avslagÅrsak: AvslagÅrsak? = null,
+    val opprettFremleggsoppgave: Boolean,
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(
