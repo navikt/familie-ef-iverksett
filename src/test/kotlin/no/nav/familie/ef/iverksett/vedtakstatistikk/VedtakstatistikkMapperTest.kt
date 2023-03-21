@@ -355,6 +355,7 @@ internal class VedtakstatistikkMapperTest {
     fun vedtaksdetaljerOvergangsstønad(
         resultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
         avslagÅrsak: AvslagÅrsak? = null,
+        opprettFremleggsoppgave: Boolean = true
     ): VedtaksdetaljerOvergangsstønad {
         return VedtaksdetaljerOvergangsstønad(
             vedtaksresultat = resultat,
@@ -377,6 +378,7 @@ internal class VedtakstatistikkMapperTest {
                 ),
             ),
             brevmottakere = Brevmottakere(emptyList()),
+            opprettFremleggsoppgave = opprettFremleggsoppgave
         )
     }
 

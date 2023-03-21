@@ -128,6 +128,7 @@ fun opprettIverksettDto(
             beslutterId = "B23456",
             tilkjentYtelse = tilkjentYtelse,
             vedtaksperioder = emptyList(),
+            opprettFremleggsoppgave = true
         ),
     )
 }
@@ -237,6 +238,7 @@ fun vedtaksdetaljerOvergangsstønad(
     startdato: YearMonth = startmåned(andeler),
     vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad()),
     vedtaksTidspunkt: LocalDateTime = LocalDateTime.of(2021, 5, 12, 0, 0),
+    opprettFremleggsoppgave: Boolean = true
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerOvergangsstønad(
@@ -249,6 +251,7 @@ fun vedtaksdetaljerOvergangsstønad(
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
+        opprettFremleggsoppgave = opprettFremleggsoppgave
     )
 }
 

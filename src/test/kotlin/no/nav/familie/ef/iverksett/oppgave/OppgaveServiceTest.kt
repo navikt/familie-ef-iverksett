@@ -13,7 +13,6 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsst
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.lagIverksettData
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
-import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
@@ -26,7 +25,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.UUID
 
@@ -457,88 +455,6 @@ internal class OppgaveServiceTest {
             ),
         ),
     )
-
-    @Test
-    internal fun `skal ikke opprette fremleggsoppgave når en førstegangsbehandling er avslått`() {
-        val iverksett = lagIverksettData(
-            forrigeBehandlingId = UUID.randomUUID(),
-            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-            vedtaksresultat = Vedtaksresultat.AVSLÅTT,
-            vedtaksperioder = listOf(
-                vedtaksPeriode(
-                    tilOgMed = LocalDate.now().plusMonths(13),
-                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                ),
-            ),
-            vedtakstidspunkt = LocalDateTime.now(),
-        )
-        assertThat(oppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
-    }
-
-    @Test
-    internal fun `skal ikke opprette en fremleggsoppgave ved en revurdering`() {
-        val iverksett = lagIverksettData(
-            forrigeBehandlingId = UUID.randomUUID(),
-            behandlingType = BehandlingType.REVURDERING,
-            vedtaksresultat = Vedtaksresultat.INNVILGET,
-
-            vedtaksperioder = listOf(
-                vedtaksPeriode(
-                    tilOgMed = LocalDate.now().plusMonths(13),
-                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                ),
-            ),
-            vedtakstidspunkt = LocalDateTime.now(),
-        )
-        assertThat(oppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
-    }
-
-    @Test
-    internal fun `skal ikke opprette fremleggsoppgave hvis den seneste vedtaksperioden ender før det har gått ett år`() {
-        val iverksett = lagIverksettData(
-            forrigeBehandlingId = UUID.randomUUID(),
-            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-            vedtaksresultat = Vedtaksresultat.INNVILGET,
-            vedtaksperioder = listOf(
-                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(11), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
-                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(10), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
-            ),
-            vedtakstidspunkt = LocalDateTime.now(),
-        )
-        assertThat(oppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
-    }
-
-    @Test
-    internal fun `skal opprette fremleggsoppgave hvis den seneste vedtaksperioden er over ett år frem i tid`() {
-        val iverksett = lagIverksettData(
-            forrigeBehandlingId = UUID.randomUUID(),
-            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-            vedtaksresultat = Vedtaksresultat.INNVILGET,
-            vedtaksperioder = listOf(
-                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(13), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
-                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(9), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
-            ),
-            vedtakstidspunkt = LocalDateTime.now(),
-            andeler = listOf(lagAndelTilkjentYtelse(beløp=1, fraOgMed = YearMonth.now().plusMonths(1), tilOgMed = YearMonth.now().plusMonths(2)))
-        )
-        assertThat(oppgaveService.skalOppretteFremleggsoppgave(iverksett)).isTrue()
-    }
-
-    @Test
-    internal fun `skal ikke opprette fremleggsoppgave hvis ingen andeltilkjentytelser har beløp over 0`() {
-        val iverksett = lagIverksettData(
-            forrigeBehandlingId = UUID.randomUUID(),
-            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-            vedtaksresultat = Vedtaksresultat.INNVILGET,
-            vedtaksperioder = listOf(
-                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(13), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
-                vedtaksPeriode(tilOgMed = LocalDate.now().plusMonths(9), aktivitet = AktivitetType.FORSØRGER_I_ARBEID),
-            ),
-            vedtakstidspunkt = LocalDateTime.now(),
-            andeler = listOf(lagAndelTilkjentYtelse(beløp=0, fraOgMed = YearMonth.now().plusMonths(1), tilOgMed = YearMonth.now().plusMonths(2)))
-        )
-        assertThat(oppgaveService.skalOppretteFremleggsoppgave(iverksett)).isFalse()
-    }
 
     private fun lagIverksettOvergangsstønadSanksjon(sanksjonsmåned: YearMonth = YearMonth.now()): IverksettOvergangsstønad {
         val månedsperiode = Månedsperiode(fom = sanksjonsmåned, tom = sanksjonsmåned)
