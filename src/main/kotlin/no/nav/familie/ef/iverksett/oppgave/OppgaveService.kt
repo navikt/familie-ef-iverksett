@@ -3,7 +3,6 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
-import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget
@@ -48,13 +47,9 @@ class OppgaveService(
         }
     }
 
-    fun skalOppretteFremleggsoppgave(iverksett: IverksettOvergangsstønad): Boolean =
-        harAndelTilkjentYtelseMedBeløp(iverksett.vedtak.tilkjentYtelse) &&
-        iverksett.vedtak.vedtaksresultat == Vedtaksresultat.INNVILGET &&
-            iverksett.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING &&
-            iverksett.vedtak.vedtaksperioder.any {
-                it.periode.tomDato >= iverksett.vedtak.vedtakstidspunkt.toLocalDate().plusYears(1)
-            }
+    fun skalOppretteFremleggsoppgave(iverksettOvergangsstønad: IverksettOvergangsstønad): Boolean {
+        return iverksettOvergangsstønad.vedtak.opprettFremleggsoppgave
+    }
 
     fun opprettOppgave(iverksett: IverksettOvergangsstønad, oppgaveType: Oppgavetype, beskrivelse: String): Long {
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
@@ -79,10 +74,6 @@ class OppgaveService(
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
-
-    private fun harAndelTilkjentYtelseMedBeløp(tilkjentYtelse: TilkjentYtelse?) : Boolean {
-        return tilkjentYtelse?.andelerTilkjentYtelse?.any { it.beløp > 0 } ?: false
-    }
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
         return when (iverksett.vedtak.vedtaksresultat) {
