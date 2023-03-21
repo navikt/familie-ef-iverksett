@@ -50,7 +50,7 @@ class SimuleringControllerTest : ServerTest() {
     internal fun `Hent simulering skal gi 200 OK`() {
         val respons = restTemplate
             .exchange<Ressurs<DetaljertSimuleringResultat>>(
-                localhostUrl("/api/simulering/"),
+                localhostUrl("/api/simulering"),
                 HttpMethod.POST,
                 HttpEntity(simuleringDto(), headers),
             )
@@ -64,7 +64,7 @@ class SimuleringControllerTest : ServerTest() {
     internal fun `Hent simulering v2 skal gi 200 OK`() {
         val respons = restTemplate
             .exchange<Ressurs<BeriketSimuleringsresultat>>(
-                localhostUrl("/api/simulering/v2/"),
+                localhostUrl("/api/simulering/v2"),
                 HttpMethod.POST,
                 HttpEntity(simuleringDto(), headers),
             )
@@ -79,7 +79,7 @@ class SimuleringControllerTest : ServerTest() {
         val request = simuleringDto(andeler = emptyList(), forrigeBehandlingId = null)
         val respons = restTemplate
             .exchange<Ressurs<BeriketSimuleringsresultat>>(
-                localhostUrl("/api/simulering/v2/"),
+                localhostUrl("/api/simulering/v2"),
                 HttpMethod.POST,
                 HttpEntity(request, headers),
             )
@@ -95,7 +95,7 @@ class SimuleringControllerTest : ServerTest() {
         val request = simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 0)), forrigeBehandlingId = null)
         val respons = restTemplate
             .exchange<Ressurs<BeriketSimuleringsresultat>>(
-                localhostUrl("/api/simulering/v2/"),
+                localhostUrl("/api/simulering/v2"),
                 HttpMethod.POST,
                 HttpEntity(request, headers),
             )
@@ -115,7 +115,7 @@ class SimuleringControllerTest : ServerTest() {
             simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 1000)), forrigeBehandlingId = behandlingId)
 
         val response = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
-            localhostUrl("/api/simulering/v2/"),
+            localhostUrl("/api/simulering/v2"),
             HttpMethod.POST,
             HttpEntity(revurdering, headers),
         )
@@ -133,7 +133,7 @@ class SimuleringControllerTest : ServerTest() {
             simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 0)), forrigeBehandlingId = behandlingId)
 
         val respons = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
-            localhostUrl("/api/simulering/v2/"),
+            localhostUrl("/api/simulering/v2"),
             HttpMethod.POST,
             HttpEntity(revurdering, headers),
         )

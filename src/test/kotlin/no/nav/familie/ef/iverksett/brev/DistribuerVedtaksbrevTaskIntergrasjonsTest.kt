@@ -16,7 +16,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.util.Properties
 import java.util.UUID
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 
 class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 

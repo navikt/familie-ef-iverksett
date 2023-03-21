@@ -44,6 +44,7 @@ abstract class ServerTest {
 
     @AfterEach
     fun reset() {
+        headers.clear()
         resetDatabase()
         resetWiremockServers()
     }
