@@ -48,7 +48,7 @@ class OppgaveService(
     }
 
     fun skalOppretteFremleggsoppgave(iverksettOvergangsstønad: IverksettOvergangsstønad): Boolean {
-        return iverksettOvergangsstønad.vedtak.opprettFremleggsoppgave
+        return iverksettOvergangsstønad.vedtak.opprettFremleggsoppgave?.let { it.inntekt } ?: false
     }
 
     fun opprettOppgave(iverksett: IverksettOvergangsstønad, oppgaveType: Oppgavetype, beskrivelse: String): Long {
