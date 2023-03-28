@@ -51,6 +51,6 @@ class OpprettFremleggsOppgaveForOvergangsstønadTask(
 
     companion object {
 
-        const val TYPE = "opprettFremleggsOppgaveForOvergangsstønad"
+        const val TYPE = "opprettFremleggsoppgaveForOvergangsstønad"
     }
 }
