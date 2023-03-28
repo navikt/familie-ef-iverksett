@@ -49,6 +49,7 @@ import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.FremleggsoppgaveType
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.OpprettFremleggsoppgaveDto
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
@@ -130,7 +131,7 @@ fun opprettIverksettDto(
             beslutterId = "B23456",
             tilkjentYtelse = tilkjentYtelse,
             vedtaksperioder = emptyList(),
-            opprettFremleggsoppgave = OpprettFremleggsoppgaveDto(inntekt = true),
+            opprettFremleggsoppgave = OpprettFremleggsoppgaveDto(listOf(FremleggsoppgaveType.INNTEKT)),
         ),
     )
 }
@@ -253,7 +254,7 @@ fun vedtaksdetaljerOvergangsstønad(
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
-        opprettFremleggsoppgave = OpprettFremleggsoppgave(inntekt = inntekt),
+        opprettFremleggsoppgave = OpprettFremleggsoppgave(listOf(FremleggsoppgaveType.INNTEKT)),
     )
 }
 

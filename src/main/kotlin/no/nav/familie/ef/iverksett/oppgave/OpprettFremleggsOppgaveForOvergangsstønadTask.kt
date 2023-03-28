@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTas
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.kontrakter.ef.iverksett.FremleggsoppgaveType
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -36,7 +37,7 @@ class OpprettFremleggsOppgaveForOvergangsstønadTask(
             )
             return
         }
-        if (oppgaveService.skalOppretteFremleggsoppgave(iverksett.data)) {
+        if (oppgaveService.skalOppretteFremleggsoppgave(iverksett.data, FremleggsoppgaveType.INNTEKT)) {
             val oppgaveId = oppgaveService.opprettOppgave(iverksett.data, Oppgavetype.Fremlegg, "Inntekt")
             logger.info("Opprettet fremleggsoppgave for behandling=$behandlingId oppgave=$oppgaveId")
         } else {

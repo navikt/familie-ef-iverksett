@@ -13,6 +13,7 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.ef.iverksett.FremleggsoppgaveType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
@@ -43,12 +44,16 @@ class OppgaveService(
                     else -> false
                 }
             }
+
             else -> false
         }
     }
 
-    fun skalOppretteFremleggsoppgave(iverksettOvergangsstønad: IverksettOvergangsstønad): Boolean {
-        return iverksettOvergangsstønad.vedtak.opprettFremleggsoppgave?.let { it.inntekt } ?: false
+    fun skalOppretteFremleggsoppgave(
+        iverksettOvergangsstønad: IverksettOvergangsstønad,
+        fremleggsoppgaveType: FremleggsoppgaveType,
+    ): Boolean {
+        return iverksettOvergangsstønad.vedtak.opprettFremleggsoppgave.oppgaveTyper.contains(fremleggsoppgaveType)
     }
 
     fun opprettOppgave(iverksett: IverksettOvergangsstønad, oppgaveType: Oppgavetype, beskrivelse: String): Long {
@@ -156,7 +161,8 @@ class OppgaveService(
         )
 
     private fun IverksettOvergangsstønad.finnSanksjonsvedtakMåned(): YearMonth {
-        val yearMonth = this.vedtak.vedtaksperioder.findLast { it.periodeType == VedtaksperiodeType.SANKSJON }?.periode?.fom
+        val yearMonth =
+            this.vedtak.vedtaksperioder.findLast { it.periodeType == VedtaksperiodeType.SANKSJON }?.periode?.fom
         return yearMonth
             ?: error("Finner ikke periode for iversetting av sanksjon. Behandling: (${this.behandling.behandlingId})")
     }

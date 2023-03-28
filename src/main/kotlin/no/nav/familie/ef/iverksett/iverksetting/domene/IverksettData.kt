@@ -18,6 +18,7 @@ import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
+import no.nav.familie.kontrakter.ef.iverksett.FremleggsoppgaveType
 import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
@@ -174,7 +175,7 @@ sealed class Vedtaksdetaljer {
     abstract val avslagÅrsak: AvslagÅrsak?
 }
 
-data class OpprettFremleggsoppgave(val inntekt: Boolean?)
+data class OpprettFremleggsoppgave(val oppgaveTyper: List<FremleggsoppgaveType>)
 
 data class VedtaksdetaljerOvergangsstønad(
     override val vedtaksresultat: Vedtaksresultat,
@@ -187,7 +188,7 @@ data class VedtaksdetaljerOvergangsstønad(
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(),
     override val avslagÅrsak: AvslagÅrsak? = null,
-    val opprettFremleggsoppgave: OpprettFremleggsoppgave,
+    val opprettFremleggsoppgave: OpprettFremleggsoppgave = OpprettFremleggsoppgave(oppgaveTyper = emptyList()),
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(

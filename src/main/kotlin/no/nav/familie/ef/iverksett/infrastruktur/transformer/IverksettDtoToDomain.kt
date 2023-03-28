@@ -10,6 +10,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
+import no.nav.familie.ef.iverksett.iverksetting.domene.OpprettFremleggsoppgave
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.SkolepengerUtgift
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
@@ -136,7 +137,7 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
         tilbakekreving = this.tilbakekreving?.toDomain(),
         brevmottakere = this.brevmottakere.toDomain(),
         avslagÅrsak = this.avslagÅrsak,
-        opprettFremleggsoppgave = this.opprettFremleggsoppgave
+        opprettFremleggsoppgave = OpprettFremleggsoppgave(this.opprettFremleggsoppgave.oppgaveTyper),
     )
 }
 
@@ -213,18 +214,21 @@ fun IverksettDto.toDomain(): IverksettData {
             behandling = this.behandling.toDomain(),
             vedtak = this.vedtak.toDomain(),
         )
+
         is IverksettBarnetilsynDto -> IverksettBarnetilsyn(
             fagsak = this.fagsak.toDomain(),
             søker = this.søker.toDomain(),
             behandling = this.behandling.toDomain(),
             vedtak = this.vedtak.toDomain(),
         )
+
         is IverksettSkolepengerDto -> IverksettSkolepenger(
             fagsak = this.fagsak.toDomain(),
             søker = this.søker.toDomain(),
             behandling = this.behandling.toDomain(),
             vedtak = this.vedtak.toDomain(),
         )
+
         else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
     }
 }

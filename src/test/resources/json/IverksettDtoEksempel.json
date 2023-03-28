@@ -52,6 +52,7 @@
     }
   },
   "søker": {
+    "personIdent": "12345678901",
     "barn": [
       {
         "personIdent": "1234567910",
@@ -59,8 +60,7 @@
       }
     ],
     "tilhørendeEnhet": "4489",
-    "adressebeskyttelse": "STRENGT_FORTROLIG",
-    "personIdent": "12345678901"
+    "adressebeskyttelse": "STRENGT_FORTROLIG"
   },
   "vedtak": {
     "resultat": "AVSLÅTT",
@@ -114,6 +114,9 @@
       }
     },
     "brevmottakere": [],
-    "avslagÅrsak":null
+    "avslagÅrsak": null,
+    "opprettFremleggsoppgave": {
+      "oppgaveTyper": []
+    }
   }
 }
