@@ -53,7 +53,7 @@ class OppgaveService(
         iverksettOvergangsstønad: IverksettOvergangsstønad,
         fremleggsoppgaveType: FremleggsoppgaveType,
     ): Boolean {
-        return iverksettOvergangsstønad.vedtak.opprettFremleggsoppgave.oppgaveTyper.contains(fremleggsoppgaveType)
+        return iverksettOvergangsstønad.vedtak.opprettFremleggsoppgave.oppgavetyper.contains(fremleggsoppgaveType)
     }
 
     fun opprettOppgave(iverksett: IverksettOvergangsstønad, oppgaveType: Oppgavetype, beskrivelse: String): Long {

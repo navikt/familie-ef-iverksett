@@ -380,7 +380,7 @@ internal class VedtakstatistikkMapperTest {
                 ),
             ),
             brevmottakere = Brevmottakere(emptyList()),
-            opprettFremleggsoppgave = OpprettFremleggsoppgave(oppgaveTyper = fremleggsoppgaveTyper),
+            opprettFremleggsoppgave = OpprettFremleggsoppgave(oppgavetyper = fremleggsoppgaveTyper),
         )
     }
 

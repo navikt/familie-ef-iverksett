@@ -175,7 +175,7 @@ sealed class Vedtaksdetaljer {
     abstract val avslagÅrsak: AvslagÅrsak?
 }
 
-data class OpprettFremleggsoppgave(val oppgaveTyper: List<FremleggsoppgaveType>)
+data class OpprettFremleggsoppgave(val oppgavetyper: List<FremleggsoppgaveType>)
 
 data class VedtaksdetaljerOvergangsstønad(
     override val vedtaksresultat: Vedtaksresultat,
@@ -188,7 +188,7 @@ data class VedtaksdetaljerOvergangsstønad(
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(),
     override val avslagÅrsak: AvslagÅrsak? = null,
-    val opprettFremleggsoppgave: OpprettFremleggsoppgave = OpprettFremleggsoppgave(oppgaveTyper = emptyList()),
+    val opprettFremleggsoppgave: OpprettFremleggsoppgave = OpprettFremleggsoppgave(oppgavetyper = emptyList()),
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(
