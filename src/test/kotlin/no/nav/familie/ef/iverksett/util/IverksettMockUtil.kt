@@ -131,7 +131,7 @@ fun opprettIverksettDto(
             beslutterId = "B23456",
             tilkjentYtelse = tilkjentYtelse,
             vedtaksperioder = emptyList(),
-            opprettFremleggsoppgave = OpprettFremleggsoppgaveDto(listOf(FremleggsoppgaveType.INNTEKT)),
+            opprettFremleggsoppgave = OpprettFremleggsoppgaveDto(listOf(FremleggsoppgaveType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
         ),
     )
 }
@@ -254,7 +254,7 @@ fun vedtaksdetaljerOvergangsstønad(
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
-        opprettFremleggsoppgave = OpprettFremleggsoppgave(listOf(FremleggsoppgaveType.INNTEKT)),
+        opprettFremleggsoppgave = OpprettFremleggsoppgave(listOf(FremleggsoppgaveType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
     )
 }
 

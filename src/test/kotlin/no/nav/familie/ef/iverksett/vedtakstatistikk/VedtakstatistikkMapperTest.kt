@@ -357,7 +357,7 @@ internal class VedtakstatistikkMapperTest {
     fun vedtaksdetaljerOvergangsstønad(
         resultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
         avslagÅrsak: AvslagÅrsak? = null,
-        fremleggsoppgaveTyper: List<FremleggsoppgaveType> = listOf(FremleggsoppgaveType.INNTEKT),
+        fremleggsoppgaveTyper: List<FremleggsoppgaveType> = listOf(FremleggsoppgaveType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID),
     ): VedtaksdetaljerOvergangsstønad {
         return VedtaksdetaljerOvergangsstønad(
             vedtaksresultat = resultat,

@@ -37,7 +37,7 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
             )
             return
         }
-        if (oppgaveService.skalOppretteFremleggsoppgave(iverksett.data, FremleggsoppgaveType.INNTEKT)) {
+        if (oppgaveService.skalOppretteFremleggsoppgave(iverksett.data, FremleggsoppgaveType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)) {
             val oppgaveId = oppgaveService.opprettOppgave(iverksett.data, Oppgavetype.Fremlegg, "Inntekt")
             logger.info("Opprettet fremleggsoppgave for behandling=$behandlingId oppgave=$oppgaveId")
         } else {

@@ -137,7 +137,7 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
         tilbakekreving = this.tilbakekreving?.toDomain(),
         brevmottakere = this.brevmottakere.toDomain(),
         avslagÅrsak = this.avslagÅrsak,
-        opprettFremleggsoppgave = OpprettFremleggsoppgave(this.opprettFremleggsoppgave.oppgaveTyper),
+        opprettFremleggsoppgave = OpprettFremleggsoppgave(this.opprettFremleggsoppgave.oppgavetyper),
     )
 }
 
