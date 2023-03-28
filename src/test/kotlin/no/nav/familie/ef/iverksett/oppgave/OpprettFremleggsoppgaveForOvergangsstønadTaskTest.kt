@@ -14,12 +14,12 @@ import no.nav.familie.prosessering.internal.TaskService
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-class OpprettFremleggsOppgaveForOvergangsstønadTaskTest {
+class OpprettFremleggsoppgaveForOvergangsstønadTaskTest {
     private val oppgaveService = mockk<OppgaveService>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val taskService = mockk<TaskService>()
 
-    private val taskStegService = OpprettFremleggsOppgaveForOvergangsstønadTask(
+    private val taskStegService = OpprettFremleggsoppgaveForOvergangsstønadTask(
         oppgaveService,
         iverksettingRepository,
         taskService,

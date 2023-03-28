@@ -16,10 +16,10 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = OpprettFremleggsOppgaveForOvergangsstønadTask.TYPE,
+    taskStepType = OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE,
     beskrivelse = "Oppretter fremleggsoppgave om kontroll av inntekt",
 )
-class OpprettFremleggsOppgaveForOvergangsstønadTask(
+class OpprettFremleggsoppgaveForOvergangsstønadTask(
     private val oppgaveService: OppgaveService,
     private val iverksettingRepository: IverksettingRepository,
     private val taskService: TaskService,

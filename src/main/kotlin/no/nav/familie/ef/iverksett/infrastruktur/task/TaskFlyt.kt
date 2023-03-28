@@ -6,7 +6,7 @@ import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
-import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsOppgaveForOvergangsstønadTask
+import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.vedtak.PubliserVedtakTilKafkaTask
@@ -36,7 +36,7 @@ fun publiseringsflyt() = listOf(
     TaskType(PubliserVedtakTilKafkaTask.TYPE),
     TaskType(SendVedtakTilArbeidsoppfølgingTask.TYPE),
     TaskType(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE),
-    TaskType(OpprettFremleggsOppgaveForOvergangsstønadTask.TYPE),
+    TaskType(OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE),
     TaskType(VedtakstatistikkTask.TYPE),
 )
 
