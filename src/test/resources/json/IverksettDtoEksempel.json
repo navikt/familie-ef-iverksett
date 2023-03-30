@@ -115,8 +115,8 @@
     },
     "brevmottakere": [],
     "avslagÅrsak": null,
-    "opprettFremleggsoppgave": {
-      "oppgaveTyper": []
+    "oppgaverForOpprettelse": {
+      "oppgavetyper": []
     }
   }
 }

@@ -15,7 +15,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
-import no.nav.familie.ef.iverksett.iverksetting.domene.OpprettFremleggsoppgave
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppgaverForOpprettelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
@@ -49,9 +49,9 @@ import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
-import no.nav.familie.kontrakter.ef.iverksett.FremleggsoppgaveType
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
-import no.nav.familie.kontrakter.ef.iverksett.OpprettFremleggsoppgaveDto
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
+import no.nav.familie.kontrakter.ef.iverksett.OppgaverForOpprettelseDto
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
@@ -131,7 +131,7 @@ fun opprettIverksettDto(
             beslutterId = "B23456",
             tilkjentYtelse = tilkjentYtelse,
             vedtaksperioder = emptyList(),
-            opprettFremleggsoppgave = OpprettFremleggsoppgaveDto(listOf(FremleggsoppgaveType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
+            oppgaverForOpprettelse = OppgaverForOpprettelseDto(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
         ),
     )
 }
@@ -254,7 +254,7 @@ fun vedtaksdetaljerOvergangsstønad(
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
-        opprettFremleggsoppgave = OpprettFremleggsoppgave(listOf(FremleggsoppgaveType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
+        oppgaverForOpprettelse = OppgaverForOpprettelse(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
     )
 }
 

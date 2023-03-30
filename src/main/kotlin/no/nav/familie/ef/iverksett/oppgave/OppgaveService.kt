@@ -13,7 +13,7 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
-import no.nav.familie.kontrakter.ef.iverksett.FremleggsoppgaveType
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.springframework.stereotype.Service
@@ -49,11 +49,11 @@ class OppgaveService(
         }
     }
 
-    fun skalOppretteFremleggsoppgave(
+    fun skalOppretteOppgave(
         iverksettOvergangsstønad: IverksettOvergangsstønad,
-        fremleggsoppgaveType: FremleggsoppgaveType,
+        oppgaveForOpprettelseType: OppgaveForOpprettelseType,
     ): Boolean {
-        return iverksettOvergangsstønad.vedtak.opprettFremleggsoppgave.oppgavetyper.contains(fremleggsoppgaveType)
+        return iverksettOvergangsstønad.vedtak.oppgaverForOpprettelse.oppgavetyper.contains(oppgaveForOpprettelseType)
     }
 
     fun opprettOppgave(iverksett: IverksettOvergangsstønad, oppgaveType: Oppgavetype, beskrivelse: String): Long {

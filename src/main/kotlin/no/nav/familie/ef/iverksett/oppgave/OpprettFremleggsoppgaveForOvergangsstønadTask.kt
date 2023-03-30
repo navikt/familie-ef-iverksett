@@ -4,7 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTas
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
-import no.nav.familie.kontrakter.ef.iverksett.FremleggsoppgaveType
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -37,11 +37,11 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
             )
             return
         }
-        if (oppgaveService.skalOppretteFremleggsoppgave(iverksett.data, FremleggsoppgaveType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)) {
+        if (oppgaveService.skalOppretteOppgave(iverksett.data, OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)) {
             val oppgaveId = oppgaveService.opprettOppgave(iverksett.data, Oppgavetype.Fremlegg, "Inntekt")
-            logger.info("Opprettet fremleggsoppgave for behandling=$behandlingId oppgave=$oppgaveId")
+            logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
         } else {
-            logger.info("Fremleggsoppgave opprettes ikke for behandling=$behandlingId")
+            logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
         }
     }
 

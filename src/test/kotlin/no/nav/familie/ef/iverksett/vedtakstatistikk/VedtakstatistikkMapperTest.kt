@@ -10,7 +10,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Fagsakdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
-import no.nav.familie.ef.iverksett.iverksetting.domene.OpprettFremleggsoppgave
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppgaverForOpprettelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.SkolepengerUtgift
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
@@ -41,7 +41,7 @@ import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
-import no.nav.familie.kontrakter.ef.iverksett.FremleggsoppgaveType
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.ef.iverksett.SkolepengerStudietype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
@@ -357,7 +357,7 @@ internal class VedtakstatistikkMapperTest {
     fun vedtaksdetaljerOvergangsstønad(
         resultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
         avslagÅrsak: AvslagÅrsak? = null,
-        fremleggsoppgaveTyper: List<FremleggsoppgaveType> = listOf(FremleggsoppgaveType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID),
+        fremleggsoppgaveTyper: List<OppgaveForOpprettelseType> = listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID),
     ): VedtaksdetaljerOvergangsstønad {
         return VedtaksdetaljerOvergangsstønad(
             vedtaksresultat = resultat,
@@ -380,7 +380,7 @@ internal class VedtakstatistikkMapperTest {
                 ),
             ),
             brevmottakere = Brevmottakere(emptyList()),
-            opprettFremleggsoppgave = OpprettFremleggsoppgave(oppgavetyper = fremleggsoppgaveTyper),
+            oppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = fremleggsoppgaveTyper),
         )
     }
 

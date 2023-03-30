@@ -10,7 +10,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
-import no.nav.familie.ef.iverksett.iverksetting.domene.OpprettFremleggsoppgave
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppgaverForOpprettelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.SkolepengerUtgift
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
@@ -137,7 +137,7 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
         tilbakekreving = this.tilbakekreving?.toDomain(),
         brevmottakere = this.brevmottakere.toDomain(),
         avslagÅrsak = this.avslagÅrsak,
-        opprettFremleggsoppgave = OpprettFremleggsoppgave(this.opprettFremleggsoppgave.oppgavetyper),
+        oppgaverForOpprettelse = OppgaverForOpprettelse(this.oppgaverForOpprettelse.oppgavetyper),
     )
 }
 

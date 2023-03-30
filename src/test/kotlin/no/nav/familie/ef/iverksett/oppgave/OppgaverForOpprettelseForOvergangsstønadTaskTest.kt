@@ -14,7 +14,7 @@ import no.nav.familie.prosessering.internal.TaskService
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-class OpprettFremleggsoppgaveForOvergangsstønadTaskTest {
+class OppgaverForOpprettelseForOvergangsstønadTaskTest {
     private val oppgaveService = mockk<OppgaveService>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val taskService = mockk<TaskService>()
@@ -29,23 +29,23 @@ class OpprettFremleggsoppgaveForOvergangsstønadTaskTest {
     internal fun `skal opprette fremleggsoppgave for overgangsstønad`() {
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
         every { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) } returns 1
-        every { oppgaveService.skalOppretteFremleggsoppgave(any(), any()) } returns true
+        every { oppgaveService.skalOppretteOppgave(any(), any()) } returns true
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 1) { oppgaveService.skalOppretteFremleggsoppgave(any(), any()) }
+        verify(exactly = 1) { oppgaveService.skalOppretteOppgave(any(), any()) }
         verify(exactly = 1) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }
     }
 
     @Test
     internal fun `skal ikke opprette fremleggsoppgave for overgangsstønad`() {
-        every { oppgaveService.skalOppretteFremleggsoppgave(any(), any()) } returns false
+        every { oppgaveService.skalOppretteOppgave(any(), any()) } returns false
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
         every { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) } returns 1
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 1) { oppgaveService.skalOppretteFremleggsoppgave(any(), any()) }
+        verify(exactly = 1) { oppgaveService.skalOppretteOppgave(any(), any()) }
         verify(exactly = 0) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }
     }
 
@@ -55,7 +55,7 @@ class OpprettFremleggsoppgaveForOvergangsstønadTaskTest {
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 0) { oppgaveService.skalOppretteFremleggsoppgave(any(), any()) }
+        verify(exactly = 0) { oppgaveService.skalOppretteOppgave(any(), any()) }
         verify(exactly = 0) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }
     }
 
