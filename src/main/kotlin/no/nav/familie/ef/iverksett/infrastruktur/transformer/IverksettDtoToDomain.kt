@@ -85,6 +85,7 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
         aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato,
         kravMottatt = this.kravMottatt,
         årsakRevurdering = this.årsakRevurdering?.let { ÅrsakRevurdering(it.opplysningskilde, it.årsak) },
+        kategori = this.kategori
     )
 }
 
