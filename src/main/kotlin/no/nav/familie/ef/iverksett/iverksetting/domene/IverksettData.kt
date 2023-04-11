@@ -18,10 +18,12 @@ import no.nav.familie.kontrakter.ef.felles.VilkårType
 import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
+import no.nav.familie.kontrakter.ef.iverksett.BehandlingKategori
 import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettSkolepengerDto
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.ef.iverksett.SkolepengerStudietype
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
@@ -174,6 +176,8 @@ sealed class Vedtaksdetaljer {
     abstract val avslagÅrsak: AvslagÅrsak?
 }
 
+data class OppgaverForOpprettelse(val oppgavetyper: List<OppgaveForOpprettelseType>)
+
 data class VedtaksdetaljerOvergangsstønad(
     override val vedtaksresultat: Vedtaksresultat,
     override val vedtakstidspunkt: LocalDateTime,
@@ -185,6 +189,7 @@ data class VedtaksdetaljerOvergangsstønad(
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(),
     override val avslagÅrsak: AvslagÅrsak? = null,
+    val oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = emptyList()),
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(
@@ -227,6 +232,7 @@ data class Behandlingsdetaljer(
     val aktivitetspliktInntrefferDato: LocalDate? = null,
     val kravMottatt: LocalDate? = null,
     val årsakRevurdering: ÅrsakRevurdering? = null,
+    val kategori: BehandlingKategori? = null,
 )
 
 data class ÅrsakRevurdering(

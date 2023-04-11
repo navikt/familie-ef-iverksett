@@ -49,7 +49,8 @@
     "årsakRevurdering": {
       "opplysningskilde": "MELDING_MODIA",
       "årsak": "ENDRING_INNTEKT"
-    }
+    },
+    "kategori": "NASJONAL"
   },
   "søker": {
     "barn": [
@@ -114,6 +115,9 @@
       }
     },
     "brevmottakere": [],
-    "avslagÅrsak":null
+    "avslagÅrsak":null,
+    "oppgaverForOpprettelse": {
+      "oppgavetyper": ["INNTEKTSKONTROLL_1_ÅR_FREM_I_TID"]
+    }
   }
 }
