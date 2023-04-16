@@ -22,7 +22,7 @@
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20230214102837_4b63c2e-SPRING_BOOT_3</prosessering.version>
+        <prosessering.version>2.20230322091650_fb0187e-SPRING_BOOT_3</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
         <mockk.version>1.13.4</mockk.version>
         <cucumber.version>7.11.1</cucumber.version>
