@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.brev
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
+import jakarta.annotation.PostConstruct
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottaker
@@ -31,7 +32,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.util.Properties
 import java.util.UUID
-import jakarta.annotation.PostConstruct
 
 class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
 
