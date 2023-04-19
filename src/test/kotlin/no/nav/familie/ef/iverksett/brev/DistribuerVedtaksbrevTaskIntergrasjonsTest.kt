@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.brev
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
+import jakarta.annotation.PostConstruct
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.config.JournalpostClientMock
@@ -16,7 +17,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.util.Properties
 import java.util.UUID
-import jakarta.annotation.PostConstruct
 
 class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 

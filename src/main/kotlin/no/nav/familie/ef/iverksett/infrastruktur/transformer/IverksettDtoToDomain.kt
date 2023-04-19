@@ -87,7 +87,7 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
         aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato,
         kravMottatt = this.kravMottatt,
         årsakRevurdering = this.årsakRevurdering?.let { ÅrsakRevurdering(it.opplysningskilde, it.årsak) },
-        kategori = this.kategori
+        kategori = this.kategori,
     )
 }
 
@@ -140,7 +140,7 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
         brevmottakere = this.brevmottakere.toDomain(),
         avslagÅrsak = this.avslagÅrsak,
         oppgaverForOpprettelse = this.oppgaverForOpprettelse.toDomain(),
-        )
+    )
 }
 
 fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn {

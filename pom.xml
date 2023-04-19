@@ -15,24 +15,24 @@
 
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>1.8.10</kotlin.version>
-        <springdoc.version>2.0.2</springdoc.version>
+        <kotlin.version>1.8.20</kotlin.version>
+        <springdoc.version>2.1.0</springdoc.version>
         <felles.version>2.20230210162649_a258d57-SPRING_BOOT_3</felles.version>
         <familie.kontrakter.version>3.0_20230404163639_edb8619-JAKARTA</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20230214102837_4b63c2e-SPRING_BOOT_3</prosessering.version>
+        <prosessering.version>2.20230322091650_fb0187e-SPRING_BOOT_3</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
-        <mockk.version>1.13.4</mockk.version>
+        <mockk-jvm.version>1.13.5</mockk-jvm.version>
         <cucumber.version>7.11.1</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>3.0.4</token-validation-spring.version>
+        <token-validation-spring.version>3.0.10</token-validation-spring.version>
         <ibm-mq-client.version>9.3.2.0</ibm-mq-client.version>
-        <unleash.version>7.1.0</unleash.version>
+        <unleash.version>8.0.0</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
     </properties>
 
@@ -233,13 +233,13 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.17.6</version>
+            <version>1.18.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.doyaaaaaken</groupId>
             <artifactId>kotlin-csv-jvm</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -263,7 +263,7 @@
         <dependency>
             <groupId>io.mockk</groupId>
             <artifactId>mockk-jvm</artifactId>
-            <version>${mockk.version}</version>
+            <version>${mockk-jvm.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -293,7 +293,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.8</version>
+                    <version>0.8.9</version>
                     <executions>
                         <execution>
                             <goals>
