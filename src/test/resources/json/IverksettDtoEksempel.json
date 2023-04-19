@@ -49,10 +49,10 @@
     "årsakRevurdering": {
       "opplysningskilde": "MELDING_MODIA",
       "årsak": "ENDRING_INNTEKT"
-    }
+    },
+    "kategori": "NASJONAL"
   },
   "søker": {
-    "personIdent": "12345678901",
     "barn": [
       {
         "personIdent": "1234567910",
@@ -60,7 +60,8 @@
       }
     ],
     "tilhørendeEnhet": "4489",
-    "adressebeskyttelse": "STRENGT_FORTROLIG"
+    "adressebeskyttelse": "STRENGT_FORTROLIG",
+    "personIdent": "12345678901"
   },
   "vedtak": {
     "resultat": "AVSLÅTT",
@@ -114,9 +115,9 @@
       }
     },
     "brevmottakere": [],
-    "avslagÅrsak": null,
+    "avslagÅrsak":null,
     "oppgaverForOpprettelse": {
-      "oppgavetyper": []
+      "oppgavetyper": ["INNTEKTSKONTROLL_1_ÅR_FREM_I_TID"]
     }
   }
 }

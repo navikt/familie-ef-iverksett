@@ -3,7 +3,9 @@ package no.nav.familie.ef.iverksett.tilbakekreving
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
+import no.nav.familie.kontrakter.ef.iverksett.BehandlingKategori
 import no.nav.familie.kontrakter.felles.Fagsystem
+import no.nav.familie.kontrakter.felles.Regelverk
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
@@ -44,6 +46,7 @@ fun IverksettData.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
         revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
         verge = null, // Verge er per nå ikke støttet i familie-ef-sak.
         faktainfo = lagFaktainfo(this),
+        regelverk = tilRegelverk(this.behandling.kategori),
     )
 
 fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
@@ -100,4 +103,10 @@ private fun BehandlingÅrsak.visningsTekst(): String {
         BehandlingÅrsak.SANKSJON_1_MND,
         -> error("Skal ikke gi tilbakekreving for årsak=$this")
     }
+}
+
+private fun tilRegelverk(kategori: BehandlingKategori?) = when (kategori) {
+    BehandlingKategori.EØS -> Regelverk.EØS
+    BehandlingKategori.NASJONAL -> Regelverk.NASJONAL
+    null -> Regelverk.NASJONAL
 }

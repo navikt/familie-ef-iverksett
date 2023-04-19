@@ -32,6 +32,7 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettSkolepengerDto
+import no.nav.familie.kontrakter.ef.iverksett.OppgaverForOpprettelseDto
 import no.nav.familie.kontrakter.ef.iverksett.PeriodeMedBeløpDto
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilbakekrevingDto
@@ -86,6 +87,7 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
         aktivitetspliktInntrefferDato = this.aktivitetspliktInntrefferDato,
         kravMottatt = this.kravMottatt,
         årsakRevurdering = this.årsakRevurdering?.let { ÅrsakRevurdering(it.opplysningskilde, it.årsak) },
+        kategori = this.kategori,
     )
 }
 
@@ -137,7 +139,7 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
         tilbakekreving = this.tilbakekreving?.toDomain(),
         brevmottakere = this.brevmottakere.toDomain(),
         avslagÅrsak = this.avslagÅrsak,
-        oppgaverForOpprettelse = OppgaverForOpprettelse(this.oppgaverForOpprettelse.oppgavetyper),
+        oppgaverForOpprettelse = this.oppgaverForOpprettelse.toDomain(),
     )
 }
 
@@ -232,3 +234,5 @@ fun IverksettDto.toDomain(): IverksettData {
         else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
     }
 }
+
+fun OppgaverForOpprettelseDto.toDomain(): OppgaverForOpprettelse = OppgaverForOpprettelse(this.oppgavetyper)

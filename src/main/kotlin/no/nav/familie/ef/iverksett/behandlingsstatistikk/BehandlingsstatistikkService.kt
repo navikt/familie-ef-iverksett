@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
+import no.nav.familie.kontrakter.ef.iverksett.BehandlingKategori
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
 import org.springframework.stereotype.Service
@@ -73,7 +74,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
                 null
             },
             totrinnsbehandling = true,
-            sakUtland = "Nasjonal",
+            sakUtland = mapTilStreng(behandlingstatistikk.kategori),
             relatertBehandlingId = behandlingstatistikk.relatertEksternBehandlingId,
             kravMottatt = behandlingstatistikk.kravMottatt,
             revurderingÅrsak = behandlingstatistikk.årsakRevurdering?.årsak?.name,
@@ -81,6 +82,8 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             avslagAarsak = behandlingstatistikk.avslagÅrsak?.name,
         )
     }
+
+    fun String?.isNotNullOrEmpty() = this != null && this.isNotEmpty()
 
     private fun maskerVerdiHvisStrengtFortrolig(
         erStrengtFortrolig: Boolean,
@@ -92,5 +95,9 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
         return verdi
     }
 
-    fun String?.isNotNullOrEmpty() = this != null && this.isNotEmpty()
+    private fun mapTilStreng(kategori: BehandlingKategori?) = when (kategori) {
+        BehandlingKategori.EØS -> "Utland"
+        BehandlingKategori.NASJONAL -> "Nasjonal"
+        null -> "Nasjonal"
+    }
 }
