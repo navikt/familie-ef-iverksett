@@ -49,7 +49,7 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
             ),
         )
         every { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) } returns 1
-        // iverksett.data.vedtak.oppgaverForOpprettelse.oppgavetyper.contains
+
         taskStegService.doTask(opprettTask())
 
         verify(exactly = 0) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }

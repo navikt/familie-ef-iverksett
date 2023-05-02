@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.YearMonth
+import java.util.UUID
 
 @Service
 class OppgaveService(
@@ -65,7 +66,7 @@ class OppgaveService(
                 oppgavetype = oppgaveType,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
-                mappeId = finnAktuellMappeForFremleggsoppgave("4489", Oppgavetype.Fremlegg),
+                mappeId = finnAktuellMappeForFremleggsoppgave("4489", Oppgavetype.Fremlegg, iverksett.behandling.behandlingId),
             )
 
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
@@ -79,14 +80,14 @@ class OppgaveService(
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
 
-    private fun finnAktuellMappeForFremleggsoppgave(enhetsnummer: String?, oppgavetype: Oppgavetype): Long? {
+    private fun finnAktuellMappeForFremleggsoppgave(enhetsnummer: String?, oppgavetype: Oppgavetype, behandlingId: UUID): Long? {
         if (enhetsnummer == "4489" && oppgavetype == Oppgavetype.Fremlegg) {
             val mapper = finnMapper(enhetsnummer)
             val mappeIdForFremleggsoppgave = mapper.find { it.navn.contains("41 - Revurdering") }?.id?.toLong()
             mappeIdForFremleggsoppgave?.let {
                 logger.info("Legger oppgave i Revurdering vedtak-mappe")
             } ?: run {
-                logger.error("Fant ikke mappe for fremleggsoppgave: 41 - Revurdering for enhetsnummer=$enhetsnummer")
+                logger.error("Fant ikke mappe for fremleggsoppgave: 41 - Revurdering for enhetsnummer=$enhetsnummer og med behandlingId=$behandlingId")
             }
             return mappeIdForFremleggsoppgave
         }
