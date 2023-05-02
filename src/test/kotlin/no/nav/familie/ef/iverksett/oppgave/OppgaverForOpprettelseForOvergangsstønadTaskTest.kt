@@ -4,10 +4,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppgaverForOpprettelse
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.util.vedtaksdetaljerOvergangsstønad
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
@@ -29,23 +31,27 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
     internal fun `skal opprette fremleggsoppgave for overgangsstønad`() {
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
         every { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) } returns 1
-        every { oppgaveService.skalOppretteOppgave(any(), any()) } returns true
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 1) { oppgaveService.skalOppretteOppgave(any(), any()) }
         verify(exactly = 1) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }
     }
 
     @Test
     internal fun `skal ikke opprette fremleggsoppgave for overgangsstønad`() {
-        every { oppgaveService.skalOppretteOppgave(any(), any()) } returns false
-        every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
+        every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(
+            opprettIverksettOvergangsstønad(
+                vedtaksdetaljer = vedtaksdetaljerOvergangsstønad(
+                    oppgaverForOpprettelse = OppgaverForOpprettelse(
+                        emptyList(),
+                    ),
+                ),
+            ),
+        )
         every { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) } returns 1
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 1) { oppgaveService.skalOppretteOppgave(any(), any()) }
         verify(exactly = 0) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }
     }
 
@@ -55,7 +61,6 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 0) { oppgaveService.skalOppretteOppgave(any(), any()) }
         verify(exactly = 0) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }
     }
 

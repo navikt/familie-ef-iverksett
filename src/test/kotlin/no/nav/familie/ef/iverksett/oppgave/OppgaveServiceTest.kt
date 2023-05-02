@@ -19,6 +19,7 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.Månedsperiode
+import no.nav.familie.kontrakter.felles.oppgave.FinnMappeResponseDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -41,7 +42,8 @@ internal class OppgaveServiceTest {
         mockkObject(OppgaveBeskrivelse)
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns mockk()
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns mockk()
+        every { oppgaveClient.finnMapper(any(), any()) } returns FinnMappeResponseDto(0, emptyList())
     }
 
     @AfterEach

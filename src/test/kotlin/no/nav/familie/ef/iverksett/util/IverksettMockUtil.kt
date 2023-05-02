@@ -242,6 +242,7 @@ fun vedtaksdetaljerOvergangsstønad(
     vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad()),
     vedtaksTidspunkt: LocalDateTime = LocalDateTime.of(2021, 5, 12, 0, 0),
     inntekt: Boolean = true,
+    oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerOvergangsstønad(
@@ -254,7 +255,7 @@ fun vedtaksdetaljerOvergangsstønad(
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
-        oppgaverForOpprettelse = OppgaverForOpprettelse(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
+        oppgaverForOpprettelse = oppgaverForOpprettelse,
     )
 }
 
