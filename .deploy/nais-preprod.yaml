@@ -54,6 +54,11 @@ spec:
       rules:
         - application: familie-tilbake
       external:
+        - host: b27apvl219.preprod.local
+          ports:
+            - name: mq
+              port: 1413
+              protocol: TCP
         - host: familie-oppdrag.dev-fss-pub.nais.io
         - host: familie-ef-infotrygd-feed.dev-fss-pub.nais.io
   gcp:

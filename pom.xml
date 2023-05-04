@@ -15,7 +15,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>1.8.20</kotlin.version>
+        <kotlin.version>1.8.21</kotlin.version>
         <springdoc.version>2.1.0</springdoc.version>
         <felles.version>2.20230210162649_a258d57-SPRING_BOOT_3</felles.version>
         <familie.kontrakter.version>3.0_20230404163639_edb8619-JAKARTA</familie.kontrakter.version>
@@ -25,13 +25,13 @@
         <prosessering.version>2.20230322091650_fb0187e-SPRING_BOOT_3</prosessering.version>
         <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
         <mockk-jvm.version>1.13.5</mockk-jvm.version>
-        <cucumber.version>7.11.1</cucumber.version>
+        <cucumber.version>7.12.0</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <token-validation-spring.version>3.0.10</token-validation-spring.version>
-        <ibm-mq-client.version>9.3.2.0</ibm-mq-client.version>
+        <ibm-mq-client.version>9.3.2.1</ibm-mq-client.version>
         <unleash.version>8.0.0</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
     </properties>
@@ -293,7 +293,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.9</version>
+                    <version>0.8.10</version>
                     <executions>
                         <execution>
                             <goals>
