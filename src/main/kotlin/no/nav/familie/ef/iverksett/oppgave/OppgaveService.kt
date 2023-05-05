@@ -57,12 +57,6 @@ class OppgaveService(
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
             ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
 
-        val mappeId = if (oppgaveType == Oppgavetype.Fremlegg) {
-            finnAktuellMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, Oppgavetype.Fremlegg, iverksett.behandling.behandlingId)
-        } else {
-            null
-        }
-
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 eksternFagsakId = iverksett.fagsak.eksternId,
@@ -72,7 +66,7 @@ class OppgaveService(
                 oppgavetype = oppgaveType,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
-                mappeId = mappeId,
+                mappeId = finnMappeHvisFremleggsoppgave(iverksett.søker.tilhørendeEnhet, oppgaveType, iverksett.behandling.behandlingId),
             )
 
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
@@ -86,7 +80,7 @@ class OppgaveService(
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
 
-    private fun finnAktuellMappeForFremleggsoppgave(enhetsnummer: String?, oppgavetype: Oppgavetype, behandlingId: UUID): Long? {
+    private fun finnMappeHvisFremleggsoppgave(enhetsnummer: String?, oppgavetype: Oppgavetype, behandlingId: UUID): Long? {
         if (enhetsnummer == "4489" && oppgavetype == Oppgavetype.Fremlegg) {
             val mapper = finnMapper(enhetsnummer)
             val mappeIdForFremleggsoppgave = mapper.find { it.navn.contains("41 - Revurdering") }?.id?.toLong()
