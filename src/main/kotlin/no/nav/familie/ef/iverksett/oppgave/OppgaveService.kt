@@ -14,10 +14,13 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.oppgave.MappeDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.YearMonth
+import java.util.UUID
 
 @Service
 class OppgaveService(
@@ -25,6 +28,8 @@ class OppgaveService(
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
     private val iverksettingRepository: IverksettingRepository,
 ) {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     fun skalOppretteVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Boolean {
         if (iverksett.skalIkkeSendeBrev()) {
@@ -43,34 +48,65 @@ class OppgaveService(
                     else -> false
                 }
             }
+
             else -> false
         }
     }
 
-    fun opprettVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Long {
+    fun opprettOppgave(iverksett: IverksettOvergangsstønad, oppgaveType: Oppgavetype, beskrivelse: String): Long {
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
             ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
-        val beskrivelse = lagOppgavebeskrivelse(iverksett)
+
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
-                iverksett.fagsak.eksternId,
-                iverksett.søker.personIdent,
-                iverksett.fagsak.stønadstype,
-                enhet,
-                Oppgavetype.VurderHenvendelse,
-                beskrivelse,
+                eksternFagsakId = iverksett.fagsak.eksternId,
+                personIdent = iverksett.søker.personIdent,
+                stønadstype = iverksett.fagsak.stønadstype,
+                enhetsnummer = enhet,
+                oppgavetype = oppgaveType,
+                beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
+                mappeId = finnAktuellMappeForFremleggsoppgave("4489", Oppgavetype.Fremlegg, iverksett.behandling.behandlingId),
             )
+
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
             ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
-    fun lagOppgavebeskrivelse(iverksett: IverksettOvergangsstønad) =
+    fun lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad) =
         when (iverksett.behandling.behandlingType) {
             BehandlingType.FØRSTEGANGSBEHANDLING -> finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
+
+    private fun finnAktuellMappeForFremleggsoppgave(enhetsnummer: String?, oppgavetype: Oppgavetype, behandlingId: UUID): Long? {
+        if (enhetsnummer == "4489" && oppgavetype == Oppgavetype.Fremlegg) {
+            val mapper = finnMapper(enhetsnummer)
+            val mappeIdForFremleggsoppgave = mapper.find { it.navn.contains("41 - Revurdering") }?.id?.toLong()
+            mappeIdForFremleggsoppgave?.let {
+                logger.info("Legger oppgave i Revurdering vedtak-mappe")
+            } ?: run {
+                logger.error("Fant ikke mappe for fremleggsoppgave: 41 - Revurdering for enhetsnummer=$enhetsnummer og med behandlingId=$behandlingId")
+            }
+            return mappeIdForFremleggsoppgave
+        }
+        return null
+    }
+
+    private fun finnMapper(enhet: String): List<MappeDto> {
+        val mappeRespons = oppgaveClient.finnMapper(
+            enhetsnummer = enhet,
+            limit = 1000,
+        )
+        if (mappeRespons.antallTreffTotalt > mappeRespons.mapper.size) {
+            logger.error(
+                "Det finnes flere mapper (${mappeRespons.antallTreffTotalt}) " +
+                    "enn vi har hentet ut (${mappeRespons.mapper.size}). Sjekk limit. ",
+            )
+        }
+        return mappeRespons.mapper
+    }
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
         return when (iverksett.vedtak.vedtaksresultat) {
@@ -153,7 +189,8 @@ class OppgaveService(
         )
 
     private fun IverksettOvergangsstønad.finnSanksjonsvedtakMåned(): YearMonth {
-        val yearMonth = this.vedtak.vedtaksperioder.findLast { it.periodeType == VedtaksperiodeType.SANKSJON }?.periode?.fom
+        val yearMonth =
+            this.vedtak.vedtaksperioder.findLast { it.periodeType == VedtaksperiodeType.SANKSJON }?.periode?.fom
         return yearMonth
             ?: error("Finner ikke periode for iversetting av sanksjon. Behandling: (${this.behandling.behandlingId})")
     }

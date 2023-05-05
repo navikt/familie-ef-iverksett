@@ -34,6 +34,7 @@ object OppgaveUtil {
         beskrivelse: String,
         settBehandlesAvApplikasjon: Boolean,
         fristFerdigstillelse: LocalDate? = null,
+        mappeId: Long?,
     ): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
             ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
@@ -46,6 +47,7 @@ object OppgaveUtil {
             behandlingstema = opprettBehandlingstema(stønadstype).value,
             tilordnetRessurs = null,
             behandlesAvApplikasjon = if (settBehandlesAvApplikasjon) "familie-ef-sak" else null,
+            mappeId = mappeId,
         )
     }
 

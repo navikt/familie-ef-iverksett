@@ -19,6 +19,8 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.Månedsperiode
+import no.nav.familie.kontrakter.felles.oppgave.FinnMappeResponseDto
+import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -40,7 +42,8 @@ internal class OppgaveServiceTest {
         mockkObject(OppgaveBeskrivelse)
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns mockk()
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
-        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any(), any()) } returns mockk()
+        every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns mockk()
+        every { oppgaveClient.finnMapper(any(), any()) } returns FinnMappeResponseDto(0, emptyList())
     }
 
     @AfterEach
@@ -156,7 +159,11 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
+        )
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
         verify(exactly = 0) { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
@@ -182,7 +189,9 @@ internal class OppgaveServiceTest {
             ),
         )
         val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId!!
-        every { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) } returns lagIverksett(forrigeBehandlingIverksett)
+        every { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) } returns lagIverksett(
+            forrigeBehandlingIverksett,
+        )
         assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
 
         verify(exactly = 1) { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) }
@@ -244,7 +253,11 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
+        )
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingInnvilget(any(), any()) }
     }
 
@@ -257,7 +270,11 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
+        )
         verify { OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått(any()) }
     }
 
@@ -270,7 +287,11 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
+        )
         verify { OppgaveBeskrivelse.beskrivelseRevurderingInnvilget(any(), any()) }
     }
 
@@ -279,7 +300,7 @@ internal class OppgaveServiceTest {
         val februar23 = YearMonth.of(2023, 2)
         val iverksett = lagIverksettOvergangsstønadSanksjon(februar23)
 
-        val oppgavebeskrivelse = oppgaveService.lagOppgavebeskrivelse(iverksett)
+        val oppgavebeskrivelse = oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett)
 
         assertThat(oppgavebeskrivelse).isEqualTo("Bruker har fått vedtak om sanksjon 1 mnd: februar 2023")
     }
@@ -294,7 +315,11 @@ internal class OppgaveServiceTest {
             andelsdatoer = listOf(YearMonth.now()),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
+        )
         verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(any()) }
     }
 
@@ -309,7 +334,11 @@ internal class OppgaveServiceTest {
             andelsdatoer = listOf(YearMonth.now().minusMonths(2), YearMonth.now(), YearMonth.now().minusMonths(1)),
         )
 
-        oppgaveService.opprettVurderHenvendelseOppgave(iverksett)
+        oppgaveService.opprettOppgave(
+            iverksett,
+            Oppgavetype.VurderHenvendelse,
+            oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
+        )
         verify { OppgaveBeskrivelse.beskrivelseRevurderingOpphørt(capture(opphørsdato)) }
         assertThat(opphørsdato.captured).isEqualTo(YearMonth.now().atEndOfMonth())
     }
