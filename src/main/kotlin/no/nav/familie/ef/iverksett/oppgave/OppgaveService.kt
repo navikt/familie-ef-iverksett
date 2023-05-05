@@ -58,7 +58,7 @@ class OppgaveService(
             ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
 
         val mappeId = if (oppgaveType == Oppgavetype.Fremlegg) {
-            finnAktuellMappeForFremleggsoppgave("4489", Oppgavetype.Fremlegg, iverksett.behandling.behandlingId)
+            finnAktuellMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, Oppgavetype.Fremlegg, iverksett.behandling.behandlingId)
         } else {
             null
         }
