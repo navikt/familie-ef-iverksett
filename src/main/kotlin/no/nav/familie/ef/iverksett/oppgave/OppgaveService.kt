@@ -57,6 +57,12 @@ class OppgaveService(
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
             ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
 
+        val mappeId = if (oppgaveType == Oppgavetype.Fremlegg) {
+            finnAktuellMappeForFremleggsoppgave("4489", Oppgavetype.Fremlegg, iverksett.behandling.behandlingId)
+        } else {
+            null
+        }
+
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 eksternFagsakId = iverksett.fagsak.eksternId,
@@ -66,7 +72,7 @@ class OppgaveService(
                 oppgavetype = oppgaveType,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
-                mappeId = finnAktuellMappeForFremleggsoppgave("4489", Oppgavetype.Fremlegg, iverksett.behandling.behandlingId),
+                mappeId = mappeId,
             )
 
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
