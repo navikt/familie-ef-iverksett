@@ -48,7 +48,7 @@ class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<N
             .withEventId(behandlingId.toString())
             .build()
 
-    private fun lagBeskjed(): BeskjedInput {
+    fun lagBeskjed(): BeskjedInput {
         val builder = BeskjedInputBuilder()
             .withSikkerhetsnivaa(4)
             .withSynligFremTil(null)
