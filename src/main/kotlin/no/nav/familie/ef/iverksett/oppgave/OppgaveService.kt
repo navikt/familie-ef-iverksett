@@ -82,10 +82,10 @@ class OppgaveService(
 
     private fun finnMappeHvisFremleggsoppgave(enhetsnummer: String?, oppgavetype: Oppgavetype, behandlingId: UUID): Long? {
         if (enhetsnummer == "4489" && oppgavetype == Oppgavetype.Fremlegg) {
-            val mappenavnPrefiksProd = "41 Revurdering";
-            val mappenavnPrefiksDev = "41 - Revurdering"
+            val mappenavnProd = "41 Revurdering";
+            val mappenavnDev = "41 - Revurdering"
             val mapper = finnMapper(enhetsnummer)
-            val mappeIdForFremleggsoppgave = mapper.find { it.navn.contains(mappenavnPrefiksDev) || it.navn.contains(mappenavnPrefiksProd) }?.id?.toLong()
+            val mappeIdForFremleggsoppgave = mapper.find { it.navn.contains(mappenavnDev) || it.navn.contains(mappenavnProd) }?.id?.toLong()
             mappeIdForFremleggsoppgave?.let {
                 logger.info("Legger oppgave i Revurdering vedtak-mappe")
             } ?: run {
