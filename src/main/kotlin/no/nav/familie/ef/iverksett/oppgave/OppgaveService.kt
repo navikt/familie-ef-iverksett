@@ -66,7 +66,7 @@ class OppgaveService(
                 oppgavetype = oppgaveType,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
-                mappeId = finnAktuellMappeForFremleggsoppgave("4489", Oppgavetype.Fremlegg, iverksett.behandling.behandlingId),
+                mappeId = finnMappeHvisFremleggsoppgave(iverksett.søker.tilhørendeEnhet, oppgaveType, iverksett.behandling.behandlingId),
             )
 
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
@@ -80,7 +80,7 @@ class OppgaveService(
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
 
-    private fun finnAktuellMappeForFremleggsoppgave(enhetsnummer: String?, oppgavetype: Oppgavetype, behandlingId: UUID): Long? {
+    private fun finnMappeHvisFremleggsoppgave(enhetsnummer: String?, oppgavetype: Oppgavetype, behandlingId: UUID): Long? {
         if (enhetsnummer == "4489" && oppgavetype == Oppgavetype.Fremlegg) {
             val mappenavnPrefiksProd = "41 Revurdering";
             val mappenavnPrefiksDev = "41 - Revurdering"
