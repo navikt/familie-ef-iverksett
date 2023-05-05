@@ -23,6 +23,7 @@
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20230322091650_fb0187e-SPRING_BOOT_3</prosessering.version>
+        <brukernotifikasjon-schemas.version>2.5.1</brukernotifikasjon-schemas.version>
         <maven-surefire-plugin.version>3.0.0-M9</maven-surefire-plugin.version>
         <mockk-jvm.version>1.13.5</mockk-jvm.version>
         <cucumber.version>7.12.0</cucumber.version>
@@ -40,6 +41,10 @@
         <repository>
             <id>confluent</id>
             <url>https://packages.confluent.io/maven/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <id>github</id>
@@ -181,6 +186,11 @@
             <groupId>no.nav.familie.felles</groupId>
             <artifactId>http-client</artifactId>
             <version>${felles.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.navikt</groupId>
+            <artifactId>brukernotifikasjon-schemas</artifactId>
+            <version>${brukernotifikasjon-schemas.version}</version>
         </dependency>
 
         <!-- Database -->

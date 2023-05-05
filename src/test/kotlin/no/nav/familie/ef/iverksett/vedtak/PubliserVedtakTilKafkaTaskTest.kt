@@ -39,7 +39,7 @@ internal class PubliserVedtakTilKafkaTaskTest {
     }
 
     @Test
-    internal fun `doTask - ska publisere vedtak til kafka`() {
+    internal fun `doTask - skal publisere vedtak til kafka`() {
         every { vedtakKafkaProducer.sendVedtak(any()) } just runs
         task.doTask(lagTask())
 
