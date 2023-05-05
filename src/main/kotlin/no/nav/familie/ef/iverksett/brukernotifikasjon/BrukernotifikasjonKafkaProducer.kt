@@ -44,7 +44,7 @@ class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<N
             .withAppnavn("familie-ef-iverksett")
             .withNamespace("teamfamilie")
             .withFodselsnummer(fnr)
-            .withGrupperingsId(UUID.randomUUID().toString()) //Setter random UUID uten å lagre fordi feltet skal fjernes
+            .withGrupperingsId(UUID.randomUUID().toString()) // Setter random UUID uten å lagre fordi feltet skal fjernes
             .withEventId(behandlingId.toString())
             .build()
 
