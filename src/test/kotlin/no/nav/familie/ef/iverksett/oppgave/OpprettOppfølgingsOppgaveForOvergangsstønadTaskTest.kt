@@ -30,14 +30,14 @@ internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
     internal fun `skal opprette oppfølgningsoppgave for overgangsstønad`() {
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
         every { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) } returns true
-        every { oppgaveService.opprettOppgave(any(), Oppgavetype.VurderHenvendelse, any()) } returns 1
+        every { oppgaveService.opprettOppgaveMedOppfølgingsenhet(any(), Oppgavetype.VurderHenvendelse, any()) } returns 1
         every { oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(any()) } returns "Beskrivelse"
 
         taskStegService.doTask(opprettTask())
 
         verify(exactly = 1) { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) }
         verify(exactly = 1) {
-            oppgaveService.opprettOppgave(
+            oppgaveService.opprettOppgaveMedOppfølgingsenhet(
                 any(),
                 Oppgavetype.VurderHenvendelse,
                 any(),

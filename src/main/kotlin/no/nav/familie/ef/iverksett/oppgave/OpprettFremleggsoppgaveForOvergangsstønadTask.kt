@@ -5,7 +5,6 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
-import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -38,7 +37,7 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
             return
         }
         if (iverksett.data.vedtak.oppgaverForOpprettelse.oppgavetyper.contains(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)) {
-            val oppgaveId = oppgaveService.opprettOppgave(iverksett.data, Oppgavetype.Fremlegg, "Inntekt")
+            val oppgaveId = oppgaveService.opprettFremleggsoppgave(iverksett.data, "Inntekt")
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
         } else {
             logger.info("Oppgave opprettes ikke for behandling=$behandlingId")

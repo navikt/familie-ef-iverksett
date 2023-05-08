@@ -19,6 +19,7 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.Månedsperiode
+import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppgave.FinnMappeResponseDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.assertj.core.api.Assertions.assertThat
@@ -44,6 +45,7 @@ internal class OppgaveServiceTest {
         every { oppgaveClient.opprettOppgave(any()) } returns 0L
         every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns mockk()
         every { oppgaveClient.finnMapper(any(), any()) } returns FinnMappeResponseDto(0, emptyList())
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("1234", "enhet")
     }
 
     @AfterEach
@@ -159,7 +161,7 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT)),
         )
 
-        oppgaveService.opprettOppgave(
+        oppgaveService.opprettOppgaveMedOppfølgingsenhet(
             iverksett,
             Oppgavetype.VurderHenvendelse,
             oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
@@ -253,7 +255,7 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
         )
 
-        oppgaveService.opprettOppgave(
+        oppgaveService.opprettOppgaveMedOppfølgingsenhet(
             iverksett,
             Oppgavetype.VurderHenvendelse,
             oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
@@ -270,7 +272,7 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
         )
 
-        oppgaveService.opprettOppgave(
+        oppgaveService.opprettOppgaveMedOppfølgingsenhet(
             iverksett,
             Oppgavetype.VurderHenvendelse,
             oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
@@ -287,7 +289,7 @@ internal class OppgaveServiceTest {
             listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
         )
 
-        oppgaveService.opprettOppgave(
+        oppgaveService.opprettOppgaveMedOppfølgingsenhet(
             iverksett,
             Oppgavetype.VurderHenvendelse,
             oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
@@ -315,7 +317,7 @@ internal class OppgaveServiceTest {
             andelsdatoer = listOf(YearMonth.now()),
         )
 
-        oppgaveService.opprettOppgave(
+        oppgaveService.opprettOppgaveMedOppfølgingsenhet(
             iverksett,
             Oppgavetype.VurderHenvendelse,
             oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),
@@ -334,7 +336,7 @@ internal class OppgaveServiceTest {
             andelsdatoer = listOf(YearMonth.now().minusMonths(2), YearMonth.now(), YearMonth.now().minusMonths(1)),
         )
 
-        oppgaveService.opprettOppgave(
+        oppgaveService.opprettOppgaveMedOppfølgingsenhet(
             iverksett,
             Oppgavetype.VurderHenvendelse,
             oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett),

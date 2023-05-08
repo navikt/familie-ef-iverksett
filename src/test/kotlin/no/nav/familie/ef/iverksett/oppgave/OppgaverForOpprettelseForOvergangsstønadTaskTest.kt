@@ -10,7 +10,6 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.vedtaksdetaljerOvergangsstønad
-import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import org.junit.jupiter.api.Test
@@ -30,11 +29,11 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
     @Test
     internal fun `skal opprette fremleggsoppgave for overgangsstønad`() {
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
-        every { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) } returns 1
+        every { oppgaveService.opprettFremleggsoppgave(any(), any()) } returns 1
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 1) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }
+        verify(exactly = 1) { oppgaveService.opprettFremleggsoppgave(any(), any()) }
     }
 
     @Test
@@ -48,11 +47,11 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
                 ),
             ),
         )
-        every { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) } returns 1
+        every { oppgaveService.opprettFremleggsoppgave(any(), any()) } returns 1
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 0) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }
+        verify(exactly = 0) { oppgaveService.opprettFremleggsoppgave(any(), any()) }
     }
 
     @Test
@@ -61,7 +60,7 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 0) { oppgaveService.opprettOppgave(any(), Oppgavetype.Fremlegg, any()) }
+        verify(exactly = 0) { oppgaveService.opprettFremleggsoppgave(any(), any()) }
     }
 
     @Test
