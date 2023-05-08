@@ -33,7 +33,7 @@ object OppgaveUtil {
         beskrivelse: String,
         settBehandlesAvApplikasjon: Boolean,
         fristFerdigstillelse: LocalDate? = null,
-        mappeId: Long?,
+        mappeId: Long? = null,
     ): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
             ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),

@@ -66,7 +66,6 @@ class OppgaveService(
                 oppgavetype = oppgaveType,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
-                mappeId = null,
             )
 
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
