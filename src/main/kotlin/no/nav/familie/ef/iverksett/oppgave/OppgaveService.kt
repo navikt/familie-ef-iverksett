@@ -82,6 +82,7 @@ class OppgaveService(
                 oppgavetype = Oppgavetype.Fremlegg,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
+                fristFerdigstillelse = iverksett.vedtak.vedtakstidspunkt.toLocalDate().plusYears(1),
                 mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId),
             )
 
