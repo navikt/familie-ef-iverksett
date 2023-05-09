@@ -98,7 +98,7 @@ class OppgaveService(
         }
 
     private fun finnMappeForFremleggsoppgave(enhetsnummer: String?, behandlingId: UUID): Long? {
-        if (enhetsnummer == "4489") {
+        if (enhetsnummer == "4489" || enhetsnummer == "4483") {
             val mappenavnProd = "41 Revurdering"
             val mappenavnDev = "41 - Revurdering"
             val mapper = finnMapper(enhetsnummer)
