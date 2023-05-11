@@ -126,7 +126,7 @@ arena-mq:
   channel: P_FAMILIE_EF_IVERKS
   hostname: mpls01.adeo.no
   port: 1414
-  queueName: QA.P475.SOB_VEDTAKHENDELSER_ARE
+  queueName: QA.P_ARENA.VEDTAKHENDELSER_EF
   servicebruker: ${SERVICEBRUKER}
   servicebrukerPassord: ${SERVICEBRUKER_PASSORD}
 
