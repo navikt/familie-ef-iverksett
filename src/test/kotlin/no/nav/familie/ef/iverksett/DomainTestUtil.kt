@@ -195,7 +195,7 @@ fun lagIverksettData(
             vedtaksresultat = vedtaksresultat,
             vedtaksperioder = vedtaksperioder,
             andeler = andelsdatoer.map {
-                lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it)
+                lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it, inntekt = 200_000)
             },
             startdato = andelsdatoer.minByOrNull { it } ?: YearMonth.now(),
         ),

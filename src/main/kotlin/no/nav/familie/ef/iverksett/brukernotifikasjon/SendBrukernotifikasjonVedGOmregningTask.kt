@@ -23,7 +23,7 @@ class SendBrukernotifikasjonVedGOmregningTask(
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         if (iverksett.erGOmregning()) { // Dobbeltsjekk: Tasken skal egentlig ikke være lagd hvis det ikke er G-omregning
-            brukernotifikasjonKafkaProducer.sendBeskjedTilBruker(iverksett.søker.personIdent, behandlingId)
+            brukernotifikasjonKafkaProducer.sendBeskjedTilBruker(iverksett, behandlingId)
         }
     }
 
