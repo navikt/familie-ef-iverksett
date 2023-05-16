@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 data class PeriodeId(
@@ -40,14 +41,20 @@ object ØkonomiUtils {
      * Vi må opphøre og eventuelt gjenoppbygge hver kjede etter denne. Må ta vare på andel og ikke kun offset da
      * filtrering av oppdaterte andeler senere skjer før offset blir satt.
      *
-     * @param[andelerForrigeTilkjentYtelse] forrige behandlings tilstand
+     * @param[andelerForrigeTilkjentYtelse] forrige behandlingstilstand
      * @param[andelerNyTilkjentYtelse] nåværende tilstand
      * @return liste med bestående andeler
      */
     fun beståendeAndeler(
         andelerForrigeTilkjentYtelse: List<AndelTilkjentYtelse>,
         andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
+        nyStartDato: YearMonth,
+        forrigeStartDato: YearMonth?,
     ): List<AndelTilkjentYtelse> {
+        if (forrigeStartDato != null && nyStartDato.isBefore(forrigeStartDato)) {
+            return emptyList()
+        }
+
         val forrigeAndeler = andelerForrigeTilkjentYtelse.toSet()
         val oppdaterteAndeler = andelerNyTilkjentYtelse.toSet()
 
