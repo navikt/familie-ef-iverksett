@@ -63,7 +63,8 @@ class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<N
 fun genererGOmregningMelding(iverksett: IverksettData): String {
     val melding = if (iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.any { it.inntekt > 0 } == true) {
         gOmregningMedArbeidsinntektMelding(
-            iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.first { it.periode.inneholder(YearMonth.now()) }?.inntekt
+            iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.first { it.periode.inneholder(YearMonth.now().plusMonths(1)) && it.inntekt > 0 }?.inntekt
+                ?: iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.first { it.periode.inneholder(YearMonth.now()) && it.inntekt > 0 }?.inntekt
                 ?: iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.first { it.inntekt > 0 }?.inntekt ?: throw Exception("Skulle ha funnet inntekt i andel tilkjent ytelse for behandling ${iverksett.behandling.behandlingId}"),
         )
     } else {
