@@ -24,8 +24,14 @@ class BrukernotifikasjonKafkaProducerTest {
 
     @Test
     fun `lagBeskjed genererer riktig melding`() {
-        val iverksettRevurderingInnvilget = lagIverksettData(behandlingType = BehandlingType.REVURDERING, vedtaksresultat = Vedtaksresultat.INNVILGET, andelsdatoer = listOf(
-            YearMonth.now().minusMonths(1), YearMonth.now()))
+        val iverksettRevurderingInnvilget = lagIverksettData(
+            behandlingType = BehandlingType.REVURDERING,
+            vedtaksresultat = Vedtaksresultat.INNVILGET,
+            andelsdatoer = listOf(
+                YearMonth.now().minusMonths(1),
+                YearMonth.now(),
+            ),
+        )
         Assertions.assertThat(brukernotifikasjonKafkaProducer.lagBeskjed(iverksettRevurderingInnvilget).getTekst()).isEqualTo(forventetGOmregningTekst)
     }
 }
