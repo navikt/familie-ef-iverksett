@@ -27,8 +27,8 @@ class BrukernotifikasjonKafkaProducerTest {
             behandlingType = BehandlingType.REVURDERING,
             vedtaksresultat = Vedtaksresultat.INNVILGET,
             andelsdatoer = listOf(
-                YearMonth.now().minusMonths(1),
                 YearMonth.now(),
+                YearMonth.now().plusMonths(1),
             ),
         )
         Assertions.assertThat(brukernotifikasjonKafkaProducer.lagBeskjed(iverksettRevurderingInnvilget).getTekst()).isEqualTo(forventetGOmregningTekst)
