@@ -3,7 +3,7 @@ arena-mq:
   channel: Q1_FAMILIE_EF_IVERKS
   hostname: b27apvl219.preprod.local
   port: 1413
-  queueName: QA.Q1_475.SOB_VEDTAKHENDELSER_ARE
+  queueName: QA.Q1_ARENA.VEDTAKHENDELSER_EF
 
 DEPLOY_ENV: dev
 ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-test

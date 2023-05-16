@@ -4,7 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTas
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
-import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -15,10 +15,10 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE,
-    beskrivelse = "Oppretter oppgave om at bruker har innvilget overgangsstønad",
+    taskStepType = OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE,
+    beskrivelse = "Oppretter fremleggsoppgave om kontroll av inntekt",
 )
-class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
+class OpprettFremleggsoppgaveForOvergangsstønadTask(
     private val oppgaveService: OppgaveService,
     private val iverksettingRepository: IverksettingRepository,
     private val taskService: TaskService,
@@ -31,19 +31,16 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId)
         if (iverksett.data !is IverksettOvergangsstønad) {
             logger.info(
-                "Oppretter ikke oppfølgningsoppgave for behandling=$behandlingId" +
+                "Oppretter ikke fremleggsoppgave for behandling=$behandlingId" +
                     " da det ikke er en overgangsstønad (${iverksett::class.java.simpleName})",
             )
             return
         }
-
-        if (oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett.data)) {
-            val oppgaveId = oppgaveService.opprettOppgaveMedOppfølgingsenhet(
-                iverksett.data,
-                Oppgavetype.VurderHenvendelse,
-                oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett.data),
-            )
+        if (iverksett.data.vedtak.oppgaverForOpprettelse.oppgavetyper.contains(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)) {
+            val oppgaveId = oppgaveService.opprettFremleggsoppgave(iverksett.data, "Inntekt")
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
+        } else {
+            logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
         }
     }
 
@@ -53,6 +50,6 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
 
     companion object {
 
-        const val TYPE = "opprettOppfølgingOppgaveForInnvilgetOvergangsstønad"
+        const val TYPE = "opprettFremleggsoppgaveForOvergangsstønad"
     }
 }

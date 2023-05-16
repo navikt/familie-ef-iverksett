@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.oppgave
 import no.nav.familie.ef.iverksett.util.medContentTypeJsonUTF8
 import no.nav.familie.http.client.AbstractRestClient
 import no.nav.familie.kontrakter.felles.Ressurs
+import no.nav.familie.kontrakter.felles.oppgave.FinnMappeResponseDto
 import no.nav.familie.kontrakter.felles.oppgave.OppgaveResponse
 import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
 import org.springframework.beans.factory.annotation.Qualifier
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestOperations
+import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
 @Component
@@ -19,6 +21,17 @@ class OppgaveClient(
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
 
     val oppgaveUrl = "$integrasjonUrl/api/oppgave"
+
+    fun finnMapper(enhetsnummer: String, limit: Int): FinnMappeResponseDto {
+        val uri = UriComponentsBuilder.fromUri(URI.create(oppgaveUrl))
+            .pathSegment("mappe", "sok")
+            .queryParam("enhetsnr", enhetsnummer)
+            .queryParam("limit", limit)
+            .build()
+            .toUri()
+        val response = getForEntity<Ressurs<FinnMappeResponseDto>>(uri)
+        return response.data ?: error("Kunne ikke hente mapper for enhetsnummer=$enhetsnummer")
+    }
 
     fun opprettOppgave(opprettOppgaveRequest: OpprettOppgaveRequest): Long? {
         val opprettOppgaveUri = URI.create("$oppgaveUrl/opprett")

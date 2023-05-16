@@ -2,7 +2,6 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import no.nav.familie.kontrakter.felles.Tema
-import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppgave.IdentGruppe
 import no.nav.familie.kontrakter.felles.oppgave.OppgaveIdentV2
@@ -29,11 +28,12 @@ object OppgaveUtil {
         eksternFagsakId: Long,
         personIdent: String,
         stønadstype: StønadType,
-        enhetsnummer: Enhet,
+        enhetId: String,
         oppgavetype: Oppgavetype,
         beskrivelse: String,
         settBehandlesAvApplikasjon: Boolean,
         fristFerdigstillelse: LocalDate? = null,
+        mappeId: Long? = null,
     ): OpprettOppgaveRequest {
         return OpprettOppgaveRequest(
             ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
@@ -42,10 +42,11 @@ object OppgaveUtil {
             oppgavetype = oppgavetype,
             fristFerdigstillelse = fristFerdigstillelse(fristFerdigstillelse),
             beskrivelse = beskrivelse,
-            enhetsnummer = enhetsnummer.enhetId,
+            enhetsnummer = enhetId,
             behandlingstema = opprettBehandlingstema(stønadstype).value,
             tilordnetRessurs = null,
             behandlesAvApplikasjon = if (settBehandlesAvApplikasjon) "familie-ef-sak" else null,
+            mappeId = mappeId,
         )
     }
 

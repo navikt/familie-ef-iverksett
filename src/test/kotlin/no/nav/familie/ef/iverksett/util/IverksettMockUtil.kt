@@ -15,6 +15,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppgaverForOpprettelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.PeriodeMedBeløp
 import no.nav.familie.ef.iverksett.iverksetting.domene.Søker
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingMedVarsel
@@ -49,6 +50,8 @@ import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
+import no.nav.familie.kontrakter.ef.iverksett.OppgaverForOpprettelseDto
 import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.ef.iverksett.SøkerDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
@@ -128,6 +131,7 @@ fun opprettIverksettDto(
             beslutterId = "B23456",
             tilkjentYtelse = tilkjentYtelse,
             vedtaksperioder = emptyList(),
+            oppgaverForOpprettelse = OppgaverForOpprettelseDto(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
         ),
     )
 }
@@ -236,11 +240,14 @@ fun vedtaksdetaljerOvergangsstønad(
     tilbakekreving: Tilbakekrevingsdetaljer? = null,
     startdato: YearMonth = startmåned(andeler),
     vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad()),
+    vedtaksTidspunkt: LocalDateTime = LocalDateTime.of(2021, 5, 12, 0, 0),
+    inntekt: Boolean = true,
+    oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerOvergangsstønad(
         vedtaksresultat = vedtaksresultat,
-        vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
+        vedtakstidspunkt = vedtaksTidspunkt,
         opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
         saksbehandlerId = "A12345",
         beslutterId = "B23456",
@@ -248,6 +255,7 @@ fun vedtaksdetaljerOvergangsstønad(
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
+        oppgaverForOpprettelse = oppgaverForOpprettelse,
     )
 }
 

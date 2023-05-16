@@ -216,18 +216,21 @@ fun IverksettDto.toDomain(): IverksettData {
             behandling = this.behandling.toDomain(),
             vedtak = this.vedtak.toDomain(),
         )
+
         is IverksettBarnetilsynDto -> IverksettBarnetilsyn(
             fagsak = this.fagsak.toDomain(),
             søker = this.søker.toDomain(),
             behandling = this.behandling.toDomain(),
             vedtak = this.vedtak.toDomain(),
         )
+
         is IverksettSkolepengerDto -> IverksettSkolepenger(
             fagsak = this.fagsak.toDomain(),
             søker = this.søker.toDomain(),
             behandling = this.behandling.toDomain(),
             vedtak = this.vedtak.toDomain(),
         )
+
         else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
     }
 }

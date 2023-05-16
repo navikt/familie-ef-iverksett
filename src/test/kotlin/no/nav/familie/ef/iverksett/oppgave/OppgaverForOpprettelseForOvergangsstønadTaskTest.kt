@@ -4,54 +4,63 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppgaverForOpprettelse
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
-import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
+import no.nav.familie.ef.iverksett.util.vedtaksdetaljerOvergangsstønad
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
-internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
-
+class OppgaverForOpprettelseForOvergangsstønadTaskTest {
     private val oppgaveService = mockk<OppgaveService>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val taskService = mockk<TaskService>()
 
-    private val taskStegService = OpprettOppfølgingsOppgaveForOvergangsstønadTask(
+    private val taskStegService = OpprettFremleggsoppgaveForOvergangsstønadTask(
         oppgaveService,
         iverksettingRepository,
         taskService,
     )
 
     @Test
-    internal fun `skal opprette oppfølgningsoppgave for overgangsstønad`() {
+    internal fun `skal opprette fremleggsoppgave for overgangsstønad`() {
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
-        every { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) } returns true
-        every { oppgaveService.opprettOppgaveMedOppfølgingsenhet(any(), Oppgavetype.VurderHenvendelse, any()) } returns 1
-        every { oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(any()) } returns "Beskrivelse"
+        every { oppgaveService.opprettFremleggsoppgave(any(), any()) } returns 1
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 1) { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) }
-        verify(exactly = 1) {
-            oppgaveService.opprettOppgaveMedOppfølgingsenhet(
-                any(),
-                Oppgavetype.VurderHenvendelse,
-                any(),
-            )
-        }
+        verify(exactly = 1) { oppgaveService.opprettFremleggsoppgave(any(), any()) }
     }
 
     @Test
-    internal fun `skal ikke opprette oppfølgningsoppgave for barnetilsyn`() {
+    internal fun `skal ikke opprette fremleggsoppgave for overgangsstønad`() {
+        every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(
+            opprettIverksettOvergangsstønad(
+                vedtaksdetaljer = vedtaksdetaljerOvergangsstønad(
+                    oppgaverForOpprettelse = OppgaverForOpprettelse(
+                        emptyList(),
+                    ),
+                ),
+            ),
+        )
+        every { oppgaveService.opprettFremleggsoppgave(any(), any()) } returns 1
+
+        taskStegService.doTask(opprettTask())
+
+        verify(exactly = 0) { oppgaveService.opprettFremleggsoppgave(any(), any()) }
+    }
+
+    @Test
+    internal fun `skal ikke opprette fremleggsoppgave for stønad som ikke er overgangsstønad`() {
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettBarnetilsyn())
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 0) { oppgaveService.skalOppretteVurderHenvendelseOppgave(any()) }
+        verify(exactly = 0) { oppgaveService.opprettFremleggsoppgave(any(), any()) }
     }
 
     @Test
