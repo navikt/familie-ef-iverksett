@@ -3,10 +3,13 @@ package no.nav.familie.ef.iverksett.brev.frittstående
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
+import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
 import no.nav.familie.ef.iverksett.brev.stønadstypeTilDokumenttype
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
+import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
+import no.nav.familie.kontrakter.ef.felles.KarakterutskriftBrevDto
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class FrittståendeBrevService(
     private val frittståendeBrevRepository: FrittståendeBrevRepository,
+    private val karakterutskriftBrevRepository: KarakterutskriftBrevRepository,
     private val taskService: TaskService,
     private val journalpostClient: JournalpostClient,
 ) {
@@ -77,5 +81,40 @@ class FrittståendeBrevService(
             ),
         )
         taskService.save(Task(JournalførFrittståendeBrevTask.TYPE, brev.id.toString()))
+    }
+
+    @Transactional
+    fun opprettTask(data: KarakterutskriftBrevDto) {
+        validerKanLagreKarakterutskriftBrev(data)
+
+        val brev = karakterutskriftBrevRepository.insert(
+            KarakterutskriftBrev(
+                personIdent = data.personIdent,
+                eksternFagsakId = data.eksternFagsakId,
+                journalførendeEnhet = data.journalførendeEnhet,
+                fil = data.fil,
+                brevtype = data.brevtype,
+                år = data.år,
+                oppgaveId = data.oppgaveId,
+            )
+        )
+        taskService.save(Task(JournalførKarakterutskriftBrevTask.TYPE, brev.id.toString()))
+    }
+
+    private fun validerKanLagreKarakterutskriftBrev(data: KarakterutskriftBrevDto) {
+        if (
+            data.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE &&
+            data.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE
+        ) {
+            throw IllegalArgumentException("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type $data")
+        }
+        if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndÅr(
+                data.eksternFagsakId,
+                data.oppgaveId,
+                data.år
+            )
+        ) {
+            throw IllegalStateException("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${data.eksternFagsakId}")
+        }
     }
 }

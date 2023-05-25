@@ -18,7 +18,7 @@
         <kotlin.version>1.8.21</kotlin.version>
         <springdoc.version>2.1.0</springdoc.version>
         <felles.version>2.20230210162649_a258d57-SPRING_BOOT_3</felles.version>
-        <familie.kontrakter.version>3.0_20230404163639_edb8619-JAKARTA</familie.kontrakter.version>
+        <familie.kontrakter.version>3.0-SNAPSHOT</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
