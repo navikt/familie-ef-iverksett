@@ -16,7 +16,7 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = JournalførFrittståendeBrevTask.TYPE,
+    taskStepType = JournalførKarakterutskriftBrevTask.TYPE,
     maxAntallFeil = 5,
     triggerTidVedFeilISekunder = 15,
     beskrivelse = "Journalfører frittstående brev for innhenting av karakterutskrift.",
@@ -34,7 +34,7 @@ class JournalførKarakterutskriftBrevTask(
 
         val journalPostId = journalpostClient.arkiverDokument(
             arkiverDokumentRequest = opprettArkiverDokumentRequest(callId, brev),
-            saksbehandler = null
+            saksbehandler = null,
         ).journalpostId
 
         karakterutskriftBrevRepository.update(brev.copy(journalpostId = journalPostId))
@@ -53,7 +53,7 @@ class JournalførKarakterutskriftBrevTask(
         ),
         fagsakId = brev.eksternFagsakId.toString(),
         journalførendeEnhet = brev.journalførendeEnhet,
-        eksternReferanseId = callId
+        eksternReferanseId = callId,
     )
 
     override fun onCompletion(task: Task) {

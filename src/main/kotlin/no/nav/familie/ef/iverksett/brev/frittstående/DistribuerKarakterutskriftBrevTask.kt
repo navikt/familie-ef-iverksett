@@ -52,8 +52,8 @@ class DistribuerKarakterutskriftBrevTask(
     private fun distribuerKarakterutskriftBrev(brevId: UUID): Resultat {
         val brev = karakterutskriftBrevRepository.findByIdOrThrow(brevId)
         val journalpostId = brev.journalpostId ?: throw IllegalStateException(
-            "Distribuering av frittstående brev for innhenting av karakterutskrift"
-                    + "med id=$brevId feilet. Fant ingen journalpostId på brevet."
+            "Distribuering av frittstående brev for innhenting av karakterutskrift" +
+                "med id=$brevId feilet. Fant ingen journalpostId på brevet.",
         )
 
         try {
@@ -92,12 +92,12 @@ class DistribuerKarakterutskriftBrevTask(
     private fun loggDistribuertBrev(journalpostId: String, bestillingId: String) {
         logger.info(
             "Distribuerer frittstående brev for innhenting av karakterutskrift med " +
-                    "journalpostId=$journalpostId og bestillingId=$bestillingId",
+                "journalpostId=$journalpostId og bestillingId=$bestillingId",
         )
     }
 
     override fun onCompletion(task: Task) {
-        taskService.save(Task(DistribuerKarakterutskriftBrevTask.TYPE, task.payload, task.metadata))
+        taskService.save(Task(OppdaterOppgaveForInnhentingAvKarakterutskriftTask.TYPE, task.payload, task.metadata))
     }
 
     companion object {

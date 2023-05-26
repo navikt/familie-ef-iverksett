@@ -97,7 +97,7 @@ class FrittståendeBrevService(
                 gjeldendeÅr = data.gjeldendeÅr,
                 oppgaveId = data.oppgaveId,
                 stønadType = data.stønadType,
-            )
+            ),
         )
         taskService.save(Task(JournalførKarakterutskriftBrevTask.TYPE, brev.id.toString()))
     }
@@ -109,10 +109,10 @@ class FrittståendeBrevService(
         ) {
             throw IllegalArgumentException("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type $data")
         }
-        if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndÅr(
+        if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
                 data.eksternFagsakId,
                 data.oppgaveId,
-                data.gjeldendeÅr
+                data.gjeldendeÅr,
             )
         ) {
             throw IllegalStateException("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${data.eksternFagsakId}")
