@@ -1,8 +1,9 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
+import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
+import no.nav.familie.ef.iverksett.brev.stønadstypeTilDokumenttype
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
-import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
@@ -18,7 +19,7 @@ import java.util.UUID
     taskStepType = JournalførFrittståendeBrevTask.TYPE,
     maxAntallFeil = 5,
     triggerTidVedFeilISekunder = 15,
-    beskrivelse = "Journalfører brev for innhenting av karakterutskrift.",
+    beskrivelse = "Journalfører frittstående brev for innhenting av karakterutskrift.",
 )
 class JournalførKarakterutskriftBrevTask(
     private val journalpostClient: JournalpostClient,
@@ -31,29 +32,32 @@ class JournalførKarakterutskriftBrevTask(
         val brevId = UUID.fromString(task.payload)
         val brev = karakterutskriftBrevRepository.findByIdOrThrow(brevId)
 
-        // TODO: Ikke hardkod dokumenttype
-        journalpostClient.arkiverDokument(
-            ArkiverDokumentRequest(
-                fnr = brev.personIdent,
-                forsøkFerdigstill = true,
-                hoveddokumentvarianter = listOf(
-                    Dokument(
-                        dokument = brev.fil,
-                        filtype = Filtype.PDFA,
-                        dokumenttype = Dokumenttype.OVERGANGSSTØNAD_FRITTSTÅENDE_BREV,
-                        tittel = brev.brevtype.tittel,
-                    ),
-                ),
-                fagsakId = brev.eksternFagsakId.toString(),
-                journalførendeEnhet = brev.journalførendeEnhet,
-                eksternReferanseId = callId
-            ),
+        val journalPostId = journalpostClient.arkiverDokument(
+            arkiverDokumentRequest = opprettArkiverDokumentRequest(callId, brev),
             saksbehandler = null
         ).journalpostId
+
+        karakterutskriftBrevRepository.update(brev.copy(journalpostId = journalPostId))
     }
 
+    private fun opprettArkiverDokumentRequest(callId: String, brev: KarakterutskriftBrev) = ArkiverDokumentRequest(
+        fnr = brev.personIdent,
+        forsøkFerdigstill = true,
+        hoveddokumentvarianter = listOf(
+            Dokument(
+                dokument = brev.fil,
+                filtype = Filtype.PDFA,
+                dokumenttype = stønadstypeTilDokumenttype(brev.stønadType),
+                tittel = brev.brevtype.tittel,
+            ),
+        ),
+        fagsakId = brev.eksternFagsakId.toString(),
+        journalførendeEnhet = brev.journalførendeEnhet,
+        eksternReferanseId = callId
+    )
+
     override fun onCompletion(task: Task) {
-        // TODO: Distribuer brev
+        taskService.save(Task(DistribuerKarakterutskriftBrevTask.TYPE, task.payload, task.metadata))
     }
 
     companion object {

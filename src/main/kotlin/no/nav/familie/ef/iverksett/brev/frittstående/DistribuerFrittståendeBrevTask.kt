@@ -40,7 +40,6 @@ class DistribuerFrittståendeBrevTask(
 ) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     private sealed class Resultat
     private object OK : Resultat()

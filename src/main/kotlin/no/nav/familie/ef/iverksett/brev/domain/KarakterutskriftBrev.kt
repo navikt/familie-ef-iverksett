@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.brev.domain
 
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
@@ -20,9 +21,10 @@ data class KarakterutskriftBrev(
     val journalførendeEnhet: String,
     val fil: ByteArray,
     val brevtype: FrittståendeBrevType,
-    @Column("ar")
-    val år: Year,
-    val journalpostResultat: JournalpostResultatMap = JournalpostResultatMap(),
-    val distribuerBrevResultat: DistribuerBrevResultatMap = DistribuerBrevResultatMap(),
+    @Column("gjeldende_ar")
+    val gjeldendeÅr: Year,
+    @Column("stonad_type")
+    val stønadType: StønadType,
+    val journalpostId: String? = null,
     val opprettetTid: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
 )

@@ -94,8 +94,9 @@ class FrittståendeBrevService(
                 journalførendeEnhet = data.journalførendeEnhet,
                 fil = data.fil,
                 brevtype = data.brevtype,
-                år = data.år,
+                gjeldendeÅr = data.gjeldendeÅr,
                 oppgaveId = data.oppgaveId,
+                stønadType = data.stønadType,
             )
         )
         taskService.save(Task(JournalførKarakterutskriftBrevTask.TYPE, brev.id.toString()))
@@ -111,7 +112,7 @@ class FrittståendeBrevService(
         if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndÅr(
                 data.eksternFagsakId,
                 data.oppgaveId,
-                data.år
+                data.gjeldendeÅr
             )
         ) {
             throw IllegalStateException("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${data.eksternFagsakId}")
