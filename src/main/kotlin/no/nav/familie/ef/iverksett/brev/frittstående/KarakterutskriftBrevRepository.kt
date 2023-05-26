@@ -11,5 +11,5 @@ import java.util.UUID
 interface KarakterutskriftBrevRepository :
     RepositoryInterface<KarakterutskriftBrev, UUID>, InsertUpdateRepository<KarakterutskriftBrev> {
 
-    fun existsByEksternFagsakIdAndOppgaveIdAndÅr(eksternFagsakId: Long, oppgaveId: Long, år: Year): Boolean
+    fun existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(eksternFagsakId: Long, oppgaveId: Long, gjeldendeÅr: Year): Boolean
 }

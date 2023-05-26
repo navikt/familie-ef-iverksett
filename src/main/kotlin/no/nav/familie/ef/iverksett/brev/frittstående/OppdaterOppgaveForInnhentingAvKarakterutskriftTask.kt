@@ -6,10 +6,9 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import org.springframework.stereotype.Service
 
-
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = DistribuerKarakterutskriftBrevTask.TYPE,
+    taskStepType = OppdaterOppgaveForInnhentingAvKarakterutskriftTask.TYPE,
     maxAntallFeil = 50,
     settTilManuellOppfølgning = true,
     triggerTidVedFeilISekunder = 15 * 60L,
@@ -19,9 +18,8 @@ class OppdaterOppgaveForInnhentingAvKarakterutskriftTask(
     private val taskService: TaskService,
 ) : AsyncTaskStep {
 
-
     override fun doTask(task: Task) {
-        //TODO: Implementer
+        // TODO: Implementer
     }
 
     companion object {
