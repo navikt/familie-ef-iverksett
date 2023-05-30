@@ -5,6 +5,7 @@ import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppgave.IdentGruppe
 import no.nav.familie.kontrakter.felles.oppgave.OppgaveIdentV2
+import no.nav.familie.kontrakter.felles.oppgave.OppgavePrioritet
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
 import java.time.DayOfWeek
@@ -15,6 +16,9 @@ import java.time.Month
 import java.util.Locale
 
 object OppgaveUtil {
+
+    private val fristHovedperiodeForInnhentingAvKarakterutskrift: LocalDate = LocalDate.parse("2023-05-17")
+    private val fristutvidetForInnhentingAvKarakterutskrift = LocalDate.parse("2023-05-18")
 
     fun opprettBehandlingstema(stønadstype: StønadType): Behandlingstema {
         return Behandlingstema
@@ -48,6 +52,26 @@ object OppgaveUtil {
             behandlesAvApplikasjon = if (settBehandlesAvApplikasjon) "familie-ef-sak" else null,
             mappeId = mappeId,
         )
+    }
+
+    fun utledPrioritetForKarakterinnhentingOppgave(oppgaveFrist: String?, oppgaveId: Long?) = when (LocalDate.parse(oppgaveFrist)) {
+        fristHovedperiodeForInnhentingAvKarakterutskrift -> OppgavePrioritet.NORM
+        fristutvidetForInnhentingAvKarakterutskrift -> OppgavePrioritet.LAV
+        else -> throw IllegalStateException("Kan ikke oppdatere prioritet på oppgave=$oppgaveId")
+    }
+
+    fun utledBeskrivelseForKarakterinnhentingOppgave(oppgaveBeskrivelse: String?): String {
+        val tidligereBeskrivelse = "\n${oppgaveBeskrivelse.orEmpty()}"
+        val nyttBeskrivelsesInnslag = "Brev om innhenting av karakterutskrift er sendt ut.\n"
+        val nyBeskrivelse = nyttBeskrivelsesInnslag + tidligereBeskrivelse
+
+        return nyBeskrivelse.trimEnd()
+    }
+
+    fun utledFristForKarakterinnhentingOppgave(oppgaveFrist: String?, oppgaveId: Long?) = when (LocalDate.parse(oppgaveFrist)) {
+        fristHovedperiodeForInnhentingAvKarakterutskrift -> LocalDate.of(2023, 8, 5)
+        fristutvidetForInnhentingAvKarakterutskrift -> LocalDate.of(2023, 8, 6)
+        else -> throw IllegalStateException("Kan ikke oppdatere frist på oppgave=$oppgaveId")
     }
 
     private fun fristFerdigstillelse(aktivFra: LocalDate?, daysToAdd: Long = 0): LocalDate {
