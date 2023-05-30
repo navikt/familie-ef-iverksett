@@ -62,8 +62,8 @@ object OppgaveUtil {
 
     fun utledBeskrivelseForKarakterinnhentingOppgave(oppgaveBeskrivelse: String?): String {
         val tidligereBeskrivelse = "\n${oppgaveBeskrivelse.orEmpty()}"
-        val nyttBeskrivelsesInnslag = "Brev om innhenting av karakterutskrift er sendt ut.\n"
-        val nyBeskrivelse = nyttBeskrivelsesInnslag + tidligereBeskrivelse
+        val nyttBeskrivelseInnslag = "Brev om innhenting av karakterutskrift er sendt ut.\n"
+        val nyBeskrivelse = nyttBeskrivelseInnslag + tidligereBeskrivelse
 
         return nyBeskrivelse.trimEnd()
     }

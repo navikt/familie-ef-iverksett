@@ -102,8 +102,8 @@ class OppgaveService(
         return oppgaveClient.finnOppgaveMedId(gsakOppgaveId)
     }
 
-    fun oppdaterOppgave(oppgave: Oppgave) {
-        oppgaveClient.oppdaterOppgave(oppgave)
+    fun oppdaterOppgave(oppgave: Oppgave): Long {
+        return oppgaveClient.oppdaterOppgave(oppgave)
     }
 
     private fun finnMappeForFremleggsoppgave(enhetsnummer: String?, behandlingId: UUID): Long? {
