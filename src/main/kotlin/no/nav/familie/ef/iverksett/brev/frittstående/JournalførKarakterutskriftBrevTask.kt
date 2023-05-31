@@ -31,9 +31,10 @@ class JournalførKarakterutskriftBrevTask(
         val callId = task.callId
         val brevId = UUID.fromString(task.payload)
         val brev = karakterutskriftBrevRepository.findByIdOrThrow(brevId)
+        val dokumentRequest = opprettArkiverDokumentRequest(callId, brev)
 
         val journalPostId = journalpostClient.arkiverDokument(
-            arkiverDokumentRequest = opprettArkiverDokumentRequest(callId, brev),
+            arkiverDokumentRequest = dokumentRequest,
             saksbehandler = null,
         ).journalpostId
 
