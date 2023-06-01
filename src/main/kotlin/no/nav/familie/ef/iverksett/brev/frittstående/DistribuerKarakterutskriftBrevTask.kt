@@ -99,7 +99,7 @@ class DistribuerKarakterutskriftBrevTask(
     }
 
     override fun onCompletion(task: Task) {
-        taskService.save(Task(OppdaterOppgaveTask.TYPE, task.payload, task.metadata))
+        taskService.save(Task(OppdaterKarakterinnhentingOppgaveTask.TYPE, task.payload, task.metadata))
     }
 
     companion object {

@@ -63,6 +63,6 @@ class JournalførKarakterutskriftBrevTask(
 
     companion object {
 
-        const val TYPE = "journalførKarakterutskriftBrev"
+        const val TYPE = "JournalførKarakterutskriftBrevTask"
     }
 }
