@@ -447,6 +447,14 @@ internal class OppgaveServiceTest {
         assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue
     }
 
+    @Test
+    fun `Skal kunne hente oppgave på oppgaveId`() {
+        every { oppgaveClient.finnOppgaveMedId(any()) } returns lagEksternTestOppgave()
+        val oppgave = oppgaveService.hentOppgave(GSAK_OPPGAVE_ID)
+
+        assertThat(oppgave.id).isEqualTo(GSAK_OPPGAVE_ID)
+    }
+
     private fun lagMigreringsIverksetting() = lagIverksettData(
         UUID.randomUUID(),
         BehandlingType.REVURDERING,
@@ -489,5 +497,13 @@ internal class OppgaveServiceTest {
             aktivitet = aktivitet,
             periodeType = periodeType,
         )
+    }
+
+    private fun lagEksternTestOppgave(): no.nav.familie.kontrakter.felles.oppgave.Oppgave {
+        return no.nav.familie.kontrakter.felles.oppgave.Oppgave(id = GSAK_OPPGAVE_ID)
+    }
+
+    companion object {
+        private const val GSAK_OPPGAVE_ID = 12345L
     }
 }

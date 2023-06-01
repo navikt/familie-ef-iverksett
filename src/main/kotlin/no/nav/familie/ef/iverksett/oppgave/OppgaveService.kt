@@ -15,6 +15,7 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.oppgave.MappeDto
+import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -96,6 +97,14 @@ class OppgaveService(
             BehandlingType.REVURDERING -> finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett)
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
+
+    fun hentOppgave(gsakOppgaveId: Long): Oppgave {
+        return oppgaveClient.finnOppgaveMedId(gsakOppgaveId)
+    }
+
+    fun oppdaterOppgave(oppgave: Oppgave): Long {
+        return oppgaveClient.oppdaterOppgave(oppgave)
+    }
 
     private fun finnMappeForFremleggsoppgave(enhetsnummer: String?, behandlingId: UUID): Long? {
         if (enhetsnummer == "4489" || enhetsnummer == "4483") {
