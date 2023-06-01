@@ -6,6 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
+import no.nav.familie.ef.iverksett.oppgave.OppgaveUtil.opprettBrev
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
@@ -13,13 +14,11 @@ import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
-import org.assertj.core.api.Assertions.assertThat
-import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.Year
 import java.util.UUID
 
 internal class JournalførKarakterutskriftBrevTaskTest {
@@ -47,7 +46,7 @@ internal class JournalførKarakterutskriftBrevTaskTest {
 
     @Test
     internal fun `journalfør brev for innhenting av karakterutskrift med hovedperiode`() {
-        val brev = brev(brevtypeHoved)
+        val brev = opprettBrev(brevtypeHoved)
         every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev
         every { karakterutskriftBrevRepository.update(capture(brevSlot)) } returns brev.copy(journalpostId = journalPostId)
 
@@ -64,7 +63,7 @@ internal class JournalførKarakterutskriftBrevTaskTest {
 
     @Test
     internal fun `journalfør brev for innhenting av karakterutskrift med utvidet periode`() {
-        val brev = brev(brevtypeUtidet)
+        val brev = opprettBrev(brevtypeUtidet)
         every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev
         every { karakterutskriftBrevRepository.update(capture(brevSlot)) } returns brev.copy(journalpostId = journalPostId)
 
@@ -82,7 +81,7 @@ internal class JournalførKarakterutskriftBrevTaskTest {
     private fun validerAtDokumentRequestInneholderBrevVerdier(
         arkiverDokumentRequest: ArkiverDokumentRequest,
         arkivertDokument: Dokument,
-        brev: KarakterutskriftBrev
+        brev: KarakterutskriftBrev,
     ) {
         assertThat(arkiverDokumentRequest.fnr).isEqualTo("12345678910")
         assertThat(arkiverDokumentRequest.forsøkFerdigstill).isTrue
@@ -93,16 +92,4 @@ internal class JournalførKarakterutskriftBrevTaskTest {
         assertThat(arkiverDokumentRequest.fagsakId).isEqualTo(brev.eksternFagsakId.toString())
         assertThat(arkiverDokumentRequest.journalførendeEnhet).isEqualTo(brev.journalførendeEnhet)
     }
-
-    private fun brev(brevType: FrittståendeBrevType) = KarakterutskriftBrev(
-        id = UUID.randomUUID(),
-        personIdent = "12345678910",
-        oppgaveId = 5L,
-        eksternFagsakId = 6L,
-        journalførendeEnhet = "enhet",
-        fil = ByteArray(1),
-        brevtype = brevType,
-        gjeldendeÅr = Year.of(2023),
-        stønadType = StønadType.OVERGANGSSTØNAD
-    )
 }

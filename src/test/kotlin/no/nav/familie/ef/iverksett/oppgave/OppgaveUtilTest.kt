@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.oppgave
 
-import no.nav.familie.ef.iverksett.oppgave.OppgaveUtil.utledPrioritetForKarakterinnhentingOppgave
 import no.nav.familie.ef.iverksett.oppgave.OppgaveUtil.utledBeskrivelseForKarakterinnhentingOppgave
 import no.nav.familie.ef.iverksett.oppgave.OppgaveUtil.utledFristForKarakterinnhentingOppgave
+import no.nav.familie.ef.iverksett.oppgave.OppgaveUtil.utledPrioritetForKarakterinnhentingOppgave
 import no.nav.familie.kontrakter.felles.oppgave.OppgavePrioritet
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
@@ -15,7 +15,6 @@ internal class OppgaveUtilTest {
 
     private val fristHovedperiode = "2023-05-17"
     private val fristUtvidet = "2023-05-18"
-
 
     @Nested
     inner class Prioritet {
@@ -44,7 +43,6 @@ internal class OppgaveUtilTest {
         internal fun `skal utlede riktig beskrivelse basert på tidligere beskrivelse`() {
             val ingenTidligereBeskrivelse = utledBeskrivelseForKarakterinnhentingOppgave("")
             val tidligereBeskrivelse = utledBeskrivelseForKarakterinnhentingOppgave(tidligereOppgaveBeskrivelse)
-
 
             assertThat(ingenTidligereBeskrivelse).isEqualTo(nyttBeskrivelseInnslag)
             assertThat(tidligereBeskrivelse).isEqualTo(nyBeskrivelse)
@@ -75,5 +73,5 @@ internal class OppgaveUtilTest {
     private val tidligereOppgaveBeskrivelse = "Oppgave opprettet.\n\nOppgave lagt i mappe 64."
 
     private val nyBeskrivelse = "Brev om innhenting av karakterutskrift er sendt ut.\n\n" +
-            "Oppgave opprettet.\n\n" + "Oppgave lagt i mappe 64."
+        "Oppgave opprettet.\n\n" + "Oppgave lagt i mappe 64."
 }

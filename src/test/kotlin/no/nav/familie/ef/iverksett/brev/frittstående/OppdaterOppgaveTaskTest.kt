@@ -4,20 +4,18 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
 import no.nav.familie.ef.iverksett.oppgave.OppgaveService
+import no.nav.familie.ef.iverksett.oppgave.OppgaveUtil.opprettBrev
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
-import org.assertj.core.api.Assertions.assertThat
-import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.OppgavePrioritet
+import no.nav.familie.prosessering.domene.Task
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.lang.IllegalStateException
-import java.time.Year
 import java.util.UUID
 
 class OppdaterOppgaveTaskTest {
@@ -27,20 +25,21 @@ class OppdaterOppgaveTaskTest {
 
     private val fristHovedperiode = "2023-05-17"
     private val fristUtvidet = "2023-05-18"
+    private val hovedPeriode = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE
 
     private val oppdaterOppgaveTask = OppdaterOppgaveTask(karakterutskriftBrevRepository, oppgaveService)
     private val oppgaveSlot = slot<Oppgave>()
 
     @BeforeEach
     fun setUp() {
-        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev()
+        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns opprettBrev(hovedPeriode)
         every { oppgaveService.oppdaterOppgave(capture(oppgaveSlot)) } returns 1L
     }
 
     @Test
     fun `skal oppdatere oppgave med tidligere beskrivelse og frist hovedperiode`() {
         every { oppgaveService.hentOppgave(any()) } returns
-                oppgave(beskrivelse = "Oppgave opprettet.", frist = fristHovedperiode)
+            oppgave(beskrivelse = "Oppgave opprettet.", frist = fristHovedperiode)
         oppdaterOppgaveTask.doTask(Task(OppdaterOppgaveTask.TYPE, UUID.randomUUID().toString()))
 
         val oppdaterteVerdier = oppgaveSlot.captured
@@ -55,7 +54,7 @@ class OppdaterOppgaveTaskTest {
     @Test
     fun `skal oppdatere oppgave uten tidligere beskrivelse og frist utvidet periode`() {
         every { oppgaveService.hentOppgave(any()) } returns
-                oppgave(beskrivelse = "", frist = fristUtvidet)
+            oppgave(beskrivelse = "", frist = fristUtvidet)
         oppdaterOppgaveTask.doTask(Task(OppdaterOppgaveTask.TYPE, UUID.randomUUID().toString()))
 
         val oppdaterteVerdier = oppgaveSlot.captured
@@ -70,14 +69,14 @@ class OppdaterOppgaveTaskTest {
     @Test
     fun `skal kaste feil dersom fristen hverken er hovedperiode eller utvidet periode`() {
         every { oppgaveService.hentOppgave(any()) } returns
-                oppgave(beskrivelse = "", frist = "2023-05-10")
+            oppgave(beskrivelse = "", frist = "2023-05-10")
 
         val feil = assertThrows<IllegalStateException> {
             oppdaterOppgaveTask.doTask(
                 Task(
                     OppdaterOppgaveTask.TYPE,
-                    UUID.randomUUID().toString()
-                )
+                    UUID.randomUUID().toString(),
+                ),
             )
         }
 
@@ -89,16 +88,4 @@ class OppdaterOppgaveTaskTest {
 
     private fun oppgave(beskrivelse: String, frist: String) =
         Oppgave(id = 5L, beskrivelse = beskrivelse, fristFerdigstillelse = frist)
-
-    private fun brev() = KarakterutskriftBrev(
-        id = UUID.randomUUID(),
-        brevtype = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE,
-        eksternFagsakId = 6L,
-        personIdent = "",
-        oppgaveId = 5L,
-        journalførendeEnhet = "",
-        fil = ByteArray(1),
-        gjeldendeÅr = Year.now(),
-        stønadType = StønadType.OVERGANGSSTØNAD
-    )
 }
