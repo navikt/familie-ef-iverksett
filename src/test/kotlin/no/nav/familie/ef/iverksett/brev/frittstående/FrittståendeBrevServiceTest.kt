@@ -7,7 +7,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
 import no.nav.familie.ef.iverksett.brev.domain.tilDto
-import no.nav.familie.ef.iverksett.oppgave.OppgaveUtil.opprettBrev
+import no.nav.familie.ef.iverksett.brev.frittstående.KarakterInnhentingBrevUtil.opprettBrev
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService

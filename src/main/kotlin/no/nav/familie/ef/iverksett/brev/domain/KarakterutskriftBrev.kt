@@ -41,7 +41,7 @@ fun KarakterutskriftBrev.tilDto(): KarakterutskriftBrevDto = KarakterutskriftBre
     stønadType = this.stønadType,
 )
 
-fun KarakterutskriftBrevDto.tilDomene(): KarakterutskriftBrev = KarakterutskriftBrev(
+fun KarakterutskriftBrevDto.tilDomene(journalpostId: String? = null): KarakterutskriftBrev = KarakterutskriftBrev(
     fil = this.fil,
     oppgaveId = this.oppgaveId,
     personIdent = this.personIdent,
@@ -50,4 +50,5 @@ fun KarakterutskriftBrevDto.tilDomene(): KarakterutskriftBrev = Karakterutskrift
     brevtype = this.brevtype,
     gjeldendeÅr = this.gjeldendeÅr,
     stønadType = this.stønadType,
+    journalpostId = journalpostId,
 )

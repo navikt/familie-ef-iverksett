@@ -64,7 +64,7 @@ class DistribuerKarakterutskriftBrevTask(
                 is HttpClientErrorException.Gone ->
                     return Dødsbo("Dødsbo personIdent=${brev.personIdent} ${cause.responseBodyAsString}")
                 is HttpClientErrorException.Conflict -> {
-                    logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: $journalpostId - lagrer betillingId: ${e.ressurs.data}")
+                    logger.warn("Conflict: Distribuering av karakterutskrift brev allerede utført for journalpost: $journalpostId")
                 }
                 else -> throw e
             }
