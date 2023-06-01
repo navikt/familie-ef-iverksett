@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.prosessering.domene.Task
@@ -27,7 +28,7 @@ internal class VedtakstatistikkTaskTest {
     private val vedtakstatistikkService = mockk<VedtakstatistikkService>()
     private val taskService = mockk<TaskService>()
     private val vedtakstatistikkTask =
-        VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService, taskService)
+        VedtakstatistikkTask(iverksettingRepository, vedtakstatistikkService, taskService, mockFeatureToggleService())
     private val taskSlot = CapturingSlot<Task>()
     private val behandlingId: UUID = UUID.randomUUID()
 

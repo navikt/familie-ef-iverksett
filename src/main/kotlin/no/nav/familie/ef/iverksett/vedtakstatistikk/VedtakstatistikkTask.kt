@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
@@ -20,6 +21,7 @@ class VedtakstatistikkTask(
     private val iverksettingRepository: IverksettingRepository,
     private val vedtakstatistikkService: VedtakstatistikkService,
     private val taskService: TaskService,
+    private val featureToggleService: FeatureToggleService,
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
@@ -32,7 +34,7 @@ class VedtakstatistikkTask(
     override fun onCompletion(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        if (iverksett.erGOmregning()) {
+        if (iverksett.erGOmregning() && featureToggleService.isEnabled("familie.ef.sak.g-beregning-scheduler")) {
             taskService.save(task.opprettNestePubliseringTask())
         }
     }
