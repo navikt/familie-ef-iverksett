@@ -59,6 +59,7 @@ class OppdaterKarakterinnhentingOppgaveTaskTest {
 
     @Test
     fun `skal oppdatere oppgave uten tidligere beskrivelse og frist utvidet periode`() {
+        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev(FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE)
         every { oppgaveService.hentOppgave(any()) } returns
             oppgave(beskrivelse = "", frist = fristUtvidet)
         oppdaterOppgaveTask.doTask(Task(OppdaterKarakterinnhentingOppgaveTask.TYPE, UUID.randomUUID().toString()))
@@ -87,7 +88,45 @@ class OppdaterKarakterinnhentingOppgaveTaskTest {
         }
 
         verify(exactly = 0) { oppgaveService.oppdaterOppgave(any()) }
-        assertThat(feil.message).contains("Kan ikke oppdatere prioritet på oppgave=5")
+        assertThat(feil.message).contains("Kan ikke oppdatere prioritet på oppgave med id=5")
+    }
+
+    @Test
+    fun `skal kaste feil dersom oppgavefristen er endret underveis i flyten for innhenting av karakterutskrift - utvidet periode`() {
+        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev(FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE)
+        every { oppgaveService.hentOppgave(any()) } returns
+            oppgave(beskrivelse = "", frist = fristHovedperiode)
+
+        val feil = assertThrows<IllegalStateException> {
+            oppdaterOppgaveTask.doTask(
+                Task(
+                    OppdaterKarakterinnhentingOppgaveTask.TYPE,
+                    UUID.randomUUID().toString(),
+                ),
+            )
+        }
+
+        verify(exactly = 0) { oppgaveService.oppdaterOppgave(any()) }
+        assertThat(feil.message).contains("Oppgaven har blitt endret på underveis i flyten for innhenting av karakterutskrift.")
+    }
+
+    @Test
+    fun `skal kaste feil dersom oppgavefristen er endret underveis i flyten for innhenting av karakterutskrift - hovedperiode`() {
+        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev(FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE)
+        every { oppgaveService.hentOppgave(any()) } returns
+            oppgave(beskrivelse = "", frist = fristUtvidet)
+
+        val feil = assertThrows<IllegalStateException> {
+            oppdaterOppgaveTask.doTask(
+                Task(
+                    OppdaterKarakterinnhentingOppgaveTask.TYPE,
+                    UUID.randomUUID().toString(),
+                ),
+            )
+        }
+
+        verify(exactly = 0) { oppgaveService.oppdaterOppgave(any()) }
+        assertThat(feil.message).contains("Oppgaven har blitt endret på underveis i flyten for innhenting av karakterutskrift.")
     }
 
     @Nested
@@ -106,7 +145,7 @@ class OppdaterKarakterinnhentingOppgaveTaskTest {
         internal fun `skal kaste feil dersom ugyldig frist benyttes for å utlede prioritet`() {
             val feil = assertThrows<IllegalStateException> { utledPrioritetForKarakterinnhentingOppgave("2023-01-01", 1L) }
 
-            assertThat(feil.message).contains("Kan ikke oppdatere prioritet på oppgave=")
+            assertThat(feil.message).contains("Kan ikke oppdatere prioritet på oppgave med id=")
         }
     }
 
@@ -139,7 +178,7 @@ class OppdaterKarakterinnhentingOppgaveTaskTest {
         internal fun `skal kaste feil dersom ugyldig frist benyttes for å utlede ny frist`() {
             val feil = assertThrows<IllegalStateException> { utledFristForKarakterinnhentingOppgave("2023-01-01", 1L) }
 
-            assertThat(feil.message).contains("Kan ikke oppdatere frist på oppgave=")
+            assertThat(feil.message).contains("Kan ikke oppdatere frist på oppgave med id=")
         }
     }
 
@@ -155,15 +194,16 @@ class OppdaterKarakterinnhentingOppgaveTaskTest {
     private fun oppgave(beskrivelse: String, frist: String) =
         Oppgave(id = 5L, beskrivelse = beskrivelse, fristFerdigstillelse = frist)
 
-    private fun brev() = KarakterutskriftBrev(
-        id = UUID.randomUUID(),
-        brevtype = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE,
-        eksternFagsakId = 6L,
-        personIdent = "",
-        oppgaveId = 5L,
-        journalførendeEnhet = "",
-        fil = ByteArray(1),
-        gjeldendeÅr = Year.now(),
-        stønadType = StønadType.OVERGANGSSTØNAD,
-    )
+    private fun brev(brevType: FrittståendeBrevType = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE) =
+        KarakterutskriftBrev(
+            id = UUID.randomUUID(),
+            brevtype = brevType,
+            eksternFagsakId = 6L,
+            personIdent = "",
+            oppgaveId = 5L,
+            journalførendeEnhet = "",
+            fil = ByteArray(1),
+            gjeldendeÅr = Year.now(),
+            stønadType = StønadType.OVERGANGSSTØNAD,
+        )
 }

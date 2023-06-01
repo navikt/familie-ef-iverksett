@@ -1,7 +1,9 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
+import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
 import no.nav.familie.ef.iverksett.oppgave.OppgaveService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.OppgavePrioritet
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -33,6 +35,8 @@ class OppdaterKarakterinnhentingOppgaveTask(
         val prioritet = utledPrioritetForKarakterinnhentingOppgave(oppgave.fristFerdigstillelse, oppgave.id)
         val frist = utledFristForKarakterinnhentingOppgave(oppgave.fristFerdigstillelse, oppgave.id)
 
+        validerOppgave(oppgave, brev)
+
         oppgaveService.oppdaterOppgave(
             Oppgave(
                 id = brev.oppgaveId,
@@ -43,17 +47,30 @@ class OppdaterKarakterinnhentingOppgaveTask(
         )
     }
 
+    private fun validerOppgave(oppgave: Oppgave, brev: KarakterutskriftBrev) {
+        if (brev.brevtype == FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE && oppgave.fristFerdigstillelse != fristHovedperiodeString) {
+            throw IllegalStateException("Kan ikke oppdatere verdier på oppgave med id=${oppgave.id}. Oppgaven har blitt endret på underveis i flyten for innhenting av karakterutskrift.")
+        }
+        if (brev.brevtype == FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE && oppgave.fristFerdigstillelse != fristUtvidetString) {
+            throw IllegalStateException("Kan ikke oppdatere verdier på oppgave med id=${oppgave.id}. Oppgaven har blitt endret på underveis i flyten for innhenting av karakterutskrift.")
+        }
+    }
+
     companion object {
+
         const val TYPE = "OppdaterKarakterinnhentingOppgaveTask"
 
-        val fristHovedperiodeForInnhentingAvKarakterutskrift: LocalDate = LocalDate.parse("2023-05-17")
-        val fristutvidetForInnhentingAvKarakterutskrift = LocalDate.parse("2023-05-18")
+        val fristHovedperiodeString = "2023-05-17"
+        val fristUtvidetString = "2023-05-18"
+        val fristHovedperiode: LocalDate = LocalDate.parse(fristHovedperiodeString)
+        val fristUtvidet = LocalDate.parse(fristUtvidetString)
 
-        fun utledPrioritetForKarakterinnhentingOppgave(oppgaveFrist: String?, oppgaveId: Long?) = when (LocalDate.parse(oppgaveFrist)) {
-            fristHovedperiodeForInnhentingAvKarakterutskrift -> OppgavePrioritet.NORM
-            fristutvidetForInnhentingAvKarakterutskrift -> OppgavePrioritet.LAV
-            else -> throw IllegalStateException("Kan ikke oppdatere prioritet på oppgave=$oppgaveId")
-        }
+        fun utledPrioritetForKarakterinnhentingOppgave(oppgaveFrist: String?, oppgaveId: Long?) =
+            when (LocalDate.parse(oppgaveFrist)) {
+                fristHovedperiode -> OppgavePrioritet.NORM
+                fristUtvidet -> OppgavePrioritet.LAV
+                else -> throw IllegalStateException("Kan ikke oppdatere prioritet på oppgave med id=$oppgaveId")
+            }
 
         fun utledBeskrivelseForKarakterinnhentingOppgave(oppgaveBeskrivelse: String?): String {
             val tidligereBeskrivelse = "\n${oppgaveBeskrivelse.orEmpty()}"
@@ -63,10 +80,11 @@ class OppdaterKarakterinnhentingOppgaveTask(
             return nyBeskrivelse.trimEnd()
         }
 
-        fun utledFristForKarakterinnhentingOppgave(oppgaveFrist: String?, oppgaveId: Long?) = when (LocalDate.parse(oppgaveFrist)) {
-            fristHovedperiodeForInnhentingAvKarakterutskrift -> LocalDate.of(2023, 8, 5)
-            fristutvidetForInnhentingAvKarakterutskrift -> LocalDate.of(2023, 8, 6)
-            else -> throw IllegalStateException("Kan ikke oppdatere frist på oppgave=$oppgaveId")
-        }
+        fun utledFristForKarakterinnhentingOppgave(oppgaveFrist: String?, oppgaveId: Long?) =
+            when (LocalDate.parse(oppgaveFrist)) {
+                fristHovedperiode -> LocalDate.of(2023, 8, 5)
+                fristUtvidet -> LocalDate.of(2023, 8, 6)
+                else -> throw IllegalStateException("Kan ikke oppdatere frist på oppgave med id=$oppgaveId")
+            }
     }
 }
