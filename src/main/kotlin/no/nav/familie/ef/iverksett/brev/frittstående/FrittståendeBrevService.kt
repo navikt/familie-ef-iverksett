@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.brev.frittstående
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
-import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
+import no.nav.familie.ef.iverksett.brev.domain.tilDomene
 import no.nav.familie.ef.iverksett.brev.stønadstypeTilDokumenttype
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
@@ -84,38 +84,28 @@ class FrittståendeBrevService(
     }
 
     @Transactional
-    fun opprettTask(data: KarakterutskriftBrevDto) {
-        validerKanLagreKarakterutskriftBrev(data)
+    fun opprettTask(brevDto: KarakterutskriftBrevDto) {
+        validerKanLagreKarakterutskriftBrev(brevDto)
 
-        val brev = karakterutskriftBrevRepository.insert(
-            KarakterutskriftBrev(
-                personIdent = data.personIdent,
-                eksternFagsakId = data.eksternFagsakId,
-                journalførendeEnhet = data.journalførendeEnhet,
-                fil = data.fil,
-                brevtype = data.brevtype,
-                gjeldendeÅr = data.gjeldendeÅr,
-                oppgaveId = data.oppgaveId,
-                stønadType = data.stønadType,
-            ),
-        )
+        val brev = karakterutskriftBrevRepository.insert(brevDto.tilDomene())
+
         taskService.save(Task(JournalførKarakterutskriftBrevTask.TYPE, brev.id.toString()))
     }
 
-    private fun validerKanLagreKarakterutskriftBrev(data: KarakterutskriftBrevDto) {
+    private fun validerKanLagreKarakterutskriftBrev(brevDto: KarakterutskriftBrevDto) {
         if (
-            data.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE &&
-            data.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE
+            brevDto.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE &&
+            brevDto.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE
         ) {
-            throw IllegalArgumentException("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type $data")
+            throw IllegalArgumentException("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}")
         }
         if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
-                data.eksternFagsakId,
-                data.oppgaveId,
-                data.gjeldendeÅr,
+                brevDto.eksternFagsakId,
+                brevDto.oppgaveId,
+                brevDto.gjeldendeÅr,
             )
         ) {
-            throw IllegalStateException("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${data.eksternFagsakId}")
+            throw IllegalStateException("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}")
         }
     }
 }
