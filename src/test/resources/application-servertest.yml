@@ -52,3 +52,6 @@ KAFKA_BROKERS: hostname:1234
 KAFKA_KEYSTORE_PATH: kafkaKeystorePath
 KAFKA_CREDSTORE_PASSWORD: kafkaCredstorePassword
 KAFKA_TRUSTSTORE_PATH: kafkaTruststorePath
+KAFKA_SCHEMA_REGISTRY: kafkaSchemaRegistry
+KAFKA_SCHEMA_REGISTRY_USER: kafkaSchemaRegistryUser
+KAFKA_SCHEMA_REGISTRY_PASSWORD: kafkaSchemaRegistryPassword
