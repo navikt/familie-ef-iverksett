@@ -187,7 +187,7 @@ fun lagIverksettData(
     årsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
     vedtakstidspunkt: LocalDateTime = LocalDateTime.of(2021, 5, 12, 0, 0),
     andeler: List<AndelTilkjentYtelse> = andelsdatoer.map {
-        lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it)
+        lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it, inntekt = 200_000)
     },
 ): IverksettOvergangsstønad {
     val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else årsak
