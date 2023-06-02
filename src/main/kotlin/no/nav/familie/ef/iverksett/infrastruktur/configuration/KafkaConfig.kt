@@ -1,7 +1,10 @@
 package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
+import io.confluent.kafka.serializers.KafkaAvroSerializer
 import no.nav.brukernotifikasjon.schemas.input.BeskjedInput
 import no.nav.brukernotifikasjon.schemas.input.NokkelInput
+import org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG
+import org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,7 +30,10 @@ class KafkaConfig {
     fun kafkaTemplateBrukerNotifikasjoner(properties: KafkaProperties): KafkaTemplate<NokkelInput, BeskjedInput> {
         val producerListener = LoggingProducerListener<NokkelInput, BeskjedInput>()
         producerListener.setIncludeContents(false)
-        val producerFactory = DefaultKafkaProducerFactory<NokkelInput, BeskjedInput>(properties.buildProducerProperties())
+        val producerFactory = DefaultKafkaProducerFactory<NokkelInput, BeskjedInput>(properties.buildProducerProperties().apply {
+            put(KEY_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer::class.java)
+            put(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer::class.java)
+        })
 
         return KafkaTemplate(producerFactory).apply<KafkaTemplate<NokkelInput, BeskjedInput>> {
             setProducerListener(producerListener)
