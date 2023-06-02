@@ -52,7 +52,7 @@ class DistribuerKarakterutskriftBrevTask(
     private fun distribuerKarakterutskriftBrev(brevId: UUID): Resultat {
         val brev = karakterutskriftBrevRepository.findByIdOrThrow(brevId)
         val journalpostId = brev.journalpostId ?: throw IllegalStateException(
-            "Distribuering av frittstående brev for innhenting av karakterutskrift" +
+            "Distribuering av frittstående brev for innhenting av karakterutskrift " +
                 "med id=$brevId feilet. Fant ingen journalpostId på brevet.",
         )
 
@@ -63,7 +63,9 @@ class DistribuerKarakterutskriftBrevTask(
             when (cause) {
                 is HttpClientErrorException.Gone ->
                     return Dødsbo("Dødsbo personIdent=${brev.personIdent} ${cause.responseBodyAsString}")
-
+                is HttpClientErrorException.Conflict -> {
+                    logger.warn("Conflict: Distribuering av karakterutskrift brev allerede utført for journalpost: $journalpostId")
+                }
                 else -> throw e
             }
         }
