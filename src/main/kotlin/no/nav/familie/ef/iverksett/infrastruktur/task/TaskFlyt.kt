@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.arbeidsoppfolging.SendVedtakTilArbeidsoppføl
 import no.nav.familie.ef.iverksett.arena.SendFattetVedtakTilArenaTask
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
+import no.nav.familie.ef.iverksett.brukernotifikasjon.SendBrukernotifikasjonVedGOmregningTask
 import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaveForOvergangsstønadTask
@@ -38,6 +39,7 @@ fun publiseringsflyt() = listOf(
     TaskType(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE),
     TaskType(OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE),
     TaskType(VedtakstatistikkTask.TYPE),
+    TaskType(SendBrukernotifikasjonVedGOmregningTask.TYPE),
 )
 
 fun TaskType.nesteHovedflytTask() = hovedflyt().zipWithNext().first { this.type == it.first.type }.second
