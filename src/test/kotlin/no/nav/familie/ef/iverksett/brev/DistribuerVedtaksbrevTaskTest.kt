@@ -120,7 +120,7 @@ internal class DistribuerVedtaksbrevTaskTest {
             "1" to journalpostResultater[0],
             "2" to journalpostResultater[1],
         )
-        every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null andThen mapOf(journalpostResultater[0].journalpostId to DistribuerBrevResultat(bestillingIder[0]))
+        every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns null
         every { journalpostClient.distribuerBrev(any(), any()) } returns bestillingIder[0] andThen bestillingIder[1]
         every {
             iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
