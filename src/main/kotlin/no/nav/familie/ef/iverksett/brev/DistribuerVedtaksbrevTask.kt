@@ -68,9 +68,9 @@ class DistribuerVedtaksbrevTask(
                 val cause = e.cause
                 if (cause is HttpClientErrorException.Gone) {
                     resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
-                } else if (cause is HttpClientErrorException.BadRequest
-                    && e.message?.contains("Fant ikke adresseinformasjon for mottaker i PDL. Mottaker har ukjent adresse") == true
-                    && journalpostResultater.size > 1
+                } else if (cause is HttpClientErrorException.BadRequest &&
+                    e.message?.contains("Fant ikke adresseinformasjon for mottaker i PDL. Mottaker har ukjent adresse") == true &&
+                    journalpostResultater.size > 1
                 ) {
                     logger.warn("Kunne ikke distribuere vedtaksbrev for brevmottaker")
                 } else {

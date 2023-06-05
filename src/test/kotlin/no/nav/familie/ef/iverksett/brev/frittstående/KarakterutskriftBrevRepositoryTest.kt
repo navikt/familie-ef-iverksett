@@ -57,4 +57,13 @@ internal class KarakterutskriftBrevRepositoryTest : ServerTest() {
         assertThat(karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(brev.eksternFagsakId, brev.oppgaveId, brev.gjeldendeÅr)).isTrue
         assertThat(karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(brev.eksternFagsakId, brev.oppgaveId, brev.gjeldendeÅr.plusYears(1))).isFalse
     }
+
+    @Test
+    internal fun existsByEksternFagsakIdAndGjeldendeÅrAndBrevType() {
+        val brev = opprettBrev(brevType = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE)
+        karakterutskriftBrevRepository.insert(brev)
+
+        assertThat(karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(brev.eksternFagsakId, brev.gjeldendeÅr, brev.brevtype)).isTrue
+        assertThat(karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(brev.eksternFagsakId, brev.gjeldendeÅr.plusYears(1), brev.brevtype)).isFalse
+    }
 }
