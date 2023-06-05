@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
 import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
+import no.nav.familie.ef.iverksett.felles.util.dagensDatoMedTidNorskFormat
 import no.nav.familie.ef.iverksett.oppgave.OppgaveService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
@@ -74,8 +75,9 @@ class OppdaterKarakterinnhentingOppgaveTask(
 
         fun utledBeskrivelseForKarakterinnhentingOppgave(oppgaveBeskrivelse: String?): String {
             val tidligereBeskrivelse = "\n${oppgaveBeskrivelse.orEmpty()}"
-            val nyttBeskrivelseInnslag = "Brev om innhenting av karakterutskrift er sendt ut.\n"
-            val nyBeskrivelse = nyttBeskrivelseInnslag + tidligereBeskrivelse
+            val prefix = "--- ${dagensDatoMedTidNorskFormat()} Utført av familie-ef-sak ---\n"
+            val nyttBeskrivelseInnslag = "Brev om innhenting av karakterutskrift er sendt til bruker.\n"
+            val nyBeskrivelse = prefix + nyttBeskrivelseInnslag + tidligereBeskrivelse
 
             return nyBeskrivelse.trimEnd()
         }

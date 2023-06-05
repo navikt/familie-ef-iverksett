@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
 import no.nav.familie.ef.iverksett.brev.frittstående.OppdaterKarakterinnhentingOppgaveTask.Companion.utledBeskrivelseForKarakterinnhentingOppgave
 import no.nav.familie.ef.iverksett.brev.frittstående.OppdaterKarakterinnhentingOppgaveTask.Companion.utledFristForKarakterinnhentingOppgave
 import no.nav.familie.ef.iverksett.brev.frittstående.OppdaterKarakterinnhentingOppgaveTask.Companion.utledPrioritetForKarakterinnhentingOppgave
+import no.nav.familie.ef.iverksett.felles.util.dagensDatoNorskFormat
 import no.nav.familie.ef.iverksett.oppgave.OppgaveService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
@@ -25,7 +26,7 @@ import java.time.LocalDate
 import java.time.Year
 import java.util.UUID
 
-class OppdaterKarakterinnhentingOppgaveTaskTest {
+internal class OppdaterKarakterinnhentingOppgaveTaskTest {
 
     private val karakterutskriftBrevRepository = mockk<KarakterutskriftBrevRepository>()
     private val oppgaveService = mockk<OppgaveService>()
@@ -52,7 +53,9 @@ class OppdaterKarakterinnhentingOppgaveTaskTest {
 
         verify(exactly = 1) { oppgaveService.oppdaterOppgave(any()) }
         assertThat(oppdaterteVerdier.id).isEqualTo(5L)
-        assertThat(oppdaterteVerdier.beskrivelse).isEqualTo(nyBeskrivelseEtTidligereInnslag)
+        assertThat(oppdaterteVerdier.beskrivelse).startsWith("--- ${dagensDatoNorskFormat()} ")
+        assertThat(oppdaterteVerdier.beskrivelse).contains("Utført av familie-ef-sak ---")
+        assertThat(oppdaterteVerdier.beskrivelse).contains(nyBeskrivelseEtTidligereInnslag)
         assertThat(oppdaterteVerdier.prioritet).isEqualTo(OppgavePrioritet.NORM)
         assertThat(oppdaterteVerdier.fristFerdigstillelse).isEqualTo("2023-08-05")
     }
@@ -68,7 +71,9 @@ class OppdaterKarakterinnhentingOppgaveTaskTest {
 
         verify(exactly = 1) { oppgaveService.oppdaterOppgave(any()) }
         assertThat(oppdaterteVerdier.id).isEqualTo(5L)
-        assertThat(oppdaterteVerdier.beskrivelse).isEqualTo("Brev om innhenting av karakterutskrift er sendt ut.")
+        assertThat(oppdaterteVerdier.beskrivelse).startsWith("--- ${dagensDatoNorskFormat()} ")
+        assertThat(oppdaterteVerdier.beskrivelse).contains("Utført av familie-ef-sak ---")
+        assertThat(oppdaterteVerdier.beskrivelse).contains("Brev om innhenting av karakterutskrift er sendt til bruker.")
         assertThat(oppdaterteVerdier.prioritet).isEqualTo(OppgavePrioritet.LAV)
         assertThat(oppdaterteVerdier.fristFerdigstillelse).isEqualTo("2023-08-06")
     }
@@ -157,8 +162,13 @@ class OppdaterKarakterinnhentingOppgaveTaskTest {
             val ingenTidligereBeskrivelse = utledBeskrivelseForKarakterinnhentingOppgave("")
             val tidligereBeskrivelse = utledBeskrivelseForKarakterinnhentingOppgave(tidligereOppgaveBeskrivelse)
 
-            assertThat(ingenTidligereBeskrivelse).isEqualTo(nyttBeskrivelseInnslag)
-            assertThat(tidligereBeskrivelse).isEqualTo(nyBeskrivelseToTidligereInnslag)
+            assertThat(ingenTidligereBeskrivelse).startsWith("--- ${dagensDatoNorskFormat()} ")
+            assertThat(ingenTidligereBeskrivelse).contains("Utført av familie-ef-sak ---")
+            assertThat(ingenTidligereBeskrivelse).contains(nyttBeskrivelseInnslag)
+
+            assertThat(tidligereBeskrivelse).startsWith("--- ${dagensDatoNorskFormat()} ")
+            assertThat(tidligereBeskrivelse).contains("Utført av familie-ef-sak ---")
+            assertThat(tidligereBeskrivelse).contains(nyBeskrivelseToTidligereInnslag)
         }
     }
 
@@ -182,14 +192,14 @@ class OppdaterKarakterinnhentingOppgaveTaskTest {
         }
     }
 
-    private val nyttBeskrivelseInnslag = "Brev om innhenting av karakterutskrift er sendt ut."
+    private val nyttBeskrivelseInnslag = "Brev om innhenting av karakterutskrift er sendt til bruker."
 
     private val tidligereOppgaveBeskrivelse = "Oppgave opprettet.\n\nOppgave lagt i mappe 64."
 
-    private val nyBeskrivelseToTidligereInnslag = "Brev om innhenting av karakterutskrift er sendt ut.\n\n" +
+    private val nyBeskrivelseToTidligereInnslag = "Brev om innhenting av karakterutskrift er sendt til bruker.\n\n" +
         "Oppgave opprettet.\n\n" + "Oppgave lagt i mappe 64."
 
-    private val nyBeskrivelseEtTidligereInnslag = "Brev om innhenting av karakterutskrift er sendt ut.\n\nOppgave opprettet."
+    private val nyBeskrivelseEtTidligereInnslag = "Brev om innhenting av karakterutskrift er sendt til bruker.\n\nOppgave opprettet."
 
     private fun oppgave(beskrivelse: String, frist: String) =
         Oppgave(id = 5L, beskrivelse = beskrivelse, fristFerdigstillelse = frist)
