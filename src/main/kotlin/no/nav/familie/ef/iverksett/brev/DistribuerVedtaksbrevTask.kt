@@ -48,18 +48,16 @@ class DistribuerVedtaksbrevTask(
 
         if (resultat is Dødsbo) {
             håndterDødsbo(task, resultat)
-        } else {
-            validerHarSendtUtBrev(behandlingId)
         }
     }
 
     private fun distribuerVedtaksbrev(behandlingId: UUID): Resultat {
-        val journalpostResultater = hentJournalpostResultat(behandlingId)
+        val journalpostResultat = hentJournalpostResultat(behandlingId)
         val distribuerteJournalposter =
             iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId)?.keys ?: emptySet()
 
         var resultat: Dødsbo? = null
-        journalpostResultater.filter { (_, journalpostResultat) ->
+        journalpostResultat.filter { (_, journalpostResultat) ->
             journalpostResultat.journalpostId !in distribuerteJournalposter
         }.forEach { (personIdent, journalpostResultat) ->
             try {
@@ -68,27 +66,12 @@ class DistribuerVedtaksbrevTask(
                 val cause = e.cause
                 if (cause is HttpClientErrorException.Gone) {
                     resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
-                } else if (cause is HttpClientErrorException.BadRequest &&
-                    e.message?.contains("Fant ikke adresseinformasjon for mottaker i PDL. Mottaker har ukjent adresse") == true &&
-                    journalpostResultater.size > 1
-                ) {
-                    logger.warn("Kunne ikke distribuere vedtaksbrev for brevmottaker")
                 } else {
                     throw e
                 }
             }
         }
-
         return resultat ?: OK
-    }
-
-    private fun validerHarSendtUtBrev(behandlingId: UUID) {
-        val harNoendistribuerteBrev =
-            iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId)?.entries?.any { it.value.bestillingId != null } == true
-
-        if (!harNoendistribuerteBrev) {
-            throw Exception("Har ikke distribuert noen brev")
-        }
     }
 
     private fun distribuerBrevOgOppdaterVedtaksbrevResultat(
