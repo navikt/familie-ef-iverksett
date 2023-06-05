@@ -28,7 +28,7 @@ internal class JournalførKarakterutskriftBrevTaskTest {
     private val karakterutskriftBrevRepository = mockk<KarakterutskriftBrevRepository>()
 
     private val brevtypeHoved = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE
-    private val brevtypeUtidet = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE
+    private val brevtypeUtvidet = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE
 
     private val journalførTask =
         JournalførKarakterutskriftBrevTask(journalpostClient, taskService, karakterutskriftBrevRepository)
@@ -59,11 +59,12 @@ internal class JournalførKarakterutskriftBrevTaskTest {
         verify(exactly = 1) { karakterutskriftBrevRepository.update(any()) }
         assertThat(lagretBrev).isEqualTo(brev.copy(journalpostId = journalPostId))
         validerAtDokumentRequestInneholderBrevVerdier(arkiverDokumentRequest, arkivertDokument, brev)
+        assertThat(arkiverDokumentRequest.eksternReferanseId).isEqualTo("62023INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE")
     }
 
     @Test
     internal fun `journalfør brev for innhenting av karakterutskrift med utvidet periode`() {
-        val brev = opprettBrev(brevtypeUtidet)
+        val brev = opprettBrev(brevtypeUtvidet)
         every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev
         every { karakterutskriftBrevRepository.update(capture(brevSlot)) } returns brev.copy(journalpostId = journalPostId)
 
@@ -76,6 +77,7 @@ internal class JournalførKarakterutskriftBrevTaskTest {
         verify(exactly = 1) { karakterutskriftBrevRepository.update(any()) }
         assertThat(lagretBrev).isEqualTo(brev.copy(journalpostId = journalPostId))
         validerAtDokumentRequestInneholderBrevVerdier(arkiverDokumentRequest, arkivertDokument, brev)
+        assertThat(arkiverDokumentRequest.eksternReferanseId).isEqualTo("62023INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE")
     }
 
     private fun validerAtDokumentRequestInneholderBrevVerdier(
