@@ -28,10 +28,9 @@ class JournalførKarakterutskriftBrevTask(
 ) : AsyncTaskStep {
 
     override fun doTask(task: Task) {
-        val callId = task.callId
         val brevId = UUID.fromString(task.payload)
         val brev = karakterutskriftBrevRepository.findByIdOrThrow(brevId)
-        val dokumentRequest = opprettArkiverDokumentRequest(callId, brev)
+        val dokumentRequest = opprettArkiverDokumentRequest(brev)
 
         val journalPostId = journalpostClient.arkiverDokument(
             arkiverDokumentRequest = dokumentRequest,
@@ -41,21 +40,25 @@ class JournalførKarakterutskriftBrevTask(
         karakterutskriftBrevRepository.update(brev.copy(journalpostId = journalPostId))
     }
 
-    private fun opprettArkiverDokumentRequest(callId: String, brev: KarakterutskriftBrev) = ArkiverDokumentRequest(
-        fnr = brev.personIdent,
-        forsøkFerdigstill = true,
-        hoveddokumentvarianter = listOf(
-            Dokument(
-                dokument = brev.fil,
-                filtype = Filtype.PDFA,
-                dokumenttype = stønadstypeTilDokumenttype(brev.stønadType),
-                tittel = brev.brevtype.tittel,
+    private fun opprettArkiverDokumentRequest(brev: KarakterutskriftBrev): ArkiverDokumentRequest {
+        val eksternReferanseId = brev.eksternFagsakId.toString() + brev.gjeldendeÅr.toString() + brev.brevtype.name
+
+        return ArkiverDokumentRequest(
+            fnr = brev.personIdent,
+            forsøkFerdigstill = true,
+            hoveddokumentvarianter = listOf(
+                Dokument(
+                    dokument = brev.fil,
+                    filtype = Filtype.PDFA,
+                    dokumenttype = stønadstypeTilDokumenttype(brev.stønadType),
+                    tittel = brev.brevtype.tittel,
+                ),
             ),
-        ),
-        fagsakId = brev.eksternFagsakId.toString(),
-        journalførendeEnhet = brev.journalførendeEnhet,
-        eksternReferanseId = callId,
-    )
+            fagsakId = brev.eksternFagsakId.toString(),
+            journalførendeEnhet = brev.journalførendeEnhet,
+            eksternReferanseId = eksternReferanseId,
+        )
+    }
 
     override fun onCompletion(task: Task) {
         taskService.save(Task(DistribuerKarakterutskriftBrevTask.TYPE, task.payload, task.metadata))

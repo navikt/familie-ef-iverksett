@@ -77,7 +77,7 @@ fun genererGOmregningMelding(iverksett: IverksettData): String {
 fun gOmregningMedArbeidsinntektMelding(inntekt: Int) = """
     Fra ${nyesteGrunnbeløp.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${nyesteGrunnbeløp.grunnbeløp} kroner og din forventede inntekt er oppjustert til $inntekt kroner. Overgangsstønaden din er derfor endret.
     Du må si ifra til oss hvis inntekten din øker eller reduseres med 10 prosent eller mer.
-    """.trimIndent()
+""".trimIndent()
 
 val G_OMREGNING_UTEN_ARBEDSINNTEKT_MELDING = """
     Fra ${nyesteGrunnbeløp.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${nyesteGrunnbeløp.grunnbeløp} og overgangsstønaden din er derfor endret.

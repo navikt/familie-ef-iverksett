@@ -40,6 +40,7 @@ internal class FrittståendeBrevServiceTest {
             val brevDto = brev.tilDto()
 
             every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns false
+            every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(any(), any(), any()) } returns false
             every { karakterutskriftBrevRepository.insert(capture(brevSlot)) } answers { firstArg<KarakterutskriftBrev>().copy(id = brev.id) }
             every { taskService.save(capture(taskSlot)) } answers { firstArg() }
 
@@ -67,7 +68,7 @@ internal class FrittståendeBrevServiceTest {
         }
 
         @Test
-        internal fun `skal ikke lagre brev men kaste feil dersom brevet allerede er lagret`() {
+        internal fun `skal ikke lagre brev men kaste feil dersom brevet allerede er lagret for oppgaven`() {
             val brev = opprettBrev(hovedtype)
             val brevDto = brev.tilDto()
 
@@ -78,6 +79,21 @@ internal class FrittståendeBrevServiceTest {
             verify(exactly = 0) { karakterutskriftBrevRepository.insert(any()) }
             verify(exactly = 0) { taskService.save(any()) }
             assertThat(feil.message).isEqualTo("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}")
+        }
+
+        @Test
+        internal fun `skal ikke lagre brev men kaste feil dersom brevet allerede er lagret for brukeren`() {
+            val brev = opprettBrev(hovedtype)
+            val brevDto = brev.tilDto()
+
+            every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns false
+            every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(any(), any(), any()) } returns true
+
+            val feil = assertThrows<IllegalStateException> { frittståendeBrevService.opprettTask(brevDto) }
+
+            verify(exactly = 0) { karakterutskriftBrevRepository.insert(any()) }
+            verify(exactly = 0) { taskService.save(any()) }
+            assertThat(feil.message).isEqualTo("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}")
         }
     }
 }

@@ -107,5 +107,13 @@ class FrittståendeBrevService(
         ) {
             throw IllegalStateException("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}")
         }
+        if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(
+                brevDto.eksternFagsakId,
+                brevDto.gjeldendeÅr,
+                brevDto.brevtype,
+            )
+        ) {
+            throw IllegalStateException("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}")
+        }
     }
 }
