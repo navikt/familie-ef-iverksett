@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.brev
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevService
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
 import no.nav.familie.kontrakter.ef.felles.KarakterutskriftBrevDto
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -32,8 +33,8 @@ class BrevController(
     @PostMapping("/frittstaende/innhenting-karakterutskrift")
     fun journalførBrevForInnhentingAvKarakterutskrift(
         @RequestBody data: KarakterutskriftBrevDto,
-    ): ResponseEntity<Any> {
+    ): Ressurs<Unit> {
         frittståendeBrevService.opprettTask(data)
-        return ResponseEntity.ok().build()
+        return Ressurs.success(Unit)
     }
 }

@@ -60,6 +60,7 @@ abstract class ServerTest {
         )
         namedParameterJdbcTemplate.update("TRUNCATE TABLE task, task_logg CASCADE", MapSqlParameterSource())
         namedParameterJdbcTemplate.update("TRUNCATE TABLE frittstaende_brev", MapSqlParameterSource())
+        namedParameterJdbcTemplate.update("TRUNCATE TABLE karakterutskrift_brev", MapSqlParameterSource())
     }
 
     protected fun getPort(): String {

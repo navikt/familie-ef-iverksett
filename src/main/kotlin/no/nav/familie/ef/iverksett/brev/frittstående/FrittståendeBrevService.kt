@@ -97,7 +97,7 @@ class FrittståendeBrevService(
             brevDto.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE &&
             brevDto.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE
         ) {
-            throw IllegalArgumentException("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}")
+            throw ApiFeil("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}", HttpStatus.BAD_REQUEST)
         }
         if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
                 brevDto.eksternFagsakId,
@@ -105,7 +105,7 @@ class FrittståendeBrevService(
                 brevDto.gjeldendeÅr,
             )
         ) {
-            throw IllegalStateException("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}")
+            throw ApiFeil("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}", HttpStatus.BAD_REQUEST)
         }
         if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(
                 brevDto.eksternFagsakId,
@@ -113,7 +113,7 @@ class FrittståendeBrevService(
                 brevDto.brevtype,
             )
         ) {
-            throw IllegalStateException("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}")
+            throw ApiFeil("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}", HttpStatus.BAD_REQUEST)
         }
     }
 }
