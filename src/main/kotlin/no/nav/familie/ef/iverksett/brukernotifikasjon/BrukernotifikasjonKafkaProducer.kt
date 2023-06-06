@@ -80,6 +80,6 @@ fun gOmregningMedArbeidsinntektMelding(inntekt: Int) = """
 """.trimIndent()
 
 val G_OMREGNING_UTEN_ARBEDSINNTEKT_MELDING = """
-    Fra ${nyesteGrunnbeløp.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${nyesteGrunnbeløp.grunnbeløp} og overgangsstønaden din er derfor endret.
+    Fra ${nyesteGrunnbeløp.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${nyesteGrunnbeløp.grunnbeløp} kroner og overgangsstønaden din er derfor endret.
     Du må si ifra til oss hvis månedsinntekten din blir høyere enn $halvG kroner før skatt.
 """.trimIndent()
