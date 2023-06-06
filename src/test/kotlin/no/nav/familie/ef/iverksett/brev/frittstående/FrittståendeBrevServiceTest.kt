@@ -8,6 +8,7 @@ import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
 import no.nav.familie.ef.iverksett.brev.domain.tilDto
 import no.nav.familie.ef.iverksett.brev.frittstående.KarakterInnhentingBrevUtil.opprettBrev
+import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
@@ -15,8 +16,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 
 internal class FrittståendeBrevServiceTest {
 
@@ -60,11 +59,11 @@ internal class FrittståendeBrevServiceTest {
 
             every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns false
 
-            val feil = assertThrows<IllegalArgumentException> { frittståendeBrevService.opprettTask(brevDto) }
+            val feil = assertThrows<ApiFeil> { frittståendeBrevService.opprettTask(brevDto) }
 
             verify(exactly = 0) { karakterutskriftBrevRepository.insert(any()) }
             verify(exactly = 0) { taskService.save(any()) }
-            assertThat(feil.message).isEqualTo("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}")
+            assertThat(feil.feil).isEqualTo("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}")
         }
 
         @Test
@@ -74,11 +73,11 @@ internal class FrittståendeBrevServiceTest {
 
             every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns true
 
-            val feil = assertThrows<IllegalStateException> { frittståendeBrevService.opprettTask(brevDto) }
+            val feil = assertThrows<ApiFeil> { frittståendeBrevService.opprettTask(brevDto) }
 
             verify(exactly = 0) { karakterutskriftBrevRepository.insert(any()) }
             verify(exactly = 0) { taskService.save(any()) }
-            assertThat(feil.message).isEqualTo("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}")
+            assertThat(feil.feil).isEqualTo("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}")
         }
 
         @Test
@@ -89,11 +88,11 @@ internal class FrittståendeBrevServiceTest {
             every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns false
             every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(any(), any(), any()) } returns true
 
-            val feil = assertThrows<IllegalStateException> { frittståendeBrevService.opprettTask(brevDto) }
+            val feil = assertThrows<ApiFeil> { frittståendeBrevService.opprettTask(brevDto) }
 
             verify(exactly = 0) { karakterutskriftBrevRepository.insert(any()) }
             verify(exactly = 0) { taskService.save(any()) }
-            assertThat(feil.message).isEqualTo("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}")
+            assertThat(feil.feil).isEqualTo("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}")
         }
     }
 }
