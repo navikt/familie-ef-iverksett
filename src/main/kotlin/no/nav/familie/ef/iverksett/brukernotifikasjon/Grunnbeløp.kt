@@ -2,7 +2,6 @@ package no.nav.familie.ef.iverksett.brukernotifikasjon
 
 import no.nav.familie.kontrakter.felles.Månedsperiode
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.YearMonth
@@ -39,4 +38,3 @@ data class Grunnbeløp(
 )
 
 fun LocalDate.norskFormat() = this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-

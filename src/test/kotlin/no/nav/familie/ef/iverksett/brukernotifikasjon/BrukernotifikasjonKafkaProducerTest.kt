@@ -16,10 +16,7 @@ class BrukernotifikasjonKafkaProducerTest {
     private val kafkaTemplate = mockk<KafkaTemplate<NokkelInput, BeskjedInput>>()
     private val brukernotifikasjonKafkaProducer = BrukernotifikasjonKafkaProducer(kafkaTemplate)
 
-    private val forventetGOmregningTekst = """
-        Fra ${nyesteGrunnbeløp.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${nyesteGrunnbeløp.grunnbeløp} kroner og din forventede inntekt er oppjustert til 200000 kroner. Overgangsstønaden din er derfor endret.
-        Du må si ifra til oss hvis inntekten din øker eller reduseres med 10 prosent eller mer.
-    """.trimIndent()
+    private val forventetGOmregningTekst = G_OMREGNING_MELDING_TIL_BRUKER
 
     @Test
     fun `lagBeskjed genererer riktig melding`() {

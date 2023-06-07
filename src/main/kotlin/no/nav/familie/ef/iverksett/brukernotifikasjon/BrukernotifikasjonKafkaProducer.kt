@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.time.YearMonth
 import java.time.ZoneOffset
 import java.util.UUID
 
@@ -53,33 +52,11 @@ class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<N
         val builder = BeskjedInputBuilder()
             .withSikkerhetsnivaa(4)
             .withSynligFremTil(null)
-            .withTekst(genererGOmregningMelding(iverksett))
+            .withTekst(G_OMREGNING_MELDING_TIL_BRUKER)
             .withTidspunkt(LocalDateTime.now(ZoneOffset.UTC))
 
         return builder.build()
     }
 }
 
-fun genererGOmregningMelding(iverksett: IverksettData): String {
-    val melding = if (iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.any { it.inntekt > 0 } == true) {
-        gOmregningMedArbeidsinntektMelding(
-            iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.first { it.periode.inneholder(YearMonth.now().plusMonths(1)) && it.inntekt > 0 }?.inntekt
-                ?: iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.first { it.periode.inneholder(YearMonth.now()) && it.inntekt > 0 }?.inntekt
-                ?: iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.first { it.inntekt > 0 }?.inntekt ?: throw Exception("Skulle ha funnet inntekt i andel tilkjent ytelse for behandling ${iverksett.behandling.behandlingId}"),
-        )
-    } else {
-        G_OMREGNING_UTEN_ARBEDSINNTEKT_MELDING
-    }
-
-    return melding
-}
-
-fun gOmregningMedArbeidsinntektMelding(inntekt: Int) = """
-    Fra ${nyesteGrunnbeløp.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${nyesteGrunnbeløp.grunnbeløp} kroner og din forventede inntekt er oppjustert til $inntekt kroner. Overgangsstønaden din er derfor endret.
-    Du må si ifra til oss hvis inntekten din øker eller reduseres med 10 prosent eller mer.
-""".trimIndent()
-
-val G_OMREGNING_UTEN_ARBEDSINNTEKT_MELDING = """
-    Fra ${nyesteGrunnbeløp.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${nyesteGrunnbeløp.grunnbeløp} kroner og overgangsstønaden din er derfor endret.
-    Du må si ifra til oss hvis månedsinntekten din blir høyere enn $halvG kroner før skatt.
-""".trimIndent()
+val G_OMREGNING_MELDING_TIL_BRUKER = """Fra ${nyesteGrunnbeløp.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${nyesteGrunnbeløp.grunnbeløp} kroner og overgangsstønaden din er derfor endret.""".trimIndent()
