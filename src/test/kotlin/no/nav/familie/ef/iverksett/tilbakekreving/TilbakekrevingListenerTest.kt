@@ -37,8 +37,8 @@ internal class TilbakekrevingListenerTest {
     internal fun setUp() {
         every { iverksettingRepository.findByEksternId(any()) }
             .returns(lagIverksett(behandling))
-        every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) }
-            .returns(Enhet(enhetId = "0", enhetNavn = "navn"))
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandlingMedRelasjoner(any()) }
+            .returns(listOf(Enhet(enhetId = "0", enhetNavn = "navn")))
         every { tilbakekrevingProducer.send(any(), any()) } just runs
         listener = TilbakekrevingListener(iverksettingRepository, familieIntegrasjonerClient, tilbakekrevingProducer)
     }

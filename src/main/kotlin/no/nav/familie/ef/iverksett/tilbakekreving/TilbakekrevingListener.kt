@@ -60,7 +60,7 @@ class TilbakekrevingListener(
             logger.info("HentFagsystemsbehandlingRequest er mottatt i kafka med key=$key og data=$data")
             val iverksett = iverksettingRepository.findByEksternId(request.eksternId.toLong()).data
             sjekkFagsakIdKonsistens(iverksett, request)
-            familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(iverksett.søker.personIdent)?.let {
+            familieIntegrasjonerClient.hentBehandlendeEnhetForBehandlingMedRelasjoner(iverksett.søker.personIdent).firstOrNull()?.let {
                 val fagsystemsbehandling = iverksett.tilFagsystembehandling(it)
                 tilbakekrevingProducer.send(fagsystemsbehandling, key)
             } ?: error("Kan ikke finne behandlende enhet for søker på behandling ${iverksett.behandling.behandlingId}")
