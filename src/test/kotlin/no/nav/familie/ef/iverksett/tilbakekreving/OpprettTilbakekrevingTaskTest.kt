@@ -50,8 +50,8 @@ internal class OpprettTilbakekrevingTaskTest {
     @BeforeEach
     fun init() {
         every { tilbakekrevingClient.finnesÅpenBehandling(any()) } returns false
-        every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandling(any()) } returns
-            Enhet("1", "Oslo")
+        every { familieIntegrasjonerClient.hentBehandlendeEnhetForBehandlingMedRelasjoner(any()) } returns
+            listOf(Enhet("1", "Oslo"))
         every { tilbakekrevingClient.opprettBehandling(any()) } just Runs
     }
 

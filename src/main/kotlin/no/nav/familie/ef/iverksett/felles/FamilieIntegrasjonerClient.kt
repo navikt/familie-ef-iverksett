@@ -27,8 +27,6 @@ class FamilieIntegrasjonerClient(
     private val aktørUri =
         UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_AKTØR).build().toUri()
 
-    private fun arbeidsfordelingUri(tema: String) =
-        UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING, tema).build().toUri()
 
     private fun arbeidsfordelingOppfølingUri(tema: String) =
         UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING_OPPFØLGING, tema).build().toUri()
@@ -54,11 +52,6 @@ class FamilieIntegrasjonerClient(
     fun hentBehandlendeEnhetForOppfølging(personident: String): Enhet? {
         val response =
             postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingOppfølingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))
-        return response.getDataOrThrow().firstOrNull()
-    }
-
-    fun hentBehandlendeEnhetForBehandling(personident: String): Enhet? {
-        val response = postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))
         return response.getDataOrThrow().firstOrNull()
     }
 
