@@ -22,7 +22,9 @@ data class FrittståendeBrev(
     val stønadstype: StønadType,
     val mottakere: Brevmottakere,
     val fil: ByteArray,
-    val brevtype: FrittståendeBrevType,
+    @Deprecated("Skal erstattes av tittel")
+    val brevtype: FrittståendeBrevType? = null,
+    val tittel: String? = null,
     val journalpostResultat: JournalpostResultatMap = JournalpostResultatMap(),
     val distribuerBrevResultat: DistribuerBrevResultatMap = DistribuerBrevResultatMap(),
     val opprettetTid: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),

@@ -42,7 +42,7 @@ class FrittståendeBrevService(
                         data.fil,
                         Filtype.PDFA,
                         dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
-                        tittel = data.brevtype.tittel,
+                        tittel = data.tittel,
                     ),
                 ),
                 fagsakId = data.eksternFagsakId.toString(),
@@ -78,6 +78,7 @@ class FrittståendeBrevService(
                 mottakere = Brevmottakere(mottakere.map { it.toDomain() }),
                 fil = data.fil,
                 brevtype = data.brevtype,
+                tittel = data.tittel,
             ),
         )
         taskService.save(Task(JournalførFrittståendeBrevTask.TYPE, brev.id.toString()))
