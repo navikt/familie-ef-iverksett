@@ -18,6 +18,7 @@ data class PeriodeId(
 
 fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, this.forrigePeriodeId)
 
+// TODO må håndtere denne i nye utbetalingsgeneratorn
 fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): AndelTilkjentYtelse =
     AndelTilkjentYtelse(
         beløp = 0,
@@ -34,7 +35,7 @@ fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): And
 object ØkonomiUtils {
 
     fun andelerUtenNullVerdier(tilkjentYtelse: TilkjentYtelse?): List<AndelTilkjentYtelse> =
-        tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.erNull() } ?: emptyList()
+        tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.harNullBeløp() } ?: emptyList()
 
     /**
      * Lager oversikt over siste andel i hver kjede som finnes uten endring i oppdatert tilstand.

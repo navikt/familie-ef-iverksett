@@ -10,7 +10,7 @@ Egenskap: Revurderer med 0 beløp etter en revurdering med 0 beløp skal sette s
       | 1            | 03.2021  | 03.2021  | 700   |
       | 2            | 02.2021  | 04.2021  | 0     |
       | 3            | 01.2021  | 01.2021  | 0     |
-      | 3            | 01.2021  | 04.2021  | 0     |
+      | 3            | 02.2021  | 04.2021  | 0     |
 
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres
 
@@ -27,8 +27,9 @@ Egenskap: Revurderer med 0 beløp etter en revurdering med 0 beløp skal sette s
 
     Og forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      |          |          | 0     | 1          |                    | 2                   |
+      | 02.2021  | 04.2021  | 0     |            |                    |                     |
 
     Og forvent følgende tilkjente ytelser for behandling 3 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      |          |          | 0     | 1          |                    | 3                   |
+      | 01.2021  | 01.2021  | 0     |            |                    |                     |
+      | 02.2021  | 04.2021  | 0     |            |                    |                     |

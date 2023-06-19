@@ -66,12 +66,51 @@ class StepDefinitions {
     fun `andelhistorikk kjøres`() {
         beregnedeTilkjentYtelse = tilkjentYtelse.fold(emptyList<Pair<UUID, TilkjentYtelse>>()) { acc, holder ->
             val nyTilkjentYtelseMedMetaData = toMedMetadata(holder, stønadType)
-            val nyTilkjentYtelse = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
+            val forrigeTilkjentYtelse = acc.lastOrNull()?.second
+            val nyTilkjentYtelse = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
                 nyTilkjentYtelseMedMetaData,
-                acc.lastOrNull()?.second,
+                forrigeTilkjentYtelse,
             )
-            acc + (holder.behandlingId to nyTilkjentYtelse)
+            acc + (holder.behandlingId to justerPeriodeId(forrigeTilkjentYtelse, nyTilkjentYtelse))
         }.toMap()
+    }
+
+    /**
+     * Pga at nye utbetalingsgeneratorn begynner med periodeId på 0, så justeres periodeIdn her for å unngå å endre alle tester med periodeIdn nå
+     * Det trenger vi kun å justere for førstegangsbehandling som setter "startPeriodeId"
+     */
+    private fun justerPeriodeId(
+        forrigeTilkjentYtelse: TilkjentYtelse?,
+        nyTilkjentYtelse: TilkjentYtelse,
+    ): TilkjentYtelse {
+        return if (forrigeTilkjentYtelse?.sisteAndelIKjede != null) {
+            nyTilkjentYtelse
+        } else {
+            nyTilkjentYtelse.copy(
+                andelerTilkjentYtelse = nyTilkjentYtelse.andelerTilkjentYtelse.map {
+                    it.copy(
+                        periodeId = it.periodeId?.plus(1),
+                        forrigePeriodeId = it.forrigePeriodeId?.plus(1),
+                    )
+                },
+                utbetalingsoppdrag = nyTilkjentYtelse.utbetalingsoppdrag?.let { utbetalingsoppdrag ->
+                    utbetalingsoppdrag.copy(
+                        utbetalingsperiode = utbetalingsoppdrag.utbetalingsperiode.map {
+                            it.copy(
+                                periodeId = it.periodeId + 1,
+                                forrigePeriodeId = it.forrigePeriodeId?.plus(1),
+                            )
+                        },
+                    )
+                },
+                sisteAndelIKjede = nyTilkjentYtelse.sisteAndelIKjede?.let {
+                    it.copy(
+                        periodeId = it.periodeId?.plus(1),
+                        forrigePeriodeId = it.forrigePeriodeId?.plus(1),
+                    )
+                },
+            )
+        }
     }
 
     @Så("forvent følgende utbetalingsoppdrag uten utbetalingsperiode")
@@ -92,12 +131,17 @@ class StepDefinitions {
         val forventedeUtbetalingsoppdrag = TilkjentYtelseParser.mapForventetUtbetalingsoppdrag(dataTable)
         assertSjekkBehandlingIder(forventedeUtbetalingsoppdrag.map { it.behandlingId })
 
-        forventedeUtbetalingsoppdrag.forEach { forventetUtbetalingsoppdrag ->
+        forventedeUtbetalingsoppdrag.forEachIndexed { index, forventetUtbetalingsoppdrag ->
             val utbetalingsoppdrag = (
                 beregnedeTilkjentYtelse[forventetUtbetalingsoppdrag.behandlingId]?.utbetalingsoppdrag
                     ?: error("Mangler utbetalingsoppdrag for ${forventetUtbetalingsoppdrag.behandlingId}")
                 )
-            assertUtbetalingsoppdrag(forventetUtbetalingsoppdrag, utbetalingsoppdrag)
+            try {
+                assertUtbetalingsoppdrag(forventetUtbetalingsoppdrag, utbetalingsoppdrag)
+            } catch (e: Throwable) {
+                logger.error("Feilet forventet utbetalingsoppdrag index=$index")
+                throw e
+            }
         }
     }
 
@@ -154,14 +198,19 @@ class StepDefinitions {
         beregnetTilkjentYtelse: TilkjentYtelse,
     ) {
         beregnetTilkjentYtelse.andelerTilkjentYtelse.forEachIndexed { index, andel ->
-            val forventetAndel = forventetTilkjentYtelse.andeler[index]
-            assertThat(andel.periode.fom).isEqualTo(forventetAndel.fom)
-            assertThat(andel.periode.tom).isEqualTo(forventetAndel.tom)
-            assertThat(andel.beløp).isEqualTo(forventetAndel.beløp)
-            assertThat(andel.periodeId).isEqualTo(forventetAndel.periodeId)
-            assertThat(andel.forrigePeriodeId).isEqualTo(forventetAndel.forrigePeriodeId)
-            if (forventetAndel.kildeBehandlingId != null) {
-                assertThat(andel.kildeBehandlingId).isEqualTo(forventetAndel.kildeBehandlingId)
+            try {
+                val forventetAndel = forventetTilkjentYtelse.andeler[index]
+                assertThat(andel.periode.fom).isEqualTo(forventetAndel.fom)
+                assertThat(andel.periode.tom).isEqualTo(forventetAndel.tom)
+                assertThat(andel.beløp).isEqualTo(forventetAndel.beløp)
+                assertThat(andel.periodeId).isEqualTo(forventetAndel.periodeId)
+                assertThat(andel.forrigePeriodeId).isEqualTo(forventetAndel.forrigePeriodeId)
+                if (forventetAndel.kildeBehandlingId != null) {
+                    assertThat(andel.kildeBehandlingId).isEqualTo(forventetAndel.kildeBehandlingId)
+                }
+            } catch (e: Throwable) {
+                logger.error("Feilet assertTilkjentYtelse index=$index")
+                throw e
             }
         }
         assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(forventetTilkjentYtelse.startmåned)

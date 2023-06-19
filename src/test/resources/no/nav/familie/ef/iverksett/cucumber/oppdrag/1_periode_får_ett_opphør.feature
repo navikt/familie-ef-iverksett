@@ -24,4 +24,4 @@ Egenskap: Har en periode og får ett opphør
 
     Så forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id |
-      |          |          | 0     | 1          |                    |
+      | 02.2021  | 05.2021  | 0     |            |                    |

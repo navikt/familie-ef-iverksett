@@ -326,7 +326,7 @@ object TestOppdragRunner {
         forrigeTilkjentYtelse: TilkjentYtelse? = null,
     ) =
         UtbetalingsoppdragGenerator
-            .lagTilkjentYtelseMedUtbetalingsoppdrag(
+            .lagTilkjentYtelseMedUtbetalingsoppdragNy(
                 nyTilkjentYtelse,
                 forrigeTilkjentYtelse,
             )

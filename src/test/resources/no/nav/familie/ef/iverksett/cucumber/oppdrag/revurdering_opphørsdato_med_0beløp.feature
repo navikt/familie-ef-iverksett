@@ -31,7 +31,7 @@ Egenskap: Opphører vedtak med 0-periode, og deretter innvilget ny stønad
 
     Og forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      |          |          | 0     | 1          |                    | 2                   |
+      | 03.2021  | 03.2021  | 0     |            |                    |                     |
 
     Og forvent følgende tilkjente ytelser for behandling 3 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |

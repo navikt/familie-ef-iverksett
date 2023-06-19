@@ -83,6 +83,7 @@ class KonsistensavstemmingService(
 
         val andelerFraRequest = konsistensavstemmingTilkjentYtelseDto.andelerTilkjentYtelse.map { it.toDomain() }
 
+        // TODO må verifisere at vi sender riktig kildeBehandlingId her?
         val andeler = tilkjentYtelse.andelerTilkjentYtelse.filter {
             andelerFraRequest.any { andel -> beløpOgPeriodeErLik(andel, it) }
         }

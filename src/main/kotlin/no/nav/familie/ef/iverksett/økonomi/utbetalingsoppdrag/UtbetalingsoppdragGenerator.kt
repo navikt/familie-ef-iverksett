@@ -8,11 +8,19 @@ import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.and
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerUtenNullVerdier
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
+import no.nav.familie.felles.utbetalingsgenerator.Utbetalingsgenerator
+import no.nav.familie.felles.utbetalingsgenerator.domain.AndelData
+import no.nav.familie.felles.utbetalingsgenerator.domain.Behandlingsinformasjon
+import no.nav.familie.felles.utbetalingsgenerator.domain.IdentOgType
+import no.nav.familie.felles.utbetalingsgenerator.domain.YtelseType
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.ENDR
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
+import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.UUID
 
 object UtbetalingsoppdragGenerator {
@@ -25,6 +33,131 @@ object UtbetalingsoppdragGenerator {
      * @param[forrigeTilkjentYtelse] Forrige tilkjent ytelse, med fullstendig sett av andeler med id
      * @return Ny tilkjent ytelse med andeler med id'er, samt utbetalingsoppdrag
      */
+    fun lagTilkjentYtelseMedUtbetalingsoppdragNy(
+        nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
+        forrigeTilkjentYtelse: TilkjentYtelse? = null,
+        erGOmregning: Boolean = false,
+    ): TilkjentYtelse {
+        val stønadstype = nyTilkjentYtelseMedMetaData.stønadstype
+        val personIdent = nyTilkjentYtelseMedMetaData.personIdent
+        val ytelseType = stønadstype.tilYtelseType()
+        var counter = 0
+        fun nextId() = (++counter).toString()
+        val forrigeAndeler = (forrigeTilkjentYtelse?.andelerTilkjentYtelse ?: emptyList())
+            .map { it.tilAndelData(id = nextId(), personIdent = personIdent, ytelseType = ytelseType) }
+        val nyeAndelerPåId = nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.associateBy { nextId() }
+
+        val nyeAndeler = nyeAndelerPåId.map { (id, andel) ->
+            andel.tilAndelData(id = id, personIdent = personIdent, ytelseType = ytelseType)
+        }
+        val forrigeSisteAndelIKjede = forrigeTilkjentYtelse?.sisteAndelIKjede
+        val sisteAndelPerKjede = forrigeSisteAndelIKjede?.tilAndelData("-1", personIdent, ytelseType)
+            ?.let { mapOf(IdentOgType(personIdent, ytelseType) to it) } ?: emptyMap()
+        val beregnetUtbetalingsoppdrag = Utbetalingsgenerator().lagUtbetalingsoppdrag(
+            behandlingsinformasjon = behandlingsinformasjon(
+                nyTilkjentYtelseMedMetaData,
+                erGOmregning,
+                forrigeTilkjentYtelse,
+            ),
+            nyeAndeler = nyeAndeler,
+            forrigeAndeler = forrigeAndeler,
+            sisteAndelPerKjede = sisteAndelPerKjede,
+        )
+        val beregnedeAndelerPåId = beregnetUtbetalingsoppdrag.andeler.associateBy { it.id }
+        val gjeldendeAndeler = nyeAndelerPåId.entries.map {
+            if (it.value.harNullBeløp()) {
+                it.value
+            } else {
+                val beregnetAndel = beregnedeAndelerPåId.getValue(it.key)
+                it.value.copy(
+                    periodeId = beregnetAndel.periodeId,
+                    forrigePeriodeId = beregnetAndel.forrigePeriodeId,
+                    kildeBehandlingId = UUID.fromString(beregnetAndel.kildeBehandlingId),
+                )
+            }
+        }
+        // TODO settes kanskje ikke kildeBehandlingId i ef-sak? Settes den då nå kanskje feil hvis man avkorter en periode?
+        val copy = nyTilkjentYtelseMedMetaData.tilkjentYtelse.copy(
+            utbetalingsoppdrag = beregnetUtbetalingsoppdrag.utbetalingsoppdrag,
+            andelerTilkjentYtelse = gjeldendeAndeler,
+            sisteAndelIKjede = nySisteAndelIKjede(gjeldendeAndeler, forrigeSisteAndelIKjede),
+        )
+        return copy
+    }
+
+    private fun behandlingsinformasjon(
+        nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
+        erGOmregning: Boolean,
+        forrigeTilkjentYtelse: TilkjentYtelse?,
+    ) = Behandlingsinformasjon(
+        saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
+        behandlingId = nyTilkjentYtelseMedMetaData.behandlingId.toString(),
+        eksternBehandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
+        eksternFagsakId = nyTilkjentYtelseMedMetaData.eksternFagsakId,
+        fagsystem = nyTilkjentYtelseMedMetaData.stønadstype.tilYtelsestype(),
+        personIdent = nyTilkjentYtelseMedMetaData.personIdent,
+        vedtaksdato = nyTilkjentYtelseMedMetaData.vedtaksdato,
+        opphørFra = opphørFra(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData),
+        utbetalesTil = null,
+        erGOmregning = erGOmregning,
+    )
+
+    private fun opphørFra(
+        forrigeTilkjentYtelse: TilkjentYtelse?,
+        nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
+    ): YearMonth? {
+        if (forrigeTilkjentYtelse == null) return null
+        val forrigeStartdato = forrigeTilkjentYtelse.startmåned
+        val nyStartdato = nyTilkjentYtelseMedMetaData.tilkjentYtelse.startmåned
+        val førsteAndelDato =
+            nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.periode.fom }
+        if (nyStartdato < forrigeStartdato && (førsteAndelDato == null || nyStartdato < førsteAndelDato)) {
+            return nyStartdato
+        }
+        return null
+    }
+
+    private fun nySisteAndelIKjede(
+        gjeldendeAndeler: List<AndelTilkjentYtelse>,
+        forrigeSisteAndelIKjede: AndelTilkjentYtelse?,
+    ): AndelTilkjentYtelse? {
+        val sisteAndelINyKjede = gjeldendeAndeler.filterNot { it.harNullBeløp() }.maxByOrNull { it.periodeId!! }
+        return if (
+            forrigeSisteAndelIKjede != null && sisteAndelINyKjede != null &&
+            forrigeSisteAndelIKjede.periodeId!! < sisteAndelINyKjede.periodeId!!
+        ) {
+            sisteAndelINyKjede
+        } else {
+            forrigeSisteAndelIKjede ?: sisteAndelINyKjede
+        }
+    }
+
+    private fun AndelTilkjentYtelse.tilAndelData(id: String, personIdent: String, ytelseType: YtelseType): AndelData =
+        AndelData(
+            id = id,
+            fom = periode.fom,
+            tom = periode.tom,
+            beløp = beløp,
+            personIdent = personIdent,
+            type = ytelseType,
+            periodeId = periodeId,
+            forrigePeriodeId = forrigePeriodeId,
+            kildeBehandlingId = kildeBehandlingId?.toString(),
+            utbetalingsgrad = this.utbetalingsgrad(), // TODO denne skal vel ikke settes for Skolepenger/Barnetilsyn?
+        )
+
+    private fun StønadType.tilYtelsestype(): Ytelsestype = when (this) {
+        StønadType.OVERGANGSSTØNAD -> Ytelsestype.OVERGANGSSTØNAD
+        StønadType.BARNETILSYN -> Ytelsestype.BARNETILSYN
+        StønadType.SKOLEPENGER -> Ytelsestype.SKOLEPENGER
+    }
+
+    private fun StønadType.tilYtelseType(): YtelseType = when (this) {
+        StønadType.OVERGANGSSTØNAD -> YtelseType.OVERGANGSSTØNAD
+        StønadType.BARNETILSYN -> YtelseType.BARNETILSYN
+        StønadType.SKOLEPENGER -> YtelseType.SKOLEPENGER
+    }
+
     fun lagTilkjentYtelseMedUtbetalingsoppdrag(
         nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
         forrigeTilkjentYtelse: TilkjentYtelse? = null,
@@ -55,7 +188,8 @@ object UtbetalingsoppdragGenerator {
             tilkjentYtelse = nyTilkjentYtelseMedMetaData,
         )
 
-        val utbetalingsperiodeSomOpphøres = utbetalingsperiodeForOpphør(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
+        val utbetalingsperiodeSomOpphøres =
+            utbetalingsperiodeForOpphør(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
 
         val utbetalingsperioder = (utbetalingsperioderSomOpprettes + utbetalingsperiodeSomOpphøres)
             .filterNotNull()
@@ -150,7 +284,8 @@ object UtbetalingsoppdragGenerator {
         return tilkjentYtelse?.let { ytelse ->
             ytelse.sisteAndelIKjede?.tilPeriodeId()
                 // TODO denne kan fjernes når den er patchet
-                ?: ytelse.andelerTilkjentYtelse.filter { it.periodeId != null }.maxByOrNull { it.periodeId!! }?.tilPeriodeId()
+                ?: ytelse.andelerTilkjentYtelse.filter { it.periodeId != null }.maxByOrNull { it.periodeId!! }
+                    ?.tilPeriodeId()
         }
     }
 }

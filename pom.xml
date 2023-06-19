@@ -201,6 +201,12 @@
             <version>${brukernotifikasjon-schemas.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>no.nav.familie.felles</groupId>
+            <artifactId>familie-utbetalingsgenerator</artifactId>
+            <version>1.0_20230616144450_f692c50</version>
+        </dependency>
+
         <!-- Database -->
         <dependency>
             <groupId>org.postgresql</groupId>

@@ -389,7 +389,7 @@ internal class ØkonomiUtilsTest {
             utbetalingsperiodeForOpphør(null, tilkjentYtelseMedMetadata(andeler, startmåned))
 
         private fun leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler: List<AndelTilkjentYtelse>): List<AndelTilkjentYtelse> {
-            val utenNullandeler = tidligereAndeler.filterNot { it.erNull() }
+            val utenNullandeler = tidligereAndeler.filterNot { it.harNullBeløp() }
             if (utenNullandeler.isEmpty()) return listOf(nullAndelTilkjentYtelse(UUID.randomUUID(), PeriodeId(1)))
             return utenNullandeler
                 .sortedBy { it.periode }

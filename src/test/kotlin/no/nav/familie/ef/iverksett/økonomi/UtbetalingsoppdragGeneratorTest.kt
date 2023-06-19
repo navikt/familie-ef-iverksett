@@ -3,7 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.assertj.core.api.Assertions.assertThat
@@ -28,7 +28,7 @@ internal class UtbetalingsoppdragGeneratorTest {
         val andel2 = opprettAndel(2, YearMonth.of(2021, 1), YearMonth.of(2021, 12)) // endres i behandling b
         val andel3 = opprettAndel(2, YearMonth.of(2022, 1), YearMonth.of(2022, 12)) // ny i behandling b
         val førsteTilkjentYtelse =
-            lagTilkjentYtelseMedUtbetalingsoppdrag(
+            lagTilkjentYtelseMedUtbetalingsoppdragNy(
                 opprettTilkjentYtelseMedMetadata(
                     behandlingA,
                     andel1.periode.fom,
@@ -46,7 +46,7 @@ internal class UtbetalingsoppdragGeneratorTest {
             andel2.copy(periode = andel2.periode.copy(tom = andel2.periode.tom.minusMonths(2))),
             andel3,
         )
-        val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdrag(nyePerioder, førsteTilkjentYtelse)
+        val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdragNy(nyePerioder, førsteTilkjentYtelse)
 
         assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(utbetalingsoppdragB, behandlingA, behandlingB)
     }

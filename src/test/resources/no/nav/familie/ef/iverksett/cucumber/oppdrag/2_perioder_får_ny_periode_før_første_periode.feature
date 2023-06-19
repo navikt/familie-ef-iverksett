@@ -18,7 +18,6 @@ Egenskap: 2 perioder får en ny periode
       | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
       | 1            | 02.2021  | 04.2021  |             | 700   | NY           | Nei        | 1          |                    |
       | 1            | 05.2021  | 07.2021  |             | 900   | NY           | Nei        | 2          | 1                  |
-      | 2            | 05.2021  | 07.2021  | 01.2021     | 900   | ENDR         | Ja         | 2          | 1                  |
       | 2            | 01.2021  | 01.2021  |             | 500   | ENDR         | Nei        | 3          | 2                  |
       | 2            | 05.2021  | 07.2021  |             | 900   | ENDR         | Nei        | 4          | 3                  |
 
