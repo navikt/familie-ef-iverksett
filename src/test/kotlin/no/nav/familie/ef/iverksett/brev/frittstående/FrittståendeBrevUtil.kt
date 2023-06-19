@@ -32,5 +32,6 @@ object FrittståendeBrevUtil {
         ),
         fil = byteArrayOf(13),
         brevtype = FrittståendeBrevType.INFORMASJONSBREV,
+        tittel = "tittel123",
     )
 }

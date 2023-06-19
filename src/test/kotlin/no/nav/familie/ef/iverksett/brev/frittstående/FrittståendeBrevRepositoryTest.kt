@@ -32,6 +32,7 @@ internal class FrittståendeBrevRepositoryTest : ServerTest() {
         assertThat(oppdatertBrev.mottakere).isEqualTo(brev.mottakere)
         assertThat(oppdatertBrev.fil).isEqualTo(brev.fil)
         assertThat(oppdatertBrev.brevtype).isEqualTo(brev.brevtype)
+        assertThat(oppdatertBrev.tittel).isEqualTo(brev.tittel)
         assertThat(oppdatertBrev.journalpostResultat).isEqualTo(brev.journalpostResultat)
         assertThat(oppdatertBrev.distribuerBrevResultat).isEqualTo(brev.distribuerBrevResultat)
         assertThat(oppdatertBrev.opprettetTid).isEqualTo(brev.opprettetTid)

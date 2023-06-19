@@ -17,6 +17,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
 
@@ -125,5 +126,19 @@ internal class JournalførFrittståendeBrevTaskTest {
 
         assertThat(arkivrequests[1].fnr).isEqualTo("11")
         assertThat(arkivrequests[1].avsenderMottaker?.id).isEqualTo("22")
+    }
+
+    @Test
+    internal fun `skal feile dersom tittel og brevtype begge er null`() {
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
+            tittel = null,
+            brevtype = null,
+        )
+
+        val feil = assertThrows<IllegalStateException> {
+            service.doTask(Task(JournalførFrittståendeBrevTask.TYPE, UUID.randomUUID().toString()))
+        }
+
+        assertThat(feil.message).contains("Frittstående brev mangler både tittel og brevtype")
     }
 }

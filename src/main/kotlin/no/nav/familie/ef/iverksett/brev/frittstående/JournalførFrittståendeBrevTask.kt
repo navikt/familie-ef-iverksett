@@ -77,7 +77,7 @@ class JournalførFrittståendeBrevTask(
                 frittståendeBrev.fil,
                 Filtype.PDFA,
                 dokumenttype = stønadstypeTilDokumenttype(frittståendeBrev.stønadstype),
-                tittel = frittståendeBrev.brevtype.tittel,
+                tittel = utledBrevtittel(frittståendeBrev),
             ),
         ),
         fagsakId = frittståendeBrev.eksternFagsakId.toString(),
@@ -85,6 +85,10 @@ class JournalførFrittståendeBrevTask(
         eksternReferanseId = "$callId-$index",
         avsenderMottaker = avsenderMottaker(frittståendeBrev, brevmottaker),
     )
+
+    private fun utledBrevtittel(frittståendeBrev: FrittståendeBrev): String =
+        frittståendeBrev.tittel ?: frittståendeBrev.brevtype?.tittel
+            ?: throw IllegalStateException("Frittstående brev mangler både tittel og brevtype")
 
     private fun avsenderMottaker(
         frittståendeBrev: FrittståendeBrev,

@@ -368,6 +368,7 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
         journalførendeEnhet = "4489",
         saksbehandlerIdent = "saksbehandlerIdent",
         stønadType = StønadType.OVERGANGSSTØNAD,
+        tittel = "brevtittel",
     )
 }
 
