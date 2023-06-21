@@ -3,10 +3,13 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.PeriodeId
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.nullAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.YearMonth
@@ -14,10 +17,11 @@ import java.util.UUID
 
 internal class UtbetalingsoppdragGeneratorTest {
 
+    private val behandlingA = UUID.randomUUID()
+    private val behandlingB = UUID.randomUUID()
+
     @Test
     fun `Andeler med behandlingId, periodeId og forrigePeriodeId blir oppdaterte i lagTilkjentYtelseMedUtbetalingsoppdrag`() {
-        val behandlingA = UUID.randomUUID()
-        val behandlingB = UUID.randomUUID()
         val andel1 = opprettAndel(
             2,
             YearMonth.of(2020, 1),
@@ -47,6 +51,41 @@ internal class UtbetalingsoppdragGeneratorTest {
         val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdragNy(nyePerioder, førsteTilkjentYtelse)
 
         assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(utbetalingsoppdragB, behandlingA, behandlingB)
+    }
+
+    @Nested
+    inner class HåndteringAvMinusUendeligheten {
+
+        val andel1 = opprettAndel(
+            0,
+            YearMonth.of(2020, 1),
+            YearMonth.of(2020, 12),
+        )
+
+        @Test
+        fun `historiskt har vi lagret ned andeler med -uendelig fom-tom dato, som må håndteres`() {
+            val startmåned = andel1.periode.fom
+            val nullAndelTilkjentYtelse = nullAndelTilkjentYtelse(UUID.randomUUID(), PeriodeId(1L, forrige = null))
+            val utbetalingsoppdrag = lagTilkjentYtelseMedUtbetalingsoppdragNy(
+                opprettTilkjentYtelseMedMetadata(
+                    behandlingA,
+                    startmåned,
+                    andel1,
+                ),
+                TilkjentYtelse(
+                    andelerTilkjentYtelse = listOf(nullAndelTilkjentYtelse),
+                    startmåned = startmåned,
+                ),
+            )
+            assertThat(utbetalingsoppdrag.andelerTilkjentYtelse).hasSize(1)
+            assertThat(utbetalingsoppdrag.utbetalingsoppdrag?.utbetalingsperiode).isEmpty()
+            assertAndel(
+                andelTilkjentYtelse = utbetalingsoppdrag.andelerTilkjentYtelse[0],
+                expectedPeriodeId = null,
+                expectedForrigePeriodeId = null,
+                expectedKildeBehandlingId = andel1.kildeBehandlingId,
+            )
+        }
     }
 
     private fun assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(
