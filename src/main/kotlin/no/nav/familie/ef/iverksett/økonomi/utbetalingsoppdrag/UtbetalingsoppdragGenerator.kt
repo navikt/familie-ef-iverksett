@@ -43,16 +43,15 @@ object UtbetalingsoppdragGenerator {
         val ytelseType = stønadstype.tilYtelseType()
         var counter = 0
         fun nextId() = (++counter).toString()
+
         val forrigeAndeler = (forrigeTilkjentYtelse?.andelerTilkjentYtelse ?: emptyList())
             .map { it.tilAndelData(id = nextId(), personIdent = personIdent, ytelseType = ytelseType) }
         val nyeAndelerPåId = nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.associateBy { nextId() }
 
-        val nyeAndeler = nyeAndelerPåId.map { (id, andel) ->
-            andel.tilAndelData(id = id, personIdent = personIdent, ytelseType = ytelseType)
-        }
+        val nyeAndeler = tilAndelData(nyeAndelerPåId, personIdent, ytelseType)
         val forrigeSisteAndelIKjede = forrigeTilkjentYtelse?.sisteAndelIKjede
-        val sisteAndelPerKjede = forrigeSisteAndelIKjede?.tilAndelData("-1", personIdent, ytelseType)
-            ?.let { mapOf(IdentOgType(personIdent, ytelseType) to it) } ?: emptyMap()
+        val sisteAndelPerKjede = mapTilSisteAndelPerKjede(forrigeSisteAndelIKjede, personIdent, ytelseType)
+
         val beregnetUtbetalingsoppdrag = Utbetalingsgenerator().lagUtbetalingsoppdrag(
             behandlingsinformasjon = behandlingsinformasjon(
                 nyTilkjentYtelseMedMetaData,
@@ -84,6 +83,24 @@ object UtbetalingsoppdragGenerator {
         )
         return copy
     }
+
+    private fun tilAndelData(
+        nyeAndelerPåId: Map<String, AndelTilkjentYtelse>,
+        personIdent: String,
+        ytelseType: YtelseType,
+    ) = nyeAndelerPåId.map { (id, andel) ->
+        andel.tilAndelData(id = id, personIdent = personIdent, ytelseType = ytelseType)
+    }
+
+    /**
+     * Utbetalingsgeneratorn ønsker en map med ident og type, då den har støtte for å sende inn flere personer som brukes av Barnetrygd
+     */
+    private fun mapTilSisteAndelPerKjede(
+        forrigeSisteAndelIKjede: AndelTilkjentYtelse?,
+        personIdent: String,
+        ytelseType: YtelseType,
+    ) = forrigeSisteAndelIKjede?.tilAndelData("-1", personIdent, ytelseType)
+        ?.let { mapOf(IdentOgType(personIdent, ytelseType) to it) } ?: emptyMap()
 
     private fun behandlingsinformasjon(
         nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
