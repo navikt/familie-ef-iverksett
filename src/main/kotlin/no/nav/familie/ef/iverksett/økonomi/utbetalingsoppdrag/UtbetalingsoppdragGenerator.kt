@@ -94,7 +94,7 @@ object UtbetalingsoppdragGenerator {
         behandlingId = nyTilkjentYtelseMedMetaData.behandlingId.toString(),
         eksternBehandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
         eksternFagsakId = nyTilkjentYtelseMedMetaData.eksternFagsakId,
-        fagsystem = nyTilkjentYtelseMedMetaData.stønadstype.tilYtelsestype(),
+        ytelse = nyTilkjentYtelseMedMetaData.stønadstype.tilYtelsestype(),
         personIdent = nyTilkjentYtelseMedMetaData.personIdent,
         vedtaksdato = nyTilkjentYtelseMedMetaData.vedtaksdato,
         opphørFra = opphørFra(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData),

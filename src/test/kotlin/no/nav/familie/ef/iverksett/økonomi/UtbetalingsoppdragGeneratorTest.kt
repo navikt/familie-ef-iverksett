@@ -8,8 +8,6 @@ import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.opentest4j.AssertionFailedError
-import org.opentest4j.ValueWrapper
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.UUID
@@ -51,22 +49,6 @@ internal class UtbetalingsoppdragGeneratorTest {
         assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(utbetalingsoppdragB, behandlingA, behandlingB)
     }
 
-    private fun assertExpectedOgActualErLikeUtenomFeltSomFeiler(
-        catchThrowable: Throwable?,
-        feltSomSkalFiltreres: String,
-    ) {
-        val assertionFailedError = catchThrowable as AssertionFailedError
-        val actual = filterAwayBehandlingId(assertionFailedError.actual, feltSomSkalFiltreres)
-        val expected = filterAwayBehandlingId(assertionFailedError.expected, feltSomSkalFiltreres)
-        assertThat(actual).isEqualTo(expected)
-    }
-
-    private fun filterAwayBehandlingId(valueWrapper: ValueWrapper, feltSomSkalFiltreres: String) =
-        valueWrapper.stringRepresentation
-            .split("\n")
-            .filterNot { it.contains(feltSomSkalFiltreres) }
-            .joinToString("\n")
-
     private fun assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(
         utbetalingsoppdragB: TilkjentYtelse,
         behandlingA: UUID?,
@@ -74,20 +56,20 @@ internal class UtbetalingsoppdragGeneratorTest {
     ) {
         assertAndel(
             andelTilkjentYtelse = utbetalingsoppdragB.andelerTilkjentYtelse[0],
-            expectedPeriodeId = 1,
+            expectedPeriodeId = 0,
             expectedForrigePeriodeId = null,
             expectedKildeBehandlingId = behandlingA,
         )
         assertAndel(
             andelTilkjentYtelse = utbetalingsoppdragB.andelerTilkjentYtelse[1],
-            expectedPeriodeId = 3,
-            expectedForrigePeriodeId = 2,
-            expectedKildeBehandlingId = behandlingB,
+            expectedPeriodeId = 1,
+            expectedForrigePeriodeId = 0,
+            expectedKildeBehandlingId = behandlingA,
         )
         assertAndel(
             andelTilkjentYtelse = utbetalingsoppdragB.andelerTilkjentYtelse[2],
-            expectedPeriodeId = 4,
-            expectedForrigePeriodeId = 3,
+            expectedPeriodeId = 2,
+            expectedForrigePeriodeId = 1,
             expectedKildeBehandlingId = behandlingB,
         )
     }
@@ -98,14 +80,14 @@ internal class UtbetalingsoppdragGeneratorTest {
     ) {
         assertAndel(
             andelTilkjentYtelse = førsteTilkjentYtelse.andelerTilkjentYtelse[0],
-            expectedPeriodeId = 1,
+            expectedPeriodeId = 0,
             expectedForrigePeriodeId = null,
             expectedKildeBehandlingId = behandlingA,
         )
         assertAndel(
             andelTilkjentYtelse = førsteTilkjentYtelse.andelerTilkjentYtelse[1],
-            expectedPeriodeId = 2,
-            expectedForrigePeriodeId = 1,
+            expectedPeriodeId = 1,
+            expectedForrigePeriodeId = 0,
             expectedKildeBehandlingId = behandlingA,
         )
     }
@@ -121,15 +103,21 @@ internal class UtbetalingsoppdragGeneratorTest {
         assertThat(andelTilkjentYtelse.kildeBehandlingId).isEqualTo(expectedKildeBehandlingId)
     }
 
-    private fun opprettAndel(beløp: Int, stønadFom: YearMonth, stønadTom: YearMonth) =
+    private fun opprettAndel(
+        beløp: Int,
+        stønadFom: YearMonth,
+        stønadTom: YearMonth,
+        periodeId: Long? = null,
+        forrigePeriodeId: Long? = null,
+    ) =
         lagAndelTilkjentYtelse(
             beløp = beløp,
             fraOgMed = stønadFom,
             tilOgMed = stønadTom,
-            periodeId = 100, // overskreves
-            forrigePeriodeId = 100, // overskreves
+            periodeId = periodeId,
+            forrigePeriodeId = forrigePeriodeId,
             kildeBehandlingId = UUID.randomUUID(),
-        ) // overskreves
+        )
 
     private fun opprettTilkjentYtelseMedMetadata(
         behandlingId: UUID,

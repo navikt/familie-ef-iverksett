@@ -204,7 +204,7 @@
         <dependency>
             <groupId>no.nav.familie.felles</groupId>
             <artifactId>familie-utbetalingsgenerator</artifactId>
-            <version>1.0_20230616144450_f692c50</version>
+            <version>1.0_20230621111154_c44818b</version>
         </dependency>
 
         <!-- Database -->

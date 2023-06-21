@@ -89,8 +89,8 @@ internal class KonsistensavstemmingServiceTest {
         assertThat(utbetalingsoppdrag.utbetalingsperiode).hasSize(1)
 
         val utbetalingsperiode = utbetalingsoppdrag.utbetalingsperiode[0]
-        assertThat(utbetalingsperiode.periodeId).isEqualTo(2)
-        assertThat(utbetalingsperiode.forrigePeriodeId).isEqualTo(1)
+        assertThat(utbetalingsperiode.periodeId).isEqualTo(1)
+        assertThat(utbetalingsperiode.forrigePeriodeId).isEqualTo(0)
     }
 
     @Test
