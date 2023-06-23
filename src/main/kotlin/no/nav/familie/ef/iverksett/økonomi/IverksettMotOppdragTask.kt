@@ -1,5 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
+import no.nav.familie.ef.iverksett.featuretoggle.withFagsakId
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
@@ -25,6 +27,7 @@ class IverksettMotOppdragTask(
     private val oppdragClient: OppdragClient,
     private val taskService: TaskService,
     private val iverksettResultatService: IverksettResultatService,
+    private val featureToggleService: FeatureToggleService,
 ) : AsyncTaskStep {
 
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -33,7 +36,8 @@ class IverksettMotOppdragTask(
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
-            iverksettResultatService.hentTilkjentYtelse(it) ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=$it")
+            iverksettResultatService.hentTilkjentYtelse(it)
+                ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=$it")
         }
         val nyTilkjentYtelseMedMetaData =
             iverksett.vedtak.tilkjentYtelse?.toMedMetadata(
@@ -46,11 +50,23 @@ class IverksettMotOppdragTask(
                 vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate(),
             ) ?: error("Mangler tilkjent ytelse på vedtaket")
 
-        val utbetaling = lagTilkjentYtelseMedUtbetalingsoppdrag(
-            nyTilkjentYtelseMedMetaData,
-            forrigeTilkjentYtelse,
-            iverksett.erGOmregning(),
-        )
+        val brukNyUtbetalingsgenerator = withFagsakId(nyTilkjentYtelseMedMetaData.eksternFagsakId) {
+            featureToggleService.isEnabled("familie.ef.iverksett.ny-utbetalingsgenerator")
+        }
+
+        val utbetaling = if (brukNyUtbetalingsgenerator) {
+            lagTilkjentYtelseMedUtbetalingsoppdragNy(
+                nyTilkjentYtelseMedMetaData,
+                forrigeTilkjentYtelse,
+                iverksett.erGOmregning(),
+            )
+        } else {
+            lagTilkjentYtelseMedUtbetalingsoppdrag(
+                nyTilkjentYtelseMedMetaData,
+                forrigeTilkjentYtelse,
+                iverksett.erGOmregning(),
+            )
+        }
 
         iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
         utbetaling.utbetalingsoppdrag?.let {

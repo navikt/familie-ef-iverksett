@@ -5,6 +5,7 @@ import io.getunleash.UnleashContext
 import io.getunleash.UnleashContextProvider
 import io.getunleash.util.UnleashConfig
 import no.nav.familie.ef.iverksett.featuretoggle.ByEnvironmentStrategy
+import no.nav.familie.ef.iverksett.featuretoggle.ByFagsakIdStrategy
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -47,6 +48,7 @@ class FeatureToggleConfig(
                 .unleashContextProvider(lagUnleashContextProvider())
                 .build(),
             ByEnvironmentStrategy(),
+            ByFagsakIdStrategy(),
         )
 
         return object : FeatureToggleService {

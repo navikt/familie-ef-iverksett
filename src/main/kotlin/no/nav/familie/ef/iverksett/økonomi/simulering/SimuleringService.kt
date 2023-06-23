@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering
 
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
+import no.nav.familie.ef.iverksett.featuretoggle.withFagsakId
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.iverksetting.domene.Simulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
@@ -32,11 +33,20 @@ class SimuleringService(
                 iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
             }
 
-            val tilkjentYtelseMedUtbetalingsoppdrag =
+            val brukNyUtbetalingsgenerator = withFagsakId(simulering.nyTilkjentYtelseMedMetaData.eksternFagsakId) {
+                featureToggleService.isEnabled("familie.ef.iverksett.ny-utbetalingsgenerator")
+            }
+            val tilkjentYtelseMedUtbetalingsoppdrag = if (brukNyUtbetalingsgenerator) {
+                UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
+                    simulering.nyTilkjentYtelseMedMetaData,
+                    forrigeTilkjentYtelse,
+                )
+            } else {
                 UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simulering.nyTilkjentYtelseMedMetaData,
                     forrigeTilkjentYtelse,
                 )
+            }
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
                 ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")

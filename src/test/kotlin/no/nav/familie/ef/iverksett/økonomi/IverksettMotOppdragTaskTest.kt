@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.prosessering.domene.Task
@@ -34,6 +35,7 @@ internal class IverksettMotOppdragTaskTest {
             oppdragClient = oppdragClient,
             taskService = taskService,
             iverksettResultatService = iverksettResultatService,
+            mockFeatureToggleService(),
         )
 
     @BeforeEach
