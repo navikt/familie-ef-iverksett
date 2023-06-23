@@ -65,7 +65,7 @@ object UtbetalingsoppdragGenerator {
         val beregnedeAndelerPåId = beregnetUtbetalingsoppdrag.andeler.associateBy { it.id }
         val gjeldendeAndeler = nyeAndelerPåId.entries.map {
             if (it.value.harNullBeløp()) {
-        // TODO vi kan vurdere om vi bare skal filtrere vekk de etter att man har laget utbetalingsoppdraget, då vil de ikke bli sendt med som "forrige andeler" i neste utbetalingsoppdrag
+                // TODO vi kan vurdere om vi bare skal filtrere vekk de etter att man har laget utbetalingsoppdraget, då vil de ikke bli sendt med som "forrige andeler" i neste utbetalingsoppdrag
                 it.value
             } else {
                 val beregnetAndel = beregnedeAndelerPåId.getValue(it.key)
@@ -161,7 +161,7 @@ object UtbetalingsoppdragGenerator {
             periodeId = periodeId,
             forrigePeriodeId = forrigePeriodeId,
             kildeBehandlingId = kildeBehandlingId?.toString(),
-            utbetalingsgrad = this.utbetalingsgrad(), // TODO denne skal vel ikke settes for Skolepenger/Barnetilsyn?
+            utbetalingsgrad = if (ytelseType == YtelseType.OVERGANGSSTØNAD) this.utbetalingsgrad() else null,
         )
 
     private fun StønadType.tilYtelsestype(): Ytelsestype = when (this) {
