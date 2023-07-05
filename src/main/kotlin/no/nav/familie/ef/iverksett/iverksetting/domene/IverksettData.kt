@@ -148,7 +148,6 @@ data class DelårsperiodeSkoleårSkolepenger(
 
 data class SkolepengerUtgift(
     val utgiftsdato: LocalDate,
-    val utgifter: Int,
     val stønad: Int,
 )
 
