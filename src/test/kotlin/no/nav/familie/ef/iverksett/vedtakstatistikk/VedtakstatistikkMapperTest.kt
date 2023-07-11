@@ -233,7 +233,6 @@ internal class VedtakstatistikkMapperTest {
         val mappetUtgiftsperiode = vedtakSkolepenger.vedtaksperioder.first().utgifter.first()
 
         assertThat(mappetUtgiftsperiode.utgiftsdato).isEqualTo(forventetUtgiftsperiode.utgiftsdato)
-        assertThat(mappetUtgiftsperiode.utgiftsbeløp).isEqualTo(forventetUtgiftsperiode.utgifter)
         assertThat(mappetUtgiftsperiode.utbetaltBeløp).isEqualTo(forventetUtgiftsperiode.stønad)
 
         assertThat(vedtakSkolepenger.kravMottatt).isEqualTo(LocalDate.of(2021, 3, 1))
@@ -312,7 +311,6 @@ internal class VedtakstatistikkMapperTest {
                 utgiftsperioder = listOf(
                     SkolepengerUtgift(
                         utgiftsdato = LocalDate.of(2021, 1, 1),
-                        utgifter = 5000,
                         stønad = 5000,
                     ),
                 ),

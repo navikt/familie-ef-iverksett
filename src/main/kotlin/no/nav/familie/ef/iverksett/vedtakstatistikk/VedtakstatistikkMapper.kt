@@ -256,7 +256,6 @@ object VedtakstatistikkMapper {
     private fun mapTilUtgiftSkolepenger(utgiftsperiode: SkolepengerUtgift) =
         UtgiftSkolepenger(
             utgiftsdato = utgiftsperiode.utgiftsdato,
-            utgiftsbeløp = utgiftsperiode.utgifter,
             utbetaltBeløp = utgiftsperiode.stønad,
         )
 
