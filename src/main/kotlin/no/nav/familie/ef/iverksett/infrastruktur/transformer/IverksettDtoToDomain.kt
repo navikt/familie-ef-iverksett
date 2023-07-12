@@ -120,7 +120,6 @@ fun VedtaksperiodeSkolepengerDto.toDomain(): VedtaksperiodeSkolepenger {
         utgiftsperioder = this.utgiftsperioder.map {
             SkolepengerUtgift(
                 utgiftsdato = it.utgiftsdato,
-                utgifter = it.utgifter,
                 stønad = it.stønad,
             )
         },
