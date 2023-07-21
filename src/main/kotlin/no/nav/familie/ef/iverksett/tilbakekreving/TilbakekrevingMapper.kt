@@ -96,6 +96,7 @@ private fun BehandlingÅrsak.visningsTekst(): String {
         BehandlingÅrsak.NYE_OPPLYSNINGER -> "Nye opplysninger"
         BehandlingÅrsak.KORRIGERING_UTEN_BREV -> "Korrigering uten brev"
         BehandlingÅrsak.PAPIRSØKNAD -> "Papirsøknad"
+        BehandlingÅrsak.MANUELT_OPPRETTET -> "Manuelt opprettet"
         BehandlingÅrsak.G_OMREGNING -> "G-omregning"
         BehandlingÅrsak.SATSENDRING -> "Satsendring"
 
