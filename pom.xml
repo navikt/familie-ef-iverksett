@@ -19,7 +19,7 @@
         <springdoc.version>2.1.0</springdoc.version>
         <felles.version>2.20230210162649_a258d57-SPRING_BOOT_3</felles.version>
         <familie.kontrakter.version>3.0_20230705132547_9303863</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230705125709_fdce40d</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230721144943_b5151d2</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20230713120621_747ed8f</prosessering.version>
