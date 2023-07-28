@@ -49,6 +49,7 @@ import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsdetaljerDto
 import no.nav.familie.kontrakter.ef.iverksett.DelvilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.FagsakdetaljerDto
+import no.nav.familie.kontrakter.ef.iverksett.Grunnbeløp
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.ef.iverksett.OppgaverForOpprettelseDto
@@ -243,6 +244,7 @@ fun vedtaksdetaljerOvergangsstønad(
     vedtaksTidspunkt: LocalDateTime = LocalDateTime.of(2021, 5, 12, 0, 0),
     inntekt: Boolean = true,
     oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
+    grunnbeløp: Grunnbeløp? = null,
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerOvergangsstønad(
@@ -256,6 +258,7 @@ fun vedtaksdetaljerOvergangsstønad(
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
         oppgaverForOpprettelse = oppgaverForOpprettelse,
+        grunnbeløp = grunnbeløp,
     )
 }
 
