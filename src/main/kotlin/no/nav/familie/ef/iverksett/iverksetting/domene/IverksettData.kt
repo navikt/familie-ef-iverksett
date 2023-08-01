@@ -19,7 +19,6 @@ import no.nav.familie.kontrakter.ef.felles.Vilkårsresultat
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingKategori
-import no.nav.familie.kontrakter.ef.iverksett.Grunnbeløp
 import no.nav.familie.kontrakter.ef.iverksett.IverksettBarnetilsynDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettOvergangsstønadDto
@@ -190,7 +189,6 @@ data class VedtaksdetaljerOvergangsstønad(
     override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(),
     override val avslagÅrsak: AvslagÅrsak? = null,
     val oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = emptyList()),
-    val grunnbeløp: Grunnbeløp? = null,
 ) : Vedtaksdetaljer()
 
 data class VedtaksdetaljerBarnetilsyn(
