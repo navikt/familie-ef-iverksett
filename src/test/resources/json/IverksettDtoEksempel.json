@@ -118,7 +118,6 @@
     "avslagÅrsak":null,
     "oppgaverForOpprettelse": {
       "oppgavetyper": ["INNTEKTSKONTROLL_1_ÅR_FREM_I_TID"]
-    },
-    "grunnbeløp": null
+    }
   }
 }
