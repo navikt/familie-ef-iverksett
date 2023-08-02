@@ -139,6 +139,7 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
         brevmottakere = this.brevmottakere.toDomain(),
         avslagÅrsak = this.avslagÅrsak,
         oppgaverForOpprettelse = this.oppgaverForOpprettelse.toDomain(),
+        grunnbeløp = this.grunnbeløp,
     )
 }
 

@@ -4,7 +4,7 @@ import no.nav.brukernotifikasjon.schemas.builders.BeskjedInputBuilder
 import no.nav.brukernotifikasjon.schemas.builders.NokkelInputBuilder
 import no.nav.brukernotifikasjon.schemas.input.BeskjedInput
 import no.nav.brukernotifikasjon.schemas.input.NokkelInput
-import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -23,7 +23,7 @@ class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<N
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    fun sendBeskjedTilBruker(iverksett: IverksettData, behandlingId: UUID) {
+    fun sendBeskjedTilBruker(iverksett: IverksettOvergangsstønad, behandlingId: UUID) {
         val nokkel = lagNøkkel(iverksett.søker.personIdent, behandlingId)
         val beskjed = lagBeskjed(iverksett)
 
@@ -48,15 +48,18 @@ class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<N
             .withEventId(behandlingId.toString())
             .build()
 
-    fun lagBeskjed(iverksett: IverksettData): BeskjedInput {
+    fun lagBeskjed(iverksett: IverksettOvergangsstønad): BeskjedInput {
         val builder = BeskjedInputBuilder()
             .withSikkerhetsnivaa(4)
             .withSynligFremTil(null)
-            .withTekst(G_OMREGNING_MELDING_TIL_BRUKER)
+            .withTekst(lagMelding(iverksett))
             .withTidspunkt(LocalDateTime.now(ZoneOffset.UTC))
 
         return builder.build()
     }
 }
 
-val G_OMREGNING_MELDING_TIL_BRUKER = """Fra ${nyesteGrunnbeløp.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${nyesteGrunnbeløp.grunnbeløp} kroner og overgangsstønaden din er derfor endret.""".trimIndent()
+fun lagMelding(iverksett: IverksettOvergangsstønad): String =
+    iverksett.vedtak.grunnbeløp?.let {
+        """Fra ${it.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${it.grunnbeløp} kroner og overgangsstønaden din er derfor endret.""".trimIndent()
+    } ?: throw IllegalStateException("Mangler grunnbeløp")

@@ -118,6 +118,13 @@
     "avslagÅrsak":null,
     "oppgaverForOpprettelse": {
       "oppgavetyper": ["INNTEKTSKONTROLL_1_ÅR_FREM_I_TID"]
+    },
+    "grunnbeløp": {
+      "grunnbeløp": 106399,
+      "periode": {
+        "fom": "2021-05",
+        "tom": "2022-04"
+      }
     }
   }
 }

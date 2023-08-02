@@ -17,6 +17,7 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
+import no.nav.familie.kontrakter.ef.iverksett.Grunnbeløp
 import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.Datoperiode
@@ -189,6 +190,7 @@ fun lagIverksettData(
     andeler: List<AndelTilkjentYtelse> = andelsdatoer.map {
         lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it, inntekt = 200_000)
     },
+    grunnbeløp: Grunnbeløp? = null,
 ): IverksettOvergangsstønad {
     val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else årsak
     return opprettIverksettOvergangsstønad(
@@ -203,6 +205,7 @@ fun lagIverksettData(
             andeler = andeler,
             startdato = andelsdatoer.minByOrNull { it } ?: YearMonth.now(),
             vedtaksTidspunkt = vedtakstidspunkt,
+            grunnbeløp = grunnbeløp,
         ),
     )
 }
