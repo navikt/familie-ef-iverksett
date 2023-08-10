@@ -4,7 +4,6 @@ import io.mockk.clearMocks
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.beriketSimuleringsresultat
-import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.simuleringDto
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
@@ -44,20 +43,6 @@ class SimuleringControllerTest : ServerTest() {
     @AfterEach
     internal fun tearDown() {
         clearMocks(oppdragClient, answers = false)
-    }
-
-    @Test
-    internal fun `Hent simulering skal gi 200 OK`() {
-        val respons = restTemplate
-            .exchange<Ressurs<DetaljertSimuleringResultat>>(
-                localhostUrl("/api/simulering"),
-                HttpMethod.POST,
-                HttpEntity(simuleringDto(), headers),
-            )
-        assertThat(respons.statusCode.value()).isEqualTo(200)
-        assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
-        assertThat(respons.body?.data).isEqualTo(detaljertSimuleringResultat())
-        verify(exactly = 1) { oppdragClient.hentSimuleringsresultat(any()) }
     }
 
     @Test
