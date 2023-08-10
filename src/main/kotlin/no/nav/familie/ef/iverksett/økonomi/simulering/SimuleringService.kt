@@ -23,7 +23,7 @@ class SimuleringService(
     private val featureToggleService: FeatureToggleService,
 ) {
 
-    fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
+    private fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Kan ikke sende inn simmulere")
         }
