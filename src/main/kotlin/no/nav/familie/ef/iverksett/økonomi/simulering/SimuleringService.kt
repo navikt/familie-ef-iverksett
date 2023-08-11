@@ -24,7 +24,10 @@ class SimuleringService(
     private val featureToggleService: FeatureToggleService,
 ) {
 
-    private fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
+    private fun hentDetaljertSimuleringResultat(
+        simulering: Simulering,
+        brukNyUtbetalingsgenerator: Boolean,
+    ): DetaljertSimuleringResultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Kan ikke sende inn simmulere")
         }
@@ -33,10 +36,10 @@ class SimuleringService(
                 iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
             }
 
-            val brukNyUtbetalingsgenerator = withFagsakId(simulering.nyTilkjentYtelseMedMetaData.eksternFagsakId) {
+            val brukNyUtbetalingsgeneratorFeature = withFagsakId(simulering.nyTilkjentYtelseMedMetaData.eksternFagsakId) {
                 featureToggleService.isEnabled("familie.ef.iverksett.ny-utbetalingsgenerator")
             }
-            val tilkjentYtelseMedUtbetalingsoppdrag = if (brukNyUtbetalingsgenerator) {
+            val tilkjentYtelseMedUtbetalingsoppdrag = if (brukNyUtbetalingsgenerator || brukNyUtbetalingsgeneratorFeature) {
                 UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
                     simulering.nyTilkjentYtelseMedMetaData,
                     forrigeTilkjentYtelse,
@@ -67,11 +70,14 @@ class SimuleringService(
         }
     }
 
-    fun hentBeriketSimulering(simulering: Simulering): BeriketSimuleringsresultat {
+    fun hentBeriketSimulering(
+        simulering: Simulering,
+        brukNyUtbetalingsgenerator: Boolean = false,
+    ): BeriketSimuleringsresultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Kan ikke sende inn simmulere")
         }
-        val detaljertSimuleringResultat = hentDetaljertSimuleringResultat(simulering)
+        val detaljertSimuleringResultat = hentDetaljertSimuleringResultat(simulering, brukNyUtbetalingsgenerator)
         val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
 
         return BeriketSimuleringsresultat(
