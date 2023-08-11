@@ -59,6 +59,7 @@ class SimuleringskontrollService(
             val input = SimuleringskontrollInput(simulering, beriketSimuleringsresultat)
             simuleringskontrollRepository.insert(Simuleringskontroll(behandlingId, input, resultat))
         }
+        logger.info("behandling=$behandlingId - kontroll av ny utbetalingsgenerator utført - harDiff=$harDiff")
     }
 
     private fun harDiff(

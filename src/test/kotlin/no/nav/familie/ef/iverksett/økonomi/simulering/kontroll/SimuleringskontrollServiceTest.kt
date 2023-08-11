@@ -142,7 +142,9 @@ class SimuleringskontrollServiceTest {
             feilutbetaling = BigDecimal.ZERO,
         )
 
-    private fun getLogmeldinger() = logWatcher.list.map { it.formattedMessage }
+    private fun getLogmeldinger() =
+        logWatcher.list.map { it.formattedMessage }
+            .filterNot { it.contains("kontroll av ny utbetalingsgenerator utført") }
 
     private fun kontroller(data: IverksettOvergangsstønad, tidligereSimuleringsperioder: List<Simuleringsperiode>) {
         service.kontrollerMedNyUtbetalingsgenerator(data) { lagBeriketSimuleringsresultat(tidligereSimuleringsperioder) }
