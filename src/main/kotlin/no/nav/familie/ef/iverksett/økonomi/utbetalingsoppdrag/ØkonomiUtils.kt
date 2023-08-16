@@ -18,7 +18,6 @@ data class PeriodeId(
 
 fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, this.forrigePeriodeId)
 
-// TODO må håndtere denne i nye utbetalingsgeneratorn
 fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): AndelTilkjentYtelse =
     AndelTilkjentYtelse(
         beløp = 0,
