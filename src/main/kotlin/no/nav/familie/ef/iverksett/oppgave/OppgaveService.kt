@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
+import no.nav.familie.ef.iverksett.felles.util.DatoUtil
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
@@ -14,6 +15,7 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.Datoperiode
 import no.nav.familie.kontrakter.felles.oppgave.MappeDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
@@ -83,12 +85,38 @@ class OppgaveService(
                 oppgavetype = Oppgavetype.Fremlegg,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
-                fristFerdigstillelse = iverksett.vedtak.vedtakstidspunkt.toLocalDate().plusYears(1),
+                fristFerdigstillelse = lagFristFerdigstillelseInntektsjekk(iverksett.vedtak.vedtakstidspunkt.toLocalDate()),
                 mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId),
             )
 
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
             ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+    }
+
+    fun lagFristFerdigstillelseInntektsjekk(vedtaksdato: LocalDate): LocalDate? {
+        // Skal ikke falle på den 6. hver måned
+        // 17. og 18. mai
+        // ikke juli eller august
+        val ugyldigePerioder =
+            listOf(
+                Datoperiode(
+                    LocalDate.of(DatoUtil.dagensDato().year + 1, 7, 1),
+                    LocalDate.of(DatoUtil.dagensDato().year + 1, 8, 31),
+                ),
+                Datoperiode(
+                    LocalDate.of(DatoUtil.dagensDato().year + 1, 5, 17),
+                    LocalDate.of(DatoUtil.dagensDato().year + 1, 5, 18),
+                ),
+            )
+
+        var ettÅrFremITid = vedtaksdato.plusYears(1)
+        ettÅrFremITid = ugyldigePerioder.firstOrNull { it.inneholder(ettÅrFremITid) }?.fom?.minusDays(1) ?: ettÅrFremITid
+
+        if (ettÅrFremITid.dayOfMonth == 6) {
+            return ettÅrFremITid.minusDays(1)
+        }
+
+        return ettÅrFremITid
     }
 
     fun lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad) =

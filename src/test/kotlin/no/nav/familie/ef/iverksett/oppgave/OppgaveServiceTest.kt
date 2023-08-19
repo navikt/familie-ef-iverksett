@@ -7,6 +7,7 @@ import io.mockk.slot
 import io.mockk.unmockkAll
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
+import no.nav.familie.ef.iverksett.felles.util.DatoUtil
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
@@ -22,6 +23,7 @@ import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.oppgave.FinnMappeResponseDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
+import no.nav.familie.kontrakter.felles.oppgave.OpprettOppgaveRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -35,14 +37,16 @@ internal class OppgaveServiceTest {
     val iverksettRepository = mockk<IverksettingRepository>()
     val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
     val oppgaveClient = mockk<OppgaveClient>()
+    val opprettOppgaveRequestSlot = slot<OpprettOppgaveRequest>()
     val oppgaveService = OppgaveService(oppgaveClient, familieIntegrasjonerClient, iverksettRepository)
 
     @BeforeEach
     internal fun init() {
         mockkObject(OppgaveUtil)
         mockkObject(OppgaveBeskrivelse)
+        mockkObject(DatoUtil)
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns mockk()
-        every { oppgaveClient.opprettOppgave(any()) } returns 0L
+        every { oppgaveClient.opprettOppgave(capture(opprettOppgaveRequestSlot)) } returns 0L
         every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns mockk()
         every { oppgaveClient.finnMapper(any(), any()) } returns FinnMappeResponseDto(0, emptyList())
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("1234", "enhet")
@@ -453,6 +457,30 @@ internal class OppgaveServiceTest {
         val oppgave = oppgaveService.hentOppgave(GSAK_OPPGAVE_ID)
 
         assertThat(oppgave.id).isEqualTo(GSAK_OPPGAVE_ID)
+    }
+
+    @Test
+    fun `lovlig frist for inntektsjekk skal ikke fremskyndes`() {
+        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 9,1))
+        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 9, 1)))
+    }
+
+    @Test
+    fun `frist for inntektsjekk skal ikke være 17 eller 18 mai`() {
+        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 5,18))
+        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 5, 16)))
+    }
+
+    @Test
+    fun `frist for inntektsjekk skal ikke være i juli eller august`() {
+        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 8,28))
+        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 6, 30)))
+    }
+
+    @Test
+    fun `frist for inntektsjekk skal ikke være den 6 dagen i måneden`() {
+        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 9,6))
+        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 9, 5)))
     }
 
     private fun lagMigreringsIverksetting() = lagIverksettData(
