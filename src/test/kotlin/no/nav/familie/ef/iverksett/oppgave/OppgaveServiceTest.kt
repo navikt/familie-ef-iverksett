@@ -461,25 +461,41 @@ internal class OppgaveServiceTest {
 
     @Test
     fun `lovlig frist for inntektsjekk skal ikke fremskyndes`() {
-        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 9,1))
+        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 9, 1))
         assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 9, 1)))
     }
 
     @Test
     fun `frist for inntektsjekk skal ikke være 17 eller 18 mai`() {
-        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 5,18))
+        var frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 5, 17))
+        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 5, 15)))
+
+        frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 5, 18))
         assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 5, 16)))
     }
 
     @Test
     fun `frist for inntektsjekk skal ikke være i juli eller august`() {
-        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 8,28))
-        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 6, 30)))
+        var frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 7, 28))
+        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 5, 28)))
+
+        frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 8, 28))
+        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 6, 28)))
     }
 
     @Test
+    fun `frist for inntektsjekt - dersom vedtakstidspunkt er 17 eller 18 august skal tidspunkt fremskyndes to dager i tillegg til 2 måneder`() {
+        var frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 7, 17))
+        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 5, 15)))
+
+        frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 7, 18))
+        assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 5, 16)))
+    }
+
+
+    @Test
     fun `frist for inntektsjekk skal ikke være den 6 dagen i måneden`() {
-        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 9,6))
+        val frist = oppgaveService.lagFristFerdigstillelseInntektsjekk(LocalDate.of(LocalDate.now().year, 9, 6))
         assertThat(frist).isEqualTo((LocalDate.of(LocalDate.now().year + 1, 9, 5)))
     }
 

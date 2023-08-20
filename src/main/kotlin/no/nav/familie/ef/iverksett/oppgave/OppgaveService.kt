@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
-import no.nav.familie.ef.iverksett.felles.util.DatoUtil
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
@@ -15,7 +14,6 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
-import no.nav.familie.kontrakter.felles.Datoperiode
 import no.nav.familie.kontrakter.felles.oppgave.MappeDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
@@ -97,24 +95,11 @@ class OppgaveService(
         // Skal ikke falle på den 6. hver måned
         // 17. og 18. mai
         // ikke juli eller august
-        val ugyldigePerioder =
-            listOf(
-                Datoperiode(
-                    LocalDate.of(DatoUtil.dagensDato().year + 1, 7, 1),
-                    LocalDate.of(DatoUtil.dagensDato().year + 1, 8, 31),
-                ),
-                Datoperiode(
-                    LocalDate.of(DatoUtil.dagensDato().year + 1, 5, 17),
-                    LocalDate.of(DatoUtil.dagensDato().year + 1, 5, 18),
-                ),
-            )
-
         var ettÅrFremITid = vedtaksdato.plusYears(1)
-        ettÅrFremITid = ugyldigePerioder.firstOrNull { it.inneholder(ettÅrFremITid) }?.fom?.minusDays(1) ?: ettÅrFremITid
 
-        if (ettÅrFremITid.dayOfMonth == 6) {
-            return ettÅrFremITid.minusDays(1)
-        }
+        if (ettÅrFremITid.monthValue == 7 || ettÅrFremITid.monthValue == 8) ettÅrFremITid = ettÅrFremITid.minusMonths(2)
+        if (ettÅrFremITid.monthValue == 5 && (ettÅrFremITid.dayOfMonth == 17 || ettÅrFremITid.dayOfMonth == 18)) ettÅrFremITid = ettÅrFremITid.minusDays(2)
+        if (ettÅrFremITid.dayOfMonth == 6) ettÅrFremITid = ettÅrFremITid.minusDays(1)
 
         return ettÅrFremITid
     }
