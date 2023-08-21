@@ -70,10 +70,12 @@ class StepDefinitions {
     fun `lagTilkjentYtelseMedUtbetalingsoppdrag kjøres kastes exception`() {
         catchThrowable { `andelhistorikk kjøres`() }
     }
+
     @Når("lag frist for ferdigstillelse av inntektsjekk")
     fun `lag frist for ferdigstillelse av inntektsjekk`() {
         fristForInntektsjekk = OppgaveService(mockk(), mockk(), mockk()).lagFristFerdigstillelseInntektsjekk(vedtaksdato)
     }
+
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres")
     fun `andelhistorikk kjøres`() {
         beregnedeTilkjentYtelse = tilkjentYtelse.fold(emptyList<Pair<UUID, TilkjentYtelse>>()) { acc, holder ->
@@ -90,6 +92,7 @@ class StepDefinitions {
     fun `forvent følgende frist`(forventetFrist: String) {
         assertThat(fristForInntektsjekk).isEqualTo(parseDato(forventetFrist))
     }
+
     @Så("forvent følgende utbetalingsoppdrag uten utbetalingsperiode")
     fun `forvent følgende utbetalingsoppdrag uten utbetalingsperiode`(dataTable: DataTable) {
         val forventedeUtbetalingsoppdrag = TilkjentYtelseParser.mapForventetUtbetalingsoppdrag(dataTable, false)
