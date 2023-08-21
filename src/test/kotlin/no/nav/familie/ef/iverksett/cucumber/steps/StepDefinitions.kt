@@ -4,12 +4,15 @@ import io.cucumber.datatable.DataTable
 import io.cucumber.java.no.Gitt
 import io.cucumber.java.no.Når
 import io.cucumber.java.no.Så
+import io.mockk.mockk
 import no.nav.familie.ef.iverksett.cucumber.domeneparser.IdTIlUUIDHolder
 import no.nav.familie.ef.iverksett.cucumber.domeneparser.TilkjentYtelseParser
+import no.nav.familie.ef.iverksett.cucumber.domeneparser.parseDato
 import no.nav.familie.ef.iverksett.cucumber.domeneparser.parseÅrMåned
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.ef.iverksett.oppgave.OppgaveService
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
@@ -37,12 +40,18 @@ class StepDefinitions {
     private lateinit var stønadType: StønadType
     private var tilkjentYtelse = mutableListOf<TilkjentYtelseHolder>()
     private var startdato = mapOf<UUID, LocalDate>()
-
+    private lateinit var vedtaksdato: LocalDate
+    private var fristForInntektsjekk: LocalDate? = LocalDate.now()
     private var beregnedeTilkjentYtelse = mapOf<UUID, TilkjentYtelse>()
 
     @Gitt("følgende startdatoer")
     fun følgende_startdatoer(dataTable: DataTable) {
         startdato = TilkjentYtelseParser.mapStartdatoer(dataTable)
+    }
+
+    @Gitt("følgende vedtaksdato {}")
+    fun følgende_vedtaksdato(vedtaksdatoArg: String) {
+        vedtaksdato = parseDato(vedtaksdatoArg)
     }
 
     @Gitt("følgende tilkjente ytelser for {}")
@@ -61,7 +70,10 @@ class StepDefinitions {
     fun `lagTilkjentYtelseMedUtbetalingsoppdrag kjøres kastes exception`() {
         catchThrowable { `andelhistorikk kjøres`() }
     }
-
+    @Når("lag frist for ferdigstillelse av inntektsjekk")
+    fun `lag frist for ferdigstillelse av inntektsjekk`() {
+        fristForInntektsjekk = OppgaveService(mockk(), mockk(), mockk()).lagFristFerdigstillelseInntektsjekk(vedtaksdato)
+    }
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres")
     fun `andelhistorikk kjøres`() {
         beregnedeTilkjentYtelse = tilkjentYtelse.fold(emptyList<Pair<UUID, TilkjentYtelse>>()) { acc, holder ->
@@ -74,6 +86,10 @@ class StepDefinitions {
         }.toMap()
     }
 
+    @Så("forvent frist satt til {}")
+    fun `forvent følgende frist`(forventetFrist: String) {
+        assertThat(fristForInntektsjekk).isEqualTo(parseDato(forventetFrist))
+    }
     @Så("forvent følgende utbetalingsoppdrag uten utbetalingsperiode")
     fun `forvent følgende utbetalingsoppdrag uten utbetalingsperiode`(dataTable: DataTable) {
         val forventedeUtbetalingsoppdrag = TilkjentYtelseParser.mapForventetUtbetalingsoppdrag(dataTable, false)

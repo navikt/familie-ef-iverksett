@@ -99,7 +99,7 @@ class OppgaveService(
 
         if (ettÅrFremITid.monthValue == 7 || ettÅrFremITid.monthValue == 8) ettÅrFremITid = ettÅrFremITid.minusMonths(2)
         if (ettÅrFremITid.monthValue == 5 && (ettÅrFremITid.dayOfMonth == 17 || ettÅrFremITid.dayOfMonth == 18)) ettÅrFremITid = ettÅrFremITid.minusDays(2)
-        if (ettÅrFremITid.dayOfMonth == 6) ettÅrFremITid = ettÅrFremITid.minusDays(1)
+        if (ettÅrFremITid.dayOfMonth == 6) ettÅrFremITid = ettÅrFremITid.plusDays(1)
 
         return ettÅrFremITid
     }
