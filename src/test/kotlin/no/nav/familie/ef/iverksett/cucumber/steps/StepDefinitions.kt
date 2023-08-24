@@ -73,7 +73,7 @@ class StepDefinitions {
 
     @Når("lag frist for ferdigstillelse av inntektsjekk")
     fun `lag frist for ferdigstillelse av inntektsjekk`() {
-        fristForInntektsjekk = OppgaveService(mockk(), mockk(), mockk()).lagFristFerdigstillelseInntektsjekk(vedtaksdato)
+        fristForInntektsjekk = OppgaveService(mockk(), mockk(), mockk()).lagFristFerdigstillelseFremleggsoppgaver(vedtaksdato)
     }
 
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres")

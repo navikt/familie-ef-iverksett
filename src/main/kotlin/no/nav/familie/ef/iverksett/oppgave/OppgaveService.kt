@@ -83,7 +83,7 @@ class OppgaveService(
                 oppgavetype = Oppgavetype.Fremlegg,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
-                fristFerdigstillelse = lagFristFerdigstillelseInntektsjekk(iverksett.vedtak.vedtakstidspunkt.toLocalDate()),
+                fristFerdigstillelse = lagFristFerdigstillelseFremleggsoppgaver(iverksett.vedtak.vedtakstidspunkt.toLocalDate()),
                 mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId),
             )
 
@@ -91,10 +91,13 @@ class OppgaveService(
             ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
-    fun lagFristFerdigstillelseInntektsjekk(vedtaksdato: LocalDate): LocalDate? {
-        // Skal ikke falle på den 6. hver måned
-        // 17. og 18. mai
-        // ikke juli eller august
+    fun lagFristFerdigstillelseFremleggsoppgaver(vedtaksdato: LocalDate): LocalDate? {
+        // Frist skal ikke falle på
+        // - Den 6. dagen i måneden for det er en rutine i enhetene som sier at hvis man ikke får revurdert eller sjekket en sak fordi inntekten for den siste måneden ikke er innrapportert ennå, så oppretter man en fremleggsoppgave med frist den 6. neste måned for å sjekke inntekten. Grunnen til at fristen er den 6. er fordi arbeidsgivers frist til å innrapportere inntekt for forrige måned er den 5.
+        // - 17. og 18. mai, for de er forbeholdt karakterutskriftsoppgavene
+        // - Juli og august på grunn av ferie og lav bemanning
+        // Det er verdt å merke seg at oppgavesystemet flytter fristen fremover dersom fristdato lander på en helg.
+
         var ettÅrFremITid = vedtaksdato.plusYears(1)
 
         if (ettÅrFremITid.monthValue == 7 || ettÅrFremITid.monthValue == 8) ettÅrFremITid = ettÅrFremITid.minusMonths(2)
