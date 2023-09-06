@@ -32,7 +32,7 @@
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>3.1.2</token-validation-spring.version>
+        <token-validation-spring.version>3.1.3</token-validation-spring.version>
         <ibm-mq-client.version>9.3.3.0</ibm-mq-client.version>
         <unleash.version>8.3.0</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
