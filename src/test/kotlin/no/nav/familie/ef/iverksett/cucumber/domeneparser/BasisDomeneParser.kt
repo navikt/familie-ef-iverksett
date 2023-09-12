@@ -73,7 +73,7 @@ fun parseValgfriBoolean(domenebegrep: Domenenøkkel, rad: Map<String, String?>):
     }
 }
 
-private fun parseDato(dato: String): LocalDate {
+fun parseDato(dato: String): LocalDate {
     return if (dato.contains(".")) {
         LocalDate.parse(dato, norskDatoFormatter)
     } else {
