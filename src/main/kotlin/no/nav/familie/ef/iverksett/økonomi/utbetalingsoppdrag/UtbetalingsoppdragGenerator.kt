@@ -38,15 +38,13 @@ object UtbetalingsoppdragGenerator {
         forrigeTilkjentYtelse: TilkjentYtelse? = null,
         erGOmregning: Boolean = false,
     ): TilkjentYtelse {
-        val stønadstype = nyTilkjentYtelseMedMetaData.stønadstype
         val personIdent = nyTilkjentYtelseMedMetaData.personIdent
-        val ytelseType = stønadstype.tilYtelseType()
-        var counter = 0
-        fun nextId() = (++counter).toString()
+        val ytelseType = nyTilkjentYtelseMedMetaData.stønadstype.tilYtelseType()
 
         val forrigeAndeler = (forrigeTilkjentYtelse?.andelerTilkjentYtelse ?: emptyList())
-            .map { it.tilAndelData(id = nextId(), personIdent = personIdent, ytelseType = ytelseType) }
-        val nyeAndelerPåId = nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.associateBy { nextId() }
+            .map { it.tilAndelData(id = UUID.randomUUID().toString(), personIdent = personIdent, ytelseType = ytelseType) }
+        val nyeAndelerPåId =
+            nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.associateBy { UUID.randomUUID().toString() }
 
         val nyeAndeler = tilAndelData(nyeAndelerPåId, personIdent, ytelseType)
         val forrigeSisteAndelIKjede = forrigeTilkjentYtelse?.sisteAndelIKjede
@@ -63,26 +61,25 @@ object UtbetalingsoppdragGenerator {
             sisteAndelPerKjede = sisteAndelPerKjede,
         )
         val beregnedeAndelerPåId = beregnetUtbetalingsoppdrag.andeler.associateBy { it.id }
-        val gjeldendeAndeler = nyeAndelerPåId.entries.map {
-            if (it.value.harNullBeløp()) {
+        val gjeldendeAndeler = nyeAndelerPåId.entries.map { (id, andel) ->
+            if (andel.harNullBeløp()) {
                 // TODO vi kan vurdere om vi bare skal filtrere vekk de etter att man har laget utbetalingsoppdraget, då vil de ikke bli sendt med som "forrige andeler" i neste utbetalingsoppdrag
-                it.value
+                andel
             } else {
-                val beregnetAndel = beregnedeAndelerPåId.getValue(it.key)
-                it.value.copy(
+                val beregnetAndel = beregnedeAndelerPåId.getValue(id)
+                andel.copy(
                     periodeId = beregnetAndel.periodeId,
                     forrigePeriodeId = beregnetAndel.forrigePeriodeId,
                     kildeBehandlingId = UUID.fromString(beregnetAndel.kildeBehandlingId),
                 )
             }
         }
-        // TODO settes kanskje ikke kildeBehandlingId i ef-sak? Settes den då nå kanskje feil hvis man avkorter en periode?
-        val copy = nyTilkjentYtelseMedMetaData.tilkjentYtelse.copy(
+
+        return nyTilkjentYtelseMedMetaData.tilkjentYtelse.copy(
             utbetalingsoppdrag = beregnetUtbetalingsoppdrag.utbetalingsoppdrag,
             andelerTilkjentYtelse = gjeldendeAndeler,
             sisteAndelIKjede = nySisteAndelIKjede(gjeldendeAndeler, forrigeSisteAndelIKjede),
         )
-        return copy
     }
 
     private fun tilAndelData(
@@ -120,6 +117,20 @@ object UtbetalingsoppdragGenerator {
         erGOmregning = erGOmregning,
     )
 
+    /**
+     * Brukes for å løse de casene hvor man midlertidig opphører tilbake i tid hvis du har noe i infotrygd fra før.
+     * |-----50------| [INFOTRYGD]
+     *        |-----100------| FØRSTEGANGSBEHANDLING
+     *    |--0--|---100--|     REVURDERING (midlertidig opphør)
+     *    |--0-------->        REVURDERING (Opphør)
+     * I dette spesialtilfellet vil opphøret skje FØR første andel i forrige tilkjent ytelse,
+     * og gjeldende tilkjent ytelse starter med et opphør. Da har vi ingen andeler å hente startdato fra,
+     * og bruker spesialtilfellet med startmåned for å finne første opphørsdato
+     *
+     * Svakhet? I eksempelet nedenfor tror vi ikke at vi plukker ut riktig startdato...
+     * |----50----| Infotrygd
+     *   |--0--|--100--| Førstegangsbehandling i ny løsning
+     */
     private fun opphørFra(
         forrigeTilkjentYtelse: TilkjentYtelse?,
         nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
