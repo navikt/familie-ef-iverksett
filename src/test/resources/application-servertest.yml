@@ -31,13 +31,8 @@ arena-mq:
   servicebruker: srvuser
   servicebrukerPassord: srvuserPassword
 
-funksjonsbrytere:
-  enabled: false
-  unleash:
-    uri: http://localhost:4242/api
-    environment: local
-    applicationName: familie-ef-iverksett
-
+unleash:
+  enabled: true
 
 FAMILIE_OPPDRAG_API_URL: http://localhost:8087
 FAMILIE_INTEGRASJONER_API_URL: http://localhost:9085
@@ -55,3 +50,7 @@ KAFKA_TRUSTSTORE_PATH: kafkaTruststorePath
 KAFKA_SCHEMA_REGISTRY: kafkaSchemaRegistry
 KAFKA_SCHEMA_REGISTRY_USER: kafkaSchemaRegistryUser
 KAFKA_SCHEMA_REGISTRY_PASSWORD: kafkaSchemaRegistryPassword
+
+UNLEASH_SERVER_API_URL: http://localhost:4242/api
+UNLEASH_SERVER_API_TOKEN: token
+NAIS_APP_NAME: familie-ef-sak
