@@ -11,6 +11,9 @@ enum class Toggle(val toggleId: String) {
     IVERKSETT_STOPP_IVERKSETTING("familie.ef.iverksett.stopp-iverksetting");
 }
 
+/**
+ * TODO : Fjern når toggles er verifisert ok ift Unleash Next
+ */
 @RestController
 @RequestMapping(path = ["/api/featuretoggle"], produces = [MediaType.APPLICATION_JSON_VALUE])
 @Unprotected
