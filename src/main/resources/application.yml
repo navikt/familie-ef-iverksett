@@ -130,12 +130,8 @@ arena-mq:
   servicebruker: ${SERVICEBRUKER}
   servicebrukerPassord: ${SERVICEBRUKER_PASSORD}
 
-funksjonsbrytere:
+unleash:
   enabled: true
-  unleash:
-    uri: https://unleash.nais.io/api/
-    environment: ${NAIS_CLUSTER_NAME}
-    applicationName: ${NAIS_APP_NAME}
 
 DEPLOY_ENV: prod
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.${DEPLOY_ENV}-fss-pub.nais.io

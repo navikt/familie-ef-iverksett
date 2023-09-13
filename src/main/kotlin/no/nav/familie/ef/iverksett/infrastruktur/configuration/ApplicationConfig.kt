@@ -34,6 +34,7 @@ import java.time.temporal.ChronoUnit
     "no.nav.familie.ef.iverksett",
     "no.nav.familie.prosessering",
     "no.nav.familie.sikkerhet",
+    "no.nav.familie.unleash",
     excludeFilters = [
         ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class]),
     ],
