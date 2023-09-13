@@ -36,6 +36,7 @@ spec:
       value: prod
   envFrom:
     - secret: familie-ef-iverksett
+    - secret: familie-ef-sak-unleash-api-token
   azure:
     application:
       enabled: true
