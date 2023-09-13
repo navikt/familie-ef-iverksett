@@ -15,7 +15,7 @@ metadata:
     team: teamfamilie
 spec:
   preAuthorizedApplications:
-    - application: familie-ef-sak-lokal
+    - application: familie-ef-iverksett-lokal
       cluster: dev-gcp
       namespace: teamfamilie
   tenant: trygdeetaten.no
