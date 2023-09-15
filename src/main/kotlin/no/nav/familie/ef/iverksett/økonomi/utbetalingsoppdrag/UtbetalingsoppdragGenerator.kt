@@ -132,10 +132,6 @@ object UtbetalingsoppdragGenerator {
      * I dette spesialtilfellet vil opphøret skje FØR første andel i forrige tilkjent ytelse,
      * og gjeldende tilkjent ytelse starter med et opphør. Da har vi ingen andeler å hente startdato fra,
      * og bruker spesialtilfellet med startmåned for å finne første opphørsdato
-     *
-     * Svakhet? I eksempelet nedenfor tror vi ikke at vi plukker ut riktig startdato...
-     * |----50----| Infotrygd
-     *   |--0--|--100--| Førstegangsbehandling i ny løsning
      */
     private fun opphørFra(
         forrigeTilkjentYtelse: TilkjentYtelse?,
