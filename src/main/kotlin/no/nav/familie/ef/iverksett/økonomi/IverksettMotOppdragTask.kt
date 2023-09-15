@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi
 
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
-import no.nav.familie.ef.iverksett.featuretoggle.withFagsakId
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
@@ -50,9 +49,7 @@ class IverksettMotOppdragTask(
                 vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate(),
             ) ?: error("Mangler tilkjent ytelse på vedtaket")
 
-        val brukNyUtbetalingsgenerator = withFagsakId(nyTilkjentYtelseMedMetaData.eksternFagsakId) {
-            featureToggleService.isEnabled("familie.ef.iverksett.ny-utbetalingsgenerator")
-        }
+        val brukNyUtbetalingsgenerator = featureToggleService.isEnabledMedFagsakId("familie.ef.iverksett.ny-utbetalingsgenerator", nyTilkjentYtelseMedMetaData.eksternFagsakId)
 
         val utbetaling = if (brukNyUtbetalingsgenerator) {
             lagTilkjentYtelseMedUtbetalingsoppdragNy(
