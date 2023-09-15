@@ -91,13 +91,19 @@ object UtbetalingsoppdragGenerator {
     }
 
     /**
+     * Id brukes ikke til noe spesielt for siste andel i kjeden, men er en del av [AndelData]
+     * Settes til noe random.
+     */
+    private val idSisteAndelIKjeden = "SISTE_ANDEL_I_KJEDEN"
+
+    /**
      * Utbetalingsgeneratorn ønsker en map med ident og type, då den har støtte for å sende inn flere personer som brukes av Barnetrygd
      */
     private fun mapTilSisteAndelPerKjede(
         forrigeSisteAndelIKjede: AndelTilkjentYtelse?,
         personIdent: String,
         ytelseType: YtelseType,
-    ) = forrigeSisteAndelIKjede?.tilAndelData("-1", personIdent, ytelseType)
+    ) = forrigeSisteAndelIKjede?.tilAndelData(idSisteAndelIKjeden, personIdent, ytelseType)
         ?.let { mapOf(IdentOgType(personIdent, ytelseType) to it) } ?: emptyMap()
 
     private fun behandlingsinformasjon(
@@ -309,12 +315,6 @@ object UtbetalingsoppdragGenerator {
         }
     }
 
-    private fun sistePeriodeId(tilkjentYtelse: TilkjentYtelse?): PeriodeId? {
-        return tilkjentYtelse?.let { ytelse ->
-            ytelse.sisteAndelIKjede?.tilPeriodeId()
-                // TODO denne kan fjernes når den er patchet
-                ?: ytelse.andelerTilkjentYtelse.filter { it.periodeId != null }.maxByOrNull { it.periodeId!! }
-                    ?.tilPeriodeId()
-        }
-    }
+    private fun sistePeriodeId(tilkjentYtelse: TilkjentYtelse?): PeriodeId? =
+        tilkjentYtelse?.sisteAndelIKjede?.tilPeriodeId()
 }

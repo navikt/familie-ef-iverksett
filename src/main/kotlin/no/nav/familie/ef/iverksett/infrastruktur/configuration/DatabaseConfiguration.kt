@@ -13,6 +13,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
+import no.nav.familie.ef.iverksett.økonomi.simulering.kontroll.SimuleringskontrollInput
+import no.nav.familie.ef.iverksett.økonomi.simulering.kontroll.SimuleringskontrollResultat
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -66,6 +68,11 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
                 StringTilBrevmottakereConverter(),
                 YearTilLocalDateConverter(),
                 LocalDateTilYearConverter(),
+
+                SimuleringskontrollInputTilStringConverter(),
+                StringTilSimuleringskontrollInputConverter(),
+                SimuleringskontrollResultatTilStringConverter(),
+                StringTilSimuleringskontrollResultatConverter(),
             ),
         )
     }
@@ -90,7 +97,11 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
             val fagsakdetaljer: Fagsakdetaljer = objectMapper.treeToValue(fagsakNode)
             return when (fagsakdetaljer.stønadstype) {
                 StønadType.BARNETILSYN -> objectMapper.readValue(pGobject.value, IverksettBarnetilsyn::class.java)
-                StønadType.OVERGANGSSTØNAD -> objectMapper.readValue(pGobject.value, IverksettOvergangsstønad::class.java)
+                StønadType.OVERGANGSSTØNAD -> objectMapper.readValue(
+                    pGobject.value,
+                    IverksettOvergangsstønad::class.java,
+                )
+
                 StønadType.SKOLEPENGER -> objectMapper.readValue(pGobject.value, IverksettSkolepenger::class.java)
             }
         }
@@ -200,6 +211,42 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
         override fun convert(date: Date): Year {
             return Year.from(date.toLocalDate())
+        }
+    }
+
+    @WritingConverter
+    class SimuleringskontrollInputTilStringConverter : Converter<SimuleringskontrollInput, PGobject> {
+
+        override fun convert(data: SimuleringskontrollInput): PGobject =
+            PGobject().apply {
+                type = "json"
+                value = objectMapper.writeValueAsString(data)
+            }
+    }
+
+    @ReadingConverter
+    class StringTilSimuleringskontrollInputConverter : Converter<PGobject, SimuleringskontrollInput> {
+
+        override fun convert(pgObject: PGobject): SimuleringskontrollInput {
+            return objectMapper.readValue(pgObject.value!!)
+        }
+    }
+
+    @WritingConverter
+    class SimuleringskontrollResultatTilStringConverter : Converter<SimuleringskontrollResultat, PGobject> {
+
+        override fun convert(data: SimuleringskontrollResultat): PGobject =
+            PGobject().apply {
+                type = "json"
+                value = objectMapper.writeValueAsString(data)
+            }
+    }
+
+    @ReadingConverter
+    class StringTilSimuleringskontrollResultatConverter : Converter<PGobject, SimuleringskontrollResultat> {
+
+        override fun convert(pgObject: PGobject): SimuleringskontrollResultat {
+            return objectMapper.readValue(pgObject.value!!)
         }
     }
 }
