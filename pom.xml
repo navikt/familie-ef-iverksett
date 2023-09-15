@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -15,27 +15,27 @@
 
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>1.9.0</kotlin.version>
-        <springdoc.version>2.1.0</springdoc.version>
-        <felles.version>2.20230210162649_a258d57-SPRING_BOOT_3</felles.version>
-        <familie.kontrakter.version>3.0_20230801091645_4237b37</familie.kontrakter.version>
+        <kotlin.version>1.9.10</kotlin.version>
+        <springdoc.version>2.2.0</springdoc.version>
+        <felles.version>2.20230905101454_06fa3d7</felles.version>
+        <familie.kontrakter.version>3.0_20230911133621_c5918cb</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230721144943_b5151d2</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20230713120621_747ed8f</prosessering.version>
+        <prosessering.version>2.20230807154047_d770f01</prosessering.version>
         <utbetalingsgenerator.version>1.0_20230801144343_5d8629f</utbetalingsgenerator.version>
         <brukernotifikasjon-schemas.version>2.5.2</brukernotifikasjon-schemas.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
-        <confluent.version>7.4.1</confluent.version>
-        <mockk-jvm.version>1.13.5</mockk-jvm.version>
-        <cucumber.version>7.13.0</cucumber.version>
+        <confluent.version>7.5.0</confluent.version>
+        <mockk-jvm.version>1.13.7</mockk-jvm.version>
+        <cucumber.version>7.14.0</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>3.0.12</token-validation-spring.version>
-        <ibm-mq-client.version>9.3.3.0</ibm-mq-client.version>
-        <unleash.version>8.2.0</unleash.version>
+        <token-validation-spring.version>3.1.3</token-validation-spring.version>
+        <ibm-mq-client.version>9.3.3.1</ibm-mq-client.version>
+        <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
     </properties>
 
@@ -157,6 +157,11 @@
             <version>${felles.version}</version>
         </dependency>
         <dependency>
+            <groupId>no.nav.familie.felles</groupId>
+            <artifactId>unleash</artifactId>
+            <version>${felles.version}</version>
+        </dependency>
+        <dependency>
             <groupId>no.nav.familie</groupId>
             <artifactId>prosessering-core</artifactId>
             <version>${prosessering.version}</version>
@@ -226,13 +231,6 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
 
-        <!-- Feature toggles -->
-        <dependency>
-            <groupId>io.getunleash</groupId>
-            <artifactId>unleash-client-java</artifactId>
-            <version>${unleash.version}</version>
-        </dependency>
-
         <!-- MQ / JMS -->
         <dependency>
             <groupId>jakarta.jms</groupId>
@@ -258,7 +256,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.18.3</version>
+            <version>1.19.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -270,7 +268,7 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8-standalone</artifactId>
-            <version>2.35.0</version>
+            <version>2.35.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -373,8 +371,7 @@
                         <phase>verify</phase>
                         <configuration>
                             <target name="ktlint">
-                                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true"
-                                      classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
+                                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
                                     <arg value="src/**/*.kt"/>
                                 </java>
                             </target>
@@ -388,8 +385,7 @@
                         <phase>validate</phase>
                         <configuration>
                             <target name="ktlint">
-                                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true"
-                                      classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
+                                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true" classpathref="maven.plugin.classpath" classname="com.pinterest.ktlint.Main">
                                     <jvmarg value="--add-opens"/>
                                     <jvmarg value="java.base/java.lang=ALL-UNNAMED"/>
                                     <arg value="-F"/>

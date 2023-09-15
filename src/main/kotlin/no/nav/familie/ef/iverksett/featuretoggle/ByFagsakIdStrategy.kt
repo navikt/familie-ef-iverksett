@@ -34,12 +34,3 @@ class ByFagsakIdStrategy : Strategy {
         .map { env -> map["miljø"]?.split(',')?.contains(env) ?: false }
         .orElse(false)
 }
-
-private const val MDC_FEATURE_FAGSAK_ID = "ft_fagsakId"
-
-fun <T> withFagsakId(eksternFagsakId: Long, fn: () -> T): T {
-    MDC.put(MDC_FEATURE_FAGSAK_ID, eksternFagsakId.toString())
-    val res = fn()
-    MDC.remove(MDC_FEATURE_FAGSAK_ID)
-    return res
-}
