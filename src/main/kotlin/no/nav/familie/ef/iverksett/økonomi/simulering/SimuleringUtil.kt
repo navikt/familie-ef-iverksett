@@ -45,7 +45,17 @@ fun lagSimuleringsoppsummering(
         forfallsdatoNestePeriode = nestePeriode?.forfallsdato,
         tidSimuleringHentet = tidSimuleringHentet,
         tomSisteUtbetaling = tomSisteUtbetaling,
+        sumManuellePosteringer = summerManuellePosteringer(detaljertSimuleringResultat)
     )
+}
+
+fun summerManuellePosteringer(detaljertSimuleringResultat: DetaljertSimuleringResultat): BigDecimal {
+    return detaljertSimuleringResultat.simuleringMottaker
+        .flatMap { simuleringMottaker -> simuleringMottaker.simulertPostering }
+        .filter { simulertPostering ->
+            simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING.name
+        }
+        .fold(ZERO) { acc, simulertPostering -> acc + simulertPostering.beløp }
 }
 
 fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simuleringsperiode> {
@@ -72,11 +82,13 @@ fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode>
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING,
     )
+
     StønadType.BARNETILSYN -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN,
         FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_INFOTRYGD,
         FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
     )
+
     StønadType.SKOLEPENGER -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER,
         FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER_INFOTRYGD,
