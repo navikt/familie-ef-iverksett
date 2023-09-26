@@ -49,10 +49,10 @@ sealed class IverksettData {
     fun erMigrering() = behandling.behandlingÅrsak == BehandlingÅrsak.MIGRERING
 
     fun erKorrigeringUtenBrev() = behandling.behandlingÅrsak == BehandlingÅrsak.KORRIGERING_UTEN_BREV
-
+    fun erKAIverksettingUtenBrev(): Boolean = behandling.behandlingÅrsak == BehandlingÅrsak.IVERKSETTE_KA_VEDTAK
     fun erSatsendring() = behandling.behandlingÅrsak == BehandlingÅrsak.SATSENDRING
 
-    fun skalIkkeSendeBrev() = erMigrering() || erGOmregning() || erKorrigeringUtenBrev() || erSatsendring()
+    fun skalIkkeSendeBrev() = erMigrering() || erGOmregning() || erKorrigeringUtenBrev() || erKAIverksettingUtenBrev() || erSatsendring()
 
     abstract fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettData
 }
