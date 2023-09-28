@@ -4,6 +4,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsgeneratorHelper.FagsystemEF
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsgeneratorHelper.YtelsestypeEF
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerTilOpprettelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.andelerUtenNullVerdier
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.beståendeAndeler
@@ -12,16 +14,14 @@ import no.nav.familie.felles.utbetalingsgenerator.Utbetalingsgenerator
 import no.nav.familie.felles.utbetalingsgenerator.domain.AndelData
 import no.nav.familie.felles.utbetalingsgenerator.domain.Behandlingsinformasjon
 import no.nav.familie.felles.utbetalingsgenerator.domain.IdentOgType
-import no.nav.familie.felles.utbetalingsgenerator.domain.YtelseType
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsoppdrag
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsoppdrag.KodeEndring
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.ENDR
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring.NY
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
-import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.UUID
+import no.nav.familie.felles.utbetalingsgenerator.domain.Ytelsestype as YtelsestypeUG
 
 object UtbetalingsoppdragGenerator {
 
@@ -85,7 +85,7 @@ object UtbetalingsoppdragGenerator {
     private fun tilAndelData(
         nyeAndelerPåId: Map<String, AndelTilkjentYtelse>,
         personIdent: String,
-        ytelseType: YtelseType,
+        ytelseType: YtelsestypeUG,
     ) = nyeAndelerPåId.map { (id, andel) ->
         andel.tilAndelData(id = id, personIdent = personIdent, ytelseType = ytelseType)
     }
@@ -102,7 +102,7 @@ object UtbetalingsoppdragGenerator {
     private fun mapTilSisteAndelPerKjede(
         forrigeSisteAndelIKjede: AndelTilkjentYtelse?,
         personIdent: String,
-        ytelseType: YtelseType,
+        ytelseType: YtelsestypeUG,
     ) = forrigeSisteAndelIKjede?.tilAndelData(idSisteAndelIKjeden, personIdent, ytelseType)
         ?.let { mapOf(IdentOgType(personIdent, ytelseType) to it) } ?: emptyMap()
 
@@ -115,7 +115,7 @@ object UtbetalingsoppdragGenerator {
         behandlingId = nyTilkjentYtelseMedMetaData.behandlingId.toString(),
         eksternBehandlingId = nyTilkjentYtelseMedMetaData.eksternBehandlingId,
         eksternFagsakId = nyTilkjentYtelseMedMetaData.eksternFagsakId,
-        ytelse = nyTilkjentYtelseMedMetaData.stønadstype.tilYtelsestype(),
+        fagsystem = nyTilkjentYtelseMedMetaData.stønadstype.tilFagsystem(),
         personIdent = nyTilkjentYtelseMedMetaData.personIdent,
         vedtaksdato = nyTilkjentYtelseMedMetaData.vedtaksdato,
         opphørFra = opphørFra(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData),
@@ -163,7 +163,7 @@ object UtbetalingsoppdragGenerator {
         }
     }
 
-    private fun AndelTilkjentYtelse.tilAndelData(id: String, personIdent: String, ytelseType: YtelseType): AndelData =
+    private fun AndelTilkjentYtelse.tilAndelData(id: String, personIdent: String, ytelseType: YtelsestypeUG): AndelData =
         AndelData(
             id = id,
             fom = periode.fom,
@@ -174,19 +174,19 @@ object UtbetalingsoppdragGenerator {
             periodeId = periodeId,
             forrigePeriodeId = forrigePeriodeId,
             kildeBehandlingId = kildeBehandlingId?.toString(),
-            utbetalingsgrad = if (ytelseType == YtelseType.OVERGANGSSTØNAD) this.utbetalingsgrad() else null,
+            utbetalingsgrad = if (ytelseType == YtelsestypeEF.OVERGANGSSTØNAD) this.utbetalingsgrad() else null,
         )
 
-    private fun StønadType.tilYtelsestype(): Ytelsestype = when (this) {
-        StønadType.OVERGANGSSTØNAD -> Ytelsestype.OVERGANGSSTØNAD
-        StønadType.BARNETILSYN -> Ytelsestype.BARNETILSYN
-        StønadType.SKOLEPENGER -> Ytelsestype.SKOLEPENGER
+    private fun StønadType.tilFagsystem(): FagsystemEF = when (this) {
+        StønadType.OVERGANGSSTØNAD -> FagsystemEF.OVERGANGSSTØNAD
+        StønadType.BARNETILSYN -> FagsystemEF.BARNETILSYN
+        StønadType.SKOLEPENGER -> FagsystemEF.SKOLEPENGER
     }
 
-    private fun StønadType.tilYtelseType(): YtelseType = when (this) {
-        StønadType.OVERGANGSSTØNAD -> YtelseType.OVERGANGSSTØNAD
-        StønadType.BARNETILSYN -> YtelseType.BARNETILSYN
-        StønadType.SKOLEPENGER -> YtelseType.SKOLEPENGER
+    private fun StønadType.tilYtelseType(): YtelsestypeUG = when (this) {
+        StønadType.OVERGANGSSTØNAD -> YtelsestypeEF.OVERGANGSSTØNAD
+        StønadType.BARNETILSYN -> YtelsestypeEF.BARNETILSYN
+        StønadType.SKOLEPENGER -> YtelsestypeEF.SKOLEPENGER
     }
 
     fun lagTilkjentYtelseMedUtbetalingsoppdrag(
@@ -228,7 +228,7 @@ object UtbetalingsoppdragGenerator {
         val utbetalingsoppdrag =
             Utbetalingsoppdrag(
                 saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
-                kodeEndring = if (erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse)) NY else ENDR,
+                kodeEndring = if (erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse)) KodeEndring.NY else KodeEndring.ENDR,
                 fagSystem = nyTilkjentYtelseMedMetaData.stønadstype.tilKlassifisering(),
                 saksnummer = nyTilkjentYtelseMedMetaData.eksternFagsakId.toString(),
                 aktoer = nyTilkjentYtelseMedMetaData.personIdent,
@@ -264,7 +264,7 @@ object UtbetalingsoppdragGenerator {
     private fun forrigeTilkjentYtelseManglerPeriodeOgErNy(forrigeTilkjentYtelse: TilkjentYtelse): Boolean {
         val utbetalingsoppdrag = forrigeTilkjentYtelse.utbetalingsoppdrag
             ?: error("Mangler utbetalingsoppdrag for tilkjentYtelse=${forrigeTilkjentYtelse.id}")
-        return utbetalingsoppdrag.utbetalingsperiode.isEmpty() && utbetalingsoppdrag.kodeEndring == NY
+        return utbetalingsoppdrag.utbetalingsperiode.isEmpty() && utbetalingsoppdrag.kodeEndring == KodeEndring.NY
     }
 
     /**

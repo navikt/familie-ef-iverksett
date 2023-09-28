@@ -6,7 +6,7 @@ import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
 import no.nav.familie.ef.iverksett.util.startmåned
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsperiode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
