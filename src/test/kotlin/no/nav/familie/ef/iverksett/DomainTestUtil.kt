@@ -134,7 +134,7 @@ fun posteringer(
     beløp: Int = 5000,
     posteringstype: PosteringType = PosteringType.YTELSE,
     betalingstype: BetalingType = if (beløp >= 0) BetalingType.DEBIT else BetalingType.KREDIT,
-    fagOmrådeKode: FagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD
+    fagOmrådeKode: FagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
 
 ): List<SimulertPostering> = MutableList(antallMåneder) { index ->
     SimulertPostering(

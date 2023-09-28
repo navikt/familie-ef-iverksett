@@ -45,7 +45,7 @@ fun lagSimuleringsoppsummering(
         forfallsdatoNestePeriode = nestePeriode?.forfallsdato,
         tidSimuleringHentet = tidSimuleringHentet,
         tomSisteUtbetaling = tomSisteUtbetaling,
-        sumManuellePosteringer = summerManuellePosteringer(detaljertSimuleringResultat)
+        sumManuellePosteringer = summerManuellePosteringer(detaljertSimuleringResultat),
     )
 }
 
