@@ -11,6 +11,6 @@ class FeatureToggleService(val unleashService: UnleashService) {
     }
 
     fun isEnabledMedFagsakId(toggleId: String, fagsakId: Long): Boolean {
-        return defaultUnleashService.isEnabled(toggleId, mapOf("fagsakId" to fagsakId.toString()))
+        return unleashService.isEnabled(toggleId, mapOf("fagsakId" to fagsakId.toString()))
     }
 }
