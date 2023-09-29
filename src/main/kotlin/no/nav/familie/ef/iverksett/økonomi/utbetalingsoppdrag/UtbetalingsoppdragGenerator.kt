@@ -118,7 +118,7 @@ object UtbetalingsoppdragGenerator {
         fagsystem = nyTilkjentYtelseMedMetaData.stønadstype.tilFagsystem(),
         personIdent = nyTilkjentYtelseMedMetaData.personIdent,
         vedtaksdato = nyTilkjentYtelseMedMetaData.vedtaksdato,
-        opphørFra = opphørFra(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData),
+        opphørAlleKjederFra = opphørFra(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData),
         utbetalesTil = null,
         erGOmregning = erGOmregning,
     )
