@@ -6,11 +6,13 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Simulering
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsoppdrag
 import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -22,8 +24,12 @@ class SimuleringService(
     private val iverksettResultatService: IverksettResultatService,
     private val featureToggleService: FeatureToggleService,
 ) {
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
-    private fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
+    private fun hentDetaljertSimuleringResultat(
+        simulering: Simulering,
+        brukNyUtbetalingsgenerator: Boolean,
+    ): DetaljertSimuleringResultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Kan ikke sende inn simmulere")
         }
@@ -32,11 +38,25 @@ class SimuleringService(
                 iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
             }
 
-            val tilkjentYtelseMedUtbetalingsoppdrag =
+            val brukNyUtbetalingsgeneratorFeature =
+                featureToggleService.isEnabledMedFagsakId(
+                    "familie.ef.iverksett.ny-utbetalingsgenerator",
+                    simulering.nyTilkjentYtelseMedMetaData.eksternFagsakId,
+                )
+
+            val tilkjentYtelseMedUtbetalingsoppdrag = if (brukNyUtbetalingsgenerator || brukNyUtbetalingsgeneratorFeature) {
+                log.info("Simulerer med ny utbetalingsgenerator for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
+                UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
+                    simulering.nyTilkjentYtelseMedMetaData,
+                    forrigeTilkjentYtelse,
+                )
+            } else {
+                log.info("Simulerer med gammel utbetalingsgenerator for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
                 UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simulering.nyTilkjentYtelseMedMetaData,
                     forrigeTilkjentYtelse,
                 )
+            }
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
                 ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
@@ -57,11 +77,14 @@ class SimuleringService(
         }
     }
 
-    fun hentBeriketSimulering(simulering: Simulering): BeriketSimuleringsresultat {
+    fun hentBeriketSimulering(
+        simulering: Simulering,
+        brukNyUtbetalingsgenerator: Boolean = false,
+    ): BeriketSimuleringsresultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Kan ikke sende inn simmulere")
         }
-        val detaljertSimuleringResultat = hentDetaljertSimuleringResultat(simulering)
+        val detaljertSimuleringResultat = hentDetaljertSimuleringResultat(simulering, brukNyUtbetalingsgenerator)
         val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
 
         return BeriketSimuleringsresultat(

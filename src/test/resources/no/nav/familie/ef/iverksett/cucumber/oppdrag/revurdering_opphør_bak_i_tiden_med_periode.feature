@@ -30,5 +30,6 @@ Egenskap: Revurdering med opphør bak i tiden, samt ny periode frem i tiden
 
     Og forvent følgende tilkjente ytelser for behandling 2 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
+      | 01.2021  | 01.2021  | 0     |            |                    |                     |
       | 04.2021  | 04.2021  | 800   | 3          | 2                  | 2                   |
 

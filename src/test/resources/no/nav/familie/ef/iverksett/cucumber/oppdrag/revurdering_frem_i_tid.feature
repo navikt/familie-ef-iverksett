@@ -23,7 +23,7 @@ Egenskap: Revurdering frem i tid
 
     Så forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      |          |          | 0     | 1          |                    | 2                   |
+      | 02.2021  | 03.2021  | 0     |            |                    |                     |
 
   Scenario: Revurdering frem i tid med beløp
 

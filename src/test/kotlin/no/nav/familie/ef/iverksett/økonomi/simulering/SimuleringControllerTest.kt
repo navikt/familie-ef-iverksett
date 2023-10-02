@@ -11,7 +11,7 @@ import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
@@ -132,7 +132,7 @@ class SimuleringControllerTest : ServerTest() {
             lagAndelTilkjentYtelse(0, fraOgMed = YearMonth.of(2021, 1), tilOgMed = YearMonth.of(2021, 1))
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingId, andeler = listOf(andelTilkjentYtelse))
         val tilkjentYtelseMedUtbetalingsoppdrag =
-            lagTilkjentYtelseMedUtbetalingsoppdrag(opprettTilkjentYtelseMedMetadata(behandlingId, 1L, tilkjentYtelse))
+            lagTilkjentYtelseMedUtbetalingsoppdragNy(opprettTilkjentYtelseMedMetadata(behandlingId, 1L, tilkjentYtelse))
 
         iverksettResultatService.opprettTomtResultat(behandlingId)
         iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelseMedUtbetalingsoppdrag)

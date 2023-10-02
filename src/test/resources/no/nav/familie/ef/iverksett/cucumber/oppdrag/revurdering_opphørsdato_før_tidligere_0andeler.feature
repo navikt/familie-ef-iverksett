@@ -31,7 +31,7 @@ Egenskap: Kan opphøre når man bare har 0-andeler
 
     Og forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      |          |          | 0     | 1          |                    | 2                   |
+      | 02.2021  | 04.2021  | 0     |            |                    |                     |
 
     Og forvent følgende tilkjente ytelser for behandling 3 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |

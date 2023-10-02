@@ -35,11 +35,11 @@ Egenskap: Revurdering med 0 beløp beholder periodeId når man har flere periode
 
     Og forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      |          |          | 0     | 2          | 1                  | 2                   |
+      | 02.2021  | 03.2021  | 0     |            |                    |                     |
 
     Og forvent følgende tilkjente ytelser for behandling 3 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      |          |          | 0     | 2          | 1                  | 3                   |
+      | 02.2021  | 02.2021  | 0     |            |                    |                     |
 
     Og forvent følgende tilkjente ytelser for behandling 4 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
@@ -72,6 +72,7 @@ Egenskap: Revurdering med 0 beløp beholder periodeId når man har flere periode
 
     Og forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
+      | 02.2021  | 02.2021  | 0     |            |                    |                     |
       | 03.2021  | 03.2021  | 800   | 3          | 2                  | 2                   |
 
   Scenario: Revurdering med 0 beløp beholder periodeId når man har flere perioder, før tidligere periode
@@ -100,4 +101,5 @@ Egenskap: Revurdering med 0 beløp beholder periodeId når man har flere periode
 
     Og forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
+      | 02.2021  | 02.2021  | 0     |            |                    |                     |
       | 03.2021  | 03.2021  | 800   | 3          | 2                  | 2                   |

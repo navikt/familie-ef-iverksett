@@ -3,23 +3,25 @@ package no.nav.familie.ef.iverksett.økonomi
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.PeriodeId
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.nullAndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.felles.TilkjentYtelseStatus
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.opentest4j.AssertionFailedError
-import org.opentest4j.ValueWrapper
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.UUID
 
 internal class UtbetalingsoppdragGeneratorTest {
 
+    private val behandlingA = UUID.randomUUID()
+    private val behandlingB = UUID.randomUUID()
+
     @Test
     fun `Andeler med behandlingId, periodeId og forrigePeriodeId blir oppdaterte i lagTilkjentYtelseMedUtbetalingsoppdrag`() {
-        val behandlingA = UUID.randomUUID()
-        val behandlingB = UUID.randomUUID()
         val andel1 = opprettAndel(
             2,
             YearMonth.of(2020, 1),
@@ -28,7 +30,7 @@ internal class UtbetalingsoppdragGeneratorTest {
         val andel2 = opprettAndel(2, YearMonth.of(2021, 1), YearMonth.of(2021, 12)) // endres i behandling b
         val andel3 = opprettAndel(2, YearMonth.of(2022, 1), YearMonth.of(2022, 12)) // ny i behandling b
         val førsteTilkjentYtelse =
-            lagTilkjentYtelseMedUtbetalingsoppdrag(
+            lagTilkjentYtelseMedUtbetalingsoppdragNy(
                 opprettTilkjentYtelseMedMetadata(
                     behandlingA,
                     andel1.periode.fom,
@@ -46,26 +48,45 @@ internal class UtbetalingsoppdragGeneratorTest {
             andel2.copy(periode = andel2.periode.copy(tom = andel2.periode.tom.minusMonths(2))),
             andel3,
         )
-        val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdrag(nyePerioder, førsteTilkjentYtelse)
+        val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdragNy(nyePerioder, førsteTilkjentYtelse)
 
         assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(utbetalingsoppdragB, behandlingA, behandlingB)
     }
 
-    private fun assertExpectedOgActualErLikeUtenomFeltSomFeiler(
-        catchThrowable: Throwable?,
-        feltSomSkalFiltreres: String,
-    ) {
-        val assertionFailedError = catchThrowable as AssertionFailedError
-        val actual = filterAwayBehandlingId(assertionFailedError.actual, feltSomSkalFiltreres)
-        val expected = filterAwayBehandlingId(assertionFailedError.expected, feltSomSkalFiltreres)
-        assertThat(actual).isEqualTo(expected)
-    }
+    @Nested
+    inner class HåndteringAvMinusUendeligheten {
 
-    private fun filterAwayBehandlingId(valueWrapper: ValueWrapper, feltSomSkalFiltreres: String) =
-        valueWrapper.stringRepresentation
-            .split("\n")
-            .filterNot { it.contains(feltSomSkalFiltreres) }
-            .joinToString("\n")
+        val andel1 = opprettAndel(
+            0,
+            YearMonth.of(2020, 1),
+            YearMonth.of(2020, 12),
+        )
+
+        @Test
+        fun `historiskt har vi lagret ned andeler med -uendelig fom-tom dato, som må håndteres`() {
+            val startmåned = andel1.periode.fom
+            val nullAndelTilkjentYtelse = nullAndelTilkjentYtelse(UUID.randomUUID(), PeriodeId(1L, forrige = null))
+            val utbetalingsoppdrag = lagTilkjentYtelseMedUtbetalingsoppdragNy(
+                opprettTilkjentYtelseMedMetadata(
+                    behandlingA,
+                    startmåned,
+                    andel1,
+                ),
+                TilkjentYtelse(
+                    andelerTilkjentYtelse = listOf(nullAndelTilkjentYtelse),
+                    startmåned = startmåned,
+                ),
+            )
+            assertThat(utbetalingsoppdrag.andelerTilkjentYtelse).hasSize(1)
+            assertThat(utbetalingsoppdrag.utbetalingsoppdrag?.utbetalingsperiode).isEmpty()
+            assertAndel(
+                andelTilkjentYtelse = utbetalingsoppdrag.andelerTilkjentYtelse[0],
+                expectedPeriodeId = null,
+                expectedForrigePeriodeId = null,
+                expectedKildeBehandlingId = andel1.kildeBehandlingId,
+            )
+        }
+    }
 
     private fun assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(
         utbetalingsoppdragB: TilkjentYtelse,
@@ -74,20 +95,20 @@ internal class UtbetalingsoppdragGeneratorTest {
     ) {
         assertAndel(
             andelTilkjentYtelse = utbetalingsoppdragB.andelerTilkjentYtelse[0],
-            expectedPeriodeId = 1,
+            expectedPeriodeId = 0,
             expectedForrigePeriodeId = null,
             expectedKildeBehandlingId = behandlingA,
         )
         assertAndel(
             andelTilkjentYtelse = utbetalingsoppdragB.andelerTilkjentYtelse[1],
-            expectedPeriodeId = 3,
-            expectedForrigePeriodeId = 2,
-            expectedKildeBehandlingId = behandlingB,
+            expectedPeriodeId = 1,
+            expectedForrigePeriodeId = 0,
+            expectedKildeBehandlingId = behandlingA,
         )
         assertAndel(
             andelTilkjentYtelse = utbetalingsoppdragB.andelerTilkjentYtelse[2],
-            expectedPeriodeId = 4,
-            expectedForrigePeriodeId = 3,
+            expectedPeriodeId = 2,
+            expectedForrigePeriodeId = 1,
             expectedKildeBehandlingId = behandlingB,
         )
     }
@@ -98,14 +119,14 @@ internal class UtbetalingsoppdragGeneratorTest {
     ) {
         assertAndel(
             andelTilkjentYtelse = førsteTilkjentYtelse.andelerTilkjentYtelse[0],
-            expectedPeriodeId = 1,
+            expectedPeriodeId = 0,
             expectedForrigePeriodeId = null,
             expectedKildeBehandlingId = behandlingA,
         )
         assertAndel(
             andelTilkjentYtelse = førsteTilkjentYtelse.andelerTilkjentYtelse[1],
-            expectedPeriodeId = 2,
-            expectedForrigePeriodeId = 1,
+            expectedPeriodeId = 1,
+            expectedForrigePeriodeId = 0,
             expectedKildeBehandlingId = behandlingA,
         )
     }
@@ -121,15 +142,21 @@ internal class UtbetalingsoppdragGeneratorTest {
         assertThat(andelTilkjentYtelse.kildeBehandlingId).isEqualTo(expectedKildeBehandlingId)
     }
 
-    private fun opprettAndel(beløp: Int, stønadFom: YearMonth, stønadTom: YearMonth) =
+    private fun opprettAndel(
+        beløp: Int,
+        stønadFom: YearMonth,
+        stønadTom: YearMonth,
+        periodeId: Long? = null,
+        forrigePeriodeId: Long? = null,
+    ) =
         lagAndelTilkjentYtelse(
             beløp = beløp,
             fraOgMed = stønadFom,
             tilOgMed = stønadTom,
-            periodeId = 100, // overskreves
-            forrigePeriodeId = 100, // overskreves
+            periodeId = periodeId,
+            forrigePeriodeId = forrigePeriodeId,
             kildeBehandlingId = UUID.randomUUID(),
-        ) // overskreves
+        )
 
     private fun opprettTilkjentYtelseMedMetadata(
         behandlingId: UUID,

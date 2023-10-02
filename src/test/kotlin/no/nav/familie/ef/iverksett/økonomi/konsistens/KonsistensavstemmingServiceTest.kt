@@ -9,11 +9,11 @@ import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatServic
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
-import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsgeneratorHelper
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingTilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.oppdrag.KonsistensavstemmingUtbetalingsoppdrag
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.BeforeEach
@@ -52,12 +52,12 @@ internal class KonsistensavstemmingServiceTest {
         kildeBehandlingId = behandlingId,
     )
 
-    private val requestSlot = slot<KonsistensavstemmingUtbetalingsoppdrag>()
+    private val requestSlot = slot<UtbetalingsgeneratorHelper.KonsistensavstemmingUtbetalingsoppdrag>()
 
     @BeforeEach
     internal fun setUp() {
         every { iverksettResultatService.hentTilkjentYtelse(setOf(behandlingId)) } returns
-            mapOf(behandlingId to lagTilkjentYtelseMedUtbetalingsoppdrag(lagTilkjentYtelseMedMetadata()))
+            mapOf(behandlingId to lagTilkjentYtelseMedUtbetalingsoppdragNy(lagTilkjentYtelseMedMetadata()))
         every { oppdragClient.konsistensavstemming(capture(requestSlot)) } returns ""
     }
 
@@ -89,8 +89,8 @@ internal class KonsistensavstemmingServiceTest {
         assertThat(utbetalingsoppdrag.utbetalingsperiode).hasSize(1)
 
         val utbetalingsperiode = utbetalingsoppdrag.utbetalingsperiode[0]
-        assertThat(utbetalingsperiode.periodeId).isEqualTo(2)
-        assertThat(utbetalingsperiode.forrigePeriodeId).isEqualTo(1)
+        assertThat(utbetalingsperiode.periodeId).isEqualTo(1)
+        assertThat(utbetalingsperiode.forrigePeriodeId).isEqualTo(0)
     }
 
     @Test

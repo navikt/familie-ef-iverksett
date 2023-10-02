@@ -10,6 +10,7 @@ import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatServic
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
 import no.nav.familie.ef.iverksett.økonomi.simulering.harFeilutbetaling
+import no.nav.familie.ef.iverksett.økonomi.simulering.kontroll.SimuleringskontrollService
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
@@ -37,6 +38,7 @@ class OpprettTilbakekrevingTask(
     private val iverksettResultatService: IverksettResultatService,
     private val simuleringService: SimuleringService,
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
+    private val simuleringskontrollService: SimuleringskontrollService,
 ) : AsyncTaskStep {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -46,6 +48,8 @@ class OpprettTilbakekrevingTask(
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         if (skalOppretteTilbakekreving(iverksett, behandlingId)) {
             val nyBeriketSimuleringsresultat = hentBeriketSimulering(iverksett)
+            simuleringskontrollService.kontrollerMedNyUtbetalingsgenerator(iverksett) { nyBeriketSimuleringsresultat }
+
             val nyIverksett = iverksett.oppfriskTilbakekreving(nyBeriketSimuleringsresultat)
             loggForskjell(nyIverksett, iverksett, behandlingId)
             if (nyBeriketSimuleringsresultat.harFeilutbetaling()) {
@@ -53,6 +57,8 @@ class OpprettTilbakekrevingTask(
             } else {
                 logger.info("Behandling=$behandlingId har ikke (lenger) positiv feilutbetaling i simuleringen")
             }
+        } else {
+            simuleringskontrollService.kontrollerMedNyUtbetalingsgenerator(iverksett) { hentBeriketSimulering(iverksett) }
         }
     }
 

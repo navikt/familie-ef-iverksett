@@ -3,10 +3,10 @@ package no.nav.familie.ef.iverksett.cucumber.domeneparser
 import io.cucumber.datatable.DataTable
 import no.nav.familie.ef.iverksett.cucumber.domeneparser.IdTIlUUIDHolder.behandlingIdTilUUID
 import no.nav.familie.ef.iverksett.cucumber.steps.TilkjentYtelseHolder
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsoppdrag.KodeEndring
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsperiode.SatsType
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsoppdrag.KodeEndring
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode.SatsType
 import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
 import java.time.YearMonth
@@ -94,7 +94,7 @@ object TilkjentYtelseParser {
         fom = parseValgfriÅrMåned(Domenebegrep.FRA_DATO, rad) ?: YearMonth.from(LocalDate.MIN),
         tom = parseValgfriÅrMåned(Domenebegrep.TIL_DATO, rad) ?: YearMonth.from(LocalDate.MIN),
         beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
-        periodeId = parseInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad).toLong(),
+        periodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad)?.toLong(),
         forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong(),
         kildeBehandlingId = behandlingIdTilUUID[parseValgfriInt(TilkjentYtelseDomenebegrep.KILDE_BEHANDLING_ID, rad)],
     )
@@ -153,7 +153,7 @@ object TilkjentYtelseParser {
     data class ForventetAndelTilkjentYtelse(
         val fom: YearMonth,
         val tom: YearMonth,
-        val periodeId: Long,
+        val periodeId: Long?,
         val forrigePeriodeId: Long?,
         val beløp: Int,
         val kildeBehandlingId: UUID?,
