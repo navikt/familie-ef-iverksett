@@ -64,24 +64,24 @@ class SimuleringskontrollService(
 
     private fun harDiff(
         behandlingId: UUID,
-        tidligerePerioder: List<Simuleringsperiode>,
-        nyePerioder: List<Simuleringsperiode>,
+        perioderMedGammelUtbetalingsgenerator: List<Simuleringsperiode>,
+        perioderMedNyUtbetalingsgenerator: List<Simuleringsperiode>,
     ): Boolean {
         var harDiff = false
 
-        val tidligereFørstePeriode = tidligerePerioder.firstOrNull()
-        val nyFørstePeriode = nyePerioder.firstOrNull()
-        if (tidligereFørstePeriode == null || nyFørstePeriode == null) {
+        val førstePeriodeMedGammelUG = perioderMedGammelUtbetalingsgenerator.firstOrNull()
+        val førstePeriodeMedNyUG = perioderMedNyUtbetalingsgenerator.firstOrNull()
+        if (førstePeriodeMedGammelUG == null || førstePeriodeMedNyUG == null) {
             logger.info(
                 "behandlingId=$behandlingId - kjørerIkkeKontroll" +
-                    " tidligereFørstePeriodeErNull=${tidligereFørstePeriode == null}" +
-                    " nyFørstePeriodeErNull=${nyFørstePeriode == null}",
+                    " tidligereFørstePeriodeErNull=${førstePeriodeMedGammelUG == null}" +
+                    " nyFørstePeriodeErNull=${førstePeriodeMedNyUG == null}",
             )
             return false
         }
 
-        tidligerePerioder
-            .filter { it.tom < nyFørstePeriode.fom }
+        perioderMedGammelUtbetalingsgenerator
+            .filter { it.tom < førstePeriodeMedNyUG.fom }
             .filter { it.resultat.harDiff() }
             .takeIf { it.isNotEmpty() }
             ?.run {
@@ -89,18 +89,18 @@ class SimuleringskontrollService(
                 harDiff = true
             }
 
-        val tidligerePerioderMap =
-            extracted(tidligerePerioder).filterKeys { it >= YearMonth.from(nyFørstePeriode.fom) }
-        val nyePerioderMap = extracted(nyePerioder)
+        val perioderMedGammelUtbetalingsgeneratorMap =
+            extracted(perioderMedGammelUtbetalingsgenerator).filterKeys { it >= YearMonth.from(førstePeriodeMedNyUG.fom) }
+        val perioderMedNyUtbetalingsgeneratorMap = extracted(perioderMedNyUtbetalingsgenerator)
 
-        nyePerioderMap.forEach { (måned, nyttResultat) ->
-            val tidligereResultat = tidligerePerioderMap[måned]
-            if (tidligereResultat != null && tidligereResultat != nyttResultat) {
-                logger.warn("behandlingId=$behandlingId - måned=$måned forrigeVerdi=$tidligereResultat nyttVerdi=$nyttResultat")
+        perioderMedNyUtbetalingsgeneratorMap.forEach { (måned, resultatMedNyUG) ->
+            val resultatMedGammelUG = perioderMedGammelUtbetalingsgeneratorMap[måned]
+            if (resultatMedGammelUG != null && resultatMedGammelUG != resultatMedNyUG) {
+                logger.warn("behandlingId=$behandlingId - måned=$måned resultatMedGammelUG=$resultatMedGammelUG resultatMedNyUG=$resultatMedNyUG")
                 harDiff = true
             }
         }
-        if (nyePerioderMap.size != tidligerePerioderMap.size) {
+        if (perioderMedNyUtbetalingsgeneratorMap.size != perioderMedGammelUtbetalingsgeneratorMap.size) {
             logger.warn("behandlingId=$behandlingId - diff i antall måneder")
             harDiff = true
         }
