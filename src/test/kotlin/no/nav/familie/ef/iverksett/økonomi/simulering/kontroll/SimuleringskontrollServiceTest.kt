@@ -85,7 +85,7 @@ class SimuleringskontrollServiceTest {
 
         val logmeldinger = getLogmeldinger()
         assertThat(logmeldinger).hasSize(1)
-        assertThat(logmeldinger[0]).contains("måned=2023-02 forrigeVerdi=20 nyttVerdi=10")
+        assertThat(logmeldinger[0]).contains("måned=2023-02 resultatMedGammelUG=20 resultatMedNyUG=10")
 
         verify(exactly = 1) { simuleringskontrollRepository.insert(any()) }
     }
