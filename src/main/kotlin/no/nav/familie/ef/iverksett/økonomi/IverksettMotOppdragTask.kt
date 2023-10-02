@@ -52,12 +52,14 @@ class IverksettMotOppdragTask(
         val brukNyUtbetalingsgenerator = featureToggleService.isEnabledMedFagsakId("familie.ef.iverksett.ny-utbetalingsgenerator", nyTilkjentYtelseMedMetaData.eksternFagsakId)
 
         val utbetaling = if (brukNyUtbetalingsgenerator) {
+            log.info("Bruker ny utbetalingsgenerator for behandling=${iverksett.behandling.behandlingId}")
             lagTilkjentYtelseMedUtbetalingsoppdragNy(
                 nyTilkjentYtelseMedMetaData,
                 forrigeTilkjentYtelse,
                 iverksett.erGOmregning(),
             )
         } else {
+            log.info("Bruker gammel utbetalingsgenerator for behandling=${iverksett.behandling.behandlingId}")
             lagTilkjentYtelseMedUtbetalingsoppdrag(
                 nyTilkjentYtelseMedMetaData,
                 forrigeTilkjentYtelse,

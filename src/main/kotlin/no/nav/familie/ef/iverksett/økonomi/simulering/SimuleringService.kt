@@ -11,6 +11,8 @@ import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -22,6 +24,7 @@ class SimuleringService(
     private val iverksettResultatService: IverksettResultatService,
     private val featureToggleService: FeatureToggleService,
 ) {
+    private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     private fun hentDetaljertSimuleringResultat(
         simulering: Simulering,
@@ -42,11 +45,13 @@ class SimuleringService(
                 )
 
             val tilkjentYtelseMedUtbetalingsoppdrag = if (brukNyUtbetalingsgenerator || brukNyUtbetalingsgeneratorFeature) {
+                log.info("Simulerer med ny utbetalingsgenerator for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
                 UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
                     simulering.nyTilkjentYtelseMedMetaData,
                     forrigeTilkjentYtelse,
                 )
             } else {
+                log.info("Simulerer med gammel utbetalingsgenerator for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
                 UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
                     simulering.nyTilkjentYtelseMedMetaData,
                     forrigeTilkjentYtelse,
