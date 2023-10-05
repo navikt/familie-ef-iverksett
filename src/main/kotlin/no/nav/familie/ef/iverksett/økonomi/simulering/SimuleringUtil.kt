@@ -54,6 +54,7 @@ fun summerManuellePosteringer(detaljertSimuleringResultat: DetaljertSimuleringRe
         .flatMap { simuleringMottaker -> simuleringMottaker.simulertPostering }
         .filter { simulertPostering ->
             simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING.name
+                || simulertPostering.fagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD.name
                 || simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING.name
         }
         .fold(ZERO) { acc, simulertPostering -> acc + simulertPostering.beløp }
