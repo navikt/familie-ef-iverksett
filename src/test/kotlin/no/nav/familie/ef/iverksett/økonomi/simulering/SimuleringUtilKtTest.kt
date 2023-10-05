@@ -9,7 +9,6 @@ import no.nav.familie.kontrakter.felles.simulering.MottakerType
 import no.nav.familie.kontrakter.felles.simulering.SimuleringMottaker
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-
 import java.math.BigDecimal
 
 class SimuleringUtilKtTest {
@@ -18,7 +17,6 @@ class SimuleringUtilKtTest {
 
     @Test
     fun `summer flere manuelle posteringer fagOmrådeKode ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING`() {
-
         val simulertePosteringer = posteringer(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING, beløp = 1, antallMåneder = 3)
         val simulertePosteringerAnnenFagOmrådeKode = posteringer(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD, beløp = 1, antallMåneder = 3)
         val simuleringsMottaker = listOf(SimuleringMottaker(simulertPostering = simulertePosteringer + simulertePosteringerAnnenFagOmrådeKode, mottakerType = MottakerType.BRUKER))
@@ -30,7 +28,6 @@ class SimuleringUtilKtTest {
 
     @Test
     fun `ikke summer posteringer med fagOmrådeKode ulik ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING`() {
-
         val simulertePosteringer = posteringer(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD, beløp = 1, antallMåneder = 3)
         val simuleringsMottaker = listOf(SimuleringMottaker(simulertPostering = simulertePosteringer, mottakerType = MottakerType.BRUKER))
         every { simuleringsResultat.simuleringMottaker } returns simuleringsMottaker
