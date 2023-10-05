@@ -38,7 +38,6 @@ Egenskap: Startdato før tidligere skal sende nytt startdato til oppdrag
 
     Og forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      |          |          | 0     | 1          |                    | 2                   |
 
     Og forvent følgende tilkjente ytelser for behandling 3 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |

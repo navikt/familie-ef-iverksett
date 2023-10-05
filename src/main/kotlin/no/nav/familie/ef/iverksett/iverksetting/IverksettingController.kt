@@ -71,7 +71,7 @@ class IverksettingController(
         if (!iverksettData.skalIkkeSendeBrev()) {
             throw ApiFeil(
                 "Kan ikke ha iverksetting uten brev når det ikke er en migrering, " +
-                    "g-omregning eller korrigering uten brev ",
+                    "g-omregning eller korrigering, eller iverksetting KA uten brev",
                 HttpStatus.BAD_REQUEST,
             )
         }

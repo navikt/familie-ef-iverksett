@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.3</version>
+        <version>3.1.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -18,15 +18,16 @@
         <kotlin.version>1.9.10</kotlin.version>
         <springdoc.version>2.2.0</springdoc.version>
         <felles.version>2.20230905101454_06fa3d7</felles.version>
-        <familie.kontrakter.version>3.0_20230922145040_6bfba9a</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230721144943_b5151d2</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.kontrakter.version>3.0_20230925140159_1b0dbac</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230926133506_4e05190</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20230807154047_d770f01</prosessering.version>
+        <utbetalingsgenerator.version>1.0_20230927085000_900743f</utbetalingsgenerator.version>
         <brukernotifikasjon-schemas.version>2.5.2</brukernotifikasjon-schemas.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <confluent.version>7.5.0</confluent.version>
-        <mockk-jvm.version>1.13.7</mockk-jvm.version>
+        <mockk-jvm.version>1.13.8</mockk-jvm.version>
         <cucumber.version>7.14.0</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.4.1</dotenv.version>
@@ -204,6 +205,12 @@
             <groupId>com.github.navikt</groupId>
             <artifactId>brukernotifikasjon-schemas</artifactId>
             <version>${brukernotifikasjon-schemas.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>no.nav.familie.felles</groupId>
+            <artifactId>familie-utbetalingsgenerator</artifactId>
+            <version>${utbetalingsgenerator.version}</version>
         </dependency>
 
         <!-- Database -->

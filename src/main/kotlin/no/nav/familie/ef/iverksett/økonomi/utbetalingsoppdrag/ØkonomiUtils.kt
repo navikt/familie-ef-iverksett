@@ -5,8 +5,8 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Compa
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse.Companion.snittAndeler
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsperiode
 import no.nav.familie.kontrakter.felles.Månedsperiode
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.UUID
@@ -34,7 +34,7 @@ fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): And
 object ØkonomiUtils {
 
     fun andelerUtenNullVerdier(tilkjentYtelse: TilkjentYtelse?): List<AndelTilkjentYtelse> =
-        tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.erNull() } ?: emptyList()
+        tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.harNullBeløp() } ?: emptyList()
 
     /**
      * Lager oversikt over siste andel i hver kjede som finnes uten endring i oppdatert tilstand.

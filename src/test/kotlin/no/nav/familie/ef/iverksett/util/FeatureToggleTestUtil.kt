@@ -7,8 +7,8 @@ import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 fun mockFeatureToggleService(enabled: Boolean = true): FeatureToggleService {
     val mockk = mockk<FeatureToggleService>()
     every { mockk.isEnabled(any()) } returns enabled
-    every { mockk.isEnabled("familie.ef.iverksett.stopp-iverksetting") } answers {
-        false
-    }
+    every { mockk.isEnabled("familie.ef.iverksett.stopp-iverksetting") } returns false
+    every { mockk.isEnabled("familie.ef.iverksett.ny-utbetalingsgenerator") } returns false
+    every { mockk.isEnabledMedFagsakId("familie.ef.iverksett.ny-utbetalingsgenerator", any()) } returns false
     return mockk
 }

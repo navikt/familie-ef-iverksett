@@ -7,7 +7,6 @@ Egenskap: Førstegangsbehandling - kan sende startdato i en førstegangsbehandli
 
     Gitt følgende tilkjente ytelser for Overgangsstønad
       | BehandlingId | Fra dato | Til dato | Beløp |
-      | 1            | 03.2021  | 03.2021  | 0     |
       | 1            | 03.2021  | 03.2021  | 700   |
 
     Når lagTilkjentYtelseMedUtbetalingsoppdrag kjøres

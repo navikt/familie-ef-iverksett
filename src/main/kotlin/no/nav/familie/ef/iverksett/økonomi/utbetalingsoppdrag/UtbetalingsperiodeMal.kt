@@ -3,9 +3,9 @@ package no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
+import no.nav.familie.felles.utbetalingsgenerator.domain.Opphør
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.oppdrag.Opphør
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
 import java.math.BigDecimal
 import java.time.LocalDate
 

@@ -6,7 +6,7 @@ import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelseMedMetadata
 import no.nav.familie.ef.iverksett.util.startmåned
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.ØkonomiUtils.utbetalingsperiodeForOpphør
-import no.nav.familie.kontrakter.felles.oppdrag.Utbetalingsperiode
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsperiode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
@@ -389,7 +389,7 @@ internal class ØkonomiUtilsTest {
             utbetalingsperiodeForOpphør(null, tilkjentYtelseMedMetadata(andeler, startmåned))
 
         private fun leggTilPeriodeIdPåTidligereAndeler(tidligereAndeler: List<AndelTilkjentYtelse>): List<AndelTilkjentYtelse> {
-            val utenNullandeler = tidligereAndeler.filterNot { it.erNull() }
+            val utenNullandeler = tidligereAndeler.filterNot { it.harNullBeløp() }
             if (utenNullandeler.isEmpty()) return listOf(nullAndelTilkjentYtelse(UUID.randomUUID(), PeriodeId(1)))
             return utenNullandeler
                 .sortedBy { it.periode }
