@@ -82,6 +82,7 @@ fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode>
     StønadType.OVERGANGSSTØNAD -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
+        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING,
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD,
     )
 
@@ -89,6 +90,7 @@ fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode>
         FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN,
         FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_INFOTRYGD,
         FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
+        FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING,
     )
 
     StønadType.SKOLEPENGER -> setOf(
