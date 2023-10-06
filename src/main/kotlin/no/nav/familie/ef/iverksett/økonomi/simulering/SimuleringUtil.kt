@@ -53,9 +53,9 @@ fun summerManuellePosteringer(detaljertSimuleringResultat: DetaljertSimuleringRe
     return detaljertSimuleringResultat.simuleringMottaker
         .flatMap { simuleringMottaker -> simuleringMottaker.simulertPostering }
         .filter { simulertPostering ->
-            simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING.name
-                || simulertPostering.fagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD.name
-                || simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING.name
+            simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING.name ||
+                simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD.name ||
+                simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING.name
         }
         .fold(ZERO) { acc, simulertPostering -> acc + simulertPostering.beløp }
 }
@@ -82,7 +82,7 @@ fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode>
     StønadType.OVERGANGSSTØNAD -> setOf(
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
         FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
-        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING,
+        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD,
     )
 
     StønadType.BARNETILSYN -> setOf(
