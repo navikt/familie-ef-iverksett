@@ -8,10 +8,13 @@ import no.nav.familie.kafka.KafkaErrorHandler
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.log.filter.LogFilter
 import no.nav.familie.log.filter.RequestTimeFilter
+import no.nav.familie.prosessering.config.ProsesseringInfoProvider
 import no.nav.security.token.support.client.core.http.OAuth2HttpClient
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client
+import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -101,5 +104,30 @@ class ApplicationConfig {
                 .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
                 .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS)),
         )
+    }
+
+    @Bean
+    fun prosesseringInfoProvider(@Value("\${prosessering.rolle}") prosesseringRolle: String) = object : ProsesseringInfoProvider {
+
+        override fun hentBrukernavn(): String = try {
+            SpringTokenValidationContextHolder().tokenValidationContext.getClaims("azuread")
+                .getStringClaim("preferred_username")
+        } catch (e: Exception) {
+            throw e
+        }
+
+        override fun harTilgang(): Boolean {
+            val grupper = Result.runCatching { SpringTokenValidationContextHolder().tokenValidationContext }
+                .fold(
+                    onSuccess = {
+                        @Suppress("UNCHECKED_CAST")
+                        val groups = it.getClaims("azuread")?.get("groups") as List<String>?
+                        groups?.toSet() ?: emptySet()
+                    },
+                    onFailure = { emptySet() },
+                )
+
+            return grupper.contains(prosesseringRolle)
+        }
     }
 }
