@@ -39,13 +39,14 @@ class SimuleringUtilKtTest {
     fun `summer forskjellige FagområdeKoder av manuelle posteringer`() {
         val posteringerOvergangsstønad = posteringer(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD, beløp = 1, antallMåneder = 3)
         val manuellePosteringerBarnetilsyn = posteringer(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING, beløp = 2, antallMåneder = 2)
-        val manuellePosteringerOvergangsstønadInf= posteringer(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD, beløp = 3, antallMåneder = 2)
-        val simuleringsMottaker = listOf(SimuleringMottaker(simulertPostering = posteringerOvergangsstønad, mottakerType = MottakerType.BRUKER), SimuleringMottaker(simulertPostering = manuellePosteringerBarnetilsyn, mottakerType = MottakerType.BRUKER),SimuleringMottaker(simulertPostering = manuellePosteringerOvergangsstønadInf, mottakerType = MottakerType.BRUKER))
+        val manuellePosteringerOvergangsstønadInf = posteringer(fagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD, beløp = 3, antallMåneder = 2)
+        val simuleringsMottaker = listOf(SimuleringMottaker(simulertPostering = posteringerOvergangsstønad, mottakerType = MottakerType.BRUKER), SimuleringMottaker(simulertPostering = manuellePosteringerBarnetilsyn, mottakerType = MottakerType.BRUKER), SimuleringMottaker(simulertPostering = manuellePosteringerOvergangsstønadInf, mottakerType = MottakerType.BRUKER))
 
         every { simuleringsResultat.simuleringMottaker } returns simuleringsMottaker
 
         assertThat(summerManuellePosteringer(simuleringsResultat)).isEqualTo(BigDecimal(10))
     }
+
     @Test
     fun `summerManuellePosteringer skal returnere ZERO by default `() {
         every { simuleringsResultat.simuleringMottaker } returns emptyList()

@@ -52,11 +52,7 @@ fun lagSimuleringsoppsummering(
 fun summerManuellePosteringer(detaljertSimuleringResultat: DetaljertSimuleringResultat): BigDecimal {
     return detaljertSimuleringResultat.simuleringMottaker
         .flatMap { simuleringMottaker -> simuleringMottaker.simulertPostering }
-        .filter { simulertPostering ->
-            simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING.name ||
-                simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD.name ||
-                simulertPostering.fagOmrådeKode.name == FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING.name
-        }
+        .filter { simulertPostering -> simulertPostering.fagOmrådeKode.gjelderManuellPostering() }
         .fold(ZERO) { acc, simulertPostering -> acc + simulertPostering.beløp }
 }
 
@@ -184,3 +180,9 @@ fun Simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(): List<
 
 private fun erPerioderSammenhengende(gjeldendePeriode: Datoperiode, nestePeriode: Datoperiode) =
     gjeldendePeriode.tom.plusDays(1) == nestePeriode.fom
+
+private fun FagOmrådeKode.gjelderManuellPostering(): Boolean {
+    return this.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING.name ||
+        this.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD.name ||
+        this.name == FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING.name
+}
