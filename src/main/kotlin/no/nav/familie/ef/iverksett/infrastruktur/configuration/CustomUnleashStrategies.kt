@@ -12,5 +12,4 @@ class CustomUnleashStrategies {
     fun strategies(): List<Strategy> {
         return listOf(ByEnvironmentStrategy())
     }
-
 }
