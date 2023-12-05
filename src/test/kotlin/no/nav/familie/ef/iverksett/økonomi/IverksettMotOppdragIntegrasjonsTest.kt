@@ -10,7 +10,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.time.LocalDate
 import java.time.YearMonth
 import java.util.UUID
 
@@ -47,7 +46,7 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     internal fun `start iverksetting, forvent at andelerTilkjentYtelse er lik 1 og har periodeId 1`() {
         val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(behandlingid)!!
         assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(0)
     }
 
     @Test
@@ -72,9 +71,9 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
 
         val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(behandlingIdRevurdering)!!
         assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(2)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].periodeId).isEqualTo(2)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].forrigePeriodeId).isEqualTo(1)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(0)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].periodeId).isEqualTo(1)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].forrigePeriodeId).isEqualTo(0)
     }
 
     @Test
@@ -99,13 +98,13 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
 
         val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(behandlingIdRevurdering)!!
         assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(2)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(2)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].periodeId).isEqualTo(3)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].forrigePeriodeId).isEqualTo(2)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].periodeId).isEqualTo(2)
+        assertThat(tilkjentYtelse.andelerTilkjentYtelse[1].forrigePeriodeId).isEqualTo(1)
     }
 
     @Test
-    internal fun `iverksett med opphør, forventer beløp lik 0 og dato lik LocalDate MIN`() {
+    internal fun `iverksett med opphør - sisteAndelIKjedene ivaretar `() {
         val opphørBehandlingId = UUID.randomUUID()
         val startmåned = førsteAndel.periode.fom
         val iverksettMedOpphør =
@@ -115,17 +114,35 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         iverksettingService.startIverksetting(iverksettMedOpphør, opprettBrev())
         iverksettMotOppdrag()
 
-        val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(opphørBehandlingId)!!
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().beløp).isEqualTo(0)
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periode.fom).isEqualTo(YearMonth.from(LocalDate.MIN))
-        assertThat(tilkjentYtelse.andelerTilkjentYtelse.first().periode.tom).isEqualTo(YearMonth.from(LocalDate.MIN))
+        val behandlingIdRevurderingUtbetaling = UUID.randomUUID()
+        val iverksettUtbetaling = iverksett.copy(
+            behandling = iverksett.behandling.copy(
+                behandlingId = behandlingIdRevurderingUtbetaling,
+                forrigeBehandlingId = opphørBehandlingId,
+            ),
+        )
+        iverksettingService.startIverksetting(
+            iverksettUtbetaling,
+            opprettBrev(),
+        )
+        iverksettMotOppdrag()
+
+        val tilkjentYtelseOpphør = iverksettResultatService.hentTilkjentYtelse(opphørBehandlingId)!!
+        assertThat(tilkjentYtelseOpphør.andelerTilkjentYtelse).hasSize(0)
+        assertThat(tilkjentYtelseOpphør.sisteAndelIKjede?.periodeId).isEqualTo(0)
+
+        val tilkjentYtelseUtbetaling = iverksettResultatService.hentTilkjentYtelse(behandlingIdRevurderingUtbetaling)!!
+        assertThat(tilkjentYtelseUtbetaling.sisteAndelIKjede?.periodeId).isEqualTo(1)
+        assertThat(tilkjentYtelseUtbetaling.andelerTilkjentYtelse).hasSize(1)
+        assertThat(tilkjentYtelseUtbetaling.andelerTilkjentYtelse.first().periodeId).isEqualTo(1)
+        assertThat(tilkjentYtelseUtbetaling.andelerTilkjentYtelse.first().forrigePeriodeId).isEqualTo(0)
+        assertThat(tilkjentYtelseUtbetaling.andelerTilkjentYtelse.first().beløp).isGreaterThan(0)
     }
 
     private fun iverksettMotOppdrag() {
         val tasks = taskService.findAll()
         assertThat(tasks).hasSize(1)
         iverksettMotOppdragTask.doTask(tasks.first())
+        taskService.deleteAll(taskService.findAll())
     }
 }

@@ -1,23 +1,36 @@
 package no.nav.familie.ef.iverksett.økonomi.simulering.kontroll
 
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
+import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Simulering
 import no.nav.familie.ef.iverksett.iverksetting.domene.tilSimulering
-import no.nav.familie.ef.iverksett.økonomi.simulering.SimuleringService
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
+import no.nav.familie.ef.iverksett.økonomi.OppdragClient
+import no.nav.familie.ef.iverksett.økonomi.simulering.fagområdeKoderForPosteringer
+import no.nav.familie.ef.iverksett.økonomi.simulering.lagSimuleringsoppsummering
+import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsoppdrag
+import no.nav.familie.http.client.RessursException
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
+import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
 import no.nav.familie.kontrakter.felles.simulering.Simuleringsperiode
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.YearMonth
 import java.util.UUID
 
 @Service
 class SimuleringskontrollService(
-    private val simuleringService: SimuleringService,
     private val simuleringskontrollRepository: SimuleringskontrollRepository,
     private val featureToggleService: FeatureToggleService,
+    private val oppdragKlient: OppdragClient,
+    private val iverksettResultatService: IverksettResultatService,
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -37,29 +50,93 @@ class SimuleringskontrollService(
 
         val behandlingId = iverksett.behandling.behandlingId
         try {
-            simulerMedNyUtbetalingsgeneratorOgSjekkDif(simulering, beriketSimuleringsresultat)
+            simulerMedGammelUtbetalingsgeneratorOgSjekkDiff(simulering, beriketSimuleringsresultat)
         } catch (e: Exception) {
             logger.warn("Feilet kontroll av behandling=$behandlingId")
         }
     }
 
-    private fun simulerMedNyUtbetalingsgeneratorOgSjekkDif(
+    private fun simulerMedGammelUtbetalingsgeneratorOgSjekkDiff(
         simulering: Simulering,
         beriketSimuleringsresultat: BeriketSimuleringsresultat,
     ) {
         val behandlingId = simulering.nyTilkjentYtelseMedMetaData.behandlingId
-        val simuleringNyUtbetalingsgenerator =
-            simuleringService.hentBeriketSimulering(simulering, brukNyUtbetalingsgenerator = true)
+        val simuleringsresultatKontroll = hentKontrollsimulering(simulering)
         val tidligerePerioder = beriketSimuleringsresultat.oppsummering.perioder.sortedBy { it.fom }
-        val nyePerioder = simuleringNyUtbetalingsgenerator.oppsummering.perioder.sortedBy { it.fom }
+        val nyePerioder = simuleringsresultatKontroll.oppsummering.perioder.sortedBy { it.fom }
 
         val harDiff = harDiff(behandlingId, tidligerePerioder, nyePerioder)
         if (harDiff) {
-            val resultat = SimuleringskontrollResultat(simuleringNyUtbetalingsgenerator)
+            val resultat = SimuleringskontrollResultat(simuleringsresultatKontroll)
             val input = SimuleringskontrollInput(simulering, beriketSimuleringsresultat)
             simuleringskontrollRepository.insert(Simuleringskontroll(behandlingId, input, resultat))
         }
         logger.info("behandling=$behandlingId - kontroll av ny utbetalingsgenerator utført - harDiff=$harDiff")
+    }
+
+    private fun hentKontrollsimulering(simulering: Simulering): BeriketSimuleringsresultat {
+        val detaljertSimuleringResultat = hentKontrollResultat(simulering)
+        val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
+
+        return BeriketSimuleringsresultat(
+            detaljer = detaljertSimuleringResultat,
+            oppsummering = simuleringsresultatDto,
+        )
+    }
+
+    private fun hentKontrollResultat(
+        simulering: Simulering,
+    ): DetaljertSimuleringResultat {
+        if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
+            error("Kan ikke sende inn simmulere")
+        }
+        try {
+            val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
+                iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
+            }
+
+            logger.info("Kontrollsimulerer for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
+            val tilkjentYtelseMedUtbetalingsoppdrag =
+                UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
+                    simulering.nyTilkjentYtelseMedMetaData,
+                    forrigeTilkjentYtelse,
+                )
+
+            val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
+                ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
+
+            if (utbetalingsoppdrag.utbetalingsperiode.isEmpty()) {
+                return DetaljertSimuleringResultat(emptyList())
+            }
+            return hentSimuleringsresultatOgFiltrerPosteringer(
+                utbetalingsoppdrag,
+                simulering.nyTilkjentYtelseMedMetaData.stønadstype,
+            )
+        } catch (feil: Throwable) {
+            val cause = feil.cause
+            if (feil is RessursException && cause is HttpClientErrorException.BadRequest) {
+                throw ApiFeil(feil.ressurs.melding, HttpStatus.BAD_REQUEST)
+            }
+            throw Exception("Henting av simuleringsresultat feilet", feil)
+        }
+    }
+
+    private fun hentSimuleringsresultatOgFiltrerPosteringer(
+        utbetalingsoppdrag: Utbetalingsoppdrag,
+        stønadType: StønadType,
+    ): DetaljertSimuleringResultat {
+        val fagOmrådeKoder = fagområdeKoderForPosteringer(stønadType)
+        val simuleringsResultat = oppdragKlient.hentSimuleringsresultat(utbetalingsoppdrag)
+        return simuleringsResultat.copy(
+            simuleringsResultat.simuleringMottaker
+                .map { mottaker ->
+                    mottaker.copy(
+                        simulertPostering = mottaker.simulertPostering.filter { postering ->
+                            fagOmrådeKoder.contains(postering.fagOmrådeKode)
+                        },
+                    )
+                },
+        )
     }
 
     private fun harDiff(
