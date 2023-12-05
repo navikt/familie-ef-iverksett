@@ -189,6 +189,7 @@ object UtbetalingsoppdragGenerator {
         StønadType.SKOLEPENGER -> YtelsestypeEF.SKOLEPENGER
     }
 
+    @Deprecated("Fases ut til fordel for lagTilkjentYtelseMedUtbetalingsoppdragNy. Brukes kun for simuleringskontroll")
     fun lagTilkjentYtelseMedUtbetalingsoppdrag(
         nyTilkjentYtelseMedMetaData: TilkjentYtelseMedMetaData,
         forrigeTilkjentYtelse: TilkjentYtelse? = null,
