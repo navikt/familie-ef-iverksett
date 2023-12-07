@@ -31,7 +31,7 @@ class SimuleringService(
         simulering: Simulering,
     ): DetaljertSimuleringResultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
-            error("Kan ikke sende inn simmulere")
+            error("Iverksetting er skrudd av - kan ikke simulere nå")
         }
         try {
             val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
@@ -68,7 +68,7 @@ class SimuleringService(
         simulering: Simulering,
     ): BeriketSimuleringsresultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
-            error("Kan ikke sende inn simmulere")
+            error("Iverksetting er skrudd av - kan ikke simulere nå")
         }
         val detaljertSimuleringResultat = hentDetaljertSimuleringResultat(simulering)
         val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
