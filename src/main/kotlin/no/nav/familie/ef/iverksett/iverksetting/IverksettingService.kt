@@ -39,7 +39,7 @@ class IverksettingService(
     @Transactional
     fun startIverksetting(iverksett: IverksettData, brev: Brev?) {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
-            error("Kan ikke iverksette akkurat nå")
+            error("Iverksetting er skrudd av - kan derfor ikke iverksette akkurat nå")
         }
         iverksettingRepository.insert(
             Iverksett(
