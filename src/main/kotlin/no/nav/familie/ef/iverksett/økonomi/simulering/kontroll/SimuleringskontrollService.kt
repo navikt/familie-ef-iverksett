@@ -62,10 +62,10 @@ class SimuleringskontrollService(
     ) {
         val behandlingId = simulering.nyTilkjentYtelseMedMetaData.behandlingId
         val simuleringsresultatKontroll = hentKontrollsimulering(simulering)
-        val tidligerePerioder = beriketSimuleringsresultat.oppsummering.perioder.sortedBy { it.fom }
-        val nyePerioder = simuleringsresultatKontroll.oppsummering.perioder.sortedBy { it.fom }
+        val iverksattePerioder = beriketSimuleringsresultat.oppsummering.perioder.sortedBy { it.fom }
+        val kontrollPerioder = simuleringsresultatKontroll.oppsummering.perioder.sortedBy { it.fom }
 
-        val harDiff = harDiff(behandlingId, tidligerePerioder, nyePerioder)
+        val harDiff = harDiff(behandlingId, iverksattePerioder, kontrollPerioder)
         if (harDiff) {
             val resultat = SimuleringskontrollResultat(simuleringsresultatKontroll)
             val input = SimuleringskontrollInput(simulering, beriketSimuleringsresultat)
@@ -140,25 +140,25 @@ class SimuleringskontrollService(
     }
 
     private fun harDiff(
-        behandlingId: UUID,
-        perioderMedGammelUtbetalingsgenerator: List<Simuleringsperiode>,
-        perioderMedNyUtbetalingsgenerator: List<Simuleringsperiode>,
+            behandlingId: UUID,
+            iverksattePerioder: List<Simuleringsperiode>,
+            kontrollPerioder: List<Simuleringsperiode>,
     ): Boolean {
         var harDiff = false
 
-        val førstePeriodeMedGammelUG = perioderMedGammelUtbetalingsgenerator.firstOrNull()
-        val førstePeriodeMedNyUG = perioderMedNyUtbetalingsgenerator.firstOrNull()
-        if (førstePeriodeMedGammelUG == null || førstePeriodeMedNyUG == null) {
+        val førstePeriodeIverksatt = iverksattePerioder.firstOrNull()
+        val førstePeriodeKontroll = kontrollPerioder.firstOrNull()
+        if (førstePeriodeIverksatt == null || førstePeriodeKontroll == null) {
             logger.info(
-                "behandlingId=$behandlingId - kjørerIkkeKontroll" +
-                    " tidligereFørstePeriodeErNull=${førstePeriodeMedGammelUG == null}" +
-                    " nyFørstePeriodeErNull=${førstePeriodeMedNyUG == null}",
+                    "behandlingId=$behandlingId - kjørerIkkeKontroll" +
+                    " førstePeriodeIverksattErNull=${førstePeriodeIverksatt == null}" +
+                    " førstePeriodeKontrollErNull=${førstePeriodeKontroll == null}",
             )
             return false
         }
 
-        perioderMedGammelUtbetalingsgenerator
-            .filter { it.tom < førstePeriodeMedNyUG.fom }
+        iverksattePerioder
+            .filter { it.tom < førstePeriodeKontroll.fom }
             .filter { it.resultat.harDiff() }
             .takeIf { it.isNotEmpty() }
             ?.run {
@@ -166,19 +166,22 @@ class SimuleringskontrollService(
                 harDiff = true
             }
 
-        val perioderMedGammelUtbetalingsgeneratorMap =
-            extracted(perioderMedGammelUtbetalingsgenerator).filterKeys { it >= YearMonth.from(førstePeriodeMedNyUG.fom) }
-        val perioderMedNyUtbetalingsgeneratorMap = extracted(perioderMedNyUtbetalingsgenerator)
+        val iverksattePerioderMap = extracted(iverksattePerioder)
+        val kontrollPerioderMap = extracted(kontrollPerioder)
 
-        perioderMedNyUtbetalingsgeneratorMap.forEach { (måned, resultatMedNyUG) ->
-            val resultatMedGammelUG = perioderMedGammelUtbetalingsgeneratorMap[måned]
-            if (resultatMedGammelUG != null && resultatMedGammelUG != resultatMedNyUG) {
-                logger.warn("behandlingId=$behandlingId - måned=$måned resultatMedGammelUG=$resultatMedGammelUG resultatMedNyUG=$resultatMedNyUG")
+        kontrollPerioderMap.forEach { (måned, resultatMedKontrollUG) ->
+            val resultatMedIverksattUG = iverksattePerioderMap[måned]
+            if (resultatMedIverksattUG != null && resultatMedIverksattUG != resultatMedKontrollUG) {
+                logger.warn("behandlingId=$behandlingId - måned=$måned resultatMedIverksattUG=$resultatMedIverksattUG resultatMedKontrollUG=$resultatMedKontrollUG")
                 harDiff = true
             }
         }
-        if (perioderMedNyUtbetalingsgeneratorMap.size != perioderMedGammelUtbetalingsgeneratorMap.size) {
-            logger.warn("behandlingId=$behandlingId - diff i antall måneder")
+        if (kontrollPerioderMap.size != iverksattePerioderMap.size) {
+            if (iverksattePerioderMap.size > kontrollPerioderMap.size) {
+                logger.warn("behandlingId=$behandlingId - diff i antall måneder. Nå: ${kontrollPerioder.size} Tidligere: ${iverksattePerioder.size}. Er nullbeløp i første periode? ${førstePeriodeIverksatt.nyttBeløp == BigDecimal.ZERO}")
+            } else {
+                logger.info("behandlingId=$behandlingId - diff i antall måneder. Nå: ${kontrollPerioder.size} Tidligere: ${iverksattePerioder.size}")
+            }
             harDiff = true
         }
         return harDiff
