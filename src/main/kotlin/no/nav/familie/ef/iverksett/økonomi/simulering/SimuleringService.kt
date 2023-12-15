@@ -24,39 +24,26 @@ class SimuleringService(
     private val iverksettResultatService: IverksettResultatService,
     private val featureToggleService: FeatureToggleService,
 ) {
+
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     private fun hentDetaljertSimuleringResultat(
         simulering: Simulering,
-        brukNyUtbetalingsgenerator: Boolean,
     ): DetaljertSimuleringResultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
-            error("Kan ikke sende inn simmulere")
+            error("Iverksetting er skrudd av - kan ikke simulere nå")
         }
         try {
             val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
                 iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
             }
 
-            val brukNyUtbetalingsgeneratorFeature =
-                featureToggleService.isEnabledMedFagsakId(
-                    "familie.ef.iverksett.ny-utbetalingsgenerator",
-                    simulering.nyTilkjentYtelseMedMetaData.eksternFagsakId,
-                )
-
-            val tilkjentYtelseMedUtbetalingsoppdrag = if (brukNyUtbetalingsgenerator || brukNyUtbetalingsgeneratorFeature) {
-                log.info("Simulerer med ny utbetalingsgenerator for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
+            log.info("Simulerer med ny utbetalingsgenerator for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
+            val tilkjentYtelseMedUtbetalingsoppdrag =
                 UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
                     simulering.nyTilkjentYtelseMedMetaData,
                     forrigeTilkjentYtelse,
                 )
-            } else {
-                log.info("Simulerer med gammel utbetalingsgenerator for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
-                UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdrag(
-                    simulering.nyTilkjentYtelseMedMetaData,
-                    forrigeTilkjentYtelse,
-                )
-            }
 
             val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
                 ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
@@ -79,12 +66,11 @@ class SimuleringService(
 
     fun hentBeriketSimulering(
         simulering: Simulering,
-        brukNyUtbetalingsgenerator: Boolean = false,
     ): BeriketSimuleringsresultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
-            error("Kan ikke sende inn simmulere")
+            error("Iverksetting er skrudd av - kan ikke simulere nå")
         }
-        val detaljertSimuleringResultat = hentDetaljertSimuleringResultat(simulering, brukNyUtbetalingsgenerator)
+        val detaljertSimuleringResultat = hentDetaljertSimuleringResultat(simulering)
         val simuleringsresultatDto = lagSimuleringsoppsummering(detaljertSimuleringResultat, LocalDate.now())
 
         return BeriketSimuleringsresultat(
