@@ -10,84 +10,84 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: deploy vedtaksstatistikk to dev
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-vedtak/topic-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy behandlingsstatistikk to dev
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-behandling/topic-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy infotrygd aivenapp to dev
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/aivenapp-infotrygd-goldengate-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy infotrygd aivenapp to prod
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/aivenapp-infotrygd-goldengate-prod.yaml
           PRINT_PAYLOAD: true
       - name: deploy infotrygd kafka-topic to dev
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/topic-infotrygd-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy infotrygd kafka-topic to prod
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/overgangsstønad-infotrygd-vedtak/topic-infotrygd-prod.yaml
           PRINT_PAYLOAD: true
       - name: deploy to prod
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-vedtak/topic-prod.yaml
           PRINT_PAYLOAD: true
       - name: deploy behandlingsstatistikk to prod
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-behandling/topic-prod.yaml
           PRINT_PAYLOAD: true
       - name: deploy vedtak kafka-topic to dev
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/vedtak/topic-vedtak-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy vedtak to prod
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/vedtak/topic-vedtak-prod.yaml
           PRINT_PAYLOAD: true
       - name: deploy arbeidsoppfølging topic to dev
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/arbeidsoppfølging/topic-arbeidsoppfølging-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy arbeidsoppfølging topic to prod
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
