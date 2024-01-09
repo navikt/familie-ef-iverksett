@@ -56,9 +56,7 @@ Applikasjonen vil deployes til produksjon ved ny commit på master-branchen. Det
 
 ## Henvendelser
 
-Spørsmål knyttet til koden eller prosjektet kan rettes til:
-
-* Mattis Janitz, `mattis.janitz@nav.no`
+Spørsmål knyttet til koden eller prosjektet kan gjøres via issues her på github
 
 ### For NAV-ansatte
 
