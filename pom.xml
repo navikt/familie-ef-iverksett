@@ -22,7 +22,7 @@
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230926133506_4e05190</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20231026103714_2f17845</prosessering.version>
+        <prosessering.version>2.20240110093731_0eda75e</prosessering.version>
         <utbetalingsgenerator.version>1.0_20230927085000_900743f</utbetalingsgenerator.version>
         <brukernotifikasjon-schemas.version>2.5.2</brukernotifikasjon-schemas.version>
         <maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
