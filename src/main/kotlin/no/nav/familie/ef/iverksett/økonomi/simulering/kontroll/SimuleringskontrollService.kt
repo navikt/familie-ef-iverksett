@@ -140,9 +140,9 @@ class SimuleringskontrollService(
     }
 
     private fun harDiff(
-            behandlingId: UUID,
-            iverksattePerioder: List<Simuleringsperiode>,
-            kontrollPerioder: List<Simuleringsperiode>,
+        behandlingId: UUID,
+        iverksattePerioder: List<Simuleringsperiode>,
+        kontrollPerioder: List<Simuleringsperiode>,
     ): Boolean {
         var harDiff = false
 
@@ -150,7 +150,7 @@ class SimuleringskontrollService(
         val førstePeriodeKontroll = kontrollPerioder.firstOrNull()
         if (førstePeriodeIverksatt == null || førstePeriodeKontroll == null) {
             logger.info(
-                    "behandlingId=$behandlingId - kjørerIkkeKontroll" +
+                "behandlingId=$behandlingId - kjørerIkkeKontroll" +
                     " førstePeriodeIverksattErNull=${førstePeriodeIverksatt == null}" +
                     " førstePeriodeKontrollErNull=${førstePeriodeKontroll == null}",
             )
