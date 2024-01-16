@@ -6,7 +6,7 @@ metadata:
   labels:
     team: teamfamilie
 spec:
-  image: {{ image }}
+  image: "{{ image }}"
   ingresses:
     - https://familie-ef-iverksett.intern.dev.nav.no
   liveness:
@@ -55,9 +55,7 @@ spec:
       external:
         - host: b27apvl219.preprod.local
           ports:
-            - name: mq
-              port: 1413
-              protocol: TCP
+            - port: 1413
         - host: familie-oppdrag.dev-fss-pub.nais.io
         - host: familie-ef-infotrygd-feed.dev-fss-pub.nais.io
         - host: teamfamilie-unleash-api.nav.cloud.nais.io
