@@ -24,7 +24,7 @@
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20240110093731_0eda75e</prosessering.version>
         <utbetalingsgenerator.version>1.0_20240104161725_c2493c6</utbetalingsgenerator.version>
-        <brukernotifikasjon-schemas.version>3.0.0</brukernotifikasjon-schemas.version>
+        <brukernotifikasjon-schemas.version>2.6.0</brukernotifikasjon-schemas.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <confluent.version>7.5.3</confluent.version>
         <mockk-jvm.version>1.13.9</mockk-jvm.version>
@@ -33,7 +33,7 @@
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>3.1.3</token-validation-spring.version>
+        <token-validation-spring.version>3.2.0</token-validation-spring.version>
         <ibm-mq-client.version>9.3.4.1</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
@@ -202,7 +202,7 @@
             <version>${felles.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.navikt</groupId>
+            <groupId>no.nav.tms</groupId>
             <artifactId>brukernotifikasjon-schemas</artifactId>
             <version>${brukernotifikasjon-schemas.version}</version>
         </dependency>
@@ -247,12 +247,6 @@
         </dependency>
 
         <!-- Test -->
-        <dependency>
-            <groupId>dev.akkinoc.spring.boot</groupId>
-            <artifactId>logback-access-spring-boot-starter</artifactId>
-            <version>4.1.1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
