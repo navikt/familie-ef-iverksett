@@ -6,12 +6,14 @@ on:
 env:
   IMAGE: ghcr.io/navikt/familie-ef-iverksett:${{ github.sha }}
 
+permissions:
+  contents: "read"
+  id-token: "write"
+
 jobs:
   build:
     name: Build, push and deploy to prod-gcp
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,13 +57,11 @@ jobs:
       - name: Deploy til dev-gcp
         uses: nais/deploy/actions/deploy@v1
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: .deploy/nais-preprod.yaml
       - name: Deploy til prod-gcp
         uses: nais/deploy/actions/deploy@v1
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: .deploy/nais-prod.yaml
       - name: Post deploy failures to Slack
