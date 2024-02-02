@@ -3,6 +3,11 @@ name: Deploy unleash api-token for prod
 on:
   workflow_dispatch:
 
+permissions:
+  contents: "read"
+  id-token: "write"
+  packages: "write"
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -10,9 +15,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: deploy unleash api-token
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: .deploy/unleash-apitoken-prod.yaml
           PRINT_PAYLOAD: true
