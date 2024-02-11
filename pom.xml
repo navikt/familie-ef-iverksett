@@ -18,15 +18,15 @@
         <kotlin.version>1.9.22</kotlin.version>
         <springdoc.version>2.3.0</springdoc.version>
         <felles.version>2.20240123084817_35f03aa</felles.version>
-        <familie.kontrakter.version>3.0_20240116082529_ee44807</familie.kontrakter.version>
+        <familie.kontrakter.version>3.0_20240207140632_bf1f3eb</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20230926133506_4e05190</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20240110093731_0eda75e</prosessering.version>
-        <utbetalingsgenerator.version>1.0_20240119115834_cc89420</utbetalingsgenerator.version>
+        <utbetalingsgenerator.version>1.0_20240208132236_bce5777</utbetalingsgenerator.version>
         <brukernotifikasjon-schemas.version>2.6.0</brukernotifikasjon-schemas.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
-        <confluent.version>7.5.3</confluent.version>
+        <confluent.version>7.6.0</confluent.version>
         <mockk-jvm.version>1.13.9</mockk-jvm.version>
         <cucumber.version>7.15.0</cucumber.version>
         <revision>1.0</revision>
@@ -250,7 +250,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.19.4</version>
+            <version>1.19.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
