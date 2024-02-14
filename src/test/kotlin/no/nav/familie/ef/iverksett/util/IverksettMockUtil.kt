@@ -71,6 +71,7 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.Random
 import java.util.UUID
+import no.nav.familie.kontrakter.ef.felles.AvslagÅrsak
 
 fun opprettIverksettDto(
     behandlingId: UUID,
@@ -245,6 +246,7 @@ fun vedtaksdetaljerOvergangsstønad(
     inntekt: Boolean = true,
     oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
     grunnbeløp: Grunnbeløp? = null,
+    avslagÅrsak: AvslagÅrsak? = null
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerOvergangsstønad(
@@ -259,6 +261,7 @@ fun vedtaksdetaljerOvergangsstønad(
         brevmottakere = Brevmottakere(emptyList()),
         oppgaverForOpprettelse = oppgaverForOpprettelse,
         grunnbeløp = grunnbeløp,
+        avslagÅrsak = avslagÅrsak,
     )
 }
 

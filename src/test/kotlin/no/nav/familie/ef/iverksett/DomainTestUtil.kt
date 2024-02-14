@@ -37,6 +37,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.UUID
+import no.nav.familie.kontrakter.ef.felles.AvslagÅrsak
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
 
 fun simuleringDto(
@@ -192,6 +193,7 @@ fun lagIverksettData(
         lagAndelTilkjentYtelse(beløp = 0, fraOgMed = it.minusMonths(1), tilOgMed = it, inntekt = 200_000)
     },
     grunnbeløp: Grunnbeløp? = null,
+    avslagÅrsak: AvslagÅrsak? = null
 ): IverksettOvergangsstønad {
     val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else årsak
     return opprettIverksettOvergangsstønad(
@@ -207,6 +209,7 @@ fun lagIverksettData(
             startdato = andelsdatoer.minByOrNull { it } ?: YearMonth.now(),
             vedtaksTidspunkt = vedtakstidspunkt,
             grunnbeløp = grunnbeløp,
+            avslagÅrsak = avslagÅrsak
         ),
     )
 }
