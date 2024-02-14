@@ -1,3 +1,3 @@
-FROM ghcr.io/navikt/baseimages/temurin:21
+FROM gcr.io/distroless/java21-debian12:nonroot
 COPY ./target/familie-ef-iverksett.jar "app.jar"
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75"
