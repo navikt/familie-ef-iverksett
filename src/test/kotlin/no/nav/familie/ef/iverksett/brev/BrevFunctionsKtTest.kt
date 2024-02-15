@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.lagIverksettData
+import no.nav.familie.kontrakter.ef.felles.AvslagÅrsak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType.FØRSTEGANGSBEHANDLING
 import no.nav.familie.kontrakter.ef.felles.BehandlingType.REVURDERING
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak.NYE_OPPLYSNINGER
@@ -25,6 +26,8 @@ internal class BrevFunctionsKtTest {
         lagIverksettData(behandlingType = REVURDERING, vedtaksresultat = INNVILGET, årsak = NYE_OPPLYSNINGER)
     private val iverksettRevurderingOpphørt =
         lagIverksettData(behandlingType = REVURDERING, vedtaksresultat = OPPHØRT)
+    private val iverksettRevurderingAvslagMindreInntektsendringer =
+        lagIverksettData(behandlingType = REVURDERING, vedtaksresultat = AVSLÅTT, avslagÅrsak = AvslagÅrsak.MINDRE_INNTEKTSENDRINGER)
 
     @Test
     internal fun `skal lage riktig brevtekst for riktig vedtak og behandlingstype`() {
@@ -34,5 +37,6 @@ internal class BrevFunctionsKtTest {
         assertThat(lagVedtakstekst(iverksettRevurderingInnvilgetMedSøknad)).isEqualTo("Vedtak om innvilget ")
         assertThat(lagVedtakstekst(iverksettRevurderingInnvilgetUtenSøknad)).isEqualTo("Vedtak om revurdert ")
         assertThat(lagVedtakstekst(iverksettRevurderingOpphørt)).isEqualTo("Vedtak om opphørt ")
+        assertThat(lagVedtakstekst(iverksettRevurderingAvslagMindreInntektsendringer)).isEqualTo("Vedtak om avslått endring av ")
     }
 }
