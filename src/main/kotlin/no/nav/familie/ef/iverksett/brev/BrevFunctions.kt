@@ -24,7 +24,7 @@ fun vedtaksbrevForStønadType(stønadType: StønadType): Dokumenttype =
 
 fun lagStønadtypeTekst(stønadstype: StønadType): String =
     when (stønadstype) {
-        StønadType.OVERGANGSSTØNAD -> "overgangstønad"
+        StønadType.OVERGANGSSTØNAD -> "overgangsstønad"
         StønadType.BARNETILSYN -> "stønad til barnetilsyn"
         StønadType.SKOLEPENGER -> "stønad til skolepenger"
     }
