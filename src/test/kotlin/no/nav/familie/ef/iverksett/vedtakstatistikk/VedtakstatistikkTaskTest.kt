@@ -23,7 +23,6 @@ import java.util.Properties
 import java.util.UUID
 
 internal class VedtakstatistikkTaskTest {
-
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val vedtakstatistikkService = mockk<VedtakstatistikkService>()
     private val taskService = mockk<TaskService>()
@@ -55,7 +54,11 @@ internal class VedtakstatistikkTaskTest {
     @Test
     internal fun `onCompletion - skal opprette neste task hvis G-omregning`() {
         every { iverksettingRepository.findByIdOrThrow(any()) }
-            .returns(lagIverksett(opprettIverksettDto(behandlingId = UUID.randomUUID(), behandlingÅrsak = BehandlingÅrsak.G_OMREGNING).toDomain()))
+            .returns(
+                lagIverksett(
+                    opprettIverksettDto(behandlingId = UUID.randomUUID(), behandlingÅrsak = BehandlingÅrsak.G_OMREGNING).toDomain(),
+                ),
+            )
         vedtakstatistikkTask.onCompletion(Task(VedtakstatistikkTask.TYPE, UUID.randomUUID().toString()))
 
         verify(exactly = 1) { taskService.save(any()) }

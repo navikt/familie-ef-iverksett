@@ -23,7 +23,6 @@ class TilbakekrevingListener(
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
     private val tilbakekrevingProducer: TilbakekrevingProducer,
 ) : ConsumerSeekAware {
-
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
@@ -50,7 +49,10 @@ class TilbakekrevingListener(
         }
     }
 
-    private fun transformerOgSend(data: String, key: String) {
+    private fun transformerOgSend(
+        data: String,
+        key: String,
+    ) {
         try {
             val request: HentFagsystemsbehandlingRequest =
                 objectMapper.readValue(data)
@@ -81,7 +83,10 @@ class TilbakekrevingListener(
         ).contains(this.ytelsestype)
     }
 
-    private fun sjekkFagsakIdKonsistens(iverksett: IverksettData, request: HentFagsystemsbehandlingRequest) {
+    private fun sjekkFagsakIdKonsistens(
+        iverksett: IverksettData,
+        request: HentFagsystemsbehandlingRequest,
+    ) {
         if (!iverksett.fagsak.eksternId.equals(request.eksternFagsakId.toLong())) {
             error(
                 "Inkonsistens. Ekstern fagsakID mellom iverksatt behandling (ekstern fagsakID=" +

@@ -10,12 +10,12 @@ import java.text.SimpleDateFormat
 
 @Component
 class VedtakhendelseProducer(private val jmsTemplate: JmsTemplate) {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val xmlMapper = XmlMapper()
-        .registerModule(JavaTimeModule())
-        .setDateFormat(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"))
+    private val xmlMapper =
+        XmlMapper()
+            .registerModule(JavaTimeModule())
+            .setDateFormat(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"))
 
     @Transactional
     fun produce(vedtakHendelse: VedtakHendelser) {

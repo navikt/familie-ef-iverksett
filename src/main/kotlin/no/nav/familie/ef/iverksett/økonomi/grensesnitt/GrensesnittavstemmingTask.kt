@@ -23,7 +23,6 @@ class GrensesnittavstemmingTask(
     private val oppdragClient: OppdragClient,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
-
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun doTask(task: Task) {
@@ -32,11 +31,12 @@ class GrensesnittavstemmingTask(
             val tilTidspunkt = task.triggerTid.toLocalDate().atStartOfDay()
 
             logger.info("Gjør ${task.id} $stønadstype avstemming mot oppdrag fra $fraTidspunkt til $tilTidspunkt")
-            val grensesnittavstemmingRequest = GrensesnittavstemmingRequest(
-                fagsystem = stønadstype.tilKlassifisering(),
-                fra = fraTidspunkt,
-                til = tilTidspunkt,
-            )
+            val grensesnittavstemmingRequest =
+                GrensesnittavstemmingRequest(
+                    fagsystem = stønadstype.tilKlassifisering(),
+                    fra = fraTidspunkt,
+                    til = tilTidspunkt,
+                )
             oppdragClient.grensesnittavstemming(grensesnittavstemmingRequest)
         }
     }
@@ -52,7 +52,6 @@ class GrensesnittavstemmingTask(
             .let { taskService.save(it) }
 
     companion object {
-
         const val TYPE = "utførGrensesnittavstemming"
     }
 }

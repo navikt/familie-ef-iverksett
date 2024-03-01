@@ -48,7 +48,6 @@ import no.nav.familie.eksterne.kontrakter.ef.Barn as BarnEkstern
 import no.nav.familie.eksterne.kontrakter.ef.StønadType as StønadTypeEkstern
 
 object VedtakstatistikkMapper {
-
     fun mapTilVedtakBarnetilsynDVH(
         iverksett: IverksettBarnetilsyn,
         forrigeIverksettBehandlingEksternId: Long?,
@@ -57,44 +56,49 @@ object VedtakstatistikkMapper {
             fagsakId = iverksett.fagsak.eksternId,
             behandlingId = iverksett.behandling.eksternId,
             relatertBehandlingId = forrigeIverksettBehandlingEksternId,
-            adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let {
-                Adressebeskyttelse.valueOf(it.name)
-            },
+            adressebeskyttelse =
+                iverksett.søker.adressebeskyttelse?.let {
+                    Adressebeskyttelse.valueOf(it.name)
+                },
             tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")),
-            vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map {
-                mapTilVilkårsvurderinger(it)
-            },
+            vilkårsvurderinger =
+                iverksett.behandling.vilkårsvurderinger.map {
+                    mapTilVilkårsvurderinger(it)
+                },
             person = mapTilPerson(personIdent = iverksett.søker.personIdent),
             barn = iverksett.søker.barn.map { mapTilBarn(it) },
             behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
             behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
             vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
             vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak),
-            utbetalinger = iverksett.vedtak.tilkjentYtelse?.let {
-                mapTilUtbetaling(
-                    it,
-                    iverksett.fagsak.stønadstype,
-                    iverksett.fagsak.eksternId,
-                    iverksett.søker,
-                )
-            } ?: emptyList(),
+            utbetalinger =
+                iverksett.vedtak.tilkjentYtelse?.let {
+                    mapTilUtbetaling(
+                        it,
+                        iverksett.fagsak.stønadstype,
+                        iverksett.fagsak.eksternId,
+                        iverksett.søker,
+                    )
+                } ?: emptyList(),
             aktivitetskrav = hentAktivitetsvilkårBarnetilsyn(iverksett.behandling.vilkårsvurderinger),
             funksjonellId = iverksett.behandling.eksternId,
             stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
-            perioderKontantstøtte = iverksett.vedtak.kontantstøtte.map {
-                PeriodeMedBeløp(
-                    it.periode.fomDato,
-                    it.periode.tomDato,
-                    it.beløp,
-                )
-            },
-            perioderTilleggsstønad = iverksett.vedtak.tilleggsstønad.map {
-                PeriodeMedBeløp(
-                    it.periode.fomDato,
-                    it.periode.tomDato,
-                    it.beløp,
-                )
-            },
+            perioderKontantstøtte =
+                iverksett.vedtak.kontantstøtte.map {
+                    PeriodeMedBeløp(
+                        it.periode.fomDato,
+                        it.periode.tomDato,
+                        it.beløp,
+                    )
+                },
+            perioderTilleggsstønad =
+                iverksett.vedtak.tilleggsstønad.map {
+                    PeriodeMedBeløp(
+                        it.periode.fomDato,
+                        it.periode.tomDato,
+                        it.beløp,
+                    )
+                },
             kravMottatt = iverksett.behandling.kravMottatt,
             årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
             avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
@@ -117,32 +121,37 @@ object VedtakstatistikkMapper {
             fagsakId = iverksett.fagsak.eksternId,
             behandlingId = iverksett.behandling.eksternId,
             relatertBehandlingId = forrigeIverksettBehandlingEksternId,
-            adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let {
-                Adressebeskyttelse.valueOf(it.name)
-            },
+            adressebeskyttelse =
+                iverksett.søker.adressebeskyttelse?.let {
+                    Adressebeskyttelse.valueOf(it.name)
+                },
             tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")),
-            vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map {
-                mapTilVilkårsvurderinger(it)
-            },
+            vilkårsvurderinger =
+                iverksett.behandling.vilkårsvurderinger.map {
+                    mapTilVilkårsvurderinger(it)
+                },
             person = mapTilPerson(personIdent = iverksett.søker.personIdent),
             barn = iverksett.søker.barn.map { mapTilBarn(it) },
             behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
             behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
             vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
             vedtaksperioder = mapToVedtaksperioder(iverksett.vedtak),
-            utbetalinger = iverksett.vedtak.tilkjentYtelse?.let {
-                mapTilUtbetaling(
-                    it,
-                    iverksett.fagsak.stønadstype,
-                    iverksett.fagsak.eksternId,
-                    iverksett.søker,
-                )
-            } ?: emptyList(),
-            aktivitetskrav = Aktivitetskrav(
-                aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
-                harSagtOppArbeidsforhold = VilkårsvurderingUtil
-                    .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger),
-            ),
+            utbetalinger =
+                iverksett.vedtak.tilkjentYtelse?.let {
+                    mapTilUtbetaling(
+                        it,
+                        iverksett.fagsak.stønadstype,
+                        iverksett.fagsak.eksternId,
+                        iverksett.søker,
+                    )
+                } ?: emptyList(),
+            aktivitetskrav =
+                Aktivitetskrav(
+                    aktivitetspliktInntrefferDato = iverksett.behandling.aktivitetspliktInntrefferDato,
+                    harSagtOppArbeidsforhold =
+                        VilkårsvurderingUtil
+                            .hentHarSagtOppEllerRedusertFraVurderinger(iverksett.behandling.vilkårsvurderinger),
+                ),
             funksjonellId = iverksett.behandling.eksternId,
             stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
             kravMottatt = iverksett.behandling.kravMottatt,
@@ -211,41 +220,48 @@ object VedtakstatistikkMapper {
         }
     }
 
-    fun mapTilVedtakSkolepengeDVH(iverksett: IverksettSkolepenger, forrigeBehandlingId: Long?): VedtakSkolepenger {
+    fun mapTilVedtakSkolepengeDVH(
+        iverksett: IverksettSkolepenger,
+        forrigeBehandlingId: Long?,
+    ): VedtakSkolepenger {
         return VedtakSkolepenger(
             fagsakId = iverksett.fagsak.eksternId,
             behandlingId = iverksett.behandling.eksternId,
             relatertBehandlingId = forrigeBehandlingId,
-            adressebeskyttelse = iverksett.søker.adressebeskyttelse?.let {
-                Adressebeskyttelse.valueOf(it.name)
-            },
+            adressebeskyttelse =
+                iverksett.søker.adressebeskyttelse?.let {
+                    Adressebeskyttelse.valueOf(it.name)
+                },
             tidspunktVedtak = iverksett.vedtak.vedtakstidspunkt.atZone(ZoneId.of("Europe/Oslo")),
-            vilkårsvurderinger = iverksett.behandling.vilkårsvurderinger.map {
-                mapTilVilkårsvurderinger(it)
-            },
+            vilkårsvurderinger =
+                iverksett.behandling.vilkårsvurderinger.map {
+                    mapTilVilkårsvurderinger(it)
+                },
             person = mapTilPerson(personIdent = iverksett.søker.personIdent),
             barn = iverksett.søker.barn.map { mapTilBarn(it) },
             behandlingType = BehandlingType.valueOf(iverksett.behandling.behandlingType.name),
             behandlingÅrsak = BehandlingÅrsak.valueOf(iverksett.behandling.behandlingÅrsak.name),
             vedtak = Vedtak.valueOf(iverksett.vedtak.vedtaksresultat.name),
-            utbetalinger = iverksett.vedtak.tilkjentYtelse?.let {
-                mapTilUtbetaling(
-                    it,
-                    iverksett.fagsak.stønadstype,
-                    iverksett.fagsak.eksternId,
-                    iverksett.søker,
-                )
-            } ?: emptyList(),
+            utbetalinger =
+                iverksett.vedtak.tilkjentYtelse?.let {
+                    mapTilUtbetaling(
+                        it,
+                        iverksett.fagsak.stønadstype,
+                        iverksett.fagsak.eksternId,
+                        iverksett.søker,
+                    )
+                } ?: emptyList(),
             funksjonellId = iverksett.behandling.eksternId,
             stønadstype = StønadTypeEkstern.valueOf(iverksett.fagsak.stønadstype.name),
-            vedtaksperioder = iverksett.vedtak.vedtaksperioder.map {
-                VedtaksperiodeSkolepenger(
-                    skoleår = it.perioder.first().periode.fomDato.utledSkoleår().value,
-                    perioder = it.perioder.map { delårsperiode -> mapTilDelårsperiode(delårsperiode) },
-                    utgifter = it.utgiftsperioder.map { utgiftsperiode -> mapTilUtgiftSkolepenger(utgiftsperiode) },
-                    maksSatsForSkoleår = it.perioder.first().makssatsForSkoleår,
-                )
-            },
+            vedtaksperioder =
+                iverksett.vedtak.vedtaksperioder.map {
+                    VedtaksperiodeSkolepenger(
+                        skoleår = it.perioder.first().periode.fomDato.utledSkoleår().value,
+                        perioder = it.perioder.map { delårsperiode -> mapTilDelårsperiode(delårsperiode) },
+                        utgifter = it.utgiftsperioder.map { utgiftsperiode -> mapTilUtgiftSkolepenger(utgiftsperiode) },
+                        maksSatsForSkoleår = it.perioder.first().makssatsForSkoleår,
+                    )
+                },
             vedtaksbegrunnelse = iverksett.vedtak.begrunnelse,
             kravMottatt = iverksett.behandling.kravMottatt,
             årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),

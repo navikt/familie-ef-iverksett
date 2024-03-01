@@ -38,7 +38,6 @@ import javax.sql.DataSource
 @Configuration
 @EnableJdbcRepositories("no.nav.familie")
 class DatabaseConfiguration : AbstractJdbcConfiguration() {
-
     @Bean
     fun namedParameterJdbcTemplate(dataSource: DataSource): NamedParameterJdbcTemplate {
         return NamedParameterJdbcTemplate(dataSource)
@@ -68,7 +67,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
                 StringTilBrevmottakereConverter(),
                 YearTilLocalDateConverter(),
                 LocalDateTilYearConverter(),
-
                 SimuleringskontrollInputTilStringConverter(),
                 StringTilSimuleringskontrollInputConverter(),
                 SimuleringskontrollResultatTilStringConverter(),
@@ -78,7 +76,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
     }
 
     open class DomainTilPGobjectConverter<T : Any> : Converter<T, PGobject> {
-
         override fun convert(data: T): PGobject =
             PGobject().apply {
                 type = "json"
@@ -91,16 +88,16 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectConverterTilIverksettData : Converter<PGobject, IverksettData> {
-
         override fun convert(pGobject: PGobject): IverksettData {
             val fagsakNode = objectMapper.readTree(pGobject.value).findValue("fagsak")
             val fagsakdetaljer: Fagsakdetaljer = objectMapper.treeToValue(fagsakNode)
             return when (fagsakdetaljer.stønadstype) {
                 StønadType.BARNETILSYN -> objectMapper.readValue(pGobject.value, IverksettBarnetilsyn::class.java)
-                StønadType.OVERGANGSSTØNAD -> objectMapper.readValue(
-                    pGobject.value,
-                    IverksettOvergangsstønad::class.java,
-                )
+                StønadType.OVERGANGSSTØNAD ->
+                    objectMapper.readValue(
+                        pGobject.value,
+                        IverksettOvergangsstønad::class.java,
+                    )
 
                 StønadType.SKOLEPENGER -> objectMapper.readValue(pGobject.value, IverksettSkolepenger::class.java)
             }
@@ -112,7 +109,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilTilkjentYtelseConverter : Converter<PGobject, TilkjentYtelse> {
-
         override fun convert(pGobject: PGobject): TilkjentYtelse {
             return objectMapper.readValue(pGobject.value!!)
         }
@@ -123,7 +119,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilOppdragResultatConverter : Converter<PGobject, OppdragResultat> {
-
         override fun convert(pGobject: PGobject): OppdragResultat {
             return objectMapper.readValue(pGobject.value!!)
         }
@@ -134,7 +129,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilJournalpostResultatMapConverter : Converter<PGobject, JournalpostResultatMap> {
-
         override fun convert(pGobject: PGobject): JournalpostResultatMap {
             return objectMapper.readValue(pGobject.value!!)
         }
@@ -145,7 +139,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilVedtaksbrevResultatMapConverter : Converter<PGobject, DistribuerBrevResultatMap> {
-
         override fun convert(pGobject: PGobject): DistribuerBrevResultatMap {
             return objectMapper.readValue(pGobject.value!!)
         }
@@ -156,7 +149,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilTilbakekrevingResultatConverter : Converter<PGobject, TilbakekrevingResultat> {
-
         override fun convert(pGobject: PGobject): TilbakekrevingResultat {
             return objectMapper.readValue(pGobject.value!!)
         }
@@ -164,7 +156,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @WritingConverter
     class BehandlingDVHTilStringConverter : Converter<BehandlingDVH, PGobject> {
-
         override fun convert(utbetalingsoppdrag: BehandlingDVH): PGobject =
             PGobject().apply {
                 type = "json"
@@ -174,7 +165,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class StringTilBehandlingDVHConverter : Converter<PGobject, BehandlingDVH> {
-
         override fun convert(pgObject: PGobject): BehandlingDVH {
             return objectMapper.readValue(pgObject.value!!)
         }
@@ -182,7 +172,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @WritingConverter
     class BrevmottakereTilStringConverter : Converter<Brevmottakere, PGobject> {
-
         override fun convert(data: Brevmottakere): PGobject =
             PGobject().apply {
                 type = "json"
@@ -192,7 +181,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class StringTilBrevmottakereConverter : Converter<PGobject, Brevmottakere> {
-
         override fun convert(pgObject: PGobject): Brevmottakere {
             return objectMapper.readValue(pgObject.value!!)
         }
@@ -200,7 +188,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @WritingConverter
     class YearTilLocalDateConverter : Converter<Year, LocalDate> {
-
         override fun convert(year: Year): LocalDate {
             return year.atDay(1)
         }
@@ -208,7 +195,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class LocalDateTilYearConverter : Converter<Date, Year> {
-
         override fun convert(date: Date): Year {
             return Year.from(date.toLocalDate())
         }
@@ -216,7 +202,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @WritingConverter
     class SimuleringskontrollInputTilStringConverter : Converter<SimuleringskontrollInput, PGobject> {
-
         override fun convert(data: SimuleringskontrollInput): PGobject =
             PGobject().apply {
                 type = "json"
@@ -226,7 +211,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class StringTilSimuleringskontrollInputConverter : Converter<PGobject, SimuleringskontrollInput> {
-
         override fun convert(pgObject: PGobject): SimuleringskontrollInput {
             return objectMapper.readValue(pgObject.value!!)
         }
@@ -234,7 +218,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @WritingConverter
     class SimuleringskontrollResultatTilStringConverter : Converter<SimuleringskontrollResultat, PGobject> {
-
         override fun convert(data: SimuleringskontrollResultat): PGobject =
             PGobject().apply {
                 type = "json"
@@ -244,7 +227,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class StringTilSimuleringskontrollResultatConverter : Converter<PGobject, SimuleringskontrollResultat> {
-
         override fun convert(pgObject: PGobject): SimuleringskontrollResultat {
             return objectMapper.readValue(pgObject.value!!)
         }

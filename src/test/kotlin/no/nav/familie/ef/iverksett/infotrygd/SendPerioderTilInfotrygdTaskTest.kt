@@ -25,7 +25,6 @@ import java.time.YearMonth
 import java.util.UUID
 
 internal class SendPerioderTilInfotrygdTaskTest {
-
     private val infotrygdFeedClient = mockk<InfotrygdFeedClient>(relaxed = true)
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>(relaxed = true)
     private val iverksettingRepository = mockk<IverksettingRepository>()
@@ -33,19 +32,21 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     private val behandlingId = UUID.randomUUID()
 
-    private val identer = listOf(
-        PersonIdentMedHistorikk("1", false),
-        PersonIdentMedHistorikk("2", true),
-    )
+    private val identer =
+        listOf(
+            PersonIdentMedHistorikk("1", false),
+            PersonIdentMedHistorikk("2", true),
+        )
 
     private val requestSlot = slot<OpprettPeriodeHendelseDto>()
 
-    val task = SendPerioderTilInfotrygdTask(
-        infotrygdFeedClient,
-        familieIntegrasjonerClient,
-        iverksettingRepository,
-        taskService,
-    )
+    val task =
+        SendPerioderTilInfotrygdTask(
+            infotrygdFeedClient,
+            familieIntegrasjonerClient,
+            iverksettingRepository,
+            taskService,
+        )
 
     @BeforeEach
     internal fun setUp() {
@@ -69,20 +70,22 @@ internal class SendPerioderTilInfotrygdTaskTest {
 
     @Test
     internal fun `fullOvergangsstønad er false hvis samordningsfradrag eller inntektsreduksjon ikke er 0`() {
-        val andelTilkjentYtelse = lagAndelTilkjentYtelse(
-            beløp = 1,
-            fraOgMed = YearMonth.of(1901, 1),
-            tilOgMed = YearMonth.of(1901, 1),
-            samordningsfradrag = 1,
-            inntektsreduksjon = 0,
-        )
-        val andelTilkjentYtelse2 = lagAndelTilkjentYtelse(
-            beløp = 3,
-            fraOgMed = YearMonth.of(1902, 1),
-            tilOgMed = YearMonth.of(1902, 1),
-            samordningsfradrag = 0,
-            inntektsreduksjon = 1,
-        )
+        val andelTilkjentYtelse =
+            lagAndelTilkjentYtelse(
+                beløp = 1,
+                fraOgMed = YearMonth.of(1901, 1),
+                tilOgMed = YearMonth.of(1901, 1),
+                samordningsfradrag = 1,
+                inntektsreduksjon = 0,
+            )
+        val andelTilkjentYtelse2 =
+            lagAndelTilkjentYtelse(
+                beløp = 3,
+                fraOgMed = YearMonth.of(1902, 1),
+                tilOgMed = YearMonth.of(1902, 1),
+                samordningsfradrag = 0,
+                inntektsreduksjon = 1,
+            )
         val iverksett = opprettData(andelTilkjentYtelse, andelTilkjentYtelse2)
         every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns iverksett
 
@@ -111,12 +114,14 @@ internal class SendPerioderTilInfotrygdTaskTest {
         val iverksett = opprettIverksettOvergangsstønad(behandlingId)
         val vedtak = iverksett.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
-        val iverksettData = iverksett.copy(
-            vedtak = vedtak.copy(
-                tilkjentYtelse =
-                tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelTilkjentYtelse.toList()),
-            ),
-        )
+        val iverksettData =
+            iverksett.copy(
+                vedtak =
+                    vedtak.copy(
+                        tilkjentYtelse =
+                            tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelTilkjentYtelse.toList()),
+                    ),
+            )
         return Iverksett(behandlingId, iverksettData, iverksettData.behandling.eksternId)
     }
 }

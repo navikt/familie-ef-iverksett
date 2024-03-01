@@ -24,19 +24,17 @@ class SimuleringService(
     private val iverksettResultatService: IverksettResultatService,
     private val featureToggleService: FeatureToggleService,
 ) {
-
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
-    private fun hentDetaljertSimuleringResultat(
-        simulering: Simulering,
-    ): DetaljertSimuleringResultat {
+    private fun hentDetaljertSimuleringResultat(simulering: Simulering): DetaljertSimuleringResultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Iverksetting er skrudd av - kan ikke simulere nå")
         }
         try {
-            val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
-                iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
-            }
+            val forrigeTilkjentYtelse =
+                simulering.forrigeBehandlingId?.let {
+                    iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
+                }
 
             log.info("Simulerer med ny utbetalingsgenerator for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
             val tilkjentYtelseMedUtbetalingsoppdrag =
@@ -45,8 +43,9 @@ class SimuleringService(
                     forrigeTilkjentYtelse,
                 )
 
-            val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
-                ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
+            val utbetalingsoppdrag =
+                tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
+                    ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
 
             if (utbetalingsoppdrag.utbetalingsperiode.isEmpty()) {
                 return DetaljertSimuleringResultat(emptyList())
@@ -64,9 +63,7 @@ class SimuleringService(
         }
     }
 
-    fun hentBeriketSimulering(
-        simulering: Simulering,
-    ): BeriketSimuleringsresultat {
+    fun hentBeriketSimulering(simulering: Simulering): BeriketSimuleringsresultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Iverksetting er skrudd av - kan ikke simulere nå")
         }
@@ -89,9 +86,10 @@ class SimuleringService(
             simuleringsResultat.simuleringMottaker
                 .map { mottaker ->
                     mottaker.copy(
-                        simulertPostering = mottaker.simulertPostering.filter { postering ->
-                            fagOmrådeKoder.contains(postering.fagOmrådeKode)
-                        },
+                        simulertPostering =
+                            mottaker.simulertPostering.filter { postering ->
+                                fagOmrådeKoder.contains(postering.fagOmrådeKode)
+                            },
                     )
                 },
         )

@@ -28,14 +28,14 @@ class VentePåStatusFraØkonomiTask(
     private val taskService: TaskService,
     private val iverksettResultatService: IverksettResultatService,
 ) : AsyncTaskStep {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        val tilkjentYtelse = iverksettResultatService.hentTilkjentYtelse(behandlingId)
-            ?: error("Kunne ikke finne tilkjent ytelse for behandling=$behandlingId")
+        val tilkjentYtelse =
+            iverksettResultatService.hentTilkjentYtelse(behandlingId)
+                ?: error("Kunne ikke finne tilkjent ytelse for behandling=$behandlingId")
 
         if (tilkjentYtelse.harIngenUtbetalingsperioder()) {
             return
@@ -63,7 +63,6 @@ class VentePåStatusFraØkonomiTask(
     }
 
     companion object {
-
         const val TYPE = "sjekkStatusPåOppdrag"
     }
 

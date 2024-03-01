@@ -21,7 +21,6 @@ class FamilieIntegrasjonerClient(
     @Value("\${FAMILIE_INTEGRASJONER_API_URL}")
     private val integrasjonUri: URI,
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
-
     private val hentIdenterURI =
         UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_HENT_IDENTER).build().toUri()
     private val aktørUri =
@@ -37,7 +36,10 @@ class FamilieIntegrasjonerClient(
             .build()
             .toUri()
 
-    fun hentIdenter(personident: String, medHistprikk: Boolean): List<PersonIdentMedHistorikk> {
+    fun hentIdenter(
+        personident: String,
+        medHistprikk: Boolean,
+    ): List<PersonIdentMedHistorikk> {
         val uri = UriComponentsBuilder.fromUri(hentIdenterURI).queryParam("historikk", medHistprikk).build().toUri()
         val response = postForEntity<Ressurs<FinnPersonidenterResponse>>(uri, PersonIdent(personident))
         return response.getDataOrThrow().identer
@@ -61,7 +63,6 @@ class FamilieIntegrasjonerClient(
     }
 
     companion object {
-
         private const val TEMA_ENSLIG_FORSØRGER = "ENF" // NAY - 4489
         const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet"
         const val PATH_ARBEIDSFORDELING_OPPFØLGING = "api/arbeidsfordeling/oppfolging"

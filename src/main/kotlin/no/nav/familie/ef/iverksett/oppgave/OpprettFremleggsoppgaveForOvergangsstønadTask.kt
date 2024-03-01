@@ -23,7 +23,6 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
     private val iverksettingRepository: IverksettingRepository,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
@@ -36,7 +35,10 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
             )
             return
         }
-        if (iverksett.data.vedtak.oppgaverForOpprettelse.oppgavetyper.contains(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)) {
+        if (iverksett.data.vedtak.oppgaverForOpprettelse.oppgavetyper.contains(
+                OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID,
+            )
+        ) {
             val oppgaveId = oppgaveService.opprettFremleggsoppgave(iverksett.data, "Inntekt")
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
         } else {
@@ -49,7 +51,6 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
     }
 
     companion object {
-
         const val TYPE = "opprettFremleggsoppgaveForOvergangsstønad"
     }
 }

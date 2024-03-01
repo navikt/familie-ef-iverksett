@@ -15,29 +15,39 @@ import java.util.UUID
 
 @Service
 class IverksettResultatService(private val iverksettResultatRepository: IverksettResultatRepository) {
-
     fun opprettTomtResultat(behandlingId: UUID) {
         iverksettResultatRepository.insert(IverksettResultat(behandlingId))
     }
 
-    fun oppdaterTilkjentYtelseForUtbetaling(behandlingId: UUID, tilkjentYtelseForUtbetaling: TilkjentYtelse) {
+    fun oppdaterTilkjentYtelseForUtbetaling(
+        behandlingId: UUID,
+        tilkjentYtelseForUtbetaling: TilkjentYtelse,
+    ) {
         val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
         iverksettResultatRepository.update(iverksettResultat.copy(tilkjentYtelseForUtbetaling = tilkjentYtelseForUtbetaling))
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun oppdaterOppdragResultat(behandlingId: UUID, oppdragResultat: OppdragResultat) {
+    fun oppdaterOppdragResultat(
+        behandlingId: UUID,
+        oppdragResultat: OppdragResultat,
+    ) {
         val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
         iverksettResultatRepository.update(iverksettResultat.copy(oppdragResultat = oppdragResultat))
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun oppdaterJournalpostResultat(behandlingId: UUID, mottakerIdent: String, journalPostResultat: JournalpostResultat) {
+    fun oppdaterJournalpostResultat(
+        behandlingId: UUID,
+        mottakerIdent: String,
+        journalPostResultat: JournalpostResultat,
+    ) {
         val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
 
-        val oppdatert = iverksettResultat.copy(
-            journalpostResultat = iverksettResultat.journalpostResultat + mapOf(mottakerIdent to journalPostResultat),
-        )
+        val oppdatert =
+            iverksettResultat.copy(
+                journalpostResultat = iverksettResultat.journalpostResultat + mapOf(mottakerIdent to journalPostResultat),
+            )
         iverksettResultatRepository.update(oppdatert)
     }
 
@@ -48,9 +58,10 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
         distribuerVedtaksbrevResultat: DistribuerBrevResultat,
     ) {
         val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
-        val oppdatert = iverksettResultat.copy(
-            vedtaksbrevResultat = iverksettResultat.vedtaksbrevResultat + mapOf(journalpostId to distribuerVedtaksbrevResultat),
-        )
+        val oppdatert =
+            iverksettResultat.copy(
+                vedtaksbrevResultat = iverksettResultat.vedtaksbrevResultat + mapOf(journalpostId to distribuerVedtaksbrevResultat),
+            )
         iverksettResultatRepository.update(oppdatert)
     }
 
@@ -58,7 +69,10 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
         return iverksettResultatRepository.findByIdOrThrow(behandlingId).vedtaksbrevResultat.map
     }
 
-    fun oppdaterTilbakekrevingResultat(behandlingId: UUID, tilbakekrevingResultat: TilbakekrevingResultat) {
+    fun oppdaterTilbakekrevingResultat(
+        behandlingId: UUID,
+        tilbakekrevingResultat: TilbakekrevingResultat,
+    ) {
         val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingId)
         iverksettResultatRepository.update(iverksettResultat.copy(tilbakekrevingResultat = tilbakekrevingResultat))
     }
@@ -69,8 +83,9 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
 
     fun hentTilkjentYtelse(behandlingId: Set<UUID>): Map<UUID, TilkjentYtelse> {
         val iverksettResultater = iverksettResultatRepository.findAllById(behandlingId)
-        val tilkjenteYtelser = iverksettResultater.filter { it.tilkjentYtelseForUtbetaling != null }
-            .associate { it.behandlingId to it.tilkjentYtelseForUtbetaling!! }
+        val tilkjenteYtelser =
+            iverksettResultater.filter { it.tilkjentYtelseForUtbetaling != null }
+                .associate { it.behandlingId to it.tilkjentYtelseForUtbetaling!! }
         if (behandlingId.size > tilkjenteYtelser.size) {
             error("Finner ikke tilkjent ytelse til behandlingIder=${behandlingId.minus(tilkjenteYtelser.keys)}}")
         }

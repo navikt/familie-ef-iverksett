@@ -37,7 +37,6 @@ import java.util.Properties
 import java.util.UUID
 
 internal class JournalførVedtaksbrevTaskTest {
-
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val journalpostClient = mockk<JournalpostClient>()
     private val taskService = mockk<TaskService>()
@@ -58,12 +57,13 @@ internal class JournalførVedtaksbrevTaskTest {
 
     private val iverksettDto = opprettIverksettDto(behandlingId = behandlingId)
 
-    private val iverksett = Iverksett(
-        iverksettDto.behandling.behandlingId,
-        iverksettDto.toDomain(),
-        iverksettDto.behandling.eksternId,
-        Brev(ByteArray(256)),
-    )
+    private val iverksett =
+        Iverksett(
+            iverksettDto.behandling.behandlingId,
+            iverksettDto.toDomain(),
+            iverksettDto.behandling.eksternId,
+            Brev(ByteArray(256)),
+        )
 
     @BeforeEach
     fun setUp() {
@@ -76,16 +76,19 @@ internal class JournalførVedtaksbrevTaskTest {
 
     @Test
     internal fun `skal journalføre brev og opprette ny task`() {
-        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
-            journalpostId,
-            true,
-        )
-        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
-        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
-            "123" to JournalpostResultat(
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
                 journalpostId,
-            ),
-        )
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
         every {
             iverksettResultatService.oppdaterJournalpostResultat(
                 behandlingId,
@@ -105,34 +108,40 @@ internal class JournalførVedtaksbrevTaskTest {
 
     @Test
     internal fun `skal journalføre brev til alle brevmottakere`() {
-        val verge = Brevmottaker(
-            "22222222222",
-            "Mottaker Navn",
-            Brevmottaker.MottakerRolle.VERGE,
-            Brevmottaker.IdentType.PERSONIDENT,
-        )
-        val fullmektig = Brevmottaker(
-            "333333333",
-            "Mottaker B Navn",
-            Brevmottaker.MottakerRolle.FULLMEKTIG,
-            Brevmottaker.IdentType.ORGANISASJONSNUMMER,
-        )
+        val verge =
+            Brevmottaker(
+                "22222222222",
+                "Mottaker Navn",
+                Brevmottaker.MottakerRolle.VERGE,
+                Brevmottaker.IdentType.PERSONIDENT,
+            )
+        val fullmektig =
+            Brevmottaker(
+                "333333333",
+                "Mottaker B Navn",
+                Brevmottaker.MottakerRolle.FULLMEKTIG,
+                Brevmottaker.IdentType.ORGANISASJONSNUMMER,
+            )
 
-        val brevmottakere = listOf(
-            verge,
-            fullmektig,
-        )
-        val iverksettMedBrevmottakere = opprettIverksettDto(behandlingId).let {
-            it.copy(vedtak = it.vedtak.copy(brevmottakere = brevmottakere)).toDomain()
-        }
+        val brevmottakere =
+            listOf(
+                verge,
+                fullmektig,
+            )
+        val iverksettMedBrevmottakere =
+            opprettIverksettDto(behandlingId).let {
+                it.copy(vedtak = it.vedtak.copy(brevmottakere = brevmottakere)).toDomain()
+            }
 
         every { iverksettingRepository.findByIdOrThrow(behandlingId) } returns iverksett.copy(data = iverksettMedBrevmottakere)
-        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
-            "123" to JournalpostResultat(
-                "journalpostId",
-            ),
-            "444" to JournalpostResultat("journalpostId"),
-        )
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        "journalpostId",
+                    ),
+                "444" to JournalpostResultat("journalpostId"),
+            )
         every { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), any()) } just Runs
 
         every {
@@ -148,23 +157,27 @@ internal class JournalførVedtaksbrevTaskTest {
 
     @Test
     internal fun `Journalføring av barnetilsynbrev og opprette ny task`() {
-        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns ArkiverDokumentResponse(
-            journalpostId,
-            true,
-        )
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
         every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(
             iverksett.copy(
-                data = opprettIverksettDto(
-                    behandlingId = behandlingId,
-                    stønadType = StønadType.BARNETILSYN,
-                ).toDomain(),
+                data =
+                    opprettIverksettDto(
+                        behandlingId = behandlingId,
+                        stønadType = StønadType.BARNETILSYN,
+                    ).toDomain(),
             ),
         )
-        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
-            "123" to JournalpostResultat(
-                "journalpostId",
-            ),
-        )
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        "journalpostId",
+                    ),
+            )
         every {
             iverksettResultatService.oppdaterJournalpostResultat(
                 behandlingId,
@@ -213,11 +226,13 @@ internal class JournalførVedtaksbrevTaskTest {
         }
         every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
 
-        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen mapOf(
-            "123" to JournalpostResultat(
-                journalpostId,
-            ),
-        )
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
         justRun { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), capture(journalpostResultatSlot)) }
 
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))

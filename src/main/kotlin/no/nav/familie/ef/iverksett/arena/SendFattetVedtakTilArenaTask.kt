@@ -22,7 +22,6 @@ class SendFattetVedtakTilArenaTask(
     private val iverksettingRepository: IverksettingRepository,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
-
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId)
@@ -35,7 +34,6 @@ class SendFattetVedtakTilArenaTask(
     }
 
     companion object {
-
         const val TYPE = "sendFattetVedtakTilArena"
     }
 }

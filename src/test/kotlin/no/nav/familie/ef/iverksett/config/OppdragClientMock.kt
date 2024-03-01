@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Profile
 @Configuration
 @Profile("mock-oppdrag")
 class OppdragClientMock {
-
     @Bean
     @Primary
     fun oppdragClient(): OppdragClient {

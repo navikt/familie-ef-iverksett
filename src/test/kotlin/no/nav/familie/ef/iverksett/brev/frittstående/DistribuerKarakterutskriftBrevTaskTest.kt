@@ -29,7 +29,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 internal class DistribuerKarakterutskriftBrevTaskTest {
-
     private val journalpostClient = mockk<JournalpostClient>()
     private val taskService = mockk<TaskService>()
     private val karakterutskriftBrevRepository = mockk<KarakterutskriftBrevRepository>()
@@ -65,9 +64,10 @@ internal class DistribuerKarakterutskriftBrevTaskTest {
         every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns opprettBrev(hovedPeriode, "journalpostId")
         every { journalpostClient.distribuerBrev("journalpostId", any()) } throws ressursExceptionGone()
 
-        val throwable = Assertions.catchThrowable {
-            distribuerTask.doTask(Task(DistribuerKarakterutskriftBrevTask.TYPE, brevId))
-        }
+        val throwable =
+            Assertions.catchThrowable {
+                distribuerTask.doTask(Task(DistribuerKarakterutskriftBrevTask.TYPE, brevId))
+            }
         assertThat(throwable).isInstanceOf(RekjørSenereException::class.java)
 
         val rekjørSenereException = throwable as RekjørSenereException
@@ -108,20 +108,22 @@ internal class DistribuerKarakterutskriftBrevTaskTest {
         )
 
     private fun ressursExceptionConflict(bestillingsId: String): RessursException {
-        val e = HttpClientErrorException.create(
-            HttpStatus.CONFLICT,
-            "",
-            HttpHeaders(),
-            DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
-            null,
-        )
+        val e =
+            HttpClientErrorException.create(
+                HttpStatus.CONFLICT,
+                "",
+                HttpHeaders(),
+                DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
+                null,
+            )
 
-        val ressurs: Ressurs<Any> = Ressurs(
-            data = e.responseBodyAsString,
-            status = Ressurs.Status.FEILET,
-            melding = e.message.toString(),
-            stacktrace = e.stackTraceToString(),
-        )
+        val ressurs: Ressurs<Any> =
+            Ressurs(
+                data = e.responseBodyAsString,
+                status = Ressurs.Status.FEILET,
+                melding = e.message.toString(),
+                stacktrace = e.stackTraceToString(),
+            )
 
         return RessursException(
             ressurs,

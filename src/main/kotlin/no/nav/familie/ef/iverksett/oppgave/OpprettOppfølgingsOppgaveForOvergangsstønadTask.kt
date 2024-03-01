@@ -23,7 +23,6 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
     private val iverksettingRepository: IverksettingRepository,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
@@ -38,11 +37,12 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
         }
 
         if (oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett.data)) {
-            val oppgaveId = oppgaveService.opprettOppgaveMedOppfølgingsenhet(
-                iverksett.data,
-                Oppgavetype.VurderHenvendelse,
-                oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett.data),
-            )
+            val oppgaveId =
+                oppgaveService.opprettOppgaveMedOppfølgingsenhet(
+                    iverksett.data,
+                    Oppgavetype.VurderHenvendelse,
+                    oppgaveService.lagOppgavebeskrivelseForVurderHenvendelseOppgave(iverksett.data),
+                )
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
         }
     }
@@ -52,7 +52,6 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
     }
 
     companion object {
-
         const val TYPE = "opprettOppfølgingOppgaveForInnvilgetOvergangsstønad"
     }
 }

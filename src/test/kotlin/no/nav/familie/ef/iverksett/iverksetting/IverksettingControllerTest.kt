@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity
 import java.util.UUID
 
 class IverksettingControllerTest : ServerTest() {
-
     private val behandlingId = UUID.randomUUID()
 
     @Autowired
@@ -37,16 +36,18 @@ class IverksettingControllerTest : ServerTest() {
     @Test
     internal fun `starte iverksetting gir 200 OK`() {
         val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        val request = MultipartBuilder()
-            .withJson("data", iverksettJson)
-            .withByteArray("fil", "1", byteArrayOf(12))
-            .build()
+        val request =
+            MultipartBuilder()
+                .withJson("data", iverksettJson)
+                .withByteArray("fil", "1", byteArrayOf(12))
+                .build()
 
-        val respons: ResponseEntity<Any> = restTemplate.exchange(
-            localhostUrl("/api/iverksett"),
-            HttpMethod.POST,
-            HttpEntity(request, headers),
-        )
+        val respons: ResponseEntity<Any> =
+            restTemplate.exchange(
+                localhostUrl("/api/iverksett"),
+                HttpMethod.POST,
+                HttpEntity(request, headers),
+            )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         val tasker = taskService.findAll()
         assertThat(tasker.map { it.type }).contains(OpprettTilbakekrevingTask.TYPE)
@@ -59,16 +60,18 @@ class IverksettingControllerTest : ServerTest() {
         // Copy skal legges inn som egen metode i egen PR
         val iverksettJsonMedAvslag =
             iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null, resultat = Vedtaksresultat.AVSLÅTT))
-        val request = MultipartBuilder()
-            .withJson("data", iverksettJsonMedAvslag)
-            .withByteArray("fil", "1", byteArrayOf(12))
-            .build()
+        val request =
+            MultipartBuilder()
+                .withJson("data", iverksettJsonMedAvslag)
+                .withByteArray("fil", "1", byteArrayOf(12))
+                .build()
 
-        val respons: ResponseEntity<Any> = restTemplate.exchange(
-            localhostUrl("/api/iverksett"),
-            HttpMethod.POST,
-            HttpEntity(request, headers),
-        )
+        val respons: ResponseEntity<Any> =
+            restTemplate.exchange(
+                localhostUrl("/api/iverksett"),
+                HttpMethod.POST,
+                HttpEntity(request, headers),
+            )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         val tasker = taskService.findAll()
         assertThat(tasker.map { it.type }).doesNotContain(IverksettMotOppdragTask.TYPE)
@@ -79,31 +82,35 @@ class IverksettingControllerTest : ServerTest() {
     internal fun `Innvilget vedtak uten tilkjent ytelse gir 400 feil`() {
         val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
         val iverksettJsonUtenTilkjentYtelse = iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null))
-        val request = MultipartBuilder()
-            .withJson("data", iverksettJsonUtenTilkjentYtelse)
-            .withByteArray("fil", "1", byteArrayOf(12))
-            .build()
+        val request =
+            MultipartBuilder()
+                .withJson("data", iverksettJsonUtenTilkjentYtelse)
+                .withByteArray("fil", "1", byteArrayOf(12))
+                .build()
 
-        val respons: ResponseEntity<Ressurs<Nothing>> = restTemplate.exchange(
-            localhostUrl("/api/iverksett"),
-            HttpMethod.POST,
-            HttpEntity(request, headers),
-        )
+        val respons: ResponseEntity<Ressurs<Nothing>> =
+            restTemplate.exchange(
+                localhostUrl("/api/iverksett"),
+                HttpMethod.POST,
+                HttpEntity(request, headers),
+            )
         assertThat(respons.statusCode.value()).isEqualTo(400)
     }
 
     @Test
     internal fun `mangler brev, forvent 400`() {
         val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        val request = MultipartBuilder()
-            .withJson("data", iverksettJson)
-            .build()
+        val request =
+            MultipartBuilder()
+                .withJson("data", iverksettJson)
+                .build()
 
-        val respons: ResponseEntity<Any> = restTemplate.exchange(
-            localhostUrl("/api/iverksett"),
-            HttpMethod.POST,
-            HttpEntity(request, headers),
-        )
+        val respons: ResponseEntity<Any> =
+            restTemplate.exchange(
+                localhostUrl("/api/iverksett"),
+                HttpMethod.POST,
+                HttpEntity(request, headers),
+            )
 
         assertThat(respons.statusCode.value()).isEqualTo(400)
     }

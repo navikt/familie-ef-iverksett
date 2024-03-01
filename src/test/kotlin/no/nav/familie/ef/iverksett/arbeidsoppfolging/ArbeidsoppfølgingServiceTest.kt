@@ -9,7 +9,6 @@ import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import org.junit.Test
 
 class ArbeidsoppfølgingServiceTest {
-
     private val arbeidsoppfølgingKafkaProducer = mockk<ArbeidsoppfølgingKafkaProducer>()
 
     val arbeidsoppfølgingService = ArbeidsoppfølgingService(arbeidsoppfølgingKafkaProducer)

@@ -22,7 +22,6 @@ import org.springframework.data.repository.findByIdOrNull
 import java.util.UUID
 
 internal class JournalførFrittståendeBrevTaskTest {
-
     private val journalpostClient = mockk<JournalpostClient>()
     private val taskService = mockk<TaskService>()
     private val frittståendeBrevRepository = mockk<FrittståendeBrevRepository>()
@@ -90,8 +89,9 @@ internal class JournalførFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal ikke arkivere allerede arkiverte brev`() {
-        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev()
-            .copy(journalpostResultat = JournalpostResultatMap(mapOf("11" to JournalpostResultat("tidligereOpprettetJournalpostId"))))
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns
+            opprettFrittståendeBrev()
+                .copy(journalpostResultat = JournalpostResultatMap(mapOf("11" to JournalpostResultat("tidligereOpprettetJournalpostId"))))
 
         service.doTask(Task("", UUID.randomUUID().toString()))
         verify(exactly = 1) { journalpostClient.arkiverDokument(any(), any()) }
@@ -130,14 +130,16 @@ internal class JournalførFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal feile dersom tittel og brevtype begge er null`() {
-        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
-            tittel = null,
-            brevtype = null,
-        )
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns
+            opprettFrittståendeBrev().copy(
+                tittel = null,
+                brevtype = null,
+            )
 
-        val feil = assertThrows<IllegalStateException> {
-            service.doTask(Task(JournalførFrittståendeBrevTask.TYPE, UUID.randomUUID().toString()))
-        }
+        val feil =
+            assertThrows<IllegalStateException> {
+                service.doTask(Task(JournalførFrittståendeBrevTask.TYPE, UUID.randomUUID().toString()))
+            }
 
         assertThat(feil.message).contains("Frittstående brev mangler både tittel og brevtype")
     }

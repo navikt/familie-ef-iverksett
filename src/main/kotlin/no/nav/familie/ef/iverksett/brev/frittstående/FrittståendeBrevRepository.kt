@@ -15,14 +15,19 @@ import java.util.UUID
 @Repository
 interface FrittståendeBrevRepository :
     RepositoryInterface<FrittståendeBrev, UUID>, InsertUpdateRepository<FrittståendeBrev> {
-
     @Modifying
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Query("UPDATE frittstaende_brev SET journalpost_resultat=:journalpostresultat WHERE id=:id")
-    fun oppdaterJournalpostResultat(id: UUID, journalpostresultat: JournalpostResultatMap)
+    fun oppdaterJournalpostResultat(
+        id: UUID,
+        journalpostresultat: JournalpostResultatMap,
+    )
 
     @Modifying
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Query("UPDATE frittstaende_brev SET distribuer_brev_resultat=:distribuerBrevResultat WHERE id=:id")
-    fun oppdaterDistribuerBrevResultat(id: UUID, distribuerBrevResultat: DistribuerBrevResultatMap)
+    fun oppdaterDistribuerBrevResultat(
+        id: UUID,
+        distribuerBrevResultat: DistribuerBrevResultatMap,
+    )
 }

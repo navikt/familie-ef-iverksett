@@ -50,7 +50,6 @@ import java.time.temporal.ChronoUnit
 @EnableOAuth2Client(cacheEnabled = true)
 @EnableScheduling
 class ApplicationConfig {
-
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
@@ -107,25 +106,28 @@ class ApplicationConfig {
     }
 
     @Bean
-    fun prosesseringInfoProvider(@Value("\${prosessering.rolle}") prosesseringRolle: String) = object : ProsesseringInfoProvider {
-
-        override fun hentBrukernavn(): String = try {
-            SpringTokenValidationContextHolder().tokenValidationContext.getClaims("azuread")
-                .getStringClaim("preferred_username")
-        } catch (e: Exception) {
-            throw e
-        }
+    fun prosesseringInfoProvider(
+        @Value("\${prosessering.rolle}") prosesseringRolle: String,
+    ) = object : ProsesseringInfoProvider {
+        override fun hentBrukernavn(): String =
+            try {
+                SpringTokenValidationContextHolder().tokenValidationContext.getClaims("azuread")
+                    .getStringClaim("preferred_username")
+            } catch (e: Exception) {
+                throw e
+            }
 
         override fun harTilgang(): Boolean {
-            val grupper = Result.runCatching { SpringTokenValidationContextHolder().tokenValidationContext }
-                .fold(
-                    onSuccess = {
-                        @Suppress("UNCHECKED_CAST")
-                        val groups = it.getClaims("azuread")?.get("groups") as List<String>?
-                        groups?.toSet() ?: emptySet()
-                    },
-                    onFailure = { emptySet() },
-                )
+            val grupper =
+                Result.runCatching { SpringTokenValidationContextHolder().tokenValidationContext }
+                    .fold(
+                        onSuccess = {
+                            @Suppress("UNCHECKED_CAST")
+                            val groups = it.getClaims("azuread")?.get("groups") as List<String>?
+                            groups?.toSet() ?: emptySet()
+                        },
+                        onFailure = { emptySet() },
+                    )
 
             return grupper.contains(prosesseringRolle)
         }

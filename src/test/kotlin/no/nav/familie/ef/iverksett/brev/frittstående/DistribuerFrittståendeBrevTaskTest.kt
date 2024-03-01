@@ -31,7 +31,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 internal class DistribuerFrittståendeBrevTaskTest {
-
     private val journalpostClient = mockk<JournalpostClient>()
     private val frittståendeBrevRepository = mockk<FrittståendeBrevRepository>()
     private val taskService = mockk<TaskService>()
@@ -66,13 +65,15 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal ferdigstille task med bestillingsid ved Conflict exception`() {
-        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
-            journalpostResultat = JournalpostResultatMap(
-                mapOf(
-                    "222" to JournalpostResultat("journalpostId2"),
-                ),
-            ),
-        )
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns
+            opprettFrittståendeBrev().copy(
+                journalpostResultat =
+                    JournalpostResultatMap(
+                        mapOf(
+                            "222" to JournalpostResultat("journalpostId2"),
+                        ),
+                    ),
+            )
 
         mockDistribuerBrev()
         every { journalpostClient.distribuerBrev(any(), any()) } throws ressursExceptionConflict("DetteErbestillingsId")
@@ -88,21 +89,24 @@ internal class DistribuerFrittståendeBrevTaskTest {
     @Test
     internal fun `skal hoppe over personer som er døde men feile tasken`() {
         val dødJournalpostId = "dødPersonJournalpostId"
-        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
-            journalpostResultat = JournalpostResultatMap(
-                mapOf(
-                    "dødPersonId" to JournalpostResultat(dødJournalpostId),
-                    "222" to JournalpostResultat("journalpostId2"),
-                ),
-            ),
-        )
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns
+            opprettFrittståendeBrev().copy(
+                journalpostResultat =
+                    JournalpostResultatMap(
+                        mapOf(
+                            "dødPersonId" to JournalpostResultat(dødJournalpostId),
+                            "222" to JournalpostResultat("journalpostId2"),
+                        ),
+                    ),
+            )
 
         mockDistribuerBrev()
         every { journalpostClient.distribuerBrev(dødJournalpostId, any()) } throws ressursExceptionGone()
 
-        val throwable = Assertions.catchThrowable {
-            distribuerFrittståendeBrevTask.doTask(Task("", UUID.randomUUID().toString()))
-        }
+        val throwable =
+            Assertions.catchThrowable {
+                distribuerFrittståendeBrevTask.doTask(Task("", UUID.randomUUID().toString()))
+            }
         assertThat(throwable).isInstanceOf(RekjørSenereException::class.java)
         val rekjørSenereException = throwable as RekjørSenereException
         assertThat(rekjørSenereException.triggerTid)
@@ -122,14 +126,16 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal distribuere frittstående brev med en mottaker`() {
-        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
-            journalpostResultat = JournalpostResultatMap(
-                mapOf(
-                    "111" to JournalpostResultat("journalpostId1"),
-                    "222" to JournalpostResultat("journalpostId2"),
-                ),
-            ),
-        )
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns
+            opprettFrittståendeBrev().copy(
+                journalpostResultat =
+                    JournalpostResultatMap(
+                        mapOf(
+                            "111" to JournalpostResultat("journalpostId1"),
+                            "222" to JournalpostResultat("journalpostId2"),
+                        ),
+                    ),
+            )
         mockDistribuerBrev()
 
         distribuerFrittståendeBrevTask.doTask((Task("", UUID.randomUUID().toString())))
@@ -150,14 +156,16 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal ikke legge inn distribuerBrevResultat som feiler og skal feile tasken`() {
-        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
-            journalpostResultat = JournalpostResultatMap(
-                mapOf(
-                    "111" to JournalpostResultat("journalpostId1"),
-                    "222" to JournalpostResultat("journalpostId2"),
-                ),
-            ),
-        )
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns
+            opprettFrittståendeBrev().copy(
+                journalpostResultat =
+                    JournalpostResultatMap(
+                        mapOf(
+                            "111" to JournalpostResultat("journalpostId1"),
+                            "222" to JournalpostResultat("journalpostId2"),
+                        ),
+                    ),
+            )
 
         mockDistribuerBrev(medFeil = true)
 
@@ -178,17 +186,20 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
     @Test
     internal fun `skal ikke distribuere allerede distribuerte brev`() {
-        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns opprettFrittståendeBrev().copy(
-            journalpostResultat = JournalpostResultatMap(
-                mapOf(
-                    "111" to JournalpostResultat("tidligereDistribuertJournalpost"),
-                    "222" to JournalpostResultat("journalpostId2"),
-                ),
-            ),
-            distribuerBrevResultat = DistribuerBrevResultatMap(
-                map = mapOf("tidligereDistribuertJournalpost" to DistribuerBrevResultat("alleredeDistribuertBestillingId")),
-            ),
-        )
+        every { frittståendeBrevRepository.findByIdOrNull(any()) } returns
+            opprettFrittståendeBrev().copy(
+                journalpostResultat =
+                    JournalpostResultatMap(
+                        mapOf(
+                            "111" to JournalpostResultat("tidligereDistribuertJournalpost"),
+                            "222" to JournalpostResultat("journalpostId2"),
+                        ),
+                    ),
+                distribuerBrevResultat =
+                    DistribuerBrevResultatMap(
+                        map = mapOf("tidligereDistribuertJournalpost" to DistribuerBrevResultat("alleredeDistribuertBestillingId")),
+                    ),
+            )
 
         mockDistribuerBrev()
 
@@ -218,20 +229,22 @@ internal class DistribuerFrittståendeBrevTaskTest {
         )
 
     private fun ressursExceptionConflict(bestillingsId: String): RessursException {
-        val e = HttpClientErrorException.create(
-            HttpStatus.CONFLICT,
-            "",
-            HttpHeaders(),
-            DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
-            null,
-        )
+        val e =
+            HttpClientErrorException.create(
+                HttpStatus.CONFLICT,
+                "",
+                HttpHeaders(),
+                DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
+                null,
+            )
 
-        val ressurs: Ressurs<Any> = Ressurs(
-            data = e.responseBodyAsString,
-            status = Ressurs.Status.FEILET,
-            melding = e.message.toString(),
-            stacktrace = e.stackTraceToString(),
-        )
+        val ressurs: Ressurs<Any> =
+            Ressurs(
+                data = e.responseBodyAsString,
+                status = Ressurs.Status.FEILET,
+                melding = e.message.toString(),
+                stacktrace = e.stackTraceToString(),
+            )
 
         return RessursException(
             ressurs,

@@ -14,7 +14,6 @@ import java.time.YearMonth
 import java.util.UUID
 
 class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
-
     @Autowired
     lateinit var iverksettResultatService: IverksettResultatService
 
@@ -28,11 +27,12 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     lateinit var iverksettMotOppdragTask: IverksettMotOppdragTask
 
     private val behandlingid: UUID = UUID.randomUUID()
-    private val førsteAndel = lagAndelTilkjentYtelse(
-        beløp = 1000,
-        fraOgMed = YearMonth.of(2021, 1),
-        tilOgMed = YearMonth.of(2021, 1),
-    )
+    private val førsteAndel =
+        lagAndelTilkjentYtelse(
+            beløp = 1000,
+            fraOgMed = YearMonth.of(2021, 1),
+            tilOgMed = YearMonth.of(2021, 1),
+        )
     private val iverksett =
         opprettIverksettOvergangsstønad(behandlingid, andeler = listOf(førsteAndel), startmåned = førsteAndel.periode.fom)
 
@@ -52,18 +52,19 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     @Test
     internal fun `revurdering med en ny periode, forvent at den nye perioden har peker på den forrige`() {
         val behandlingIdRevurdering = UUID.randomUUID()
-        val iverksettRevurdering = opprettIverksettOvergangsstønad(
-            behandlingIdRevurdering,
-            behandlingid,
-            listOf(
-                førsteAndel,
-                lagAndelTilkjentYtelse(
-                    beløp = 1000,
-                    fraOgMed = YearMonth.now(),
-                    tilOgMed = YearMonth.now().plusMonths(1),
+        val iverksettRevurdering =
+            opprettIverksettOvergangsstønad(
+                behandlingIdRevurdering,
+                behandlingid,
+                listOf(
+                    førsteAndel,
+                    lagAndelTilkjentYtelse(
+                        beløp = 1000,
+                        fraOgMed = YearMonth.now(),
+                        tilOgMed = YearMonth.now().plusMonths(1),
+                    ),
                 ),
-            ),
-        )
+            )
 
         taskService.deleteAll(taskService.findAll())
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
@@ -79,18 +80,19 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
     @Test
     internal fun `revurdering der beløpet på den første endres, og en ny legges til, forvent at den første perioden erstattes`() {
         val behandlingIdRevurdering = UUID.randomUUID()
-        val iverksettRevurdering = opprettIverksettOvergangsstønad(
-            behandlingIdRevurdering,
-            behandlingid,
-            listOf(
-                førsteAndel.copy(beløp = 299),
-                lagAndelTilkjentYtelse(
-                    beløp = 1000,
-                    fraOgMed = YearMonth.now(),
-                    tilOgMed = YearMonth.now().plusMonths(1),
+        val iverksettRevurdering =
+            opprettIverksettOvergangsstønad(
+                behandlingIdRevurdering,
+                behandlingid,
+                listOf(
+                    førsteAndel.copy(beløp = 299),
+                    lagAndelTilkjentYtelse(
+                        beløp = 1000,
+                        fraOgMed = YearMonth.now(),
+                        tilOgMed = YearMonth.now().plusMonths(1),
+                    ),
                 ),
-            ),
-        )
+            )
 
         taskService.deleteAll(taskService.findAll())
         iverksettingService.startIverksetting(iverksettRevurdering, opprettBrev())
@@ -115,12 +117,14 @@ class IverksettMotOppdragIntegrasjonsTest : ServerTest() {
         iverksettMotOppdrag()
 
         val behandlingIdRevurderingUtbetaling = UUID.randomUUID()
-        val iverksettUtbetaling = iverksett.copy(
-            behandling = iverksett.behandling.copy(
-                behandlingId = behandlingIdRevurderingUtbetaling,
-                forrigeBehandlingId = opphørBehandlingId,
-            ),
-        )
+        val iverksettUtbetaling =
+            iverksett.copy(
+                behandling =
+                    iverksett.behandling.copy(
+                        behandlingId = behandlingIdRevurderingUtbetaling,
+                        forrigeBehandlingId = opphørBehandlingId,
+                    ),
+            )
         iverksettingService.startIverksetting(
             iverksettUtbetaling,
             opprettBrev(),

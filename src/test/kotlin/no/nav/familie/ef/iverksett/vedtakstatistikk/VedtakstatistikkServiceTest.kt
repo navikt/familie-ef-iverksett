@@ -40,7 +40,6 @@ import java.time.ZoneId
 import java.util.UUID
 
 class VedtakstatistikkServiceTest {
-
     private var vedtakstatistikkKafkaProducer: VedtakstatistikkKafkaProducer = mockk(relaxed = true)
     private var vedtakstatistikkService = VedtakstatistikkService(vedtakstatistikkKafkaProducer)
 
@@ -54,12 +53,13 @@ class VedtakstatistikkServiceTest {
         val iverksettOvergangsstønad = opprettIverksettOvergangsstønad(behandlingId)
         vedtakstatistikkService.sendTilKafka(iverksettData = iverksettOvergangsstønad, forrigeIverksett = null)
 
-        val vedtakOvergangsstønad = opprettVedtakstatistikkOvergangsstønad(
-            behandlingId = iverksettOvergangsstønad.behandling.eksternId,
-            fagsakId = iverksettOvergangsstønad.fagsak.eksternId,
-            tidspunktVedtak = iverksettOvergangsstønad.vedtak.vedtakstidspunkt.toLocalDate(),
-            barn = iverksettOvergangsstønad.søker.barn.map { Barn(it.personIdent, it.termindato) },
-        )
+        val vedtakOvergangsstønad =
+            opprettVedtakstatistikkOvergangsstønad(
+                behandlingId = iverksettOvergangsstønad.behandling.eksternId,
+                fagsakId = iverksettOvergangsstønad.fagsak.eksternId,
+                tidspunktVedtak = iverksettOvergangsstønad.vedtak.vedtakstidspunkt.toLocalDate(),
+                barn = iverksettOvergangsstønad.søker.barn.map { Barn(it.personIdent, it.termindato) },
+            )
         assertThat(vedtakOvergangsstønad).isEqualTo(vedtakstatistikkJsonSlot.captured)
     }
 
@@ -94,52 +94,57 @@ class VedtakstatistikkServiceTest {
             relatertBehandlingId = null,
             adressebeskyttelse = Adressebeskyttelse.UGRADERT,
             tidspunktVedtak = tidspunktVedtak.atStartOfDay(ZoneId.of("Europe/Oslo")),
-            vilkårsvurderinger = listOf(
-                VilkårsvurderingDto(
-                    vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT,
-                    resultat = Vilkårsresultat.OPPFYLT,
+            vilkårsvurderinger =
+                listOf(
+                    VilkårsvurderingDto(
+                        vilkår = Vilkår.SAGT_OPP_ELLER_REDUSERT,
+                        resultat = Vilkårsresultat.OPPFYLT,
+                    ),
                 ),
-            ),
             person = Person(personIdent = "12345678910"),
             barn = barn,
             behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
             behandlingÅrsak = BehandlingÅrsak.SØKNAD,
             vedtak = Vedtak.INNVILGET,
-            vedtaksperioder = listOf(
-                VedtaksperiodeOvergangsstønadDto(
-                    fraOgMed = YearMonth.now().atDay(1),
-                    tilOgMed = YearMonth.now().atEndOfMonth(),
-                    aktivitet = AktivitetType.BARNET_ER_SYKT,
-                    periodeType = VedtaksperiodeType.HOVEDPERIODE,
-                ),
-            ),
-            utbetalinger = listOf(
-                Utbetaling(
-                    beløp = 5000,
-                    fraOgMed = LocalDate.parse("2021-01-01"),
-                    tilOgMed = LocalDate.parse("2021-12-31"),
-                    inntekt = 100,
-                    inntektsreduksjon = 5,
-                    samordningsfradrag = 2,
-                    utbetalingsdetalj = Utbetalingsdetalj(
-                        klassekode = "EFOG",
-                        gjelderPerson = Person(personIdent = "12345678910"),
-                        delytelseId = "1",
+            vedtaksperioder =
+                listOf(
+                    VedtaksperiodeOvergangsstønadDto(
+                        fraOgMed = YearMonth.now().atDay(1),
+                        tilOgMed = YearMonth.now().atEndOfMonth(),
+                        aktivitet = AktivitetType.BARNET_ER_SYKT,
+                        periodeType = VedtaksperiodeType.HOVEDPERIODE,
                     ),
                 ),
-            ),
-
-            aktivitetskrav = Aktivitetskrav(
-                aktivitetspliktInntrefferDato = null,
-                harSagtOppArbeidsforhold = true,
-            ),
+            utbetalinger =
+                listOf(
+                    Utbetaling(
+                        beløp = 5000,
+                        fraOgMed = LocalDate.parse("2021-01-01"),
+                        tilOgMed = LocalDate.parse("2021-12-31"),
+                        inntekt = 100,
+                        inntektsreduksjon = 5,
+                        samordningsfradrag = 2,
+                        utbetalingsdetalj =
+                            Utbetalingsdetalj(
+                                klassekode = "EFOG",
+                                gjelderPerson = Person(personIdent = "12345678910"),
+                                delytelseId = "1",
+                            ),
+                    ),
+                ),
+            aktivitetskrav =
+                Aktivitetskrav(
+                    aktivitetspliktInntrefferDato = null,
+                    harSagtOppArbeidsforhold = true,
+                ),
             funksjonellId = 9L,
             stønadstype = StønadType.OVERGANGSSTØNAD,
             kravMottatt = LocalDate.of(2021, 3, 3),
-            årsakRevurdering = ÅrsakRevurdering(
-                Opplysningskilde.MELDING_MODIA.name,
-                Revurderingsårsak.ENDRING_INNTEKT.name,
-            ),
+            årsakRevurdering =
+                ÅrsakRevurdering(
+                    Opplysningskilde.MELDING_MODIA.name,
+                    Revurderingsårsak.ENDRING_INNTEKT.name,
+                ),
         )
     }
 }

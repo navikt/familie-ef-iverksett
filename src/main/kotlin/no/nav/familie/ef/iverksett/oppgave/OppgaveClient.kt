@@ -22,16 +22,19 @@ class OppgaveClient(
     @Qualifier("azure") restOperations: RestOperations,
     @Value("\${FAMILIE_INTEGRASJONER_API_URL}") private val integrasjonUrl: String,
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
-
     val oppgaveUrl = "$integrasjonUrl/api/oppgave"
 
-    fun finnMapper(enhetsnummer: String, limit: Int): FinnMappeResponseDto {
-        val uri = UriComponentsBuilder.fromUri(URI.create(oppgaveUrl))
-            .pathSegment("mappe", "sok")
-            .queryParam("enhetsnr", enhetsnummer)
-            .queryParam("limit", limit)
-            .build()
-            .toUri()
+    fun finnMapper(
+        enhetsnummer: String,
+        limit: Int,
+    ): FinnMappeResponseDto {
+        val uri =
+            UriComponentsBuilder.fromUri(URI.create(oppgaveUrl))
+                .pathSegment("mappe", "sok")
+                .queryParam("enhetsnr", enhetsnummer)
+                .queryParam("limit", limit)
+                .build()
+                .toUri()
         val response = getForEntity<Ressurs<FinnMappeResponseDto>>(uri)
         return response.data ?: error("Kunne ikke hente mapper for enhetsnummer=$enhetsnummer")
     }
@@ -48,11 +51,12 @@ class OppgaveClient(
     }
 
     fun oppdaterOppgave(oppgave: Oppgave): Long {
-        val response = patchForEntity<Ressurs<OppgaveResponse>>(
-            URI.create("$oppgaveUrl/${oppgave.id}/oppdater"),
-            oppgave,
-            HttpHeaders().medContentTypeJsonUTF8(),
-        )
+        val response =
+            patchForEntity<Ressurs<OppgaveResponse>>(
+                URI.create("$oppgaveUrl/${oppgave.id}/oppdater"),
+                oppgave,
+                HttpHeaders().medContentTypeJsonUTF8(),
+            )
         return response.getDataOrThrow().oppgaveId
     }
 

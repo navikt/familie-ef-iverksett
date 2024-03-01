@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 internal class FrittståendeBrevServiceTest {
-
     private val frittståendeBrevRepository = mockk<FrittståendeBrevRepository>()
     private val karakterutskriftBrevRepository = mockk<KarakterutskriftBrevRepository>()
     private val taskService = mockk<TaskService>()
@@ -40,7 +39,11 @@ internal class FrittståendeBrevServiceTest {
 
             every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns false
             every { karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(any(), any(), any()) } returns false
-            every { karakterutskriftBrevRepository.insert(capture(brevSlot)) } answers { firstArg<KarakterutskriftBrev>().copy(id = brev.id) }
+            every {
+                karakterutskriftBrevRepository.insert(
+                    capture(brevSlot),
+                )
+            } answers { firstArg<KarakterutskriftBrev>().copy(id = brev.id) }
             every { taskService.save(capture(taskSlot)) } answers { firstArg() }
 
             frittståendeBrevService.opprettTask(brevDto)
@@ -63,7 +66,9 @@ internal class FrittståendeBrevServiceTest {
 
             verify(exactly = 0) { karakterutskriftBrevRepository.insert(any()) }
             verify(exactly = 0) { taskService.save(any()) }
-            assertThat(feil.feil).isEqualTo("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}")
+            assertThat(
+                feil.feil,
+            ).isEqualTo("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}")
         }
 
         @Test
@@ -77,7 +82,9 @@ internal class FrittståendeBrevServiceTest {
 
             verify(exactly = 0) { karakterutskriftBrevRepository.insert(any()) }
             verify(exactly = 0) { taskService.save(any()) }
-            assertThat(feil.feil).isEqualTo("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}")
+            assertThat(
+                feil.feil,
+            ).isEqualTo("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}")
         }
 
         @Test
@@ -92,7 +99,9 @@ internal class FrittståendeBrevServiceTest {
 
             verify(exactly = 0) { karakterutskriftBrevRepository.insert(any()) }
             verify(exactly = 0) { taskService.save(any()) }
-            assertThat(feil.feil).isEqualTo("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}")
+            assertThat(
+                feil.feil,
+            ).isEqualTo("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}")
         }
     }
 }

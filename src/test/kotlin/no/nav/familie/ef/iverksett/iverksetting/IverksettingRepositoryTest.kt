@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 class IverksettingRepositoryTest : ServerTest() {
-
     @Autowired
     private lateinit var iverksettingRepository: IverksettingRepository
 

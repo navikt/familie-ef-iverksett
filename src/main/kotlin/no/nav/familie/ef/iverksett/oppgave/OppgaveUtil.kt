@@ -15,7 +15,6 @@ import java.time.Month
 import java.util.Locale
 
 object OppgaveUtil {
-
     fun opprettBehandlingstema(stønadstype: StønadType): Behandlingstema {
         return Behandlingstema
             .fromValue(
@@ -50,7 +49,10 @@ object OppgaveUtil {
         )
     }
 
-    private fun fristFerdigstillelse(aktivFra: LocalDate?, daysToAdd: Long = 0): LocalDate {
+    private fun fristFerdigstillelse(
+        aktivFra: LocalDate?,
+        daysToAdd: Long = 0,
+    ): LocalDate {
         var date = (aktivFra?.atTime(LocalTime.now()) ?: LocalDateTime.now()).plusDays(daysToAdd)
 
         if (date.hour >= 14) {

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 
 class FrittståendeBrevServiceIntegrasjonsTest : ServerTest() {
-
     @Autowired
     lateinit var frittståendeBrevService: FrittståendeBrevService
 
@@ -22,9 +21,10 @@ class FrittståendeBrevServiceIntegrasjonsTest : ServerTest() {
         val brevDto2 = brevDto(eksternFagsakId, 2L)
 
         frittståendeBrevService.opprettTask(brevDto1)
-        val feil = assertThrows<ApiFeil> {
-            frittståendeBrevService.opprettTask(brevDto2)
-        }
+        val feil =
+            assertThrows<ApiFeil> {
+                frittståendeBrevService.opprettTask(brevDto2)
+            }
         assertThat(feil.feil).contains("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=$eksternFagsakId")
     }
 }

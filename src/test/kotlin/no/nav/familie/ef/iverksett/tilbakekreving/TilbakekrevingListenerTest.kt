@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 internal class TilbakekrevingListenerTest {
-
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>()
     private val tilbakekrevingProducer = mockk<TilbakekrevingProducer>()
@@ -68,25 +67,30 @@ internal class TilbakekrevingListenerTest {
         assertThat(respons.captured.feilMelding!!).contains("Inkonsistens. Ekstern fagsakID")
     }
 
-    private fun record(ytelsestype: Ytelsestype, eksternFagsakId: String = "0"): ConsumerRecord<String, String> {
-        val behandling = objectMapper.writeValueAsString(
-            HentFagsystemsbehandling(
-                eksternFagsakId = "0",
-                eksternId = "1",
-                ytelsestype = ytelsestype,
-                personIdent = "12345678910",
-                språkkode = Språkkode.NB,
-                enhetId = "enhet",
-                enhetsnavn = "enhetNavn",
-                revurderingsvedtaksdato = LocalDate.EPOCH,
-                faktainfo = Faktainfo(
-                    revurderingsårsak = "årsak",
-                    revurderingsresultat = "resultat",
-                    tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
-                    konsekvensForYtelser = emptySet(),
+    private fun record(
+        ytelsestype: Ytelsestype,
+        eksternFagsakId: String = "0",
+    ): ConsumerRecord<String, String> {
+        val behandling =
+            objectMapper.writeValueAsString(
+                HentFagsystemsbehandling(
+                    eksternFagsakId = "0",
+                    eksternId = "1",
+                    ytelsestype = ytelsestype,
+                    personIdent = "12345678910",
+                    språkkode = Språkkode.NB,
+                    enhetId = "enhet",
+                    enhetsnavn = "enhetNavn",
+                    revurderingsvedtaksdato = LocalDate.EPOCH,
+                    faktainfo =
+                        Faktainfo(
+                            revurderingsårsak = "årsak",
+                            revurderingsresultat = "resultat",
+                            tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
+                            konsekvensForYtelser = emptySet(),
+                        ),
                 ),
-            ),
-        )
+            )
         return ConsumerRecord("topic", 0, 0L, "1", behandling)
     }
 }

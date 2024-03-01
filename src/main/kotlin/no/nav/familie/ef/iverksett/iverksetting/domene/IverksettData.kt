@@ -38,7 +38,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 sealed class IverksettData {
-
     abstract val fagsak: Fagsakdetaljer
     abstract val behandling: Behandlingsdetaljer
     abstract val søker: Søker
@@ -49,7 +48,9 @@ sealed class IverksettData {
     fun erMigrering() = behandling.behandlingÅrsak == BehandlingÅrsak.MIGRERING
 
     fun erKorrigeringUtenBrev() = behandling.behandlingÅrsak == BehandlingÅrsak.KORRIGERING_UTEN_BREV
+
     fun erKAIverksettingUtenBrev(): Boolean = behandling.behandlingÅrsak == BehandlingÅrsak.IVERKSETTE_KA_VEDTAK
+
     fun erSatsendring() = behandling.behandlingÅrsak == BehandlingÅrsak.SATSENDRING
 
     fun skalIkkeSendeBrev() = erMigrering() || erGOmregning() || erKorrigeringUtenBrev() || erKAIverksettingUtenBrev() || erSatsendring()
@@ -63,7 +64,6 @@ data class IverksettOvergangsstønad(
     override val søker: Søker,
     override val vedtak: VedtaksdetaljerOvergangsstønad,
 ) : IverksettData() {
-
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettOvergangsstønad {
         return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
     }
@@ -75,7 +75,6 @@ data class IverksettBarnetilsyn(
     override val søker: Søker,
     override val vedtak: VedtaksdetaljerBarnetilsyn,
 ) : IverksettData() {
-
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettBarnetilsyn {
         return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
     }
@@ -87,7 +86,6 @@ data class IverksettSkolepenger(
     override val søker: Søker,
     override val vedtak: VedtaksdetaljerSkolepenger,
 ) : IverksettData() {
-
     override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettSkolepenger {
         return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
     }
@@ -111,10 +109,11 @@ sealed class Vedtaksperiode
 data class VedtaksperiodeOvergangsstønad(
     @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
     @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
-    val periode: Månedsperiode = Månedsperiode(
-        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
-    ),
+    val periode: Månedsperiode =
+        Månedsperiode(
+            fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
+            tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
+        ),
     val aktivitet: AktivitetType,
     val periodeType: VedtaksperiodeType,
 ) : Vedtaksperiode()
@@ -122,10 +121,11 @@ data class VedtaksperiodeOvergangsstønad(
 data class VedtaksperiodeBarnetilsyn(
     @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
     @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
-    val periode: Månedsperiode = Månedsperiode(
-        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
-    ),
+    val periode: Månedsperiode =
+        Månedsperiode(
+            fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
+            tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
+        ),
     val utgifter: Int,
     val antallBarn: Int,
 ) : Vedtaksperiode()
@@ -139,10 +139,11 @@ data class DelårsperiodeSkoleårSkolepenger(
     val studietype: SkolepengerStudietype,
     @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
     @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
-    val periode: Månedsperiode = Månedsperiode(
-        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
-    ),
+    val periode: Månedsperiode =
+        Månedsperiode(
+            fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
+            tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
+        ),
     val studiebelastning: Int,
     val makssatsForSkoleår: Int,
 )
@@ -155,15 +156,15 @@ data class SkolepengerUtgift(
 data class PeriodeMedBeløp(
     @Deprecated("Bruk periode.", ReplaceWith("periode.fom")) val fraOgMed: LocalDate? = null,
     @Deprecated("Bruk periode.", ReplaceWith("periode.tom")) val tilOgMed: LocalDate? = null,
-    val periode: Månedsperiode = Månedsperiode(
-        fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
-        tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
-    ),
+    val periode: Månedsperiode =
+        Månedsperiode(
+            fraOgMed ?: error("Minst en av fraOgMed og periode.fom må ha verdi."),
+            tilOgMed ?: error("Minst en av tilOgMed og periode.tom må ha verdi."),
+        ),
     val beløp: Int,
 )
 
 sealed class Vedtaksdetaljer {
-
     abstract val vedtaksresultat: Vedtaksresultat
     abstract val vedtakstidspunkt: LocalDateTime
     abstract val opphørÅrsak: OpphørÅrsak?
@@ -270,8 +271,10 @@ data class TilbakekrevingMedVarsel(
 )
 
 private class IverksettDeserializer : StdDeserializer<IverksettData>(IverksettData::class.java) {
-
-    override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): IverksettData {
+    override fun deserialize(
+        p: JsonParser,
+        ctxt: DeserializationContext?,
+    ): IverksettData {
         val mapper = p.codec as ObjectMapper
         val node: JsonNode = mapper.readTree(p)
 
@@ -286,8 +289,10 @@ private class IverksettDeserializer : StdDeserializer<IverksettData>(IverksettDa
 }
 
 class IverksettDtoDeserializer : StdDeserializer<IverksettDto>(IverksettDto::class.java) {
-
-    override fun deserialize(p: JsonParser, ctxt: DeserializationContext?): IverksettDto {
+    override fun deserialize(
+        p: JsonParser,
+        ctxt: DeserializationContext?,
+    ): IverksettDto {
         val mapper = p.codec as ObjectMapper
         val node: JsonNode = mapper.readTree(p)
 

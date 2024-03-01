@@ -34,19 +34,19 @@ import java.util.Properties
 import java.util.UUID
 
 internal class VentePåStatusFraØkonomiTaskTest {
-
     private val oppdragClient = mockk<OppdragClient>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val taskService = mockk<TaskService>()
     private val iverksettResultatService = mockk<IverksettResultatService>()
     private val behandlingId: UUID = UUID.randomUUID()
-    private val iverksettingService = IverksettingService(
-        taskService = taskService,
-        oppdragClient = oppdragClient,
-        iverksettingRepository = iverksettingRepository,
-        iverksettResultatService = iverksettResultatService,
-        featureToggleService = mockFeatureToggleService(),
-    )
+    private val iverksettingService =
+        IverksettingService(
+            taskService = taskService,
+            oppdragClient = oppdragClient,
+            iverksettingRepository = iverksettingRepository,
+            iverksettResultatService = iverksettResultatService,
+            featureToggleService = mockFeatureToggleService(),
+        )
 
     private val ventePåStatusFraØkonomiTask =
         VentePåStatusFraØkonomiTask(iverksettingRepository, iverksettingService, taskService, iverksettResultatService)
@@ -97,34 +97,36 @@ internal class VentePåStatusFraØkonomiTaskTest {
         ventePåStatusFraØkonomiTask.onCompletion(task)
     }
 
-    private val utbetalingsperiode = Utbetalingsperiode(
-        erEndringPåEksisterendePeriode = false,
-        opphør = null,
-        periodeId = 0,
-        forrigePeriodeId = null,
-        datoForVedtak = LocalDate.now(),
-        klassifisering = "",
-        vedtakdatoFom = LocalDate.of(2021, 1, 1),
-        vedtakdatoTom = LocalDate.of(2021, 6, 1),
-        sats = BigDecimal.TEN,
-        satsType = Utbetalingsperiode.SatsType.MND,
-        utbetalesTil = "x",
-        behandlingId = 0,
-        utbetalingsgrad = null,
-    )
+    private val utbetalingsperiode =
+        Utbetalingsperiode(
+            erEndringPåEksisterendePeriode = false,
+            opphør = null,
+            periodeId = 0,
+            forrigePeriodeId = null,
+            datoForVedtak = LocalDate.now(),
+            klassifisering = "",
+            vedtakdatoFom = LocalDate.of(2021, 1, 1),
+            vedtakdatoTom = LocalDate.of(2021, 6, 1),
+            sats = BigDecimal.TEN,
+            satsType = Utbetalingsperiode.SatsType.MND,
+            utbetalesTil = "x",
+            behandlingId = 0,
+            utbetalingsgrad = null,
+        )
 
     private fun tilkjentYtelse(utbetalingsperioder: List<Utbetalingsperiode> = listOf()): TilkjentYtelse {
         return TilkjentYtelse(
             id = UUID.randomUUID(),
-            utbetalingsoppdrag = Utbetalingsoppdrag(
-                kodeEndring = Utbetalingsoppdrag.KodeEndring.NY,
-                fagSystem = "",
-                saksnummer = "",
-                aktoer = "",
-                saksbehandlerId = "",
-                avstemmingTidspunkt = LocalDateTime.now(),
-                utbetalingsperiode = utbetalingsperioder,
-            ),
+            utbetalingsoppdrag =
+                Utbetalingsoppdrag(
+                    kodeEndring = Utbetalingsoppdrag.KodeEndring.NY,
+                    fagSystem = "",
+                    saksnummer = "",
+                    aktoer = "",
+                    saksbehandlerId = "",
+                    avstemmingTidspunkt = LocalDateTime.now(),
+                    utbetalingsperiode = utbetalingsperioder,
+                ),
             status = TilkjentYtelseStatus.SENDT_TIL_IVERKSETTING,
             andelerTilkjentYtelse = listOf(),
             startmåned = YearMonth.now(),

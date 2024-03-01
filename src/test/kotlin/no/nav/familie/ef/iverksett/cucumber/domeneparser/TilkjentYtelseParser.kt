@@ -13,7 +13,6 @@ import java.time.YearMonth
 import java.util.UUID
 
 object TilkjentYtelseParser {
-
     fun mapStartdatoer(dataTable: DataTable): Map<UUID, LocalDate> {
         return dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.single()
@@ -31,23 +30,25 @@ object TilkjentYtelseParser {
             val rad = rader.first()
             val behandlingIdInt = parseInt(Domenebegrep.BEHANDLING_ID, rad)
             val behandlingId = behandlingIdTilUUID[behandlingIdInt]!!
-            val andeler = if (medAndel) {
-                rader.map { mapAndelTilkjentYtelse(it) }
-            } else {
-                listOf()
-            }
+            val andeler =
+                if (medAndel) {
+                    rader.map { mapAndelTilkjentYtelse(it) }
+                } else {
+                    listOf()
+                }
             val startdato = (
                 startdatoer[behandlingId]
                     ?: andeler.minOfOrNull { it.periode.fomDato }
                     ?: error("Mangler startdato eller andel for behandling=$behandlingIdInt")
-                )
+            )
             TilkjentYtelseHolder(
                 behandlingId = behandlingId,
                 behandlingIdInt = behandlingIdInt,
-                tilkjentYtelse = TilkjentYtelseDto(
-                    andelerTilkjentYtelse = andeler,
-                    startdato = startdato,
-                ),
+                tilkjentYtelse =
+                    TilkjentYtelseDto(
+                        andelerTilkjentYtelse = andeler,
+                        startdato = startdato,
+                    ),
             )
         }
     }
@@ -80,24 +81,30 @@ object TilkjentYtelseParser {
             opphør = parseValgfriÅrMåned(UtbetalingsoppdragDomenebegrep.OPPHØRSDATO, it)?.atDay(1),
         )
 
-    fun mapForventetTilkjentYtelse(dataTable: DataTable, behandlingIdInt: Int, startdato: YearMonth?): ForventetTilkjentYtelse {
+    fun mapForventetTilkjentYtelse(
+        dataTable: DataTable,
+        behandlingIdInt: Int,
+        startdato: YearMonth?,
+    ): ForventetTilkjentYtelse {
         val andeler = dataTable.asMaps().map { mapForventetAndel(it) }
         return ForventetTilkjentYtelse(
             behandlingId = behandlingIdTilUUID[behandlingIdInt]!!,
             andeler = andeler,
-            startmåned = startdato ?: andeler.minOfOrNull { it.fom }
-                ?: error("Mangler startdato når det ikke finnes noen andeler for behandling=$behandlingIdInt"),
+            startmåned =
+                startdato ?: andeler.minOfOrNull { it.fom }
+                    ?: error("Mangler startdato når det ikke finnes noen andeler for behandling=$behandlingIdInt"),
         )
     }
 
-    private fun mapForventetAndel(rad: MutableMap<String, String>) = ForventetAndelTilkjentYtelse(
-        fom = parseValgfriÅrMåned(Domenebegrep.FRA_DATO, rad) ?: YearMonth.from(LocalDate.MIN),
-        tom = parseValgfriÅrMåned(Domenebegrep.TIL_DATO, rad) ?: YearMonth.from(LocalDate.MIN),
-        beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
-        periodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad)?.toLong(),
-        forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong(),
-        kildeBehandlingId = behandlingIdTilUUID[parseValgfriInt(TilkjentYtelseDomenebegrep.KILDE_BEHANDLING_ID, rad)],
-    )
+    private fun mapForventetAndel(rad: MutableMap<String, String>) =
+        ForventetAndelTilkjentYtelse(
+            fom = parseValgfriÅrMåned(Domenebegrep.FRA_DATO, rad) ?: YearMonth.from(LocalDate.MIN),
+            tom = parseValgfriÅrMåned(Domenebegrep.TIL_DATO, rad) ?: YearMonth.from(LocalDate.MIN),
+            beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
+            periodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.PERIODE_ID, rad)?.toLong(),
+            forrigePeriodeId = parseValgfriInt(TilkjentYtelseDomenebegrep.FORRIGE_PERIODE_ID, rad)?.toLong(),
+            kildeBehandlingId = behandlingIdTilUUID[parseValgfriInt(TilkjentYtelseDomenebegrep.KILDE_BEHANDLING_ID, rad)],
+        )
 
     private fun DataTable.groupByBehandlingId() =
         this.asMaps().groupBy {
@@ -111,15 +118,16 @@ object TilkjentYtelseParser {
         }
     }
 
-    private fun mapAndelTilkjentYtelse(rad: MutableMap<String, String>) = AndelTilkjentYtelseDto(
-        beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
-        inntekt = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
-        inntektsreduksjon = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKTSREDUKSJON, rad) ?: 0,
-        samordningsfradrag = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
-        fraOgMed = parseÅrMåned(Domenebegrep.FRA_DATO, rad).atDay(1),
-        tilOgMed = parseÅrMåned(Domenebegrep.TIL_DATO, rad).atEndOfMonth(),
-        kildeBehandlingId = null, // ikke i bruk i iverksett
-    )
+    private fun mapAndelTilkjentYtelse(rad: MutableMap<String, String>) =
+        AndelTilkjentYtelseDto(
+            beløp = parseInt(TilkjentYtelseDomenebegrep.BELØP, rad),
+            inntekt = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
+            inntektsreduksjon = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKTSREDUKSJON, rad) ?: 0,
+            samordningsfradrag = parseValgfriInt(TilkjentYtelseDomenebegrep.INNTEKT, rad) ?: 0,
+            fraOgMed = parseÅrMåned(Domenebegrep.FRA_DATO, rad).atDay(1),
+            tilOgMed = parseÅrMåned(Domenebegrep.TIL_DATO, rad).atEndOfMonth(),
+            kildeBehandlingId = null, // ikke i bruk i iverksett
+        )
 
     /**
      * Skal vi bare validere et og et oppdrag, sånn att man ikke validerer for mye

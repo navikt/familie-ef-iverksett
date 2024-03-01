@@ -39,7 +39,6 @@ class JournalførVedtaksbrevTask(
     private val taskService: TaskService,
     private val iverksettResultatService: IverksettResultatService,
 ) : AsyncTaskStep {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
@@ -57,20 +56,21 @@ class JournalførVedtaksbrevTask(
         mottakerIdent: String,
         beslutterId: String,
     ) {
-        val journalpostId = try {
-            journalpostClient.arkiverDokument(arkiverDokumentRequest, beslutterId).journalpostId
-        } catch (e: RessursException) {
-            if (e.cause is HttpClientErrorException.Conflict) {
-                val eksternReferanseId = arkiverDokumentRequest.eksternReferanseId
-                logger.warn(
-                    "Konflikt ved arkivering av dokument, " +
-                        "prøver å hente journalpostId med eksternReferanseId=$eksternReferanseId",
-                )
-                finnJournalpostIdForEksternReferanseId(mottakerIdent, eksternReferanseId)
-            } else {
-                throw e
+        val journalpostId =
+            try {
+                journalpostClient.arkiverDokument(arkiverDokumentRequest, beslutterId).journalpostId
+            } catch (e: RessursException) {
+                if (e.cause is HttpClientErrorException.Conflict) {
+                    val eksternReferanseId = arkiverDokumentRequest.eksternReferanseId
+                    logger.warn(
+                        "Konflikt ved arkivering av dokument, " +
+                            "prøver å hente journalpostId med eksternReferanseId=$eksternReferanseId",
+                    )
+                    finnJournalpostIdForEksternReferanseId(mottakerIdent, eksternReferanseId)
+                } else {
+                    throw e
+                }
             }
-        }
         iverksettResultatService.oppdaterJournalpostResultat(
             behandlingId = behandlingId,
             mottakerIdent = mottakerIdent,
@@ -94,21 +94,23 @@ class JournalførVedtaksbrevTask(
         iverksett: Iverksett,
     ) {
         val vedtaksbrev = iverksett.brev ?: error("Fant ikke brev for behandlingId : $behandlingId")
-        val dokument = Dokument(
-            vedtaksbrev.pdf,
-            Filtype.PDFA,
-            dokumenttype = vedtaksbrevForStønadType(iverksett.data.fagsak.stønadstype),
-            tittel = lagDokumentTittel(iverksett.data),
-        )
+        val dokument =
+            Dokument(
+                vedtaksbrev.pdf,
+                Filtype.PDFA,
+                dokumenttype = vedtaksbrevForStønadType(iverksett.data.fagsak.stønadstype),
+                tittel = lagDokumentTittel(iverksett.data),
+            )
 
-        val arkiverDokumentRequest = ArkiverDokumentRequest(
-            fnr = iverksett.data.søker.personIdent,
-            forsøkFerdigstill = true,
-            hoveddokumentvarianter = listOf(dokument),
-            fagsakId = iverksett.data.fagsak.eksternId.toString(),
-            journalførendeEnhet = iverksett.data.søker.tilhørendeEnhet,
-            eksternReferanseId = "$behandlingId-vedtaksbrev",
-        )
+        val arkiverDokumentRequest =
+            ArkiverDokumentRequest(
+                fnr = iverksett.data.søker.personIdent,
+                forsøkFerdigstill = true,
+                hoveddokumentvarianter = listOf(dokument),
+                fagsakId = iverksett.data.fagsak.eksternId.toString(),
+                journalførendeEnhet = iverksett.data.søker.tilhørendeEnhet,
+                eksternReferanseId = "$behandlingId-vedtaksbrev",
+            )
 
         val journalførteIdenter: List<String> =
             iverksettResultatService.hentJournalpostResultat(behandlingId)?.keys?.toList() ?: emptyList()
@@ -128,14 +130,16 @@ class JournalførVedtaksbrevTask(
     ) {
         iverksett.vedtak.brevmottakere?.mottakere?.mapIndexed { indeks, mottaker ->
             if (!journalførteIdenter.contains(mottaker.ident)) {
-                val arkiverDokumentRequestForMottaker = arkiverDokumentRequest.copy(
-                    eksternReferanseId = "$behandlingId-vedtaksbrev-mottaker$indeks",
-                    avsenderMottaker = AvsenderMottaker(
-                        id = mottaker.ident,
-                        idType = mottaker.identType.tilIdType(),
-                        navn = mottaker.navn,
-                    ),
-                )
+                val arkiverDokumentRequestForMottaker =
+                    arkiverDokumentRequest.copy(
+                        eksternReferanseId = "$behandlingId-vedtaksbrev-mottaker$indeks",
+                        avsenderMottaker =
+                            AvsenderMottaker(
+                                id = mottaker.ident,
+                                idType = mottaker.identType.tilIdType(),
+                                navn = mottaker.navn,
+                            ),
+                    )
 
                 journalførOgLagreResultat(
                     behandlingId = behandlingId,
@@ -160,9 +164,13 @@ class JournalførVedtaksbrevTask(
         )
     }
 
-    private fun validerJournalpostResultatErSatt(behandlingId: UUID, iverksett: IverksettData) {
-        val antallJournalføringer = iverksettResultatService.hentJournalpostResultat(behandlingId)?.size
-            ?: error("Ingen journalføringer for behandling=[$behandlingId]")
+    private fun validerJournalpostResultatErSatt(
+        behandlingId: UUID,
+        iverksett: IverksettData,
+    ) {
+        val antallJournalføringer =
+            iverksettResultatService.hentJournalpostResultat(behandlingId)?.size
+                ?: error("Ingen journalføringer for behandling=[$behandlingId]")
 
         val satteBrevmottakere = iverksett.vedtak.brevmottakere?.mottakere?.size ?: 0
 
@@ -185,7 +193,6 @@ class JournalførVedtaksbrevTask(
     }
 
     companion object {
-
         const val TYPE = "journalførVedtaksbrev"
     }
 }

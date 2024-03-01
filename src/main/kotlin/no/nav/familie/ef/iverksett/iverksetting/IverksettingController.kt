@@ -31,7 +31,6 @@ import java.util.UUID
 class IverksettingController(
     private val iverksettingService: IverksettingService,
 ) {
-
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun iverksett(
         @RequestPart("data") iverksettDto: IverksettDto,
@@ -44,7 +43,9 @@ class IverksettingController(
     }
 
     @PostMapping("migrering", "uten-brev")
-    fun iverksett(@RequestBody iverksettDto: IverksettDto) {
+    fun iverksett(
+        @RequestBody iverksettDto: IverksettDto,
+    ) {
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         validerUtenBrev(iverksett)
@@ -52,13 +53,17 @@ class IverksettingController(
     }
 
     @GetMapping("/status/{behandlingId}")
-    fun hentStatus(@PathVariable behandlingId: UUID): ResponseEntity<IverksettStatus> {
+    fun hentStatus(
+        @PathVariable behandlingId: UUID,
+    ): ResponseEntity<IverksettStatus> {
         val status = iverksettingService.utledStatus(behandlingId)
         return status?.let { ResponseEntity(status, HttpStatus.OK) } ?: ResponseEntity(null, HttpStatus.NOT_FOUND)
     }
 
     @PostMapping("/vedtakshendelse/{behandlingId}")
-    fun publiserVedtakshendelser(@PathVariable behandlingId: UUID): ResponseEntity<Any> {
+    fun publiserVedtakshendelser(
+        @PathVariable behandlingId: UUID,
+    ): ResponseEntity<Any> {
         iverksettingService.publiserVedtak(behandlingId)
         return ResponseEntity.ok().build()
     }

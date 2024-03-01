@@ -11,7 +11,6 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 @EnableKafka
 @Configuration
 class KafkaConsumerConfig {
-
     @Bean
     fun concurrentTilbakekrevingListenerContainerFactory(
         properties: KafkaProperties,

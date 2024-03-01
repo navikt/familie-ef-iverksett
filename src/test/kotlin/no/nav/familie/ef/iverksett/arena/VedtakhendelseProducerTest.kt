@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class VedtakhendelseProducerTest {
-
     private var jmsTemplate: JmsTemplate = mockk(relaxed = true)
     private val vedtakhendelseProducer = VedtakhendelseProducer(jmsTemplate)
 

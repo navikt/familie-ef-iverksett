@@ -8,8 +8,10 @@ import java.time.Year
 import java.util.UUID
 
 object KarakterInnhentingBrevUtil {
-
-    fun opprettBrev(brevType: FrittståendeBrevType, journalpostId: String? = null) = KarakterutskriftBrev(
+    fun opprettBrev(
+        brevType: FrittståendeBrevType,
+        journalpostId: String? = null,
+    ) = KarakterutskriftBrev(
         id = UUID.randomUUID(),
         personIdent = "12345678910",
         oppgaveId = 5L,
@@ -22,7 +24,10 @@ object KarakterInnhentingBrevUtil {
         journalpostId = journalpostId,
     )
 
-    fun brevDto(eksternFagsakId: Long, oppgaveId: Long) = KarakterutskriftBrevDto(
+    fun brevDto(
+        eksternFagsakId: Long,
+        oppgaveId: Long,
+    ) = KarakterutskriftBrevDto(
         "123".toByteArray(),
         oppgaveId,
         "ident",

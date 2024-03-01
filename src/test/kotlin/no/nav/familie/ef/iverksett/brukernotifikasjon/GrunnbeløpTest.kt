@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class GrunnbeløpTest {
-
     // Denne testen vil feile hvis vi legger inn nytt grunnbeløp.
     // Vi ønsker at grunnbeløp skal sendes med fra ef-sak til iverksett.
     // Da kan denne testen og grunnbeløp slettes fra iverksett.

@@ -25,7 +25,6 @@ class SendFattetVedtakTilInfotrygdTask(
     private val iverksettingRepository: IverksettingRepository,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
-
     private final val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
@@ -40,13 +39,15 @@ class SendFattetVedtakTilInfotrygdTask(
         }
 
         val stønadstype = iverksettData.fagsak.stønadstype
-        val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksettData.søker.personIdent, true)
-            .map { it.personIdent }.toSet()
+        val personIdenter =
+            familieIntegrasjonerClient.hentIdenter(iverksettData.søker.personIdent, true)
+                .map { it.personIdent }.toSet()
         val tilkjentYtelse: TilkjentYtelse =
             iverksettData.vedtak.tilkjentYtelse
                 ?: error("Finner ikke tilkjent ytelse for behandling med id=${iverksettData.behandling.behandlingId}")
-        val startDato = tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.periode.fomDato }
-            ?: error("Finner ikke noen andel med fraOgMed for behandling=$behandlingId")
+        val startDato =
+            tilkjentYtelse.andelerTilkjentYtelse.minOfOrNull { it.periode.fomDato }
+                ?: error("Finner ikke noen andel med fraOgMed for behandling=$behandlingId")
 
         infotrygdFeedClient.opprettVedtakHendelse(OpprettVedtakHendelseDto(personIdenter, stønadstype, startDato))
     }
@@ -56,7 +57,6 @@ class SendFattetVedtakTilInfotrygdTask(
     }
 
     companion object {
-
         const val TYPE = "sendFattetVedtakTilInfotrygd"
     }
 }

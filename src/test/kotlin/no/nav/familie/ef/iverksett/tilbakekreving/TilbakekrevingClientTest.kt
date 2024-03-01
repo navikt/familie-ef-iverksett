@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 
 internal class TilbakekrevingClientTest : ServerTest() {
-
     @Autowired
     private lateinit var tilbakekrevingClient: TilbakekrevingClient
 
@@ -25,15 +24,16 @@ internal class TilbakekrevingClientTest : ServerTest() {
                 ytelsestype = Ytelsestype.OVERGANGSSTØNAD,
                 behandlendeEnhetsNavn = "Oslo",
                 språkkode = Språkkode.NB,
-                feilutbetaltePerioderDto = FeilutbetaltePerioderDto(
-                    654654L,
-                    listOf(
-                        Periode(
-                            LocalDate.MIN,
-                            LocalDate.MAX,
+                feilutbetaltePerioderDto =
+                    FeilutbetaltePerioderDto(
+                        654654L,
+                        listOf(
+                            Periode(
+                                LocalDate.MIN,
+                                LocalDate.MAX,
+                            ),
                         ),
                     ),
-                ),
                 fagsystem = Fagsystem.EF,
                 ident = "32165498721",
                 eksternFagsakId = "654654",

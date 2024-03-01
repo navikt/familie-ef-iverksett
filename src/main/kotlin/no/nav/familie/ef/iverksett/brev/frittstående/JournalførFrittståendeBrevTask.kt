@@ -31,7 +31,6 @@ class JournalførFrittståendeBrevTask(
     private val taskService: TaskService,
     private val frittståendeBrevRepository: FrittståendeBrevRepository,
 ) : AsyncTaskStep {
-
     override fun doTask(task: Task) {
         val callId = task.callId
         val frittståendeBrevId = UUID.fromString(task.payload)
@@ -45,10 +44,11 @@ class JournalførFrittståendeBrevTask(
             if (frittståendeBrev.journalpostResultat.map.containsKey(brevmottaker.ident)) {
                 return@forEachIndexed
             }
-            val journalpostId = journalpostClient.arkiverDokument(
-                opprettArkiverDokumentRequest(frittståendeBrev, callId, index, brevmottaker),
-                saksbehandler = frittståendeBrev.saksbehandlerIdent,
-            ).journalpostId
+            val journalpostId =
+                journalpostClient.arkiverDokument(
+                    opprettArkiverDokumentRequest(frittståendeBrev, callId, index, brevmottaker),
+                    saksbehandler = frittståendeBrev.saksbehandlerIdent,
+                ).journalpostId
             val oppdatertJournalposter =
                 frittståendeBrev.journalpostResultat.map + mapOf(brevmottaker.ident to JournalpostResultat(journalpostId))
             frittståendeBrev =
@@ -72,14 +72,15 @@ class JournalførFrittståendeBrevTask(
     ) = ArkiverDokumentRequest(
         fnr = frittståendeBrev.personIdent,
         forsøkFerdigstill = true,
-        hoveddokumentvarianter = listOf(
-            Dokument(
-                frittståendeBrev.fil,
-                Filtype.PDFA,
-                dokumenttype = stønadstypeTilDokumenttype(frittståendeBrev.stønadstype),
-                tittel = utledBrevtittel(frittståendeBrev),
+        hoveddokumentvarianter =
+            listOf(
+                Dokument(
+                    frittståendeBrev.fil,
+                    Filtype.PDFA,
+                    dokumenttype = stønadstypeTilDokumenttype(frittståendeBrev.stønadstype),
+                    tittel = utledBrevtittel(frittståendeBrev),
+                ),
             ),
-        ),
         fagsakId = frittståendeBrev.eksternFagsakId.toString(),
         journalførendeEnhet = frittståendeBrev.journalførendeEnhet,
         eksternReferanseId = "$callId-$index",
@@ -93,19 +94,17 @@ class JournalførFrittståendeBrevTask(
     private fun avsenderMottaker(
         frittståendeBrev: FrittståendeBrev,
         brevmottaker: Brevmottaker,
-    ) =
-        if (frittståendeBrev.personIdent != brevmottaker.ident) {
-            AvsenderMottaker(
-                brevmottaker.ident,
-                brevmottaker.identType.tilIdType(),
-                brevmottaker.navn,
-            )
-        } else {
-            null
-        }
+    ) = if (frittståendeBrev.personIdent != brevmottaker.ident) {
+        AvsenderMottaker(
+            brevmottaker.ident,
+            brevmottaker.identType.tilIdType(),
+            brevmottaker.navn,
+        )
+    } else {
+        null
+    }
 
     companion object {
-
         const val TYPE = "journalførFrittståendeBrev"
     }
 }

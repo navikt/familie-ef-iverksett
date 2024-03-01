@@ -11,7 +11,6 @@ import java.time.ZonedDateTime
 
 @Service
 class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer) {
-
     @Transactional
     fun sendBehandlingstatistikk(behandlingsstatistikkDto: BehandlingsstatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingsstatistikkDto)
@@ -24,29 +23,34 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             behandlingId = behandlingstatistikk.eksternBehandlingId,
             sakId = behandlingstatistikk.eksternFagsakId,
             personIdent = behandlingstatistikk.personIdent,
-            registrertTid = behandlingstatistikk.behandlingOpprettetTidspunkt
-                ?: behandlingstatistikk.hendelseTidspunkt,
+            registrertTid =
+                behandlingstatistikk.behandlingOpprettetTidspunkt
+                    ?: behandlingstatistikk.hendelseTidspunkt,
             endretTid = behandlingstatistikk.hendelseTidspunkt,
             tekniskTid = tekniskTid,
             behandlingStatus = behandlingstatistikk.hendelse.name,
-            opprettetAv = maskerVerdiHvisStrengtFortrolig(
-                behandlingstatistikk.strengtFortroligAdresse,
-                behandlingstatistikk.gjeldendeSaksbehandlerId,
-            ),
+            opprettetAv =
+                maskerVerdiHvisStrengtFortrolig(
+                    behandlingstatistikk.strengtFortroligAdresse,
+                    behandlingstatistikk.gjeldendeSaksbehandlerId,
+                ),
             saksnummer = behandlingstatistikk.eksternFagsakId,
             mottattTid = behandlingstatistikk.henvendelseTidspunkt,
-            saksbehandler = maskerVerdiHvisStrengtFortrolig(
-                behandlingstatistikk.strengtFortroligAdresse,
-                behandlingstatistikk.gjeldendeSaksbehandlerId,
-            ),
-            opprettetEnhet = maskerVerdiHvisStrengtFortrolig(
-                behandlingstatistikk.strengtFortroligAdresse,
-                behandlingstatistikk.opprettetEnhet,
-            ),
-            ansvarligEnhet = maskerVerdiHvisStrengtFortrolig(
-                behandlingstatistikk.strengtFortroligAdresse,
-                behandlingstatistikk.ansvarligEnhet,
-            ),
+            saksbehandler =
+                maskerVerdiHvisStrengtFortrolig(
+                    behandlingstatistikk.strengtFortroligAdresse,
+                    behandlingstatistikk.gjeldendeSaksbehandlerId,
+                ),
+            opprettetEnhet =
+                maskerVerdiHvisStrengtFortrolig(
+                    behandlingstatistikk.strengtFortroligAdresse,
+                    behandlingstatistikk.opprettetEnhet,
+                ),
+            ansvarligEnhet =
+                maskerVerdiHvisStrengtFortrolig(
+                    behandlingstatistikk.strengtFortroligAdresse,
+                    behandlingstatistikk.ansvarligEnhet,
+                ),
             behandlingMetode = behandlingstatistikk.behandlingMetode?.name ?: "MANUELL",
             behandlingÅrsak = behandlingstatistikk.behandlingÅrsak?.name,
             avsender = "NAV enslig forelder",
@@ -55,24 +59,26 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             behandlingResultat = behandlingstatistikk.behandlingResultat,
             resultatBegrunnelse = behandlingstatistikk.resultatBegrunnelse,
             ansvarligBeslutter =
-            if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty()) {
-                maskerVerdiHvisStrengtFortrolig(
-                    behandlingstatistikk.strengtFortroligAdresse,
-                    behandlingstatistikk.beslutterId.toString(),
-                )
-            } else {
-                null
-            },
-            vedtakTid = if (Hendelse.VEDTATT == behandlingstatistikk.hendelse) {
-                behandlingstatistikk.hendelseTidspunkt
-            } else {
-                null
-            },
-            ferdigBehandletTid = if (Hendelse.FERDIG == behandlingstatistikk.hendelse) {
-                behandlingstatistikk.hendelseTidspunkt
-            } else {
-                null
-            },
+                if (Hendelse.BESLUTTET == behandlingstatistikk.hendelse && behandlingstatistikk.beslutterId.isNotNullOrEmpty()) {
+                    maskerVerdiHvisStrengtFortrolig(
+                        behandlingstatistikk.strengtFortroligAdresse,
+                        behandlingstatistikk.beslutterId.toString(),
+                    )
+                } else {
+                    null
+                },
+            vedtakTid =
+                if (Hendelse.VEDTATT == behandlingstatistikk.hendelse) {
+                    behandlingstatistikk.hendelseTidspunkt
+                } else {
+                    null
+                },
+            ferdigBehandletTid =
+                if (Hendelse.FERDIG == behandlingstatistikk.hendelse) {
+                    behandlingstatistikk.hendelseTidspunkt
+                } else {
+                    null
+                },
             totrinnsbehandling = true,
             sakUtland = mapTilStreng(behandlingstatistikk.kategori),
             relatertBehandlingId = behandlingstatistikk.relatertEksternBehandlingId,
@@ -95,9 +101,10 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
         return verdi
     }
 
-    private fun mapTilStreng(kategori: BehandlingKategori?) = when (kategori) {
-        BehandlingKategori.EØS -> "Utland"
-        BehandlingKategori.NASJONAL -> "Nasjonal"
-        null -> "Nasjonal"
-    }
+    private fun mapTilStreng(kategori: BehandlingKategori?) =
+        when (kategori) {
+            BehandlingKategori.EØS -> "Utland"
+            BehandlingKategori.NASJONAL -> "Nasjonal"
+            null -> "Nasjonal"
+        }
 }

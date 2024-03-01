@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 internal class FrittståendeBrevRepositoryTest : ServerTest() {
-
     @Autowired
     private lateinit var frittståendeBrevRepository: FrittståendeBrevRepository
 

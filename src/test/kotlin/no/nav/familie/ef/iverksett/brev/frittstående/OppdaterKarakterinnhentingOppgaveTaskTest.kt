@@ -27,7 +27,6 @@ import java.time.Year
 import java.util.UUID
 
 internal class OppdaterKarakterinnhentingOppgaveTaskTest {
-
     private val karakterutskriftBrevRepository = mockk<KarakterutskriftBrevRepository>()
     private val oppgaveService = mockk<OppgaveService>()
 
@@ -62,7 +61,9 @@ internal class OppdaterKarakterinnhentingOppgaveTaskTest {
 
     @Test
     fun `skal oppdatere oppgave uten tidligere beskrivelse og frist utvidet periode`() {
-        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev(FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE)
+        every {
+            karakterutskriftBrevRepository.findByIdOrThrow(any())
+        } returns brev(FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE)
         every { oppgaveService.hentOppgave(any()) } returns
             oppgave(beskrivelse = "", frist = fristUtvidet)
         oppdaterOppgaveTask.doTask(Task(OppdaterKarakterinnhentingOppgaveTask.TYPE, UUID.randomUUID().toString()))
@@ -83,14 +84,15 @@ internal class OppdaterKarakterinnhentingOppgaveTaskTest {
         every { oppgaveService.hentOppgave(any()) } returns
             oppgave(beskrivelse = "", frist = "2023-05-10")
 
-        val feil = assertThrows<IllegalStateException> {
-            oppdaterOppgaveTask.doTask(
-                Task(
-                    OppdaterKarakterinnhentingOppgaveTask.TYPE,
-                    UUID.randomUUID().toString(),
-                ),
-            )
-        }
+        val feil =
+            assertThrows<IllegalStateException> {
+                oppdaterOppgaveTask.doTask(
+                    Task(
+                        OppdaterKarakterinnhentingOppgaveTask.TYPE,
+                        UUID.randomUUID().toString(),
+                    ),
+                )
+            }
 
         verify(exactly = 0) { oppgaveService.oppdaterOppgave(any()) }
         assertThat(feil.message).contains("Kan ikke oppdatere prioritet på oppgave med id=5")
@@ -98,18 +100,21 @@ internal class OppdaterKarakterinnhentingOppgaveTaskTest {
 
     @Test
     fun `skal kaste feil dersom oppgavefristen er endret underveis i flyten for innhenting av karakterutskrift - utvidet periode`() {
-        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev(FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE)
+        every {
+            karakterutskriftBrevRepository.findByIdOrThrow(any())
+        } returns brev(FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE)
         every { oppgaveService.hentOppgave(any()) } returns
             oppgave(beskrivelse = "", frist = fristHovedperiode)
 
-        val feil = assertThrows<IllegalStateException> {
-            oppdaterOppgaveTask.doTask(
-                Task(
-                    OppdaterKarakterinnhentingOppgaveTask.TYPE,
-                    UUID.randomUUID().toString(),
-                ),
-            )
-        }
+        val feil =
+            assertThrows<IllegalStateException> {
+                oppdaterOppgaveTask.doTask(
+                    Task(
+                        OppdaterKarakterinnhentingOppgaveTask.TYPE,
+                        UUID.randomUUID().toString(),
+                    ),
+                )
+            }
 
         verify(exactly = 0) { oppgaveService.oppdaterOppgave(any()) }
         assertThat(feil.message).contains("Oppgaven har blitt endret på underveis i flyten for innhenting av karakterutskrift.")
@@ -117,18 +122,21 @@ internal class OppdaterKarakterinnhentingOppgaveTaskTest {
 
     @Test
     fun `skal kaste feil dersom oppgavefristen er endret underveis i flyten for innhenting av karakterutskrift - hovedperiode`() {
-        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns brev(FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE)
+        every {
+            karakterutskriftBrevRepository.findByIdOrThrow(any())
+        } returns brev(FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE)
         every { oppgaveService.hentOppgave(any()) } returns
             oppgave(beskrivelse = "", frist = fristUtvidet)
 
-        val feil = assertThrows<IllegalStateException> {
-            oppdaterOppgaveTask.doTask(
-                Task(
-                    OppdaterKarakterinnhentingOppgaveTask.TYPE,
-                    UUID.randomUUID().toString(),
-                ),
-            )
-        }
+        val feil =
+            assertThrows<IllegalStateException> {
+                oppdaterOppgaveTask.doTask(
+                    Task(
+                        OppdaterKarakterinnhentingOppgaveTask.TYPE,
+                        UUID.randomUUID().toString(),
+                    ),
+                )
+            }
 
         verify(exactly = 0) { oppgaveService.oppdaterOppgave(any()) }
         assertThat(feil.message).contains("Oppgaven har blitt endret på underveis i flyten for innhenting av karakterutskrift.")
@@ -136,7 +144,6 @@ internal class OppdaterKarakterinnhentingOppgaveTaskTest {
 
     @Nested
     inner class Prioritet {
-
         @Test
         internal fun `skal utlede riktig prioritet basert på oppgavens tidligere frist`() {
             val prioritetNormal = utledPrioritetForKarakterinnhentingOppgave(fristHovedperiode, 1L)
@@ -156,7 +163,6 @@ internal class OppdaterKarakterinnhentingOppgaveTaskTest {
 
     @Nested
     inner class Beskrivelse {
-
         @Test
         internal fun `skal utlede riktig beskrivelse basert på tidligere beskrivelse`() {
             val ingenTidligereBeskrivelse = utledBeskrivelseForKarakterinnhentingOppgave("")
@@ -174,7 +180,6 @@ internal class OppdaterKarakterinnhentingOppgaveTaskTest {
 
     @Nested
     inner class Frist {
-
         @Test
         internal fun `skal utlede riktig frist oppgavens tidligere frist`() {
             val fristFemteAugust = utledFristForKarakterinnhentingOppgave(fristHovedperiode, 1L)
@@ -196,13 +201,16 @@ internal class OppdaterKarakterinnhentingOppgaveTaskTest {
 
     private val tidligereOppgaveBeskrivelse = "Oppgave opprettet.\n\nOppgave lagt i mappe 64."
 
-    private val nyBeskrivelseToTidligereInnslag = "Brev om innhenting av karakterutskrift er sendt til bruker.\n\n" +
-        "Oppgave opprettet.\n\n" + "Oppgave lagt i mappe 64."
+    private val nyBeskrivelseToTidligereInnslag =
+        "Brev om innhenting av karakterutskrift er sendt til bruker.\n\n" +
+            "Oppgave opprettet.\n\n" + "Oppgave lagt i mappe 64."
 
     private val nyBeskrivelseEtTidligereInnslag = "Brev om innhenting av karakterutskrift er sendt til bruker.\n\nOppgave opprettet."
 
-    private fun oppgave(beskrivelse: String, frist: String) =
-        Oppgave(id = 5L, beskrivelse = beskrivelse, fristFerdigstillelse = frist)
+    private fun oppgave(
+        beskrivelse: String,
+        frist: String,
+    ) = Oppgave(id = 5L, beskrivelse = beskrivelse, fristFerdigstillelse = frist)
 
     private fun brev(brevType: FrittståendeBrevType = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE) =
         KarakterutskriftBrev(

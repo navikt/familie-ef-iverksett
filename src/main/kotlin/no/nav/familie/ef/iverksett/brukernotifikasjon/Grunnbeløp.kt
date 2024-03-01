@@ -30,6 +30,7 @@ val grunnbeløpsperioder: List<Grunnbeløp> =
     )
 val nyesteGrunnbeløp = grunnbeløpsperioder.maxBy { it.periode }
 val halvG = nyesteGrunnbeløp.grunnbeløp.divide(BigDecimal(2)).divide(BigDecimal(12)).setScale(0, RoundingMode.HALF_UP)
+
 data class Grunnbeløp(
     val periode: Månedsperiode,
     val grunnbeløp: BigDecimal,

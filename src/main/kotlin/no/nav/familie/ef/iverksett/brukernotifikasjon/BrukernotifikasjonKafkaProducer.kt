@@ -16,14 +16,16 @@ import java.util.UUID
 
 @Service
 class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<NokkelInput, BeskjedInput>) {
-
     @Value("\${KAFKA_TOPIC_DITTNAV}")
     private lateinit var topic: String
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    fun sendBeskjedTilBruker(iverksett: IverksettOvergangsstønad, behandlingId: UUID) {
+    fun sendBeskjedTilBruker(
+        iverksett: IverksettOvergangsstønad,
+        behandlingId: UUID,
+    ) {
         val nokkel = lagNøkkel(iverksett.søker.personIdent, behandlingId)
         val beskjed = lagBeskjed(iverksett)
 
@@ -39,7 +41,10 @@ class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<N
         }
     }
 
-    private fun lagNøkkel(fnr: String, behandlingId: UUID): NokkelInput =
+    private fun lagNøkkel(
+        fnr: String,
+        behandlingId: UUID,
+    ): NokkelInput =
         NokkelInputBuilder()
             .withAppnavn("familie-ef-iverksett")
             .withNamespace("teamfamilie")
@@ -49,11 +54,12 @@ class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<N
             .build()
 
     fun lagBeskjed(iverksett: IverksettOvergangsstønad): BeskjedInput {
-        val builder = BeskjedInputBuilder()
-            .withSikkerhetsnivaa(4)
-            .withSynligFremTil(null)
-            .withTekst(lagMelding(iverksett))
-            .withTidspunkt(LocalDateTime.now(ZoneOffset.UTC))
+        val builder =
+            BeskjedInputBuilder()
+                .withSikkerhetsnivaa(4)
+                .withSynligFremTil(null)
+                .withTekst(lagMelding(iverksett))
+                .withTidspunkt(LocalDateTime.now(ZoneOffset.UTC))
 
         return builder.build()
     }

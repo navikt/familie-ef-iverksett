@@ -52,17 +52,17 @@ fun IverksettData.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
 fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
     HentFagsystemsbehandlingRespons(
         hentFagsystemsbehandling =
-        HentFagsystemsbehandling(
-            eksternFagsakId = this.fagsak.eksternId.toString(),
-            eksternId = this.behandling.eksternId.toString(),
-            ytelsestype = Ytelsestype.valueOf(this.fagsak.stønadstype.name),
-            personIdent = this.søker.personIdent,
-            språkkode = Språkkode.NB,
-            enhetId = enhet.enhetId,
-            enhetsnavn = enhet.enhetNavn,
-            revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
-            faktainfo = lagFaktainfo(this),
-        ),
+            HentFagsystemsbehandling(
+                eksternFagsakId = this.fagsak.eksternId.toString(),
+                eksternId = this.behandling.eksternId.toString(),
+                ytelsestype = Ytelsestype.valueOf(this.fagsak.stønadstype.name),
+                personIdent = this.søker.personIdent,
+                språkkode = Språkkode.NB,
+                enhetId = enhet.enhetId,
+                enhetsnavn = enhet.enhetNavn,
+                revurderingsvedtaksdato = this.vedtak.vedtakstidspunkt.toLocalDate(),
+                faktainfo = lagFaktainfo(this),
+            ),
     )
 
 private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel? {
@@ -107,8 +107,9 @@ private fun BehandlingÅrsak.visningsTekst(): String {
     }
 }
 
-private fun tilRegelverk(kategori: BehandlingKategori?) = when (kategori) {
-    BehandlingKategori.EØS -> Regelverk.EØS
-    BehandlingKategori.NASJONAL -> Regelverk.NASJONAL
-    null -> Regelverk.NASJONAL
-}
+private fun tilRegelverk(kategori: BehandlingKategori?) =
+    when (kategori) {
+        BehandlingKategori.EØS -> Regelverk.EØS
+        BehandlingKategori.NASJONAL -> Regelverk.NASJONAL
+        null -> Regelverk.NASJONAL
+    }

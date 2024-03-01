@@ -26,7 +26,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ActiveProfiles("servertest", "mock-oppdrag", "mock-kafkatemplate", "mock-tilbakekreving", "mock-oauth", "mock-integrasjoner")
 @EnableMockOAuth2Server
 abstract class ServerTest {
-
     protected val restTemplate = TestRestTemplate(ApplicationConfig().restTemplateBuilder())
     protected val headers = HttpHeaders()
 

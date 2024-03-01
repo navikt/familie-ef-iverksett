@@ -32,7 +32,6 @@ class SimuleringskontrollService(
     private val oppdragKlient: OppdragClient,
     private val iverksettResultatService: IverksettResultatService,
 ) {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun kontrollerMedNyUtbetalingsgenerator(
@@ -84,16 +83,15 @@ class SimuleringskontrollService(
         )
     }
 
-    private fun hentKontrollResultat(
-        simulering: Simulering,
-    ): DetaljertSimuleringResultat {
+    private fun hentKontrollResultat(simulering: Simulering): DetaljertSimuleringResultat {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Iverksetting er skrudd av - kan ikke simulere nå")
         }
         try {
-            val forrigeTilkjentYtelse = simulering.forrigeBehandlingId?.let {
-                iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
-            }
+            val forrigeTilkjentYtelse =
+                simulering.forrigeBehandlingId?.let {
+                    iverksettResultatService.hentTilkjentYtelse(simulering.forrigeBehandlingId)
+                }
 
             logger.info("Kontrollsimulerer for behandling=${simulering.nyTilkjentYtelseMedMetaData.behandlingId}")
             val tilkjentYtelseMedUtbetalingsoppdrag =
@@ -102,8 +100,9 @@ class SimuleringskontrollService(
                     forrigeTilkjentYtelse,
                 )
 
-            val utbetalingsoppdrag = tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
-                ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
+            val utbetalingsoppdrag =
+                tilkjentYtelseMedUtbetalingsoppdrag.utbetalingsoppdrag
+                    ?: error("Utbetalingsoppdraget finnes ikke for tilkjent ytelse")
 
             if (utbetalingsoppdrag.utbetalingsperiode.isEmpty()) {
                 return DetaljertSimuleringResultat(emptyList())
@@ -131,9 +130,10 @@ class SimuleringskontrollService(
             simuleringsResultat.simuleringMottaker
                 .map { mottaker ->
                     mottaker.copy(
-                        simulertPostering = mottaker.simulertPostering.filter { postering ->
-                            fagOmrådeKoder.contains(postering.fagOmrådeKode)
-                        },
+                        simulertPostering =
+                            mottaker.simulertPostering.filter { postering ->
+                                fagOmrådeKoder.contains(postering.fagOmrådeKode)
+                            },
                     )
                 },
         )
@@ -172,15 +172,21 @@ class SimuleringskontrollService(
         kontrollPerioderMap.forEach { (måned, resultatMedKontrollUG) ->
             val resultatMedIverksattUG = iverksattePerioderMap[måned]
             if (resultatMedIverksattUG != null && resultatMedIverksattUG != resultatMedKontrollUG) {
-                logger.warn("behandlingId=$behandlingId - måned=$måned resultatMedIverksattUG=$resultatMedIverksattUG resultatMedKontrollUG=$resultatMedKontrollUG")
+                logger.warn(
+                    "behandlingId=$behandlingId - måned=$måned resultatMedIverksattUG=$resultatMedIverksattUG resultatMedKontrollUG=$resultatMedKontrollUG",
+                )
                 harDiff = true
             }
         }
         if (kontrollPerioderMap.size != iverksattePerioderMap.size) {
             if (iverksattePerioderMap.size > kontrollPerioderMap.size) {
-                logger.warn("behandlingId=$behandlingId - diff i antall måneder. Nå: ${kontrollPerioder.size} Tidligere: ${iverksattePerioder.size}. Er nullbeløp i første periode? ${førstePeriodeIverksatt.nyttBeløp == BigDecimal.ZERO}")
+                logger.warn(
+                    "behandlingId=$behandlingId - diff i antall måneder. Nå: ${kontrollPerioder.size} Tidligere: ${iverksattePerioder.size}. Er nullbeløp i første periode? ${førstePeriodeIverksatt.nyttBeløp == BigDecimal.ZERO}",
+                )
             } else {
-                logger.info("behandlingId=$behandlingId - diff i antall måneder. Nå: ${kontrollPerioder.size} Tidligere: ${iverksattePerioder.size}")
+                logger.info(
+                    "behandlingId=$behandlingId - diff i antall måneder. Nå: ${kontrollPerioder.size} Tidligere: ${iverksattePerioder.size}",
+                )
             }
             harDiff = true
         }

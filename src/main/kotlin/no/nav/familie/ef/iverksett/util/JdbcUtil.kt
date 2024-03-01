@@ -14,7 +14,10 @@ inline fun <reified T> ResultSet.getJson(columnLabel: String): T? {
     return this.getBytes(columnLabel)?.let { ObjectMapperProvider.objectMapper.readValue<T>(it) }
 }
 
-inline fun <reified T> NamedParameterJdbcTemplate.queryForJson(sql: String, paramSource: SqlParameterSource): T? {
+inline fun <reified T> NamedParameterJdbcTemplate.queryForJson(
+    sql: String,
+    paramSource: SqlParameterSource,
+): T? {
     try {
         val json = this.queryForObject(sql, paramSource, ByteArray::class.java) ?: return null
         return ObjectMapperProvider.objectMapper.readValue<T>(json)

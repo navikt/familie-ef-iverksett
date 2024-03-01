@@ -19,7 +19,6 @@ class InfotrygdFeedClient(
     restOperations: RestOperations,
 ) :
     AbstractPingableRestClient(restOperations, "infotrygd.feed") {
-
     val opprettVedtakUri: URI =
         UriComponentsBuilder.fromUri(infotrygdFeedUri).pathSegment("api/entry/vedtak").build().toUri()
     val opprettStartBehandlingUri: URI =

@@ -22,27 +22,30 @@ class TaskType(
     val triggerTidAntallSekunderFrem: Long? = null,
 )
 
-fun hovedflyt() = listOf(
-    TaskType(OpprettTilbakekrevingTask.TYPE),
-    TaskType(IverksettMotOppdragTask.TYPE),
-    TaskType(VentePåStatusFraØkonomiTask.TYPE, 20), // går ikke videre ved migrering//korrigering_uten_brev
-    TaskType(JournalførVedtaksbrevTask.TYPE),
-    TaskType(DistribuerVedtaksbrevTask.TYPE),
-)
+fun hovedflyt() =
+    listOf(
+        TaskType(OpprettTilbakekrevingTask.TYPE),
+        TaskType(IverksettMotOppdragTask.TYPE),
+        TaskType(VentePåStatusFraØkonomiTask.TYPE, 20), // går ikke videre ved migrering//korrigering_uten_brev
+        TaskType(JournalførVedtaksbrevTask.TYPE),
+        TaskType(DistribuerVedtaksbrevTask.TYPE),
+    )
 
-fun publiseringsflyt() = listOf(
-    TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
-    TaskType(SendPerioderTilInfotrygdTask.TYPE), // Hopper til vedtakstatistikk ved migrering
-    TaskType(SendFattetVedtakTilArenaTask.TYPE),
-    TaskType(PubliserVedtakTilKafkaTask.TYPE),
-    TaskType(SendVedtakTilArbeidsoppfølgingTask.TYPE),
-    TaskType(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE),
-    TaskType(OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE),
-    TaskType(VedtakstatistikkTask.TYPE),
-    TaskType(SendBrukernotifikasjonVedGOmregningTask.TYPE),
-)
+fun publiseringsflyt() =
+    listOf(
+        TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
+        TaskType(SendPerioderTilInfotrygdTask.TYPE), // Hopper til vedtakstatistikk ved migrering
+        TaskType(SendFattetVedtakTilArenaTask.TYPE),
+        TaskType(PubliserVedtakTilKafkaTask.TYPE),
+        TaskType(SendVedtakTilArbeidsoppfølgingTask.TYPE),
+        TaskType(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE),
+        TaskType(OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE),
+        TaskType(VedtakstatistikkTask.TYPE),
+        TaskType(SendBrukernotifikasjonVedGOmregningTask.TYPE),
+    )
 
 fun TaskType.nesteHovedflytTask() = hovedflyt().zipWithNext().first { this.type == it.first.type }.second
+
 fun TaskType.nestePubliseringsflytTask() = publiseringsflyt().zipWithNext().first { this.type == it.first.type }.second
 
 fun Task.opprettNesteTask(): Task {
@@ -51,11 +54,12 @@ fun Task.opprettNesteTask(): Task {
 }
 
 fun Task.opprettNestePubliseringTask(erMigrering: Boolean = false): Task {
-    val nesteTask = if (erMigrering && this.type == SendPerioderTilInfotrygdTask.TYPE) {
-        TaskType(VedtakstatistikkTask.TYPE)
-    } else {
-        TaskType(this.type).nestePubliseringsflytTask()
-    }
+    val nesteTask =
+        if (erMigrering && this.type == SendPerioderTilInfotrygdTask.TYPE) {
+            TaskType(VedtakstatistikkTask.TYPE)
+        } else {
+            TaskType(this.type).nestePubliseringsflytTask()
+        }
     return lagTask(nesteTask)
 }
 
@@ -66,8 +70,9 @@ private fun Task.lagTask(nesteTask: TaskType): Task {
             payload = this.payload,
             properties = this.metadata,
         ).copy(
-            triggerTid = LocalDateTime.now()
-                .plusSeconds(nesteTask.triggerTidAntallSekunderFrem),
+            triggerTid =
+                LocalDateTime.now()
+                    .plusSeconds(nesteTask.triggerTidAntallSekunderFrem),
         )
     } else {
         Task(

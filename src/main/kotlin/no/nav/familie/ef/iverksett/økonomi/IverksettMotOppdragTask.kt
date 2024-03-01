@@ -25,16 +25,16 @@ class IverksettMotOppdragTask(
     private val taskService: TaskService,
     private val iverksettResultatService: IverksettResultatService,
 ) : AsyncTaskStep {
-
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        val forrigeTilkjentYtelse = iverksett.behandling.forrigeBehandlingId?.let {
-            iverksettResultatService.hentTilkjentYtelse(it)
-                ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=$it")
-        }
+        val forrigeTilkjentYtelse =
+            iverksett.behandling.forrigeBehandlingId?.let {
+                iverksettResultatService.hentTilkjentYtelse(it)
+                    ?: error("Kunne ikke finne tilkjent ytelse for behandlingId=$it")
+            }
         val nyTilkjentYtelseMedMetaData =
             iverksett.vedtak.tilkjentYtelse?.toMedMetadata(
                 saksbehandlerId = iverksett.vedtak.saksbehandlerId,
@@ -70,7 +70,6 @@ class IverksettMotOppdragTask(
     }
 
     companion object {
-
         const val TYPE = "utførIverksettingAvUtbetaling"
     }
 }

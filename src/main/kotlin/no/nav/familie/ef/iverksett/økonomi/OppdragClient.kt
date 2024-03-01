@@ -24,7 +24,6 @@ class OppdragClient(
     @Qualifier("azure")
     restOperations: RestOperations,
 ) : AbstractPingableRestClient(restOperations, "familie.oppdrag") {
-
     private val postOppdragUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/oppdrag").build().toUri()
 
     private val getStatusUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/status").build().toUri()
@@ -57,11 +56,12 @@ class OppdragClient(
         sendAvsluttmelding: Boolean = true,
         transaksjonId: UUID? = null,
     ): String {
-        val url = UriComponentsBuilder.fromUri(konsistensavstemmingUri)
-            .queryParam("sendStartmelding", sendStartmelding)
-            .queryParam("sendAvsluttmelding", sendAvsluttmelding)
-            .queryParam("transaksjonId", transaksjonId.toString())
-            .build().toUri()
+        val url =
+            UriComponentsBuilder.fromUri(konsistensavstemmingUri)
+                .queryParam("sendStartmelding", sendStartmelding)
+                .queryParam("sendAvsluttmelding", sendAvsluttmelding)
+                .queryParam("transaksjonId", transaksjonId.toString())
+                .build().toUri()
         return postForEntity<Ressurs<String>>(url, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
     }
 

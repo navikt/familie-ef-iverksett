@@ -109,20 +109,22 @@ fun VedtaksperiodeBarnetilsynDto.toDomain(): VedtaksperiodeBarnetilsyn {
 
 fun VedtaksperiodeSkolepengerDto.toDomain(): VedtaksperiodeSkolepenger {
     return VedtaksperiodeSkolepenger(
-        perioder = this.perioder.map {
-            DelårsperiodeSkoleårSkolepenger(
-                studietype = it.studietype,
-                periode = it.periode,
-                studiebelastning = it.studiebelastning,
-                makssatsForSkoleår = it.maksSatsForSkoleår,
-            )
-        },
-        utgiftsperioder = this.utgiftsperioder.map {
-            SkolepengerUtgift(
-                utgiftsdato = it.utgiftsdato,
-                stønad = it.stønad,
-            )
-        },
+        perioder =
+            this.perioder.map {
+                DelårsperiodeSkoleårSkolepenger(
+                    studietype = it.studietype,
+                    periode = it.periode,
+                    studiebelastning = it.studiebelastning,
+                    makssatsForSkoleår = it.maksSatsForSkoleår,
+                )
+            },
+        utgiftsperioder =
+            this.utgiftsperioder.map {
+                SkolepengerUtgift(
+                    utgiftsdato = it.utgiftsdato,
+                    stønad = it.stønad,
+                )
+            },
     )
 }
 
@@ -157,7 +159,6 @@ fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn {
         kontantstøtte = this.kontantstøtte.map { it.toDomain() },
         tilleggsstønad = this.tilleggsstønad.map { it.toDomain() },
         avslagÅrsak = this.avslagÅrsak,
-
     )
 }
 
@@ -192,15 +193,15 @@ fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel {
     )
 }
 
-fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere =
-    Brevmottakere(mottakere = this.map { it.toDomain() })
+fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere = Brevmottakere(mottakere = this.map { it.toDomain() })
 
-fun BrevmottakerKontrakter.toDomain(): Brevmottaker = Brevmottaker(
-    ident = this.ident,
-    navn = this.navn,
-    identType = this.identType,
-    mottakerRolle = this.mottakerRolle,
-)
+fun BrevmottakerKontrakter.toDomain(): Brevmottaker =
+    Brevmottaker(
+        ident = this.ident,
+        navn = this.navn,
+        identType = this.identType,
+        mottakerRolle = this.mottakerRolle,
+    )
 
 fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
     PeriodeMedBeløp(
@@ -210,26 +211,29 @@ fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
 
 fun IverksettDto.toDomain(): IverksettData {
     return when (this) {
-        is IverksettOvergangsstønadDto -> IverksettOvergangsstønad(
-            fagsak = this.fagsak.toDomain(),
-            søker = this.søker.toDomain(),
-            behandling = this.behandling.toDomain(),
-            vedtak = this.vedtak.toDomain(),
-        )
+        is IverksettOvergangsstønadDto ->
+            IverksettOvergangsstønad(
+                fagsak = this.fagsak.toDomain(),
+                søker = this.søker.toDomain(),
+                behandling = this.behandling.toDomain(),
+                vedtak = this.vedtak.toDomain(),
+            )
 
-        is IverksettBarnetilsynDto -> IverksettBarnetilsyn(
-            fagsak = this.fagsak.toDomain(),
-            søker = this.søker.toDomain(),
-            behandling = this.behandling.toDomain(),
-            vedtak = this.vedtak.toDomain(),
-        )
+        is IverksettBarnetilsynDto ->
+            IverksettBarnetilsyn(
+                fagsak = this.fagsak.toDomain(),
+                søker = this.søker.toDomain(),
+                behandling = this.behandling.toDomain(),
+                vedtak = this.vedtak.toDomain(),
+            )
 
-        is IverksettSkolepengerDto -> IverksettSkolepenger(
-            fagsak = this.fagsak.toDomain(),
-            søker = this.søker.toDomain(),
-            behandling = this.behandling.toDomain(),
-            vedtak = this.vedtak.toDomain(),
-        )
+        is IverksettSkolepengerDto ->
+            IverksettSkolepenger(
+                fagsak = this.fagsak.toDomain(),
+                søker = this.søker.toDomain(),
+                behandling = this.behandling.toDomain(),
+                vedtak = this.vedtak.toDomain(),
+            )
 
         else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
     }

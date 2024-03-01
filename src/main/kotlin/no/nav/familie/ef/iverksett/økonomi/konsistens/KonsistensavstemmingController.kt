@@ -17,7 +17,6 @@ import java.util.UUID
 class KonsistensavstemmingController(
     private val konsistensavstemmingService: KonsistensavstemmingService,
 ) {
-
     // TODO må verifisere at man ikke lagrer ned kildeBehandlingId i iverksett
     // Og må verifisere at man ikke bruker kildeBehandlingId på andelsnivå fra KonsistensavstemmingDto
     @PostMapping

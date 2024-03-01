@@ -19,7 +19,6 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 internal class BehandlingsstatistikkServiceTest {
-
     private val behandlingstatistikkProducer = mockk<BehandlingsstatistikkProducer>(relaxed = true)
     private val featureToggleService = mockk<FeatureToggleService>()
     private val behandlingstatistikkService = BehandlingsstatistikkService(behandlingstatistikkProducer)
@@ -54,8 +53,9 @@ internal class BehandlingsstatistikkServiceTest {
         val uuid = UUID.randomUUID()
         val endretTid = ZonedDateTime.now()
         val saksbehandler = "Saksbehandler påbegynt"
-        val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.PÅBEGYNT, fortrolig = false)
-            .copy(hendelseTidspunkt = endretTid, gjeldendeSaksbehandlerId = saksbehandler)
+        val behandlingStatistikkDto =
+            opprettBehandlingsstatistikkDto(uuid, Hendelse.PÅBEGYNT, fortrolig = false)
+                .copy(hendelseTidspunkt = endretTid, gjeldendeSaksbehandlerId = saksbehandler)
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
@@ -72,13 +72,14 @@ internal class BehandlingsstatistikkServiceTest {
         val saksbehandler = "Saksbehandler som vedtar"
         val behandlingResultat = "Behandlingsresultat fra vedtak"
         val resultatBegrunnelse = "Begrunnelse for vedtak"
-        val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.VEDTATT, fortrolig = false)
-            .copy(
-                hendelseTidspunkt = endretTid,
-                gjeldendeSaksbehandlerId = saksbehandler,
-                behandlingResultat = behandlingResultat,
-                resultatBegrunnelse = resultatBegrunnelse,
-            )
+        val behandlingStatistikkDto =
+            opprettBehandlingsstatistikkDto(uuid, Hendelse.VEDTATT, fortrolig = false)
+                .copy(
+                    hendelseTidspunkt = endretTid,
+                    gjeldendeSaksbehandlerId = saksbehandler,
+                    behandlingResultat = behandlingResultat,
+                    resultatBegrunnelse = resultatBegrunnelse,
+                )
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
@@ -104,13 +105,14 @@ internal class BehandlingsstatistikkServiceTest {
         val ansvarligBeslutter = "beslutterId"
         val behandlingResultat = "Behandlingsresultat fra beslutter"
         val resultatBegrunnelse = "Begrunnelse for vedtak"
-        val behandlingStatistikkDto = opprettBehandlingsstatistikkDto(uuid, Hendelse.BESLUTTET, fortrolig = false)
-            .copy(
-                hendelseTidspunkt = endretTid,
-                gjeldendeSaksbehandlerId = ansvarligBeslutter,
-                behandlingResultat = behandlingResultat,
-                resultatBegrunnelse = resultatBegrunnelse,
-            )
+        val behandlingStatistikkDto =
+            opprettBehandlingsstatistikkDto(uuid, Hendelse.BESLUTTET, fortrolig = false)
+                .copy(
+                    hendelseTidspunkt = endretTid,
+                    gjeldendeSaksbehandlerId = ansvarligBeslutter,
+                    behandlingResultat = behandlingResultat,
+                    resultatBegrunnelse = resultatBegrunnelse,
+                )
 
         behandlingstatistikkService.sendBehandlingstatistikk(behandlingStatistikkDto)
 
