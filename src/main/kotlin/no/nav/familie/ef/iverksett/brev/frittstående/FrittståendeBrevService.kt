@@ -28,28 +28,29 @@ class FrittståendeBrevService(
     private val taskService: TaskService,
     private val journalpostClient: JournalpostClient,
 ) {
-
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     fun journalførOgDistribuerBrev(data: FrittståendeBrevDto) {
-        val journalpostId = journalpostClient.arkiverDokument(
-            ArkiverDokumentRequest(
-                fnr = data.personIdent,
-                forsøkFerdigstill = true,
-                hoveddokumentvarianter = listOf(
-                    Dokument(
-                        data.fil,
-                        Filtype.PDFA,
-                        dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
-                        tittel = data.tittel,
-                    ),
+        val journalpostId =
+            journalpostClient.arkiverDokument(
+                ArkiverDokumentRequest(
+                    fnr = data.personIdent,
+                    forsøkFerdigstill = true,
+                    hoveddokumentvarianter =
+                        listOf(
+                            Dokument(
+                                data.fil,
+                                Filtype.PDFA,
+                                dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
+                                tittel = data.tittel,
+                            ),
+                        ),
+                    fagsakId = data.eksternFagsakId.toString(),
+                    journalførendeEnhet = data.journalførendeEnhet,
                 ),
-                fagsakId = data.eksternFagsakId.toString(),
-                journalførendeEnhet = data.journalførendeEnhet,
-            ),
-            data.saksbehandlerIdent,
-        ).journalpostId
+                data.saksbehandlerIdent,
+            ).journalpostId
         try {
             val bestillingId = journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
             logger.info("Sendt frittstående brev journalpost=$journalpostId bestillingId=$bestillingId")
@@ -68,19 +69,20 @@ class FrittståendeBrevService(
             throw IllegalArgumentException("Liste med brevmottakere kan ikke være tom")
         }
 
-        val brev = frittståendeBrevRepository.insert(
-            FrittståendeBrev(
-                personIdent = data.personIdent,
-                eksternFagsakId = data.eksternFagsakId,
-                journalførendeEnhet = data.journalførendeEnhet,
-                saksbehandlerIdent = data.saksbehandlerIdent,
-                stønadstype = data.stønadType,
-                mottakere = Brevmottakere(mottakere.map { it.toDomain() }),
-                fil = data.fil,
-                brevtype = data.brevtype,
-                tittel = data.tittel,
-            ),
-        )
+        val brev =
+            frittståendeBrevRepository.insert(
+                FrittståendeBrev(
+                    personIdent = data.personIdent,
+                    eksternFagsakId = data.eksternFagsakId,
+                    journalførendeEnhet = data.journalførendeEnhet,
+                    saksbehandlerIdent = data.saksbehandlerIdent,
+                    stønadstype = data.stønadType,
+                    mottakere = Brevmottakere(mottakere.map { it.toDomain() }),
+                    fil = data.fil,
+                    brevtype = data.brevtype,
+                    tittel = data.tittel,
+                ),
+            )
         taskService.save(Task(JournalførFrittståendeBrevTask.TYPE, brev.id.toString()))
     }
 
@@ -98,7 +100,10 @@ class FrittståendeBrevService(
             brevDto.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE &&
             brevDto.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE
         ) {
-            throw ApiFeil("Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}", HttpStatus.BAD_REQUEST)
+            throw ApiFeil(
+                "Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}",
+                HttpStatus.BAD_REQUEST,
+            )
         }
         if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
                 brevDto.eksternFagsakId,
@@ -106,7 +111,10 @@ class FrittståendeBrevService(
                 brevDto.gjeldendeÅr,
             )
         ) {
-            throw ApiFeil("Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}", HttpStatus.BAD_REQUEST)
+            throw ApiFeil(
+                "Skal ikke kunne opprette flere innhentingsbrev for fagsak med eksternId=${brevDto.eksternFagsakId}",
+                HttpStatus.BAD_REQUEST,
+            )
         }
         if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(
                 brevDto.eksternFagsakId,
@@ -114,7 +122,10 @@ class FrittståendeBrevService(
                 brevDto.brevtype,
             )
         ) {
-            throw ApiFeil("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}", HttpStatus.BAD_REQUEST)
+            throw ApiFeil(
+                "Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=${brevDto.eksternFagsakId}",
+                HttpStatus.BAD_REQUEST,
+            )
         }
     }
 }

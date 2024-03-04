@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import java.time.YearMonth
 
 internal class AndelTilkjentYtelseTest {
-
     @Test
     internal fun `utbetalingsgrad - skal runde riktig`() {
         assertThat(
@@ -77,12 +76,15 @@ internal class AndelTilkjentYtelseTest {
         assertThat(lagTY(1, 0, 1).erFullOvergangsstønad()).isFalse
     }
 
-    private fun lagTY(beløp: Int, inntektsreduksjon: Int = 0, samordningsfradrag: Int = 0) =
-        lagAndelTilkjentYtelse(
-            beløp = beløp,
-            fraOgMed = YearMonth.now(),
-            tilOgMed = YearMonth.now(),
-            inntektsreduksjon = inntektsreduksjon,
-            samordningsfradrag = samordningsfradrag,
-        )
+    private fun lagTY(
+        beløp: Int,
+        inntektsreduksjon: Int = 0,
+        samordningsfradrag: Int = 0,
+    ) = lagAndelTilkjentYtelse(
+        beløp = beløp,
+        fraOgMed = YearMonth.now(),
+        tilOgMed = YearMonth.now(),
+        inntektsreduksjon = inntektsreduksjon,
+        samordningsfradrag = samordningsfradrag,
+    )
 }

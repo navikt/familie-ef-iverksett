@@ -23,7 +23,6 @@ import java.time.YearMonth
 import java.util.UUID
 
 internal class KonsistensavstemmingServiceTest {
-
     private val oppdragClient = mockk<OppdragClient>()
     private val iverksettResultatService = mockk<IverksettResultatService>()
 
@@ -36,21 +35,23 @@ internal class KonsistensavstemmingServiceTest {
     private val behandlingId = UUID.randomUUID()
     private val vedtaksdato = LocalDate.of(2021, 6, 1)
 
-    private val andel1 = lagAndelTilkjentYtelse(
-        beløp = 1,
-        fraOgMed = YearMonth.of(2021, 1),
-        tilOgMed = YearMonth.of(2021, 1),
-        kildeBehandlingId = behandlingId,
-    )
+    private val andel1 =
+        lagAndelTilkjentYtelse(
+            beløp = 1,
+            fraOgMed = YearMonth.of(2021, 1),
+            tilOgMed = YearMonth.of(2021, 1),
+            kildeBehandlingId = behandlingId,
+        )
 
     private val andel2StartDato = YearMonth.of(2021, 3)
     private val andel2Sluttdato = YearMonth.of(2021, 3)
-    private val andel2 = lagAndelTilkjentYtelse(
-        beløp = 2,
-        fraOgMed = andel2StartDato,
-        tilOgMed = andel2Sluttdato,
-        kildeBehandlingId = behandlingId,
-    )
+    private val andel2 =
+        lagAndelTilkjentYtelse(
+            beløp = 2,
+            fraOgMed = andel2StartDato,
+            tilOgMed = andel2Sluttdato,
+            kildeBehandlingId = behandlingId,
+        )
 
     private val requestSlot = slot<UtbetalingsgeneratorHelper.KonsistensavstemmingUtbetalingsoppdrag>()
 
@@ -63,21 +64,23 @@ internal class KonsistensavstemmingServiceTest {
 
     @Test
     internal fun `skal lage utbetalingsoppdrag med perioden som er med i requesten`() {
-        val andelerTilkjentYtelse = listOf(
-            lagAndelTilkjentYtelseDto(
-                beløp = 2,
-                fraOgMed = andel2StartDato.atDay(1),
-                tilOgMed = andel2Sluttdato.atEndOfMonth(),
-                kildeBehandlingId = behandlingId,
-            ),
-        )
-        val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(
-            behandlingId = behandlingId,
-            eksternBehandlingId = eksternBehandlingId,
-            eksternFagsakId = eksternFagsakId,
-            personIdent = personIdent,
-            andelerTilkjentYtelse = andelerTilkjentYtelse,
-        )
+        val andelerTilkjentYtelse =
+            listOf(
+                lagAndelTilkjentYtelseDto(
+                    beløp = 2,
+                    fraOgMed = andel2StartDato.atDay(1),
+                    tilOgMed = andel2Sluttdato.atEndOfMonth(),
+                    kildeBehandlingId = behandlingId,
+                ),
+            )
+        val tilkjentYtelseDto =
+            KonsistensavstemmingTilkjentYtelseDto(
+                behandlingId = behandlingId,
+                eksternBehandlingId = eksternBehandlingId,
+                eksternFagsakId = eksternFagsakId,
+                personIdent = personIdent,
+                andelerTilkjentYtelse = andelerTilkjentYtelse,
+            )
         val konsistensavstemmingDto = KonsistensavstemmingDto(StønadType.OVERGANGSSTØNAD, listOf(tilkjentYtelseDto))
         konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto)
 
@@ -95,31 +98,34 @@ internal class KonsistensavstemmingServiceTest {
 
     @Test
     internal fun `skal kaste feil hvis beløpet er annerledes`() {
-        val andelerTilkjentYtelse = listOf(
-            lagAndelTilkjentYtelseDto(
-                beløp = 1,
-                fraOgMed = andel2StartDato.atDay(1),
-                tilOgMed = andel2Sluttdato.atEndOfMonth(),
-                kildeBehandlingId = behandlingId,
-            ),
-        )
-        val tilkjentYtelseDto = KonsistensavstemmingTilkjentYtelseDto(
-            behandlingId = behandlingId,
-            eksternBehandlingId = eksternBehandlingId,
-            eksternFagsakId = eksternFagsakId,
-            personIdent = personIdent,
-            andelerTilkjentYtelse = andelerTilkjentYtelse,
-        )
+        val andelerTilkjentYtelse =
+            listOf(
+                lagAndelTilkjentYtelseDto(
+                    beløp = 1,
+                    fraOgMed = andel2StartDato.atDay(1),
+                    tilOgMed = andel2Sluttdato.atEndOfMonth(),
+                    kildeBehandlingId = behandlingId,
+                ),
+            )
+        val tilkjentYtelseDto =
+            KonsistensavstemmingTilkjentYtelseDto(
+                behandlingId = behandlingId,
+                eksternBehandlingId = eksternBehandlingId,
+                eksternFagsakId = eksternFagsakId,
+                personIdent = personIdent,
+                andelerTilkjentYtelse = andelerTilkjentYtelse,
+            )
         val konsistensavstemmingDto = KonsistensavstemmingDto(StønadType.OVERGANGSSTØNAD, listOf(tilkjentYtelseDto))
         assertThat(catchThrowable { konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto) })
     }
 
     private fun lagTilkjentYtelseMedMetadata(): TilkjentYtelseMedMetaData {
         return TilkjentYtelseMedMetaData(
-            tilkjentYtelse = TilkjentYtelse(
-                andelerTilkjentYtelse = listOf(andel1, andel2),
-                startmåned = andel1.periode.fom,
-            ),
+            tilkjentYtelse =
+                TilkjentYtelse(
+                    andelerTilkjentYtelse = listOf(andel1, andel2),
+                    startmåned = andel1.periode.fom,
+                ),
             saksbehandlerId = saksbehandlerId,
             eksternBehandlingId = eksternBehandlingId,
             stønadstype = StønadType.OVERGANGSSTØNAD,

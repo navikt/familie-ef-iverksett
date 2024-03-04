@@ -16,17 +16,17 @@ import java.time.YearMonth
 import java.util.UUID
 
 internal class UtbetalingsoppdragGeneratorTest {
-
     private val behandlingA = UUID.randomUUID()
     private val behandlingB = UUID.randomUUID()
 
     @Test
     fun `Andeler med behandlingId, periodeId og forrigePeriodeId blir oppdaterte i lagTilkjentYtelseMedUtbetalingsoppdrag`() {
-        val andel1 = opprettAndel(
-            2,
-            YearMonth.of(2020, 1),
-            YearMonth.of(2020, 12),
-        ) // endres ikke, beholder kildeBehandlingId
+        val andel1 =
+            opprettAndel(
+                2,
+                YearMonth.of(2020, 1),
+                YearMonth.of(2020, 12),
+            ) // endres ikke, beholder kildeBehandlingId
         val andel2 = opprettAndel(2, YearMonth.of(2021, 1), YearMonth.of(2021, 12)) // endres i behandling b
         val andel3 = opprettAndel(2, YearMonth.of(2022, 1), YearMonth.of(2022, 12)) // ny i behandling b
         val førsteTilkjentYtelse =
@@ -41,13 +41,14 @@ internal class UtbetalingsoppdragGeneratorTest {
 
         assertFørsteBehandling(førsteTilkjentYtelse, behandlingA)
 
-        val nyePerioder = opprettTilkjentYtelseMedMetadata(
-            behandlingB,
-            andel1.periode.fom,
-            andel1,
-            andel2.copy(periode = andel2.periode.copy(tom = andel2.periode.tom.minusMonths(2))),
-            andel3,
-        )
+        val nyePerioder =
+            opprettTilkjentYtelseMedMetadata(
+                behandlingB,
+                andel1.periode.fom,
+                andel1,
+                andel2.copy(periode = andel2.periode.copy(tom = andel2.periode.tom.minusMonths(2))),
+                andel3,
+            )
         val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdragNy(nyePerioder, førsteTilkjentYtelse)
 
         assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(utbetalingsoppdragB, behandlingA, behandlingB)
@@ -55,28 +56,29 @@ internal class UtbetalingsoppdragGeneratorTest {
 
     @Nested
     inner class HåndteringAvMinusUendeligheten {
-
-        val andel1 = opprettAndel(
-            0,
-            YearMonth.of(2020, 1),
-            YearMonth.of(2020, 12),
-        )
+        val andel1 =
+            opprettAndel(
+                0,
+                YearMonth.of(2020, 1),
+                YearMonth.of(2020, 12),
+            )
 
         @Test
         fun `historiskt har vi lagret ned andeler med -uendelig fom-tom dato, som må håndteres`() {
             val startmåned = andel1.periode.fom
             val nullAndelTilkjentYtelse = nullAndelTilkjentYtelse(UUID.randomUUID(), PeriodeId(1L, forrige = null))
-            val utbetalingsoppdrag = lagTilkjentYtelseMedUtbetalingsoppdragNy(
-                opprettTilkjentYtelseMedMetadata(
-                    behandlingA,
-                    startmåned,
-                    andel1,
-                ),
-                TilkjentYtelse(
-                    andelerTilkjentYtelse = listOf(nullAndelTilkjentYtelse),
-                    startmåned = startmåned,
-                ),
-            )
+            val utbetalingsoppdrag =
+                lagTilkjentYtelseMedUtbetalingsoppdragNy(
+                    opprettTilkjentYtelseMedMetadata(
+                        behandlingA,
+                        startmåned,
+                        andel1,
+                    ),
+                    TilkjentYtelse(
+                        andelerTilkjentYtelse = listOf(nullAndelTilkjentYtelse),
+                        startmåned = startmåned,
+                    ),
+                )
             assertThat(utbetalingsoppdrag.andelerTilkjentYtelse).hasSize(1)
             assertThat(utbetalingsoppdrag.utbetalingsoppdrag?.utbetalingsperiode).isEmpty()
             assertAndel(
@@ -148,35 +150,34 @@ internal class UtbetalingsoppdragGeneratorTest {
         stønadTom: YearMonth,
         periodeId: Long? = null,
         forrigePeriodeId: Long? = null,
-    ) =
-        lagAndelTilkjentYtelse(
-            beløp = beløp,
-            fraOgMed = stønadFom,
-            tilOgMed = stønadTom,
-            periodeId = periodeId,
-            forrigePeriodeId = forrigePeriodeId,
-            kildeBehandlingId = UUID.randomUUID(),
-        )
+    ) = lagAndelTilkjentYtelse(
+        beløp = beløp,
+        fraOgMed = stønadFom,
+        tilOgMed = stønadTom,
+        periodeId = periodeId,
+        forrigePeriodeId = forrigePeriodeId,
+        kildeBehandlingId = UUID.randomUUID(),
+    )
 
     private fun opprettTilkjentYtelseMedMetadata(
         behandlingId: UUID,
         startmåned: YearMonth,
         vararg andelTilkjentYtelse: AndelTilkjentYtelse,
-    ) =
-        TilkjentYtelseMedMetaData(
-            tilkjentYtelse = TilkjentYtelse(
+    ) = TilkjentYtelseMedMetaData(
+        tilkjentYtelse =
+            TilkjentYtelse(
                 id = UUID.randomUUID(),
                 utbetalingsoppdrag = null,
                 status = TilkjentYtelseStatus.OPPRETTET,
                 andelerTilkjentYtelse = andelTilkjentYtelse.toList(),
                 startmåned = startmåned,
             ),
-            personIdent = "1",
-            behandlingId = behandlingId,
-            eksternBehandlingId = 1,
-            stønadstype = StønadType.OVERGANGSSTØNAD,
-            eksternFagsakId = 1,
-            saksbehandlerId = "VL",
-            vedtaksdato = LocalDate.of(2021, 5, 12),
-        )
+        personIdent = "1",
+        behandlingId = behandlingId,
+        eksternBehandlingId = 1,
+        stønadstype = StønadType.OVERGANGSSTØNAD,
+        eksternFagsakId = 1,
+        saksbehandlerId = "VL",
+        vedtaksdato = LocalDate.of(2021, 5, 12),
+    )
 }

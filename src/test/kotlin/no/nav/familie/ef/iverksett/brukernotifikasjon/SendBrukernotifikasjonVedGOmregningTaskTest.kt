@@ -18,15 +18,19 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class SendBrukernotifikasjonVedGOmregningTaskTest {
-
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val brukernotifikasjonKafkaProducer = mockk<BrukernotifikasjonKafkaProducer>()
-    private val task = SendBrukernotifikasjonVedGOmregningTask(brukernotifikasjonKafkaProducer, iverksettingRepository, mockFeatureToggleService())
+    private val task =
+        SendBrukernotifikasjonVedGOmregningTask(brukernotifikasjonKafkaProducer, iverksettingRepository, mockFeatureToggleService())
 
     @BeforeEach
     internal fun setUp() {
         every { iverksettingRepository.findByIdOrThrow(any()) }
-            .returns(lagIverksett(opprettIverksettDto(behandlingId = UUID.randomUUID(), behandlingÅrsak = BehandlingÅrsak.G_OMREGNING).toDomain()))
+            .returns(
+                lagIverksett(
+                    opprettIverksettDto(behandlingId = UUID.randomUUID(), behandlingÅrsak = BehandlingÅrsak.G_OMREGNING).toDomain(),
+                ),
+            )
     }
 
     @Test

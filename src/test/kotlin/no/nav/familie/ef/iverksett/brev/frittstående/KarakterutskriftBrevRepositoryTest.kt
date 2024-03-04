@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 internal class KarakterutskriftBrevRepositoryTest : ServerTest() {
-
     @Autowired
     private lateinit var karakterutskriftBrevRepository: KarakterutskriftBrevRepository
 
@@ -54,8 +53,20 @@ internal class KarakterutskriftBrevRepositoryTest : ServerTest() {
         val brev = opprettBrev(brevType = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE)
         karakterutskriftBrevRepository.insert(brev)
 
-        assertThat(karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(brev.eksternFagsakId, brev.oppgaveId, brev.gjeldendeÅr)).isTrue
-        assertThat(karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(brev.eksternFagsakId, brev.oppgaveId, brev.gjeldendeÅr.plusYears(1))).isFalse
+        assertThat(
+            karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
+                brev.eksternFagsakId,
+                brev.oppgaveId,
+                brev.gjeldendeÅr,
+            ),
+        ).isTrue
+        assertThat(
+            karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
+                brev.eksternFagsakId,
+                brev.oppgaveId,
+                brev.gjeldendeÅr.plusYears(1),
+            ),
+        ).isFalse
     }
 
     @Test
@@ -63,7 +74,19 @@ internal class KarakterutskriftBrevRepositoryTest : ServerTest() {
         val brev = opprettBrev(brevType = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE)
         karakterutskriftBrevRepository.insert(brev)
 
-        assertThat(karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(brev.eksternFagsakId, brev.gjeldendeÅr, brev.brevtype)).isTrue
-        assertThat(karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(brev.eksternFagsakId, brev.gjeldendeÅr.plusYears(1), brev.brevtype)).isFalse
+        assertThat(
+            karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(
+                brev.eksternFagsakId,
+                brev.gjeldendeÅr,
+                brev.brevtype,
+            ),
+        ).isTrue
+        assertThat(
+            karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(
+                brev.eksternFagsakId,
+                brev.gjeldendeÅr.plusYears(1),
+                brev.brevtype,
+            ),
+        ).isFalse
     }
 }

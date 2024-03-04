@@ -15,16 +15,16 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 internal class OpprettOppfølgingsOppgaveForOvergangsstønadTaskTest {
-
     private val oppgaveService = mockk<OppgaveService>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val taskService = mockk<TaskService>()
 
-    private val taskStegService = OpprettOppfølgingsOppgaveForOvergangsstønadTask(
-        oppgaveService,
-        iverksettingRepository,
-        taskService,
-    )
+    private val taskStegService =
+        OpprettOppfølgingsOppgaveForOvergangsstønadTask(
+            oppgaveService,
+            iverksettingRepository,
+            taskService,
+        )
 
     @Test
     internal fun `skal opprette oppfølgningsoppgave for overgangsstønad`() {

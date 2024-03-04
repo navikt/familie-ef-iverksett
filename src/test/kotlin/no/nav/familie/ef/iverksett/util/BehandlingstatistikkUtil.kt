@@ -16,7 +16,11 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
 
-fun opprettBehandlingsstatistikkDto(behandlingId: UUID, hendelse: Hendelse, fortrolig: Boolean): BehandlingsstatistikkDto {
+fun opprettBehandlingsstatistikkDto(
+    behandlingId: UUID,
+    hendelse: Hendelse,
+    fortrolig: Boolean,
+): BehandlingsstatistikkDto {
     return BehandlingsstatistikkDto(
         behandlingId = behandlingId,
         eksternBehandlingId = 654L,

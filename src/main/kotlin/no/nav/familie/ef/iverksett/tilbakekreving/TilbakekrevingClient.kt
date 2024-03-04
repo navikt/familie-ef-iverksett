@@ -25,31 +25,37 @@ class TilbakekrevingClient(
     @Value("\${FAMILIE_TILBAKE_URL}") private val familieTilbakeUri: URI,
 ) :
     AbstractRestClient(restOperations, "familie.tilbakekreving") {
-
-    private val hentForhåndsvisningVarselbrevUri: URI = UriComponentsBuilder.fromUri(familieTilbakeUri)
-        .pathSegment("api/dokument/forhandsvis-varselbrev")
-        .build()
-        .toUri()
+    private val hentForhåndsvisningVarselbrevUri: URI =
+        UriComponentsBuilder.fromUri(familieTilbakeUri)
+            .pathSegment("api/dokument/forhandsvis-varselbrev")
+            .build()
+            .toUri()
 
     private val opprettTilbakekrevingUri: URI =
         UriComponentsBuilder.fromUri(familieTilbakeUri).pathSegment("api/behandling/v1").build().toUri()
 
-    private val opprettBehandlingManueltUri = UriComponentsBuilder.fromUri(familieTilbakeUri)
-        .pathSegment("api/behandling/manuelt/task/v1")
-        .build()
-        .toUri()
+    private val opprettBehandlingManueltUri =
+        UriComponentsBuilder.fromUri(familieTilbakeUri)
+            .pathSegment("api/behandling/manuelt/task/v1")
+            .build()
+            .toUri()
 
-    private fun finnesÅpenBehandlingUri(fagsakId: Long) = UriComponentsBuilder.fromUri(familieTilbakeUri)
-        .pathSegment("api/fagsystem/${Fagsystem.EF}/fagsak/$fagsakId/finnesApenBehandling/v1")
-        .build()
-        .toUri()
+    private fun finnesÅpenBehandlingUri(fagsakId: Long) =
+        UriComponentsBuilder.fromUri(familieTilbakeUri)
+            .pathSegment("api/fagsystem/${Fagsystem.EF}/fagsak/$fagsakId/finnesApenBehandling/v1")
+            .build()
+            .toUri()
 
-    private fun finnBehandlingerUri(fagsakId: Long) = UriComponentsBuilder.fromUri(familieTilbakeUri)
-        .pathSegment("api/fagsystem/${Fagsystem.EF}/fagsak/$fagsakId/behandlinger/v1")
-        .build()
-        .toUri()
+    private fun finnBehandlingerUri(fagsakId: Long) =
+        UriComponentsBuilder.fromUri(familieTilbakeUri)
+            .pathSegment("api/fagsystem/${Fagsystem.EF}/fagsak/$fagsakId/behandlinger/v1")
+            .build()
+            .toUri()
 
-    private fun kanBehandlingOpprettesManueltUri(fagsakId: Long, ytelsestype: Ytelsestype) = UriComponentsBuilder.fromUri(
+    private fun kanBehandlingOpprettesManueltUri(
+        fagsakId: Long,
+        ytelsestype: Ytelsestype,
+    ) = UriComponentsBuilder.fromUri(
         familieTilbakeUri,
     )
         .pathSegment("api", "ytelsestype", ytelsestype.name, "fagsak", fagsakId.toString(), "kanBehandlingOpprettesManuelt", "v1")
@@ -79,7 +85,10 @@ class TilbakekrevingClient(
         return response.getDataOrThrow()
     }
 
-    fun kanBehandlingOpprettesManuelt(fagsakId: Long, ytelsestype: Ytelsestype): KanBehandlingOpprettesManueltRespons {
+    fun kanBehandlingOpprettesManuelt(
+        fagsakId: Long,
+        ytelsestype: Ytelsestype,
+    ): KanBehandlingOpprettesManueltRespons {
         val response: Ressurs<KanBehandlingOpprettesManueltRespons> =
             getForEntity(kanBehandlingOpprettesManueltUri(fagsakId, ytelsestype))
         return response.getDataOrThrow()

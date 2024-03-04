@@ -7,13 +7,13 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.name
 
 class KafkaTopicTest {
-
     @Test
     internal fun `sjekk att navn på topic ikke finnes flere ganger`() {
-        val topicsSomFinnesFlereGanger = getTopics().groupBy { it.isDev }
-            .entries
-            .map { it.value.groupBy(Topic::topic).filter { entry -> entry.value.size > 1 } }
-            .flatMap { it.entries }
+        val topicsSomFinnesFlereGanger =
+            getTopics().groupBy { it.isDev }
+                .entries
+                .map { it.value.groupBy(Topic::topic).filter { entry -> entry.value.size > 1 } }
+                .flatMap { it.entries }
         if (topicsSomFinnesFlereGanger.isNotEmpty()) {
             error(lagFeilmelding(topicsSomFinnesFlereGanger))
         }
@@ -41,7 +41,6 @@ class KafkaTopicTest {
     }
 
     data class Topic(val directory: String, val file: String, val topic: String) {
-
         val isDev = file.endsWith("-dev.yaml")
 
         fun fullFilename() = "$directory/$file"

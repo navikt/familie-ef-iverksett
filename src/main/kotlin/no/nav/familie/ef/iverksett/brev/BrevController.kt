@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController
 class BrevController(
     private val frittståendeBrevService: FrittståendeBrevService,
 ) {
-
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(
         @RequestBody data: FrittståendeBrevDto,

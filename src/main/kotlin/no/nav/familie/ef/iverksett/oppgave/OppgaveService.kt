@@ -29,7 +29,6 @@ class OppgaveService(
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
     private val iverksettingRepository: IverksettingRepository,
 ) {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun skalOppretteVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Boolean {
@@ -54,9 +53,14 @@ class OppgaveService(
         }
     }
 
-    fun opprettOppgaveMedOppfølgingsenhet(iverksett: IverksettOvergangsstønad, oppgaveType: Oppgavetype, beskrivelse: String): Long {
-        val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
-            ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
+    fun opprettOppgaveMedOppfølgingsenhet(
+        iverksett: IverksettOvergangsstønad,
+        oppgaveType: Oppgavetype,
+        beskrivelse: String,
+    ): Long {
+        val enhet =
+            familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(iverksett.søker.personIdent)
+                ?: error("Kunne ikke finne enhetsnummer for personident med behandlingsId=${iverksett.behandling.behandlingId}")
 
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
@@ -73,7 +77,10 @@ class OppgaveService(
             ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
-    fun opprettFremleggsoppgave(iverksett: IverksettOvergangsstønad, beskrivelse: String): Long {
+    fun opprettFremleggsoppgave(
+        iverksett: IverksettOvergangsstønad,
+        beskrivelse: String,
+    ): Long {
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 eksternFagsakId = iverksett.fagsak.eksternId,
@@ -101,7 +108,12 @@ class OppgaveService(
         var ettÅrFremITid = vedtaksdato.plusYears(1)
 
         if (ettÅrFremITid.monthValue == 7 || ettÅrFremITid.monthValue == 8) ettÅrFremITid = ettÅrFremITid.minusMonths(2)
-        if (ettÅrFremITid.monthValue == 5 && (ettÅrFremITid.dayOfMonth == 17 || ettÅrFremITid.dayOfMonth == 18)) ettÅrFremITid = ettÅrFremITid.minusDays(2)
+        if (ettÅrFremITid.monthValue == 5 && (ettÅrFremITid.dayOfMonth == 17 || ettÅrFremITid.dayOfMonth == 18)) {
+            ettÅrFremITid =
+                ettÅrFremITid.minusDays(
+                    2,
+                )
+        }
         if (ettÅrFremITid.dayOfMonth == 6) ettÅrFremITid = ettÅrFremITid.plusDays(1)
 
         return ettÅrFremITid
@@ -122,7 +134,10 @@ class OppgaveService(
         return oppgaveClient.oppdaterOppgave(oppgave)
     }
 
-    private fun finnMappeForFremleggsoppgave(enhetsnummer: String?, behandlingId: UUID): Long? {
+    private fun finnMappeForFremleggsoppgave(
+        enhetsnummer: String?,
+        behandlingId: UUID,
+    ): Long? {
         if (enhetsnummer == "4489" || enhetsnummer == "4483") {
             val mappenavnProd = "41 Revurdering"
             val mappenavnDev = "41 - Revurdering"
@@ -131,7 +146,9 @@ class OppgaveService(
             mappeIdForFremleggsoppgave?.let {
                 logger.info("Legger oppgave i Revurdering vedtak-mappe")
             } ?: run {
-                logger.error("Fant ikke mappe for fremleggsoppgave: 41 - Revurdering for enhetsnummer=$enhetsnummer og med behandlingId=$behandlingId")
+                logger.error(
+                    "Fant ikke mappe for fremleggsoppgave: 41 - Revurdering for enhetsnummer=$enhetsnummer og med behandlingId=$behandlingId",
+                )
             }
             return mappeIdForFremleggsoppgave
         }
@@ -139,10 +156,11 @@ class OppgaveService(
     }
 
     private fun finnMapper(enhet: String): List<MappeDto> {
-        val mappeRespons = oppgaveClient.finnMapper(
-            enhetsnummer = enhet,
-            limit = 1000,
-        )
+        val mappeRespons =
+            oppgaveClient.finnMapper(
+                enhetsnummer = enhet,
+                limit = 1000,
+            )
         if (mappeRespons.antallTreffTotalt > mappeRespons.mapper.size) {
             logger.error(
                 "Det finnes flere mapper (${mappeRespons.antallTreffTotalt}) " +
@@ -154,10 +172,11 @@ class OppgaveService(
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
         return when (iverksett.vedtak.vedtaksresultat) {
-            Vedtaksresultat.INNVILGET -> beskrivelseFørstegangsbehandlingInnvilget(
-                iverksett.totalVedtaksperiode(),
-                iverksett.gjeldendeVedtak(),
-            )
+            Vedtaksresultat.INNVILGET ->
+                beskrivelseFørstegangsbehandlingInnvilget(
+                    iverksett.totalVedtaksperiode(),
+                    iverksett.gjeldendeVedtak(),
+                )
 
             Vedtaksresultat.AVSLÅTT -> beskrivelseFørstegangsbehandlingAvslått(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")

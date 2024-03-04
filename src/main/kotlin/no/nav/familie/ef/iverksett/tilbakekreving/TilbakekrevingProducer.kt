@@ -9,13 +9,15 @@ import org.springframework.stereotype.Component
 
 @Component
 class TilbakekrevingProducer(private val kafkaProducerService: KafkaProducerService) {
-
     @Value("\${FAGSYSTEMBEHANDLING_RESPONS_TOPIC}")
     lateinit var topic: String
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun send(behandling: HentFagsystemsbehandlingRespons, key: String) {
+    fun send(
+        behandling: HentFagsystemsbehandlingRespons,
+        key: String,
+    ) {
         try {
             kafkaProducerService.send(topic, key, behandling.toJson())
             logger.info(

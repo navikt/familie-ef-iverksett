@@ -17,10 +17,9 @@ import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 
 class SendVedtakTilArbeidsoppfølgingTaskTest {
-
     private val taskService = mockk<TaskService>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val arbeidsoppfølgingService = mockk<ArbeidsoppfølgingService>()

@@ -20,11 +20,12 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val taskService = mockk<TaskService>()
 
-    private val taskStegService = OpprettFremleggsoppgaveForOvergangsstønadTask(
-        oppgaveService,
-        iverksettingRepository,
-        taskService,
-    )
+    private val taskStegService =
+        OpprettFremleggsoppgaveForOvergangsstønadTask(
+            oppgaveService,
+            iverksettingRepository,
+            taskService,
+        )
 
     @Test
     internal fun `skal opprette fremleggsoppgave for overgangsstønad`() {
@@ -38,15 +39,18 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
 
     @Test
     internal fun `skal ikke opprette fremleggsoppgave for overgangsstønad`() {
-        every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(
-            opprettIverksettOvergangsstønad(
-                vedtaksdetaljer = vedtaksdetaljerOvergangsstønad(
-                    oppgaverForOpprettelse = OppgaverForOpprettelse(
-                        emptyList(),
-                    ),
+        every { iverksettingRepository.findByIdOrThrow(any()) } returns
+            lagIverksett(
+                opprettIverksettOvergangsstønad(
+                    vedtaksdetaljer =
+                        vedtaksdetaljerOvergangsstønad(
+                            oppgaverForOpprettelse =
+                                OppgaverForOpprettelse(
+                                    emptyList(),
+                                ),
+                        ),
                 ),
-            ),
-        )
+            )
         every { oppgaveService.opprettFremleggsoppgave(any(), any()) } returns 1
 
         taskStegService.doTask(opprettTask())

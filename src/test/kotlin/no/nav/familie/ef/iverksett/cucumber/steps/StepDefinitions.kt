@@ -34,7 +34,6 @@ data class TilkjentYtelseHolder(
 )
 
 class StepDefinitions {
-
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     private lateinit var stønadType: StønadType
@@ -45,23 +44,29 @@ class StepDefinitions {
     private var beregnedeTilkjentYtelse = mapOf<UUID, TilkjentYtelse>()
 
     @Gitt("følgende startdatoer")
-    fun følgende_startdatoer(dataTable: DataTable) {
+    fun følgendeStartdatoer(dataTable: DataTable) {
         startdato = TilkjentYtelseParser.mapStartdatoer(dataTable)
     }
 
     @Gitt("følgende vedtaksdato {}")
-    fun følgende_vedtaksdato(vedtaksdatoArg: String) {
+    fun følgendeVedtaksdato(vedtaksdatoArg: String) {
         vedtaksdato = parseDato(vedtaksdatoArg)
     }
 
     @Gitt("følgende tilkjente ytelser for {}")
-    fun følgende_vedtak(stønadTypeArg: String, dataTable: DataTable) {
+    fun følgendeVedtak(
+        stønadTypeArg: String,
+        dataTable: DataTable,
+    ) {
         stønadType = StønadType.valueOf(stønadTypeArg.uppercase())
         tilkjentYtelse.addAll(TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato))
     }
 
     @Gitt("følgende tilkjente ytelser uten andel for {}")
-    fun `følgende tilkjente ytelser uten andel for`(stønadTypeArg: String, dataTable: DataTable) {
+    fun `følgende tilkjente ytelser uten andel for`(
+        stønadTypeArg: String,
+        dataTable: DataTable,
+    ) {
         stønadType = StønadType.valueOf(stønadTypeArg.uppercase())
         tilkjentYtelse.addAll(TilkjentYtelseParser.mapTilkjentYtelse(dataTable, startdato, false))
     }
@@ -78,15 +83,17 @@ class StepDefinitions {
 
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres")
     fun `andelhistorikk kjøres`() {
-        beregnedeTilkjentYtelse = tilkjentYtelse.fold(emptyList<Pair<UUID, TilkjentYtelse>>()) { acc, holder ->
-            val nyTilkjentYtelseMedMetaData = toMedMetadata(holder, stønadType)
-            val forrigeTilkjentYtelse = acc.lastOrNull()?.second
-            val nyTilkjentYtelse = UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
-                nyTilkjentYtelseMedMetaData,
-                forrigeTilkjentYtelse,
-            )
-            acc + (holder.behandlingId to justerPeriodeId(forrigeTilkjentYtelse, nyTilkjentYtelse))
-        }.toMap()
+        beregnedeTilkjentYtelse =
+            tilkjentYtelse.fold(emptyList<Pair<UUID, TilkjentYtelse>>()) { acc, holder ->
+                val nyTilkjentYtelseMedMetaData = toMedMetadata(holder, stønadType)
+                val forrigeTilkjentYtelse = acc.lastOrNull()?.second
+                val nyTilkjentYtelse =
+                    UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
+                        nyTilkjentYtelseMedMetaData,
+                        forrigeTilkjentYtelse,
+                    )
+                acc + (holder.behandlingId to justerPeriodeId(forrigeTilkjentYtelse, nyTilkjentYtelse))
+            }.toMap()
     }
 
     /**
@@ -101,28 +108,32 @@ class StepDefinitions {
             nyTilkjentYtelse
         } else {
             nyTilkjentYtelse.copy(
-                andelerTilkjentYtelse = nyTilkjentYtelse.andelerTilkjentYtelse.map {
-                    it.copy(
-                        periodeId = it.periodeId?.plus(1),
-                        forrigePeriodeId = it.forrigePeriodeId?.plus(1),
-                    )
-                },
-                utbetalingsoppdrag = nyTilkjentYtelse.utbetalingsoppdrag?.let { utbetalingsoppdrag ->
-                    utbetalingsoppdrag.copy(
-                        utbetalingsperiode = utbetalingsoppdrag.utbetalingsperiode.map {
-                            it.copy(
-                                periodeId = it.periodeId + 1,
-                                forrigePeriodeId = it.forrigePeriodeId?.plus(1),
-                            )
-                        },
-                    )
-                },
-                sisteAndelIKjede = nyTilkjentYtelse.sisteAndelIKjede?.let {
-                    it.copy(
-                        periodeId = it.periodeId?.plus(1),
-                        forrigePeriodeId = it.forrigePeriodeId?.plus(1),
-                    )
-                },
+                andelerTilkjentYtelse =
+                    nyTilkjentYtelse.andelerTilkjentYtelse.map {
+                        it.copy(
+                            periodeId = it.periodeId?.plus(1),
+                            forrigePeriodeId = it.forrigePeriodeId?.plus(1),
+                        )
+                    },
+                utbetalingsoppdrag =
+                    nyTilkjentYtelse.utbetalingsoppdrag?.let { utbetalingsoppdrag ->
+                        utbetalingsoppdrag.copy(
+                            utbetalingsperiode =
+                                utbetalingsoppdrag.utbetalingsperiode.map {
+                                    it.copy(
+                                        periodeId = it.periodeId + 1,
+                                        forrigePeriodeId = it.forrigePeriodeId?.plus(1),
+                                    )
+                                },
+                        )
+                    },
+                sisteAndelIKjede =
+                    nyTilkjentYtelse.sisteAndelIKjede?.let {
+                        it.copy(
+                            periodeId = it.periodeId?.plus(1),
+                            forrigePeriodeId = it.forrigePeriodeId?.plus(1),
+                        )
+                    },
             )
         }
     }
@@ -140,7 +151,7 @@ class StepDefinitions {
             val utbetalingsoppdrag = (
                 beregnedeTilkjentYtelse[forventetUtbetalingsoppdrag.behandlingId]?.utbetalingsoppdrag
                     ?: error("Mangler utbetalingsoppdrag for ${forventetUtbetalingsoppdrag.behandlingId}")
-                )
+            )
             assertUtbetalingsoppdrag(forventetUtbetalingsoppdrag, utbetalingsoppdrag, false)
         }
     }
@@ -154,7 +165,7 @@ class StepDefinitions {
             val utbetalingsoppdrag = (
                 beregnedeTilkjentYtelse[forventetUtbetalingsoppdrag.behandlingId]?.utbetalingsoppdrag
                     ?: error("Mangler utbetalingsoppdrag for ${forventetUtbetalingsoppdrag.behandlingId}")
-                )
+            )
             try {
                 assertUtbetalingsoppdrag(forventetUtbetalingsoppdrag, utbetalingsoppdrag)
             } catch (e: Throwable) {
@@ -165,7 +176,10 @@ class StepDefinitions {
     }
 
     @Så("forvent følgende tilkjente ytelser for behandling {int}")
-    fun `forvent følgende tilkjente ytelser`(behandlingId: Int, dataTable: DataTable) {
+    fun `forvent følgende tilkjente ytelser`(
+        behandlingId: Int,
+        dataTable: DataTable,
+    ) {
         `forvent følgende tilkjente ytelser med startdato`(behandlingId, null, dataTable)
     }
 
@@ -267,7 +281,10 @@ class StepDefinitions {
         assertThat(utbetalingsperiode.opphør?.opphørDatoFom).isEqualTo(forventetUtbetalingsperiode.opphør)
     }
 
-    private fun assertSjekkBehandlingIder(expectedBehandlingIder: List<UUID>, medUtbetalingsperiode: Boolean = true) {
+    private fun assertSjekkBehandlingIder(
+        expectedBehandlingIder: List<UUID>,
+        medUtbetalingsperiode: Boolean = true,
+    ) {
         val list =
             beregnedeTilkjentYtelse.filter {
                 it.value.utbetalingsoppdrag?.utbetalingsperiode?.isNotEmpty() == medUtbetalingsperiode
@@ -276,7 +293,10 @@ class StepDefinitions {
     }
 }
 
-private fun toMedMetadata(holder: TilkjentYtelseHolder, stønadType: StønadType): TilkjentYtelseMedMetaData {
+private fun toMedMetadata(
+    holder: TilkjentYtelseHolder,
+    stønadType: StønadType,
+): TilkjentYtelseMedMetaData {
     return holder.tilkjentYtelse.toDomain()
         .toMedMetadata(
             saksbehandlerId = "",

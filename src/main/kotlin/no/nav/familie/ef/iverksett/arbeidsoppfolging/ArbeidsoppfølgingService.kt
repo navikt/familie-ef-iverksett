@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service
 class ArbeidsoppfølgingService(
     private val arbeidsoppfølgingKafkaProducer: ArbeidsoppfølgingKafkaProducer,
 ) {
-
     fun sendTilKafka(iverksettData: IverksettData) {
         if (iverksettData is IverksettOvergangsstønad) {
             arbeidsoppfølgingKafkaProducer.sendVedtak(

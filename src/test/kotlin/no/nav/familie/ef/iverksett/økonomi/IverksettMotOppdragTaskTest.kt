@@ -22,7 +22,6 @@ import java.util.Properties
 import java.util.UUID
 
 internal class IverksettMotOppdragTaskTest {
-
     private val oppdragClient = mockk<OppdragClient>()
     val taskService = mockk<TaskService>()
     val iverksettingRepository = mockk<IverksettingRepository>()

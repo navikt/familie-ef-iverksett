@@ -8,7 +8,7 @@ import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
@@ -21,7 +21,6 @@ class SendVedtakTilArbeidsoppfølgingTask(
     private val iverksettingRepository: IverksettingRepository,
     private val arbeidsoppfølgingService: ArbeidsoppfølgingService,
 ) : AsyncTaskStep {
-
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data

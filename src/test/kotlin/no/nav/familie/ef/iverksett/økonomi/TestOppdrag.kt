@@ -21,9 +21,9 @@ import java.time.YearMonth
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
-private const val behandlingEksternId = 0L
-private const val fagsakEksternId = 1L
-private const val saksbehandlerId = "VL"
+private const val BEHANDLING_EKSTERN_ID = 0L
+private const val FAGSAK_EKSTERN_ID = 1L
+private const val SAKSBEHANDLER_ID = "VL"
 private val vedtaksdato = LocalDate.of(2021, 5, 12)
 
 enum class TestOppdragType {
@@ -52,7 +52,6 @@ data class TestOppdrag(
     val startPeriode: YearMonth? = null,
     val sluttPeriode: YearMonth? = null,
 ) {
-
     fun tilAndelTilkjentYtelse(): AndelTilkjentYtelse? {
         return if (beløp != null && startPeriode != null && sluttPeriode != null) {
             lagAndelTilkjentYtelse(
@@ -99,7 +98,6 @@ data class TestOppdrag(
 }
 
 class TestOppdragGroup {
-
     private var startdatoInn: LocalDate? = null
     private var startdatoUt: LocalDate? = null
     private val andelerTilkjentYtelseInn: MutableList<AndelTilkjentYtelse> = mutableListOf()
@@ -132,7 +130,10 @@ class TestOppdragGroup {
         }
     }
 
-    private fun validerOgGetStartdato(to: TestOppdrag, tidligereStartdato: LocalDate?): LocalDate? {
+    private fun validerOgGetStartdato(
+        to: TestOppdrag,
+        tidligereStartdato: LocalDate?,
+    ): LocalDate? {
         if (tidligereStartdato != null && to.opphørsdato != null) {
             error("Kan kun sette 1 startdato på en input/output")
         }
@@ -140,18 +141,19 @@ class TestOppdragGroup {
     }
 
     val input: TilkjentYtelseMedMetaData by lazy {
-        val startmåned = startdatoInn?.let { YearMonth.from(it) }
-            ?: andelerTilkjentYtelseInn.minOfOrNull { it.periode.fom }
-            ?: error("Input feiler - hvis man ikke har en andel må man sette startdato")
+        val startmåned =
+            startdatoInn?.let { YearMonth.from(it) }
+                ?: andelerTilkjentYtelseInn.minOfOrNull { it.periode.fom }
+                ?: error("Input feiler - hvis man ikke har en andel må man sette startdato")
         TilkjentYtelseMedMetaData(
             TilkjentYtelse(
                 andelerTilkjentYtelse = andelerTilkjentYtelseInn,
                 startmåned = startmåned,
             ),
             stønadstype = StønadType.OVERGANGSSTØNAD,
-            eksternBehandlingId = behandlingEksternId,
-            eksternFagsakId = fagsakEksternId,
-            saksbehandlerId = saksbehandlerId,
+            eksternBehandlingId = BEHANDLING_EKSTERN_ID,
+            eksternFagsakId = FAGSAK_EKSTERN_ID,
+            saksbehandlerId = SAKSBEHANDLER_ID,
             personIdent = personIdent!!,
             behandlingId = oppdragId!!,
             vedtaksdato = vedtaksdato,
@@ -159,19 +161,21 @@ class TestOppdragGroup {
     }
 
     val output: TilkjentYtelse by lazy {
-        val startmåned = startdatoUt?.let { YearMonth.from(it) }
-            ?: andelerTilkjentYtelseUt.minOfOrNull { it.periode.fom }
-            ?: error("Output feiler - hvis man ikke har en andel må man sette startdato")
+        val startmåned =
+            startdatoUt?.let { YearMonth.from(it) }
+                ?: andelerTilkjentYtelseUt.minOfOrNull { it.periode.fom }
+                ?: error("Output feiler - hvis man ikke har en andel må man sette startdato")
         val utbetalingsoppdrag =
             Utbetalingsoppdrag(
                 kodeEndring = oppdragKode110,
                 fagSystem = "EFOG",
-                saksnummer = fagsakEksternId.toString(),
+                saksnummer = FAGSAK_EKSTERN_ID.toString(),
                 aktoer = personIdent!!,
-                saksbehandlerId = saksbehandlerId,
+                saksbehandlerId = SAKSBEHANDLER_ID,
                 avstemmingTidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS),
-                utbetalingsperiode = utbetalingsperioder
-                    .map { it.copy(behandlingId = behandlingEksternId) },
+                utbetalingsperiode =
+                    utbetalingsperioder
+                        .map { it.copy(behandlingId = BEHANDLING_EKSTERN_ID) },
             )
 
         TilkjentYtelse(
@@ -184,7 +188,6 @@ class TestOppdragGroup {
 }
 
 object TestOppdragParser {
-
     private const val KEY_TYPE = "Type"
     private const val KEY_FNR = "Fnr"
     private const val KEY_OPPDRAG = "Oppdrag"
@@ -210,31 +213,35 @@ object TestOppdragParser {
 
     private fun parse(url: URL): List<TestOppdrag> {
         val fileContent = url.openStream()!!
-        val rows: List<Map<String, String>> = csvReader().readAllWithHeader(fileContent)
-            .filterNot { it.getValue(KEY_TYPE).startsWith("!") }
+        val rows: List<Map<String, String>> =
+            csvReader().readAllWithHeader(fileContent)
+                .filterNot { it.getValue(KEY_TYPE).startsWith("!") }
 
         return rows.map { row ->
-            val datoKeysMedBeløp = row.keys
-                .filter { key -> !RESERVERED_KEYS.contains(key) }
-                .filter { datoKey -> (row[datoKey])?.trim('x')?.toIntOrNull() != null }
-                .sorted()
+            val datoKeysMedBeløp =
+                row.keys
+                    .filter { key -> !RESERVERED_KEYS.contains(key) }
+                    .filter { datoKey -> (row[datoKey])?.trim('x')?.toIntOrNull() != null }
+                    .sorted()
 
-            val opphørYearMonth = row.keys
-                .filter { key -> !RESERVERED_KEYS.contains(key) }
-                .sorted()
-                .firstOrNull { datoKey -> (row[datoKey])?.contains('x') ?: false }
-                ?.let { YearMonth.parse(it) }
+            val opphørYearMonth =
+                row.keys
+                    .filter { key -> !RESERVERED_KEYS.contains(key) }
+                    .sorted()
+                    .firstOrNull { datoKey -> (row[datoKey])?.contains('x') ?: false }
+                    ?.let { YearMonth.parse(it) }
 
             val firstYearMonth = datoKeysMedBeløp.firstOrNull()?.let { YearMonth.parse(it) }
             val lastYearMonth = datoKeysMedBeløp.lastOrNull()?.let { YearMonth.parse(it) }
             val beløp = datoKeysMedBeløp.firstOrNull()?.let { row[it]?.trim('x') }?.toIntOrNull()
 
             val value = row.getValue(KEY_OPPDRAG)
-            val oppdragId: UUID? = if (value.isEmpty()) {
-                null
-            } else {
-                oppdragIdn.getOrPut(value.toInt()) { UUID.randomUUID() }
-            }
+            val oppdragId: UUID? =
+                if (value.isEmpty()) {
+                    null
+                } else {
+                    oppdragIdn.getOrPut(value.toInt()) { UUID.randomUUID() }
+                }
 
             TestOppdrag(
                 type = row[KEY_TYPE]?.let { TestOppdragType.valueOf(it) }!!,
@@ -242,9 +249,10 @@ object TestOppdragParser {
                 oppdragId = oppdragId,
                 ytelse = row.getValue(KEY_YTELSE),
                 linjeId = row[KEY_LINJE_ID]?.let { emptyAsNull(it) }?.let { Integer.parseInt(it).toLong() },
-                forrigeLinjeId = row[KEY_FORRIGE_LINJE_ID]
-                    ?.let { emptyAsNull(it) }
-                    ?.let { Integer.parseInt(it).toLong() },
+                forrigeLinjeId =
+                    row[KEY_FORRIGE_LINJE_ID]
+                        ?.let { emptyAsNull(it) }
+                        ?.let { Integer.parseInt(it).toLong() },
                 status110 = row[KEY_STATUS_OPPDRAG]?.let { emptyAsNull(it) },
                 erEndring = row[KEY_ER_ENDRING]?.let { it.toBoolean() },
                 beløp = beløp,
@@ -282,12 +290,10 @@ object TestOppdragParser {
         return result
     }
 
-    private fun emptyAsNull(s: String): String? =
-        s.ifEmpty { null }
+    private fun emptyAsNull(s: String): String? = s.ifEmpty { null }
 }
 
 object TestOppdragRunner {
-
     fun run(url: URL?) {
         if (url == null) error("Url Mangler")
         val grupper = TestOppdragParser.parseToTestOppdragGroup(url)
@@ -324,10 +330,9 @@ object TestOppdragRunner {
     private fun lagTilkjentYtelseMedUtbetalingsoppdrag(
         nyTilkjentYtelse: TilkjentYtelseMedMetaData,
         forrigeTilkjentYtelse: TilkjentYtelse? = null,
-    ) =
-        UtbetalingsoppdragGenerator
-            .lagTilkjentYtelseMedUtbetalingsoppdragNy(
-                nyTilkjentYtelse,
-                forrigeTilkjentYtelse,
-            )
+    ) = UtbetalingsoppdragGenerator
+        .lagTilkjentYtelseMedUtbetalingsoppdragNy(
+            nyTilkjentYtelse,
+            forrigeTilkjentYtelse,
+        )
 }

@@ -22,7 +22,6 @@ import java.time.LocalDateTime
 import java.util.Properties
 
 class TaskTypeTest {
-
     @Test
     fun `test taskflyt`() {
         val opprettTilbakekrevingTask = Task(OpprettTilbakekrevingTask.TYPE, "", Properties())

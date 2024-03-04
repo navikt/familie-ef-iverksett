@@ -32,11 +32,12 @@ class DistribuerKarakterutskriftBrevTask(
     private val journalpostClient: JournalpostClient,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
-
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private sealed class Resultat
+
     private object OK : Resultat()
+
     private data class Dødsbo(val melding: String) : Resultat()
 
     override fun doTask(task: Task) {
@@ -51,10 +52,11 @@ class DistribuerKarakterutskriftBrevTask(
 
     private fun distribuerKarakterutskriftBrev(brevId: UUID): Resultat {
         val brev = karakterutskriftBrevRepository.findByIdOrThrow(brevId)
-        val journalpostId = brev.journalpostId ?: throw IllegalStateException(
-            "Distribuering av frittstående brev for innhenting av karakterutskrift " +
-                "med id=$brevId feilet. Fant ingen journalpostId på brevet.",
-        )
+        val journalpostId =
+            brev.journalpostId ?: throw IllegalStateException(
+                "Distribuering av frittstående brev for innhenting av karakterutskrift " +
+                    "med id=$brevId feilet. Fant ingen journalpostId på brevet.",
+            )
 
         try {
             distribuerBrev(journalpostId)
@@ -72,17 +74,19 @@ class DistribuerKarakterutskriftBrevTask(
         return OK
     }
 
-    private fun distribuerBrev(
-        journalpostId: String,
-    ): String {
+    private fun distribuerBrev(journalpostId: String): String {
         val bestillingId = journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
         loggDistribuertBrev(journalpostId, bestillingId)
         return bestillingId
     }
 
-    private fun håndterDødsbo(task: Task, dødsbo: Dødsbo) {
-        val antallRekjørSenerePgaDødsbo = taskService.findTaskLoggByTaskId(task.id)
-            .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
+    private fun håndterDødsbo(
+        task: Task,
+        dødsbo: Dødsbo,
+    ) {
+        val antallRekjørSenerePgaDødsbo =
+            taskService.findTaskLoggByTaskId(task.id)
+                .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 7) {
             logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
             throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))
@@ -91,7 +95,10 @@ class DistribuerKarakterutskriftBrevTask(
         }
     }
 
-    private fun loggDistribuertBrev(journalpostId: String, bestillingId: String) {
+    private fun loggDistribuertBrev(
+        journalpostId: String,
+        bestillingId: String,
+    ) {
         logger.info(
             "Distribuerer frittstående brev for innhenting av karakterutskrift med " +
                 "journalpostId=$journalpostId og bestillingId=$bestillingId",
@@ -103,7 +110,6 @@ class DistribuerKarakterutskriftBrevTask(
     }
 
     companion object {
-
         const val TYPE = "distribuerKarakterutskriftBrev"
     }
 }

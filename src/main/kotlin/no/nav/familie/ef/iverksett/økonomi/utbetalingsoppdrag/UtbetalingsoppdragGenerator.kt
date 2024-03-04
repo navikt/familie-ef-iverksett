@@ -24,7 +24,6 @@ import java.util.UUID
 import no.nav.familie.felles.utbetalingsgenerator.domain.Ytelsestype as YtelsestypeUG
 
 object UtbetalingsoppdragGenerator {
-
     /**
      * Lager utbetalingsoppdrag med kjedede perioder av andeler.
      * Ved opphør sendes @param[nyTilkjentYtelseMedMetaData] uten andeler.
@@ -41,8 +40,9 @@ object UtbetalingsoppdragGenerator {
         val personIdent = nyTilkjentYtelseMedMetaData.personIdent
         val ytelseType = nyTilkjentYtelseMedMetaData.stønadstype.tilYtelseType()
 
-        val forrigeAndeler = (forrigeTilkjentYtelse?.andelerTilkjentYtelse ?: emptyList())
-            .map { it.tilAndelData(id = UUID.randomUUID().toString(), personIdent = personIdent, ytelseType = ytelseType) }
+        val forrigeAndeler =
+            (forrigeTilkjentYtelse?.andelerTilkjentYtelse ?: emptyList())
+                .map { it.tilAndelData(id = UUID.randomUUID().toString(), personIdent = personIdent, ytelseType = ytelseType) }
         val nyeAndelerPåId =
             nyTilkjentYtelseMedMetaData.tilkjentYtelse.andelerTilkjentYtelse.associateBy { UUID.randomUUID().toString() }
 
@@ -50,30 +50,33 @@ object UtbetalingsoppdragGenerator {
         val forrigeSisteAndelIKjede = forrigeTilkjentYtelse?.sisteAndelIKjede
         val sisteAndelPerKjede = mapTilSisteAndelPerKjede(forrigeSisteAndelIKjede, personIdent, ytelseType)
 
-        val beregnetUtbetalingsoppdrag = Utbetalingsgenerator().lagUtbetalingsoppdrag(
-            behandlingsinformasjon = behandlingsinformasjon(
-                nyTilkjentYtelseMedMetaData,
-                erGOmregning,
-                forrigeTilkjentYtelse,
-            ),
-            nyeAndeler = nyeAndeler,
-            forrigeAndeler = forrigeAndeler,
-            sisteAndelPerKjede = sisteAndelPerKjede,
-        )
+        val beregnetUtbetalingsoppdrag =
+            Utbetalingsgenerator().lagUtbetalingsoppdrag(
+                behandlingsinformasjon =
+                    behandlingsinformasjon(
+                        nyTilkjentYtelseMedMetaData,
+                        erGOmregning,
+                        forrigeTilkjentYtelse,
+                    ),
+                nyeAndeler = nyeAndeler,
+                forrigeAndeler = forrigeAndeler,
+                sisteAndelPerKjede = sisteAndelPerKjede,
+            )
         val beregnedeAndelerPåId = beregnetUtbetalingsoppdrag.andeler.associateBy { it.id }
-        val gjeldendeAndeler = nyeAndelerPåId.entries.map { (id, andel) ->
-            if (andel.harNullBeløp()) {
-                // TODO vi kan vurdere om vi bare skal filtrere vekk de etter att man har laget utbetalingsoppdraget, då vil de ikke bli sendt med som "forrige andeler" i neste utbetalingsoppdrag
-                andel
-            } else {
-                val beregnetAndel = beregnedeAndelerPåId.getValue(id)
-                andel.copy(
-                    periodeId = beregnetAndel.periodeId,
-                    forrigePeriodeId = beregnetAndel.forrigePeriodeId,
-                    kildeBehandlingId = UUID.fromString(beregnetAndel.kildeBehandlingId),
-                )
+        val gjeldendeAndeler =
+            nyeAndelerPåId.entries.map { (id, andel) ->
+                if (andel.harNullBeløp()) {
+                    // TODO vi kan vurdere om vi bare skal filtrere vekk de etter att man har laget utbetalingsoppdraget, då vil de ikke bli sendt med som "forrige andeler" i neste utbetalingsoppdrag
+                    andel
+                } else {
+                    val beregnetAndel = beregnedeAndelerPåId.getValue(id)
+                    andel.copy(
+                        periodeId = beregnetAndel.periodeId,
+                        forrigePeriodeId = beregnetAndel.forrigePeriodeId,
+                        kildeBehandlingId = UUID.fromString(beregnetAndel.kildeBehandlingId),
+                    )
+                }
             }
-        }
 
         return nyTilkjentYtelseMedMetaData.tilkjentYtelse.copy(
             utbetalingsoppdrag = beregnetUtbetalingsoppdrag.utbetalingsoppdrag,
@@ -163,7 +166,11 @@ object UtbetalingsoppdragGenerator {
         }
     }
 
-    private fun AndelTilkjentYtelse.tilAndelData(id: String, personIdent: String, ytelseType: YtelsestypeUG): AndelData =
+    private fun AndelTilkjentYtelse.tilAndelData(
+        id: String,
+        personIdent: String,
+        ytelseType: YtelsestypeUG,
+    ): AndelData =
         AndelData(
             id = id,
             fom = periode.fom,
@@ -177,17 +184,19 @@ object UtbetalingsoppdragGenerator {
             utbetalingsgrad = if (ytelseType == YtelsestypeEF.OVERGANGSSTØNAD) this.utbetalingsgrad() else null,
         )
 
-    private fun StønadType.tilFagsystem(): FagsystemEF = when (this) {
-        StønadType.OVERGANGSSTØNAD -> FagsystemEF.OVERGANGSSTØNAD
-        StønadType.BARNETILSYN -> FagsystemEF.BARNETILSYN
-        StønadType.SKOLEPENGER -> FagsystemEF.SKOLEPENGER
-    }
+    private fun StønadType.tilFagsystem(): FagsystemEF =
+        when (this) {
+            StønadType.OVERGANGSSTØNAD -> FagsystemEF.OVERGANGSSTØNAD
+            StønadType.BARNETILSYN -> FagsystemEF.BARNETILSYN
+            StønadType.SKOLEPENGER -> FagsystemEF.SKOLEPENGER
+        }
 
-    private fun StønadType.tilYtelseType(): YtelsestypeUG = when (this) {
-        StønadType.OVERGANGSSTØNAD -> YtelsestypeEF.OVERGANGSSTØNAD
-        StønadType.BARNETILSYN -> YtelsestypeEF.BARNETILSYN
-        StønadType.SKOLEPENGER -> YtelsestypeEF.SKOLEPENGER
-    }
+    private fun StønadType.tilYtelseType(): YtelsestypeUG =
+        when (this) {
+            StønadType.OVERGANGSSTØNAD -> YtelsestypeEF.OVERGANGSSTØNAD
+            StønadType.BARNETILSYN -> YtelsestypeEF.BARNETILSYN
+            StønadType.SKOLEPENGER -> YtelsestypeEF.SKOLEPENGER
+        }
 
     @Deprecated("Fases ut til fordel for lagTilkjentYtelseMedUtbetalingsoppdragNy. Brukes kun for simuleringskontroll")
     fun lagTilkjentYtelseMedUtbetalingsoppdrag(
@@ -200,32 +209,36 @@ object UtbetalingsoppdragGenerator {
         val andelerForrigeTilkjentYtelse = andelerUtenNullVerdier(forrigeTilkjentYtelse)
         val sistePeriodeIdIForrigeKjede = sistePeriodeId(forrigeTilkjentYtelse)
 
-        val beståendeAndeler = beståendeAndeler(
-            andelerForrigeTilkjentYtelse,
-            andelerNyTilkjentYtelse,
-            nyTilkjentYtelse.startmåned,
-            forrigeTilkjentYtelse?.startmåned,
-        )
+        val beståendeAndeler =
+            beståendeAndeler(
+                andelerForrigeTilkjentYtelse,
+                andelerNyTilkjentYtelse,
+                nyTilkjentYtelse.startmåned,
+                forrigeTilkjentYtelse?.startmåned,
+            )
 
         val andelerTilOpprettelse = andelerTilOpprettelse(andelerNyTilkjentYtelse, beståendeAndeler)
 
-        val andelerTilOpprettelseMedPeriodeId = lagAndelerMedPeriodeId(
-            andelerTilOpprettelse,
-            sistePeriodeIdIForrigeKjede,
-            nyTilkjentYtelseMedMetaData.behandlingId,
-        )
+        val andelerTilOpprettelseMedPeriodeId =
+            lagAndelerMedPeriodeId(
+                andelerTilOpprettelse,
+                sistePeriodeIdIForrigeKjede,
+                nyTilkjentYtelseMedMetaData.behandlingId,
+            )
 
-        val utbetalingsperioderSomOpprettes = lagUtbetalingsperioderForOpprettelse(
-            andeler = andelerTilOpprettelseMedPeriodeId,
-            tilkjentYtelse = nyTilkjentYtelseMedMetaData,
-        )
+        val utbetalingsperioderSomOpprettes =
+            lagUtbetalingsperioderForOpprettelse(
+                andeler = andelerTilOpprettelseMedPeriodeId,
+                tilkjentYtelse = nyTilkjentYtelseMedMetaData,
+            )
 
         val utbetalingsperiodeSomOpphøres =
             utbetalingsperiodeForOpphør(forrigeTilkjentYtelse, nyTilkjentYtelseMedMetaData)
 
-        val utbetalingsperioder = (utbetalingsperioderSomOpprettes + utbetalingsperiodeSomOpphøres)
-            .filterNotNull()
-            .sortedBy { it.periodeId }
+        val utbetalingsperioder =
+            (utbetalingsperioderSomOpprettes + utbetalingsperiodeSomOpphøres)
+                .filterNotNull()
+                .sortedBy { it.periodeId }
         val utbetalingsoppdrag =
             Utbetalingsoppdrag(
                 saksbehandlerId = nyTilkjentYtelseMedMetaData.saksbehandlerId,
@@ -237,8 +250,9 @@ object UtbetalingsoppdragGenerator {
                 gOmregning = erGOmregning,
             )
 
-        val gjeldendeAndeler = (beståendeAndeler + andelerTilOpprettelseMedPeriodeId)
-            .ellerNullAndel(nyTilkjentYtelseMedMetaData, sistePeriodeIdIForrigeKjede)
+        val gjeldendeAndeler =
+            (beståendeAndeler + andelerTilOpprettelseMedPeriodeId)
+                .ellerNullAndel(nyTilkjentYtelseMedMetaData, sistePeriodeIdIForrigeKjede)
 
         val sisteAndelIKjede = sisteAndelIKjede(gjeldendeAndeler, forrigeTilkjentYtelse)
 
@@ -253,18 +267,18 @@ object UtbetalingsoppdragGenerator {
     private fun sisteAndelIKjede(
         gjeldendeAndeler: List<AndelTilkjentYtelse>,
         forrigeTilkjentYtelse: TilkjentYtelse?,
-    ) =
-        (gjeldendeAndeler + listOfNotNull(forrigeTilkjentYtelse?.sisteAndelIKjede))
-            .filter { it.periodeId != null }
-            .filter { it.periode.fomDato != LocalDate.MIN }
-            .maxByOrNull { it.periodeId ?: error("Mangler periodeId") }
+    ) = (gjeldendeAndeler + listOfNotNull(forrigeTilkjentYtelse?.sisteAndelIKjede))
+        .filter { it.periodeId != null }
+        .filter { it.periode.fomDato != LocalDate.MIN }
+        .maxByOrNull { it.periodeId ?: error("Mangler periodeId") }
 
     private fun erIkkeTidligereIverksattMotOppdrag(forrigeTilkjentYtelse: TilkjentYtelse?) =
         forrigeTilkjentYtelse == null || (forrigeTilkjentYtelseManglerPeriodeOgErNy(forrigeTilkjentYtelse))
 
     private fun forrigeTilkjentYtelseManglerPeriodeOgErNy(forrigeTilkjentYtelse: TilkjentYtelse): Boolean {
-        val utbetalingsoppdrag = forrigeTilkjentYtelse.utbetalingsoppdrag
-            ?: error("Mangler utbetalingsoppdrag for tilkjentYtelse=${forrigeTilkjentYtelse.id}")
+        val utbetalingsoppdrag =
+            forrigeTilkjentYtelse.utbetalingsoppdrag
+                ?: error("Mangler utbetalingsoppdrag for tilkjentYtelse=${forrigeTilkjentYtelse.id}")
         return utbetalingsoppdrag.utbetalingsperiode.isEmpty() && utbetalingsoppdrag.kodeEndring == KodeEndring.NY
     }
 
@@ -312,6 +326,5 @@ object UtbetalingsoppdragGenerator {
         }
     }
 
-    private fun sistePeriodeId(tilkjentYtelse: TilkjentYtelse?): PeriodeId? =
-        tilkjentYtelse?.sisteAndelIKjede?.tilPeriodeId()
+    private fun sistePeriodeId(tilkjentYtelse: TilkjentYtelse?): PeriodeId? = tilkjentYtelse?.sisteAndelIKjede?.tilPeriodeId()
 }

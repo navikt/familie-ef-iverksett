@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity
 import java.util.UUID
 
 class BehandlingsstatistikkControllerTest : ServerTest() {
-
     @Autowired
     private lateinit var kafkaProducerPayloadSlot: CapturingSlot<String>
 

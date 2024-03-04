@@ -23,9 +23,7 @@ import java.net.URI
 import java.time.LocalDate
 
 class OppgaveClientTest {
-
     companion object {
-
         private val restOperations: RestOperations = RestTemplateBuilder().build()
         lateinit var oppgaveClient: OppgaveClient
         lateinit var wiremockServerItem: WireMockServer
@@ -80,17 +78,19 @@ class OppgaveClientTest {
             "}"
     }
 
-    fun defaultOpprettOppgaveRequest(personIdent: String, beskrivelse: String) =
-        OpprettOppgaveRequest(
-            ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
-            saksId = null,
-            tema = Tema.ENF,
-            oppgavetype = Oppgavetype.VurderLivshendelse,
-            fristFerdigstillelse = LocalDate.now().plusDays(1),
-            beskrivelse = beskrivelse,
-            enhetsnummer = null,
-            behandlingstema = Behandlingstema.Overgangsstønad.value,
-            tilordnetRessurs = null,
-            behandlesAvApplikasjon = "familie-ef-sak",
-        )
+    fun defaultOpprettOppgaveRequest(
+        personIdent: String,
+        beskrivelse: String,
+    ) = OpprettOppgaveRequest(
+        ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
+        saksId = null,
+        tema = Tema.ENF,
+        oppgavetype = Oppgavetype.VurderLivshendelse,
+        fristFerdigstillelse = LocalDate.now().plusDays(1),
+        beskrivelse = beskrivelse,
+        enhetsnummer = null,
+        behandlingstema = Behandlingstema.Overgangsstønad.value,
+        tilordnetRessurs = null,
+        behandlesAvApplikasjon = "familie-ef-sak",
+    )
 }

@@ -22,7 +22,6 @@ import java.util.UUID
 import no.nav.familie.kontrakter.felles.ef.StønadType as EksternStønadType
 
 internal class PubliserVedtakTilKafkaTaskTest {
-
     private val taskService = mockk<TaskService>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val vedtakKafkaProducer = mockk<VedtakKafkaProducer>()

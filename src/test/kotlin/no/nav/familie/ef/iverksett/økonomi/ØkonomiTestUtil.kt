@@ -17,17 +17,16 @@ fun lagAndelTilkjentYtelse(
     inntekt: Int = 0,
     samordningsfradrag: Int = 0,
     inntektsreduksjon: Int = 0,
-) =
-    AndelTilkjentYtelse(
-        beløp = beløp,
-        periode = Månedsperiode(fraOgMed, tilOgMed),
-        inntekt = inntekt,
-        samordningsfradrag = samordningsfradrag,
-        inntektsreduksjon = inntektsreduksjon,
-        periodeId = periodeId,
-        forrigePeriodeId = forrigePeriodeId,
-        kildeBehandlingId = kildeBehandlingId,
-    )
+) = AndelTilkjentYtelse(
+    beløp = beløp,
+    periode = Månedsperiode(fraOgMed, tilOgMed),
+    inntekt = inntekt,
+    samordningsfradrag = samordningsfradrag,
+    inntektsreduksjon = inntektsreduksjon,
+    periodeId = periodeId,
+    forrigePeriodeId = forrigePeriodeId,
+    kildeBehandlingId = kildeBehandlingId,
+)
 
 fun lagAndelTilkjentYtelseDto(
     beløp: Int,
@@ -37,13 +36,12 @@ fun lagAndelTilkjentYtelseDto(
     inntekt: Int = 0,
     samordningsfradrag: Int = 0,
     inntektsreduksjon: Int = 0,
-) =
-    AndelTilkjentYtelseDto(
-        beløp = beløp,
-        fraOgMed = fraOgMed,
-        tilOgMed = tilOgMed,
-        inntekt = inntekt,
-        samordningsfradrag = samordningsfradrag,
-        inntektsreduksjon = inntektsreduksjon,
-        kildeBehandlingId = kildeBehandlingId,
-    )
+) = AndelTilkjentYtelseDto(
+    beløp = beløp,
+    fraOgMed = fraOgMed,
+    tilOgMed = tilOgMed,
+    inntekt = inntekt,
+    samordningsfradrag = samordningsfradrag,
+    inntektsreduksjon = inntektsreduksjon,
+    kildeBehandlingId = kildeBehandlingId,
+)

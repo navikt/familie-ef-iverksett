@@ -11,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 class SimuleringskontrollRepositoryTest : ServerTest() {
-
     @Autowired
     lateinit var repository: SimuleringskontrollRepository
 
     @Test
     fun `lagring og henting av data`() {
         val behandlingId = UUID.randomUUID()
-        val input = SimuleringskontrollInput(Simulering(opprettTilkjentYtelseMedMetadata(), UUID.randomUUID()), beriketSimuleringsresultat())
+        val input =
+            SimuleringskontrollInput(Simulering(opprettTilkjentYtelseMedMetadata(), UUID.randomUUID()), beriketSimuleringsresultat())
         val resultat = SimuleringskontrollResultat(beriketSimuleringsresultat())
         val simuleringskontroll = repository.insert(Simuleringskontroll(behandlingId, input, resultat))
 

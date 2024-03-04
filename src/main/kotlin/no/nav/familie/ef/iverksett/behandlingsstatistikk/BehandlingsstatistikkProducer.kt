@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class BehandlingsstatistikkProducer(private val kafkaProducerService: KafkaProducerService) {
-
     @Value("\${ENSLIG_FORSORGER_BEHANDLING_TOPIC}")
     lateinit var topic: String
 

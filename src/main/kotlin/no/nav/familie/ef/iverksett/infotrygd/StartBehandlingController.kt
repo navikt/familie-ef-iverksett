@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/start-behandling")
 @ProtectedWithClaims(issuer = "azuread")
 class StartBehandlingController(private val infotrygdFeedClient: InfotrygdFeedClient) {
-
     @PostMapping
-    fun startBehandling(@RequestBody request: OpprettStartBehandlingHendelseDto) {
+    fun startBehandling(
+        @RequestBody request: OpprettStartBehandlingHendelseDto,
+    ) {
         infotrygdFeedClient.opprettStartBehandlingHendelse(request)
     }
 }

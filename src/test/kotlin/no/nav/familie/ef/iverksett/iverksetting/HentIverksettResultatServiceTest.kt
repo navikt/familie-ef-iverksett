@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 internal class HentIverksettResultatServiceTest : ServerTest() {
-
     @Autowired
     private lateinit var iverksettResultatService: IverksettResultatService
 
@@ -64,10 +63,11 @@ internal class HentIverksettResultatServiceTest : ServerTest() {
 
     @Test
     fun `lagre tilkjentYtelse, hent IverksettResultat med riktig behandlingsID`() {
-        val resultat = IverksettResultatMockBuilder.Builder()
-            .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
-            .journalPostResultat()
-            .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
+        val resultat =
+            IverksettResultatMockBuilder.Builder()
+                .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
+                .journalPostResultat()
+                .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
         iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
         iverksettResultatService.oppdaterOppdragResultat(behandlingId, resultat.oppdragResultat!!)
         val (mottakerIdent, journalpostresultat) = resultat.journalpostResultat.map.entries.first()
@@ -104,8 +104,9 @@ internal class HentIverksettResultatServiceTest : ServerTest() {
     @Test
     fun `lagre tilbakekrevingsresultat, hent IverksettResultat med tilbakekrevingsresultat`() {
         val iverksett = opprettIverksettOvergangsstønad(behandlingId)
-        val opprettTilbakekrevingRequest = iverksett
-            .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
+        val opprettTilbakekrevingRequest =
+            iverksett
+                .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
         val tilbakekrevingResultat = TilbakekrevingResultat(opprettTilbakekrevingRequest)
 
@@ -124,8 +125,9 @@ internal class HentIverksettResultatServiceTest : ServerTest() {
     fun `overskriv tomt (null) tilbakekrevingsresultat`() {
         val id = UUID.randomUUID()
         val iverksett = opprettIverksettOvergangsstønad(id)
-        val opprettTilbakekrevingRequest = iverksett
-            .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
+        val opprettTilbakekrevingRequest =
+            iverksett
+                .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
         val tilbakekrevingResultat = TilbakekrevingResultat(opprettTilbakekrevingRequest)
 

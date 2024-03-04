@@ -32,6 +32,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Vurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.ÅrsakRevurdering
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
+import no.nav.familie.kontrakter.ef.felles.AvslagÅrsak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
@@ -71,7 +72,6 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.Random
 import java.util.UUID
-import no.nav.familie.kontrakter.ef.felles.AvslagÅrsak
 
 fun opprettIverksettDto(
     behandlingId: UUID,
@@ -79,62 +79,70 @@ fun opprettIverksettDto(
     andelsbeløp: Int = 5000,
     stønadType: StønadType = StønadType.OVERGANGSSTØNAD,
 ): IverksettOvergangsstønadDto {
-    val andelTilkjentYtelse = lagAndelTilkjentYtelseDto(
-        beløp = andelsbeløp,
-        fraOgMed = LocalDate.of(2021, 1, 1),
-        tilOgMed = LocalDate.of(2021, 12, 31),
-        kildeBehandlingId = UUID.randomUUID(),
-    )
-    val tilkjentYtelse = TilkjentYtelseDto(
-        andelerTilkjentYtelse = listOf(andelTilkjentYtelse),
-        startdato = andelTilkjentYtelse.periode.fomDato,
-    )
+    val andelTilkjentYtelse =
+        lagAndelTilkjentYtelseDto(
+            beløp = andelsbeløp,
+            fraOgMed = LocalDate.of(2021, 1, 1),
+            tilOgMed = LocalDate.of(2021, 12, 31),
+            kildeBehandlingId = UUID.randomUUID(),
+        )
+    val tilkjentYtelse =
+        TilkjentYtelseDto(
+            andelerTilkjentYtelse = listOf(andelTilkjentYtelse),
+            startdato = andelTilkjentYtelse.periode.fomDato,
+        )
 
     return IverksettOvergangsstønadDto(
         fagsak = FagsakdetaljerDto(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = stønadType),
-        behandling = BehandlingsdetaljerDto(
-            behandlingId = behandlingId,
-            forrigeBehandlingId = null,
-            eksternId = 9L,
-            behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
-            behandlingÅrsak = behandlingÅrsak,
-            vilkårsvurderinger = listOf(
-                VilkårsvurderingDto(
-                    vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    delvilkårsvurderinger = listOf(
-                        DelvilkårsvurderingDto(
+        behandling =
+            BehandlingsdetaljerDto(
+                behandlingId = behandlingId,
+                forrigeBehandlingId = null,
+                eksternId = 9L,
+                behandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
+                behandlingÅrsak = behandlingÅrsak,
+                vilkårsvurderinger =
+                    listOf(
+                        VilkårsvurderingDto(
+                            vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
                             resultat = Vilkårsresultat.OPPFYLT,
-                            vurderinger = listOf(
-                                VurderingDto(
-                                    regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
-                                    svar = SvarId.JA,
-                                    begrunnelse = "Nei",
+                            delvilkårsvurderinger =
+                                listOf(
+                                    DelvilkårsvurderingDto(
+                                        resultat = Vilkårsresultat.OPPFYLT,
+                                        vurderinger =
+                                            listOf(
+                                                VurderingDto(
+                                                    regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
+                                                    svar = SvarId.JA,
+                                                    begrunnelse = "Nei",
+                                                ),
+                                            ),
+                                    ),
                                 ),
-                            ),
                         ),
                     ),
-                ),
+                kravMottatt = LocalDate.of(2021, 3, 3),
+                årsakRevurdering = ÅrsakRevurderingDto(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
             ),
-            kravMottatt = LocalDate.of(2021, 3, 3),
-            årsakRevurdering = ÅrsakRevurderingDto(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
-        ),
-        søker = SøkerDto(
-            personIdent = "12345678910",
-            barn = emptyList(),
-            tilhørendeEnhet = "4489",
-            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
-        ),
-        vedtak = VedtaksdetaljerOvergangsstønadDto(
-            resultat = Vedtaksresultat.INNVILGET,
-            vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
-            opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
-            saksbehandlerId = "A12345",
-            beslutterId = "B23456",
-            tilkjentYtelse = tilkjentYtelse,
-            vedtaksperioder = emptyList(),
-            oppgaverForOpprettelse = OppgaverForOpprettelseDto(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
-        ),
+        søker =
+            SøkerDto(
+                personIdent = "12345678910",
+                barn = emptyList(),
+                tilhørendeEnhet = "4489",
+                adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
+            ),
+        vedtak =
+            VedtaksdetaljerOvergangsstønadDto(
+                resultat = Vedtaksresultat.INNVILGET,
+                vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
+                opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
+                saksbehandlerId = "A12345",
+                beslutterId = "B23456",
+                tilkjentYtelse = tilkjentYtelse,
+                vedtaksperioder = emptyList(),
+                oppgaverForOpprettelse = OppgaverForOpprettelseDto(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
+            ),
     )
 }
 
@@ -198,27 +206,29 @@ fun behandlingsdetaljer(
         behandlingType = behandlingType,
         behandlingÅrsak = behandlingÅrsak,
         relatertBehandlingId = null,
-        vilkårsvurderinger = listOf(
-            Vilkårsvurdering(
-                vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
-                resultat = Vilkårsresultat.OPPFYLT,
-                delvilkårsvurderinger = listOf(
-                    Delvilkårsvurdering(
-                        resultat = Vilkårsresultat.OPPFYLT,
-                        vurderinger = listOf(
-                            Vurdering(
-                                regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
-                                svar = SvarId.JA,
-                                begrunnelse = "Nei",
+        vilkårsvurderinger =
+            listOf(
+                Vilkårsvurdering(
+                    vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
+                    resultat = Vilkårsresultat.OPPFYLT,
+                    delvilkårsvurderinger =
+                        listOf(
+                            Delvilkårsvurdering(
+                                resultat = Vilkårsresultat.OPPFYLT,
+                                vurderinger =
+                                    listOf(
+                                        Vurdering(
+                                            regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
+                                            svar = SvarId.JA,
+                                            begrunnelse = "Nei",
+                                        ),
+                                    ),
                             ),
                         ),
-                    ),
                 ),
             ),
-        ),
         kravMottatt = LocalDate.of(2021, 3, 3),
         årsakRevurdering = ÅrsakRevurdering(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
-
     )
 }
 
@@ -244,9 +254,10 @@ fun vedtaksdetaljerOvergangsstønad(
     vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(vedtaksperioderOvergangsstønad()),
     vedtaksTidspunkt: LocalDateTime = LocalDateTime.of(2021, 5, 12, 0, 0),
     inntekt: Boolean = true,
-    oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
+    oppgaverForOpprettelse: OppgaverForOpprettelse =
+        OppgaverForOpprettelse(listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)),
     grunnbeløp: Grunnbeløp? = null,
-    avslagÅrsak: AvslagÅrsak? = null
+    avslagÅrsak: AvslagÅrsak? = null,
 ): VedtaksdetaljerOvergangsstønad {
     val tilkjentYtelse = lagTilkjentYtelse(andeler, startdato)
     return VedtaksdetaljerOvergangsstønad(
@@ -283,12 +294,13 @@ fun vedtaksdetaljerBarnetilsyn(
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
         brevmottakere = Brevmottakere(emptyList()),
-        kontantstøtte = listOf(
-            PeriodeMedBeløp(
-                periode = Månedsperiode(YearMonth.of(2022, 1), YearMonth.of(2022, 3)),
-                beløp = 10,
+        kontantstøtte =
+            listOf(
+                PeriodeMedBeløp(
+                    periode = Månedsperiode(YearMonth.of(2022, 1), YearMonth.of(2022, 3)),
+                    beløp = 10,
+                ),
             ),
-        ),
         tilleggsstønad = listOf(PeriodeMedBeløp(periode = Månedsperiode(YearMonth.of(2022, 2), YearMonth.of(2022, 3)), beløp = 5)),
     )
 }
@@ -308,34 +320,34 @@ private fun lagTilkjentYtelse(
 fun opprettIverksettBarnetilsyn(
     behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetaljer(),
     vedtaksdetaljer: VedtaksdetaljerBarnetilsyn = vedtaksdetaljerBarnetilsyn(),
-) =
-    IverksettBarnetilsyn(
-        fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
-        behandling = behandlingsdetaljer,
-        søker = Søker(
+) = IverksettBarnetilsyn(
+    fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
+    behandling = behandlingsdetaljer,
+    søker =
+        Søker(
             personIdent = "12345678910",
             barn = emptyList(),
             tilhørendeEnhet = "4489",
             adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
         ),
-        vedtak = vedtaksdetaljer,
-    )
+    vedtak = vedtaksdetaljer,
+)
 
 fun opprettIverksettOvergangsstønad(
     behandlingsdetaljer: Behandlingsdetaljer = behandlingsdetaljer(),
     vedtaksdetaljer: VedtaksdetaljerOvergangsstønad = vedtaksdetaljerOvergangsstønad(),
-) =
-    IverksettOvergangsstønad(
-        fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
-        behandling = behandlingsdetaljer,
-        søker = Søker(
+) = IverksettOvergangsstønad(
+    fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
+    behandling = behandlingsdetaljer,
+    søker =
+        Søker(
             personIdent = "12345678910",
             barn = emptyList(),
             tilhørendeEnhet = "4489",
             adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
         ),
-        vedtak = vedtaksdetaljer,
-    )
+    vedtak = vedtaksdetaljer,
+)
 
 fun opprettIverksettOvergangsstønad(
     behandlingId: UUID = UUID.randomUUID(),
@@ -348,12 +360,13 @@ fun opprettIverksettOvergangsstønad(
     return IverksettOvergangsstønad(
         fagsak = Fagsakdetaljer(fagsakId = UUID.randomUUID(), eksternId = 1L, stønadstype = StønadType.OVERGANGSSTØNAD),
         behandling = behandlingsdetaljer(behandlingId, forrigeBehandlingId, behandlingType),
-        søker = Søker(
-            personIdent = "12345678910",
-            barn = listOf(Barn("01010199999"), Barn(null, LocalDate.of(2023, 1, 1))),
-            tilhørendeEnhet = "4489",
-            adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
-        ),
+        søker =
+            Søker(
+                personIdent = "12345678910",
+                barn = listOf(Barn("01010199999"), Barn(null, LocalDate.of(2023, 1, 1))),
+                tilhørendeEnhet = "4489",
+                adressebeskyttelse = AdressebeskyttelseGradering.UGRADERT,
+            ),
         vedtak = vedtaksdetaljerOvergangsstønad(Vedtaksresultat.INNVILGET, andeler, tilbakekreving, startmåned),
     )
 }
@@ -386,12 +399,13 @@ fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
 
 fun opprettTilbakekrevingMedVarsel(
     sumFeilutbetaling: BigDecimal = BigDecimal.valueOf(100),
-    perioder: List<Datoperiode> = listOf(
-        Datoperiode(
-            fom = LocalDate.of(2021, 5, 1),
-            tom = LocalDate.of(2021, 6, 30),
+    perioder: List<Datoperiode> =
+        listOf(
+            Datoperiode(
+                fom = LocalDate.of(2021, 5, 1),
+                tom = LocalDate.of(2021, 6, 30),
+            ),
         ),
-    ),
 ) = TilbakekrevingMedVarsel(
     varseltekst = "varseltekst",
     sumFeilutbetaling = sumFeilutbetaling,
@@ -399,47 +413,49 @@ fun opprettTilbakekrevingMedVarsel(
 )
 
 class IverksettResultatMockBuilder private constructor(
-
     val tilkjentYtelse: TilkjentYtelse,
     val oppdragResultat: OppdragResultat,
     val journalpostResultat: Map<String, JournalpostResultat>,
     val vedtaksbrevResultat: Map<String, DistribuerBrevResultat>,
 ) {
-
     data class Builder(
         var oppdragResultat: OppdragResultat? = null,
         var journalpostResultat: Map<String, JournalpostResultat> = mapOf(),
         var vedtaksbrevResultat: Map<String, DistribuerBrevResultat> = mapOf(),
         var tilbakekrevingResultat: TilbakekrevingResultat? = null,
     ) {
-
         fun oppdragResultat(oppdragResultat: OppdragResultat) = apply { this.oppdragResultat = oppdragResultat }
-        fun journalPostResultat() = apply {
-            this.journalpostResultat = mapOf("123456789" to JournalpostResultat(UUID.randomUUID().toString()))
-        }
+
+        fun journalPostResultat() =
+            apply {
+                this.journalpostResultat = mapOf("123456789" to JournalpostResultat(UUID.randomUUID().toString()))
+            }
 
         fun vedtaksbrevResultat(behandlingId: UUID) =
             apply {
                 this.vedtaksbrevResultat =
                     mapOf(
-                        this.journalpostResultat!!.entries.first().value.journalpostId to DistribuerBrevResultat(
-                            bestillingId = behandlingId.toString(),
-                        ),
+                        this.journalpostResultat!!.entries.first().value.journalpostId to
+                            DistribuerBrevResultat(
+                                bestillingId = behandlingId.toString(),
+                            ),
                     )
             }
 
         fun tilbakekrevingResultat(tilbakekrevingResultat: TilbakekrevingResultat?) =
             apply { this.tilbakekrevingResultat = tilbakekrevingResultat }
 
-        fun build(behandlingId: UUID, tilkjentYtelse: TilkjentYtelse?) =
-            IverksettResultat(
-                behandlingId,
-                tilkjentYtelse,
-                oppdragResultat,
-                JournalpostResultatMap(journalpostResultat),
-                DistribuerBrevResultatMap(vedtaksbrevResultat),
-                tilbakekrevingResultat,
-            )
+        fun build(
+            behandlingId: UUID,
+            tilkjentYtelse: TilkjentYtelse?,
+        ) = IverksettResultat(
+            behandlingId,
+            tilkjentYtelse,
+            oppdragResultat,
+            JournalpostResultatMap(journalpostResultat),
+            DistribuerBrevResultatMap(vedtaksbrevResultat),
+            tilbakekrevingResultat,
+        )
     }
 }
 

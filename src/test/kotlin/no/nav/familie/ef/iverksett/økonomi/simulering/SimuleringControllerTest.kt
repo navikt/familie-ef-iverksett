@@ -28,7 +28,6 @@ import java.time.YearMonth
 import java.util.UUID
 
 class SimuleringControllerTest : ServerTest() {
-
     @Autowired
     private lateinit var iverksettResultatService: IverksettResultatService
 
@@ -47,12 +46,13 @@ class SimuleringControllerTest : ServerTest() {
 
     @Test
     internal fun `Hent simulering v2 skal gi 200 OK`() {
-        val respons = restTemplate
-            .exchange<Ressurs<BeriketSimuleringsresultat>>(
-                localhostUrl("/api/simulering/v2"),
-                HttpMethod.POST,
-                HttpEntity(simuleringDto(), headers),
-            )
+        val respons =
+            restTemplate
+                .exchange<Ressurs<BeriketSimuleringsresultat>>(
+                    localhostUrl("/api/simulering/v2"),
+                    HttpMethod.POST,
+                    HttpEntity(simuleringDto(), headers),
+                )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
         assertThat(respons.body?.data).isEqualTo(beriketSimuleringsresultat())
@@ -62,12 +62,13 @@ class SimuleringControllerTest : ServerTest() {
     @Test
     internal fun `simulering av førstegangsbehandling skal gi tomt svar`() {
         val request = simuleringDto(andeler = emptyList(), forrigeBehandlingId = null)
-        val respons = restTemplate
-            .exchange<Ressurs<BeriketSimuleringsresultat>>(
-                localhostUrl("/api/simulering/v2"),
-                HttpMethod.POST,
-                HttpEntity(request, headers),
-            )
+        val respons =
+            restTemplate
+                .exchange<Ressurs<BeriketSimuleringsresultat>>(
+                    localhostUrl("/api/simulering/v2"),
+                    HttpMethod.POST,
+                    HttpEntity(request, headers),
+                )
 
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
@@ -78,12 +79,13 @@ class SimuleringControllerTest : ServerTest() {
     @Test
     internal fun `simulering av førstegangsbehandling med kun 0 beløp skal gi tomt svar`() {
         val request = simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 0)), forrigeBehandlingId = null)
-        val respons = restTemplate
-            .exchange<Ressurs<BeriketSimuleringsresultat>>(
-                localhostUrl("/api/simulering/v2"),
-                HttpMethod.POST,
-                HttpEntity(request, headers),
-            )
+        val respons =
+            restTemplate
+                .exchange<Ressurs<BeriketSimuleringsresultat>>(
+                    localhostUrl("/api/simulering/v2"),
+                    HttpMethod.POST,
+                    HttpEntity(request, headers),
+                )
 
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons.body?.status).isEqualTo(Ressurs.Status.SUKSESS)
@@ -99,11 +101,12 @@ class SimuleringControllerTest : ServerTest() {
         val revurdering =
             simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 1000)), forrigeBehandlingId = behandlingId)
 
-        val response = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
-            localhostUrl("/api/simulering/v2"),
-            HttpMethod.POST,
-            HttpEntity(revurdering, headers),
-        )
+        val response =
+            restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
+                localhostUrl("/api/simulering/v2"),
+                HttpMethod.POST,
+                HttpEntity(revurdering, headers),
+            )
 
         assertThat(response.body?.data?.detaljer?.simuleringMottaker).isNotEmpty
         verify(exactly = 1) { oppdragClient.hentSimuleringsresultat(any()) }
@@ -117,11 +120,12 @@ class SimuleringControllerTest : ServerTest() {
         val revurdering =
             simuleringDto(andeler = listOf(lagAndelTilkjentYtelseDto(beløp = 0)), forrigeBehandlingId = behandlingId)
 
-        val respons = restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
-            localhostUrl("/api/simulering/v2"),
-            HttpMethod.POST,
-            HttpEntity(revurdering, headers),
-        )
+        val respons =
+            restTemplate.exchange<Ressurs<BeriketSimuleringsresultat>>(
+                localhostUrl("/api/simulering/v2"),
+                HttpMethod.POST,
+                HttpEntity(revurdering, headers),
+            )
 
         assertThat(respons.body?.data).isEqualTo(lagSimuleringsresultatMedTomListe())
         verify(exactly = 0) { oppdragClient.hentSimuleringsresultat(any()) }

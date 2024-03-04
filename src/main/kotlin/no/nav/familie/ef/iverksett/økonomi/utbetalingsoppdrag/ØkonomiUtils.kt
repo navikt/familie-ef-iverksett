@@ -18,21 +18,22 @@ data class PeriodeId(
 
 fun AndelTilkjentYtelse.tilPeriodeId(): PeriodeId = PeriodeId(this.periodeId, this.forrigePeriodeId)
 
-fun nullAndelTilkjentYtelse(kildeBehandlingId: UUID, periodeId: PeriodeId?): AndelTilkjentYtelse =
+fun nullAndelTilkjentYtelse(
+    kildeBehandlingId: UUID,
+    periodeId: PeriodeId?,
+): AndelTilkjentYtelse =
     AndelTilkjentYtelse(
         beløp = 0,
         periode = Månedsperiode(LocalDate.MIN, LocalDate.MIN),
         inntekt = 0,
         samordningsfradrag = 0,
         inntektsreduksjon = 0,
-
         periodeId = periodeId?.gjeldende,
         kildeBehandlingId = kildeBehandlingId,
         forrigePeriodeId = periodeId?.forrige,
     )
 
 object ØkonomiUtils {
-
     fun andelerUtenNullVerdier(tilkjentYtelse: TilkjentYtelse?): List<AndelTilkjentYtelse> =
         tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.harNullBeløp() } ?: emptyList()
 
@@ -132,8 +133,7 @@ object ØkonomiUtils {
         opphørsdato: LocalDate?,
         forrigeTilkjentYtelse: TilkjentYtelse,
         forrigeAndeler: List<AndelTilkjentYtelse>,
-    ) =
-        forrigeAndeler.isEmpty() && opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startmåned.atDay(1)
+    ) = forrigeAndeler.isEmpty() && opphørsdato != null && opphørsdato >= forrigeTilkjentYtelse.startmåned.atDay(1)
 
     /**
      * Ny opphørsdato må finnes hvis det finnes startdato på tidligere tilkjent ytelse
@@ -206,13 +206,14 @@ object ØkonomiUtils {
     private fun finnDatoForFørsteEndredeAndel(
         andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
         andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>,
-    ) =
-        andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse)
-            .minOfOrNull { it.periode.fomDato }
+    ) = andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse)
+        .minOfOrNull { it.periode.fomDato }
 
     /**
      * Sjekker om den nye endringen er etter maks datot for tidligere perioder
      */
-    private fun erNyPeriode(forrigeMaksDato: LocalDate?, førsteEndring: LocalDate) =
-        forrigeMaksDato != null && førsteEndring.isAfter(forrigeMaksDato)
+    private fun erNyPeriode(
+        forrigeMaksDato: LocalDate?,
+        førsteEndring: LocalDate,
+    ) = forrigeMaksDato != null && førsteEndring.isAfter(forrigeMaksDato)
 }

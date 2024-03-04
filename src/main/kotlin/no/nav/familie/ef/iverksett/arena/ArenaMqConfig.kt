@@ -18,7 +18,6 @@ import org.springframework.jms.core.JmsTemplate
 @EnableJms
 @EnableConfigurationProperties(ArenaMqConfigProperties::class)
 class ArenaMqConfig(val arenaMqConfigProperties: ArenaMqConfigProperties) {
-
     @Bean
     fun jmsTemplate(connectionFactory: ConnectionFactory): JmsTemplate {
         val jmsTemplate = JmsTemplate(connectionFactory)
@@ -52,7 +51,6 @@ class ArenaMqConfig(val arenaMqConfigProperties: ArenaMqConfigProperties) {
     }
 
     companion object {
-
         private const val UTF_8_WITH_PUA = 1208
     }
 }

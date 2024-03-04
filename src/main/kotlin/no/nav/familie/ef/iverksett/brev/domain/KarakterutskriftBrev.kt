@@ -30,25 +30,27 @@ data class KarakterutskriftBrev(
     val opprettetTid: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
 )
 
-fun KarakterutskriftBrev.tilDto(): KarakterutskriftBrevDto = KarakterutskriftBrevDto(
-    fil = this.fil,
-    oppgaveId = this.oppgaveId,
-    personIdent = this.personIdent,
-    eksternFagsakId = this.eksternFagsakId,
-    journalførendeEnhet = this.journalførendeEnhet,
-    brevtype = this.brevtype,
-    gjeldendeÅr = this.gjeldendeÅr,
-    stønadType = this.stønadType,
-)
+fun KarakterutskriftBrev.tilDto(): KarakterutskriftBrevDto =
+    KarakterutskriftBrevDto(
+        fil = this.fil,
+        oppgaveId = this.oppgaveId,
+        personIdent = this.personIdent,
+        eksternFagsakId = this.eksternFagsakId,
+        journalførendeEnhet = this.journalførendeEnhet,
+        brevtype = this.brevtype,
+        gjeldendeÅr = this.gjeldendeÅr,
+        stønadType = this.stønadType,
+    )
 
-fun KarakterutskriftBrevDto.tilDomene(journalpostId: String? = null): KarakterutskriftBrev = KarakterutskriftBrev(
-    fil = this.fil,
-    oppgaveId = this.oppgaveId,
-    personIdent = this.personIdent,
-    eksternFagsakId = this.eksternFagsakId,
-    journalførendeEnhet = this.journalførendeEnhet,
-    brevtype = this.brevtype,
-    gjeldendeÅr = this.gjeldendeÅr,
-    stønadType = this.stønadType,
-    journalpostId = journalpostId,
-)
+fun KarakterutskriftBrevDto.tilDomene(journalpostId: String? = null): KarakterutskriftBrev =
+    KarakterutskriftBrev(
+        fil = this.fil,
+        oppgaveId = this.oppgaveId,
+        personIdent = this.personIdent,
+        eksternFagsakId = this.eksternFagsakId,
+        journalførendeEnhet = this.journalførendeEnhet,
+        brevtype = this.brevtype,
+        gjeldendeÅr = this.gjeldendeÅr,
+        stønadType = this.stønadType,
+        journalpostId = journalpostId,
+    )

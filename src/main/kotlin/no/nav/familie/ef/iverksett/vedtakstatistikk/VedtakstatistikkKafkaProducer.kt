@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProducerService) {
-
     @Value("\${ENSLIG_FORSORGER_VEDTAK_TOPIC}")
     lateinit var topic: String
 
@@ -31,7 +30,11 @@ class VedtakstatistikkKafkaProducer(private val kafkaProducerService: KafkaProdu
         sendVedtak(vedtakstatistikk.behandlingId, vedtakstatistikk.stønadstype, vedtakstatistikk.toJson())
     }
 
-    fun sendVedtak(behandlingId: Long, stønadstype: StønadType, vedtakStatistikk: String) {
+    fun sendVedtak(
+        behandlingId: Long,
+        stønadstype: StønadType,
+        vedtakStatistikk: String,
+    ) {
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nVedtakStatistikk: {}", topic, vedtakStatistikk)
 

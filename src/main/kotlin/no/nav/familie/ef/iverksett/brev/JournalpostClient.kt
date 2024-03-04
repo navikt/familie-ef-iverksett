@@ -28,7 +28,6 @@ class JournalpostClient(
     @Value("\${FAMILIE_INTEGRASJONER_API_URL}")
     private val integrasjonUri: URI,
 ) : AbstractPingableRestClient(restOperations, "journalpost") {
-
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override val pingUri: URI = URI("/ping")
@@ -42,7 +41,10 @@ class JournalpostClient(
             ?: error("Kunne ikke journalposter for for ${journalposterForBrukerRequest.brukerId.id}")
     }
 
-    fun arkiverDokument(arkiverDokumentRequest: ArkiverDokumentRequest, saksbehandler: String?): ArkiverDokumentResponse {
+    fun arkiverDokument(
+        arkiverDokumentRequest: ArkiverDokumentRequest,
+        saksbehandler: String?,
+    ): ArkiverDokumentResponse {
         return postForEntity<Ressurs<ArkiverDokumentResponse>>(
             URI.create("$dokarkivUri/v4"),
             arkiverDokumentRequest,
@@ -51,15 +53,19 @@ class JournalpostClient(
             ?: error("Kunne ikke arkivere dokument med fagsakid ${arkiverDokumentRequest.fagsakId}")
     }
 
-    fun distribuerBrev(journalpostId: String, distribusjonstype: Distribusjonstype): String {
+    fun distribuerBrev(
+        journalpostId: String,
+        distribusjonstype: Distribusjonstype,
+    ): String {
         logger.info("Kaller dokdist-tjeneste for journalpost=$journalpostId")
 
-        val journalpostRequest = DistribuerJournalpostRequest(
-            journalpostId = journalpostId,
-            bestillendeFagsystem = Fagsystem.EF,
-            dokumentProdApp = "FAMILIE_EF_SAK",
-            distribusjonstype = distribusjonstype,
-        )
+        val journalpostRequest =
+            DistribuerJournalpostRequest(
+                journalpostId = journalpostId,
+                bestillendeFagsystem = Fagsystem.EF,
+                dokumentProdApp = "FAMILIE_EF_SAK",
+                distribusjonstype = distribusjonstype,
+            )
 
         return postForEntity<Ressurs<String>>(
             distribuerDokumentUri,

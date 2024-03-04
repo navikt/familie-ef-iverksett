@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 class SimuleringFormatTest {
-
     @Test
     fun `sjekk at v1 lar seg deserialisere`() {
         val v1: String = ResourceLoaderTestUtil.readResource("json/simulering_v1.json")

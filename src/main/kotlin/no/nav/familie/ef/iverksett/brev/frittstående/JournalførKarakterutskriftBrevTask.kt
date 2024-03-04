@@ -26,16 +26,16 @@ class JournalførKarakterutskriftBrevTask(
     private val taskService: TaskService,
     private val karakterutskriftBrevRepository: KarakterutskriftBrevRepository,
 ) : AsyncTaskStep {
-
     override fun doTask(task: Task) {
         val brevId = UUID.fromString(task.payload)
         val brev = karakterutskriftBrevRepository.findByIdOrThrow(brevId)
         val dokumentRequest = opprettArkiverDokumentRequest(brev)
 
-        val journalPostId = journalpostClient.arkiverDokument(
-            arkiverDokumentRequest = dokumentRequest,
-            saksbehandler = null,
-        ).journalpostId
+        val journalPostId =
+            journalpostClient.arkiverDokument(
+                arkiverDokumentRequest = dokumentRequest,
+                saksbehandler = null,
+            ).journalpostId
 
         karakterutskriftBrevRepository.update(brev.copy(journalpostId = journalPostId))
     }
@@ -46,14 +46,15 @@ class JournalførKarakterutskriftBrevTask(
         return ArkiverDokumentRequest(
             fnr = brev.personIdent,
             forsøkFerdigstill = true,
-            hoveddokumentvarianter = listOf(
-                Dokument(
-                    dokument = brev.fil,
-                    filtype = Filtype.PDFA,
-                    dokumenttype = stønadstypeTilDokumenttype(brev.stønadType),
-                    tittel = brev.brevtype.tittel,
+            hoveddokumentvarianter =
+                listOf(
+                    Dokument(
+                        dokument = brev.fil,
+                        filtype = Filtype.PDFA,
+                        dokumenttype = stønadstypeTilDokumenttype(brev.stønadType),
+                        tittel = brev.brevtype.tittel,
+                    ),
                 ),
-            ),
             fagsakId = brev.eksternFagsakId.toString(),
             journalførendeEnhet = brev.journalførendeEnhet,
             eksternReferanseId = eksternReferanseId,
@@ -65,7 +66,6 @@ class JournalførKarakterutskriftBrevTask(
     }
 
     companion object {
-
         const val TYPE = "JournalførKarakterutskriftBrevTask"
     }
 }

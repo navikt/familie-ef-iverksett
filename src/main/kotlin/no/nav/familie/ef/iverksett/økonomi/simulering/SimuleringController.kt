@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.RestController
 class SimuleringController(
     private val simuleringService: SimuleringService,
 ) {
-
     @PostMapping("v2")
-    fun hentSimuleringV2(@RequestBody simuleringDto: SimuleringDto): Ressurs<BeriketSimuleringsresultat> {
+    fun hentSimuleringV2(
+        @RequestBody simuleringDto: SimuleringDto,
+    ): Ressurs<BeriketSimuleringsresultat> {
         val beriketSimuleringResultat =
             simuleringService.hentBeriketSimulering(simuleringDto.toDomain())
         return Ressurs.success(beriketSimuleringResultat)

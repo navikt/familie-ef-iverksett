@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class ArbeidsoppfølgingKafkaProducer(private val kafkaProducerService: KafkaProducerService) {
-
     @Value("\${ARBEIDSOPPFOLGING_VEDTAK_TOPIC}")
     lateinit var topic: String
 
@@ -19,15 +18,28 @@ class ArbeidsoppfølgingKafkaProducer(private val kafkaProducerService: KafkaPro
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     fun sendVedtak(vedtakOvergangsstønadArbeidsoppfølging: VedtakOvergangsstønadArbeidsoppfølging) {
-        sendVedtak(vedtakOvergangsstønadArbeidsoppfølging.vedtakId, vedtakOvergangsstønadArbeidsoppfølging.stønadstype, vedtakOvergangsstønadArbeidsoppfølging.toJson())
+        sendVedtak(
+            vedtakOvergangsstønadArbeidsoppfølging.vedtakId,
+            vedtakOvergangsstønadArbeidsoppfølging.stønadstype,
+            vedtakOvergangsstønadArbeidsoppfølging.toJson(),
+        )
     }
 
-    fun sendVedtak(behandlingId: Long, stønadstype: Stønadstype, vedtakArbeidsoppfølging: String) {
+    fun sendVedtak(
+        behandlingId: Long,
+        stønadstype: Stønadstype,
+        vedtakArbeidsoppfølging: String,
+    ) {
         logger.info("Sending to Kafka topic: {}", topic)
         secureLogger.debug("Sending to Kafka topic: {}\nArbeidsoppfølging: {}", topic, vedtakArbeidsoppfølging)
 
         runCatching {
-            kafkaProducerService.sendMedStønadstypeIHeader(topic, StønadType.valueOf(stønadstype.name), behandlingId.toString(), vedtakArbeidsoppfølging)
+            kafkaProducerService.sendMedStønadstypeIHeader(
+                topic,
+                StønadType.valueOf(stønadstype.name),
+                behandlingId.toString(),
+                vedtakArbeidsoppfølging,
+            )
             logger.info("Arbeidsoppfølging for behandling=$behandlingId sent til Kafka")
         }.onFailure {
             val errorMessage = "Kunne ikke sende vedtak til arbeidsoppfølging topic. Se securelogs for mer informasjon."

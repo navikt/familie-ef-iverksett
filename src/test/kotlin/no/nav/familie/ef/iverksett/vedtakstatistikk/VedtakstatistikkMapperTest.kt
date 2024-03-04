@@ -57,7 +57,6 @@ import java.util.UUID
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEksterneKontrakter
 
 internal class VedtakstatistikkMapperTest {
-
     private val fagsakId: UUID = UUID.randomUUID()
     private val behandlingId: UUID = UUID.randomUUID()
     private val forrigeBehandlingEksternId = 11L
@@ -70,10 +69,11 @@ internal class VedtakstatistikkMapperTest {
 
     @Test
     internal fun `skal mappe iverksett til VedtakOvergangsstønadDVH - sjekk alle felter`() {
-        val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
-            iverksettOvergangsstønad(),
-            forrigeBehandlingEksternId,
-        )
+        val vedtakOvergangsstønadDVH =
+            VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
+                iverksettOvergangsstønad(),
+                forrigeBehandlingEksternId,
+            )
         assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.harSagtOppArbeidsforhold).isFalse()
         assertThat(vedtakOvergangsstønadDVH.aktivitetskrav.aktivitetspliktInntrefferDato).isNull()
         assertThat(vedtakOvergangsstønadDVH.barn).hasSize(2)
@@ -115,53 +115,61 @@ internal class VedtakstatistikkMapperTest {
 
     @Test
     internal fun `skal mappe iverksett med avslagsårsak`() {
-        val vedtakOvergangsstønadDVH = VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
-            iverksettOvergangsstønad().copy(
-                vedtak = vedtaksdetaljerOvergangsstønad(
-                    Vedtaksresultat.AVSLÅTT,
-                    AvslagÅrsak.MINDRE_INNTEKTSENDRINGER,
+        val vedtakOvergangsstønadDVH =
+            VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
+                iverksettOvergangsstønad().copy(
+                    vedtak =
+                        vedtaksdetaljerOvergangsstønad(
+                            Vedtaksresultat.AVSLÅTT,
+                            AvslagÅrsak.MINDRE_INNTEKTSENDRINGER,
+                        ),
                 ),
-            ),
-            forrigeBehandlingEksternId,
-        )
+                forrigeBehandlingEksternId,
+            )
         assertThat(vedtakOvergangsstønadDVH.vedtak).isEqualTo(Vedtak.AVSLÅTT)
         assertThat(vedtakOvergangsstønadDVH.avslagÅrsak).isEqualTo("MINDRE_INNTEKTSENDRINGER")
     }
 
-    private fun iverksettOvergangsstønad() = IverksettOvergangsstønad(
-        fagsak = fagsakdetaljer(),
-        behandling = behandlingsdetaljer(),
-        søker = Søker(
-            personIdent = søker,
-            barn = listOf(
-                Barn(personIdent = barnFnr, termindato = termindato),
-                Barn(termindato = termindato),
-            ),
-            tilhørendeEnhet = "4489",
-            adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
-        ),
-        vedtak = vedtaksdetaljerOvergangsstønad(),
-    )
-
-    @Test
-    internal fun `Map iverksett til VedtakBarnetilsynDVH - sjekk alle barnetilsyn-spesifikke felter`() {
-        val vedtakBarnetilsynDVH = VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(
-            IverksettBarnetilsyn(
-                fagsak = fagsakdetaljer(stønadstype = StønadType.BARNETILSYN),
-                behandling = behandlingsdetaljer(),
-                søker = Søker(
+    private fun iverksettOvergangsstønad() =
+        IverksettOvergangsstønad(
+            fagsak = fagsakdetaljer(),
+            behandling = behandlingsdetaljer(),
+            søker =
+                Søker(
                     personIdent = søker,
-                    barn = listOf(
-                        Barn(personIdent = barnFnr),
-                        Barn(termindato = termindato),
-                    ),
+                    barn =
+                        listOf(
+                            Barn(personIdent = barnFnr, termindato = termindato),
+                            Barn(termindato = termindato),
+                        ),
                     tilhørendeEnhet = "4489",
                     adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
                 ),
-                vedtak = vedtaksdetaljerBarnetilsyn(),
-            ),
-            null,
+            vedtak = vedtaksdetaljerOvergangsstønad(),
         )
+
+    @Test
+    internal fun `Map iverksett til VedtakBarnetilsynDVH - sjekk alle barnetilsyn-spesifikke felter`() {
+        val vedtakBarnetilsynDVH =
+            VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(
+                IverksettBarnetilsyn(
+                    fagsak = fagsakdetaljer(stønadstype = StønadType.BARNETILSYN),
+                    behandling = behandlingsdetaljer(),
+                    søker =
+                        Søker(
+                            personIdent = søker,
+                            barn =
+                                listOf(
+                                    Barn(personIdent = barnFnr),
+                                    Barn(termindato = termindato),
+                                ),
+                            tilhørendeEnhet = "4489",
+                            adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
+                        ),
+                    vedtak = vedtaksdetaljerBarnetilsyn(),
+                ),
+                null,
+            )
 
         assertThat(vedtakBarnetilsynDVH.aktivitetskrav?.name).isEqualTo(AktivitetsvilkårBarnetilsyn.ER_I_ARBEID.name)
         assertThat(vedtakBarnetilsynDVH.fagsakId).isEqualTo(eksternFagsakId)
@@ -189,23 +197,26 @@ internal class VedtakstatistikkMapperTest {
 
     @Test
     internal fun `skal mappe iverksett til VedtakSkolepenger`() {
-        val vedtakSkolepenger = VedtakstatistikkMapper.mapTilVedtakSkolepengeDVH(
-            IverksettSkolepenger(
-                fagsak = fagsakdetaljer(stønadstype = StønadType.BARNETILSYN),
-                behandling = behandlingsdetaljer(),
-                søker = Søker(
-                    personIdent = søker,
-                    barn = listOf(
-                        Barn(personIdent = barnFnr),
-                        Barn(termindato = termindato),
-                    ),
-                    tilhørendeEnhet = "4489",
-                    adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
+        val vedtakSkolepenger =
+            VedtakstatistikkMapper.mapTilVedtakSkolepengeDVH(
+                IverksettSkolepenger(
+                    fagsak = fagsakdetaljer(stønadstype = StønadType.BARNETILSYN),
+                    behandling = behandlingsdetaljer(),
+                    søker =
+                        Søker(
+                            personIdent = søker,
+                            barn =
+                                listOf(
+                                    Barn(personIdent = barnFnr),
+                                    Barn(termindato = termindato),
+                                ),
+                            tilhørendeEnhet = "4489",
+                            adressebeskyttelse = AdressebeskyttelseGradering.STRENGT_FORTROLIG,
+                        ),
+                    vedtak = vedtaksdetaljerSkolepenger(),
                 ),
-                vedtak = vedtaksdetaljerSkolepenger(),
-            ),
-            null,
-        )
+                null,
+            )
 
         assertThat(vedtakSkolepenger.fagsakId).isEqualTo(eksternFagsakId)
         assertThat(vedtakSkolepenger.behandlingId).isEqualTo(eksternBehandlingId)
@@ -266,91 +277,100 @@ internal class VedtakstatistikkMapperTest {
             id = UUID.randomUUID(),
             utbetalingsoppdrag = null,
             status = TilkjentYtelseStatus.OPPRETTET,
-            andelerTilkjentYtelse = listOf(
-                AndelTilkjentYtelse(
-                    beløp = 9000,
-                    periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 5)),
-                    inntekt = 300000,
-                    samordningsfradrag = 1000,
-                    inntektsreduksjon = 11000,
-                    periodeId = 1,
-                    forrigePeriodeId = null,
-                    kildeBehandlingId = behandlingId,
+            andelerTilkjentYtelse =
+                listOf(
+                    AndelTilkjentYtelse(
+                        beløp = 9000,
+                        periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 5)),
+                        inntekt = 300000,
+                        samordningsfradrag = 1000,
+                        inntektsreduksjon = 11000,
+                        periodeId = 1,
+                        forrigePeriodeId = null,
+                        kildeBehandlingId = behandlingId,
+                    ),
+                    AndelTilkjentYtelse(
+                        beløp = 10000,
+                        periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
+                        inntekt = 300000,
+                        samordningsfradrag = 0,
+                        inntektsreduksjon = 11000,
+                        periodeId = 2,
+                        forrigePeriodeId = 1,
+                        kildeBehandlingId = behandlingId,
+                    ),
                 ),
-                AndelTilkjentYtelse(
-                    beløp = 10000,
-                    periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
-                    inntekt = 300000,
-                    samordningsfradrag = 0,
-                    inntektsreduksjon = 11000,
-                    periodeId = 2,
-                    forrigePeriodeId = 1,
-                    kildeBehandlingId = behandlingId,
-                ),
-            ),
             startmåned = YearMonth.now(),
         )
 
-    fun vedtaksdetaljerSkolepenger() = VedtaksdetaljerSkolepenger(
-        vedtaksresultat = Vedtaksresultat.INNVILGET,
-        vedtakstidspunkt = LocalDateTime.now(),
-        opphørÅrsak = null,
-        saksbehandlerId = "A123456",
-        beslutterId = "B123456",
-        tilkjentYtelse = tilkjentYtelse(),
-        vedtaksperioder = listOf(
-            VedtaksperiodeSkolepenger(
-                perioder = listOf(
-                    DelårsperiodeSkoleårSkolepenger(
-                        studietype = SkolepengerStudietype.HØGSKOLE_UNIVERSITET,
-                        periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
-                        studiebelastning = 100,
-                        makssatsForSkoleår = 50000,
+    fun vedtaksdetaljerSkolepenger() =
+        VedtaksdetaljerSkolepenger(
+            vedtaksresultat = Vedtaksresultat.INNVILGET,
+            vedtakstidspunkt = LocalDateTime.now(),
+            opphørÅrsak = null,
+            saksbehandlerId = "A123456",
+            beslutterId = "B123456",
+            tilkjentYtelse = tilkjentYtelse(),
+            vedtaksperioder =
+                listOf(
+                    VedtaksperiodeSkolepenger(
+                        perioder =
+                            listOf(
+                                DelårsperiodeSkoleårSkolepenger(
+                                    studietype = SkolepengerStudietype.HØGSKOLE_UNIVERSITET,
+                                    periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
+                                    studiebelastning = 100,
+                                    makssatsForSkoleår = 50000,
+                                ),
+                            ),
+                        utgiftsperioder =
+                            listOf(
+                                SkolepengerUtgift(
+                                    utgiftsdato = LocalDate.of(2021, 1, 1),
+                                    stønad = 5000,
+                                ),
+                            ),
                     ),
                 ),
-                utgiftsperioder = listOf(
-                    SkolepengerUtgift(
-                        utgiftsdato = LocalDate.of(2021, 1, 1),
-                        stønad = 5000,
-                    ),
-                ),
-            ),
-        ),
-    )
+        )
 
-    fun vedtaksdetaljerBarnetilsyn() = VedtaksdetaljerBarnetilsyn(
-        vedtaksresultat = Vedtaksresultat.INNVILGET,
-        vedtakstidspunkt = LocalDateTime.now(),
-        opphørÅrsak = null,
-        saksbehandlerId = "A123456",
-        beslutterId = "B123456",
-        tilkjentYtelse = tilkjentYtelse(),
-        vedtaksperioder = listOf(
-            VedtaksperiodeBarnetilsyn(
-                periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
-                utgifter = 1000,
-                antallBarn = 1,
-            ),
-            VedtaksperiodeBarnetilsyn(
-                periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
-                utgifter = 2000,
-                antallBarn = 2,
-            ),
-        ),
-        brevmottakere = Brevmottakere(emptyList()),
-        kontantstøtte = listOf(
-            PeriodeMedBeløp(
-                periode = Månedsperiode(YearMonth.of(2021, 5), YearMonth.of(2021, 7)),
-                beløp = 1000,
-            ),
-        ),
-        tilleggsstønad = listOf(
-            PeriodeMedBeløp(
-                periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 8)),
-                beløp = 2000,
-            ),
-        ),
-    )
+    fun vedtaksdetaljerBarnetilsyn() =
+        VedtaksdetaljerBarnetilsyn(
+            vedtaksresultat = Vedtaksresultat.INNVILGET,
+            vedtakstidspunkt = LocalDateTime.now(),
+            opphørÅrsak = null,
+            saksbehandlerId = "A123456",
+            beslutterId = "B123456",
+            tilkjentYtelse = tilkjentYtelse(),
+            vedtaksperioder =
+                listOf(
+                    VedtaksperiodeBarnetilsyn(
+                        periode = Månedsperiode(YearMonth.of(2021, 1), YearMonth.of(2021, 1)),
+                        utgifter = 1000,
+                        antallBarn = 1,
+                    ),
+                    VedtaksperiodeBarnetilsyn(
+                        periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
+                        utgifter = 2000,
+                        antallBarn = 2,
+                    ),
+                ),
+            brevmottakere = Brevmottakere(emptyList()),
+            kontantstøtte =
+                listOf(
+                    PeriodeMedBeløp(
+                        periode = Månedsperiode(YearMonth.of(2021, 5), YearMonth.of(2021, 7)),
+                        beløp = 1000,
+                    ),
+                ),
+            tilleggsstønad =
+                listOf(
+                    PeriodeMedBeløp(
+                        periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 8)),
+                        beløp = 2000,
+                    ),
+                ),
+        )
 
     fun vedtaksdetaljerOvergangsstønad(
         resultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
@@ -365,277 +385,292 @@ internal class VedtakstatistikkMapperTest {
             saksbehandlerId = "A123456",
             beslutterId = "B123456",
             tilkjentYtelse = tilkjentYtelse(),
-            vedtaksperioder = listOf(
-                VedtaksperiodeOvergangsstønad(
-                    aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
-                    periode = Månedsperiode(YearMonth.of(2021, 2), YearMonth.of(2021, 3)),
-                    periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL,
+            vedtaksperioder =
+                listOf(
+                    VedtaksperiodeOvergangsstønad(
+                        aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT,
+                        periode = Månedsperiode(YearMonth.of(2021, 2), YearMonth.of(2021, 3)),
+                        periodeType = VedtaksperiodeType.PERIODE_FØR_FØDSEL,
+                    ),
+                    VedtaksperiodeOvergangsstønad(
+                        aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
+                        periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
+                        periodeType = VedtaksperiodeType.HOVEDPERIODE,
+                    ),
                 ),
-                VedtaksperiodeOvergangsstønad(
-                    aktivitet = AktivitetType.FORSØRGER_I_ARBEID,
-                    periode = Månedsperiode(YearMonth.of(2021, 6), YearMonth.of(2021, 10)),
-                    periodeType = VedtaksperiodeType.HOVEDPERIODE,
-                ),
-            ),
             brevmottakere = Brevmottakere(emptyList()),
             oppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = fremleggsoppgaveTyper),
         )
     }
 
-    private fun lagVilkårsvurderinger(): List<Vilkårsvurdering> = listOf(
-        Vilkårsvurdering(
-            vilkårType = VilkårType.FORUTGÅENDE_MEDLEMSKAP,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    vurderinger = listOf(
-                        Vurdering(
-                            RegelId.SØKER_MEDLEM_I_FOLKETRYGDEN,
-                            SvarId.JA,
-                            null,
-                        ),
-                    ),
-                ),
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    vurderinger = listOf(
-                        Vurdering(
-                            RegelId.MEDLEMSKAP_UNNTAK,
-                            SvarId.NEI,
-                            null,
-                        ),
-                    ),
-                ),
-            ),
-        ),
-
-        Vilkårsvurdering(
-            vilkårType = VilkårType.LOVLIG_OPPHOLD,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    vurderinger = listOf(
-                        Vurdering(
-                            RegelId.BOR_OG_OPPHOLDER_SEG_I_NORGE,
-                            SvarId.JA,
-                            null,
-                        ),
-                    ),
-                ),
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    vurderinger = listOf(
-                        Vurdering(
-                            RegelId.OPPHOLD_UNNTAK,
-                            SvarId.NEI,
-                            null,
-                        ),
-                    ),
-                ),
-            ),
-        ),
-
-        Vilkårsvurdering(
-            vilkårType = VilkårType.MOR_ELLER_FAR,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    Vilkårsresultat.OPPFYLT,
+    private fun lagVilkårsvurderinger(): List<Vilkårsvurdering> =
+        listOf(
+            Vilkårsvurdering(
+                vilkårType = VilkårType.FORUTGÅENDE_MEDLEMSKAP,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
                     listOf(
-                        Vurdering(
-                            RegelId.OMSORG_FOR_EGNE_ELLER_ADOPTERTE_BARN,
-                            SvarId.JA,
-                            null,
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            vurderinger =
+                                listOf(
+                                    Vurdering(
+                                        RegelId.SØKER_MEDLEM_I_FOLKETRYGDEN,
+                                        SvarId.JA,
+                                        null,
+                                    ),
+                                ),
+                        ),
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            vurderinger =
+                                listOf(
+                                    Vurdering(
+                                        RegelId.MEDLEMSKAP_UNNTAK,
+                                        SvarId.NEI,
+                                        null,
+                                    ),
+                                ),
                         ),
                     ),
-                ),
             ),
-        ),
-
-        Vilkårsvurdering(
-            vilkårType = VilkårType.SIVILSTAND,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    Vilkårsresultat.OPPFYLT,
+            Vilkårsvurdering(
+                vilkårType = VilkårType.LOVLIG_OPPHOLD,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
                     listOf(
-                        Vurdering(
-                            RegelId.KRAV_SIVILSTAND_UTEN_PÅKREVD_BEGRUNNELSE,
-                            SvarId.JA,
-                            null,
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            vurderinger =
+                                listOf(
+                                    Vurdering(
+                                        RegelId.BOR_OG_OPPHOLDER_SEG_I_NORGE,
+                                        SvarId.JA,
+                                        null,
+                                    ),
+                                ),
+                        ),
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            vurderinger =
+                                listOf(
+                                    Vurdering(
+                                        RegelId.OPPHOLD_UNNTAK,
+                                        SvarId.NEI,
+                                        null,
+                                    ),
+                                ),
                         ),
                     ),
-                ),
             ),
-        ),
-
-        Vilkårsvurdering(
-            vilkårType = VilkårType.SAMLIV,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
+            Vilkårsvurdering(
+                vilkårType = VilkårType.MOR_ELLER_FAR,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
                     listOf(
-                        Vurdering(
-                            RegelId.LEVER_IKKE_I_EKTESKAPLIGNENDE_FORHOLD,
-                            SvarId.JA,
-                            null,
+                        Delvilkårsvurdering(
+                            Vilkårsresultat.OPPFYLT,
+                            listOf(
+                                Vurdering(
+                                    RegelId.OMSORG_FOR_EGNE_ELLER_ADOPTERTE_BARN,
+                                    SvarId.JA,
+                                    null,
+                                ),
+                            ),
                         ),
                     ),
-                ),
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
+            ),
+            Vilkårsvurdering(
+                vilkårType = VilkårType.SIVILSTAND,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
                     listOf(
-                        Vurdering(
-                            RegelId.LEVER_IKKE_MED_ANNEN_FORELDER,
-                            SvarId.JA,
-                            null,
+                        Delvilkårsvurdering(
+                            Vilkårsresultat.OPPFYLT,
+                            listOf(
+                                Vurdering(
+                                    RegelId.KRAV_SIVILSTAND_UTEN_PÅKREVD_BEGRUNNELSE,
+                                    SvarId.JA,
+                                    null,
+                                ),
+                            ),
                         ),
                     ),
-                ),
             ),
-        ),
-
-        Vilkårsvurdering(
-            vilkårType = VilkårType.ALENEOMSORG,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    vurderinger = listOf(
-                        Vurdering(
-                            RegelId.SKRIFTLIG_AVTALE_OM_DELT_BOSTED,
-                            SvarId.NEI,
-                            null,
-                        ),
-                    ),
-                ),
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    vurderinger = listOf(
-                        Vurdering(
-                            regelId = RegelId.NÆRE_BOFORHOLD,
-                            svar = SvarId.NEI,
-                            begrunnelse = null,
-                        ),
-                    ),
-                ),
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    vurderinger = listOf(
-                        Vurdering(
-                            regelId = RegelId.MER_AV_DAGLIG_OMSORG,
-                            svar = SvarId.JA,
-                            begrunnelse = null,
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        Vilkårsvurdering(
-            vilkårType = VilkårType.ALENEOMSORG,
-            resultat = Vilkårsresultat.SKAL_IKKE_VURDERES,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.SKAL_IKKE_VURDERES,
-                    vurderinger = listOf(),
-                ),
-            ),
-        ),
-
-        Vilkårsvurdering(
-            vilkårType = VilkårType.NYTT_BARN_SAMME_PARTNER,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    Vilkårsresultat.OPPFYLT,
+            Vilkårsvurdering(
+                vilkårType = VilkårType.SAMLIV,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
                     listOf(
-                        Vurdering(
-                            RegelId.HAR_FÅTT_ELLER_VENTER_NYTT_BARN_MED_SAMME_PARTNER,
-                            SvarId.NEI,
-                            null,
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            listOf(
+                                Vurdering(
+                                    RegelId.LEVER_IKKE_I_EKTESKAPLIGNENDE_FORHOLD,
+                                    SvarId.JA,
+                                    null,
+                                ),
+                            ),
+                        ),
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            listOf(
+                                Vurdering(
+                                    RegelId.LEVER_IKKE_MED_ANNEN_FORELDER,
+                                    SvarId.JA,
+                                    null,
+                                ),
+                            ),
                         ),
                     ),
-                ),
             ),
-        ),
-
-        Vilkårsvurdering(
-            vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    vurderinger = listOf(
-                        Vurdering(
-                            regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
-                            svar = SvarId.NEI,
-                            begrunnelse = null,
-                        ),
-                    ),
-                ),
-            ),
-        ),
-
-        Vilkårsvurdering(
-            vilkårType = VilkårType.AKTIVITET,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    resultat = Vilkårsresultat.OPPFYLT,
-                    vurderinger = listOf(
-                        Vurdering(
-                            RegelId.FYLLER_BRUKER_AKTIVITETSPLIKT,
-                            SvarId.JA,
-                            null,
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        Vilkårsvurdering(
-            vilkårType = VilkårType.TIDLIGERE_VEDTAKSPERIODER,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    Vilkårsresultat.OPPFYLT,
+            Vilkårsvurdering(
+                vilkårType = VilkårType.ALENEOMSORG,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
                     listOf(
-                        Vurdering(
-                            RegelId.HAR_TIDLIGERE_ANDRE_STØNADER_SOM_HAR_BETYDNING,
-                            SvarId.NEI,
-                            null,
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            vurderinger =
+                                listOf(
+                                    Vurdering(
+                                        RegelId.SKRIFTLIG_AVTALE_OM_DELT_BOSTED,
+                                        SvarId.NEI,
+                                        null,
+                                    ),
+                                ),
+                        ),
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            vurderinger =
+                                listOf(
+                                    Vurdering(
+                                        regelId = RegelId.NÆRE_BOFORHOLD,
+                                        svar = SvarId.NEI,
+                                        begrunnelse = null,
+                                    ),
+                                ),
+                        ),
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            vurderinger =
+                                listOf(
+                                    Vurdering(
+                                        regelId = RegelId.MER_AV_DAGLIG_OMSORG,
+                                        svar = SvarId.JA,
+                                        begrunnelse = null,
+                                    ),
+                                ),
                         ),
                     ),
-                ),
-                Delvilkårsvurdering(
-                    Vilkårsresultat.OPPFYLT,
-                    listOf(
-                        Vurdering(
-                            RegelId.HAR_TIDLIGERE_MOTTATT_OVERGANSSTØNAD,
-                            SvarId.NEI,
-                            null,
-                        ),
-                    ),
-                ),
             ),
-        ),
-        Vilkårsvurdering(
-            vilkårType = VilkårType.AKTIVITET_ARBEID,
-            resultat = Vilkårsresultat.OPPFYLT,
-            delvilkårsvurderinger = listOf(
-                Delvilkårsvurdering(
-                    Vilkårsresultat.OPPFYLT,
+            Vilkårsvurdering(
+                vilkårType = VilkårType.ALENEOMSORG,
+                resultat = Vilkårsresultat.SKAL_IKKE_VURDERES,
+                delvilkårsvurderinger =
                     listOf(
-                        Vurdering(
-                            RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM,
-                            SvarId.ER_I_ARBEID,
-                            null,
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.SKAL_IKKE_VURDERES,
+                            vurderinger = listOf(),
                         ),
                     ),
-                ),
             ),
-        ),
-    )
+            Vilkårsvurdering(
+                vilkårType = VilkårType.NYTT_BARN_SAMME_PARTNER,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
+                    listOf(
+                        Delvilkårsvurdering(
+                            Vilkårsresultat.OPPFYLT,
+                            listOf(
+                                Vurdering(
+                                    RegelId.HAR_FÅTT_ELLER_VENTER_NYTT_BARN_MED_SAMME_PARTNER,
+                                    SvarId.NEI,
+                                    null,
+                                ),
+                            ),
+                        ),
+                    ),
+            ),
+            Vilkårsvurdering(
+                vilkårType = VilkårType.SAGT_OPP_ELLER_REDUSERT,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
+                    listOf(
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            vurderinger =
+                                listOf(
+                                    Vurdering(
+                                        regelId = RegelId.SAGT_OPP_ELLER_REDUSERT,
+                                        svar = SvarId.NEI,
+                                        begrunnelse = null,
+                                    ),
+                                ),
+                        ),
+                    ),
+            ),
+            Vilkårsvurdering(
+                vilkårType = VilkårType.AKTIVITET,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
+                    listOf(
+                        Delvilkårsvurdering(
+                            resultat = Vilkårsresultat.OPPFYLT,
+                            vurderinger =
+                                listOf(
+                                    Vurdering(
+                                        RegelId.FYLLER_BRUKER_AKTIVITETSPLIKT,
+                                        SvarId.JA,
+                                        null,
+                                    ),
+                                ),
+                        ),
+                    ),
+            ),
+            Vilkårsvurdering(
+                vilkårType = VilkårType.TIDLIGERE_VEDTAKSPERIODER,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
+                    listOf(
+                        Delvilkårsvurdering(
+                            Vilkårsresultat.OPPFYLT,
+                            listOf(
+                                Vurdering(
+                                    RegelId.HAR_TIDLIGERE_ANDRE_STØNADER_SOM_HAR_BETYDNING,
+                                    SvarId.NEI,
+                                    null,
+                                ),
+                            ),
+                        ),
+                        Delvilkårsvurdering(
+                            Vilkårsresultat.OPPFYLT,
+                            listOf(
+                                Vurdering(
+                                    RegelId.HAR_TIDLIGERE_MOTTATT_OVERGANSSTØNAD,
+                                    SvarId.NEI,
+                                    null,
+                                ),
+                            ),
+                        ),
+                    ),
+            ),
+            Vilkårsvurdering(
+                vilkårType = VilkårType.AKTIVITET_ARBEID,
+                resultat = Vilkårsresultat.OPPFYLT,
+                delvilkårsvurderinger =
+                    listOf(
+                        Delvilkårsvurdering(
+                            Vilkårsresultat.OPPFYLT,
+                            listOf(
+                                Vurdering(
+                                    RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM,
+                                    SvarId.ER_I_ARBEID,
+                                    null,
+                                ),
+                            ),
+                        ),
+                    ),
+            ),
+        )
 }

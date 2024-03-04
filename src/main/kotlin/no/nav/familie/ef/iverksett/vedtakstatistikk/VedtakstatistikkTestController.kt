@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController
 class VedtakstatistikkTestController(
     private val vedtakstatistikkService: VedtakstatistikkService,
 ) {
-
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun sendStatistikk(@RequestBody data: IverksettDto) {
+    fun sendStatistikk(
+        @RequestBody data: IverksettDto,
+    ) {
         vedtakstatistikkService.sendTilKafka(data.toDomain(), null)
     }
 }

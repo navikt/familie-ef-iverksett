@@ -26,7 +26,6 @@ import java.util.UUID
  * så hjelper det sannsynligvis å reloade maven dependencies.
  */
 class IverksettJsonTransformTest {
-
     @Test
     fun `deserialiser overgangsstønad JSON til IverksettDtoJson, kall toDomain, forvent likhet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
@@ -90,7 +89,10 @@ class IverksettJsonTransformTest {
         parseJsonMedFeilStønadstype(filnavn, stønadType)
     }
 
-    private fun parseJsonMedFeilStønadstype(filnavn: String, stønadType: StønadType) {
+    private fun parseJsonMedFeilStønadstype(
+        filnavn: String,
+        stønadType: StønadType,
+    ) {
         val json: String = ResourceLoaderTestUtil.readResource(filnavn)
         val tree = objectMapper.readTree(json)
         (tree.get("fagsak") as ObjectNode).put("stønadstype", stønadType.name)

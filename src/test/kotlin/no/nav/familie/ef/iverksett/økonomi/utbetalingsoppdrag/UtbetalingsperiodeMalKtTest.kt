@@ -9,7 +9,6 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 internal class UtbetalingsperiodeMalKtTest {
-
     @Test
     fun `skal mappe stønadstype til riktig satstype`() {
         assertThat(mapSatstype(StønadType.OVERGANGSSTØNAD)).isEqualTo(Utbetalingsperiode.SatsType.MND)
@@ -31,12 +30,13 @@ internal class UtbetalingsperiodeMalKtTest {
 
     private fun lagUtbetalingsperiode(stønadType: StønadType) =
         lagPeriodeFraAndel(
-            andel = lagAndelTilkjentYtelse(
-                beløp = 10,
-                fraOgMed = YearMonth.now(),
-                tilOgMed = YearMonth.now(),
-                periodeId = 1,
-            ),
+            andel =
+                lagAndelTilkjentYtelse(
+                    beløp = 10,
+                    fraOgMed = YearMonth.now(),
+                    tilOgMed = YearMonth.now(),
+                    periodeId = 1,
+                ),
             type = stønadType,
             eksternBehandlingId = 1,
             vedtaksdato = LocalDate.now(),

@@ -17,7 +17,6 @@ import java.math.BigDecimal
 import java.util.UUID
 
 internal class TilbakekrevingMapperTest {
-
     @Test
     fun `konverter Iverksetting til OpprettTilbakekrevingRequest`() {
         val behandlingsId = UUID.randomUUID()
@@ -77,36 +76,41 @@ internal class TilbakekrevingMapperTest {
 
     @Test
     fun `skal validere at tilbakekreving med varsel ikker gyldig uten varseltekst`() {
-        val tilbakekreving = Tilbakekrevingsdetaljer(
-            tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-            tilbakekrevingMedVarsel = null,
-        )
+        val tilbakekreving =
+            Tilbakekrevingsdetaljer(
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+                tilbakekrevingMedVarsel = null,
+            )
         assertThat(tilbakekreving.validerTilbakekreving()).isFalse
     }
 
     @Test
     fun `skal validere at tilbakekreving med varsel ikke er gyldig uten sumFeilutbetaling`() {
-        val tilbakekreving = Tilbakekrevingsdetaljer(
-            tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-            tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
-                varseltekst = "",
-                perioder = emptyList(),
-                sumFeilutbetaling = null,
-            ),
-        )
+        val tilbakekreving =
+            Tilbakekrevingsdetaljer(
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+                tilbakekrevingMedVarsel =
+                    TilbakekrevingMedVarsel(
+                        varseltekst = "",
+                        perioder = emptyList(),
+                        sumFeilutbetaling = null,
+                    ),
+            )
         assertThat(tilbakekreving.validerTilbakekreving()).isFalse
     }
 
     @Test
     fun `skal validere at tilbakekreving med varsel ikke er gyldig uten perioder`() {
-        val tilbakekreving = Tilbakekrevingsdetaljer(
-            tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-            tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
-                varseltekst = "",
-                perioder = null,
-                sumFeilutbetaling = BigDecimal.ZERO,
-            ),
-        )
+        val tilbakekreving =
+            Tilbakekrevingsdetaljer(
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+                tilbakekrevingMedVarsel =
+                    TilbakekrevingMedVarsel(
+                        varseltekst = "",
+                        perioder = null,
+                        sumFeilutbetaling = BigDecimal.ZERO,
+                    ),
+            )
         assertThat(tilbakekreving.validerTilbakekreving()).isFalse
     }
 
@@ -128,14 +132,16 @@ internal class TilbakekrevingMapperTest {
 
     @Test
     fun `skal validere at tilbakekreving uten varsel ignorerer feil i varsel-data`() {
-        val tilbakekrevingsdetaljer = Tilbakekrevingsdetaljer(
-            tilbakekrevingMedVarsel = TilbakekrevingMedVarsel(
-                varseltekst = "",
-                sumFeilutbetaling = null,
-                perioder = null,
-            ),
-            tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
-        )
+        val tilbakekrevingsdetaljer =
+            Tilbakekrevingsdetaljer(
+                tilbakekrevingMedVarsel =
+                    TilbakekrevingMedVarsel(
+                        varseltekst = "",
+                        sumFeilutbetaling = null,
+                        perioder = null,
+                    ),
+                tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+            )
 
         assertThat(
             tilbakekrevingsdetaljer

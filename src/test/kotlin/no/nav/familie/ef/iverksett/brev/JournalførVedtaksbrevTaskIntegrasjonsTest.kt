@@ -34,7 +34,6 @@ import java.util.Properties
 import java.util.UUID
 
 class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
-
     @Autowired
     private lateinit var iverksettResultatService: IverksettResultatService
 
@@ -61,39 +60,43 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
 
     @PostConstruct
     fun init() {
-        journalførVedtaksbrevTask = JournalførVedtaksbrevTask(
-            iverksettingRepository = iverksettingRepository,
-            journalpostClient = journalpostClient,
-            taskService = taskService,
-            iverksettResultatService = iverksettResultatService,
-        )
+        journalførVedtaksbrevTask =
+            JournalførVedtaksbrevTask(
+                iverksettingRepository = iverksettingRepository,
+                journalpostClient = journalpostClient,
+                taskService = taskService,
+                iverksettResultatService = iverksettResultatService,
+            )
     }
 
     @Test
     fun `skal oppdatere journalpostresultat for brevmottakere`() {
         val identA = "123"
         val identB = "321"
-        val iverksettMedBrevmottakere = iverksett.copy(
-            vedtak =
-            iverksett.vedtak.copy(
-                brevmottakere = Brevmottakere(
-                    mottakere = listOf(
-                        Brevmottaker(
-                            ident = identA,
-                            navn = "Navn",
-                            identType = PERSONIDENT,
-                            mottakerRolle = BRUKER,
-                        ),
-                        Brevmottaker(
-                            ident = identB,
-                            navn = "Navn",
-                            identType = PERSONIDENT,
-                            mottakerRolle = VERGE,
-                        ),
+        val iverksettMedBrevmottakere =
+            iverksett.copy(
+                vedtak =
+                    iverksett.vedtak.copy(
+                        brevmottakere =
+                            Brevmottakere(
+                                mottakere =
+                                    listOf(
+                                        Brevmottaker(
+                                            ident = identA,
+                                            navn = "Navn",
+                                            identType = PERSONIDENT,
+                                            mottakerRolle = BRUKER,
+                                        ),
+                                        Brevmottaker(
+                                            ident = identB,
+                                            navn = "Navn",
+                                            identType = PERSONIDENT,
+                                            mottakerRolle = VERGE,
+                                        ),
+                                    ),
+                            ),
                     ),
-                ),
-            ),
-        )
+            )
         val behandlingId = iverksettMedBrevmottakere.behandling.behandlingId
         iverksettResultatService.opprettTomtResultat(behandlingId)
         iverksettingRepository.insert(
@@ -204,7 +207,10 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
         }
     }
 
-    private fun verifiserKallTilDokarkivMedIdent(ident: String, antall: Int = 1) {
+    private fun verifiserKallTilDokarkivMedIdent(
+        ident: String,
+        antall: Int = 1,
+    ) {
         wireMockServer.verify(
             antall,
             WireMock.postRequestedFor(WireMock.urlMatching(journalpostClientMock.journalføringPath()))

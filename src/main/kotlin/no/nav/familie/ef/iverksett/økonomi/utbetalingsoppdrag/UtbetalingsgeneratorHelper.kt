@@ -7,12 +7,10 @@ import no.nav.familie.felles.utbetalingsgenerator.domain.Ytelsestype
 import java.time.LocalDateTime
 
 object UtbetalingsgeneratorHelper {
-
     enum class FagsystemEF(
         override val kode: String,
         override val gyldigeSatstyper: Set<Ytelsestype>,
     ) : Fagsystem {
-
         OVERGANGSSTØNAD("EFOG", setOf(YtelsestypeEF.OVERGANGSSTØNAD)),
         SKOLEPENGER("EFSP", setOf(YtelsestypeEF.SKOLEPENGER)),
         BARNETILSYN("EFBT", setOf(YtelsestypeEF.BARNETILSYN)),
@@ -22,7 +20,6 @@ object UtbetalingsgeneratorHelper {
         override val klassifisering: String,
         override val satsType: SatsType = SatsType.MND,
     ) : Ytelsestype {
-
         OVERGANGSSTØNAD("EFOG"),
         BARNETILSYN("EFBT"),
         SKOLEPENGER("EFSP", SatsType.ENG),

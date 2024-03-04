@@ -14,7 +14,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 
 class FrittståendeBrevControllerTest : ServerTest() {
-
     @BeforeEach
     fun setUp() {
         headers.setBearerAuth(lokalTestToken)
@@ -28,17 +27,19 @@ class FrittståendeBrevControllerTest : ServerTest() {
         val brevDto1 = brevDto(eksternFagsakId, 1L)
         val brevDto2 = brevDto(eksternFagsakId, 2L)
 
-        val respons: ResponseEntity<Ressurs<Unit>> = restTemplate.exchange(
-            localhostUrl("/api/brev/frittstaende/innhenting-karakterutskrift"),
-            HttpMethod.POST,
-            HttpEntity(brevDto1, headers),
-        )
+        val respons: ResponseEntity<Ressurs<Unit>> =
+            restTemplate.exchange(
+                localhostUrl("/api/brev/frittstaende/innhenting-karakterutskrift"),
+                HttpMethod.POST,
+                HttpEntity(brevDto1, headers),
+            )
 
-        val respons2: ResponseEntity<Ressurs<Unit>> = restTemplate.exchange(
-            localhostUrl("/api/brev/frittstaende/innhenting-karakterutskrift"),
-            HttpMethod.POST,
-            HttpEntity(brevDto2, headers),
-        )
+        val respons2: ResponseEntity<Ressurs<Unit>> =
+            restTemplate.exchange(
+                localhostUrl("/api/brev/frittstaende/innhenting-karakterutskrift"),
+                HttpMethod.POST,
+                HttpEntity(brevDto2, headers),
+            )
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(respons2.statusCode.value()).isEqualTo(400)
         assertThat(respons2.body?.melding).contains("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=")

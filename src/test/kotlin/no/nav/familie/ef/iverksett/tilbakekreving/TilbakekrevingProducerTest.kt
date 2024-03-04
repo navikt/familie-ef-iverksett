@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class TilbakekrevingProducerTest {
-
     private val tilbakekrevingProducer = mockk<TilbakekrevingProducer>()
     private val kafkaProducerService = mockk<KafkaProducerService>()
     private val behandling = mockk<HentFagsystemsbehandlingRespons>()

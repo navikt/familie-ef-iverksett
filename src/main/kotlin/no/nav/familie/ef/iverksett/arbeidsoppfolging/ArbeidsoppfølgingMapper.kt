@@ -11,10 +11,7 @@ import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.VedtakOvergangsstøn
 import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Vedtaksresultat
 
 object ArbeidsoppfølgingMapper {
-
-    fun mapTilVedtakOvergangsstønadTilArbeidsoppfølging(
-        iverksett: IverksettOvergangsstønad,
-    ): VedtakOvergangsstønadArbeidsoppfølging {
+    fun mapTilVedtakOvergangsstønadTilArbeidsoppfølging(iverksett: IverksettOvergangsstønad): VedtakOvergangsstønadArbeidsoppfølging {
         return VedtakOvergangsstønadArbeidsoppfølging(
             vedtakId = iverksett.behandling.eksternId,
             personIdent = iverksett.søker.personIdent,

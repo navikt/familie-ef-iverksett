@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
 internal class LagreIverksettResultatServiceTest : ServerTest() {
-
     @Autowired
     private lateinit var tilstandRepositoryService: IverksettResultatService
 
@@ -77,8 +76,9 @@ internal class LagreIverksettResultatServiceTest : ServerTest() {
 
     @Test
     fun `oppdater tilbakekrevingsresultat, forvent ingen unntak`() {
-        val opprettTilbakekrevingRequest = opprettIverksettOvergangsstønad(behandlingsId)
-            .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
+        val opprettTilbakekrevingRequest =
+            opprettIverksettOvergangsstønad(behandlingsId)
+                .tilOpprettTilbakekrevingRequest(Enhet("1", "Enhet"))
 
         tilstandRepositoryService.oppdaterTilbakekrevingResultat(
             behandlingsId,

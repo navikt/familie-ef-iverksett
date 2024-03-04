@@ -40,7 +40,6 @@ class OpprettTilbakekrevingTask(
     private val familieIntegrasjonerClient: FamilieIntegrasjonerClient,
     private val simuleringskontrollService: SimuleringskontrollService,
 ) : AsyncTaskStep {
-
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun doTask(task: Task) {
@@ -123,14 +122,15 @@ class OpprettTilbakekrevingTask(
     private fun lagTilbakekrevingRequest(iverksett: IverksettData): OpprettTilbakekrevingRequest {
         // Henter ut på nytt, selv om noe finnes i iverksett-dto'en
         val enhet = familieIntegrasjonerClient.hentBehandlendeEnhetForBehandlingMedRelasjoner(iverksett.søker.personIdent).firstOrNull()
-        return iverksett.tilOpprettTilbakekrevingRequest(enhet ?: error("Kan ikke finne behandlende enhet for behandling=${iverksett.behandling.behandlingId}"))
+        return iverksett.tilOpprettTilbakekrevingRequest(
+            enhet ?: error("Kan ikke finne behandlende enhet for behandling=${iverksett.behandling.behandlingId}"),
+        )
     }
 
     private fun finnesÅpenTilbakekrevingsbehandling(nyIverksett: IverksettData): Boolean =
         tilbakekrevingClient.finnesÅpenBehandling(nyIverksett.fagsak.eksternId)
 
     companion object {
-
         const val TYPE = "opprettTilbakekrevingsbehandling"
     }
 }

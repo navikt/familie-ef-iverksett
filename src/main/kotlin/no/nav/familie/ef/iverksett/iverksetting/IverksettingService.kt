@@ -35,9 +35,11 @@ class IverksettingService(
     val iverksettResultatService: IverksettResultatService,
     val featureToggleService: FeatureToggleService,
 ) {
-
     @Transactional
-    fun startIverksetting(iverksett: IverksettData, brev: Brev?) {
+    fun startIverksetting(
+        iverksett: IverksettData,
+        brev: Brev?,
+    ) {
         if (featureToggleService.isEnabled("familie.ef.iverksett.stopp-iverksetting")) {
             error("Iverksetting er skrudd av - kan derfor ikke iverksette akkurat nå")
         }
@@ -56,12 +58,13 @@ class IverksettingService(
             Task(
                 type = førsteHovedflytTask(iverksett),
                 payload = iverksett.behandling.behandlingId.toString(),
-                properties = Properties().apply {
-                    this["personIdent"] = iverksett.søker.personIdent
-                    this["behandlingId"] = iverksett.behandling.behandlingId.toString()
-                    this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
-                    this["beslutter"] = iverksett.vedtak.beslutterId
-                },
+                properties =
+                    Properties().apply {
+                        this["personIdent"] = iverksett.søker.personIdent
+                        this["behandlingId"] = iverksett.behandling.behandlingId.toString()
+                        this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                        this["beslutter"] = iverksett.vedtak.beslutterId
+                    },
             ),
         )
     }
@@ -74,26 +77,29 @@ class IverksettingService(
             Task(
                 type = førstePubliseringsflytTask(iverksettDbo.data),
                 payload = behandlingId.toString(),
-                properties = Properties().apply {
-                    this["personIdent"] = iverksettDbo.data.søker.personIdent
-                    this["behandlingId"] = behandlingId.toString()
-                    this["saksbehandler"] = iverksettDbo.data.vedtak.saksbehandlerId
-                    this["beslutter"] = iverksettDbo.data.vedtak.beslutterId
-                },
+                properties =
+                    Properties().apply {
+                        this["personIdent"] = iverksettDbo.data.søker.personIdent
+                        this["behandlingId"] = behandlingId.toString()
+                        this["saksbehandler"] = iverksettDbo.data.vedtak.saksbehandlerId
+                        this["beslutter"] = iverksettDbo.data.vedtak.beslutterId
+                    },
             ),
         )
     }
 
-    private fun førstePubliseringsflytTask(iverksett: IverksettData) = when {
-        iverksett.erGOmregning() || iverksett.erSatsendring() -> VedtakstatistikkTask.TYPE
-        erIverksettingUtenVedtaksperioder(iverksett) -> OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE
-        else -> publiseringsflyt().first().type
-    }
+    private fun førstePubliseringsflytTask(iverksett: IverksettData) =
+        when {
+            iverksett.erGOmregning() || iverksett.erSatsendring() -> VedtakstatistikkTask.TYPE
+            erIverksettingUtenVedtaksperioder(iverksett) -> OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE
+            else -> publiseringsflyt().first().type
+        }
 
-    private fun førsteHovedflytTask(iverksett: IverksettData) = when {
-        erIverksettingUtenVedtaksperioder(iverksett) -> JournalførVedtaksbrevTask.TYPE
-        else -> hovedflyt().first().type
-    }
+    private fun førsteHovedflytTask(iverksett: IverksettData) =
+        when {
+            erIverksettingUtenVedtaksperioder(iverksett) -> JournalførVedtaksbrevTask.TYPE
+            else -> hovedflyt().first().type
+        }
 
     private fun erIverksettingUtenVedtaksperioder(iverksett: IverksettData) =
         iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT
@@ -130,11 +136,12 @@ class IverksettingService(
         eksternBehandlingId: Long,
         behandlingId: UUID,
     ) {
-        val oppdragId = OppdragId(
-            fagsystem = stønadstype.tilKlassifisering(),
-            personIdent = personIdent,
-            behandlingsId = eksternBehandlingId.toString(),
-        )
+        val oppdragId =
+            OppdragId(
+                fagsystem = stønadstype.tilKlassifisering(),
+                personIdent = personIdent,
+                behandlingsId = eksternBehandlingId.toString(),
+            )
 
         val (status, melding) = oppdragClient.hentStatus(oppdragId)
 

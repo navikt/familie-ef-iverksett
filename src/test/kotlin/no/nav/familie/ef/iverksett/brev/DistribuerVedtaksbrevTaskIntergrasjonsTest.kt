@@ -19,7 +19,6 @@ import java.util.Properties
 import java.util.UUID
 
 class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
-
     @Autowired
     private lateinit var iverksettResultatService: IverksettResultatService
 
@@ -43,11 +42,12 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
 
     @PostConstruct
     fun init() {
-        distribuerVedtaksbrevTask = DistribuerVedtaksbrevTask(
-            journalpostClient = journalpostClient,
-            iverksettResultatService = iverksettResultatService,
-            taskService = taskService,
-        )
+        distribuerVedtaksbrevTask =
+            DistribuerVedtaksbrevTask(
+                journalpostClient = journalpostClient,
+                iverksettResultatService = iverksettResultatService,
+                taskService = taskService,
+            )
     }
 
     @Test
@@ -127,7 +127,10 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         }
     }
 
-    private fun verifiserKallTilDokarkivMedIdent(journalpostId: String, antall: Int = 1) {
+    private fun verifiserKallTilDokarkivMedIdent(
+        journalpostId: String,
+        antall: Int = 1,
+    ) {
         wireMockServer.verify(
             antall,
             WireMock.postRequestedFor(WireMock.urlMatching(journalpostClientMock.distribuerPath()))
@@ -135,7 +138,10 @@ class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
         )
     }
 
-    private fun settOppTilstandsrepository(behandlingId: UUID, mottakereMedJournalpost: List<Pair<String, String>>) {
+    private fun settOppTilstandsrepository(
+        behandlingId: UUID,
+        mottakereMedJournalpost: List<Pair<String, String>>,
+    ) {
         val resultat = iverksettResultatService.hentIverksettResultat(behandlingId)
         if (resultat == null) iverksettResultatService.opprettTomtResultat(behandlingId)
 

@@ -74,27 +74,31 @@ fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simul
         }
 }
 
-fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode> = when (stønadType) {
-    StønadType.OVERGANGSSTØNAD -> setOf(
-        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
-        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
-        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING,
-        FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD,
-    )
+fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode> =
+    when (stønadType) {
+        StønadType.OVERGANGSSTØNAD ->
+            setOf(
+                FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
+                FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
+                FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING,
+                FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD,
+            )
 
-    StønadType.BARNETILSYN -> setOf(
-        FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN,
-        FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_INFOTRYGD,
-        FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
-        FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING,
-    )
+        StønadType.BARNETILSYN ->
+            setOf(
+                FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN,
+                FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_INFOTRYGD,
+                FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
+                FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING,
+            )
 
-    StønadType.SKOLEPENGER -> setOf(
-        FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER,
-        FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER_INFOTRYGD,
-        FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
-    )
-}
+        StønadType.SKOLEPENGER ->
+            setOf(
+                FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER,
+                FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER_INFOTRYGD,
+                FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
+            )
+    }
 
 private fun hentNyttBeløp(posteringer: List<SimulertPostering>) =
     posteringer.sumBarePositiv(YTELSE) - posteringer.sumBarePositiv(FEILUTBETALING)
@@ -117,16 +121,20 @@ private fun hentEtterbetaling(posteringer: List<SimulertPostering>) =
         else -> hentResultat(posteringer) + posteringer.sumBareNegativ(FEILUTBETALING)
     }
 
-private fun hentTotalEtterbetaling(simuleringsperioder: List<Simuleringsperiode>, fomDatoNestePeriode: LocalDate?) =
-    simuleringsperioder
-        .filter { fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode }
-        .sumOf { it.etterbetaling ?: ZERO }
-        .let { maxOf(it, ZERO) }
+private fun hentTotalEtterbetaling(
+    simuleringsperioder: List<Simuleringsperiode>,
+    fomDatoNestePeriode: LocalDate?,
+) = simuleringsperioder
+    .filter { fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode }
+    .sumOf { it.etterbetaling ?: ZERO }
+    .let { maxOf(it, ZERO) }
 
-private fun hentTotalFeilutbetaling(simuleringsperioder: List<Simuleringsperiode>, fomDatoNestePeriode: LocalDate?) =
-    simuleringsperioder
-        .filter { fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode }
-        .sumOf { it.feilutbetaling }
+private fun hentTotalFeilutbetaling(
+    simuleringsperioder: List<Simuleringsperiode>,
+    fomDatoNestePeriode: LocalDate?,
+) = simuleringsperioder
+    .filter { fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode }
+    .sumOf { it.feilutbetaling }
 
 private fun List<SimulertPostering>.sumBarePositiv(type: PosteringType) =
     this.filter { it.posteringType == type && it.beløp > ZERO }.sumOf { it.beløp }
@@ -141,7 +149,6 @@ private data class PeriodeMedForfall(
 )
 
 private object SimuleringsperiodeEtterbetaling {
-
     // Simuleringsperiode mangler etterbetaling. Dette er et lite påbygg for å emulere at det finnes.
     fun Simuleringsperiode.medEtterbetaling(etterbetaling: BigDecimal?): Simuleringsperiode {
         simuleringsperiodeEtterbetalingMap[this] = etterbetaling
@@ -178,8 +185,10 @@ fun Simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(): List<
     }
 }
 
-private fun erPerioderSammenhengende(gjeldendePeriode: Datoperiode, nestePeriode: Datoperiode) =
-    gjeldendePeriode.tom.plusDays(1) == nestePeriode.fom
+private fun erPerioderSammenhengende(
+    gjeldendePeriode: Datoperiode,
+    nestePeriode: Datoperiode,
+) = gjeldendePeriode.tom.plusDays(1) == nestePeriode.fom
 
 private fun FagOmrådeKode.gjelderManuellPostering(): Boolean {
     return this.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING.name ||

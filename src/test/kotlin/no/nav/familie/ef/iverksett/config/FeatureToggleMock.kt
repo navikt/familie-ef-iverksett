@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Profile
 @Profile("servertest")
 @Configuration
 class FeatureToggleMock {
-
     @Bean
     @Primary
     fun featureToggleService(): FeatureToggleService {

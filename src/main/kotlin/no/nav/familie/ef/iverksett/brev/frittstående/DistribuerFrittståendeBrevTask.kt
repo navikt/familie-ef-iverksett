@@ -38,11 +38,12 @@ class DistribuerFrittståendeBrevTask(
     private val journalpostClient: JournalpostClient,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
-
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private sealed class Resultat
+
     private object OK : Resultat()
+
     private data class Dødsbo(val melding: String) : Resultat()
 
     override fun doTask(task: Task) {
@@ -74,14 +75,17 @@ class DistribuerFrittståendeBrevTask(
                 when (cause) {
                     is HttpClientErrorException.Gone -> resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
                     is HttpClientErrorException.Conflict -> {
-                        logger.warn("Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}")
-                        val response: DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
-                        frittståendeBrev = oppdaterOgLagreresultat(
-                            frittståendeBrev,
-                            journalpostResultat,
-                            response.bestillingsId,
-                            frittståendeBrevId,
+                        logger.warn(
+                            "Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}",
                         )
+                        val response: DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
+                        frittståendeBrev =
+                            oppdaterOgLagreresultat(
+                                frittståendeBrev,
+                                journalpostResultat,
+                                response.bestillingsId,
+                                frittståendeBrevId,
+                            )
                     }
                     else -> throw e
                 }
@@ -115,17 +119,19 @@ class DistribuerFrittståendeBrevTask(
         return frittståendeBrev.copy(distribuerBrevResultat = DistribuerBrevResultatMap(oppdaterteDistribuerBrevResultat))
     }
 
-    private fun distribuerBrev(
-        journalpostResultat: JournalpostResultat,
-    ): String {
+    private fun distribuerBrev(journalpostResultat: JournalpostResultat): String {
         val bestillingId = journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VIKTIG)
         loggBrevDistribuert(journalpostResultat.journalpostId, bestillingId)
         return bestillingId
     }
 
-    private fun håndterDødsbo(task: Task, dødsbo: Dødsbo) {
-        val antallRekjørSenerePgaDødsbo = taskService.findTaskLoggByTaskId(task.id)
-            .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
+    private fun håndterDødsbo(
+        task: Task,
+        dødsbo: Dødsbo,
+    ) {
+        val antallRekjørSenerePgaDødsbo =
+            taskService.findTaskLoggByTaskId(task.id)
+                .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 7) {
             logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
             throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))
@@ -142,7 +148,10 @@ class DistribuerFrittståendeBrevTask(
         return frittståendeBrev
     }
 
-    private fun loggBrevDistribuert(journalpostId: String, bestillingId: String) {
+    private fun loggBrevDistribuert(
+        journalpostId: String,
+        bestillingId: String,
+    ) {
         logger.info(
             "Distribuer frittstående brev journalpost=[$journalpostId] " +
                 "med bestillingId=[$bestillingId]",
@@ -150,7 +159,6 @@ class DistribuerFrittståendeBrevTask(
     }
 
     companion object {
-
         const val TYPE = "distribuerFrittståendeBrev"
     }
 }

@@ -12,10 +12,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.LocalDate
 import java.time.YearMonth
-import java.util.*
+import java.util.UUID
 
 class ArbeidsoppfølgingMapperTest {
-
     @Test
     fun mapTilVedtakOvergangsstønadTilArbeidsoppfølging() {
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID())
@@ -28,12 +27,13 @@ class ArbeidsoppfølgingMapperTest {
         assertThat(vedtakTilArbeidsoppfølging.vedtaksresultat).isEqualTo(Vedtaksresultat.INNVILGET)
         assertThat(vedtakTilArbeidsoppfølging.personIdent).isEqualTo(iverksett.søker.personIdent)
 
-        val forventetPeriode = Periode(
-            lagMånedsperiode(YearMonth.now()).fomDato,
-            lagMånedsperiode(YearMonth.now()).tomDato,
-            Periodetype.HOVEDPERIODE,
-            Aktivitetstype.BARNET_ER_SYKT,
-        )
+        val forventetPeriode =
+            Periode(
+                lagMånedsperiode(YearMonth.now()).fomDato,
+                lagMånedsperiode(YearMonth.now()).tomDato,
+                Periodetype.HOVEDPERIODE,
+                Aktivitetstype.BARNET_ER_SYKT,
+            )
 
         assertThat(vedtakTilArbeidsoppfølging.periode).isEqualTo(listOf(forventetPeriode))
 

@@ -49,10 +49,11 @@ val Simuleringsoppsummering.harFeilutbetaling: Boolean
 
 fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringsoppsummering): Tilbakekrevingsdetaljer {
     return this.copy(
-        tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel
-            ?.copy(
-                sumFeilutbetaling = simuleringsoppsummering.feilutbetaling,
-                perioder = simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(),
-            ),
+        tilbakekrevingMedVarsel =
+            this.tilbakekrevingMedVarsel
+                ?.copy(
+                    sumFeilutbetaling = simuleringsoppsummering.feilutbetaling,
+                    perioder = simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(),
+                ),
     )
 }

@@ -9,14 +9,18 @@ import java.util.Locale
 
 private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
-fun mapIverksettTilVedtakHendelser(iverksettData: IverksettData, aktørId: String): VedtakHendelser {
+fun mapIverksettTilVedtakHendelser(
+    iverksettData: IverksettData,
+    aktørId: String,
+): VedtakHendelser {
     return VedtakHendelser(
         aktoerID = aktørId,
         avslutningsstatus = mapAvslutningsstatus(iverksettData.vedtak.vedtaksresultat),
-        behandlingstema = Behandlingstema.valueOf(
-            iverksettData.fagsak.stønadstype.name.lowercase(Locale.getDefault())
-                .replaceFirstChar { it.uppercase() },
-        ).value,
+        behandlingstema =
+            Behandlingstema.valueOf(
+                iverksettData.fagsak.stønadstype.name.lowercase(Locale.getDefault())
+                    .replaceFirstChar { it.uppercase() },
+            ).value,
         hendelsesprodusentREF = "EF",
         applikasjonSakREF = iverksettData.fagsak.eksternId.toString(),
         hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter),

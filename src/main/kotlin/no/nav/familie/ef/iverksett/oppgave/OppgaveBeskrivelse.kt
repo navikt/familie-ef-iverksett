@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object OppgaveBeskrivelse {
-
     fun beskrivelseFørstegangsbehandlingInnvilget(
         periode: Pair<LocalDate, LocalDate>,
         vedtak: VedtaksperiodeOvergangsstønad,

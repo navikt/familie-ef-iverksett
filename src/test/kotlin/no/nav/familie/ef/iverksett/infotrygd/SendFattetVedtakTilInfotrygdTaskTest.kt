@@ -22,7 +22,6 @@ import java.time.LocalDate
 import java.util.UUID
 
 internal class SendFattetVedtakTilInfotrygdTaskTest {
-
     private val infotrygdFeedClient = mockk<InfotrygdFeedClient>(relaxed = true)
     private val familieIntegrasjonerClient = mockk<FamilieIntegrasjonerClient>(relaxed = true)
     private val iverksettingRepository = mockk<IverksettingRepository>()
@@ -34,16 +33,18 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
     private val iverksettData = opprettIverksettOvergangsstønad(behandlingId)
     private val personIdent = iverksettData.søker.personIdent
     private val historiskPersonIdent = "2"
-    private val perioder = listOf(
-        Månedsperiode(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
-        Månedsperiode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)),
-        Månedsperiode(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 31)),
-    )
+    private val perioder =
+        listOf(
+            Månedsperiode(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31)),
+            Månedsperiode(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 31)),
+            Månedsperiode(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 31)),
+        )
 
-    private val identer = listOf(
-        PersonIdentMedHistorikk(personIdent, false),
-        PersonIdentMedHistorikk(historiskPersonIdent, true),
-    )
+    private val identer =
+        listOf(
+            PersonIdentMedHistorikk(personIdent, false),
+            PersonIdentMedHistorikk(historiskPersonIdent, true),
+        )
 
     @Test
     internal fun `skal sende fattet vedtak til infotrygd med første perioden i andelene`() {
@@ -62,9 +63,10 @@ internal class SendFattetVedtakTilInfotrygdTaskTest {
     private fun opprettIverksettMedTilkjentYtelse(): Iverksett {
         val vedtak = iverksettData.vedtak
         val tilkjentYtelse = vedtak.tilkjentYtelse
-        val andelerTilkjentYtelse = perioder.map {
-            lagAndelTilkjentYtelse(1, it.fom, it.tom)
-        }
+        val andelerTilkjentYtelse =
+            perioder.map {
+                lagAndelTilkjentYtelse(1, it.fom, it.tom)
+            }
 
         val nyTilkjentYtelse = tilkjentYtelse!!.copy(andelerTilkjentYtelse = andelerTilkjentYtelse)
         return Iverksett(

@@ -23,7 +23,6 @@ class KonsistensavstemmingService(
     private val oppdragKlient: OppdragClient,
     private val iverksettResultatService: IverksettResultatService,
 ) {
-
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     fun sendKonsistensavstemming(
@@ -34,11 +33,12 @@ class KonsistensavstemmingService(
     ) {
         try {
             val utbetalingsoppdrag = lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto)
-            val konsistensavstemmingUtbetalingsoppdrag = UtbetalingsgeneratorHelper.KonsistensavstemmingUtbetalingsoppdrag(
-                fagsystem = konsistensavstemmingDto.stønadType.tilKlassifisering(),
-                utbetalingsoppdrag = utbetalingsoppdrag,
-                avstemmingstidspunkt = konsistensavstemmingDto.avstemmingstidspunkt ?: LocalDateTime.now(),
-            )
+            val konsistensavstemmingUtbetalingsoppdrag =
+                UtbetalingsgeneratorHelper.KonsistensavstemmingUtbetalingsoppdrag(
+                    fagsystem = konsistensavstemmingDto.stønadType.tilKlassifisering(),
+                    utbetalingsoppdrag = utbetalingsoppdrag,
+                    avstemmingstidspunkt = konsistensavstemmingDto.avstemmingstidspunkt ?: LocalDateTime.now(),
+                )
             oppdragKlient.konsistensavstemming(
                 konsistensavstemmingUtbetalingsoppdrag,
                 sendStartmelding,
@@ -83,9 +83,10 @@ class KonsistensavstemmingService(
 
         val andelerFraRequest = konsistensavstemmingTilkjentYtelseDto.andelerTilkjentYtelse.map { it.toDomain() }
 
-        val andeler = tilkjentYtelse.andelerTilkjentYtelse.filter {
-            andelerFraRequest.any { andel -> beløpOgPeriodeErLik(andel, it) }
-        }
+        val andeler =
+            tilkjentYtelse.andelerTilkjentYtelse.filter {
+                andelerFraRequest.any { andel -> beløpOgPeriodeErLik(andel, it) }
+            }
 
         if (andelerFraRequest.size != andeler.size) {
             secureLogger.info(
@@ -103,22 +104,25 @@ class KonsistensavstemmingService(
             aktoer = personIdent,
             saksbehandlerId = tilkjentYtelse.utbetalingsoppdrag.saksbehandlerId,
             avstemmingTidspunkt = LocalDateTime.now(),
-            utbetalingsperiode = andeler.map {
-                lagPeriodeFraAndel(
-                    andel = it,
-                    type = stønadType,
-                    eksternBehandlingId = eksternBehandlingId,
-                    vedtaksdato = LocalDate.now(), // er ikke i bruk ved konsistensavstemming
-                    personIdent = personIdent,
-                )
-            },
+            utbetalingsperiode =
+                andeler.map {
+                    lagPeriodeFraAndel(
+                        andel = it,
+                        type = stønadType,
+                        eksternBehandlingId = eksternBehandlingId,
+                        vedtaksdato = LocalDate.now(), // er ikke i bruk ved konsistensavstemming
+                        personIdent = personIdent,
+                    )
+                },
         )
     }
 
     /**
      * Når vi skal finne finne frem andeler fra databasen som vi har sendt ivei er det tilsrekkelig å kun matche beløp og periode
      */
-    private fun beløpOgPeriodeErLik(a: AndelTilkjentYtelse, b: AndelTilkjentYtelse) =
-        a.beløp == b.beløp &&
-            a.periode == b.periode
+    private fun beløpOgPeriodeErLik(
+        a: AndelTilkjentYtelse,
+        b: AndelTilkjentYtelse,
+    ) = a.beløp == b.beløp &&
+        a.periode == b.periode
 }

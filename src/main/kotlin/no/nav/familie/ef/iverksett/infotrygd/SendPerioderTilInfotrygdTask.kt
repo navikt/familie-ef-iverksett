@@ -26,7 +26,6 @@ class SendPerioderTilInfotrygdTask(
     private val iverksettingRepository: IverksettingRepository,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun doTask(task: Task) {
@@ -35,15 +34,17 @@ class SendPerioderTilInfotrygdTask(
         if (stønadstype != StønadType.OVERGANGSSTØNAD) {
             return
         }
-        val personIdenter = familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
-            .map { it.personIdent }.toSet()
-        val perioder = iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.map {
-            Periode(
-                startdato = it.periode.fomDato,
-                sluttdato = it.periode.tomDato,
-                fullOvergangsstønad = it.erFullOvergangsstønad(),
-            )
-        } ?: error("Kan ikke finne tilkjentYtelse for behandling med id=${iverksett.behandling.behandlingId}")
+        val personIdenter =
+            familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
+                .map { it.personIdent }.toSet()
+        val perioder =
+            iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.map {
+                Periode(
+                    startdato = it.periode.fomDato,
+                    sluttdato = it.periode.tomDato,
+                    fullOvergangsstønad = it.erFullOvergangsstønad(),
+                )
+            } ?: error("Kan ikke finne tilkjentYtelse for behandling med id=${iverksett.behandling.behandlingId}")
 
         infotrygdFeedClient.opprettPeriodeHendelse(OpprettPeriodeHendelseDto(personIdenter, stønadstype, perioder))
     }
@@ -52,13 +53,14 @@ class SendPerioderTilInfotrygdTask(
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
         if (iverksett.erMigrering()) {
-            logger.info("Siste tasken i publiseringsflyt er SendPerioderTilInfotrygd før vedtakstatistikk sendes for behandling=$behandlingId då årsaken er migrering")
+            logger.info(
+                "Siste tasken i publiseringsflyt er SendPerioderTilInfotrygd før vedtakstatistikk sendes for behandling=$behandlingId då årsaken er migrering",
+            )
         }
         taskService.save(task.opprettNestePubliseringTask(iverksett.erMigrering()))
     }
 
     companion object {
-
         const val TYPE = "sendPerioderTilInfotrygd"
     }
 }

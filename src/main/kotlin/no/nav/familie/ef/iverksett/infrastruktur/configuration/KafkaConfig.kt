@@ -16,7 +16,6 @@ import org.springframework.kafka.support.LoggingProducerListener
 
 @Configuration
 class KafkaConfig {
-
     @Value("\${KAFKA_SCHEMA_REGISTRY}")
     lateinit var schemaRegistryUrl: String
 
@@ -41,15 +40,16 @@ class KafkaConfig {
     fun kafkaTemplateBrukerNotifikasjoner(properties: KafkaProperties): KafkaTemplate<NokkelInput, BeskjedInput> {
         val producerListener = LoggingProducerListener<NokkelInput, BeskjedInput>()
         producerListener.setIncludeContents(false)
-        val producerFactory = DefaultKafkaProducerFactory<NokkelInput, BeskjedInput>(
-            properties.buildProducerProperties().apply {
-                put(KEY_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer::class.java)
-                put(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer::class.java)
-                put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl)
-                put(KafkaAvroSerializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO")
-                put(KafkaAvroSerializerConfig.USER_INFO_CONFIG, "$schemaRegistryUser:$schemaRegistryPassword")
-            },
-        )
+        val producerFactory =
+            DefaultKafkaProducerFactory<NokkelInput, BeskjedInput>(
+                properties.buildProducerProperties().apply {
+                    put(KEY_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer::class.java)
+                    put(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer::class.java)
+                    put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl)
+                    put(KafkaAvroSerializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO")
+                    put(KafkaAvroSerializerConfig.USER_INFO_CONFIG, "$schemaRegistryUser:$schemaRegistryPassword")
+                },
+            )
 
         return KafkaTemplate(producerFactory).apply<KafkaTemplate<NokkelInput, BeskjedInput>> {
             setProducerListener(producerListener)

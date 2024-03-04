@@ -34,11 +34,12 @@ class DistribuerVedtaksbrevTask(
     private val iverksettResultatService: IverksettResultatService,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
-
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private sealed class Resultat
+
     private object OK : Resultat()
+
     private data class Dødsbo(val melding: String) : Resultat()
 
     override fun doTask(task: Task) {
@@ -78,18 +79,19 @@ class DistribuerVedtaksbrevTask(
         journalpostResultat: JournalpostResultat,
         behandlingId: UUID,
     ) {
-        val bestillingId = try {
-            journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VEDTAK)
-        } catch (e: RessursException) {
-            val cause = e.cause
-            if (cause is HttpClientErrorException.Conflict) {
-                logger.warn("Conflict: distribuering av brev allerede utført for journalpost: ${journalpostResultat.journalpostId}")
-                val response: DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
-                response.bestillingsId
-            } else {
-                throw e
+        val bestillingId =
+            try {
+                journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VEDTAK)
+            } catch (e: RessursException) {
+                val cause = e.cause
+                if (cause is HttpClientErrorException.Conflict) {
+                    logger.warn("Conflict: distribuering av brev allerede utført for journalpost: ${journalpostResultat.journalpostId}")
+                    val response: DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
+                    response.bestillingsId
+                } else {
+                    throw e
+                }
             }
-        }
 
         loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
         iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
@@ -99,9 +101,13 @@ class DistribuerVedtaksbrevTask(
         )
     }
 
-    private fun håndterDødsbo(task: Task, dødsbo: Dødsbo) {
-        val antallRekjørSenerePgaDødsbo = taskService.findTaskLoggByTaskId(task.id)
-            .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
+    private fun håndterDødsbo(
+        task: Task,
+        dødsbo: Dødsbo,
+    ) {
+        val antallRekjørSenerePgaDødsbo =
+            taskService.findTaskLoggByTaskId(task.id)
+                .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 26) {
             logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
             throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))
@@ -118,7 +124,11 @@ class DistribuerVedtaksbrevTask(
         return journalpostResultat
     }
 
-    private fun loggBrevDistribuert(journalpostId: String, behandlingId: UUID, bestillingId: String) {
+    private fun loggBrevDistribuert(
+        journalpostId: String,
+        behandlingId: UUID,
+        bestillingId: String,
+    ) {
         logger.info(
             "Distribuer vedtaksbrev journalpost=[$journalpostId] " +
                 "for behandling=[$behandlingId] med bestillingId=[$bestillingId]",
@@ -126,7 +136,6 @@ class DistribuerVedtaksbrevTask(
     }
 
     companion object {
-
         const val TYPE = "distribuerVedtaksbrev"
     }
 }

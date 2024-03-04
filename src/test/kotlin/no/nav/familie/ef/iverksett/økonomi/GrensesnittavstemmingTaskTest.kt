@@ -18,7 +18,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 internal class GrensesnittavstemmingTaskTest {
-
     private val oppdragClient = mockk<OppdragClient>()
     val taskService = mockk<TaskService>()
     private val grensesnittavstemmingTask = GrensesnittavstemmingTask(oppdragClient, taskService)
@@ -67,7 +66,6 @@ internal class GrensesnittavstemmingTaskTest {
     }
 
     companion object {
-
         val payload: String =
             objectMapper.writeValueAsString(
                 GrensesnittavstemmingPayload(

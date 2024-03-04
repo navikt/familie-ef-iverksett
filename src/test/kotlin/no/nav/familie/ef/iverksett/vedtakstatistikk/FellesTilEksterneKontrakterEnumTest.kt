@@ -25,7 +25,6 @@ import no.nav.familie.eksterne.kontrakter.ef.VedtaksperiodeType as VedtakPeriode
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEkstern
 
 class FellesTilEksterneKontrakterEnumTest {
-
     @Test
     fun `for alle eksterne kontrakter enums, forvent fullstendig mapping fra familie kontrakter enums`() {
         Vedtaksresultat.values().forEach { Vedtak.valueOf(it.name) }

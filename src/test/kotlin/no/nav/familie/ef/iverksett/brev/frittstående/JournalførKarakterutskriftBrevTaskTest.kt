@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 internal class JournalførKarakterutskriftBrevTaskTest {
-
     private val journalpostClient = mockk<JournalpostClient>()
     private val taskService = mockk<TaskService>()
     private val karakterutskriftBrevRepository = mockk<KarakterutskriftBrevRepository>()

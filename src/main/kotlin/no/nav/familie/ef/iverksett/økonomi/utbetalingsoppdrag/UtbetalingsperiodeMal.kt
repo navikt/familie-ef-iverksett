@@ -25,22 +25,21 @@ fun lagPeriodeFraAndel(
     personIdent: String,
     opphørKjedeFom: LocalDate? = null,
     erEndringPåEksisterendePeriode: Boolean = false,
-) =
-    Utbetalingsperiode(
-        erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode,
-        opphør = if (erEndringPåEksisterendePeriode) Opphør(opphørKjedeFom!!) else null,
-        forrigePeriodeId = andel.forrigePeriodeId,
-        periodeId = andel.periodeId!!,
-        datoForVedtak = vedtaksdato,
-        klassifisering = type.tilKlassifisering(),
-        vedtakdatoFom = andel.periode.fomDato,
-        vedtakdatoTom = andel.periode.tomDato,
-        sats = BigDecimal(andel.beløp),
-        satsType = mapSatstype(type),
-        utbetalesTil = personIdent,
-        behandlingId = eksternBehandlingId,
-        utbetalingsgrad = andel.utbetalingsgrad(),
-    )
+) = Utbetalingsperiode(
+    erEndringPåEksisterendePeriode = erEndringPåEksisterendePeriode,
+    opphør = if (erEndringPåEksisterendePeriode) Opphør(opphørKjedeFom!!) else null,
+    forrigePeriodeId = andel.forrigePeriodeId,
+    periodeId = andel.periodeId!!,
+    datoForVedtak = vedtaksdato,
+    klassifisering = type.tilKlassifisering(),
+    vedtakdatoFom = andel.periode.fomDato,
+    vedtakdatoTom = andel.periode.tomDato,
+    sats = BigDecimal(andel.beløp),
+    satsType = mapSatstype(type),
+    utbetalesTil = personIdent,
+    behandlingId = eksternBehandlingId,
+    utbetalingsgrad = andel.utbetalingsgrad(),
+)
 
 fun lagUtbetalingsperiodeForOpphør(
     sisteAndelIKjede: AndelTilkjentYtelse,
@@ -58,10 +57,11 @@ fun lagUtbetalingsperiodeForOpphør(
     )
 }
 
-fun mapSatstype(stønadstype: StønadType) = when (stønadstype) {
-    StønadType.OVERGANGSSTØNAD,
-    StønadType.BARNETILSYN,
-    -> Utbetalingsperiode.SatsType.MND
-    StønadType.SKOLEPENGER -> Utbetalingsperiode.SatsType.ENG
-    else -> error("Støtter ikke periodetype=$stønadstype")
-}
+fun mapSatstype(stønadstype: StønadType) =
+    when (stønadstype) {
+        StønadType.OVERGANGSSTØNAD,
+        StønadType.BARNETILSYN,
+        -> Utbetalingsperiode.SatsType.MND
+        StønadType.SKOLEPENGER -> Utbetalingsperiode.SatsType.ENG
+        else -> error("Støtter ikke periodetype=$stønadstype")
+    }
