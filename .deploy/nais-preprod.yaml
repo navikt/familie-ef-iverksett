@@ -27,7 +27,7 @@ spec:
       memory: 1024Mi
     requests:
       memory: 512Mi
-      cpu: 200m
+      cpu: 50m
   secureLogs:
     enabled: true
   env:
