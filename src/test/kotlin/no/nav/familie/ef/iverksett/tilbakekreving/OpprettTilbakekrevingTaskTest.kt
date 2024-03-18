@@ -45,7 +45,6 @@ internal class OpprettTilbakekrevingTaskTest {
             tilbakekrevingClient = tilbakekrevingClient,
             simuleringService = simuleringService,
             familieIntegrasjonerClient = familieIntegrasjonerClient,
-            simuleringskontrollService = mockk(relaxed = true),
         )
 
     @BeforeEach
