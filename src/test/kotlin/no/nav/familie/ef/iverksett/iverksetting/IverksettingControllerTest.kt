@@ -29,7 +29,7 @@ class IverksettingControllerTest : ServerTest() {
 
     @BeforeEach
     fun setUp() {
-        headers.setBearerAuth(lokalTestToken)
+        headers.setBearerAuth(søkerBearerToken())
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
     }
 

@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity
 class FrittståendeBrevControllerTest : ServerTest() {
     @BeforeEach
     fun setUp() {
-        headers.setBearerAuth(lokalTestToken)
+        headers.setBearerAuth(søkerBearerToken())
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
     }
 
