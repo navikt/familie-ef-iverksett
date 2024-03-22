@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Primary
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestTemplate
 import java.time.Duration
 import java.time.temporal.ChronoUnit
@@ -95,13 +96,15 @@ class ApplicationConfig {
      * pga .setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE)
      * og [OAuth2AccessTokenResponse] som burde settes med setters, då feltnavn heter noe annet enn feltet i json
      */
-    @Bean
     @Primary
+    @Bean
     fun oAuth2HttpClient(): OAuth2HttpClient {
         return RetryOAuth2HttpClient(
-            RestTemplateBuilder()
-                .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
-                .setReadTimeout(Duration.of(2, ChronoUnit.SECONDS)),
+            RestClient.create(
+                RestTemplateBuilder()
+                    .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
+                    .setReadTimeout(Duration.of(4, ChronoUnit.SECONDS)).build(),
+            ),
         )
     }
 
@@ -111,7 +114,7 @@ class ApplicationConfig {
     ) = object : ProsesseringInfoProvider {
         override fun hentBrukernavn(): String =
             try {
-                SpringTokenValidationContextHolder().tokenValidationContext.getClaims("azuread")
+                SpringTokenValidationContextHolder().getTokenValidationContext().getClaims("azuread")
                     .getStringClaim("preferred_username")
             } catch (e: Exception) {
                 throw e
@@ -119,11 +122,11 @@ class ApplicationConfig {
 
         override fun harTilgang(): Boolean {
             val grupper =
-                Result.runCatching { SpringTokenValidationContextHolder().tokenValidationContext }
+                Result.runCatching { SpringTokenValidationContextHolder().getTokenValidationContext() }
                     .fold(
                         onSuccess = {
                             @Suppress("UNCHECKED_CAST")
-                            val groups = it.getClaims("azuread")?.get("groups") as List<String>?
+                            val groups = it.getClaims("azuread").get("groups") as List<String>?
                             groups?.toSet() ?: emptySet()
                         },
                         onFailure = { emptySet() },

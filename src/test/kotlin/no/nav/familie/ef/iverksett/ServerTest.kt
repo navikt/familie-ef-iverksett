@@ -3,8 +3,8 @@ package no.nav.familie.ef.iverksett
 import com.github.tomakehurst.wiremock.WireMockServer
 import no.nav.familie.ef.iverksett.infrastruktur.configuration.ApplicationConfig
 import no.nav.familie.ef.iverksett.infrastruktur.database.DbContainerInitializer
-import no.nav.familie.ef.iverksett.util.TokenUtil
 import no.nav.security.mock.oauth2.MockOAuth2Server
+import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.extension.ExtendWith
@@ -19,6 +19,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.UUID
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(initializers = [DbContainerInitializer::class])
@@ -70,9 +71,20 @@ abstract class ServerTest {
         return "http://localhost:" + getPort() + uri
     }
 
-    protected val lokalTestToken: String
-        get() {
-            @Suppress("SpringJavaInjectionPointsAutowiringInspection")
-            return TokenUtil.onBehalfOfToken(mockOAuth2Server, saksbehandler = "julenissen")
-        }
+    protected fun søkerBearerToken(
+        personident: String = "12345678911",
+    ): String {
+        val clientId = "lokal:teamfamilie:familie-ef-iverksett"
+        return mockOAuth2Server.issueToken(
+            issuerId = "azuread",
+            clientId,
+            DefaultOAuth2TokenCallback(
+                issuerId = "azuread",
+                subject = personident,
+                audience = listOf("aud-localhost"),
+                claims = mapOf("oid" to UUID.randomUUID().toString(), "azp" to clientId, "name" to "saksbehandler", "NAVIdent" to "saksbehandler"),
+                expiry = 3600,
+            ),
+        ).serialize()
+    }
 }

@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.util.Properties
 import java.util.UUID
 
-class DistribuerVedtaksbrevTaskIntergrasjonsTest : ServerTest() {
+class DistribuerVedtaksbrevTaskIntegrasjonTest : ServerTest() {
     @Autowired
     private lateinit var iverksettResultatService: IverksettResultatService
 

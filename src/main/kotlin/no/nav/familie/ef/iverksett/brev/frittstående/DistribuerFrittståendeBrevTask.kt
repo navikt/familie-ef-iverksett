@@ -69,7 +69,7 @@ class DistribuerFrittståendeBrevTask(
         }.forEach { (personIdent, journalpostResultat) ->
             try {
                 val bestillingId = distribuerBrev(journalpostResultat)
-                frittståendeBrev = oppdaterOgLagreresultat(frittståendeBrev, journalpostResultat, bestillingId, frittståendeBrevId)
+                frittståendeBrev = oppdaterOgLagreResultat(frittståendeBrev, journalpostResultat, bestillingId, frittståendeBrevId)
             } catch (e: RessursException) {
                 val cause = e.cause
                 when (cause) {
@@ -80,7 +80,7 @@ class DistribuerFrittståendeBrevTask(
                         )
                         val response: DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
                         frittståendeBrev =
-                            oppdaterOgLagreresultat(
+                            oppdaterOgLagreResultat(
                                 frittståendeBrev,
                                 journalpostResultat,
                                 response.bestillingsId,
@@ -94,7 +94,7 @@ class DistribuerFrittståendeBrevTask(
         return resultat ?: OK
     }
 
-    private fun oppdaterOgLagreresultat(
+    private fun oppdaterOgLagreResultat(
         frittståendeBrev: FrittståendeBrev,
         journalpostResultat: JournalpostResultat,
         bestillingId: String,
