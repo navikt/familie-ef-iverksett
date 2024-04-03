@@ -230,6 +230,7 @@ data class Behandlingsdetaljer(
     val behandlingType: BehandlingType,
     val behandlingÅrsak: BehandlingÅrsak,
     val relatertBehandlingId: UUID? = null,
+    val relatertBehandlingEksternId: Long? = null,
     val vilkårsvurderinger: List<Vilkårsvurdering> = emptyList(),
     val aktivitetspliktInntrefferDato: LocalDate? = null,
     val kravMottatt: LocalDate? = null,

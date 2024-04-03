@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.infrastruktur.task
 
 import no.nav.familie.ef.iverksett.arbeidsoppfolging.SendVedtakTilArbeidsoppfølgingTask
 import no.nav.familie.ef.iverksett.arena.SendFattetVedtakTilArenaTask
+import no.nav.familie.ef.iverksett.behandlingsstatistikk.BehandlingsstatistikkTask
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brukernotifikasjon.SendBrukernotifikasjonVedGOmregningTask
@@ -42,6 +43,7 @@ fun publiseringsflyt() =
         TaskType(OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE),
         TaskType(VedtakstatistikkTask.TYPE),
         TaskType(SendBrukernotifikasjonVedGOmregningTask.TYPE),
+        TaskType(BehandlingsstatistikkTask.TYPE),
     )
 
 fun TaskType.nesteHovedflytTask() = hovedflyt().zipWithNext().first { this.type == it.first.type }.second
