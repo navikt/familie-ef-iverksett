@@ -66,7 +66,7 @@ class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: Be
             ferdigBehandletTid = iverksett.vedtak.vedtakstidspunkt.atZone(zoneId),
             totrinnsbehandling = false,
             sakUtland = mapTilStreng(iverksett.behandling.kategori),
-            relatertBehandlingId = iverksett.behandling.relatertBehandlingEksternId,
+            relatertBehandlingId = iverksett.behandling.eksternId,
             kravMottatt = null,
             revurderingÅrsak = BehandlingÅrsak.G_OMREGNING.name,
             revurderingOpplysningskilde = null,
