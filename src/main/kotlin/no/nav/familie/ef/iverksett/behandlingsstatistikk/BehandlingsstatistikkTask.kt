@@ -24,14 +24,9 @@ class BehandlingsstatistikkTask(
 ) : AsyncTaskStep {
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
-        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        if (iverksett is IverksettOvergangsstønad &&
-            iverksett.erGOmregning() &&
-            featureToggleService.isEnabled("familie.ef.sak.g-beregning-scheduler")
-        ) {
-            val behandlingDVH = behandlingsstatistikkService.mapGOmregningIverksettingTilBehandlingDVH(iverksett)
-            behandlingsstatistikkProducer.sendBehandling(behandlingDVH)
-        }
+        val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data as IverksettOvergangsstønad
+        val behandlingDVH = behandlingsstatistikkService.mapGOmregningIverksettingTilBehandlingDVH(iverksett)
+        behandlingsstatistikkProducer.sendBehandling(behandlingDVH)
     }
 
     companion object {
