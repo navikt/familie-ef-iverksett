@@ -13,6 +13,7 @@ import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.prosessering.domene.Task
+import no.nav.familie.prosessering.internal.TaskService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -20,8 +21,9 @@ import java.util.UUID
 class SendBrukernotifikasjonVedGOmregningTaskTest {
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val brukernotifikasjonKafkaProducer = mockk<BrukernotifikasjonKafkaProducer>()
+    private val taskService = mockk<TaskService>()
     private val task =
-        SendBrukernotifikasjonVedGOmregningTask(brukernotifikasjonKafkaProducer, iverksettingRepository, mockFeatureToggleService())
+        SendBrukernotifikasjonVedGOmregningTask(brukernotifikasjonKafkaProducer, iverksettingRepository, mockFeatureToggleService(), taskService)
 
     @BeforeEach
     internal fun setUp() {
