@@ -7,6 +7,7 @@
   "behandling": {
     "behandlingId": "234bed7c-b1d3-11eb-8529-0242ac130003",
     "forrigeBehandlingId": "999abcde-fabc-11eb-8529-0242ac130003",
+    "forrigeBehandlingEksternId": 11,
     "eksternId": 14,
     "behandlingType": "FØRSTEGANGSBEHANDLING",
     "behandlingÅrsak": "NYE_OPPLYSNINGER",
