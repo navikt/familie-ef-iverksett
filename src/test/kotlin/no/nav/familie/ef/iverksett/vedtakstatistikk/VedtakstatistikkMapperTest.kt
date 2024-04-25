@@ -20,7 +20,12 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksdetaljerSkolepenge
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeSkolepenger
+import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
 import no.nav.familie.ef.iverksett.iverksetting.domene.ÅrsakRevurdering
+import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkMapperTestHelper.lagVilkårsvurderinger
+import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkMapperTestHelper.lagVilkårsvurderingerEøs
+import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkMapperTestHelper.lagVilkårsvurderingerEøsAnnenForelder
+import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkMapperTestHelper.lagVilkårsvurderingerEøsOgOpphold
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetsvilkårBarnetilsyn
 import no.nav.familie.eksterne.kontrakter.ef.Studietype
 import no.nav.familie.eksterne.kontrakter.ef.Vedtak
@@ -49,11 +54,6 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.util.UUID
-import no.nav.familie.ef.iverksett.iverksetting.domene.Vilkårsvurdering
-import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkMapperTestHelper.lagVilkårsvurderinger
-import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkMapperTestHelper.lagVilkårsvurderingerEøs
-import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkMapperTestHelper.lagVilkårsvurderingerEøsAnnenForelder
-import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkMapperTestHelper.lagVilkårsvurderingerEøsOgOpphold
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat as VilkårsresultatEksterneKontrakter
 
 internal class VedtakstatistikkMapperTest {
@@ -441,5 +441,4 @@ internal class VedtakstatistikkMapperTest {
             oppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = fremleggsoppgaveTyper),
         )
     }
-
 }
