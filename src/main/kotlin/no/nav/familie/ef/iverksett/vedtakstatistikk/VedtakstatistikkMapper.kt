@@ -21,6 +21,7 @@ import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
 import no.nav.familie.eksterne.kontrakter.ef.Delårsperiode
+import no.nav.familie.eksterne.kontrakter.ef.EøsUnntak
 import no.nav.familie.eksterne.kontrakter.ef.PeriodeMedBeløp
 import no.nav.familie.eksterne.kontrakter.ef.Person
 import no.nav.familie.eksterne.kontrakter.ef.Studietype
@@ -39,6 +40,7 @@ import no.nav.familie.eksterne.kontrakter.ef.Vilkår
 import no.nav.familie.eksterne.kontrakter.ef.Vilkårsresultat
 import no.nav.familie.eksterne.kontrakter.ef.VilkårsvurderingDto
 import no.nav.familie.eksterne.kontrakter.ef.ÅrsakRevurdering
+import no.nav.familie.kontrakter.ef.iverksett.SvarId
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import java.time.LocalDate
 import java.time.Month
@@ -102,6 +104,7 @@ object VedtakstatistikkMapper {
             kravMottatt = iverksett.behandling.kravMottatt,
             årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
             avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
+            eøsUnntak = mapEøsUnntak(iverksett.behandling.vilkårsvurderinger),
         )
     }
 
@@ -157,6 +160,7 @@ object VedtakstatistikkMapper {
             kravMottatt = iverksett.behandling.kravMottatt,
             årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
             avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
+            eøsUnntak = mapEøsUnntak(iverksett.behandling.vilkårsvurderinger),
         )
     }
 
@@ -266,6 +270,7 @@ object VedtakstatistikkMapper {
             kravMottatt = iverksett.behandling.kravMottatt,
             årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
             avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
+            eøsUnntak = mapEøsUnntak(iverksett.behandling.vilkårsvurderinger),
         )
     }
 
@@ -284,4 +289,18 @@ object VedtakstatistikkMapper {
         )
 
     private fun LocalDate.utledSkoleår() = if (this.month > Month.JUNE) Year.of(this.year) else Year.of(this.year - 1)
+
+    private fun mapEøsUnntak(vilkårsvurderinger: List<Vilkårsvurdering>): EøsUnntak {
+        return EøsUnntak(
+            medlemMerEnn5ÅrEøs = inneholderEøsUnntak(SvarId.MEDLEM_MER_ENN_5_ÅR_EØS, vilkårsvurderinger),
+            medlemMerEnn5ÅrEøsAnnenForelderTrygdedekketINorge = inneholderEøsUnntak(SvarId.MEDLEM_MER_ENN_5_ÅR_EØS_ANNEN_FORELDER_TRYGDEDEKKET_I_NORGE, vilkårsvurderinger),
+            oppholderSegIAnnetEøsLand = inneholderEøsUnntak(SvarId.OPPHOLDER_SEG_I_ANNET_EØS_LAND, vilkårsvurderinger),
+        )
+    }
+
+    private fun inneholderEøsUnntak(
+        unntak: SvarId,
+        vilkårsvurderinger: List<Vilkårsvurdering>,
+    ): Boolean =
+        vilkårsvurderinger.any { vilkårsvurdering -> vilkårsvurdering.delvilkårsvurderinger.any { delvilkårsvurdering -> delvilkårsvurdering.vurderinger.any { vurdering -> vurdering.svar == unntak } } }
 }
