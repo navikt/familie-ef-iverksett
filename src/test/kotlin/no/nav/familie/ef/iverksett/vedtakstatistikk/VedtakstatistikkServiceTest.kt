@@ -16,6 +16,7 @@ import no.nav.familie.eksterne.kontrakter.ef.Aktivitetskrav
 import no.nav.familie.eksterne.kontrakter.ef.Barn
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingType
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
+import no.nav.familie.eksterne.kontrakter.ef.EøsUnntak
 import no.nav.familie.eksterne.kontrakter.ef.Person
 import no.nav.familie.eksterne.kontrakter.ef.StønadType
 import no.nav.familie.eksterne.kontrakter.ef.Utbetaling
@@ -145,6 +146,7 @@ class VedtakstatistikkServiceTest {
                     Opplysningskilde.MELDING_MODIA.name,
                     Revurderingsårsak.ENDRING_INNTEKT.name,
                 ),
+            eøsUnntak = EøsUnntak(medlemMerEnn5ÅrEøs = false, medlemMerEnn5ÅrEøsAnnenForelderTrygdedekketINorge = false, oppholderSegIAnnetEøsLand = false),
         )
     }
 }
