@@ -19,6 +19,7 @@ import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.UUID
@@ -103,11 +104,12 @@ class OppgaveService(
         // - Den 6. dagen i måneden for det er en rutine i enhetene som sier at hvis man ikke får revurdert eller sjekket en sak fordi inntekten for den siste måneden ikke er innrapportert ennå, så oppretter man en fremleggsoppgave med frist den 6. neste måned for å sjekke inntekten. Grunnen til at fristen er den 6. er fordi arbeidsgivers frist til å innrapportere inntekt for forrige måned er den 5.
         // - 17. og 18. mai, for de er forbeholdt karakterutskriftsoppgavene
         // - Juli og august på grunn av ferie og lav bemanning
-        // Det er verdt å merke seg at oppgavesystemet flytter fristen fremover dersom fristdato lander på en helg.
+        // Det er verdt å merke seg at oppgavesystemet flytter fristen fremover dersom fristdato lander på en helg, så vi må unngå at vi sklir inn i neste mnd
 
         var ettÅrFremITid = vedtaksdato.plusYears(1)
 
         if (ettÅrFremITid.monthValue == 7 || ettÅrFremITid.monthValue == 8) ettÅrFremITid = ettÅrFremITid.minusMonths(2)
+        if (ettÅrFremITid.monthValue == 9) ettÅrFremITid = ettÅrFremITid.minusMonths(3)
         if (ettÅrFremITid.monthValue == 5 && (ettÅrFremITid.dayOfMonth == 17 || ettÅrFremITid.dayOfMonth == 18)) {
             ettÅrFremITid =
                 ettÅrFremITid.minusDays(
@@ -116,6 +118,13 @@ class OppgaveService(
         }
         if (ettÅrFremITid.dayOfMonth == 6) ettÅrFremITid = ettÅrFremITid.plusDays(1)
 
+        if (erHelgeDag(ettÅrFremITid.dayOfWeek)) {
+            if (ettÅrFremITid.dayOfMonth == 1) {
+                ettÅrFremITid = ettÅrFremITid.plusDays(2)
+            } else {
+                ettÅrFremITid = ettÅrFremITid.minusDays(2)
+            }
+        }
         return ettÅrFremITid
     }
 
@@ -168,6 +177,10 @@ class OppgaveService(
             )
         }
         return mappeRespons.mapper
+    }
+
+    private fun erHelgeDag(dag: DayOfWeek): Boolean {
+        return dag == DayOfWeek.SATURDAY || dag == DayOfWeek.SUNDAY
     }
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
