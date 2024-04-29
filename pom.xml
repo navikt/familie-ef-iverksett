@@ -17,13 +17,13 @@
         <java.version>21</java.version>
         <kotlin.version>1.9.23</kotlin.version>
         <springdoc.version>2.5.0</springdoc.version>
-        <felles.version>3.20240418160818_2c13ecd</felles.version>
-        <familie.kontrakter.version>3.0_20240417075019_5dc3ebf</familie.kontrakter.version>
+        <felles.version>3.20240422125821_21d82d5</felles.version>
+        <familie.kontrakter.version>3.0_20240423153855_eff08fb</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20240425094647_26b983d</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20240214140223_83c31de</prosessering.version>
-        <utbetalingsgenerator.version>1.0_20240208132236_bce5777</utbetalingsgenerator.version>
+        <prosessering.version>2.20240426120029_490d299</prosessering.version>
+        <utbetalingsgenerator.version>1.0_20240426154435_ca351af</utbetalingsgenerator.version>
         <brukernotifikasjon-schemas.version>2.6.0</brukernotifikasjon-schemas.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <confluent.version>7.6.1</confluent.version>
@@ -34,7 +34,7 @@
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <token-validation-spring.version>4.1.4</token-validation-spring.version>
-        <ibm-mq-client.version>9.3.5.0</ibm-mq-client.version>
+        <ibm-mq-client.version>9.3.5.1</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
     </properties>
