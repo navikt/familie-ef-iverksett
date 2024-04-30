@@ -113,7 +113,8 @@
           }
         ],
         "fellesperioder": []
-      }
+      },
+      "begrunnelseForTilbakekreving": "Begrunnelse"
     },
     "brevmottakere": [],
     "avslagÅrsak":null,
