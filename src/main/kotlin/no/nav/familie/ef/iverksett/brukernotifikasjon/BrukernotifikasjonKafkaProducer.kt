@@ -67,5 +67,5 @@ class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<N
 
 fun lagMelding(iverksett: IverksettOvergangsstønad): String =
     iverksett.vedtak.grunnbeløp?.let {
-        """Fra ${it.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${it.grunnbeløp} kroner og overgangsstønaden din er derfor endret.""".trimIndent()
+        """Fra ${it.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${it.grunnbeløp} kroner og overgangsstønaden din er derfor endret. Se nav.no/minside for detaljer.""".trimIndent()
     } ?: throw IllegalStateException("Mangler grunnbeløp")

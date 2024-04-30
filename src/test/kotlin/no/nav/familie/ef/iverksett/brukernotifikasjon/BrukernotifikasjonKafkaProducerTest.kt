@@ -20,7 +20,7 @@ class BrukernotifikasjonKafkaProducerTest {
 
     @Test
     fun `lagBeskjed genererer riktig melding`() {
-        val forventetGOmregningTekst = "Fra 01.05.2023 har folketrygdens grunnbeløp økt til 118620 kroner og overgangsstønaden din er derfor endret."
+        val forventetGOmregningTekst = "Fra 01.05.2023 har folketrygdens grunnbeløp økt til 118620 kroner og overgangsstønaden din er derfor endret. Se nav.no/minside for detaljer."
         val iverksettRevurderingInnvilget =
             lagIverksettData(
                 behandlingType = BehandlingType.REVURDERING,
