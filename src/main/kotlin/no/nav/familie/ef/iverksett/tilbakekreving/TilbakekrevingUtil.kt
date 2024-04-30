@@ -8,12 +8,6 @@ import no.nav.familie.kontrakter.felles.simulering.Simuleringsoppsummering
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import java.math.BigDecimal
 
-private val TILBAKEKREVING_UTEN_VARSEL =
-    Tilbakekrevingsdetaljer(
-        tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
-        tilbakekrevingMedVarsel = null,
-    )
-
 fun IverksettData.oppfriskTilbakekreving(beriketSimuleringsresultat: BeriketSimuleringsresultat): IverksettData {
     val tilbakekreving = this.vedtak.tilbakekreving
     val simuleringsoppsummering = beriketSimuleringsresultat.oppsummering

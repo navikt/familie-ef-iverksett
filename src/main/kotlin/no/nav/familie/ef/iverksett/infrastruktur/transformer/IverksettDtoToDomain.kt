@@ -182,6 +182,7 @@ fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
     return Tilbakekrevingsdetaljer(
         tilbakekrevingsvalg = this.tilbakekrevingsvalg,
         this.tilbakekrevingMedVarsel?.toDomain(),
+        this.begrunnelseForTilbakekreving,
     )
 }
 

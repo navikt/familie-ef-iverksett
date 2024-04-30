@@ -263,6 +263,7 @@ data class Vurdering(
 data class Tilbakekrevingsdetaljer(
     val tilbakekrevingsvalg: Tilbakekrevingsvalg,
     val tilbakekrevingMedVarsel: TilbakekrevingMedVarsel?,
+    val begrunnelseForTilbakekreving: String?,
 )
 
 data class TilbakekrevingMedVarsel(
