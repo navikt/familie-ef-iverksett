@@ -80,6 +80,7 @@ internal class TilbakekrevingMapperTest {
             Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
                 tilbakekrevingMedVarsel = null,
+                begrunnelseForTilbakekreving = "Begrunnelse",
             )
         assertThat(tilbakekreving.validerTilbakekreving()).isFalse
     }
@@ -95,6 +96,7 @@ internal class TilbakekrevingMapperTest {
                         perioder = emptyList(),
                         sumFeilutbetaling = null,
                     ),
+                begrunnelseForTilbakekreving = "Begrunnelse",
             )
         assertThat(tilbakekreving.validerTilbakekreving()).isFalse
     }
@@ -110,6 +112,7 @@ internal class TilbakekrevingMapperTest {
                         perioder = null,
                         sumFeilutbetaling = BigDecimal.ZERO,
                     ),
+                begrunnelseForTilbakekreving = "Begrunnelse",
             )
         assertThat(tilbakekreving.validerTilbakekreving()).isFalse
     }
@@ -120,12 +123,14 @@ internal class TilbakekrevingMapperTest {
             Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_UTEN_VARSEL,
                 tilbakekrevingMedVarsel = null,
+                begrunnelseForTilbakekreving = "Begrunnelse",
             ).validerTilbakekreving(),
         ).isTrue
         assertThat(
             Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.IGNORER_TILBAKEKREVING,
                 tilbakekrevingMedVarsel = null,
+                begrunnelseForTilbakekreving = "Begrunnelse",
             ).validerTilbakekreving(),
         ).isTrue
     }
@@ -141,6 +146,7 @@ internal class TilbakekrevingMapperTest {
                         perioder = null,
                     ),
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
+                begrunnelseForTilbakekreving = "Begrunnelse",
             )
 
         assertThat(

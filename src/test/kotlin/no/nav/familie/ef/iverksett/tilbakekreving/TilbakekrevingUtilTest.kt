@@ -28,6 +28,7 @@ internal class TilbakekrevingUtilTest {
             Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
                 tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(feilutbetaling, perioder),
+                begrunnelseForTilbakekreving = "Begrunnelse",
             )
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = tilbakekrevingsdetaljer)
 
@@ -103,6 +104,7 @@ internal class TilbakekrevingUtilTest {
             Tilbakekrevingsdetaljer(
                 Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
                 TilbakekrevingMedVarsel("varseltekst", BigDecimal.ZERO, listOf()),
+                begrunnelseForTilbakekreving = "Begrunnelse",
             )
 
         val varsel = tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering)
@@ -111,6 +113,7 @@ internal class TilbakekrevingUtilTest {
         assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.first()?.fom).isEqualTo(LocalDate.of(2022, 1, 1))
         assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.first()?.tom).isEqualTo(LocalDate.of(2022, 2, 28))
         assertThat(varsel.tilbakekrevingMedVarsel?.sumFeilutbetaling).isEqualTo(BigDecimal(5100.0))
+        assertThat(varsel.begrunnelseForTilbakekreving).isEqualTo("Begrunnelse")
     }
 
     @Test
@@ -119,6 +122,7 @@ internal class TilbakekrevingUtilTest {
             Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
                 tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder),
+                begrunnelseForTilbakekreving = "Begrunnelse",
             )
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
 
@@ -139,6 +143,7 @@ internal class TilbakekrevingUtilTest {
             Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
                 tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(BigDecimal.TEN, perioder),
+                begrunnelseForTilbakekreving = "Begrunnelse",
             )
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID(), tilbakekreving = originalTilbakekreving)
 

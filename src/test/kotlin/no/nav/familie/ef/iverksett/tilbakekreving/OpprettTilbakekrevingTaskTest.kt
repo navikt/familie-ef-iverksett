@@ -97,6 +97,7 @@ internal class OpprettTilbakekrevingTaskTest {
             Tilbakekrevingsdetaljer(
                 tilbakekrevingsvalg = Tilbakekrevingsvalg.IGNORER_TILBAKEKREVING,
                 tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(),
+                begrunnelseForTilbakekreving = "",
             )
         val iverksett =
             opprettIverksettOvergangsstønad(
@@ -157,6 +158,7 @@ internal class OpprettTilbakekrevingTaskTest {
         assertThat(request.faktainfo.tilbakekrevingsvalg).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg)
         assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
         assertThat(request.varsel?.sumFeilutbetaling).isEqualTo(tilbakekreving.tilbakekrevingMedVarsel?.sumFeilutbetaling)
+        assertThat(request.begrunnelseForTilbakekreving).isEqualTo("Begrunnelse")
     }
 
     @Test
