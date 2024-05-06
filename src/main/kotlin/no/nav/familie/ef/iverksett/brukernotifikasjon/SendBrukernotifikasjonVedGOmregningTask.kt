@@ -21,16 +21,14 @@ import java.util.UUID
 class SendBrukernotifikasjonVedGOmregningTask(
     val brukernotifikasjonKafkaProducer: BrukernotifikasjonKafkaProducer,
     val iverksettingRepository: IverksettingRepository,
-    val featureToggleService: FeatureToggleService,
     val taskService: TaskService,
 ) : AsyncTaskStep {
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        if (iverksett is IverksettOvergangsstønad &&
-            iverksett.erGOmregning() &&
-            featureToggleService.isEnabled("familie.ef.sak.g-beregning-scheduler")
-        ) { // Dobbeltsjekk: Tasken skal egentlig ikke være lagd hvis det ikke er G-omregning
+
+        // Dobbeltsjekk: Tasken skal egentlig ikke være lagd hvis det ikke er G-omregning
+        if (iverksett is IverksettOvergangsstønad && iverksett.erGOmregning()) {
             brukernotifikasjonKafkaProducer.sendBeskjedTilBruker(iverksett, behandlingId)
         }
     }
@@ -38,7 +36,7 @@ class SendBrukernotifikasjonVedGOmregningTask(
     override fun onCompletion(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        if (iverksett.erGOmregning() && featureToggleService.isEnabled("familie.ef.sak.g-beregning-scheduler")) {
+        if (iverksett.erGOmregning()) {
             taskService.save(task.opprettNestePubliseringTask())
         }
     }
