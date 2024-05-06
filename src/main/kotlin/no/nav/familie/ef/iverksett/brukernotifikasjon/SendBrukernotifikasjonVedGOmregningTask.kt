@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.brukernotifikasjon
 
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
