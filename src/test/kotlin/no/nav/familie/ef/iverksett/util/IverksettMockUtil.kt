@@ -395,7 +395,7 @@ fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
     Tilbakekrevingsdetaljer(
         tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
         tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(),
-        begrunnelseForTilbakekreving = "Begrunnelse"
+        begrunnelseForTilbakekreving = "Begrunnelse",
     )
 
 fun opprettTilbakekrevingMedVarsel(
