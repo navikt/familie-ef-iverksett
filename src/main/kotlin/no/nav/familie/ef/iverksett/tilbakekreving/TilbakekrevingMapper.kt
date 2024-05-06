@@ -47,7 +47,7 @@ fun IverksettData.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
         verge = null, // Verge er per nå ikke støttet i familie-ef-sak.
         faktainfo = lagFaktainfo(this),
         regelverk = tilRegelverk(this.behandling.kategori),
-        begrunnelseForTilbakekreving = this.vedtak.tilbakekreving?.begrunnelseForTilbakekreving
+        begrunnelseForTilbakekreving = this.vedtak.tilbakekreving?.begrunnelseForTilbakekreving,
     )
 
 fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
