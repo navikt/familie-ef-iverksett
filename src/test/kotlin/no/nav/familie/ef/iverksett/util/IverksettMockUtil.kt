@@ -78,6 +78,7 @@ fun opprettIverksettDto(
     behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
     andelsbeløp: Int = 5000,
     stønadType: StønadType = StønadType.OVERGANGSSTØNAD,
+    vedtakresultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
 ): IverksettOvergangsstønadDto {
     val andelTilkjentYtelse =
         lagAndelTilkjentYtelseDto(
@@ -134,7 +135,7 @@ fun opprettIverksettDto(
             ),
         vedtak =
             VedtaksdetaljerOvergangsstønadDto(
-                resultat = Vedtaksresultat.INNVILGET,
+                resultat = vedtakresultat,
                 vedtakstidspunkt = LocalDateTime.of(2021, 5, 12, 0, 0),
                 opphørÅrsak = OpphørÅrsak.PERIODE_UTLØPT,
                 saksbehandlerId = "A12345",
@@ -395,7 +396,7 @@ fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
     Tilbakekrevingsdetaljer(
         tilbakekrevingsvalg = Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL,
         tilbakekrevingMedVarsel = opprettTilbakekrevingMedVarsel(),
-        begrunnelseForTilbakekreving = "Begrunnelse"
+        begrunnelseForTilbakekreving = "Begrunnelse",
     )
 
 fun opprettTilbakekrevingMedVarsel(

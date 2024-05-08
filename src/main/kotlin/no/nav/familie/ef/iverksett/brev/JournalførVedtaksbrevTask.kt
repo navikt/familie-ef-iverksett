@@ -9,12 +9,15 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.http.client.RessursException
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.BrukerIdType
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.dokarkiv.AvsenderMottaker
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.journalpost.Bruker
 import no.nav.familie.kontrakter.felles.journalpost.JournalposterForBrukerRequest
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -107,6 +110,7 @@ class JournalførVedtaksbrevTask(
                 fnr = iverksett.data.søker.personIdent,
                 forsøkFerdigstill = true,
                 hoveddokumentvarianter = listOf(dokument),
+                vedleggsdokumenter = if (vedleggForRettigheter(iverksett)) hentVedleggForRettigheter(iverksett.data.fagsak.stønadstype) else emptyList(),
                 fagsakId = iverksett.data.fagsak.eksternId.toString(),
                 journalførendeEnhet = iverksett.data.søker.tilhørendeEnhet,
                 eksternReferanseId = "$behandlingId-vedtaksbrev",
@@ -120,6 +124,30 @@ class JournalførVedtaksbrevTask(
         } else {
             journalførVedtaksbrevTilBrevmottakere(iverksett.data, journalførteIdenter, arkiverDokumentRequest, behandlingId)
         }
+    }
+
+    private fun vedleggForRettigheter(iverksett: Iverksett): Boolean {
+        return when (iverksett.data.behandling.behandlingÅrsak) {
+            BehandlingÅrsak.G_OMREGNING -> false
+            BehandlingÅrsak.MIGRERING -> false
+            BehandlingÅrsak.SATSENDRING -> false
+            BehandlingÅrsak.SANKSJON_1_MND -> false
+            BehandlingÅrsak.KORRIGERING_UTEN_BREV -> false
+            else -> iverksett.data.vedtak.vedtaksresultat == Vedtaksresultat.INNVILGET
+        }
+    }
+
+    private fun hentVedleggForRettigheter(stønadType: StønadType): List<Dokument> {
+        val pdf = lesPdfForVedleggForRettigheter(stønadType)
+        return listOf(
+            Dokument(
+                pdf,
+                Filtype.PDFA,
+                dokumenttype = stønadstypeTilDokumenttype(stønadType),
+                tittel = vedleggForRettigheterTittelTekst(),
+                filnavn = utledFilnavnForVedleggAvRettigheter(stønadType),
+            ),
+        )
     }
 
     private fun journalførVedtaksbrevTilBrevmottakere(

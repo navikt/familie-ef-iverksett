@@ -42,6 +42,29 @@ fun lagVedtakstekst(iverksettData: IverksettData): String =
         else -> "Vedtak om revurdert "
     }
 
+fun lesPdfForVedleggForRettigheter(stønadType: StønadType): ByteArray {
+    val filnavn = utledPathForVedleggAvRettigheter(stønadType)
+    return object {}.javaClass.classLoader.getResourceAsStream(filnavn)?.use { inputStream ->
+        inputStream.readBytes()
+    } ?: run {
+        error("Filnavn ikke funnet ved : $filnavn")
+    }
+}
+
+fun vedleggForRettigheterTittelTekst() = "Dine rettigheter og plikter"
+
+fun utledFilnavnForVedleggAvRettigheter(stønadType: StønadType): String {
+    return when (stønadType) {
+        StønadType.OVERGANGSSTØNAD -> "overgangsstønad.pdf"
+        StønadType.BARNETILSYN -> "barnetilsyn.pdf"
+        StønadType.SKOLEPENGER -> "skolepenger.pdf"
+    }
+}
+
+private fun utledPathForVedleggAvRettigheter(stønadType: StønadType): String {
+    return "rettighetervedlegg/" + utledFilnavnForVedleggAvRettigheter(stønadType)
+}
+
 private fun lagVedtakstekstFørstegangsbehandling(iverksettData: IverksettData) =
     when (iverksettData.vedtak.vedtaksresultat) {
         Vedtaksresultat.INNVILGET -> "Vedtak om innvilget "
