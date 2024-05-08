@@ -47,7 +47,7 @@ fun lesPdfForVedleggForRettigheter(stønadType: StønadType): ByteArray {
     return object {}.javaClass.classLoader.getResourceAsStream(filnavn)?.use { inputStream ->
         inputStream.readBytes()
     } ?: run {
-        error("Filnavn ikke funnet ved : $filnavn")
+        error("Fil ikke funnet for filnavn : $filnavn")
     }
 }
 
