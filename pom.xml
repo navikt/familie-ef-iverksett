@@ -15,10 +15,10 @@
 
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>1.9.23</kotlin.version>
+        <kotlin.version>1.9.24</kotlin.version>
         <springdoc.version>2.5.0</springdoc.version>
-        <felles.version>3.20240422125821_21d82d5</felles.version>
-        <familie.kontrakter.version>3.0_20240430083848_be12d55</familie.kontrakter.version>
+        <felles.version>3.20240502154951_caf5f1d</felles.version>
+        <familie.kontrakter.version>3.0_20240506120136_2e7f6d9</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20240425094647_26b983d</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
@@ -260,7 +260,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.19.7</version>
+            <version>1.19.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>
