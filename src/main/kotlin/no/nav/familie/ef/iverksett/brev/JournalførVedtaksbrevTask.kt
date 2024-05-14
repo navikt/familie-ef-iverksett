@@ -105,12 +105,14 @@ class JournalførVedtaksbrevTask(
                 tittel = lagDokumentTittel(iverksett.data),
             )
 
+        val vedleggsdokumenter = if (skalHaVedleggOmRettigheter(iverksett)) vedleggsdokumentForStønad(iverksett.data.fagsak.stønadstype) else emptyList()
+
         val arkiverDokumentRequest =
             ArkiverDokumentRequest(
                 fnr = iverksett.data.søker.personIdent,
                 forsøkFerdigstill = true,
                 hoveddokumentvarianter = listOf(dokument),
-                vedleggsdokumenter = if (vedleggForRettigheter(iverksett)) hentVedleggForRettigheter(iverksett.data.fagsak.stønadstype) else emptyList(),
+                vedleggsdokumenter = vedleggsdokumenter,
                 fagsakId = iverksett.data.fagsak.eksternId.toString(),
                 journalførendeEnhet = iverksett.data.søker.tilhørendeEnhet,
                 eksternReferanseId = "$behandlingId-vedtaksbrev",
@@ -126,7 +128,7 @@ class JournalførVedtaksbrevTask(
         }
     }
 
-    private fun vedleggForRettigheter(iverksett: Iverksett): Boolean {
+    private fun skalHaVedleggOmRettigheter(iverksett: Iverksett): Boolean {
         return when (iverksett.data.behandling.behandlingÅrsak) {
             BehandlingÅrsak.G_OMREGNING -> false
             BehandlingÅrsak.MIGRERING -> false
@@ -137,14 +139,14 @@ class JournalførVedtaksbrevTask(
         }
     }
 
-    private fun hentVedleggForRettigheter(stønadType: StønadType): List<Dokument> {
+    private fun vedleggsdokumentForStønad(stønadType: StønadType): List<Dokument> {
         val pdf = lesPdfForVedleggForRettigheter(stønadType)
         return listOf(
             Dokument(
                 pdf,
                 Filtype.PDFA,
                 dokumenttype = stønadstypeTilDokumenttype(stønadType),
-                tittel = vedleggForRettigheterTittelTekst(),
+                tittel = vedleggForRettigheterTittelTekst(stønadType),
                 filnavn = utledFilnavnForVedleggAvRettigheter(stønadType),
             ),
         )

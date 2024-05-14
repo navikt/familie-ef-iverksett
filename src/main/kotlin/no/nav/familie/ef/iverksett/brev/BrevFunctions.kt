@@ -51,7 +51,7 @@ fun lesPdfForVedleggForRettigheter(stønadType: StønadType): ByteArray {
     }
 }
 
-fun vedleggForRettigheterTittelTekst() = "Dine rettigheter og plikter"
+fun vedleggForRettigheterTittelTekst(stønadstype: StønadType) = "Dine rettigheter og plikter for " + lagStønadtypeTekst(stønadstype)
 
 fun utledFilnavnForVedleggAvRettigheter(stønadType: StønadType): String {
     return when (stønadType) {

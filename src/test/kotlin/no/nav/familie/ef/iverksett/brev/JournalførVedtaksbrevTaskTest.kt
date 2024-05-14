@@ -158,7 +158,7 @@ internal class JournalførVedtaksbrevTaskTest {
         journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
 
         assertThat(arkiverDokumentRequestSlot).hasSize(1)
-        assertThat(arkiverDokumentRequestSlot[0].vedleggsdokumenter.get(0).tittel).isEqualTo(vedleggForRettigheterTittelTekst())
+        assertThat(arkiverDokumentRequestSlot[0].vedleggsdokumenter.get(0).tittel).isEqualTo(vedleggForRettigheterTittelTekst(StønadType.OVERGANGSSTØNAD))
     }
 
     @Test
