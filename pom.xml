@@ -17,23 +17,23 @@
         <java.version>21</java.version>
         <kotlin.version>1.9.24</kotlin.version>
         <springdoc.version>2.5.0</springdoc.version>
-        <felles.version>3.20240502154951_caf5f1d</felles.version>
-        <familie.kontrakter.version>3.0_20240506120136_2e7f6d9</familie.kontrakter.version>
+        <felles.version>3.20240515152313_9dd5659</felles.version>
+        <familie.kontrakter.version>3.0_20240515103524_00490ae</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20240425094647_26b983d</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20240426120029_490d299</prosessering.version>
-        <utbetalingsgenerator.version>1.0_20240426154435_ca351af</utbetalingsgenerator.version>
+        <utbetalingsgenerator.version>1.0_20240513080029_1f72427</utbetalingsgenerator.version>
         <brukernotifikasjon-schemas.version>2.6.0</brukernotifikasjon-schemas.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <confluent.version>7.6.1</confluent.version>
-        <mockk-jvm.version>1.13.10</mockk-jvm.version>
-        <cucumber.version>7.17.0</cucumber.version>
+        <mockk-jvm.version>1.13.11</mockk-jvm.version>
+        <cucumber.version>7.18.0</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>4.1.4</token-validation-spring.version>
+        <token-validation-spring.version>4.1.7</token-validation-spring.version>
         <ibm-mq-client.version>9.3.5.1</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
