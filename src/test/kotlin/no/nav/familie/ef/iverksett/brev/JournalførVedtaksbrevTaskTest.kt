@@ -16,7 +16,10 @@ import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatServic
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.http.client.RessursException
+import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
+import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker
+import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
@@ -57,13 +60,7 @@ internal class JournalførVedtaksbrevTaskTest {
 
     private val iverksettDto = opprettIverksettDto(behandlingId = behandlingId)
 
-    private val iverksett =
-        Iverksett(
-            iverksettDto.behandling.behandlingId,
-            iverksettDto.toDomain(),
-            iverksettDto.behandling.eksternId,
-            Brev(ByteArray(256)),
-        )
+    private val iverksett = iverksettDto(iverksettDto)
 
     @BeforeEach
     fun setUp() {
@@ -104,6 +101,372 @@ internal class JournalførVedtaksbrevTaskTest {
         assertThat(arkiverDokumentRequestSlot).hasSize(1)
         assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
+    }
+
+    @Test
+    internal fun `forvent dokumenttype lik overgangsstønad for vedlegg for rettigheter, overgangsstønad`() {
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].vedleggsdokumenter.get(0).dokumenttype == Dokumenttype.VEDTAKSBREV_OVERGANGSSTØNAD)
+    }
+
+    @Test
+    internal fun `forvent at titteltekst er satt for vedlegg for rettigheter, overgangsstønad`() {
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].vedleggsdokumenter.get(0).tittel).isEqualTo(vedleggForRettigheterTittelTekst(StønadType.OVERGANGSSTØNAD))
+    }
+
+    @Test
+    internal fun `forvent at filnavn er satt riktig for vedlegg for rettigheter, overgangsstønad`() {
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].vedleggsdokumenter.get(0).filnavn).isEqualTo(utledFilnavnForVedleggAvRettigheter(StønadType.OVERGANGSSTØNAD))
+    }
+
+    @Test
+    internal fun `forvent dokumenttype lik skolepenger for vedlegg for rettigheter, skolepenger`() {
+        val iverksett = iverksettDto(opprettIverksettDto(behandlingId = behandlingId, stønadType = StønadType.SKOLEPENGER))
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].vedleggsdokumenter.get(0).dokumenttype == Dokumenttype.VEDTAKSBREV_SKOLEPENGER)
+    }
+
+    @Test
+    internal fun `forvent dokumenttype lik barnetilsyn for vedlegg for rettigheter, barnetilsyn`() {
+        val iverksett = iverksettDto(opprettIverksettDto(behandlingId = behandlingId, stønadType = StønadType.BARNETILSYN))
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot[0].vedleggsdokumenter.get(0).dokumenttype == Dokumenttype.VEDTAKSBREV_BARNETILSYN)
+    }
+
+    @Test
+    internal fun `forvent at vedlegg for rettigheter ikke legges ved når behandlingsårsak er G_OMREGNING`() {
+        val iverksett = iverksettDto(opprettIverksettDto(behandlingId = behandlingId, behandlingÅrsak = BehandlingÅrsak.G_OMREGNING))
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot.get(0).vedleggsdokumenter).hasSize(0)
+    }
+
+    @Test
+    internal fun `forvent at vedlegg for rettigheter ikke legges ved når behandlingsårsak er MIGRERING`() {
+        val iverksett = iverksettDto(opprettIverksettDto(behandlingId = behandlingId, behandlingÅrsak = BehandlingÅrsak.MIGRERING))
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot.get(0).vedleggsdokumenter).hasSize(0)
+    }
+
+    @Test
+    internal fun `forvent at vedlegg for rettigheter ikke legges ved når behandlingsårsak er KORRIGERING_UTEN_BREV`() {
+        val iverksett = iverksettDto(opprettIverksettDto(behandlingId = behandlingId, behandlingÅrsak = BehandlingÅrsak.KORRIGERING_UTEN_BREV))
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot.get(0).vedleggsdokumenter).hasSize(0)
+    }
+
+    @Test
+    internal fun `forvent at vedlegg for rettigheter ikke legges ved når behandlingsårsak er SANKSJON_1_MND`() {
+        val iverksett = iverksettDto(opprettIverksettDto(behandlingId = behandlingId, behandlingÅrsak = BehandlingÅrsak.SANKSJON_1_MND))
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot.get(0).vedleggsdokumenter).hasSize(0)
+    }
+
+    @Test
+    internal fun `forvent at vedlegg for rettigheter ikke legges ved når behandlingsårsak er SATSENDRING`() {
+        val iverksett = iverksettDto(opprettIverksettDto(behandlingId = behandlingId, behandlingÅrsak = BehandlingÅrsak.SATSENDRING))
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot.get(0).vedleggsdokumenter).hasSize(0)
+    }
+
+    @Test
+    internal fun `forvent at vedlegg for rettigheter generelt legges ved når vedtak er INNVILGET`() {
+        val iverksett = iverksettDto(opprettIverksettDto(behandlingId = behandlingId))
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot.get(0).vedleggsdokumenter).hasSize(1)
+    }
+
+    @Test
+    internal fun `forvent at vedlegg for rettigheter generelt ikke legges ved når vedtak ikke er INNVILGET`() {
+        val iverksett = iverksettDto(opprettIverksettDto(behandlingId = behandlingId, vedtakresultat = Vedtaksresultat.AVSLÅTT))
+
+        every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } returns
+            ArkiverDokumentResponse(
+                journalpostId,
+                true,
+            )
+        every { iverksettingRepository.findByIdOrThrow(behandlingId) }.returns(iverksett)
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns null andThen
+            mapOf(
+                "123" to
+                    JournalpostResultat(
+                        journalpostId,
+                    ),
+            )
+        every {
+            iverksettResultatService.oppdaterJournalpostResultat(
+                behandlingId,
+                any(),
+                capture(journalpostResultatSlot),
+            )
+        } returns Unit
+
+        journalførVedtaksbrevTask.doTask(Task(JournalførVedtaksbrevTask.TYPE, behandlingIdString, Properties()))
+
+        assertThat(arkiverDokumentRequestSlot).hasSize(1)
+        assertThat(arkiverDokumentRequestSlot.get(0).vedleggsdokumenter).hasSize(0)
     }
 
     @Test
@@ -192,8 +555,7 @@ internal class JournalførVedtaksbrevTaskTest {
         verify(exactly = 1) { iverksettResultatService.oppdaterJournalpostResultat(behandlingId, any(), any()) }
         assertThat(arkiverDokumentRequestSlot).hasSize(1)
         assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
-        assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter.first().dokumenttype)
-            .isEqualTo(Dokumenttype.VEDTAKSBREV_BARNETILSYN)
+        assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter.first().dokumenttype).isEqualTo(Dokumenttype.VEDTAKSBREV_BARNETILSYN)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
     }
 
@@ -245,4 +607,12 @@ internal class JournalførVedtaksbrevTaskTest {
         assertThat(arkiverDokumentRequestSlot[0].hoveddokumentvarianter).hasSize(1)
         assertThat(journalpostResultatSlot.captured.journalpostId).isEqualTo(journalpostId)
     }
+
+    private fun iverksettDto(iverksettDto: IverksettDto) =
+        Iverksett(
+            iverksettDto.behandling.behandlingId,
+            iverksettDto.toDomain(),
+            iverksettDto.behandling.eksternId,
+            Brev(ByteArray(256)),
+        )
 }
