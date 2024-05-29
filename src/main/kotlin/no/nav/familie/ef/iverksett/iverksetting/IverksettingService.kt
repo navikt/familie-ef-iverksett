@@ -1,5 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
+import java.util.Properties
+import java.util.UUID
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.hovedflyt
@@ -22,10 +24,9 @@ import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
 import no.nav.familie.prosessering.internal.TaskService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.Properties
-import java.util.UUID
 
 @Service
 class IverksettingService(
@@ -35,6 +36,9 @@ class IverksettingService(
     val iverksettResultatService: IverksettResultatService,
     val featureToggleService: FeatureToggleService,
 ) {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     @Transactional
     fun startIverksetting(
         iverksett: IverksettData,
@@ -59,12 +63,12 @@ class IverksettingService(
                 type = førsteHovedflytTask(iverksett),
                 payload = iverksett.behandling.behandlingId.toString(),
                 properties =
-                    Properties().apply {
-                        this["personIdent"] = iverksett.søker.personIdent
-                        this["behandlingId"] = iverksett.behandling.behandlingId.toString()
-                        this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
-                        this["beslutter"] = iverksett.vedtak.beslutterId
-                    },
+                Properties().apply {
+                    this["personIdent"] = iverksett.søker.personIdent
+                    this["behandlingId"] = iverksett.behandling.behandlingId.toString()
+                    this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                    this["beslutter"] = iverksett.vedtak.beslutterId
+                },
             ),
         )
     }
@@ -72,20 +76,26 @@ class IverksettingService(
     @Transactional
     fun publiserVedtak(behandlingId: UUID) {
         val iverksettDbo = iverksettingRepository.findByIdOrThrow(behandlingId)
-
-        taskService.save(
-            Task(
-                type = førstePubliseringsflytTask(iverksettDbo.data),
-                payload = behandlingId.toString(),
-                properties =
+        val tasktype = førstePubliseringsflytTask(iverksettDbo.data)
+        val payload = behandlingId.toString()
+        val erAlleredeOpprettet = taskService.finnAlleTaskerMedPayloadOgType(payload, tasktype).isNotEmpty()
+        if (erAlleredeOpprettet) {
+            logger.info("Har allerede opprettet publiseringingstask - skal ikke kjøre en gang til")
+        } else {
+            taskService.save(
+                Task(
+                    type = tasktype,
+                    payload = payload,
+                    properties =
                     Properties().apply {
                         this["personIdent"] = iverksettDbo.data.søker.personIdent
-                        this["behandlingId"] = behandlingId.toString()
+                        this["behandlingId"] = payload
                         this["saksbehandler"] = iverksettDbo.data.vedtak.saksbehandlerId
                         this["beslutter"] = iverksettDbo.data.vedtak.beslutterId
                     },
-            ),
-        )
+                ),
+            )
+        }
     }
 
     private fun førstePubliseringsflytTask(iverksett: IverksettData) =

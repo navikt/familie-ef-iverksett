@@ -20,6 +20,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import java.util.UUID
+import no.nav.familie.ef.iverksett.infrastruktur.task.publiseringsflyt
 
 class IverksettingControllerTest : ServerTest() {
     private val behandlingId = UUID.randomUUID()
@@ -113,5 +114,41 @@ class IverksettingControllerTest : ServerTest() {
             )
 
         assertThat(respons.statusCode.value()).isEqualTo(400)
+    }
+
+    @Test
+    internal fun `skal starte publiseringsflyt og gi 200 OK - samt gi 200OK dersom det kalles en gang til`() {
+        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
+        val request =
+            MultipartBuilder()
+                .withJson("data", iverksettJson)
+                .withByteArray("fil", "1", byteArrayOf(12))
+                .build()
+
+        restTemplate.exchange<ResponseEntity<Any>>(
+            localhostUrl("/api/iverksett"),
+            HttpMethod.POST,
+            HttpEntity(request, headers),
+        )
+
+        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        val respons: ResponseEntity<Any> =
+            restTemplate.exchange(
+                localhostUrl("/api/iverksett/vedtakshendelse/$behandlingId"),
+                HttpMethod.POST,
+                HttpEntity(null, headers),
+            )
+        assertThat(respons.statusCode.value()).isEqualTo(200)
+        val tasker = taskService.findAll()
+        assertThat(tasker.map { it.type }).containsAnyElementsOf(publiseringsflyt().map { it.type })
+
+        val responsDobbelKall: ResponseEntity<Any> =
+            restTemplate.exchange(
+                localhostUrl("/api/iverksett/vedtakshendelse/$behandlingId"),
+                HttpMethod.POST,
+                HttpEntity(null, headers),
+            )
+        assertThat(responsDobbelKall.statusCode.value()).isEqualTo(200)
+
     }
 }
