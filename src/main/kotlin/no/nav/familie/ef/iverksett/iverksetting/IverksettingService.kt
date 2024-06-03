@@ -1,7 +1,5 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
-import java.util.Properties
-import java.util.UUID
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.hovedflyt
@@ -27,6 +25,8 @@ import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.Properties
+import java.util.UUID
 
 @Service
 class IverksettingService(
@@ -36,7 +36,6 @@ class IverksettingService(
     val iverksettResultatService: IverksettResultatService,
     val featureToggleService: FeatureToggleService,
 ) {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Transactional
@@ -63,12 +62,12 @@ class IverksettingService(
                 type = førsteHovedflytTask(iverksett),
                 payload = iverksett.behandling.behandlingId.toString(),
                 properties =
-                Properties().apply {
-                    this["personIdent"] = iverksett.søker.personIdent
-                    this["behandlingId"] = iverksett.behandling.behandlingId.toString()
-                    this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
-                    this["beslutter"] = iverksett.vedtak.beslutterId
-                },
+                    Properties().apply {
+                        this["personIdent"] = iverksett.søker.personIdent
+                        this["behandlingId"] = iverksett.behandling.behandlingId.toString()
+                        this["saksbehandler"] = iverksett.vedtak.saksbehandlerId
+                        this["beslutter"] = iverksett.vedtak.beslutterId
+                    },
             ),
         )
     }
@@ -87,12 +86,12 @@ class IverksettingService(
                     type = tasktype,
                     payload = payload,
                     properties =
-                    Properties().apply {
-                        this["personIdent"] = iverksettDbo.data.søker.personIdent
-                        this["behandlingId"] = payload
-                        this["saksbehandler"] = iverksettDbo.data.vedtak.saksbehandlerId
-                        this["beslutter"] = iverksettDbo.data.vedtak.beslutterId
-                    },
+                        Properties().apply {
+                            this["personIdent"] = iverksettDbo.data.søker.personIdent
+                            this["behandlingId"] = payload
+                            this["saksbehandler"] = iverksettDbo.data.vedtak.saksbehandlerId
+                            this["beslutter"] = iverksettDbo.data.vedtak.beslutterId
+                        },
                 ),
             )
         }

@@ -5,7 +5,9 @@ import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.OppdragResultat
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilbakekrevingResultat
+import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
+import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.tilbakekreving.tilOpprettTilbakekrevingRequest
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
@@ -15,11 +17,15 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.OptimisticLockingFailureException
 import java.util.UUID
 
 internal class LagreIverksettResultatServiceTest : ServerTest() {
     @Autowired
     private lateinit var tilstandRepositoryService: IverksettResultatService
+
+    @Autowired
+    private lateinit var iverksettResultatRepository: IverksettResultatRepository
 
     private val behandlingsId: UUID = UUID.randomUUID()
     private val journalpostId: UUID = UUID.randomUUID()
@@ -35,6 +41,15 @@ internal class LagreIverksettResultatServiceTest : ServerTest() {
     fun `oppdater tilkjent ytelse, forvent ingen unntak`() {
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         tilstandRepositoryService.oppdaterTilkjentYtelseForUtbetaling(behandlingsId, tilkjentYtelse)
+    }
+
+    @Test
+    fun `skal få optimistic lock exception hvis vi prøver å oppdatere resultat med gammel versjon`() {
+        val iverksettResultat = iverksettResultatRepository.findByIdOrThrow(behandlingsId)
+        iverksettResultatRepository.update(iverksettResultat.copy(tilkjentYtelseForUtbetaling = null))
+        assertThrows<OptimisticLockingFailureException> {
+            iverksettResultatRepository.update(iverksettResultat.copy(tilkjentYtelseForUtbetaling = null))
+        }
     }
 
     @Test
