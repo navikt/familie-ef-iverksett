@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Version
 import org.springframework.data.relational.core.mapping.MappedCollection
 import java.util.UUID
 
@@ -11,4 +12,6 @@ data class Iverksett(
     val eksternId: Long,
     @MappedCollection(idColumn = "behandling_id")
     val brev: Brev? = null,
+    @Version
+    val versjon: Int = 0,
 )

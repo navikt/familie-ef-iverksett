@@ -76,7 +76,7 @@ internal class HentIverksettResultatServiceTest : ServerTest() {
 
         iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(behandlingId, journalpostId, vedtaksbrevResultat)
         val iverksettResultat = iverksettResultatService.hentIverksettResultat(behandlingId)
-        assertThat(iverksettResultat).isEqualTo(resultat)
+        assertThat(iverksettResultat).isEqualTo(resultat.copy(versjon = 6))
     }
 
     @Test

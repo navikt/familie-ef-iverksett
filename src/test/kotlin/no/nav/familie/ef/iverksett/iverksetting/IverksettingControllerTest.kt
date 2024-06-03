@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
+import no.nav.familie.ef.iverksett.infrastruktur.task.publiseringsflyt
 import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
@@ -20,7 +21,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import java.util.UUID
-import no.nav.familie.ef.iverksett.infrastruktur.task.publiseringsflyt
 
 class IverksettingControllerTest : ServerTest() {
     private val behandlingId = UUID.randomUUID()
@@ -149,6 +149,5 @@ class IverksettingControllerTest : ServerTest() {
                 HttpEntity(null, headers),
             )
         assertThat(responsDobbelKall.statusCode.value()).isEqualTo(200)
-
     }
 }
