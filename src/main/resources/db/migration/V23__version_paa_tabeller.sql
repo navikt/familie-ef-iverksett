@@ -1,4 +1,4 @@
 ALTER TABLE iverksett
-    ADD COLUMN versjon BIGINT DEFAULT 1;
+    ADD COLUMN versjon INT NOT NULL DEFAULT 1;
 ALTER TABLE iverksett_resultat
-    ADD COLUMN versjon BIGINT DEFAULT 1;
+    ADD COLUMN versjon INT NOT NULL DEFAULT 1;
