@@ -102,7 +102,7 @@ class OppgaveService(
     fun lagFristFerdigstillelseFremleggsoppgaver(vedtaksdato: LocalDate): LocalDate? {
         // Frist skal ikke falle på
         // - Den 6. dagen i måneden for det er en rutine i enhetene som sier at hvis man ikke får revurdert eller sjekket en sak fordi inntekten for den siste måneden ikke er innrapportert ennå, så oppretter man en fremleggsoppgave med frist den 6. neste måned for å sjekke inntekten. Grunnen til at fristen er den 6. er fordi arbeidsgivers frist til å innrapportere inntekt for forrige måned er den 5.
-        // - 17. og 18. mai, for de er forbeholdt karakterutskriftsoppgavene
+        // - 17. og 18. mai, for de er forbeholdt innhenting av aktivitetsplikt
         // - Juli og august på grunn av ferie og lav bemanning
         // Det er verdt å merke seg at oppgavesystemet flytter fristen fremover dersom fristdato lander på en helg, så vi må unngå at vi sklir inn i neste mnd
 

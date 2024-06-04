@@ -1,7 +1,6 @@
 package no.nav.familie.ef.iverksett.brev.domain
 
-import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
-import no.nav.familie.kontrakter.ef.felles.KarakterutskriftBrevDto
+import no.nav.familie.kontrakter.ef.felles.PeriodiskAktivitetspliktBrevDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
@@ -11,8 +10,8 @@ import java.time.Year
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
-@Table("karakterutskrift_brev")
-data class KarakterutskriftBrev(
+@Table("aktivitetsplikt_brev")
+data class AktivitetspliktBrev(
     @Id
     val id: UUID = UUID.randomUUID(),
     val personIdent: String,
@@ -21,7 +20,6 @@ data class KarakterutskriftBrev(
     @Column("journalforende_enhet")
     val journalførendeEnhet: String,
     val fil: ByteArray,
-    val brevtype: FrittståendeBrevType,
     @Column("gjeldende_ar")
     val gjeldendeÅr: Year,
     @Column("stonad_type")
@@ -30,26 +28,24 @@ data class KarakterutskriftBrev(
     val opprettetTid: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
 )
 
-fun KarakterutskriftBrev.tilDto(): KarakterutskriftBrevDto =
-    KarakterutskriftBrevDto(
+fun AktivitetspliktBrev.tilDto(): PeriodiskAktivitetspliktBrevDto =
+    PeriodiskAktivitetspliktBrevDto(
         fil = this.fil,
         oppgaveId = this.oppgaveId,
         personIdent = this.personIdent,
         eksternFagsakId = this.eksternFagsakId,
         journalførendeEnhet = this.journalførendeEnhet,
-        brevtype = this.brevtype,
         gjeldendeÅr = this.gjeldendeÅr,
         stønadType = this.stønadType,
     )
 
-fun KarakterutskriftBrevDto.tilDomene(journalpostId: String? = null): KarakterutskriftBrev =
-    KarakterutskriftBrev(
+fun PeriodiskAktivitetspliktBrevDto.tilDomene(journalpostId: String? = null): AktivitetspliktBrev =
+    AktivitetspliktBrev(
         fil = this.fil,
         oppgaveId = this.oppgaveId,
         personIdent = this.personIdent,
         eksternFagsakId = this.eksternFagsakId,
         journalførendeEnhet = this.journalførendeEnhet,
-        brevtype = this.brevtype,
         gjeldendeÅr = this.gjeldendeÅr,
         stønadType = this.stønadType,
         journalpostId = journalpostId,

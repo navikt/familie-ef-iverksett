@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
@@ -21,14 +21,14 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = DistribuerKarakterutskriftBrevTask.TYPE,
+    taskStepType = DistribuerAktivitetspliktBrevTask.TYPE,
     maxAntallFeil = 50,
     settTilManuellOppfølgning = true,
     triggerTidVedFeilISekunder = 15 * 60L,
-    beskrivelse = "Distribuerer frittstående brev for innhenting av karakterutskrift.",
+    beskrivelse = "Distribuerer brev for innhenting av aktivitetsplikt.",
 )
-class DistribuerKarakterutskriftBrevTask(
-    private val karakterutskriftBrevRepository: KarakterutskriftBrevRepository,
+class DistribuerAktivitetspliktBrevTask(
+    private val aktivitetspliktBrevRepository: AktivitetspliktBrevRepository,
     private val journalpostClient: JournalpostClient,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
@@ -43,18 +43,18 @@ class DistribuerKarakterutskriftBrevTask(
     override fun doTask(task: Task) {
         val brevId = UUID.fromString(task.payload)
 
-        val resultat: Resultat = distribuerKarakterutskriftBrev(brevId)
+        val resultat: Resultat = distribuerAktivitetspliktBrev(brevId)
 
         if (resultat is Dødsbo) {
             håndterDødsbo(task, resultat)
         }
     }
 
-    private fun distribuerKarakterutskriftBrev(brevId: UUID): Resultat {
-        val brev = karakterutskriftBrevRepository.findByIdOrThrow(brevId)
+    private fun distribuerAktivitetspliktBrev(brevId: UUID): Resultat {
+        val brev = aktivitetspliktBrevRepository.findByIdOrThrow(brevId)
         val journalpostId =
             brev.journalpostId ?: throw IllegalStateException(
-                "Distribuering av frittstående brev for innhenting av karakterutskrift " +
+                "Distribuering av brev for innhenting av aktivitetsplikt " +
                     "med id=$brevId feilet. Fant ingen journalpostId på brevet.",
             )
 
@@ -66,7 +66,7 @@ class DistribuerKarakterutskriftBrevTask(
                 is HttpClientErrorException.Gone ->
                     return Dødsbo("Dødsbo personIdent=${brev.personIdent} ${cause.responseBodyAsString}")
                 is HttpClientErrorException.Conflict -> {
-                    logger.warn("Conflict: Distribuering av karakterutskrift brev allerede utført for journalpost: $journalpostId")
+                    logger.warn("Conflict: Distribuering av aktivitetsplikt brev allerede utført for journalpost: $journalpostId")
                 }
                 else -> throw e
             }
@@ -88,7 +88,7 @@ class DistribuerKarakterutskriftBrevTask(
             taskService.findTaskLoggByTaskId(task.id)
                 .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 7) {
-            logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
+            logger.warn("Mottaker for aktivitetspliktbrev brevId=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
             throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))
         } else {
             throw TaskExceptionUtenStackTrace("Er dødsbo og har feilet flere ganger: ${dødsbo.melding}")
@@ -100,16 +100,16 @@ class DistribuerKarakterutskriftBrevTask(
         bestillingId: String,
     ) {
         logger.info(
-            "Distribuerer frittstående brev for innhenting av karakterutskrift med " +
+            "Distribuerer brev for innhenting av aktivitetsplikt med " +
                 "journalpostId=$journalpostId og bestillingId=$bestillingId",
         )
     }
 
     override fun onCompletion(task: Task) {
-        taskService.save(Task(OppdaterKarakterinnhentingOppgaveTask.TYPE, task.payload, task.metadata))
+        taskService.save(Task(OppdaterAktivitetspliktInnhentingOppgaveTask.TYPE, task.payload, task.metadata))
     }
 
     companion object {
-        const val TYPE = "distribuerKarakterutskriftBrev"
+        const val TYPE = "distribuerAktivitetspliktutskriftBrev"
     }
 }

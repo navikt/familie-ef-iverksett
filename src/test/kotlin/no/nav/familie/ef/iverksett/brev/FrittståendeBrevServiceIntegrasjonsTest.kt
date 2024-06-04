@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.ServerTest
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktInnhentingBrevUtil.brevDto
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevService
-import no.nav.familie.ef.iverksett.brev.frittstående.KarakterInnhentingBrevUtil.brevDto
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -20,10 +20,10 @@ class FrittståendeBrevServiceIntegrasjonsTest : ServerTest() {
         val brevDto1 = brevDto(eksternFagsakId, 1L)
         val brevDto2 = brevDto(eksternFagsakId, 2L)
 
-        frittståendeBrevService.opprettTask(brevDto1)
+        frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(brevDto1)
         val feil =
             assertThrows<ApiFeil> {
-                frittståendeBrevService.opprettTask(brevDto2)
+                frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(brevDto2)
             }
         assertThat(feil.feil).contains("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=$eksternFagsakId")
     }

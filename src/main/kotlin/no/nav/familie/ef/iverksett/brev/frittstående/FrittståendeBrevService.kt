@@ -1,6 +1,8 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktBrevRepository
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.JournalførAktivitetspliktutskriftBrevTask
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
 import no.nav.familie.ef.iverksett.brev.domain.tilDomene
@@ -8,8 +10,7 @@ import no.nav.familie.ef.iverksett.brev.stønadstypeTilDokumenttype
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
-import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
-import no.nav.familie.kontrakter.ef.felles.KarakterutskriftBrevDto
+import no.nav.familie.kontrakter.ef.felles.PeriodiskAktivitetspliktBrevDto
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Dokument
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.Filtype
@@ -24,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class FrittståendeBrevService(
     private val frittståendeBrevRepository: FrittståendeBrevRepository,
-    private val karakterutskriftBrevRepository: KarakterutskriftBrevRepository,
+    private val aktivitetspliktBrevRepository: AktivitetspliktBrevRepository,
     private val taskService: TaskService,
     private val journalpostClient: JournalpostClient,
 ) {
@@ -87,25 +88,16 @@ class FrittståendeBrevService(
     }
 
     @Transactional
-    fun opprettTask(brevDto: KarakterutskriftBrevDto) {
-        validerKanLagreKarakterutskriftBrev(brevDto)
+    fun opprettTaskForInnhentingAvAktivitetsplikt(brevDto: PeriodiskAktivitetspliktBrevDto) {
+        validerKanLagreAktivitetspliktutskriftBrev(brevDto)
 
-        val brev = karakterutskriftBrevRepository.insert(brevDto.tilDomene())
+        val brev = aktivitetspliktBrevRepository.insert(brevDto.tilDomene())
 
-        taskService.save(Task(JournalførKarakterutskriftBrevTask.TYPE, brev.id.toString()))
+        taskService.save(Task(JournalførAktivitetspliktutskriftBrevTask.TYPE, brev.id.toString()))
     }
 
-    private fun validerKanLagreKarakterutskriftBrev(brevDto: KarakterutskriftBrevDto) {
-        if (
-            brevDto.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE &&
-            brevDto.brevtype != FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_UTVIDET_PERIODE
-        ) {
-            throw ApiFeil(
-                "Skal ikke opprette automatiske innhentingsbrev for frittstående brev av type ${brevDto.brevtype}",
-                HttpStatus.BAD_REQUEST,
-            )
-        }
-        if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
+    private fun validerKanLagreAktivitetspliktutskriftBrev(brevDto: PeriodiskAktivitetspliktBrevDto) {
+        if (aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
                 brevDto.eksternFagsakId,
                 brevDto.oppgaveId,
                 brevDto.gjeldendeÅr,
@@ -116,10 +108,9 @@ class FrittståendeBrevService(
                 HttpStatus.BAD_REQUEST,
             )
         }
-        if (karakterutskriftBrevRepository.existsByEksternFagsakIdAndGjeldendeÅrAndBrevtype(
+        if (aktivitetspliktBrevRepository.existsByEksternFagsakIdAndGjeldendeÅr(
                 brevDto.eksternFagsakId,
                 brevDto.gjeldendeÅr,
-                brevDto.brevtype,
             )
         ) {
             throw ApiFeil(

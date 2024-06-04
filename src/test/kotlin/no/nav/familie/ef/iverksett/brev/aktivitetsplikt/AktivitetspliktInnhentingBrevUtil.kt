@@ -1,24 +1,21 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
-import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
-import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
-import no.nav.familie.kontrakter.ef.felles.KarakterutskriftBrevDto
+import no.nav.familie.ef.iverksett.brev.domain.AktivitetspliktBrev
+import no.nav.familie.kontrakter.ef.felles.PeriodiskAktivitetspliktBrevDto
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import java.time.Year
 import java.util.UUID
 
-object KarakterInnhentingBrevUtil {
+object AktivitetspliktInnhentingBrevUtil {
     fun opprettBrev(
-        brevType: FrittståendeBrevType,
         journalpostId: String? = null,
-    ) = KarakterutskriftBrev(
+    ) = AktivitetspliktBrev(
         id = UUID.randomUUID(),
         personIdent = "12345678910",
         oppgaveId = 5L,
         eksternFagsakId = 6L,
         journalførendeEnhet = "enhet",
         fil = ByteArray(1),
-        brevtype = brevType,
         gjeldendeÅr = Year.of(2023),
         stønadType = StønadType.OVERGANGSSTØNAD,
         journalpostId = journalpostId,
@@ -27,13 +24,12 @@ object KarakterInnhentingBrevUtil {
     fun brevDto(
         eksternFagsakId: Long,
         oppgaveId: Long,
-    ) = KarakterutskriftBrevDto(
+    ) = PeriodiskAktivitetspliktBrevDto(
         "123".toByteArray(),
         oppgaveId,
         "ident",
         eksternFagsakId,
         "4489",
-        FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE,
         Year.of(2023),
         StønadType.OVERGANGSSTØNAD,
     )
