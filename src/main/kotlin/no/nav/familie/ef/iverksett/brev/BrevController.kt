@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevService
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
-import no.nav.familie.kontrakter.ef.felles.KarakterutskriftBrevDto
+import no.nav.familie.kontrakter.ef.felles.PeriodiskAktivitetspliktBrevDto
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.ResponseEntity
@@ -29,9 +29,9 @@ class BrevController(
         return ResponseEntity.ok().build()
     }
 
-    @PostMapping("/frittstaende/innhenting-karakterutskrift")
-    fun journalførBrevForInnhentingAvKarakterutskrift(
-        @RequestBody data: KarakterutskriftBrevDto,
+    @PostMapping("/frittstaende/innhenting-aktivitetsplikt")
+    fun journalførBrevForInnhentingAvAktivitetsplikt(
+        @RequestBody data: PeriodiskAktivitetspliktBrevDto,
     ): Ressurs<Unit> {
         frittståendeBrevService.opprettTask(data)
         return Ressurs.success(Unit)

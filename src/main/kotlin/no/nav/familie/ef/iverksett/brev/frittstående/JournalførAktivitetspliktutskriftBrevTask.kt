@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
-import no.nav.familie.ef.iverksett.brev.domain.KarakterutskriftBrev
+import no.nav.familie.ef.iverksett.brev.domain.AktivitetspliktBrev
 import no.nav.familie.ef.iverksett.brev.stønadstypeTilDokumenttype
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.felles.dokarkiv.v2.ArkiverDokumentRequest
@@ -16,19 +16,19 @@ import java.util.UUID
 
 @Service
 @TaskStepBeskrivelse(
-    taskStepType = JournalførKarakterutskriftBrevTask.TYPE,
+    taskStepType = JournalførAktivitetspliktutskriftBrevTask.TYPE,
     maxAntallFeil = 5,
     triggerTidVedFeilISekunder = 15,
-    beskrivelse = "Journalfører frittstående brev for innhenting av karakterutskrift.",
+    beskrivelse = "Journalfører frittstående brev for innhenting av aktivitetsplikt.",
 )
-class JournalførKarakterutskriftBrevTask(
+class JournalførAktivitetspliktutskriftBrevTask(
     private val journalpostClient: JournalpostClient,
     private val taskService: TaskService,
-    private val karakterutskriftBrevRepository: KarakterutskriftBrevRepository,
+    private val aktivitetspliktBrevRepository: AktivitetspliktBrevRepository,
 ) : AsyncTaskStep {
     override fun doTask(task: Task) {
         val brevId = UUID.fromString(task.payload)
-        val brev = karakterutskriftBrevRepository.findByIdOrThrow(brevId)
+        val brev = aktivitetspliktBrevRepository.findByIdOrThrow(brevId)
         val dokumentRequest = opprettArkiverDokumentRequest(brev)
 
         val journalPostId =
@@ -37,11 +37,11 @@ class JournalførKarakterutskriftBrevTask(
                 saksbehandler = null,
             ).journalpostId
 
-        karakterutskriftBrevRepository.update(brev.copy(journalpostId = journalPostId))
+        aktivitetspliktBrevRepository.update(brev.copy(journalpostId = journalPostId))
     }
 
-    private fun opprettArkiverDokumentRequest(brev: KarakterutskriftBrev): ArkiverDokumentRequest {
-        val eksternReferanseId = brev.eksternFagsakId.toString() + brev.gjeldendeÅr.toString() + brev.brevtype.name
+    private fun opprettArkiverDokumentRequest(brev: AktivitetspliktBrev): ArkiverDokumentRequest {
+        val eksternReferanseId = brev.eksternFagsakId.toString() + brev.gjeldendeÅr.toString() + "innhentingAktivitetsplikt"
 
         return ArkiverDokumentRequest(
             fnr = brev.personIdent,
@@ -52,7 +52,7 @@ class JournalførKarakterutskriftBrevTask(
                         dokument = brev.fil,
                         filtype = Filtype.PDFA,
                         dokumenttype = stønadstypeTilDokumenttype(brev.stønadType),
-                        tittel = brev.brevtype.tittel,
+                        tittel = "Innhenting av opplysninger",
                     ),
                 ),
             fagsakId = brev.eksternFagsakId.toString(),
@@ -62,10 +62,10 @@ class JournalførKarakterutskriftBrevTask(
     }
 
     override fun onCompletion(task: Task) {
-        taskService.save(Task(DistribuerKarakterutskriftBrevTask.TYPE, task.payload, task.metadata))
+        taskService.save(Task(DistribuerAktivitetspliktBrevTask.TYPE, task.payload, task.metadata))
     }
 
     companion object {
-        const val TYPE = "JournalførKarakterutskriftBrevTask"
+        const val TYPE = "JournalførAktivitetspliktutskriftBrevTask"
     }
 }

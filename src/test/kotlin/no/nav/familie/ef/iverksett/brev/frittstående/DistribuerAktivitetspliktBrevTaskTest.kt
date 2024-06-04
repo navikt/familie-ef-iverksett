@@ -6,11 +6,10 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.brev.DistribuerJournalpostResponseTo
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
-import no.nav.familie.ef.iverksett.brev.frittstående.KarakterInnhentingBrevUtil.opprettBrev
+import no.nav.familie.ef.iverksett.brev.frittstående.AktivitetspliktInnhentingBrevUtil.opprettBrev
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.vedtakstatistikk.toJson
 import no.nav.familie.http.client.RessursException
-import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevType
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.prosessering.domene.Task
@@ -28,15 +27,14 @@ import java.lang.IllegalStateException
 import java.time.LocalDateTime
 import java.util.UUID
 
-internal class DistribuerKarakterutskriftBrevTaskTest {
+internal class DistribuerAktivitetspliktBrevTaskTest {
     private val journalpostClient = mockk<JournalpostClient>()
     private val taskService = mockk<TaskService>()
-    private val karakterutskriftBrevRepository = mockk<KarakterutskriftBrevRepository>()
+    private val aktivitetspliktBrevRepository = mockk<AktivitetspliktBrevRepository>()
 
     private val distribuerTask =
-        DistribuerKarakterutskriftBrevTask(karakterutskriftBrevRepository, journalpostClient, taskService)
+        DistribuerAktivitetspliktBrevTask(aktivitetspliktBrevRepository, journalpostClient, taskService)
 
-    private val hovedPeriode = FrittståendeBrevType.INNHENTING_AV_KARAKTERUTSKRIFT_HOVEDPERIODE
     private val brevId = UUID.randomUUID().toString()
 
     private val journalpostIdSlot = slot<String>()
@@ -48,12 +46,12 @@ internal class DistribuerKarakterutskriftBrevTaskTest {
 
     @Test
     internal fun `skal kaste feil dersom brevet ikke er journalført`() {
-        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns opprettBrev(hovedPeriode)
+        every { aktivitetspliktBrevRepository.findByIdOrThrow(any()) } returns opprettBrev()
         val feil =
-            assertThrows<IllegalStateException> { distribuerTask.doTask(Task(DistribuerKarakterutskriftBrevTask.TYPE, brevId)) }
+            assertThrows<IllegalStateException> { distribuerTask.doTask(Task(DistribuerAktivitetspliktBrevTask.TYPE, brevId)) }
 
         assertThat(feil.message).contains(
-            "Distribuering av frittstående brev for innhenting av karakterutskrift " +
+            "Distribuering av frittstående brev for innhenting av aktivitetsplikt " +
                 "med id=$brevId feilet. Fant ingen journalpostId på brevet.",
         )
         verify(exactly = 0) { journalpostClient.distribuerBrev(any(), any()) }
@@ -61,12 +59,12 @@ internal class DistribuerKarakterutskriftBrevTaskTest {
 
     @Test
     internal fun `skal ikke distribuere brev ved avdød person men feile tasken`() {
-        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns opprettBrev(hovedPeriode, "journalpostId")
+        every { aktivitetspliktBrevRepository.findByIdOrThrow(any()) } returns opprettBrev("journalpostId")
         every { journalpostClient.distribuerBrev("journalpostId", any()) } throws ressursExceptionGone()
 
         val throwable =
             Assertions.catchThrowable {
-                distribuerTask.doTask(Task(DistribuerKarakterutskriftBrevTask.TYPE, brevId))
+                distribuerTask.doTask(Task(DistribuerAktivitetspliktBrevTask.TYPE, brevId))
             }
         assertThat(throwable).isInstanceOf(RekjørSenereException::class.java)
 
@@ -79,10 +77,10 @@ internal class DistribuerKarakterutskriftBrevTaskTest {
 
     @Test
     internal fun `skal ferdigstille task ved Conflict exception`() {
-        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns opprettBrev(hovedPeriode, "journalpostId")
+        every { aktivitetspliktBrevRepository.findByIdOrThrow(any()) } returns opprettBrev("journalpostId")
         every { journalpostClient.distribuerBrev(capture(journalpostIdSlot), any()) } throws ressursExceptionConflict("bestillingId")
 
-        distribuerTask.doTask(Task(DistribuerKarakterutskriftBrevTask.TYPE, brevId))
+        distribuerTask.doTask(Task(DistribuerAktivitetspliktBrevTask.TYPE, brevId))
 
         verify(exactly = 1) { journalpostClient.distribuerBrev(any(), any()) }
         verify(exactly = 0) { taskService.findTaskLoggByTaskId(any()) }
@@ -90,11 +88,11 @@ internal class DistribuerKarakterutskriftBrevTaskTest {
     }
 
     @Test
-    internal fun `skal distribuere brev for innhenting av karakterutskrift`() {
-        every { karakterutskriftBrevRepository.findByIdOrThrow(any()) } returns opprettBrev(hovedPeriode, "journalpostId")
+    internal fun `skal distribuere brev for innhenting av aktivitetsplikt`() {
+        every { aktivitetspliktBrevRepository.findByIdOrThrow(any()) } returns opprettBrev("journalpostId")
         every { journalpostClient.distribuerBrev(capture(journalpostIdSlot), any()) } returns "bestillingId"
 
-        distribuerTask.doTask(Task(DistribuerKarakterutskriftBrevTask.TYPE, brevId))
+        distribuerTask.doTask(Task(DistribuerAktivitetspliktBrevTask.TYPE, brevId))
 
         verify(exactly = 1) { journalpostClient.distribuerBrev(any(), any()) }
         verify(exactly = 0) { taskService.findTaskLoggByTaskId(any()) }

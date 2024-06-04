@@ -1,8 +1,8 @@
 package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.ServerTest
+import no.nav.familie.ef.iverksett.brev.frittstående.AktivitetspliktInnhentingBrevUtil.brevDto
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevService
-import no.nav.familie.ef.iverksett.brev.frittstående.KarakterInnhentingBrevUtil.brevDto
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

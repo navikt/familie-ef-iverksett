@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.brev.frittstående.KarakterInnhentingBrevUtil.brevDto
+import no.nav.familie.ef.iverksett.brev.frittstående.AktivitetspliktInnhentingBrevUtil.brevDto
 import no.nav.familie.kontrakter.felles.Ressurs
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -29,14 +29,14 @@ class FrittståendeBrevControllerTest : ServerTest() {
 
         val respons: ResponseEntity<Ressurs<Unit>> =
             restTemplate.exchange(
-                localhostUrl("/api/brev/frittstaende/innhenting-karakterutskrift"),
+                localhostUrl("/api/brev/frittstaende/innhenting-aktivitetsplikt"),
                 HttpMethod.POST,
                 HttpEntity(brevDto1, headers),
             )
 
         val respons2: ResponseEntity<Ressurs<Unit>> =
             restTemplate.exchange(
-                localhostUrl("/api/brev/frittstaende/innhenting-karakterutskrift"),
+                localhostUrl("/api/brev/frittstaende/innhenting-aktivitetsplikt"),
                 HttpMethod.POST,
                 HttpEntity(brevDto2, headers),
             )
