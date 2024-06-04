@@ -19,7 +19,10 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.lang.IllegalStateException
+import java.time.LocalDate
+import java.time.Month
 import java.time.Year
+import java.time.YearMonth
 import java.util.UUID
 
 internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
@@ -136,6 +139,14 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
 
         verify(exactly = 0) { oppgaveService.oppdaterOppgave(any()) }
         assertThat(feil.message).contains("Oppgaven har blitt endret på underveis i flyten for innhenting av aktivitetsplikt.")
+    }
+
+    @Test
+    fun `skal huske å oppdatere gjeldende frist innen juni neste år`() {
+        if (YearMonth.now().month >= Month.JUNE) {
+            assertThat(LocalDate.parse(OppdaterAktivitetspliktInnhentingOppgaveTask.FRIST_OPPRINNELIG_OPPGAVE).year).isEqualTo(YearMonth.now().year)
+            assertThat(LocalDate.parse(OppdaterAktivitetspliktInnhentingOppgaveTask.FRIST_OPPFØLGINGSOPPGAVE).year).isEqualTo(YearMonth.now().year)
+        }
     }
 
     @Nested

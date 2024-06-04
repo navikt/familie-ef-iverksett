@@ -9,7 +9,6 @@ import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 import java.util.UUID
 
 @Service
@@ -31,7 +30,7 @@ class OppdaterAktivitetspliktInnhentingOppgaveTask(
 
         val nyBeskrivelse = utledBeskrivelseForAktivitetspliktOppgave(oppgave.beskrivelse)
         val nyPrioritet = OppgavePrioritet.NORM
-        val nyFrist = LocalDate.of(2024, 8, 2)
+        val nyFrist = FRIST_OPPFØLGINGSOPPGAVE
 
         validerOppgave(oppgave)
 
@@ -40,7 +39,7 @@ class OppdaterAktivitetspliktInnhentingOppgaveTask(
                 id = brev.oppgaveId,
                 beskrivelse = nyBeskrivelse,
                 prioritet = nyPrioritet,
-                fristFerdigstillelse = nyFrist.toString(),
+                fristFerdigstillelse = nyFrist,
             ),
         )
     }
@@ -48,7 +47,7 @@ class OppdaterAktivitetspliktInnhentingOppgaveTask(
     private fun validerOppgave(
         oppgave: Oppgave,
     ) {
-        if (oppgave.fristFerdigstillelse != fristOpprinneligOppgave) {
+        if (oppgave.fristFerdigstillelse != FRIST_OPPRINNELIG_OPPGAVE) {
             throw IllegalStateException(
                 "Kan ikke oppdatere verdier på oppgave med id=${oppgave.id}. Oppgaven har blitt endret på underveis i flyten for innhenting av aktivitetsplikt.",
             )
@@ -57,8 +56,8 @@ class OppdaterAktivitetspliktInnhentingOppgaveTask(
 
     companion object {
         const val TYPE = "OppdaterAktivitetspliktInnhentingOppgaveTask"
-
-        val fristOpprinneligOppgave = "2024-05-17"
+        const val FRIST_OPPFØLGINGSOPPGAVE = "2024-08-02"
+        const val FRIST_OPPRINNELIG_OPPGAVE = "2024-05-17"
 
         fun utledBeskrivelseForAktivitetspliktOppgave(oppgaveBeskrivelse: String?): String {
             val tidligereBeskrivelse = "\n${oppgaveBeskrivelse.orEmpty()}"
