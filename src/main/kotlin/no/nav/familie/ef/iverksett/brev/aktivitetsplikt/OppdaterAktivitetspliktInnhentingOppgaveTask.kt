@@ -31,7 +31,7 @@ class OppdaterAktivitetspliktInnhentingOppgaveTask(
 
         val nyBeskrivelse = utledBeskrivelseForAktivitetspliktOppgave(oppgave.beskrivelse)
         val nyPrioritet = OppgavePrioritet.NORM
-        val nyFrist = LocalDate.of(2024, 8, 5)
+        val nyFrist = LocalDate.of(2024, 8, 2)
 
         validerOppgave(oppgave)
 
@@ -63,7 +63,7 @@ class OppdaterAktivitetspliktInnhentingOppgaveTask(
         fun utledBeskrivelseForAktivitetspliktOppgave(oppgaveBeskrivelse: String?): String {
             val tidligereBeskrivelse = "\n${oppgaveBeskrivelse.orEmpty()}"
             val prefix = "--- ${dagensDatoMedTidNorskFormat()} Utført av familie-ef-sak ---\n"
-            val nyttBeskrivelseInnslag = "Brev om innhenting av aktivitetsplikt er sendt til bruker.\n"
+            val nyttBeskrivelseInnslag = "Brev om innhenting av dokumentasjon på videre aktivitet er sendt til bruker.\n"
             val nyBeskrivelse = prefix + nyttBeskrivelseInnslag + tidligereBeskrivelse
 
             return nyBeskrivelse.trimEnd()

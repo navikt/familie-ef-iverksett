@@ -26,7 +26,8 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
     private val aktivitetspliktBrevRepository = mockk<AktivitetspliktBrevRepository>()
     private val oppgaveService = mockk<OppgaveService>()
 
-    private val fristHovedperiode = "2024-05-17"
+    private val initiellFristPåOppgave = "2024-05-17"
+    private val oppdatertFrist = "2024-08-02"
 
     private val oppdaterOppgaveTask = OppdaterAktivitetspliktInnhentingOppgaveTask(aktivitetspliktBrevRepository, oppgaveService)
     private val oppgaveSlot = slot<Oppgave>()
@@ -40,7 +41,7 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
     @Test
     fun `skal oppdatere oppgave med tidligere beskrivelse og frist hovedperiode`() {
         every { oppgaveService.hentOppgave(any()) } returns
-            oppgave(beskrivelse = "Oppgave opprettet.", frist = fristHovedperiode)
+            oppgave(beskrivelse = "Oppgave opprettet.", frist = initiellFristPåOppgave)
         oppdaterOppgaveTask.doTask(Task(OppdaterAktivitetspliktInnhentingOppgaveTask.TYPE, UUID.randomUUID().toString()))
 
         val oppdaterteVerdier = oppgaveSlot.captured
@@ -51,7 +52,7 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
         assertThat(oppdaterteVerdier.beskrivelse).contains("Utført av familie-ef-sak ---")
         assertThat(oppdaterteVerdier.beskrivelse).contains(nyBeskrivelseEtTidligereInnslag)
         assertThat(oppdaterteVerdier.prioritet).isEqualTo(OppgavePrioritet.NORM)
-        assertThat(oppdaterteVerdier.fristFerdigstillelse).isEqualTo("2024-08-05")
+        assertThat(oppdaterteVerdier.fristFerdigstillelse).isEqualTo(oppdatertFrist)
     }
 
     @Test
@@ -60,7 +61,7 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
             aktivitetspliktBrevRepository.findByIdOrThrow(any())
         } returns brev()
         every { oppgaveService.hentOppgave(any()) } returns
-            oppgave(beskrivelse = "", frist = fristHovedperiode)
+            oppgave(beskrivelse = "", frist = initiellFristPåOppgave)
         oppdaterOppgaveTask.doTask(Task(OppdaterAktivitetspliktInnhentingOppgaveTask.TYPE, UUID.randomUUID().toString()))
 
         val oppdaterteVerdier = oppgaveSlot.captured
@@ -69,9 +70,9 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
         assertThat(oppdaterteVerdier.id).isEqualTo(5L)
         assertThat(oppdaterteVerdier.beskrivelse).startsWith("--- ${dagensDatoNorskFormat()} ")
         assertThat(oppdaterteVerdier.beskrivelse).contains("Utført av familie-ef-sak ---")
-        assertThat(oppdaterteVerdier.beskrivelse).contains("Brev om innhenting av aktivitetsplikt er sendt til bruker.")
+        assertThat(oppdaterteVerdier.beskrivelse).contains("Brev om innhenting av dokumentasjon på videre aktivitet er sendt til bruker.")
         assertThat(oppdaterteVerdier.prioritet).isEqualTo(OppgavePrioritet.NORM)
-        assertThat(oppdaterteVerdier.fristFerdigstillelse).isEqualTo("2024-08-05")
+        assertThat(oppdaterteVerdier.fristFerdigstillelse).isEqualTo(oppdatertFrist)
     }
 
     @Test
@@ -154,15 +155,15 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
         }
     }
 
-    private val nyttBeskrivelseInnslag = "Brev om innhenting av aktivitetsplikt er sendt til bruker."
+    private val nyttBeskrivelseInnslag = "Brev om innhenting av dokumentasjon på videre aktivitet er sendt til bruker."
 
     private val tidligereOppgaveBeskrivelse = "Oppgave opprettet.\n\nOppgave lagt i mappe 64."
 
     private val nyBeskrivelseToTidligereInnslag =
-        "Brev om innhenting av aktivitetsplikt er sendt til bruker.\n\n" +
+        "Brev om innhenting av dokumentasjon på videre aktivitet er sendt til bruker.\n\n" +
             "Oppgave opprettet.\n\n" + "Oppgave lagt i mappe 64."
 
-    private val nyBeskrivelseEtTidligereInnslag = "Brev om innhenting av aktivitetsplikt er sendt til bruker.\n\nOppgave opprettet."
+    private val nyBeskrivelseEtTidligereInnslag = "Brev om innhenting av dokumentasjon på videre aktivitet er sendt til bruker.\n\nOppgave opprettet."
 
     private fun oppgave(
         beskrivelse: String,
