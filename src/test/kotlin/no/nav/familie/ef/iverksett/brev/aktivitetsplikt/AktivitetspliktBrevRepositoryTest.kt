@@ -1,7 +1,7 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
 import no.nav.familie.ef.iverksett.ServerTest
-import no.nav.familie.ef.iverksett.brev.frittstående.AktivitetspliktInnhentingBrevUtil.opprettBrev
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktInnhentingBrevUtil.opprettBrev
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

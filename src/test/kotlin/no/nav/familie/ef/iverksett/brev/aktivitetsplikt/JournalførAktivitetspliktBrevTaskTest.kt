@@ -1,12 +1,12 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktInnhentingBrevUtil.opprettBrev
 import no.nav.familie.ef.iverksett.brev.domain.AktivitetspliktBrev
-import no.nav.familie.ef.iverksett.brev.frittstående.AktivitetspliktInnhentingBrevUtil.opprettBrev
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
 import no.nav.familie.kontrakter.felles.dokarkiv.Dokumenttype
@@ -54,7 +54,7 @@ internal class JournalførAktivitetspliktBrevTaskTest {
         verify(exactly = 1) { aktivitetspliktBrevRepository.update(any()) }
         assertThat(lagretBrev).isEqualTo(brev.copy(journalpostId = journalPostId))
         validerAtDokumentRequestInneholderBrevVerdier(arkiverDokumentRequest, arkivertDokument, brev)
-        assertThat(arkiverDokumentRequest.eksternReferanseId).isEqualTo("62023innhentingAktivitetsplikt")
+        assertThat(arkiverDokumentRequest.eksternReferanseId).isEqualTo("6_2023_innhentingAktivitetsplikt")
     }
 
     private fun validerAtDokumentRequestInneholderBrevVerdier(

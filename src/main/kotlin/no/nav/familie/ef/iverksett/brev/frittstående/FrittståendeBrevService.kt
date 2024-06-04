@@ -1,6 +1,8 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktBrevRepository
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.JournalførAktivitetspliktutskriftBrevTask
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
 import no.nav.familie.ef.iverksett.brev.domain.tilDomene
@@ -86,7 +88,7 @@ class FrittståendeBrevService(
     }
 
     @Transactional
-    fun opprettTask(brevDto: PeriodiskAktivitetspliktBrevDto) {
+    fun opprettTaskForInnhentingAvAktivitetsplikt(brevDto: PeriodiskAktivitetspliktBrevDto) {
         validerKanLagreAktivitetspliktutskriftBrev(brevDto)
 
         val brev = aktivitetspliktBrevRepository.insert(brevDto.tilDomene())

@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
@@ -25,7 +25,7 @@ import java.util.UUID
     maxAntallFeil = 50,
     settTilManuellOppfølgning = true,
     triggerTidVedFeilISekunder = 15 * 60L,
-    beskrivelse = "Distribuerer frittstående brev for innhenting av aktivitetsplikt.",
+    beskrivelse = "Distribuerer brev for innhenting av aktivitetsplikt.",
 )
 class DistribuerAktivitetspliktBrevTask(
     private val aktivitetspliktBrevRepository: AktivitetspliktBrevRepository,
@@ -54,7 +54,7 @@ class DistribuerAktivitetspliktBrevTask(
         val brev = aktivitetspliktBrevRepository.findByIdOrThrow(brevId)
         val journalpostId =
             brev.journalpostId ?: throw IllegalStateException(
-                "Distribuering av frittstående brev for innhenting av aktivitetsplikt " +
+                "Distribuering av brev for innhenting av aktivitetsplikt " +
                     "med id=$brevId feilet. Fant ingen journalpostId på brevet.",
             )
 
@@ -88,7 +88,7 @@ class DistribuerAktivitetspliktBrevTask(
             taskService.findTaskLoggByTaskId(task.id)
                 .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 7) {
-            logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
+            logger.warn("Mottaker for aktivitetspliktbrev brevId=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")
             throw RekjørSenereException(dødsbo.melding, LocalDateTime.now().plusDays(7))
         } else {
             throw TaskExceptionUtenStackTrace("Er dødsbo og har feilet flere ganger: ${dødsbo.melding}")
@@ -100,7 +100,7 @@ class DistribuerAktivitetspliktBrevTask(
         bestillingId: String,
     ) {
         logger.info(
-            "Distribuerer frittstående brev for innhenting av aktivitetsplikt med " +
+            "Distribuerer brev for innhenting av aktivitetsplikt med " +
                 "journalpostId=$journalpostId og bestillingId=$bestillingId",
         )
     }

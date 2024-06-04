@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.AktivitetspliktBrev
@@ -41,7 +41,7 @@ class JournalførAktivitetspliktutskriftBrevTask(
     }
 
     private fun opprettArkiverDokumentRequest(brev: AktivitetspliktBrev): ArkiverDokumentRequest {
-        val eksternReferanseId = brev.eksternFagsakId.toString() + brev.gjeldendeÅr.toString() + "innhentingAktivitetsplikt"
+        val eksternReferanseId = "${brev.eksternFagsakId}_${brev.gjeldendeÅr}_innhentingAktivitetsplikt"
 
         return ArkiverDokumentRequest(
             fnr = brev.personIdent,
@@ -52,7 +52,7 @@ class JournalførAktivitetspliktutskriftBrevTask(
                         dokument = brev.fil,
                         filtype = Filtype.PDFA,
                         dokumenttype = stønadstypeTilDokumenttype(brev.stønadType),
-                        tittel = "Innhenting av opplysninger",
+                        tittel = DOKUMENTTITTEL_AKTIVITETSPLIKT,
                     ),
                 ),
             fagsakId = brev.eksternFagsakId.toString(),
@@ -67,5 +67,6 @@ class JournalførAktivitetspliktutskriftBrevTask(
 
     companion object {
         const val TYPE = "JournalførAktivitetspliktutskriftBrevTask"
+        const val DOKUMENTTITTEL_AKTIVITETSPLIKT = "Innhenting av opplysninger"
     }
 }

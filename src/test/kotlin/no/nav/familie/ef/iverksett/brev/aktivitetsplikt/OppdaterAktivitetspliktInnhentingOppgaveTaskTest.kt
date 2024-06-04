@@ -1,11 +1,11 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.OppdaterAktivitetspliktInnhentingOppgaveTask.Companion.utledBeskrivelseForAktivitetspliktOppgave
 import no.nav.familie.ef.iverksett.brev.domain.AktivitetspliktBrev
-import no.nav.familie.ef.iverksett.brev.frittstående.OppdaterAktivitetspliktInnhentingOppgaveTask.Companion.utledBeskrivelseForAktivitetspliktOppgave
 import no.nav.familie.ef.iverksett.felles.util.dagensDatoNorskFormat
 import no.nav.familie.ef.iverksett.oppgave.OppgaveService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow

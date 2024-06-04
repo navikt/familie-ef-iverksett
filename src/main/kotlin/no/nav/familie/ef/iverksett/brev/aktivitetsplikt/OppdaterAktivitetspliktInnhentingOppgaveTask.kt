@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
 import no.nav.familie.ef.iverksett.felles.util.dagensDatoMedTidNorskFormat
 import no.nav.familie.ef.iverksett.oppgave.OppgaveService

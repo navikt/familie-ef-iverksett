@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
 import io.mockk.every
 import io.mockk.mockk
@@ -6,7 +6,7 @@ import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.brev.DistribuerJournalpostResponseTo
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
-import no.nav.familie.ef.iverksett.brev.frittstående.AktivitetspliktInnhentingBrevUtil.opprettBrev
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktInnhentingBrevUtil.opprettBrev
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.vedtakstatistikk.toJson
 import no.nav.familie.http.client.RessursException
@@ -51,7 +51,7 @@ internal class DistribuerAktivitetspliktBrevTaskTest {
             assertThrows<IllegalStateException> { distribuerTask.doTask(Task(DistribuerAktivitetspliktBrevTask.TYPE, brevId)) }
 
         assertThat(feil.message).contains(
-            "Distribuering av frittstående brev for innhenting av aktivitetsplikt " +
+            "Distribuering av brev for innhenting av aktivitetsplikt " +
                 "med id=$brevId feilet. Fant ingen journalpostId på brevet.",
         )
         verify(exactly = 0) { journalpostClient.distribuerBrev(any(), any()) }

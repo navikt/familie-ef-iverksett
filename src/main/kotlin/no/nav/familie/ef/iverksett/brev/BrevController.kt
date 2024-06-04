@@ -33,7 +33,7 @@ class BrevController(
     fun journalførBrevForInnhentingAvAktivitetsplikt(
         @RequestBody data: PeriodiskAktivitetspliktBrevDto,
     ): Ressurs<Unit> {
-        frittståendeBrevService.opprettTask(data)
+        frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(data)
         return Ressurs.success(Unit)
     }
 }

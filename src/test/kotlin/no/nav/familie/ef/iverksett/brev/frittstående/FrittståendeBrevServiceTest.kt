@@ -5,9 +5,11 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktBrevRepository
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktInnhentingBrevUtil.opprettBrev
+import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.JournalførAktivitetspliktutskriftBrevTask
 import no.nav.familie.ef.iverksett.brev.domain.AktivitetspliktBrev
 import no.nav.familie.ef.iverksett.brev.domain.tilDto
-import no.nav.familie.ef.iverksett.brev.frittstående.AktivitetspliktInnhentingBrevUtil.opprettBrev
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
@@ -43,7 +45,7 @@ internal class FrittståendeBrevServiceTest {
             } answers { firstArg<AktivitetspliktBrev>().copy(id = brev.id) }
             every { taskService.save(capture(taskSlot)) } answers { firstArg() }
 
-            frittståendeBrevService.opprettTask(brevDto)
+            frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(brevDto)
 
             verify(exactly = 1) { aktivitetspliktBrevRepository.insert(any()) }
             verify(exactly = 1) { taskService.save(any()) }
@@ -59,7 +61,7 @@ internal class FrittståendeBrevServiceTest {
 
             every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns true
 
-            val feil = assertThrows<ApiFeil> { frittståendeBrevService.opprettTask(brevDto) }
+            val feil = assertThrows<ApiFeil> { frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(brevDto) }
 
             verify(exactly = 0) { aktivitetspliktBrevRepository.insert(any()) }
             verify(exactly = 0) { taskService.save(any()) }
@@ -76,7 +78,7 @@ internal class FrittståendeBrevServiceTest {
             every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns false
             every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndGjeldendeÅr(any(), any()) } returns true
 
-            val feil = assertThrows<ApiFeil> { frittståendeBrevService.opprettTask(brevDto) }
+            val feil = assertThrows<ApiFeil> { frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(brevDto) }
 
             verify(exactly = 0) { aktivitetspliktBrevRepository.insert(any()) }
             verify(exactly = 0) { taskService.save(any()) }

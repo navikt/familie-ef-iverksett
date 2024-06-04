@@ -1,4 +1,4 @@
-package no.nav.familie.ef.iverksett.brev.frittstående
+package no.nav.familie.ef.iverksett.brev.aktivitetsplikt
 
 import no.nav.familie.ef.iverksett.brev.domain.AktivitetspliktBrev
 import no.nav.familie.ef.iverksett.repository.InsertUpdateRepository
