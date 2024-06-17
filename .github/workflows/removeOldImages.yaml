@@ -9,7 +9,9 @@ jobs:
     name: 'Remove old images job'
     runs-on: ubuntu-latest
     permissions:
-      packages: write
+      contents: "read"
+      id-token: "write"
+      packages: "write"
     steps:
       - uses: actions/delete-package-versions@v5
         with:
