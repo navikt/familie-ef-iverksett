@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/delete-package-versions@v5
         with:
-          package-name: 'familie-ef-iverksett/familie-ef-iverksett'
+          package-name: 'familie-ef-iverksett/familie-iverksett'
           package-type: 'container'
           min-versions-to-keep: 1
       - uses: actions/delete-package-versions@v5
