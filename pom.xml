@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -33,8 +33,8 @@
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>4.1.8</token-validation-spring.version>
-        <ibm-mq-client.version>9.3.5.1</ibm-mq-client.version>
+        <token-validation-spring.version>5.0.1</token-validation-spring.version>
+        <ibm-mq-client.version>9.4.0.0</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
     </properties>
@@ -243,7 +243,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>10.13.0</version>
+            <version>10.15.0</version>
             <scope>runtime</scope>
         </dependency>
         <!-- MQ / JMS -->
@@ -411,7 +411,7 @@
                     <dependency>
                         <groupId>com.pinterest.ktlint</groupId>
                         <artifactId>ktlint-cli</artifactId>
-                        <version>1.2.1</version>
+                        <version>1.3.0</version>
                     </dependency>
                     <!-- additional 3rd party ruleset(s) can be specified here -->
                 </dependencies>
