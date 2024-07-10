@@ -64,9 +64,7 @@ data class IverksettOvergangsstønad(
     override val søker: Søker,
     override val vedtak: VedtaksdetaljerOvergangsstønad,
 ) : IverksettData() {
-    override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettOvergangsstønad {
-        return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
-    }
+    override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettOvergangsstønad = this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
 }
 
 data class IverksettBarnetilsyn(
@@ -75,9 +73,7 @@ data class IverksettBarnetilsyn(
     override val søker: Søker,
     override val vedtak: VedtaksdetaljerBarnetilsyn,
 ) : IverksettData() {
-    override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettBarnetilsyn {
-        return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
-    }
+    override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettBarnetilsyn = this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
 }
 
 data class IverksettSkolepenger(
@@ -86,9 +82,7 @@ data class IverksettSkolepenger(
     override val søker: Søker,
     override val vedtak: VedtaksdetaljerSkolepenger,
 ) : IverksettData() {
-    override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettSkolepenger {
-        return this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
-    }
+    override fun medNyTilbakekreving(nyTilbakekreving: Tilbakekrevingsdetaljer?): IverksettSkolepenger = this.copy(vedtak = this.vedtak.copy(tilbakekreving = nyTilbakekreving))
 }
 
 data class Fagsakdetaljer(
@@ -177,7 +171,9 @@ sealed class Vedtaksdetaljer {
     abstract val avslagÅrsak: AvslagÅrsak?
 }
 
-data class OppgaverForOpprettelse(val oppgavetyper: List<OppgaveForOpprettelseType>)
+data class OppgaverForOpprettelse(
+    val oppgavetyper: List<OppgaveForOpprettelseType>,
+)
 
 data class VedtaksdetaljerOvergangsstønad(
     override val vedtaksresultat: Vedtaksresultat,

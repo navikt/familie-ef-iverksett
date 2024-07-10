@@ -86,7 +86,8 @@ class JournalførVedtaksbrevTask(
         eksternReferanseId: String?,
     ): String {
         val request = JournalposterForBrukerRequest(Bruker(mottakerIdent, BrukerIdType.FNR), 50, listOf(Tema.ENF))
-        return journalpostClient.finnJournalposter(request)
+        return journalpostClient
+            .finnJournalposter(request)
             .find { it.eksternReferanseId == eksternReferanseId }
             ?.journalpostId
             ?: error("Finner ikke journalpost med eksternReferanseId=$eksternReferanseId")
@@ -113,7 +114,9 @@ class JournalførVedtaksbrevTask(
                 forsøkFerdigstill = true,
                 hoveddokumentvarianter = listOf(dokument),
                 vedleggsdokumenter = vedleggsdokumenter,
-                fagsakId = iverksett.data.fagsak.eksternId.toString(),
+                fagsakId =
+                    iverksett.data.fagsak.eksternId
+                        .toString(),
                 journalførendeEnhet = iverksett.data.søker.tilhørendeEnhet,
                 eksternReferanseId = "$behandlingId-vedtaksbrev",
             )
@@ -121,15 +124,18 @@ class JournalførVedtaksbrevTask(
         val journalførteIdenter: List<String> =
             iverksettResultatService.hentJournalpostResultat(behandlingId)?.keys?.toList() ?: emptyList()
 
-        if (iverksett.data.vedtak.brevmottakere?.mottakere?.isEmpty() == true) {
+        if (iverksett.data.vedtak.brevmottakere
+                ?.mottakere
+                ?.isEmpty() == true
+        ) {
             journalførVedtaksbrevTilStønadmottaker(arkiverDokumentRequest, iverksett.data, behandlingId)
         } else {
             journalførVedtaksbrevTilBrevmottakere(iverksett.data, journalførteIdenter, arkiverDokumentRequest, behandlingId)
         }
     }
 
-    private fun skalHaVedleggOmRettigheter(iverksett: Iverksett): Boolean {
-        return when (iverksett.data.behandling.behandlingÅrsak) {
+    private fun skalHaVedleggOmRettigheter(iverksett: Iverksett): Boolean =
+        when (iverksett.data.behandling.behandlingÅrsak) {
             BehandlingÅrsak.G_OMREGNING -> false
             BehandlingÅrsak.MIGRERING -> false
             BehandlingÅrsak.SATSENDRING -> false
@@ -137,7 +143,6 @@ class JournalførVedtaksbrevTask(
             BehandlingÅrsak.KORRIGERING_UTEN_BREV -> false
             else -> iverksett.data.vedtak.vedtaksresultat == Vedtaksresultat.INNVILGET
         }
-    }
 
     private fun vedleggsdokumentForStønad(stønadType: StønadType): List<Dokument> {
         val pdf = lesPdfForVedleggForRettigheter(stønadType)
@@ -202,7 +207,10 @@ class JournalførVedtaksbrevTask(
             iverksettResultatService.hentJournalpostResultat(behandlingId)?.size
                 ?: error("Ingen journalføringer for behandling=[$behandlingId]")
 
-        val satteBrevmottakere = iverksett.vedtak.brevmottakere?.mottakere?.size ?: 0
+        val satteBrevmottakere =
+            iverksett.vedtak.brevmottakere
+                ?.mottakere
+                ?.size ?: 0
 
         // Hvis ingen brevmottakere er satt skal bare stønadsmottaker ha vedtaksbrevet
         val forventetJournalføringer = if (satteBrevmottakere > 0) satteBrevmottakere else 1

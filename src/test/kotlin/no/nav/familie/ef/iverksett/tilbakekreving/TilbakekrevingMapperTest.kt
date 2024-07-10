@@ -48,11 +48,25 @@ internal class TilbakekrevingMapperTest {
         assertThat(request.saksbehandlerIdent).isEqualTo(iverksett.vedtak.saksbehandlerId)
 
         assertThat(request.språkkode).isEqualTo(Språkkode.NB)
-        assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
+        assertThat(request.varsel?.varseltekst).isEqualTo(
+            iverksett.vedtak.tilbakekreving
+                ?.tilbakekrevingMedVarsel
+                ?.varseltekst,
+        )
         assertThat(request.varsel?.sumFeilutbetaling)
-            .isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.sumFeilutbetaling)
+            .isEqualTo(
+                iverksett.vedtak.tilbakekreving
+                    ?.tilbakekrevingMedVarsel
+                    ?.sumFeilutbetaling,
+            )
         assertThat(objectMapper.writeValueAsString(request.varsel?.perioder))
-            .isEqualTo(objectMapper.writeValueAsString(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.perioder))
+            .isEqualTo(
+                objectMapper.writeValueAsString(
+                    iverksett.vedtak.tilbakekreving
+                        ?.tilbakekrevingMedVarsel
+                        ?.perioder,
+                ),
+            )
     }
 
     @Test

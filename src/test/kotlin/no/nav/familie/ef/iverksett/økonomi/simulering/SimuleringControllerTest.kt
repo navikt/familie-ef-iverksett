@@ -108,7 +108,12 @@ class SimuleringControllerTest : ServerTest() {
                 HttpEntity(revurdering, headers),
             )
 
-        assertThat(response.body?.data?.detaljer?.simuleringMottaker).isNotEmpty
+        assertThat(
+            response.body
+                ?.data
+                ?.detaljer
+                ?.simuleringMottaker,
+        ).isNotEmpty
         verify(exactly = 1) { oppdragClient.hentSimuleringsresultat(any()) }
     }
 

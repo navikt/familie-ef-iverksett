@@ -98,15 +98,15 @@ class ApplicationConfig {
      */
     @Primary
     @Bean
-    fun oAuth2HttpClient(): OAuth2HttpClient {
-        return RetryOAuth2HttpClient(
+    fun oAuth2HttpClient(): OAuth2HttpClient =
+        RetryOAuth2HttpClient(
             RestClient.create(
                 RestTemplateBuilder()
                     .setConnectTimeout(Duration.of(2, ChronoUnit.SECONDS))
-                    .setReadTimeout(Duration.of(4, ChronoUnit.SECONDS)).build(),
+                    .setReadTimeout(Duration.of(4, ChronoUnit.SECONDS))
+                    .build(),
             ),
         )
-    }
 
     @Bean
     fun prosesseringInfoProvider(
@@ -114,7 +114,9 @@ class ApplicationConfig {
     ) = object : ProsesseringInfoProvider {
         override fun hentBrukernavn(): String =
             try {
-                SpringTokenValidationContextHolder().getTokenValidationContext().getClaims("azuread")
+                SpringTokenValidationContextHolder()
+                    .getTokenValidationContext()
+                    .getClaims("azuread")
                     .getStringClaim("preferred_username")
             } catch (e: Exception) {
                 throw e
@@ -122,7 +124,8 @@ class ApplicationConfig {
 
         override fun harTilgang(): Boolean {
             val grupper =
-                Result.runCatching { SpringTokenValidationContextHolder().getTokenValidationContext() }
+                Result
+                    .runCatching { SpringTokenValidationContextHolder().getTokenValidationContext() }
                     .fold(
                         onSuccess = {
                             @Suppress("UNCHECKED_CAST")

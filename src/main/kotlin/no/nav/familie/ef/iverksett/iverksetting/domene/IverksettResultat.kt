@@ -27,7 +27,10 @@ data class IverksettResultat(
     val versjon: Int = 0,
 )
 
-data class OppdragResultat(val oppdragStatus: OppdragStatus, val oppdragStatusOppdatert: LocalDateTime = LocalDateTime.now())
+data class OppdragResultat(
+    val oppdragStatus: OppdragStatus,
+    val oppdragStatusOppdatert: LocalDateTime = LocalDateTime.now(),
+)
 
 data class TilbakekrevingResultat(
     val opprettTilbakekrevingRequest: OpprettTilbakekrevingRequest,

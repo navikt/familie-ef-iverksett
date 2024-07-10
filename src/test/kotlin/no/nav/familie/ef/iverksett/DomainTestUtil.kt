@@ -72,8 +72,8 @@ private fun lagDefaultAndeler() =
         kildeBehandlingId = UUID.randomUUID(),
     )
 
-fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
-    return DetaljertSimuleringResultat(
+fun detaljertSimuleringResultat(): DetaljertSimuleringResultat =
+    DetaljertSimuleringResultat(
         simuleringMottaker =
             listOf(
                 SimuleringMottaker(
@@ -95,7 +95,6 @@ fun detaljertSimuleringResultat(): DetaljertSimuleringResultat {
                 ),
             ),
     )
-}
 
 fun beriketSimuleringsresultat(
     feilutbetaling: BigDecimal = BigDecimal.ZERO,
@@ -150,7 +149,8 @@ fun posteringer(
             beløp = beløp.toBigDecimal(),
             posteringType = posteringstype,
             forfallsdato =
-                måned.plusMonths(index.toLong())
+                måned
+                    .plusMonths(index.toLong())
                     .atEndOfMonth(),
             // Forfallsdato i bank (dagen går til brukeren). Det sendes til banken kanskje en uke i forveien
             utenInntrekk = false,

@@ -24,31 +24,49 @@ class OppdragClient(
     @Qualifier("azure")
     restOperations: RestOperations,
 ) : AbstractPingableRestClient(restOperations, "familie.oppdrag") {
-    private val postOppdragUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/oppdrag").build().toUri()
+    private val postOppdragUri: URI =
+        UriComponentsBuilder
+            .fromUri(familieOppdragUri)
+            .pathSegment("api/oppdrag")
+            .build()
+            .toUri()
 
-    private val getStatusUri: URI = UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/status").build().toUri()
+    private val getStatusUri: URI =
+        UriComponentsBuilder
+            .fromUri(familieOppdragUri)
+            .pathSegment("api/status")
+            .build()
+            .toUri()
 
     private val grensesnittavstemmingUri: URI =
-        UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/grensesnittavstemming").build().toUri()
+        UriComponentsBuilder
+            .fromUri(familieOppdragUri)
+            .pathSegment("api/grensesnittavstemming")
+            .build()
+            .toUri()
 
     private val konsistensavstemmingUri: URI =
-        UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/konsistensavstemming").build().toUri()
+        UriComponentsBuilder
+            .fromUri(familieOppdragUri)
+            .pathSegment("api/konsistensavstemming")
+            .build()
+            .toUri()
 
     private val postSimuleringUri: URI =
-        UriComponentsBuilder.fromUri(familieOppdragUri).pathSegment("api/simulering/v1").build().toUri()
+        UriComponentsBuilder
+            .fromUri(familieOppdragUri)
+            .pathSegment("api/simulering/v1")
+            .build()
+            .toUri()
 
-    fun iverksettOppdrag(utbetalingsoppdrag: Utbetalingsoppdrag): String {
-        return postForEntity<Ressurs<String>>(postOppdragUri, utbetalingsoppdrag).getDataOrThrow()
-    }
+    fun iverksettOppdrag(utbetalingsoppdrag: Utbetalingsoppdrag): String = postForEntity<Ressurs<String>>(postOppdragUri, utbetalingsoppdrag).getDataOrThrow()
 
     fun hentStatus(oppdragId: OppdragId): OppdragStatusMedMelding {
         val ressurs = postForEntity<Ressurs<OppdragStatus>>(getStatusUri, oppdragId)
         return OppdragStatusMedMelding(ressurs.getDataOrThrow(), ressurs.melding)
     }
 
-    fun grensesnittavstemming(grensesnittavstemmingRequest: GrensesnittavstemmingRequest): String {
-        return postForEntity<Ressurs<String>>(grensesnittavstemmingUri, grensesnittavstemmingRequest).getDataOrThrow()
-    }
+    fun grensesnittavstemming(grensesnittavstemmingRequest: GrensesnittavstemmingRequest): String = postForEntity<Ressurs<String>>(grensesnittavstemmingUri, grensesnittavstemmingRequest).getDataOrThrow()
 
     fun konsistensavstemming(
         konsistensavstemmingUtbetalingsoppdrag: KonsistensavstemmingUtbetalingsoppdrag,
@@ -57,17 +75,17 @@ class OppdragClient(
         transaksjonId: UUID? = null,
     ): String {
         val url =
-            UriComponentsBuilder.fromUri(konsistensavstemmingUri)
+            UriComponentsBuilder
+                .fromUri(konsistensavstemmingUri)
                 .queryParam("sendStartmelding", sendStartmelding)
                 .queryParam("sendAvsluttmelding", sendAvsluttmelding)
                 .queryParam("transaksjonId", transaksjonId.toString())
-                .build().toUri()
+                .build()
+                .toUri()
         return postForEntity<Ressurs<String>>(url, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
     }
 
-    fun hentSimuleringsresultat(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat {
-        return postForEntity<Ressurs<DetaljertSimuleringResultat>>(postSimuleringUri, utbetalingsoppdrag).getDataOrThrow()
-    }
+    fun hentSimuleringsresultat(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat = postForEntity<Ressurs<DetaljertSimuleringResultat>>(postSimuleringUri, utbetalingsoppdrag).getDataOrThrow()
 
     override val pingUri = postOppdragUri
 

@@ -34,24 +34,25 @@ class FrittståendeBrevService(
 
     fun journalførOgDistribuerBrev(data: FrittståendeBrevDto) {
         val journalpostId =
-            journalpostClient.arkiverDokument(
-                ArkiverDokumentRequest(
-                    fnr = data.personIdent,
-                    forsøkFerdigstill = true,
-                    hoveddokumentvarianter =
-                        listOf(
-                            Dokument(
-                                data.fil,
-                                Filtype.PDFA,
-                                dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
-                                tittel = data.tittel,
+            journalpostClient
+                .arkiverDokument(
+                    ArkiverDokumentRequest(
+                        fnr = data.personIdent,
+                        forsøkFerdigstill = true,
+                        hoveddokumentvarianter =
+                            listOf(
+                                Dokument(
+                                    data.fil,
+                                    Filtype.PDFA,
+                                    dokumenttype = stønadstypeTilDokumenttype(data.stønadType),
+                                    tittel = data.tittel,
+                                ),
                             ),
-                        ),
-                    fagsakId = data.eksternFagsakId.toString(),
-                    journalførendeEnhet = data.journalførendeEnhet,
-                ),
-                data.saksbehandlerIdent,
-            ).journalpostId
+                        fagsakId = data.eksternFagsakId.toString(),
+                        journalførendeEnhet = data.journalførendeEnhet,
+                    ),
+                    data.saksbehandlerIdent,
+                ).journalpostId
         try {
             val bestillingId = journalpostClient.distribuerBrev(journalpostId, Distribusjonstype.VIKTIG)
             logger.info("Sendt frittstående brev journalpost=$journalpostId bestillingId=$bestillingId")

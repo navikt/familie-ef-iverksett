@@ -37,13 +37,11 @@ import javax.sql.DataSource
 @EnableJdbcRepositories("no.nav.familie")
 class DatabaseConfiguration : AbstractJdbcConfiguration() {
     @Bean
-    fun namedParameterJdbcTemplate(dataSource: DataSource): NamedParameterJdbcTemplate {
-        return NamedParameterJdbcTemplate(dataSource)
-    }
+    fun namedParameterJdbcTemplate(dataSource: DataSource): NamedParameterJdbcTemplate = NamedParameterJdbcTemplate(dataSource)
 
     @Bean
-    override fun jdbcCustomConversions(): JdbcCustomConversions {
-        return JdbcCustomConversions(
+    override fun jdbcCustomConversions(): JdbcCustomConversions =
+        JdbcCustomConversions(
             listOf(
                 PropertiesWrapperTilStringConverter(),
                 StringTilPropertiesWrapperConverter(),
@@ -67,7 +65,6 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
                 LocalDateTilYearConverter(),
             ),
         )
-    }
 
     open class DomainTilPGobjectConverter<T : Any> : Converter<T, PGobject> {
         override fun convert(data: T): PGobject =
@@ -103,9 +100,7 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilTilkjentYtelseConverter : Converter<PGobject, TilkjentYtelse> {
-        override fun convert(pGobject: PGobject): TilkjentYtelse {
-            return objectMapper.readValue(pGobject.value!!)
-        }
+        override fun convert(pGobject: PGobject): TilkjentYtelse = objectMapper.readValue(pGobject.value!!)
     }
 
     @WritingConverter
@@ -113,9 +108,7 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilOppdragResultatConverter : Converter<PGobject, OppdragResultat> {
-        override fun convert(pGobject: PGobject): OppdragResultat {
-            return objectMapper.readValue(pGobject.value!!)
-        }
+        override fun convert(pGobject: PGobject): OppdragResultat = objectMapper.readValue(pGobject.value!!)
     }
 
     @WritingConverter
@@ -123,9 +116,7 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilJournalpostResultatMapConverter : Converter<PGobject, JournalpostResultatMap> {
-        override fun convert(pGobject: PGobject): JournalpostResultatMap {
-            return objectMapper.readValue(pGobject.value!!)
-        }
+        override fun convert(pGobject: PGobject): JournalpostResultatMap = objectMapper.readValue(pGobject.value!!)
     }
 
     @WritingConverter
@@ -133,9 +124,7 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilVedtaksbrevResultatMapConverter : Converter<PGobject, DistribuerBrevResultatMap> {
-        override fun convert(pGobject: PGobject): DistribuerBrevResultatMap {
-            return objectMapper.readValue(pGobject.value!!)
-        }
+        override fun convert(pGobject: PGobject): DistribuerBrevResultatMap = objectMapper.readValue(pGobject.value!!)
     }
 
     @WritingConverter
@@ -143,9 +132,7 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class PGobjectTilTilbakekrevingResultatConverter : Converter<PGobject, TilbakekrevingResultat> {
-        override fun convert(pGobject: PGobject): TilbakekrevingResultat {
-            return objectMapper.readValue(pGobject.value!!)
-        }
+        override fun convert(pGobject: PGobject): TilbakekrevingResultat = objectMapper.readValue(pGobject.value!!)
     }
 
     @WritingConverter
@@ -159,9 +146,7 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class StringTilBehandlingDVHConverter : Converter<PGobject, BehandlingDVH> {
-        override fun convert(pgObject: PGobject): BehandlingDVH {
-            return objectMapper.readValue(pgObject.value!!)
-        }
+        override fun convert(pgObject: PGobject): BehandlingDVH = objectMapper.readValue(pgObject.value!!)
     }
 
     @WritingConverter
@@ -175,22 +160,16 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
 
     @ReadingConverter
     class StringTilBrevmottakereConverter : Converter<PGobject, Brevmottakere> {
-        override fun convert(pgObject: PGobject): Brevmottakere {
-            return objectMapper.readValue(pgObject.value!!)
-        }
+        override fun convert(pgObject: PGobject): Brevmottakere = objectMapper.readValue(pgObject.value!!)
     }
 
     @WritingConverter
     class YearTilLocalDateConverter : Converter<Year, LocalDate> {
-        override fun convert(year: Year): LocalDate {
-            return year.atDay(1)
-        }
+        override fun convert(year: Year): LocalDate = year.atDay(1)
     }
 
     @ReadingConverter
     class LocalDateTilYearConverter : Converter<Date, Year> {
-        override fun convert(date: Date): Year {
-            return Year.from(date.toLocalDate())
-        }
+        override fun convert(date: Date): Year = Year.from(date.toLocalDate())
     }
 }

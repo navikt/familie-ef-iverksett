@@ -29,7 +29,8 @@ class OppgaveClient(
         limit: Int,
     ): FinnMappeResponseDto {
         val uri =
-            UriComponentsBuilder.fromUri(URI.create(oppgaveUrl))
+            UriComponentsBuilder
+                .fromUri(URI.create(oppgaveUrl))
                 .pathSegment("mappe", "sok")
                 .queryParam("enhetsnr", enhetsnummer)
                 .queryParam("limit", limit)

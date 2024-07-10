@@ -30,8 +30,8 @@ class VedtakhendelseProducerTest {
     }
 }
 
-private fun forventetXML(hendelsesTidspunkt: String): String {
-    return """
+private fun forventetXML(hendelsesTidspunkt: String): String =
+    """
         <vedtakHendelser xmlns="http://nav.no/melding/virksomhet/vedtakHendelser/v1/vedtakHendelser">
             <aktoerID xmlns="">a123</aktoerID>
             <avslutningsstatus xmlns="">innvilget</avslutningsstatus>
@@ -43,4 +43,3 @@ private fun forventetXML(hendelsesTidspunkt: String): String {
     """.trim()
         .replace("\n", "")
         .replace("""> *<""".toRegex(), "><")
-}

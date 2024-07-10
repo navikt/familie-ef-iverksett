@@ -14,8 +14,7 @@ internal class AndelTilkjentYtelseTest {
                 inntektsreduksjon = 1000 - 337,
                 samordningsfradrag = 0,
             ).utbetalingsgrad(),
-        )
-            .withFailMessage("Skal runde opp x.7")
+        ).withFailMessage("Skal runde opp x.7")
             .isEqualTo(34)
 
         assertThat(
@@ -24,8 +23,7 @@ internal class AndelTilkjentYtelseTest {
                 inntektsreduksjon = 10000 - 3349,
                 samordningsfradrag = 0,
             ).utbetalingsgrad(),
-        )
-            .withFailMessage("Skal runde ned under x.5")
+        ).withFailMessage("Skal runde ned under x.5")
             .isEqualTo(33)
 
         assertThat(
@@ -34,8 +32,7 @@ internal class AndelTilkjentYtelseTest {
                 inntektsreduksjon = 1000 - 555,
                 samordningsfradrag = 0,
             ).utbetalingsgrad(),
-        )
-            .withFailMessage("Skal runde opp x.5")
+        ).withFailMessage("Skal runde opp x.5")
             .isEqualTo(56)
     }
 
@@ -47,8 +44,7 @@ internal class AndelTilkjentYtelseTest {
                 inntektsreduksjon = 300,
                 samordningsfradrag = 300,
             ).utbetalingsgrad(),
-        )
-            .isEqualTo(40)
+        ).isEqualTo(40)
 
         assertThat(
             lagTY(
@@ -56,8 +52,7 @@ internal class AndelTilkjentYtelseTest {
                 inntektsreduksjon = 0,
                 samordningsfradrag = 0,
             ).utbetalingsgrad(),
-        )
-            .isEqualTo(100)
+        ).isEqualTo(100)
 
         assertThat(
             lagTY(
@@ -65,8 +60,7 @@ internal class AndelTilkjentYtelseTest {
                 inntektsreduksjon = 50,
                 samordningsfradrag = 49,
             ).utbetalingsgrad(),
-        )
-            .isEqualTo(1)
+        ).isEqualTo(1)
     }
 
     @Test

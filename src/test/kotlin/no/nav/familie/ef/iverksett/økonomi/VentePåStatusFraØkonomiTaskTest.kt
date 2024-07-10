@@ -114,8 +114,8 @@ internal class VentePåStatusFraØkonomiTaskTest {
             utbetalingsgrad = null,
         )
 
-    private fun tilkjentYtelse(utbetalingsperioder: List<Utbetalingsperiode> = listOf()): TilkjentYtelse {
-        return TilkjentYtelse(
+    private fun tilkjentYtelse(utbetalingsperioder: List<Utbetalingsperiode> = listOf()): TilkjentYtelse =
+        TilkjentYtelse(
             id = UUID.randomUUID(),
             utbetalingsoppdrag =
                 Utbetalingsoppdrag(
@@ -131,5 +131,4 @@ internal class VentePåStatusFraØkonomiTaskTest {
             andelerTilkjentYtelse = listOf(),
             startmåned = YearMonth.now(),
         )
-    }
 }

@@ -65,15 +65,16 @@ fun Task.opprettNestePubliseringTask(erMigrering: Boolean = false): Task {
     return lagTask(nesteTask)
 }
 
-private fun Task.lagTask(nesteTask: TaskType): Task {
-    return if (nesteTask.triggerTidAntallSekunderFrem != null) {
+private fun Task.lagTask(nesteTask: TaskType): Task =
+    if (nesteTask.triggerTidAntallSekunderFrem != null) {
         Task(
             type = nesteTask.type,
             payload = this.payload,
             properties = this.metadata,
         ).copy(
             triggerTid =
-                LocalDateTime.now()
+                LocalDateTime
+                    .now()
                     .plusSeconds(nesteTask.triggerTidAntallSekunderFrem),
         )
     } else {
@@ -83,4 +84,3 @@ private fun Task.lagTask(nesteTask: TaskType): Task {
             properties = this.metadata,
         )
     }
-}

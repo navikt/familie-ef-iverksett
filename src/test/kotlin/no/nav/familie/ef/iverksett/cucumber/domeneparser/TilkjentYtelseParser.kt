@@ -13,20 +13,21 @@ import java.time.YearMonth
 import java.util.UUID
 
 object TilkjentYtelseParser {
-    fun mapStartdatoer(dataTable: DataTable): Map<UUID, LocalDate> {
-        return dataTable.groupByBehandlingId().map { (_, rader) ->
-            val rad = rader.single()
-            val behandlingId = behandlingIdTilUUID[parseInt(Domenebegrep.BEHANDLING_ID, rad)]!!
-            behandlingId to parseÅrMåned(TilkjentYtelseDomenebegrep.STARTDATO, rad).atDay(1)
-        }.toMap()
-    }
+    fun mapStartdatoer(dataTable: DataTable): Map<UUID, LocalDate> =
+        dataTable
+            .groupByBehandlingId()
+            .map { (_, rader) ->
+                val rad = rader.single()
+                val behandlingId = behandlingIdTilUUID[parseInt(Domenebegrep.BEHANDLING_ID, rad)]!!
+                behandlingId to parseÅrMåned(TilkjentYtelseDomenebegrep.STARTDATO, rad).atDay(1)
+            }.toMap()
 
     fun mapTilkjentYtelse(
         dataTable: DataTable,
         startdatoer: Map<UUID, LocalDate>,
         medAndel: Boolean = true,
-    ): List<TilkjentYtelseHolder> {
-        return dataTable.groupByBehandlingId().map { (_, rader) ->
+    ): List<TilkjentYtelseHolder> =
+        dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.first()
             val behandlingIdInt = parseInt(Domenebegrep.BEHANDLING_ID, rad)
             val behandlingId = behandlingIdTilUUID[behandlingIdInt]!!
@@ -51,13 +52,12 @@ object TilkjentYtelseParser {
                     ),
             )
         }
-    }
 
     fun mapForventetUtbetalingsoppdrag(
         dataTable: DataTable,
         medUtbetalingsperiode: Boolean = true,
-    ): List<ForventetUtbetalingsoppdrag> {
-        return dataTable.groupByBehandlingId().map { (_, rader) ->
+    ): List<ForventetUtbetalingsoppdrag> =
+        dataTable.groupByBehandlingId().map { (_, rader) ->
             val rad = rader.first()
             val behandlingId = behandlingIdTilUUID[parseInt(Domenebegrep.BEHANDLING_ID, rad)]!!
             validerAlleKodeEndringerLike(rader)
@@ -67,7 +67,6 @@ object TilkjentYtelseParser {
                 utbetalingsperiode = if (medUtbetalingsperiode) rader.map { mapForventetUtbetalingsperiode(it) } else listOf(),
             )
         }
-    }
 
     private fun mapForventetUtbetalingsperiode(it: MutableMap<String, String>) =
         ForventetUtbetalingsperiode(
@@ -113,7 +112,8 @@ object TilkjentYtelseParser {
 
     private fun validerAlleKodeEndringerLike(rader: List<MutableMap<String, String>>) {
         rader.map { parseEnum<KodeEndring>(UtbetalingsoppdragDomenebegrep.KODE_ENDRING, it) }.zipWithNext().forEach {
-            assertThat(it.first).isEqualTo(it.second)
+            assertThat(it.first)
+                .isEqualTo(it.second)
                 .withFailMessage("Alle kodeendringer for en og samme oppdrag må være lik ${it.first} -> ${it.second}")
         }
     }
@@ -168,7 +168,9 @@ object TilkjentYtelseParser {
     )
 }
 
-enum class TilkjentYtelseDomenebegrep(override val nøkkel: String) : Domenenøkkel {
+enum class TilkjentYtelseDomenebegrep(
+    override val nøkkel: String,
+) : Domenenøkkel {
     STARTDATO("Startdato"),
     INNTEKT("INNTEKT"),
     INNTEKTSREDUKSJON("Inntektsreduksjon"),
@@ -180,7 +182,9 @@ enum class TilkjentYtelseDomenebegrep(override val nøkkel: String) : Domenenøk
     KILDE_BEHANDLING_ID("Kilde behandling id"),
 }
 
-enum class UtbetalingsoppdragDomenebegrep(override val nøkkel: String) : Domenenøkkel {
+enum class UtbetalingsoppdragDomenebegrep(
+    override val nøkkel: String,
+) : Domenenøkkel {
     KODE_ENDRING("Kode endring"),
     ER_ENDRING("Er endring"),
     PERIODE_ID("Periode id"),

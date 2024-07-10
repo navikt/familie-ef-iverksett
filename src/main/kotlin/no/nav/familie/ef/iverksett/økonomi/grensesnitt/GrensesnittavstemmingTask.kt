@@ -15,7 +15,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
-data class GrensesnittavstemmingPayload(val fraDato: LocalDate, val stønadstype: StønadType)
+data class GrensesnittavstemmingPayload(
+    val fraDato: LocalDate,
+    val stønadstype: StønadType,
+)
 
 @Service
 @TaskStepBeskrivelse(taskStepType = GrensesnittavstemmingTask.TYPE, beskrivelse = "Utfører grensesnittavstemming mot økonomi.")
@@ -48,7 +51,8 @@ class GrensesnittavstemmingTask(
     }
 
     fun opprettGrensesnittavstemmingTask(grensesnittavstemmingDto: GrensesnittavstemmingDto) =
-        grensesnittavstemmingDto.tilTask()
+        grensesnittavstemmingDto
+            .tilTask()
             .let { taskService.save(it) }
 
     companion object {

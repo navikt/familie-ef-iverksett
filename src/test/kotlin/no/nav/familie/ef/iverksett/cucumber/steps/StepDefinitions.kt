@@ -84,16 +84,17 @@ class StepDefinitions {
     @Når("lagTilkjentYtelseMedUtbetalingsoppdrag kjøres")
     fun `andelhistorikk kjøres`() {
         beregnedeTilkjentYtelse =
-            tilkjentYtelse.fold(emptyList<Pair<UUID, TilkjentYtelse>>()) { acc, holder ->
-                val nyTilkjentYtelseMedMetaData = toMedMetadata(holder, stønadType)
-                val forrigeTilkjentYtelse = acc.lastOrNull()?.second
-                val nyTilkjentYtelse =
-                    UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
-                        nyTilkjentYtelseMedMetaData,
-                        forrigeTilkjentYtelse,
-                    )
-                acc + (holder.behandlingId to justerPeriodeId(forrigeTilkjentYtelse, nyTilkjentYtelse))
-            }.toMap()
+            tilkjentYtelse
+                .fold(emptyList<Pair<UUID, TilkjentYtelse>>()) { acc, holder ->
+                    val nyTilkjentYtelseMedMetaData = toMedMetadata(holder, stønadType)
+                    val forrigeTilkjentYtelse = acc.lastOrNull()?.second
+                    val nyTilkjentYtelse =
+                        UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy(
+                            nyTilkjentYtelseMedMetaData,
+                            forrigeTilkjentYtelse,
+                        )
+                    acc + (holder.behandlingId to justerPeriodeId(forrigeTilkjentYtelse, nyTilkjentYtelse))
+                }.toMap()
     }
 
     /**
@@ -103,8 +104,8 @@ class StepDefinitions {
     private fun justerPeriodeId(
         forrigeTilkjentYtelse: TilkjentYtelse?,
         nyTilkjentYtelse: TilkjentYtelse,
-    ): TilkjentYtelse {
-        return if (forrigeTilkjentYtelse?.sisteAndelIKjede != null) {
+    ): TilkjentYtelse =
+        if (forrigeTilkjentYtelse?.sisteAndelIKjede != null) {
             nyTilkjentYtelse
         } else {
             nyTilkjentYtelse.copy(
@@ -136,7 +137,6 @@ class StepDefinitions {
                     },
             )
         }
-    }
 
     @Så("forvent frist satt til {}")
     fun `forvent følgende frist`(forventetFrist: String) {
@@ -220,8 +220,16 @@ class StepDefinitions {
         assertThat(beregnetTilkjentYtelse.startmåned).isEqualTo(startmåned)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse).hasSize(1)
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().beløp).isEqualTo(0)
-        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.fom).isEqualTo(YearMonth.from(LocalDate.MIN))
-        assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periode.tom).isEqualTo(YearMonth.from(LocalDate.MIN))
+        assertThat(
+            beregnetTilkjentYtelse.andelerTilkjentYtelse
+                .first()
+                .periode.fom,
+        ).isEqualTo(YearMonth.from(LocalDate.MIN))
+        assertThat(
+            beregnetTilkjentYtelse.andelerTilkjentYtelse
+                .first()
+                .periode.tom,
+        ).isEqualTo(YearMonth.from(LocalDate.MIN))
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().periodeId).isNull()
         assertThat(beregnetTilkjentYtelse.andelerTilkjentYtelse.first().kildeBehandlingId).isEqualTo(behandlingId)
     }
@@ -286,9 +294,12 @@ class StepDefinitions {
         medUtbetalingsperiode: Boolean = true,
     ) {
         val list =
-            beregnedeTilkjentYtelse.filter {
-                it.value.utbetalingsoppdrag?.utbetalingsperiode?.isNotEmpty() == medUtbetalingsperiode
-            }.map { it.key }
+            beregnedeTilkjentYtelse
+                .filter {
+                    it.value.utbetalingsoppdrag
+                        ?.utbetalingsperiode
+                        ?.isNotEmpty() == medUtbetalingsperiode
+                }.map { it.key }
         assertThat(expectedBehandlingIder).containsExactlyInAnyOrderElementsOf(list)
     }
 }
@@ -296,8 +307,9 @@ class StepDefinitions {
 private fun toMedMetadata(
     holder: TilkjentYtelseHolder,
     stønadType: StønadType,
-): TilkjentYtelseMedMetaData {
-    return holder.tilkjentYtelse.toDomain()
+): TilkjentYtelseMedMetaData =
+    holder.tilkjentYtelse
+        .toDomain()
         .toMedMetadata(
             saksbehandlerId = "",
             eksternBehandlingId = holder.behandlingIdInt.toLong(),
@@ -307,4 +319,3 @@ private fun toMedMetadata(
             behandlingId = holder.behandlingId,
             vedtaksdato = LocalDate.now(),
         )
-}

@@ -5,15 +5,14 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseMedMetadata as TilkjentYtelseMedMetadataDto
 
-fun TilkjentYtelseDto.toDomain(): TilkjentYtelse {
-    return TilkjentYtelse(
+fun TilkjentYtelseDto.toDomain(): TilkjentYtelse =
+    TilkjentYtelse(
         andelerTilkjentYtelse = this.andelerTilkjentYtelse.map { it.toDomain() },
         startmåned = this.startmåned,
     )
-}
 
-fun TilkjentYtelseMedMetadataDto.toDomain(): TilkjentYtelseMedMetaData {
-    return TilkjentYtelseMedMetaData(
+fun TilkjentYtelseMedMetadataDto.toDomain(): TilkjentYtelseMedMetaData =
+    TilkjentYtelseMedMetaData(
         tilkjentYtelse = this.tilkjentYtelse.toDomain(),
         saksbehandlerId = this.saksbehandlerId,
         eksternBehandlingId = this.eksternBehandlingId,
@@ -23,4 +22,3 @@ fun TilkjentYtelseMedMetadataDto.toDomain(): TilkjentYtelseMedMetaData {
         behandlingId = this.behandlingId,
         vedtaksdato = this.vedtaksdato,
     )
-}

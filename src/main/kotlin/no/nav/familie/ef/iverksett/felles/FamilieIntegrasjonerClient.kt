@@ -22,15 +22,28 @@ class FamilieIntegrasjonerClient(
     private val integrasjonUri: URI,
 ) : AbstractRestClient(restOperations, "familie.integrasjoner") {
     private val hentIdenterURI =
-        UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_HENT_IDENTER).build().toUri()
+        UriComponentsBuilder
+            .fromUri(integrasjonUri)
+            .pathSegment(PATH_HENT_IDENTER)
+            .build()
+            .toUri()
     private val aktørUri =
-        UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_AKTØR).build().toUri()
+        UriComponentsBuilder
+            .fromUri(integrasjonUri)
+            .pathSegment(PATH_AKTØR)
+            .build()
+            .toUri()
 
     private fun arbeidsfordelingOppfølingUri(tema: String) =
-        UriComponentsBuilder.fromUri(integrasjonUri).pathSegment(PATH_ARBEIDSFORDELING_OPPFØLGING, tema).build().toUri()
+        UriComponentsBuilder
+            .fromUri(integrasjonUri)
+            .pathSegment(PATH_ARBEIDSFORDELING_OPPFØLGING, tema)
+            .build()
+            .toUri()
 
     private fun arbeidsfordelingUriMedRelasjoner(tema: String) =
-        UriComponentsBuilder.fromUri(integrasjonUri)
+        UriComponentsBuilder
+            .fromUri(integrasjonUri)
             .pathSegment(PATH_ARBEIDSFORDELING, tema)
             .pathSegment("med-relasjoner")
             .build()
@@ -40,7 +53,12 @@ class FamilieIntegrasjonerClient(
         personident: String,
         medHistprikk: Boolean,
     ): List<PersonIdentMedHistorikk> {
-        val uri = UriComponentsBuilder.fromUri(hentIdenterURI).queryParam("historikk", medHistprikk).build().toUri()
+        val uri =
+            UriComponentsBuilder
+                .fromUri(hentIdenterURI)
+                .queryParam("historikk", medHistprikk)
+                .build()
+                .toUri()
         val response = postForEntity<Ressurs<FinnPersonidenterResponse>>(uri, PersonIdent(personident))
         return response.getDataOrThrow().identer
     }

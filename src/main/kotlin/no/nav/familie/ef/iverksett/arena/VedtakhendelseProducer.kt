@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional
 import java.text.SimpleDateFormat
 
 @Component
-class VedtakhendelseProducer(private val jmsTemplate: JmsTemplate) {
+class VedtakhendelseProducer(
+    private val jmsTemplate: JmsTemplate,
+) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val xmlMapper =

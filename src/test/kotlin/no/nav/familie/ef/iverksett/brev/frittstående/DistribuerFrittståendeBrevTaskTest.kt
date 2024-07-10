@@ -169,9 +169,10 @@ internal class DistribuerFrittståendeBrevTaskTest {
 
         mockDistribuerBrev(medFeil = true)
 
-        Assertions.assertThatThrownBy {
-            distribuerFrittståendeBrevTask.doTask(Task("", UUID.randomUUID().toString()))
-        }.hasMessage("Feilet")
+        Assertions
+            .assertThatThrownBy {
+                distribuerFrittståendeBrevTask.doTask(Task("", UUID.randomUUID().toString()))
+            }.hasMessage("Feilet")
 
         verify(exactly = 2) { journalpostClient.distribuerBrev(any(), any()) }
         verify(exactly = 1) { frittståendeBrevRepository.oppdaterDistribuerBrevResultat(any(), any()) }

@@ -52,8 +52,8 @@ data class TestOppdrag(
     val startPeriode: YearMonth? = null,
     val sluttPeriode: YearMonth? = null,
 ) {
-    fun tilAndelTilkjentYtelse(): AndelTilkjentYtelse? {
-        return if (beløp != null && startPeriode != null && sluttPeriode != null) {
+    fun tilAndelTilkjentYtelse(): AndelTilkjentYtelse? =
+        if (beløp != null && startPeriode != null && sluttPeriode != null) {
             lagAndelTilkjentYtelse(
                 beløp = this.beløp,
                 fraOgMed = startPeriode,
@@ -70,10 +70,9 @@ data class TestOppdrag(
         } else {
             null
         }
-    }
 
-    fun tilUtbetalingsperiode(): Utbetalingsperiode? {
-        return if (startPeriode != null && sluttPeriode != null && linjeId != null) {
+    fun tilUtbetalingsperiode(): Utbetalingsperiode? =
+        if (startPeriode != null && sluttPeriode != null && linjeId != null) {
             Utbetalingsperiode(
                 erEndringPåEksisterendePeriode = erEndring ?: false,
                 opphør = opphørsdato?.let { Opphør(it) },
@@ -94,7 +93,6 @@ data class TestOppdrag(
         } else {
             null
         }
-    }
 }
 
 class TestOppdragGroup {
@@ -214,7 +212,8 @@ object TestOppdragParser {
     private fun parse(url: URL): List<TestOppdrag> {
         val fileContent = url.openStream()!!
         val rows: List<Map<String, String>> =
-            csvReader().readAllWithHeader(fileContent)
+            csvReader()
+                .readAllWithHeader(fileContent)
                 .filterNot { it.getValue(KEY_TYPE).startsWith("!") }
 
         return rows.map { row ->

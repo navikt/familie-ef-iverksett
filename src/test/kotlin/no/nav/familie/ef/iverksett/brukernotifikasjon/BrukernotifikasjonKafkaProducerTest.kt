@@ -36,8 +36,9 @@ class BrukernotifikasjonKafkaProducerTest {
                         grunnbeløp = 118_620.toBigDecimal(),
                     ),
             )
-        Assertions.assertThat(
-            brukernotifikasjonKafkaProducer.lagBeskjed(iverksettRevurderingInnvilget).getTekst(),
-        ).isEqualTo(forventetGOmregningTekst)
+        Assertions
+            .assertThat(
+                brukernotifikasjonKafkaProducer.lagBeskjed(iverksettRevurderingInnvilget).getTekst(),
+            ).isEqualTo(forventetGOmregningTekst)
     }
 }

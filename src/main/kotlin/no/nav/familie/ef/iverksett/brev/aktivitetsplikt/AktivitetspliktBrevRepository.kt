@@ -9,7 +9,8 @@ import java.util.UUID
 
 @Repository
 interface AktivitetspliktBrevRepository :
-    RepositoryInterface<AktivitetspliktBrev, UUID>, InsertUpdateRepository<AktivitetspliktBrev> {
+    RepositoryInterface<AktivitetspliktBrev, UUID>,
+    InsertUpdateRepository<AktivitetspliktBrev> {
     fun existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
         eksternFagsakId: Long,
         oppgaveId: Long,

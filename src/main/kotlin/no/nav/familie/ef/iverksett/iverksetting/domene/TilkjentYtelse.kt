@@ -26,8 +26,8 @@ data class TilkjentYtelse(
         personIdent: String,
         behandlingId: UUID,
         vedtaksdato: LocalDate,
-    ): TilkjentYtelseMedMetaData {
-        return TilkjentYtelseMedMetaData(
+    ): TilkjentYtelseMedMetaData =
+        TilkjentYtelseMedMetaData(
             tilkjentYtelse = this,
             saksbehandlerId = saksbehandlerId,
             eksternBehandlingId = eksternBehandlingId,
@@ -37,5 +37,4 @@ data class TilkjentYtelse(
             behandlingId = behandlingId,
             vedtaksdato = vedtaksdato,
         )
-    }
 }

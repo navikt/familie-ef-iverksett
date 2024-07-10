@@ -66,8 +66,7 @@ class VentePåStatusFraØkonomiTask(
         const val TYPE = "sjekkStatusPåOppdrag"
     }
 
-    fun TilkjentYtelse.harIngenUtbetalingsperioder(): Boolean {
-        return this.utbetalingsoppdrag?.utbetalingsperiode?.isEmpty()
+    fun TilkjentYtelse.harIngenUtbetalingsperioder(): Boolean =
+        this.utbetalingsoppdrag?.utbetalingsperiode?.isEmpty()
             ?: error("Kunne ikke finne utbetalingsoppdrag for TilkjentYtelse")
-    }
 }

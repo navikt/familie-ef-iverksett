@@ -45,8 +45,8 @@ fun lagUtbetalingsperiodeForOpphør(
     sisteAndelIKjede: AndelTilkjentYtelse,
     opphørKjedeFom: LocalDate,
     tilkjentYtelse: TilkjentYtelseMedMetaData,
-): Utbetalingsperiode {
-    return lagPeriodeFraAndel(
+): Utbetalingsperiode =
+    lagPeriodeFraAndel(
         andel = sisteAndelIKjede,
         eksternBehandlingId = tilkjentYtelse.eksternBehandlingId,
         type = tilkjentYtelse.stønadstype,
@@ -55,7 +55,6 @@ fun lagUtbetalingsperiodeForOpphør(
         opphørKjedeFom = opphørKjedeFom,
         erEndringPåEksisterendePeriode = true,
     )
-}
 
 fun mapSatstype(stønadstype: StønadType) =
     when (stønadstype) {

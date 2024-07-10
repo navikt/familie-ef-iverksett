@@ -135,13 +135,9 @@ class OppgaveService(
             else -> error("Kunne ikke finne riktig BehandlingType for oppfølgingsoppgave")
         }
 
-    fun hentOppgave(gsakOppgaveId: Long): Oppgave {
-        return oppgaveClient.finnOppgaveMedId(gsakOppgaveId)
-    }
+    fun hentOppgave(gsakOppgaveId: Long): Oppgave = oppgaveClient.finnOppgaveMedId(gsakOppgaveId)
 
-    fun oppdaterOppgave(oppgave: Oppgave): Long {
-        return oppgaveClient.oppdaterOppgave(oppgave)
-    }
+    fun oppdaterOppgave(oppgave: Oppgave): Long = oppgaveClient.oppdaterOppgave(oppgave)
 
     private fun finnMappeForFremleggsoppgave(
         enhetsnummer: String?,
@@ -179,12 +175,10 @@ class OppgaveService(
         return mappeRespons.mapper
     }
 
-    private fun erHelgeDag(dag: DayOfWeek): Boolean {
-        return dag == DayOfWeek.SATURDAY || dag == DayOfWeek.SUNDAY
-    }
+    private fun erHelgeDag(dag: DayOfWeek): Boolean = dag == DayOfWeek.SATURDAY || dag == DayOfWeek.SUNDAY
 
-    private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
-        return when (iverksett.vedtak.vedtaksresultat) {
+    private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String =
+        when (iverksett.vedtak.vedtaksresultat) {
             Vedtaksresultat.INNVILGET ->
                 beskrivelseFørstegangsbehandlingInnvilget(
                     iverksett.totalVedtaksperiode(),
@@ -194,7 +188,6 @@ class OppgaveService(
             Vedtaksresultat.AVSLÅTT -> beskrivelseFørstegangsbehandlingAvslått(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
             else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
         }
-    }
 
     private fun finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
         if (iverksett.behandling.behandlingÅrsak == BehandlingÅrsak.SANKSJON_1_MND) {
@@ -240,23 +233,17 @@ class OppgaveService(
     private fun harEndretAktivitet(
         iverksett: IverksettOvergangsstønad,
         forrigeBehandling: IverksettOvergangsstønad,
-    ): Boolean {
-        return iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
-    }
+    ): Boolean = iverksett.gjeldendeVedtak().aktivitet != forrigeBehandling.gjeldendeVedtak().aktivitet
 
     private fun harEndretPeriode(
         iverksett: IverksettOvergangsstønad,
         forrigeBehandling: IverksettOvergangsstønad,
-    ): Boolean {
-        return iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
-    }
+    ): Boolean = iverksett.vedtaksPeriodeMedMaksTilOgMedDato() != forrigeBehandling.vedtaksPeriodeMedMaksTilOgMedDato()
 
     private fun IverksettOvergangsstønad.gjeldendeVedtak(): VedtaksperiodeOvergangsstønad =
         this.vedtak.vedtaksperioder.maxByOrNull { it.periode } ?: error("Kunne ikke finne vedtaksperioder")
 
-    private fun IverksettOvergangsstønad.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate {
-        return this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
-    }
+    private fun IverksettOvergangsstønad.vedtaksPeriodeMedMaksTilOgMedDato(): LocalDate = this.vedtak.vedtaksperioder.maxOf { it.periode.tomDato }
 
     private fun IverksettOvergangsstønad.totalVedtaksperiode(): Pair<LocalDate, LocalDate> =
         Pair(
@@ -266,7 +253,10 @@ class OppgaveService(
 
     private fun IverksettOvergangsstønad.finnSanksjonsvedtakMåned(): YearMonth {
         val yearMonth =
-            this.vedtak.vedtaksperioder.findLast { it.periodeType == VedtaksperiodeType.SANKSJON }?.periode?.fom
+            this.vedtak.vedtaksperioder
+                .findLast { it.periodeType == VedtaksperiodeType.SANKSJON }
+                ?.periode
+                ?.fom
         return yearMonth
             ?: error("Finner ikke periode for iversetting av sanksjon. Behandling: (${this.behandling.behandlingId})")
     }

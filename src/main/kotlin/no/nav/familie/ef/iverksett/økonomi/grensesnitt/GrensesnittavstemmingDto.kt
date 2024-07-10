@@ -7,7 +7,11 @@ import no.nav.familie.util.VirkedagerProvider
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-data class GrensesnittavstemmingDto(val stønadstype: StønadType, val fraDato: LocalDate, val triggerTid: LocalDateTime? = null)
+data class GrensesnittavstemmingDto(
+    val stønadstype: StønadType,
+    val fraDato: LocalDate,
+    val triggerTid: LocalDateTime? = null,
+)
 
 fun GrensesnittavstemmingDto.tilTask(): Task {
     val nesteVirkedag: LocalDateTime = triggerTid ?: VirkedagerProvider.nesteVirkedag(fraDato).atTime(8, 0)

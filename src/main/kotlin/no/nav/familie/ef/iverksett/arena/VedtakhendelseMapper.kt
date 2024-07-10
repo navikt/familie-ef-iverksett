@@ -12,25 +12,25 @@ private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:
 fun mapIverksettTilVedtakHendelser(
     iverksettData: IverksettData,
     aktørId: String,
-): VedtakHendelser {
-    return VedtakHendelser(
+): VedtakHendelser =
+    VedtakHendelser(
         aktoerID = aktørId,
         avslutningsstatus = mapAvslutningsstatus(iverksettData.vedtak.vedtaksresultat),
         behandlingstema =
-            Behandlingstema.valueOf(
-                iverksettData.fagsak.stønadstype.name.lowercase(Locale.getDefault())
-                    .replaceFirstChar { it.uppercase() },
-            ).value,
+            Behandlingstema
+                .valueOf(
+                    iverksettData.fagsak.stønadstype.name
+                        .lowercase(Locale.getDefault())
+                        .replaceFirstChar { it.uppercase() },
+                ).value,
         hendelsesprodusentREF = "EF",
         applikasjonSakREF = iverksettData.fagsak.eksternId.toString(),
         hendelsesTidspunkt = LocalDateTime.now().format(dateTimeFormatter),
     )
-}
 
-private fun mapAvslutningsstatus(vedtaksresultat: Vedtaksresultat): String {
-    return when (vedtaksresultat) {
+private fun mapAvslutningsstatus(vedtaksresultat: Vedtaksresultat): String =
+    when (vedtaksresultat) {
         Vedtaksresultat.INNVILGET -> "innvilget"
         Vedtaksresultat.OPPHØRT -> "opphoert"
         else -> error("Håndterer ikke restultat $vedtaksresultat mot arena")
     }
-}

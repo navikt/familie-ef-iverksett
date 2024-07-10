@@ -5,7 +5,9 @@ import java.time.LocalDateTime
 /**
  * @param [JournalpostResultat] per ident
  */
-data class JournalpostResultatMap(val map: Map<String, JournalpostResultat> = emptyMap()) {
+data class JournalpostResultatMap(
+    val map: Map<String, JournalpostResultat> = emptyMap(),
+) {
     operator fun plus(tillegg: Map<String, JournalpostResultat>): JournalpostResultatMap = JournalpostResultatMap(this.map + tillegg)
 
     fun isNotEmpty() = map.isNotEmpty()

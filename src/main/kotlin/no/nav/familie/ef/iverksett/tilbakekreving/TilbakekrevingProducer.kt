@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
-class TilbakekrevingProducer(private val kafkaProducerService: KafkaProducerService) {
+class TilbakekrevingProducer(
+    private val kafkaProducerService: KafkaProducerService,
+) {
     @Value("\${FAGSYSTEMBEHANDLING_RESPONS_TOPIC}")
     lateinit var topic: String
 

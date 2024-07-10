@@ -14,7 +14,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
-class BehandlingsstatistikkService(private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer) {
+class BehandlingsstatistikkService(
+    private val behandlingsstatistikkProducer: BehandlingsstatistikkProducer,
+) {
     @Transactional
     fun sendBehandlingstatistikk(behandlingsstatistikkDto: BehandlingsstatistikkDto) {
         val behandlingDVH = mapTilBehandlingDVH(behandlingsstatistikkDto)

@@ -7,7 +7,9 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 
 @Service
-class KafkaProducerService(private val kafkaTemplate: KafkaTemplate<String, String>) {
+class KafkaProducerService(
+    private val kafkaTemplate: KafkaTemplate<String, String>,
+) {
     fun send(
         topic: String,
         key: String,

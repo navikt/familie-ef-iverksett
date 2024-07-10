@@ -44,7 +44,9 @@ class DistribuerFrittståendeBrevTask(
 
     private object OK : Resultat()
 
-    private data class Dødsbo(val melding: String) : Resultat()
+    private data class Dødsbo(
+        val melding: String,
+    ) : Resultat()
 
     override fun doTask(task: Task) {
         val frittståendeBrevId = UUID.fromString(task.payload)
@@ -64,33 +66,34 @@ class DistribuerFrittståendeBrevTask(
 
         var resultat: Dødsbo? = null
 
-        journalpostResultat.filter { (_, journalpostResultat) ->
-            journalpostResultat.journalpostId !in distribuertBrevResultat
-        }.forEach { (personIdent, journalpostResultat) ->
-            try {
-                val bestillingId = distribuerBrev(journalpostResultat)
-                frittståendeBrev = oppdaterOgLagreResultat(frittståendeBrev, journalpostResultat, bestillingId, frittståendeBrevId)
-            } catch (e: RessursException) {
-                val cause = e.cause
-                when (cause) {
-                    is HttpClientErrorException.Gone -> resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
-                    is HttpClientErrorException.Conflict -> {
-                        logger.warn(
-                            "Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}",
-                        )
-                        val response: DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
-                        frittståendeBrev =
-                            oppdaterOgLagreResultat(
-                                frittståendeBrev,
-                                journalpostResultat,
-                                response.bestillingsId,
-                                frittståendeBrevId,
+        journalpostResultat
+            .filter { (_, journalpostResultat) ->
+                journalpostResultat.journalpostId !in distribuertBrevResultat
+            }.forEach { (personIdent, journalpostResultat) ->
+                try {
+                    val bestillingId = distribuerBrev(journalpostResultat)
+                    frittståendeBrev = oppdaterOgLagreResultat(frittståendeBrev, journalpostResultat, bestillingId, frittståendeBrevId)
+                } catch (e: RessursException) {
+                    val cause = e.cause
+                    when (cause) {
+                        is HttpClientErrorException.Gone -> resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
+                        is HttpClientErrorException.Conflict -> {
+                            logger.warn(
+                                "Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}",
                             )
+                            val response: DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
+                            frittståendeBrev =
+                                oppdaterOgLagreResultat(
+                                    frittståendeBrev,
+                                    journalpostResultat,
+                                    response.bestillingsId,
+                                    frittståendeBrevId,
+                                )
+                        }
+                        else -> throw e
                     }
-                    else -> throw e
                 }
             }
-        }
         return resultat ?: OK
     }
 
@@ -130,7 +133,8 @@ class DistribuerFrittståendeBrevTask(
         dødsbo: Dødsbo,
     ) {
         val antallRekjørSenerePgaDødsbo =
-            taskService.findTaskLoggByTaskId(task.id)
+            taskService
+                .findTaskLoggByTaskId(task.id)
                 .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 7) {
             logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")

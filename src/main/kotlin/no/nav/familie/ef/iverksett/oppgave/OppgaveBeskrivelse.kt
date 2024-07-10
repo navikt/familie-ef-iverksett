@@ -11,44 +11,35 @@ object OppgaveBeskrivelse {
     fun beskrivelseFørstegangsbehandlingInnvilget(
         periode: Pair<LocalDate, LocalDate>,
         vedtak: VedtaksperiodeOvergangsstønad,
-    ): String {
-        return "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
+    ): String =
+        "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
-    }
 
-    fun beskrivelseFørstegangsbehandlingAvslått(vedtaksdato: LocalDate): String {
-        return "Søknad om overgangsstønad er avslått i vedtak datert ${vedtaksdato.toReadable()}."
-    }
+    fun beskrivelseFørstegangsbehandlingAvslått(vedtaksdato: LocalDate): String = "Søknad om overgangsstønad er avslått i vedtak datert ${vedtaksdato.toReadable()}."
 
     fun beskrivelseRevurderingInnvilget(
         vedtaksPeriode: Pair<LocalDate, LocalDate>,
         gjeldendeVedtak: VedtaksperiodeOvergangsstønad,
-    ): String {
-        return "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
+    ): String =
+        "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
             "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
-    }
 
-    fun beskrivelseRevurderingOpphørt(opphørsdato: LocalDate?): String {
-        return opphørsdato?.let {
+    fun beskrivelseRevurderingOpphørt(opphørsdato: LocalDate?): String =
+        opphørsdato?.let {
             "Overgangsstønad er stanset fra ${opphørsdato.toReadable()}."
         } ?: "Overgangsstønad er stanset"
-    }
 
-    private fun LocalDate.toReadable(): String {
-        return this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-    }
+    private fun LocalDate.toReadable(): String = this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
-    private fun Pair<LocalDate, LocalDate>.vedtaksPeriodeToString(): String {
-        return this.first.toReadable() + " - " + this.second.toReadable()
-    }
+    private fun Pair<LocalDate, LocalDate>.vedtaksPeriodeToString(): String = this.first.toReadable() + " - " + this.second.toReadable()
 
     fun YearMonth.tilTekst(): String {
         val månedÅrSomTekst = DateTimeFormatter.ofPattern("MMMM yyyy", Locale("nb"))
         return this.format(månedÅrSomTekst)
     }
 
-    private fun AktivitetType.beskrivelse(): String {
-        return when (this) {
+    private fun AktivitetType.beskrivelse(): String =
+        when (this) {
             AktivitetType.MIGRERING -> error("Skal ikke opprette oppfølgningsoppgave for migrering")
             AktivitetType.IKKE_AKTIVITETSPLIKT -> ""
             AktivitetType.BARN_UNDER_ETT_ÅR -> "Barn er under 1 år"
@@ -74,5 +65,4 @@ object OppgaveBeskrivelse {
 
             AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_TILSYNSORDNING -> "Stønad i påvente av tilsynsordning (§15-8 femte ledd)"
         }
-    }
 }

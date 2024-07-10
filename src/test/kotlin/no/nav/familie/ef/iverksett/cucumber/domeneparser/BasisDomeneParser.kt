@@ -21,37 +21,27 @@ fun parseDato(
 fun parseValgfriDato(
     domenebegrep: Domenenøkkel,
     rad: Map<String, String?>,
-): LocalDate? {
-    return parseValgfriDato(domenebegrep, rad)
-}
+): LocalDate? = parseValgfriDato(domenebegrep, rad)
 
 fun parseÅrMåned(
     domenebegrep: Domenenøkkel,
     rad: Map<String, String?>,
-): YearMonth {
-    return parseValgfriÅrMåned(domenebegrep, rad)!!
-}
+): YearMonth = parseValgfriÅrMåned(domenebegrep, rad)!!
 
 fun parseValgfriÅrMåned(
     domenebegrep: Domenenøkkel,
     rad: Map<String, String?>,
-): YearMonth? {
-    return parseValgfriÅrMåned(valgfriVerdi(domenebegrep, rad))
-}
+): YearMonth? = parseValgfriÅrMåned(valgfriVerdi(domenebegrep, rad))
 
 fun parseString(
     domenebegrep: Domenenøkkel,
     rad: Map<String, String>,
-): String {
-    return verdi(domenebegrep, rad)
-}
+): String = verdi(domenebegrep, rad)
 
 fun parseValgfriString(
     domenebegrep: Domenenøkkel,
     rad: Map<String, String>,
-): String? {
-    return valgfriVerdi(domenebegrep, rad)
-}
+): String? = valgfriVerdi(domenebegrep, rad)
 
 fun parseBooleanMedBooleanVerdi(
     domenebegrep: Domenenøkkel,
@@ -68,12 +58,11 @@ fun parseBooleanMedBooleanVerdi(
 fun parseBooleanJaIsTrue(
     domenebegrep: Domenenøkkel,
     rad: Map<String, String>,
-): Boolean {
-    return when (valgfriVerdi(domenebegrep, rad)) {
+): Boolean =
+    when (valgfriVerdi(domenebegrep, rad)) {
         "Ja" -> true
         else -> false
     }
-}
 
 fun parseBoolean(
     domenebegrep: Domenenøkkel,
@@ -103,13 +92,12 @@ fun parseValgfriBoolean(
     }
 }
 
-fun parseDato(dato: String): LocalDate {
-    return if (dato.contains(".")) {
+fun parseDato(dato: String): LocalDate =
+    if (dato.contains(".")) {
         LocalDate.parse(dato, norskDatoFormatter)
     } else {
         LocalDate.parse(dato, isoDatoFormatter)
     }
-}
 
 fun parseValgfriDato(
     domenebegrep: String,
@@ -135,13 +123,12 @@ private fun parseValgfriÅrMåned(verdi: String?): YearMonth? {
     return parseÅrMåned(verdi)
 }
 
-fun parseÅrMåned(verdi: String): YearMonth {
-    return if (verdi.contains(".")) {
+fun parseÅrMåned(verdi: String): YearMonth =
+    if (verdi.contains(".")) {
         YearMonth.parse(verdi, norskÅrMånedFormatter)
     } else {
         YearMonth.parse(verdi, isoÅrMånedFormatter)
     }
-}
 
 fun verdi(
     nøkkel: Domenenøkkel,
@@ -159,9 +146,7 @@ fun verdi(
 fun valgfriVerdi(
     nøkkel: Domenenøkkel,
     rad: Map<String, String?>,
-): String? {
-    return rad[nøkkel.nøkkel]
-}
+): String? = rad[nøkkel.nøkkel]
 
 fun parseInt(
     domenebegrep: Domenenøkkel,
@@ -227,6 +212,4 @@ inline fun <reified T : Enum<T>> parseValgfriEnum(
 inline fun <reified T : Enum<T>> parseEnum(
     domenebegrep: Domenenøkkel,
     rad: Map<String, String>,
-): T {
-    return enumValueOf(verdi(domenebegrep, rad))
-}
+): T = enumValueOf(verdi(domenebegrep, rad))

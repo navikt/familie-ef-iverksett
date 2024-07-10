@@ -40,7 +40,9 @@ class DistribuerVedtaksbrevTask(
 
     private object OK : Resultat()
 
-    private data class Dødsbo(val melding: String) : Resultat()
+    private data class Dødsbo(
+        val melding: String,
+    ) : Resultat()
 
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
@@ -58,20 +60,21 @@ class DistribuerVedtaksbrevTask(
             iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId)?.keys ?: emptySet()
 
         var resultat: Dødsbo? = null
-        journalpostResultat.filter { (_, journalpostResultat) ->
-            journalpostResultat.journalpostId !in distribuerteJournalposter
-        }.forEach { (personIdent, journalpostResultat) ->
-            try {
-                distribuerBrevOgOppdaterVedtaksbrevResultat(journalpostResultat, behandlingId)
-            } catch (e: RessursException) {
-                val cause = e.cause
-                if (cause is HttpClientErrorException.Gone) {
-                    resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
-                } else {
-                    throw e
+        journalpostResultat
+            .filter { (_, journalpostResultat) ->
+                journalpostResultat.journalpostId !in distribuerteJournalposter
+            }.forEach { (personIdent, journalpostResultat) ->
+                try {
+                    distribuerBrevOgOppdaterVedtaksbrevResultat(journalpostResultat, behandlingId)
+                } catch (e: RessursException) {
+                    val cause = e.cause
+                    if (cause is HttpClientErrorException.Gone) {
+                        resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
+                    } else {
+                        throw e
+                    }
                 }
             }
-        }
         return resultat ?: OK
     }
 
@@ -106,7 +109,8 @@ class DistribuerVedtaksbrevTask(
         dødsbo: Dødsbo,
     ) {
         val antallRekjørSenerePgaDødsbo =
-            taskService.findTaskLoggByTaskId(task.id)
+            taskService
+                .findTaskLoggByTaskId(task.id)
                 .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 26) {
             logger.warn("Mottaker for vedtaksbrev behandling=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")

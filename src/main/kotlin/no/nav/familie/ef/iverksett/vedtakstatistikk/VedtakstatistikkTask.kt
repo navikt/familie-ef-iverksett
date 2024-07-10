@@ -26,7 +26,10 @@ class VedtakstatistikkTask(
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        val forrigeIverksett = iverksett.behandling.forrigeBehandlingId?.let { iverksettingRepository.findByIdOrThrow(it) }?.data
+        val forrigeIverksett =
+            iverksett.behandling.forrigeBehandlingId
+                ?.let { iverksettingRepository.findByIdOrThrow(it) }
+                ?.data
         vedtakstatistikkService.sendTilKafka(iverksett, forrigeIverksett)
     }
 

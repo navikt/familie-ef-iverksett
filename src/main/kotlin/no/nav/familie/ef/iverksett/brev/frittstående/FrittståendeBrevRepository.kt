@@ -14,7 +14,8 @@ import java.util.UUID
 
 @Repository
 interface FrittståendeBrevRepository :
-    RepositoryInterface<FrittståendeBrev, UUID>, InsertUpdateRepository<FrittståendeBrev> {
+    RepositoryInterface<FrittståendeBrev, UUID>,
+    InsertUpdateRepository<FrittståendeBrev> {
     @Modifying
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Query("UPDATE frittstaende_brev SET journalpost_resultat=:journalpostresultat WHERE id=:id")

@@ -382,8 +382,8 @@ object VedtakstatistikkMapperTestHelper {
                 ),
         )
 
-    fun lagVilkårsvurderinger(): List<Vilkårsvurdering> {
-        return listOf(
+    fun lagVilkårsvurderinger(): List<Vilkårsvurdering> =
+        listOf(
             forutgåendeMedlemskap,
             lovligOpphold,
             morEllerFar,
@@ -397,10 +397,9 @@ object VedtakstatistikkMapperTestHelper {
             tidligereVedtaksperioder,
             arbeid,
         )
-    }
 
-    fun lagVilkårsvurderingerEøsAnnenForelder(): List<Vilkårsvurdering> {
-        return listOf(
+    fun lagVilkårsvurderingerEøsAnnenForelder(): List<Vilkårsvurdering> =
+        listOf(
             forutgåendeMedlemskapEøsAnnenForelder,
             lovligOpphold,
             morEllerFar,
@@ -414,10 +413,9 @@ object VedtakstatistikkMapperTestHelper {
             tidligereVedtaksperioder,
             arbeid,
         )
-    }
 
-    fun lagVilkårsvurderingerEøs(): List<Vilkårsvurdering> {
-        return listOf(
+    fun lagVilkårsvurderingerEøs(): List<Vilkårsvurdering> =
+        listOf(
             forutgåendeMedlemskapEøs,
             lovligOpphold,
             morEllerFar,
@@ -431,10 +429,9 @@ object VedtakstatistikkMapperTestHelper {
             tidligereVedtaksperioder,
             arbeid,
         )
-    }
 
-    fun lagVilkårsvurderingerEøsOgOpphold(): List<Vilkårsvurdering> {
-        return listOf(
+    fun lagVilkårsvurderingerEøsOgOpphold(): List<Vilkårsvurdering> =
+        listOf(
             forutgåendeMedlemskapEøs,
             lovligOppholdEøs,
             morEllerFar,
@@ -448,5 +445,4 @@ object VedtakstatistikkMapperTestHelper {
             tidligereVedtaksperioder,
             arbeid,
         )
-    }
 }

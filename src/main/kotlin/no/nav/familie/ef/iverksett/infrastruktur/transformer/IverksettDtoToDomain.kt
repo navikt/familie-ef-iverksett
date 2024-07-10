@@ -47,37 +47,29 @@ import no.nav.familie.kontrakter.ef.iverksett.VilkårsvurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.VurderingDto
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as BrevmottakerKontrakter
 
-fun VurderingDto.toDomain(): Vurdering {
-    return Vurdering(this.regelId, this.svar, this.begrunnelse)
-}
+fun VurderingDto.toDomain(): Vurdering = Vurdering(this.regelId, this.svar, this.begrunnelse)
 
-fun DelvilkårsvurderingDto.toDomain(): Delvilkårsvurdering {
-    return Delvilkårsvurdering(this.resultat, this.vurderinger.map { it.toDomain() })
-}
+fun DelvilkårsvurderingDto.toDomain(): Delvilkårsvurdering = Delvilkårsvurdering(this.resultat, this.vurderinger.map { it.toDomain() })
 
-fun VilkårsvurderingDto.toDomain(): Vilkårsvurdering {
-    return Vilkårsvurdering(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toDomain() })
-}
+fun VilkårsvurderingDto.toDomain(): Vilkårsvurdering = Vilkårsvurdering(this.vilkårType, this.resultat, this.delvilkårsvurderinger.map { it.toDomain() })
 
-fun FagsakdetaljerDto.toDomain(): Fagsakdetaljer {
-    return Fagsakdetaljer(
+fun FagsakdetaljerDto.toDomain(): Fagsakdetaljer =
+    Fagsakdetaljer(
         fagsakId = this.fagsakId,
         eksternId = this.eksternId,
         stønadstype = this.stønadstype,
     )
-}
 
-fun SøkerDto.toDomain(): Søker {
-    return Søker(
+fun SøkerDto.toDomain(): Søker =
+    Søker(
         personIdent = this.personIdent,
         barn = this.barn.map { it.toDomain() },
         tilhørendeEnhet = this.tilhørendeEnhet,
         adressebeskyttelse = this.adressebeskyttelse,
     )
-}
 
-fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
-    return Behandlingsdetaljer(
+fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer =
+    Behandlingsdetaljer(
         behandlingId = this.behandlingId,
         forrigeBehandlingId = this.forrigeBehandlingId,
         eksternId = this.eksternId,
@@ -89,26 +81,23 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer {
         årsakRevurdering = this.årsakRevurdering?.let { ÅrsakRevurdering(it.opplysningskilde, it.årsak) },
         kategori = this.kategori,
     )
-}
 
-fun VedtaksperiodeOvergangsstønadDto.toDomain(): VedtaksperiodeOvergangsstønad {
-    return VedtaksperiodeOvergangsstønad(
+fun VedtaksperiodeOvergangsstønadDto.toDomain(): VedtaksperiodeOvergangsstønad =
+    VedtaksperiodeOvergangsstønad(
         aktivitet = this.aktivitet,
         periode = this.periode,
         periodeType = this.periodeType,
     )
-}
 
-fun VedtaksperiodeBarnetilsynDto.toDomain(): VedtaksperiodeBarnetilsyn {
-    return VedtaksperiodeBarnetilsyn(
+fun VedtaksperiodeBarnetilsynDto.toDomain(): VedtaksperiodeBarnetilsyn =
+    VedtaksperiodeBarnetilsyn(
         periode = this.periode,
         utgifter = this.utgifter,
         antallBarn = this.antallBarn,
     )
-}
 
-fun VedtaksperiodeSkolepengerDto.toDomain(): VedtaksperiodeSkolepenger {
-    return VedtaksperiodeSkolepenger(
+fun VedtaksperiodeSkolepengerDto.toDomain(): VedtaksperiodeSkolepenger =
+    VedtaksperiodeSkolepenger(
         perioder =
             this.perioder.map {
                 DelårsperiodeSkoleårSkolepenger(
@@ -126,10 +115,9 @@ fun VedtaksperiodeSkolepengerDto.toDomain(): VedtaksperiodeSkolepenger {
                 )
             },
     )
-}
 
-fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstønad {
-    return VedtaksdetaljerOvergangsstønad(
+fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstønad =
+    VedtaksdetaljerOvergangsstønad(
         vedtaksresultat = this.resultat,
         vedtakstidspunkt = this.vedtakstidspunkt,
         opphørÅrsak = this.opphørÅrsak,
@@ -143,10 +131,9 @@ fun VedtaksdetaljerOvergangsstønadDto.toDomain(): VedtaksdetaljerOvergangsstøn
         oppgaverForOpprettelse = this.oppgaverForOpprettelse.toDomain(),
         grunnbeløp = this.grunnbeløp,
     )
-}
 
-fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn {
-    return VedtaksdetaljerBarnetilsyn(
+fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn =
+    VedtaksdetaljerBarnetilsyn(
         vedtaksresultat = this.resultat,
         vedtakstidspunkt = this.vedtakstidspunkt,
         opphørÅrsak = this.opphørÅrsak,
@@ -160,10 +147,9 @@ fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn {
         tilleggsstønad = this.tilleggsstønad.map { it.toDomain() },
         avslagÅrsak = this.avslagÅrsak,
     )
-}
 
-fun VedtaksdetaljerSkolepengerDto.toDomain(): VedtaksdetaljerSkolepenger {
-    return VedtaksdetaljerSkolepenger(
+fun VedtaksdetaljerSkolepengerDto.toDomain(): VedtaksdetaljerSkolepenger =
+    VedtaksdetaljerSkolepenger(
         vedtaksresultat = this.resultat,
         vedtakstidspunkt = this.vedtakstidspunkt,
         opphørÅrsak = this.opphørÅrsak,
@@ -176,23 +162,20 @@ fun VedtaksdetaljerSkolepengerDto.toDomain(): VedtaksdetaljerSkolepenger {
         begrunnelse = this.begrunnelse,
         avslagÅrsak = this.avslagÅrsak,
     )
-}
 
-fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer {
-    return Tilbakekrevingsdetaljer(
+fun TilbakekrevingDto.toDomain(): Tilbakekrevingsdetaljer =
+    Tilbakekrevingsdetaljer(
         tilbakekrevingsvalg = this.tilbakekrevingsvalg,
         this.tilbakekrevingMedVarsel?.toDomain(),
         this.begrunnelseForTilbakekreving,
     )
-}
 
-fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel {
-    return TilbakekrevingMedVarsel(
+fun TilbakekrevingMedVarselDto.toDomain(): TilbakekrevingMedVarsel =
+    TilbakekrevingMedVarsel(
         varseltekst = this.varseltekst,
         sumFeilutbetaling = this.sumFeilutbetaling,
         perioder = this.fellesperioder.map { it.toDatoperiode() },
     )
-}
 
 fun List<BrevmottakerKontrakter>.toDomain(): Brevmottakere = Brevmottakere(mottakere = this.map { it.toDomain() })
 
@@ -210,8 +193,8 @@ fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
         beløp = this.beløp,
     )
 
-fun IverksettDto.toDomain(): IverksettData {
-    return when (this) {
+fun IverksettDto.toDomain(): IverksettData =
+    when (this) {
         is IverksettOvergangsstønadDto ->
             IverksettOvergangsstønad(
                 fagsak = this.fagsak.toDomain(),
@@ -238,6 +221,5 @@ fun IverksettDto.toDomain(): IverksettData {
 
         else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
     }
-}
 
 fun OppgaverForOpprettelseDto.toDomain(): OppgaverForOpprettelse = OppgaverForOpprettelse(this.oppgavetyper)
