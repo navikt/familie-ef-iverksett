@@ -119,8 +119,8 @@ internal class KonsistensavstemmingServiceTest {
         assertThat(catchThrowable { konsistensavstemmingService.sendKonsistensavstemming(konsistensavstemmingDto) })
     }
 
-    private fun lagTilkjentYtelseMedMetadata(): TilkjentYtelseMedMetaData {
-        return TilkjentYtelseMedMetaData(
+    private fun lagTilkjentYtelseMedMetadata(): TilkjentYtelseMedMetaData =
+        TilkjentYtelseMedMetaData(
             tilkjentYtelse =
                 TilkjentYtelse(
                     andelerTilkjentYtelse = listOf(andel1, andel2),
@@ -134,5 +134,4 @@ internal class KonsistensavstemmingServiceTest {
             behandlingId = behandlingId,
             vedtaksdato = vedtaksdato,
         )
-    }
 }

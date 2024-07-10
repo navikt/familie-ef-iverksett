@@ -213,7 +213,8 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
     ) {
         wireMockServer.verify(
             antall,
-            WireMock.postRequestedFor(WireMock.urlMatching(journalpostClientMock.journalføringPath()))
+            WireMock
+                .postRequestedFor(WireMock.urlMatching(journalpostClientMock.journalføringPath()))
                 .withRequestBody(WireMock.matchingJsonPath("$..id", WireMock.containing(ident))),
         )
     }

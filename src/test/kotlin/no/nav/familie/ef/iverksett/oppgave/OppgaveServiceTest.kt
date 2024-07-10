@@ -528,17 +528,16 @@ internal class OppgaveServiceTest {
         fraOgMed: LocalDate = LocalDate.now(),
         tilOgMed: LocalDate = LocalDate.now(),
         periodeType: VedtaksperiodeType = VedtaksperiodeType.HOVEDPERIODE,
-    ): VedtaksperiodeOvergangsstønad {
-        return VedtaksperiodeOvergangsstønad(
+    ): VedtaksperiodeOvergangsstønad =
+        VedtaksperiodeOvergangsstønad(
             periode = Månedsperiode(fraOgMed, tilOgMed),
             aktivitet = aktivitet,
             periodeType = periodeType,
         )
-    }
 
-    private fun lagEksternTestOppgave(): no.nav.familie.kontrakter.felles.oppgave.Oppgave {
-        return no.nav.familie.kontrakter.felles.oppgave.Oppgave(id = GSAK_OPPGAVE_ID)
-    }
+    private fun lagEksternTestOppgave(): no.nav.familie.kontrakter.felles.oppgave.Oppgave =
+        no.nav.familie.kontrakter.felles.oppgave
+            .Oppgave(id = GSAK_OPPGAVE_ID)
 
     companion object {
         private const val GSAK_OPPGAVE_ID = 12345L

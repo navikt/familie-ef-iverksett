@@ -95,18 +95,46 @@ internal class VedtakstatistikkMapperTest {
         assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().inntektsreduksjon).isEqualTo(11000)
         assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().samordningsfradrag).isEqualTo(1000)
         assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().beløp).isEqualTo(9000)
-        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().utbetalingsdetalj.delytelseId).isEqualTo("121")
-        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().utbetalingsdetalj.klassekode).isEqualTo("EFOG")
-        assertThat(vedtakOvergangsstønadDVH.utbetalinger.first().utbetalingsdetalj.gjelderPerson.personIdent).isEqualTo(søker)
+        assertThat(
+            vedtakOvergangsstønadDVH.utbetalinger
+                .first()
+                .utbetalingsdetalj.delytelseId,
+        ).isEqualTo("121")
+        assertThat(
+            vedtakOvergangsstønadDVH.utbetalinger
+                .first()
+                .utbetalingsdetalj.klassekode,
+        ).isEqualTo("EFOG")
+        assertThat(
+            vedtakOvergangsstønadDVH.utbetalinger
+                .first()
+                .utbetalingsdetalj.gjelderPerson.personIdent,
+        ).isEqualTo(søker)
         assertThat(vedtakOvergangsstønadDVH.vedtak).isEqualTo(Vedtak.INNVILGET)
         assertThat(vedtakOvergangsstønadDVH.vedtaksperioder).hasSize(2)
         assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().fraOgMed).isEqualTo(LocalDate.of(2021, 2, 1))
         assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().tilOgMed).isEqualTo(LocalDate.of(2021, 3, 31))
-        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().aktivitet.name).isEqualTo(AktivitetType.IKKE_AKTIVITETSPLIKT.name)
-        assertThat(vedtakOvergangsstønadDVH.vedtaksperioder.first().periodeType.name).isEqualTo(VedtaksperiodeType.PERIODE_FØR_FØDSEL.name)
+        assertThat(
+            vedtakOvergangsstønadDVH.vedtaksperioder
+                .first()
+                .aktivitet.name,
+        ).isEqualTo(AktivitetType.IKKE_AKTIVITETSPLIKT.name)
+        assertThat(
+            vedtakOvergangsstønadDVH.vedtaksperioder
+                .first()
+                .periodeType.name,
+        ).isEqualTo(VedtaksperiodeType.PERIODE_FØR_FØDSEL.name)
         assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger).hasSize(12)
-        assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger.first().vilkår.name).isEqualTo(VilkårType.FORUTGÅENDE_MEDLEMSKAP.name)
-        assertThat(vedtakOvergangsstønadDVH.vilkårsvurderinger.first().resultat.name).isEqualTo(Vilkårsresultat.OPPFYLT.name)
+        assertThat(
+            vedtakOvergangsstønadDVH.vilkårsvurderinger
+                .first()
+                .vilkår.name,
+        ).isEqualTo(VilkårType.FORUTGÅENDE_MEDLEMSKAP.name)
+        assertThat(
+            vedtakOvergangsstønadDVH.vilkårsvurderinger
+                .first()
+                .resultat.name,
+        ).isEqualTo(Vilkårsresultat.OPPFYLT.name)
 
         assertThat(vedtakOvergangsstønadDVH.kravMottatt).isEqualTo(LocalDate.of(2021, 3, 1))
         assertThat(vedtakOvergangsstønadDVH.årsakRevurdering?.opplysningskilde).isEqualTo(Opplysningskilde.MELDING_MODIA.name)
@@ -271,16 +299,34 @@ internal class VedtakstatistikkMapperTest {
             },
         )
 
-        val forventetSkoleårsperiode = vedtaksdetaljerSkolepenger().vedtaksperioder.first().perioder.first()
-        val mappetSkoleårsperiode = vedtakSkolepenger.vedtaksperioder.first().perioder.first()
+        val forventetSkoleårsperiode =
+            vedtaksdetaljerSkolepenger()
+                .vedtaksperioder
+                .first()
+                .perioder
+                .first()
+        val mappetSkoleårsperiode =
+            vedtakSkolepenger.vedtaksperioder
+                .first()
+                .perioder
+                .first()
 
         assertThat(mappetSkoleårsperiode.datoFra).isEqualTo(forventetSkoleårsperiode.periode.fomDato)
         assertThat(mappetSkoleårsperiode.datoTil).isEqualTo(forventetSkoleårsperiode.periode.tomDato)
         assertThat(mappetSkoleårsperiode.studiebelastning).isEqualTo(forventetSkoleårsperiode.studiebelastning)
         assertThat(mappetSkoleårsperiode.studietype).isEqualTo(Studietype.valueOf(forventetSkoleårsperiode.studietype.name))
 
-        val forventetUtgiftsperiode = vedtaksdetaljerSkolepenger().vedtaksperioder.first().utgiftsperioder.first()
-        val mappetUtgiftsperiode = vedtakSkolepenger.vedtaksperioder.first().utgifter.first()
+        val forventetUtgiftsperiode =
+            vedtaksdetaljerSkolepenger()
+                .vedtaksperioder
+                .first()
+                .utgiftsperioder
+                .first()
+        val mappetUtgiftsperiode =
+            vedtakSkolepenger.vedtaksperioder
+                .first()
+                .utgifter
+                .first()
 
         assertThat(mappetUtgiftsperiode.utgiftsdato).isEqualTo(forventetUtgiftsperiode.utgiftsdato)
         assertThat(mappetUtgiftsperiode.utbetaltBeløp).isEqualTo(forventetUtgiftsperiode.stønad)
@@ -415,8 +461,8 @@ internal class VedtakstatistikkMapperTest {
         resultat: Vedtaksresultat = Vedtaksresultat.INNVILGET,
         avslagÅrsak: AvslagÅrsak? = null,
         fremleggsoppgaveTyper: List<OppgaveForOpprettelseType> = listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID),
-    ): VedtaksdetaljerOvergangsstønad {
-        return VedtaksdetaljerOvergangsstønad(
+    ): VedtaksdetaljerOvergangsstønad =
+        VedtaksdetaljerOvergangsstønad(
             vedtaksresultat = resultat,
             avslagÅrsak = avslagÅrsak,
             vedtakstidspunkt = vedtakstidspunkt,
@@ -440,5 +486,4 @@ internal class VedtakstatistikkMapperTest {
             brevmottakere = Brevmottakere(emptyList()),
             oppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = fremleggsoppgaveTyper),
         )
-    }
 }

@@ -75,13 +75,12 @@ class TilbakekrevingListener(
         }
     }
 
-    private fun HentFagsystemsbehandlingRequest.erEfYtelse(): Boolean {
-        return listOf(
+    private fun HentFagsystemsbehandlingRequest.erEfYtelse(): Boolean =
+        listOf(
             Ytelsestype.OVERGANGSSTØNAD,
             Ytelsestype.SKOLEPENGER,
             Ytelsestype.BARNETILSYN,
         ).contains(this.ytelsestype)
-    }
 
     private fun sjekkFagsakIdKonsistens(
         iverksett: IverksettData,

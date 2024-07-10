@@ -38,7 +38,9 @@ class DistribuerAktivitetspliktBrevTask(
 
     private object OK : Resultat()
 
-    private data class Dødsbo(val melding: String) : Resultat()
+    private data class Dødsbo(
+        val melding: String,
+    ) : Resultat()
 
     override fun doTask(task: Task) {
         val brevId = UUID.fromString(task.payload)
@@ -85,7 +87,8 @@ class DistribuerAktivitetspliktBrevTask(
         dødsbo: Dødsbo,
     ) {
         val antallRekjørSenerePgaDødsbo =
-            taskService.findTaskLoggByTaskId(task.id)
+            taskService
+                .findTaskLoggByTaskId(task.id)
                 .count { it.type == Loggtype.KLAR_TIL_PLUKK && it.melding?.startsWith("Dødsbo") == true }
         if (antallRekjørSenerePgaDødsbo < 7) {
             logger.warn("Mottaker for aktivitetspliktbrev brevId=${task.payload} har dødsbo, prøver å sende brev på nytt om 7 dager")

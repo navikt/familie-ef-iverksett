@@ -68,9 +68,7 @@ class IverksettingController(
         return ResponseEntity.ok().build()
     }
 
-    private fun opprettBrev(fil: MultipartFile): Brev {
-        return Brev(fil.bytes)
-    }
+    private fun opprettBrev(fil: MultipartFile): Brev = Brev(fil.bytes)
 
     private fun validerUtenBrev(iverksettData: IverksettData) {
         if (!iverksettData.skalIkkeSendeBrev()) {

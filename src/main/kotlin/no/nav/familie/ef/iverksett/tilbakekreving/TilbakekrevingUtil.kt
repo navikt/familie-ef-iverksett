@@ -41,8 +41,8 @@ val Tilbakekrevingsdetaljer?.skalTilbakekreves: Boolean
 val Simuleringsoppsummering.harFeilutbetaling: Boolean
     get() = this.feilutbetaling > BigDecimal.ZERO
 
-fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringsoppsummering): Tilbakekrevingsdetaljer {
-    return this.copy(
+fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringsoppsummering): Tilbakekrevingsdetaljer =
+    this.copy(
         tilbakekrevingMedVarsel =
             this.tilbakekrevingMedVarsel
                 ?.copy(
@@ -50,4 +50,3 @@ fun Tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering: Simuleringso
                     perioder = simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(),
                 ),
     )
-}

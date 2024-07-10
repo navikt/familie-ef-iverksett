@@ -23,31 +23,38 @@ import java.net.URI
 class TilbakekrevingClient(
     @Qualifier("azure") restOperations: RestOperations,
     @Value("\${FAMILIE_TILBAKE_URL}") private val familieTilbakeUri: URI,
-) :
-    AbstractRestClient(restOperations, "familie.tilbakekreving") {
+) : AbstractRestClient(restOperations, "familie.tilbakekreving") {
     private val hentForhåndsvisningVarselbrevUri: URI =
-        UriComponentsBuilder.fromUri(familieTilbakeUri)
+        UriComponentsBuilder
+            .fromUri(familieTilbakeUri)
             .pathSegment("api/dokument/forhandsvis-varselbrev")
             .build()
             .toUri()
 
     private val opprettTilbakekrevingUri: URI =
-        UriComponentsBuilder.fromUri(familieTilbakeUri).pathSegment("api/behandling/v1").build().toUri()
+        UriComponentsBuilder
+            .fromUri(familieTilbakeUri)
+            .pathSegment("api/behandling/v1")
+            .build()
+            .toUri()
 
     private val opprettBehandlingManueltUri =
-        UriComponentsBuilder.fromUri(familieTilbakeUri)
+        UriComponentsBuilder
+            .fromUri(familieTilbakeUri)
             .pathSegment("api/behandling/manuelt/task/v1")
             .build()
             .toUri()
 
     private fun finnesÅpenBehandlingUri(fagsakId: Long) =
-        UriComponentsBuilder.fromUri(familieTilbakeUri)
+        UriComponentsBuilder
+            .fromUri(familieTilbakeUri)
             .pathSegment("api/fagsystem/${Fagsystem.EF}/fagsak/$fagsakId/finnesApenBehandling/v1")
             .build()
             .toUri()
 
     private fun finnBehandlingerUri(fagsakId: Long) =
-        UriComponentsBuilder.fromUri(familieTilbakeUri)
+        UriComponentsBuilder
+            .fromUri(familieTilbakeUri)
             .pathSegment("api/fagsystem/${Fagsystem.EF}/fagsak/$fagsakId/behandlinger/v1")
             .build()
             .toUri()
@@ -55,21 +62,20 @@ class TilbakekrevingClient(
     private fun kanBehandlingOpprettesManueltUri(
         fagsakId: Long,
         ytelsestype: Ytelsestype,
-    ) = UriComponentsBuilder.fromUri(
-        familieTilbakeUri,
-    )
-        .pathSegment("api", "ytelsestype", ytelsestype.name, "fagsak", fagsakId.toString(), "kanBehandlingOpprettesManuelt", "v1")
+    ) = UriComponentsBuilder
+        .fromUri(
+            familieTilbakeUri,
+        ).pathSegment("api", "ytelsestype", ytelsestype.name, "fagsak", fagsakId.toString(), "kanBehandlingOpprettesManuelt", "v1")
         .encode()
         .build()
         .toUri()
 
-    fun hentForhåndsvisningVarselbrev(forhåndsvisVarselbrevRequest: ForhåndsvisVarselbrevRequest): ByteArray {
-        return postForEntity(
+    fun hentForhåndsvisningVarselbrev(forhåndsvisVarselbrevRequest: ForhåndsvisVarselbrevRequest): ByteArray =
+        postForEntity(
             hentForhåndsvisningVarselbrevUri,
             forhåndsvisVarselbrevRequest,
             HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_PDF) },
         )
-    }
 
     fun opprettBehandling(opprettTilbakekrevingRequest: OpprettTilbakekrevingRequest) {
         postForEntity<Ressurs<String>>(opprettTilbakekrevingUri, opprettTilbakekrevingRequest)

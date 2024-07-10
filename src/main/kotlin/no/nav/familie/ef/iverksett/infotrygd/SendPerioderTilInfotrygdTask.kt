@@ -35,8 +35,10 @@ class SendPerioderTilInfotrygdTask(
             return
         }
         val personIdenter =
-            familieIntegrasjonerClient.hentIdenter(iverksett.søker.personIdent, true)
-                .map { it.personIdent }.toSet()
+            familieIntegrasjonerClient
+                .hentIdenter(iverksett.søker.personIdent, true)
+                .map { it.personIdent }
+                .toSet()
         val perioder =
             iverksett.vedtak.tilkjentYtelse?.andelerTilkjentYtelse?.map {
                 Periode(

@@ -11,8 +11,8 @@ import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.VedtakOvergangsstøn
 import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Vedtaksresultat
 
 object ArbeidsoppfølgingMapper {
-    fun mapTilVedtakOvergangsstønadTilArbeidsoppfølging(iverksett: IverksettOvergangsstønad): VedtakOvergangsstønadArbeidsoppfølging {
-        return VedtakOvergangsstønadArbeidsoppfølging(
+    fun mapTilVedtakOvergangsstønadTilArbeidsoppfølging(iverksett: IverksettOvergangsstønad): VedtakOvergangsstønadArbeidsoppfølging =
+        VedtakOvergangsstønadArbeidsoppfølging(
             vedtakId = iverksett.behandling.eksternId,
             personIdent = iverksett.søker.personIdent,
             barn = iverksett.søker.barn.map { Barn(it.personIdent, it.termindato) },
@@ -20,10 +20,9 @@ object ArbeidsoppfølgingMapper {
             vedtaksresultat = Vedtaksresultat.valueOf(iverksett.vedtak.vedtaksresultat.name),
             periode = mapToVedtaksperioder(iverksett.vedtak),
         )
-    }
 
-    fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerOvergangsstønad): List<Periode> {
-        return vedtaksdetaljer.vedtaksperioder.map {
+    fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerOvergangsstønad): List<Periode> =
+        vedtaksdetaljer.vedtaksperioder.map {
             Periode(
                 it.periode.fomDato,
                 it.periode.tomDato,
@@ -31,5 +30,4 @@ object ArbeidsoppfølgingMapper {
                 Aktivitetstype.valueOf(it.aktivitet.name),
             )
         }
-    }
 }

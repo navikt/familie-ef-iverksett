@@ -67,8 +67,8 @@ class OppgaveClientTest {
     }
 
     @Throws(IOException::class)
-    private fun gyldigResponse(): String {
-        return "{\n" +
+    private fun gyldigResponse(): String =
+        "{\n" +
             "    \"data\": {\n" +
             "       \"oppgaveId\": \"123\"\n" +
             "},\n" +
@@ -76,7 +76,6 @@ class OppgaveClientTest {
             "    \"melding\": \"Innhenting av data var vellykket\",\n" +
             "    \"stacktrace\": null\n" +
             "}"
-    }
 
     fun defaultOpprettOppgaveRequest(
         personIdent: String,

@@ -3,8 +3,8 @@ package no.nav.familie.ef.iverksett.infrastruktur.transformer
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 
-fun AndelTilkjentYtelseDto.toDomain(): AndelTilkjentYtelse {
-    return AndelTilkjentYtelse(
+fun AndelTilkjentYtelseDto.toDomain(): AndelTilkjentYtelse =
+    AndelTilkjentYtelse(
         beløp = this.beløp,
         periode = this.periode,
         inntekt = this.inntekt,
@@ -12,4 +12,3 @@ fun AndelTilkjentYtelseDto.toDomain(): AndelTilkjentYtelse {
         inntektsreduksjon = this.inntektsreduksjon,
         kildeBehandlingId = this.kildeBehandlingId,
     )
-}

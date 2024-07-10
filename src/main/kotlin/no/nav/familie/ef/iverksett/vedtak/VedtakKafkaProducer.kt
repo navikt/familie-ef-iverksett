@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class VedtakKafkaProducer(private val kafkaProducerService: KafkaProducerService) {
+class VedtakKafkaProducer(
+    private val kafkaProducerService: KafkaProducerService,
+) {
     @Value("\${VEDTAK_TOPIC}")
     lateinit var topic: String
 

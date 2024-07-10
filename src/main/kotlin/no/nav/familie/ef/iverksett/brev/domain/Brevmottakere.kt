@@ -4,7 +4,9 @@ import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle
 import no.nav.familie.kontrakter.felles.BrukerIdType
 
-data class Brevmottakere(val mottakere: List<Brevmottaker>)
+data class Brevmottakere(
+    val mottakere: List<Brevmottaker>,
+)
 
 data class Brevmottaker(
     val ident: String,

@@ -20,9 +20,7 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
-    private fun rootCause(throwable: Throwable): String {
-        return NestedExceptionUtils.getMostSpecificCause(throwable).javaClass.simpleName
-    }
+    private fun rootCause(throwable: Throwable): String = NestedExceptionUtils.getMostSpecificCause(throwable).javaClass.simpleName
 
     override fun handleExceptionInternal(
         ex: java.lang.Exception,
@@ -61,13 +59,9 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler(ApiFeil::class)
-    fun handleApiFeil(feil: ApiFeil): ResponseEntity<Ressurs<Nothing>> {
-        return ResponseEntity.status(feil.httpStatus).body(Ressurs.failure(feil.feil))
-    }
+    fun handleApiFeil(feil: ApiFeil): ResponseEntity<Ressurs<Nothing>> = ResponseEntity.status(feil.httpStatus).body(Ressurs.failure(feil.feil))
 
-    private fun resolveStatus(status: Int): HttpStatus {
-        return HttpStatus.resolve(status) ?: HttpStatus.INTERNAL_SERVER_ERROR
-    }
+    private fun resolveStatus(status: Int): HttpStatus = HttpStatus.resolve(status) ?: HttpStatus.INTERNAL_SERVER_ERROR
 
     private fun uventetFeil(throwable: Throwable): ResponseEntity<Ressurs<Nothing>> {
         secureLogger.error("En feil har oppstått", throwable)

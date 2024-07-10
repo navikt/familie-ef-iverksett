@@ -15,13 +15,13 @@ import java.time.Month
 import java.util.Locale
 
 object OppgaveUtil {
-    fun opprettBehandlingstema(stønadstype: StønadType): Behandlingstema {
-        return Behandlingstema
+    fun opprettBehandlingstema(stønadstype: StønadType): Behandlingstema =
+        Behandlingstema
             .fromValue(
-                stønadstype.name.lowercase(Locale.getDefault())
+                stønadstype.name
+                    .lowercase(Locale.getDefault())
                     .replaceFirstChar { it.uppercase() },
             )
-    }
 
     fun opprettOppgaveRequest(
         eksternFagsakId: Long,
@@ -33,8 +33,8 @@ object OppgaveUtil {
         settBehandlesAvApplikasjon: Boolean,
         fristFerdigstillelse: LocalDate? = null,
         mappeId: Long? = null,
-    ): OpprettOppgaveRequest {
-        return OpprettOppgaveRequest(
+    ): OpprettOppgaveRequest =
+        OpprettOppgaveRequest(
             ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
             saksId = eksternFagsakId.toString(),
             tema = Tema.ENF,
@@ -47,7 +47,6 @@ object OppgaveUtil {
             behandlesAvApplikasjon = if (settBehandlesAvApplikasjon) "familie-ef-sak" else null,
             mappeId = mappeId,
         )
-    }
 
     private fun fristFerdigstillelse(
         aktivFra: LocalDate?,

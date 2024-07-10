@@ -17,14 +17,25 @@ class InfotrygdFeedClient(
     private val infotrygdFeedUri: URI,
     @Qualifier("azure")
     restOperations: RestOperations,
-) :
-    AbstractPingableRestClient(restOperations, "infotrygd.feed") {
+) : AbstractPingableRestClient(restOperations, "infotrygd.feed") {
     val opprettVedtakUri: URI =
-        UriComponentsBuilder.fromUri(infotrygdFeedUri).pathSegment("api/entry/vedtak").build().toUri()
+        UriComponentsBuilder
+            .fromUri(infotrygdFeedUri)
+            .pathSegment("api/entry/vedtak")
+            .build()
+            .toUri()
     val opprettStartBehandlingUri: URI =
-        UriComponentsBuilder.fromUri(infotrygdFeedUri).pathSegment("api/entry/start-behandling").build().toUri()
+        UriComponentsBuilder
+            .fromUri(infotrygdFeedUri)
+            .pathSegment("api/entry/start-behandling")
+            .build()
+            .toUri()
     val opprettPeriodeUri: URI =
-        UriComponentsBuilder.fromUri(infotrygdFeedUri).pathSegment("api/entry/periode").build().toUri()
+        UriComponentsBuilder
+            .fromUri(infotrygdFeedUri)
+            .pathSegment("api/entry/periode")
+            .build()
+            .toUri()
 
     fun opprettVedtakHendelse(hendelseDto: OpprettVedtakHendelseDto) {
         postForEntity<Any>(opprettVedtakUri, hendelseDto)
@@ -39,5 +50,10 @@ class InfotrygdFeedClient(
     }
 
     override val pingUri: URI
-        get() = UriComponentsBuilder.fromUri(infotrygdFeedUri).pathSegment("api/ping").build().toUri()
+        get() =
+            UriComponentsBuilder
+                .fromUri(infotrygdFeedUri)
+                .pathSegment("api/ping")
+                .build()
+                .toUri()
 }

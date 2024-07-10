@@ -53,8 +53,8 @@ object VedtakstatistikkMapper {
     fun mapTilVedtakBarnetilsynDVH(
         iverksett: IverksettBarnetilsyn,
         forrigeIverksettBehandlingEksternId: Long?,
-    ): VedtakBarnetilsynDVH {
-        return VedtakBarnetilsynDVH(
+    ): VedtakBarnetilsynDVH =
+        VedtakBarnetilsynDVH(
             fagsakId = iverksett.fagsak.eksternId,
             behandlingId = iverksett.behandling.eksternId,
             relatertBehandlingId = forrigeIverksettBehandlingEksternId,
@@ -106,7 +106,6 @@ object VedtakstatistikkMapper {
             avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
             eøsUnntak = mapEøsUnntak(iverksett.behandling.vilkårsvurderinger),
         )
-    }
 
     private fun mapÅrsakRevurdering(behandlingsdetaljer: Behandlingsdetaljer): ÅrsakRevurdering? =
         behandlingsdetaljer.årsakRevurdering?.let {
@@ -119,8 +118,8 @@ object VedtakstatistikkMapper {
     fun mapTilVedtakOvergangsstønadDVH(
         iverksett: IverksettOvergangsstønad,
         forrigeIverksettBehandlingEksternId: Long?,
-    ): VedtakOvergangsstønadDVH {
-        return VedtakOvergangsstønadDVH(
+    ): VedtakOvergangsstønadDVH =
+        VedtakOvergangsstønadDVH(
             fagsakId = iverksett.fagsak.eksternId,
             behandlingId = iverksett.behandling.eksternId,
             relatertBehandlingId = forrigeIverksettBehandlingEksternId,
@@ -162,15 +161,14 @@ object VedtakstatistikkMapper {
             avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
             eøsUnntak = mapEøsUnntak(iverksett.behandling.vilkårsvurderinger),
         )
-    }
 
     private fun mapTilUtbetaling(
         tilkjentYtelse: TilkjentYtelse,
         stønadsType: StønadType,
         eksternFagsakId: Long,
         søker: Søker,
-    ): List<Utbetaling> {
-        return tilkjentYtelse.andelerTilkjentYtelse.map {
+    ): List<Utbetaling> =
+        tilkjentYtelse.andelerTilkjentYtelse.map {
             Utbetaling(
                 beløp = it.beløp,
                 samordningsfradrag = it.samordningsfradrag,
@@ -185,25 +183,19 @@ object VedtakstatistikkMapper {
                 ),
             )
         }
-    }
 
-    private fun mapTilPerson(personIdent: String?): Person {
-        return Person(personIdent = personIdent)
-    }
+    private fun mapTilPerson(personIdent: String?): Person = Person(personIdent = personIdent)
 
-    private fun mapTilBarn(barn: Barn): BarnEkstern {
-        return BarnEkstern(personIdent = barn.personIdent, termindato = barn.termindato)
-    }
+    private fun mapTilBarn(barn: Barn): BarnEkstern = BarnEkstern(personIdent = barn.personIdent, termindato = barn.termindato)
 
-    private fun mapTilVilkårsvurderinger(vilkårsvurdering: Vilkårsvurdering): VilkårsvurderingDto {
-        return VilkårsvurderingDto(
+    private fun mapTilVilkårsvurderinger(vilkårsvurdering: Vilkårsvurdering): VilkårsvurderingDto =
+        VilkårsvurderingDto(
             vilkår = Vilkår.valueOf(vilkårsvurdering.vilkårType.name),
             resultat = Vilkårsresultat.valueOf(vilkårsvurdering.resultat.name),
         )
-    }
 
-    private fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerOvergangsstønad): List<VedtaksperiodeOvergangsstønadDto> {
-        return vedtaksdetaljer.vedtaksperioder.map {
+    private fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerOvergangsstønad): List<VedtaksperiodeOvergangsstønadDto> =
+        vedtaksdetaljer.vedtaksperioder.map {
             VedtaksperiodeOvergangsstønadDto(
                 it.periode.fomDato,
                 it.periode.tomDato,
@@ -211,10 +203,9 @@ object VedtakstatistikkMapper {
                 VedtaksperiodeType.valueOf(it.periodeType.name),
             )
         }
-    }
 
-    private fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerBarnetilsyn): List<VedtaksperiodeBarnetilsynDto> {
-        return vedtaksdetaljer.vedtaksperioder.map {
+    private fun mapToVedtaksperioder(vedtaksdetaljer: VedtaksdetaljerBarnetilsyn): List<VedtaksperiodeBarnetilsynDto> =
+        vedtaksdetaljer.vedtaksperioder.map {
             VedtaksperiodeBarnetilsynDto(
                 it.periode.fomDato,
                 it.periode.tomDato,
@@ -222,13 +213,12 @@ object VedtakstatistikkMapper {
                 it.antallBarn,
             )
         }
-    }
 
     fun mapTilVedtakSkolepengeDVH(
         iverksett: IverksettSkolepenger,
         forrigeBehandlingId: Long?,
-    ): VedtakSkolepenger {
-        return VedtakSkolepenger(
+    ): VedtakSkolepenger =
+        VedtakSkolepenger(
             fagsakId = iverksett.fagsak.eksternId,
             behandlingId = iverksett.behandling.eksternId,
             relatertBehandlingId = forrigeBehandlingId,
@@ -260,7 +250,12 @@ object VedtakstatistikkMapper {
             vedtaksperioder =
                 iverksett.vedtak.vedtaksperioder.map {
                     VedtaksperiodeSkolepenger(
-                        skoleår = it.perioder.first().periode.fomDato.utledSkoleår().value,
+                        skoleår =
+                            it.perioder
+                                .first()
+                                .periode.fomDato
+                                .utledSkoleår()
+                                .value,
                         perioder = it.perioder.map { delårsperiode -> mapTilDelårsperiode(delårsperiode) },
                         utgifter = it.utgiftsperioder.map { utgiftsperiode -> mapTilUtgiftSkolepenger(utgiftsperiode) },
                         maksSatsForSkoleår = it.perioder.first().makssatsForSkoleår,
@@ -272,7 +267,6 @@ object VedtakstatistikkMapper {
             avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
             eøsUnntak = mapEøsUnntak(iverksett.behandling.vilkårsvurderinger),
         )
-    }
 
     private fun mapTilUtgiftSkolepenger(utgiftsperiode: SkolepengerUtgift) =
         UtgiftSkolepenger(
@@ -290,13 +284,12 @@ object VedtakstatistikkMapper {
 
     private fun LocalDate.utledSkoleår() = if (this.month > Month.JUNE) Year.of(this.year) else Year.of(this.year - 1)
 
-    private fun mapEøsUnntak(vilkårsvurderinger: List<Vilkårsvurdering>): EøsUnntak {
-        return EøsUnntak(
+    private fun mapEøsUnntak(vilkårsvurderinger: List<Vilkårsvurdering>): EøsUnntak =
+        EøsUnntak(
             medlemMerEnn5ÅrEøs = inneholderEøsUnntak(SvarId.MEDLEM_MER_ENN_5_ÅR_EØS, vilkårsvurderinger),
             medlemMerEnn5ÅrEøsAnnenForelderTrygdedekketINorge = inneholderEøsUnntak(SvarId.MEDLEM_MER_ENN_5_ÅR_EØS_ANNEN_FORELDER_TRYGDEDEKKET_I_NORGE, vilkårsvurderinger),
             oppholderSegIAnnetEøsLand = inneholderEøsUnntak(SvarId.OPPHOLDER_SEG_I_ANNET_EØS_LAND, vilkårsvurderinger),
         )
-    }
 
     private fun inneholderEøsUnntak(
         unntak: SvarId,

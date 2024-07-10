@@ -17,7 +17,9 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Service
-class BrukernotifikasjonKafkaProducer(private val kafkaTemplate: KafkaTemplate<NokkelInput, BeskjedInput>) {
+class BrukernotifikasjonKafkaProducer(
+    private val kafkaTemplate: KafkaTemplate<NokkelInput, BeskjedInput>,
+) {
     @Value("\${KAFKA_TOPIC_DITTNAV}")
     private lateinit var topic: String
 

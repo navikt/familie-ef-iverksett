@@ -133,7 +133,8 @@ class DistribuerVedtaksbrevTaskIntegrasjonTest : ServerTest() {
     ) {
         wireMockServer.verify(
             antall,
-            WireMock.postRequestedFor(WireMock.urlMatching(journalpostClientMock.distribuerPath()))
+            WireMock
+                .postRequestedFor(WireMock.urlMatching(journalpostClientMock.distribuerPath()))
                 .withRequestBody(WireMock.matchingJsonPath("$..journalpostId", WireMock.containing(journalpostId))),
         )
     }

@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
-class IverksettResultatService(private val iverksettResultatRepository: IverksettResultatRepository) {
+class IverksettResultatService(
+    private val iverksettResultatRepository: IverksettResultatRepository,
+) {
     fun opprettTomtResultat(behandlingId: UUID) {
         iverksettResultatRepository.insert(IverksettResultat(behandlingId))
     }
@@ -65,9 +67,7 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
         iverksettResultatRepository.update(oppdatert)
     }
 
-    fun hentdistribuerVedtaksbrevResultat(behandlingId: UUID): Map<String, DistribuerBrevResultat>? {
-        return iverksettResultatRepository.findByIdOrThrow(behandlingId).vedtaksbrevResultat.map
-    }
+    fun hentdistribuerVedtaksbrevResultat(behandlingId: UUID): Map<String, DistribuerBrevResultat>? = iverksettResultatRepository.findByIdOrThrow(behandlingId).vedtaksbrevResultat.map
 
     fun oppdaterTilbakekrevingResultat(
         behandlingId: UUID,
@@ -77,14 +77,13 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
         iverksettResultatRepository.update(iverksettResultat.copy(tilbakekrevingResultat = tilbakekrevingResultat))
     }
 
-    fun hentTilkjentYtelse(behandlingId: UUID): TilkjentYtelse? {
-        return iverksettResultatRepository.findByIdOrNull(behandlingId)?.tilkjentYtelseForUtbetaling
-    }
+    fun hentTilkjentYtelse(behandlingId: UUID): TilkjentYtelse? = iverksettResultatRepository.findByIdOrNull(behandlingId)?.tilkjentYtelseForUtbetaling
 
     fun hentTilkjentYtelse(behandlingId: Set<UUID>): Map<UUID, TilkjentYtelse> {
         val iverksettResultater = iverksettResultatRepository.findAllById(behandlingId)
         val tilkjenteYtelser =
-            iverksettResultater.filter { it.tilkjentYtelseForUtbetaling != null }
+            iverksettResultater
+                .filter { it.tilkjentYtelseForUtbetaling != null }
                 .associate { it.behandlingId to it.tilkjentYtelseForUtbetaling!! }
         if (behandlingId.size > tilkjenteYtelser.size) {
             error("Finner ikke tilkjent ytelse til behandlingIder=${behandlingId.minus(tilkjenteYtelser.keys)}}")
@@ -92,15 +91,9 @@ class IverksettResultatService(private val iverksettResultatRepository: Iverkset
         return tilkjenteYtelser
     }
 
-    fun hentJournalpostResultat(behandlingId: UUID): Map<String, JournalpostResultat>? {
-        return iverksettResultatRepository.findByIdOrNull(behandlingId)?.journalpostResultat?.map
-    }
+    fun hentJournalpostResultat(behandlingId: UUID): Map<String, JournalpostResultat>? = iverksettResultatRepository.findByIdOrNull(behandlingId)?.journalpostResultat?.map
 
-    fun hentIverksettResultat(behandlingId: UUID): IverksettResultat? {
-        return iverksettResultatRepository.findByIdOrNull(behandlingId)
-    }
+    fun hentIverksettResultat(behandlingId: UUID): IverksettResultat? = iverksettResultatRepository.findByIdOrNull(behandlingId)
 
-    fun hentTilbakekrevingResultat(behandlingId: UUID): TilbakekrevingResultat? {
-        return iverksettResultatRepository.findByIdOrThrow(behandlingId).tilbakekrevingResultat
-    }
+    fun hentTilbakekrevingResultat(behandlingId: UUID): TilbakekrevingResultat? = iverksettResultatRepository.findByIdOrThrow(behandlingId).tilbakekrevingResultat
 }

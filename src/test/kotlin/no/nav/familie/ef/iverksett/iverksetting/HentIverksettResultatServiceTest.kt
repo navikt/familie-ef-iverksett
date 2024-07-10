@@ -46,7 +46,11 @@ internal class HentIverksettResultatServiceTest : ServerTest() {
     @Test
     fun `hent ekisterende journalpost resultat, forvent likhet og ingen unntak`() {
         val journalpostResultat =
-            IverksettResultatMockBuilder.Builder().journalPostResultat().build(behandlingId, tilkjentYtelse).journalpostResultat
+            IverksettResultatMockBuilder
+                .Builder()
+                .journalPostResultat()
+                .build(behandlingId, tilkjentYtelse)
+                .journalpostResultat
 
         val (mottakerIdent, resultat) = journalpostResultat.map.entries.first()
         iverksettResultatService.oppdaterJournalpostResultat(behandlingId, mottakerIdent, resultat)
@@ -64,15 +68,21 @@ internal class HentIverksettResultatServiceTest : ServerTest() {
     @Test
     fun `lagre tilkjentYtelse, hent IverksettResultat med riktig behandlingsID`() {
         val resultat =
-            IverksettResultatMockBuilder.Builder()
+            IverksettResultatMockBuilder
+                .Builder()
                 .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
                 .journalPostResultat()
-                .vedtaksbrevResultat(behandlingId).build(behandlingId, tilkjentYtelse)
+                .vedtaksbrevResultat(behandlingId)
+                .build(behandlingId, tilkjentYtelse)
         iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, tilkjentYtelse)
         iverksettResultatService.oppdaterOppdragResultat(behandlingId, resultat.oppdragResultat!!)
-        val (mottakerIdent, journalpostresultat) = resultat.journalpostResultat.map.entries.first()
+        val (mottakerIdent, journalpostresultat) =
+            resultat.journalpostResultat.map.entries
+                .first()
         iverksettResultatService.oppdaterJournalpostResultat(behandlingId, mottakerIdent, journalpostresultat)
-        val (journalpostId, vedtaksbrevResultat) = resultat.vedtaksbrevResultat.map.entries.first()
+        val (journalpostId, vedtaksbrevResultat) =
+            resultat.vedtaksbrevResultat.map.entries
+                .first()
 
         iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(behandlingId, journalpostId, vedtaksbrevResultat)
         val iverksettResultat = iverksettResultatService.hentIverksettResultat(behandlingId)

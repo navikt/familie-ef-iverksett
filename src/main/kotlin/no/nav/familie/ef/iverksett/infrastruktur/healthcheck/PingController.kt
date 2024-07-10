@@ -9,7 +9,5 @@ import org.springframework.web.bind.annotation.RestController
 @Unprotected
 class PingController {
     @GetMapping("/ping")
-    fun ping(): ResponseEntity<Unit> {
-        return ResponseEntity.ok().build()
-    }
+    fun ping(): ResponseEntity<Unit> = ResponseEntity.ok().build()
 }

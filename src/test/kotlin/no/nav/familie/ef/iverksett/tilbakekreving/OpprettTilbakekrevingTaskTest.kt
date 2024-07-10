@@ -156,7 +156,11 @@ internal class OpprettTilbakekrevingTaskTest {
 
         val request = tilbakekrevingResultatSlot.captured.opprettTilbakekrevingRequest
         assertThat(request.faktainfo.tilbakekrevingsvalg).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg)
-        assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
+        assertThat(request.varsel?.varseltekst).isEqualTo(
+            iverksett.vedtak.tilbakekreving
+                ?.tilbakekrevingMedVarsel
+                ?.varseltekst,
+        )
         assertThat(request.varsel?.sumFeilutbetaling).isEqualTo(tilbakekreving.tilbakekrevingMedVarsel?.sumFeilutbetaling)
         assertThat(request.begrunnelseForTilbakekreving).isEqualTo("Begrunnelse")
     }
@@ -209,7 +213,11 @@ internal class OpprettTilbakekrevingTaskTest {
 
         val request = tilbakekrevingResultatSlot.captured.opprettTilbakekrevingRequest
         assertThat(request.faktainfo.tilbakekrevingsvalg).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg)
-        assertThat(request.varsel?.varseltekst).isEqualTo(iverksett.vedtak.tilbakekreving?.tilbakekrevingMedVarsel?.varseltekst)
+        assertThat(request.varsel?.varseltekst).isEqualTo(
+            iverksett.vedtak.tilbakekreving
+                ?.tilbakekrevingMedVarsel
+                ?.varseltekst,
+        )
         assertThat(request.varsel?.sumFeilutbetaling).isEqualTo(beriketSimuleringsresultat.oppsummering.feilutbetaling)
     }
 

@@ -17,7 +17,9 @@ import org.springframework.jms.core.JmsTemplate
 @Configuration
 @EnableJms
 @EnableConfigurationProperties(ArenaMqConfigProperties::class)
-class ArenaMqConfig(val arenaMqConfigProperties: ArenaMqConfigProperties) {
+class ArenaMqConfig(
+    val arenaMqConfigProperties: ArenaMqConfigProperties,
+) {
     @Bean
     fun jmsTemplate(connectionFactory: ConnectionFactory): JmsTemplate {
         val jmsTemplate = JmsTemplate(connectionFactory)

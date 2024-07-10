@@ -21,12 +21,10 @@ data class AndelTilkjentYtelse(
     val forrigePeriodeId: Long? = null,
     val kildeBehandlingId: UUID? = null,
 ) {
-    private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean {
-        return (
-            this.periode == other.periode &&
-                this.beløp == other.beløp
-        )
-    }
+    private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean = (
+        this.periode == other.periode &&
+            this.beløp == other.beløp
+    )
 
     fun harNullBeløp() = this.beløp == 0
 
@@ -55,10 +53,10 @@ data class AndelTilkjentYtelse(
             return andelerKunIDenne.union(andelerKunIAnnen)
         }
 
-        private fun Set<AndelTilkjentYtelse>.subtractAndeler(other: Set<AndelTilkjentYtelse>): Set<AndelTilkjentYtelse> {
-            return this.filter { a ->
-                other.none { b -> a.erTilsvarendeForUtbetaling(b) }
-            }.toSet()
-        }
+        private fun Set<AndelTilkjentYtelse>.subtractAndeler(other: Set<AndelTilkjentYtelse>): Set<AndelTilkjentYtelse> =
+            this
+                .filter { a ->
+                    other.none { b -> a.erTilsvarendeForUtbetaling(b) }
+                }.toSet()
     }
 }

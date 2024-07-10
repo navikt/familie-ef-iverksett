@@ -49,15 +49,14 @@ fun lagSimuleringsoppsummering(
     )
 }
 
-fun summerManuellePosteringer(detaljertSimuleringResultat: DetaljertSimuleringResultat): BigDecimal {
-    return detaljertSimuleringResultat.simuleringMottaker
+fun summerManuellePosteringer(detaljertSimuleringResultat: DetaljertSimuleringResultat): BigDecimal =
+    detaljertSimuleringResultat.simuleringMottaker
         .flatMap { simuleringMottaker -> simuleringMottaker.simulertPostering }
         .filter { simulertPostering -> simulertPostering.fagOmrådeKode.gjelderManuellPostering() }
         .fold(ZERO) { acc, simulertPostering -> acc + simulertPostering.beløp }
-}
 
-fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simuleringsperiode> {
-    return mottakere
+fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simuleringsperiode> =
+    mottakere
         .flatMap { it.simulertPostering }
         .filter { it.posteringType == FEILUTBETALING || it.posteringType == YTELSE }
         .groupBy { PeriodeMedForfall(fom = it.fom, tom = it.tom, forfallsdato = it.forfallsdato) }
@@ -72,7 +71,6 @@ fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simul
                 feilutbetaling = posteringListe.sumBarePositiv(FEILUTBETALING),
             ).medEtterbetaling(hentEtterbetaling(posteringListe))
         }
-}
 
 fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode> =
     when (stønadType) {
@@ -161,9 +159,7 @@ private object SimuleringsperiodeEtterbetaling {
     private val simuleringsperiodeEtterbetalingMap = WeakHashMap<Simuleringsperiode, BigDecimal?>()
 }
 
-fun BeriketSimuleringsresultat.harFeilutbetaling(): Boolean {
-    return this.oppsummering.feilutbetaling > ZERO
-}
+fun BeriketSimuleringsresultat.harFeilutbetaling(): Boolean = this.oppsummering.feilutbetaling > ZERO
 
 fun Simuleringsoppsummering.hentSammenhengendePerioderMedFeilutbetaling(): List<Datoperiode> {
     val perioderMedFeilutbetaling =
@@ -190,8 +186,7 @@ private fun erPerioderSammenhengende(
     nestePeriode: Datoperiode,
 ) = gjeldendePeriode.tom.plusDays(1) == nestePeriode.fom
 
-private fun FagOmrådeKode.gjelderManuellPostering(): Boolean {
-    return this.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING.name ||
+private fun FagOmrådeKode.gjelderManuellPostering(): Boolean =
+    this.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING.name ||
         this.name == FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD.name ||
         this.name == FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING.name
-}

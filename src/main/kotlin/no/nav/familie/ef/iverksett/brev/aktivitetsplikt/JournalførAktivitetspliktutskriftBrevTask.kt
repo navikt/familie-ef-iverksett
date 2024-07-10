@@ -32,10 +32,11 @@ class JournalførAktivitetspliktutskriftBrevTask(
         val dokumentRequest = opprettArkiverDokumentRequest(brev)
 
         val journalPostId =
-            journalpostClient.arkiverDokument(
-                arkiverDokumentRequest = dokumentRequest,
-                saksbehandler = null,
-            ).journalpostId
+            journalpostClient
+                .arkiverDokument(
+                    arkiverDokumentRequest = dokumentRequest,
+                    saksbehandler = null,
+                ).journalpostId
 
         aktivitetspliktBrevRepository.update(brev.copy(journalpostId = journalPostId))
     }

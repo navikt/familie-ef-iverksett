@@ -53,17 +53,14 @@ fun lesPdfForVedleggForRettigheter(stønadType: StønadType): ByteArray {
 
 fun vedleggForRettigheterTittelTekst(stønadstype: StønadType) = "Dine rettigheter og plikter for " + lagStønadtypeTekst(stønadstype)
 
-fun utledFilnavnForVedleggAvRettigheter(stønadType: StønadType): String {
-    return when (stønadType) {
+fun utledFilnavnForVedleggAvRettigheter(stønadType: StønadType): String =
+    when (stønadType) {
         StønadType.OVERGANGSSTØNAD -> "overgangsstønad.pdf"
         StønadType.BARNETILSYN -> "barnetilsyn.pdf"
         StønadType.SKOLEPENGER -> "skolepenger.pdf"
     }
-}
 
-private fun utledPathForVedleggAvRettigheter(stønadType: StønadType): String {
-    return "rettighetervedlegg/" + utledFilnavnForVedleggAvRettigheter(stønadType)
-}
+private fun utledPathForVedleggAvRettigheter(stønadType: StønadType): String = "rettighetervedlegg/" + utledFilnavnForVedleggAvRettigheter(stønadType)
 
 private fun lagVedtakstekstFørstegangsbehandling(iverksettData: IverksettData) =
     when (iverksettData.vedtak.vedtaksresultat) {

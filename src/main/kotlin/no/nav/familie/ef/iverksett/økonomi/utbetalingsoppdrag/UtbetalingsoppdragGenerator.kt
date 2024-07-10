@@ -97,7 +97,8 @@ object UtbetalingsoppdragGenerator {
         forrigeSisteAndelIKjede: AndelTilkjentYtelse?,
         personIdent: String,
         ytelseType: YtelsestypeUG,
-    ) = forrigeSisteAndelIKjede?.tilAndelData(idSisteAndelIKjeden, personIdent, ytelseType)
+    ) = forrigeSisteAndelIKjede
+        ?.tilAndelData(idSisteAndelIKjeden, personIdent, ytelseType)
         ?.let { mapOf(IdentOgType(personIdent, ytelseType) to it) } ?: emptyMap()
 
     private fun behandlingsinformasjon(
@@ -148,7 +149,8 @@ object UtbetalingsoppdragGenerator {
     ): AndelTilkjentYtelse? {
         val sisteAndelINyKjede = gjeldendeAndeler.filterNot { it.harNullBeløp() }.maxByOrNull { it.periodeId!! }
         return if (
-            forrigeSisteAndelIKjede != null && sisteAndelINyKjede != null &&
+            forrigeSisteAndelIKjede != null &&
+            sisteAndelINyKjede != null &&
             forrigeSisteAndelIKjede.periodeId!! < sisteAndelINyKjede.periodeId!!
         ) {
             sisteAndelINyKjede

@@ -63,28 +63,25 @@ abstract class ServerTest {
         namedParameterJdbcTemplate.update("TRUNCATE TABLE aktivitetsplikt_brev", MapSqlParameterSource())
     }
 
-    protected fun getPort(): String {
-        return port.toString()
-    }
+    protected fun getPort(): String = port.toString()
 
-    protected fun localhostUrl(uri: String): String {
-        return "http://localhost:" + getPort() + uri
-    }
+    protected fun localhostUrl(uri: String): String = "http://localhost:" + getPort() + uri
 
     protected fun søkerBearerToken(
         personident: String = "12345678911",
     ): String {
         val clientId = "lokal:teamfamilie:familie-ef-iverksett"
-        return mockOAuth2Server.issueToken(
-            issuerId = "azuread",
-            clientId,
-            DefaultOAuth2TokenCallback(
+        return mockOAuth2Server
+            .issueToken(
                 issuerId = "azuread",
-                subject = personident,
-                audience = listOf("aud-localhost"),
-                claims = mapOf("oid" to UUID.randomUUID().toString(), "azp" to clientId, "name" to "saksbehandler", "NAVIdent" to "saksbehandler"),
-                expiry = 3600,
-            ),
-        ).serialize()
+                clientId,
+                DefaultOAuth2TokenCallback(
+                    issuerId = "azuread",
+                    subject = personident,
+                    audience = listOf("aud-localhost"),
+                    claims = mapOf("oid" to UUID.randomUUID().toString(), "azp" to clientId, "name" to "saksbehandler", "NAVIdent" to "saksbehandler"),
+                    expiry = 3600,
+                ),
+            ).serialize()
     }
 }

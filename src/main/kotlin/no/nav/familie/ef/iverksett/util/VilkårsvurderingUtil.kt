@@ -17,7 +17,8 @@ object VilkårsvurderingUtil {
             null
         } else {
             val vurdering =
-                vilkårsvurdering.delvilkårsvurderinger.flatMap { it.vurderinger }
+                vilkårsvurdering.delvilkårsvurderinger
+                    .flatMap { it.vurderinger }
                     .firstOrNull { it.regelId == RegelId.SAGT_OPP_ELLER_REDUSERT }
                     ?: error("Finner ikke delvilkårsvurderingen for sagt opp eller redusert stilling")
             harSagtOppEllerRedusertStilling(vurdering.svar)
@@ -30,7 +31,9 @@ object VilkårsvurderingUtil {
                 ?: error("Finner ikke vurderingen for arbeid aktivitet barnetilsyn")
 
         val delvikår =
-            vilkårsvurdering.delvilkårsvurderinger.first().vurderinger
+            vilkårsvurdering.delvilkårsvurderinger
+                .first()
+                .vurderinger
                 .find { it.regelId == RegelId.ER_I_ARBEID_ELLER_FORBIGÅENDE_SYKDOM }
                 ?: error("Finner ikke delvilkårvurderingen for arbeid aktivitet barnetilsyn")
 

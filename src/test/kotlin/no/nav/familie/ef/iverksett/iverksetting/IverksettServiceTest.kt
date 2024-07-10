@@ -35,7 +35,8 @@ internal class IverksettServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns
-            IverksettResultatMockBuilder.Builder()
+            IverksettResultatMockBuilder
+                .Builder()
                 .build(behandlingsId, tilkjentYtelse)
 
         val status = iverksettStatusService.utledStatus(behandlingsId)
@@ -47,7 +48,8 @@ internal class IverksettServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns
-            IverksettResultatMockBuilder.Builder()
+            IverksettResultatMockBuilder
+                .Builder()
                 .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_FUNKSJONELL_FEIL))
                 .build(behandlingsId, tilkjentYtelse)
 
@@ -60,7 +62,8 @@ internal class IverksettServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns
-            IverksettResultatMockBuilder.Builder()
+            IverksettResultatMockBuilder
+                .Builder()
                 .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
                 .build(behandlingsId, tilkjentYtelse)
 
@@ -73,7 +76,8 @@ internal class IverksettServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns
-            IverksettResultatMockBuilder.Builder()
+            IverksettResultatMockBuilder
+                .Builder()
                 .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
                 .journalPostResultat()
                 .build(behandlingsId, tilkjentYtelse)
@@ -87,10 +91,12 @@ internal class IverksettServiceTest {
         val behandlingsId = UUID.randomUUID()
         val tilkjentYtelse = opprettTilkjentYtelse(behandlingsId)
         every { iverksettResultatService.hentIverksettResultat(behandlingsId) } returns
-            IverksettResultatMockBuilder.Builder()
+            IverksettResultatMockBuilder
+                .Builder()
                 .oppdragResultat(OppdragResultat(OppdragStatus.KVITTERT_OK))
                 .journalPostResultat()
-                .vedtaksbrevResultat(behandlingsId).build(behandlingsId, tilkjentYtelse)
+                .vedtaksbrevResultat(behandlingsId)
+                .build(behandlingsId, tilkjentYtelse)
 
         val status = iverksettStatusService.utledStatus(behandlingsId)
         assertThat(status).isEqualTo(IverksettStatus.OK)

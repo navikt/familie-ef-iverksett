@@ -12,7 +12,5 @@ import org.springframework.context.annotation.Profile
 class FeatureToggleMock {
     @Bean
     @Primary
-    fun featureToggleService(): FeatureToggleService {
-        return mockFeatureToggleService()
-    }
+    fun featureToggleService(): FeatureToggleService = mockFeatureToggleService()
 }

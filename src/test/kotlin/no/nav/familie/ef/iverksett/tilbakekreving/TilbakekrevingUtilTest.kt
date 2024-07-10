@@ -110,8 +110,18 @@ internal class TilbakekrevingUtilTest {
         val varsel = tilbakekrevingsdetaljer.oppdaterVarsel(simuleringsoppsummering)
 
         assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.size).isEqualTo(1)
-        assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.first()?.fom).isEqualTo(LocalDate.of(2022, 1, 1))
-        assertThat(varsel.tilbakekrevingMedVarsel?.perioder?.first()?.tom).isEqualTo(LocalDate.of(2022, 2, 28))
+        assertThat(
+            varsel.tilbakekrevingMedVarsel
+                ?.perioder
+                ?.first()
+                ?.fom,
+        ).isEqualTo(LocalDate.of(2022, 1, 1))
+        assertThat(
+            varsel.tilbakekrevingMedVarsel
+                ?.perioder
+                ?.first()
+                ?.tom,
+        ).isEqualTo(LocalDate.of(2022, 2, 28))
         assertThat(varsel.tilbakekrevingMedVarsel?.sumFeilutbetaling).isEqualTo(BigDecimal(5100.0))
         assertThat(varsel.begrunnelseForTilbakekreving).isEqualTo("Begrunnelse")
     }

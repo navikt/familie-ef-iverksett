@@ -166,8 +166,8 @@ fun opprettTilkjentYtelseMedMetadata(
     behandlingId: UUID = UUID.randomUUID(),
     eksternId: Long = eksternIdGenerator.nextLong(10_000),
     tilkjentYtelse: TilkjentYtelse = opprettTilkjentYtelse(behandlingId),
-): TilkjentYtelseMedMetaData {
-    return TilkjentYtelseMedMetaData(
+): TilkjentYtelseMedMetaData =
+    TilkjentYtelseMedMetaData(
         tilkjentYtelse = tilkjentYtelse,
         saksbehandlerId = "saksbehandlerId",
         eksternBehandlingId = eksternId,
@@ -177,30 +177,28 @@ fun opprettTilkjentYtelseMedMetadata(
         behandlingId = behandlingId,
         vedtaksdato = LocalDate.of(2021, 1, 1),
     )
-}
 
 fun opprettTilkjentYtelse(
     behandlingId: UUID = UUID.randomUUID(),
     andeler: List<AndelTilkjentYtelse> = listOf(opprettAndelTilkjentYtelse()),
     startmåned: YearMonth = startmåned(andeler),
     sisteAndelIKjede: AndelTilkjentYtelse? = null,
-): TilkjentYtelse {
-    return TilkjentYtelse(
+): TilkjentYtelse =
+    TilkjentYtelse(
         id = behandlingId,
         utbetalingsoppdrag = null,
         andelerTilkjentYtelse = andeler,
         startmåned = startmåned,
         sisteAndelIKjede = sisteAndelIKjede,
     )
-}
 
 fun behandlingsdetaljer(
     behandlingId: UUID = UUID.randomUUID(),
     forrigeBehandlingId: UUID? = null,
     behandlingType: BehandlingType = BehandlingType.FØRSTEGANGSBEHANDLING,
     behandlingÅrsak: BehandlingÅrsak = BehandlingÅrsak.SØKNAD,
-): Behandlingsdetaljer {
-    return Behandlingsdetaljer(
+): Behandlingsdetaljer =
+    Behandlingsdetaljer(
         behandlingId = behandlingId,
         forrigeBehandlingId = forrigeBehandlingId,
         eksternId = 9L,
@@ -231,7 +229,6 @@ fun behandlingsdetaljer(
         kravMottatt = LocalDate.of(2021, 3, 3),
         årsakRevurdering = ÅrsakRevurdering(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
     )
-}
 
 fun vedtaksperioderOvergangsstønad() =
     VedtaksperiodeOvergangsstønad(
@@ -375,12 +372,10 @@ fun opprettIverksettOvergangsstønad(
 fun startmåned(andeler: List<AndelTilkjentYtelse>) =
     andeler.minOfOrNull { it.periode.fom } ?: error("Trenger å sette startdato hvs det ikke finnes andeler")
 
-fun opprettBrev(): Brev {
-    return Brev(ByteArray(256))
-}
+fun opprettBrev(): Brev = Brev(ByteArray(256))
 
-fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
-    return FrittståendeBrevDto(
+fun opprettFrittståendeBrevDto(): FrittståendeBrevDto =
+    FrittståendeBrevDto(
         personIdent = "12345678910",
         eksternFagsakId = 1,
         brevtype = FrittståendeBrevType.INFORMASJONSBREV,
@@ -390,7 +385,6 @@ fun opprettFrittståendeBrevDto(): FrittståendeBrevDto {
         stønadType = StønadType.OVERGANGSSTØNAD,
         tittel = "brevtittel",
     )
-}
 
 fun opprettTilbakekrevingsdetaljer(): Tilbakekrevingsdetaljer =
     Tilbakekrevingsdetaljer(
@@ -437,7 +431,10 @@ class IverksettResultatMockBuilder private constructor(
             apply {
                 this.vedtaksbrevResultat =
                     mapOf(
-                        this.journalpostResultat!!.entries.first().value.journalpostId to
+                        this.journalpostResultat!!
+                            .entries
+                            .first()
+                            .value.journalpostId to
                             DistribuerBrevResultat(
                                 bestillingId = behandlingId.toString(),
                             ),

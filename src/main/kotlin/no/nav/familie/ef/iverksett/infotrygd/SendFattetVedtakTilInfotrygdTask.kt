@@ -40,8 +40,10 @@ class SendFattetVedtakTilInfotrygdTask(
 
         val stønadstype = iverksettData.fagsak.stønadstype
         val personIdenter =
-            familieIntegrasjonerClient.hentIdenter(iverksettData.søker.personIdent, true)
-                .map { it.personIdent }.toSet()
+            familieIntegrasjonerClient
+                .hentIdenter(iverksettData.søker.personIdent, true)
+                .map { it.personIdent }
+                .toSet()
         val tilkjentYtelse: TilkjentYtelse =
             iverksettData.vedtak.tilkjentYtelse
                 ?: error("Finner ikke tilkjent ytelse for behandling med id=${iverksettData.behandling.behandlingId}")

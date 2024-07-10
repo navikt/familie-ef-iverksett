@@ -79,11 +79,10 @@ object ØkonomiUtils {
     fun andelerTilOpprettelse(
         andelerNyTilkjentYtelse: List<AndelTilkjentYtelse>,
         beståendeAndeler: List<AndelTilkjentYtelse>,
-    ): List<AndelTilkjentYtelse> {
-        return beståendeAndeler.maxByOrNull { it.periode }?.let { sisteBeståendeAndel ->
+    ): List<AndelTilkjentYtelse> =
+        beståendeAndeler.maxByOrNull { it.periode }?.let { sisteBeståendeAndel ->
             andelerNyTilkjentYtelse.filter { it.periode.fom > sisteBeståendeAndel.periode.fom }
         } ?: andelerNyTilkjentYtelse
-    }
 
     /**
      * Tar utgangspunkt i forrige tilstand og finner kjede med andeler til opphør og tilhørende opphørsdato
@@ -195,7 +194,8 @@ object ØkonomiUtils {
         val førsteEndring = finnDatoForFørsteEndredeAndel(forrigeAndeler, oppdaterteAndeler)
         val førsteDatoIForrigePeriode = forrigeAndeler.minOfOrNull { it.periode.fomDato }
         val førsteDatoNyePerioder = oppdaterteAndeler.minOfOrNull { it.periode.fomDato }
-        if (førsteDatoNyePerioder != null && førsteDatoIForrigePeriode != null &&
+        if (førsteDatoNyePerioder != null &&
+            førsteDatoIForrigePeriode != null &&
             førsteDatoNyePerioder.isBefore(førsteDatoIForrigePeriode)
         ) {
             return førsteDatoNyePerioder
@@ -206,7 +206,8 @@ object ØkonomiUtils {
     private fun finnDatoForFørsteEndredeAndel(
         andelerForrigeTilkjentYtelse: Set<AndelTilkjentYtelse>,
         andelerNyTilkjentYtelse: Set<AndelTilkjentYtelse>,
-    ) = andelerForrigeTilkjentYtelse.disjunkteAndeler(andelerNyTilkjentYtelse)
+    ) = andelerForrigeTilkjentYtelse
+        .disjunkteAndeler(andelerNyTilkjentYtelse)
         .minOfOrNull { it.periode.fomDato }
 
     /**

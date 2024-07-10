@@ -31,27 +31,39 @@ class JournalpostClient(
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override val pingUri: URI = URI("/ping")
-    private val dokarkivUri: URI = UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/arkiv").build().toUri()
-    private val journalPostUri: URI = UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/journalpost").build().toUri()
+    private val dokarkivUri: URI =
+        UriComponentsBuilder
+            .fromUri(integrasjonUri)
+            .pathSegment("api/arkiv")
+            .build()
+            .toUri()
+    private val journalPostUri: URI =
+        UriComponentsBuilder
+            .fromUri(integrasjonUri)
+            .pathSegment("api/journalpost")
+            .build()
+            .toUri()
     private val distribuerDokumentUri: URI =
-        UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/dist/v1").build().toUri()
+        UriComponentsBuilder
+            .fromUri(integrasjonUri)
+            .pathSegment("api/dist/v1")
+            .build()
+            .toUri()
 
-    fun finnJournalposter(journalposterForBrukerRequest: JournalposterForBrukerRequest): List<Journalpost> {
-        return postForEntity<Ressurs<List<Journalpost>>>(journalPostUri, journalposterForBrukerRequest).data
+    fun finnJournalposter(journalposterForBrukerRequest: JournalposterForBrukerRequest): List<Journalpost> =
+        postForEntity<Ressurs<List<Journalpost>>>(journalPostUri, journalposterForBrukerRequest).data
             ?: error("Kunne ikke journalposter for for ${journalposterForBrukerRequest.brukerId.id}")
-    }
 
     fun arkiverDokument(
         arkiverDokumentRequest: ArkiverDokumentRequest,
         saksbehandler: String?,
-    ): ArkiverDokumentResponse {
-        return postForEntity<Ressurs<ArkiverDokumentResponse>>(
+    ): ArkiverDokumentResponse =
+        postForEntity<Ressurs<ArkiverDokumentResponse>>(
             URI.create("$dokarkivUri/v4"),
             arkiverDokumentRequest,
             headerMedSaksbehandler(saksbehandler),
         ).data
             ?: error("Kunne ikke arkivere dokument med fagsakid ${arkiverDokumentRequest.fagsakId}")
-    }
 
     fun distribuerBrev(
         journalpostId: String,

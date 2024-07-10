@@ -20,8 +20,8 @@ fun opprettBehandlingsstatistikkDto(
     behandlingId: UUID,
     hendelse: Hendelse,
     fortrolig: Boolean,
-): BehandlingsstatistikkDto {
-    return BehandlingsstatistikkDto(
+): BehandlingsstatistikkDto =
+    BehandlingsstatistikkDto(
         behandlingId = behandlingId,
         eksternBehandlingId = 654L,
         personIdent = "aktor",
@@ -45,4 +45,3 @@ fun opprettBehandlingsstatistikkDto(
         årsakRevurdering = ÅrsakRevurderingDto(Opplysningskilde.MELDING_MODIA, Revurderingsårsak.ENDRING_INNTEKT),
         avslagÅrsak = AvslagÅrsak.BARN_OVER_ÅTTE_ÅR,
     )
-}

@@ -59,8 +59,7 @@ internal class ØkonomiUtilsTest {
                         andeler = emptyList(),
                         startmåned = opphørsdatoEtterAndeler,
                     ),
-                )
-                    .isNull()
+                ).isNull()
                 listOf(listOf(andelMedBeløp()), listOf(andelUtenBeløp())).forEach { andeler ->
                     assertThatThrownBy {
                         testOpphørsdatoUtenTidligereTilkjentYtelse(andeler = andeler, startmåned = opphørsdatoEtterAndeler)
@@ -109,8 +108,7 @@ internal class ØkonomiUtilsTest {
                         tidligereAndeler = listOf(andelUtenBeløp()),
                         sisteAndelIKjede = andelMedBeløp().copy(periodeId = 6, forrigePeriodeId = 5),
                     ).opphørsdato(),
-                )
-                    .isNull()
+                ).isNull()
             }
 
             @Test
@@ -125,8 +123,7 @@ internal class ØkonomiUtilsTest {
                                 forrigePeriodeId = 5,
                             ),
                     ).opphørsdato(),
-                )
-                    .isNull()
+                ).isNull()
             }
 
             @Test
@@ -141,8 +138,7 @@ internal class ØkonomiUtilsTest {
                                 forrigePeriodeId = 5,
                             ),
                     ).opphørsdato(),
-                )
-                    .isNull()
+                ).isNull()
             }
 
             @Test
@@ -157,8 +153,7 @@ internal class ØkonomiUtilsTest {
                                 forrigePeriodeId = 5,
                             ),
                     ).opphørsdato(),
-                )
-                    .isNull()
+                ).isNull()
             }
 
             @Test
@@ -180,8 +175,7 @@ internal class ØkonomiUtilsTest {
                         startmåned = start,
                         tidligereAndeler = listOf(andelMedBeløp()),
                     ).opphørsdato(),
-                )
-                    .isEqualTo(start)
+                ).isEqualTo(start)
             }
 
             @Test
@@ -191,8 +185,7 @@ internal class ØkonomiUtilsTest {
                         andeler = listOf(andelMedBeløp(1)),
                         tidligereAndeler = listOf(andelMedBeløp(2)),
                     ).opphørsdato(),
-                )
-                    .isEqualTo(start)
+                ).isEqualTo(start)
             }
 
             @Test
@@ -202,8 +195,7 @@ internal class ØkonomiUtilsTest {
                         andeler = listOf(andelUtenBeløp()),
                         tidligereAndeler = listOf(andelMedBeløp()),
                     ).opphørsdato(),
-                )
-                    .isEqualTo(start)
+                ).isEqualTo(start)
             }
 
             @Test
@@ -223,8 +215,7 @@ internal class ØkonomiUtilsTest {
                                 ),
                             ),
                     ).opphørsdato(),
-                )
-                    .isEqualTo(start)
+                ).isEqualTo(start)
             }
 
             @Test
@@ -235,8 +226,7 @@ internal class ØkonomiUtilsTest {
                         startmåned = opphørsdatoFørAndeler,
                         tidligereAndeler = listOf(andelMedBeløp()),
                     ).opphørsdato(),
-                )
-                    .isEqualTo(opphørsdatoFørAndeler)
+                ).isEqualTo(opphørsdatoFørAndeler)
             }
 
             @Test
@@ -248,8 +238,7 @@ internal class ØkonomiUtilsTest {
                         tidligereAndeler = listOf(andelMedBeløp()),
                         tidligereStartmåned = opphørsdatoFørAndeler.plusMonths(1),
                     ).opphørsdato(),
-                )
-                    .isEqualTo(opphørsdatoFørAndeler)
+                ).isEqualTo(opphørsdatoFørAndeler)
             }
 
             @Test
@@ -262,8 +251,7 @@ internal class ØkonomiUtilsTest {
                             tidligereAndeler = listOf(it),
                             tidligereStartmåned = opphørsdatoFørAndeler,
                         ),
-                    )
-                        .isNull()
+                    ).isNull()
                 }
             }
 
@@ -284,8 +272,7 @@ internal class ØkonomiUtilsTest {
                             ),
                         tidligereAndeler = listOf(andelMedBeløp()),
                     ),
-                )
-                    .isNull()
+                ).isNull()
                 assertThat(
                     test(
                         andeler =
@@ -295,8 +282,7 @@ internal class ØkonomiUtilsTest {
                             ),
                         tidligereAndeler = listOf(andelUtenBeløp()),
                     ),
-                )
-                    .isNull()
+                ).isNull()
 
                 assertThat(
                     test(
@@ -304,8 +290,7 @@ internal class ØkonomiUtilsTest {
                         startmåned = start,
                         tidligereAndeler = listOf(andelUtenBeløp()),
                     ),
-                )
-                    .isNull()
+                ).isNull()
             }
 
             @Test
@@ -386,7 +371,8 @@ internal class ØkonomiUtilsTest {
         private fun sisteAndel(
             sisteAndelIKjede: AndelTilkjentYtelse?,
             tidligereAndelerMedPeriodeId: List<AndelTilkjentYtelse>,
-        ) = sisteAndelIKjede ?: tidligereAndelerMedPeriodeId.maxByOrNull { it.periodeId!! }
+        ) = sisteAndelIKjede ?: tidligereAndelerMedPeriodeId
+            .maxByOrNull { it.periodeId!! }
             ?.takeIf { it.periode.fomDato != LocalDate.MIN }
 
         fun Utbetalingsperiode?.opphørsdato(): YearMonth? = this?.opphør?.opphørDatoFom?.let { YearMonth.from(it) }

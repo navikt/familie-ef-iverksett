@@ -17,6 +17,5 @@ fun main(args: Array<String>) {
             "mock-integrasjoner",
             "mock-oppdrag",
             "mock-kafkatemplate",
-        )
-        .run(*args)
+        ).run(*args)
 }

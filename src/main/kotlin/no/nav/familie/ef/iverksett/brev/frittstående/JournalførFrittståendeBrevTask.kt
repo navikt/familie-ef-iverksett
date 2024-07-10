@@ -45,10 +45,11 @@ class JournalførFrittståendeBrevTask(
                 return@forEachIndexed
             }
             val journalpostId =
-                journalpostClient.arkiverDokument(
-                    opprettArkiverDokumentRequest(frittståendeBrev, callId, index, brevmottaker),
-                    saksbehandler = frittståendeBrev.saksbehandlerIdent,
-                ).journalpostId
+                journalpostClient
+                    .arkiverDokument(
+                        opprettArkiverDokumentRequest(frittståendeBrev, callId, index, brevmottaker),
+                        saksbehandler = frittståendeBrev.saksbehandlerIdent,
+                    ).journalpostId
             val oppdatertJournalposter =
                 frittståendeBrev.journalpostResultat.map + mapOf(brevmottaker.ident to JournalpostResultat(journalpostId))
             frittståendeBrev =

@@ -16,26 +16,44 @@ import java.net.URI
 class JournalpostClientMock(
     @Value("\${FAMILIE_INTEGRASJONER_API_URL}") private val integrasjonUri: URI,
 ) {
-    private val dokarkivUri: URI = UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/arkiv").build().toUri()
+    private val dokarkivUri: URI =
+        UriComponentsBuilder
+            .fromUri(integrasjonUri)
+            .pathSegment("api/arkiv")
+            .build()
+            .toUri()
     private val pingUri: URI = URI("/ping")
     private val distribuerDokumentUri: URI =
-        UriComponentsBuilder.fromUri(integrasjonUri).pathSegment("api/dist/v1").build().toUri()
+        UriComponentsBuilder
+            .fromUri(integrasjonUri)
+            .pathSegment("api/dist/v1")
+            .build()
+            .toUri()
 
     private val arkiverDokumentResponse = Ressurs.success(ArkiverDokumentResponse(journalpostId = "1234", ferdigstilt = true))
     private val bestillingId = Ressurs.success("123458888")
 
     val responses =
         listOf(
-            WireMock.get(WireMock.urlEqualTo(pingUri.path))
+            WireMock
+                .get(WireMock.urlEqualTo(pingUri.path))
                 .willReturn(WireMock.aResponse().withStatus(200)),
-            WireMock.post(WireMock.urlMatching("${dokarkivUri.path}.*")).atPriority(1)
+            WireMock
+                .post(WireMock.urlMatching("${dokarkivUri.path}.*"))
+                .atPriority(1)
                 .withRequestBody(WireMock.matchingJsonPath("$..id", WireMock.containing("SkalKasteFeil")))
                 .willReturn(WireMock.serverError()),
-            WireMock.post(WireMock.urlMatching("${dokarkivUri.path}.*")).atPriority(2)
+            WireMock
+                .post(WireMock.urlMatching("${dokarkivUri.path}.*"))
+                .atPriority(2)
                 .willReturn(WireMock.okJson(objectMapper.writeValueAsString(arkiverDokumentResponse))),
-            WireMock.post(WireMock.urlEqualTo(distribuerDokumentUri.path)).atPriority(2)
+            WireMock
+                .post(WireMock.urlEqualTo(distribuerDokumentUri.path))
+                .atPriority(2)
                 .willReturn(WireMock.okJson(objectMapper.writeValueAsString(bestillingId))),
-            WireMock.post(WireMock.urlEqualTo(distribuerDokumentUri.path)).atPriority(1)
+            WireMock
+                .post(WireMock.urlEqualTo(distribuerDokumentUri.path))
+                .atPriority(1)
                 .withRequestBody(WireMock.matchingJsonPath("$..journalpostId", WireMock.containing("SkalFeile")))
                 .willReturn(WireMock.serverError()),
         )

@@ -66,8 +66,8 @@ fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
             ),
     )
 
-private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel? {
-    return when (tilbakekrevingsdetaljer.tilbakekrevingsvalg) {
+private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel? =
+    when (tilbakekrevingsdetaljer.tilbakekrevingsvalg) {
         Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL ->
             Varsel(
                 tilbakekrevingsdetaljer.tilbakekrevingMedVarsel?.varseltekst
@@ -79,19 +79,17 @@ private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel?
             )
         else -> null
     }
-}
 
-private fun lagFaktainfo(iverksett: IverksettData): Faktainfo {
-    return Faktainfo(
+private fun lagFaktainfo(iverksett: IverksettData): Faktainfo =
+    Faktainfo(
         revurderingsårsak = iverksett.behandling.behandlingÅrsak.visningsTekst(),
         revurderingsresultat = iverksett.vedtak.vedtaksresultat.visningsnavn,
         tilbakekrevingsvalg = iverksett.vedtak.tilbakekreving?.tilbakekrevingsvalg,
         konsekvensForYtelser = emptySet(), // Settes også empty av ba-sak
     )
-}
 
-private fun BehandlingÅrsak.visningsTekst(): String {
-    return when (this) {
+private fun BehandlingÅrsak.visningsTekst(): String =
+    when (this) {
         BehandlingÅrsak.SØKNAD -> "Søknad"
         BehandlingÅrsak.KLAGE -> "Klage"
         BehandlingÅrsak.NYE_OPPLYSNINGER -> "Nye opplysninger"
@@ -106,7 +104,6 @@ private fun BehandlingÅrsak.visningsTekst(): String {
         BehandlingÅrsak.SANKSJON_1_MND,
         -> error("Skal ikke gi tilbakekreving for årsak=$this")
     }
-}
 
 private fun tilRegelverk(kategori: BehandlingKategori?) =
     when (kategori) {

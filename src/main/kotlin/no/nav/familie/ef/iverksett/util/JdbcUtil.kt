@@ -10,9 +10,7 @@ import java.util.UUID
 
 fun ResultSet.getUUID(columnLabel: String): UUID = UUID.fromString(this.getString(columnLabel))
 
-inline fun <reified T> ResultSet.getJson(columnLabel: String): T? {
-    return this.getBytes(columnLabel)?.let { ObjectMapperProvider.objectMapper.readValue<T>(it) }
-}
+inline fun <reified T> ResultSet.getJson(columnLabel: String): T? = this.getBytes(columnLabel)?.let { ObjectMapperProvider.objectMapper.readValue<T>(it) }
 
 inline fun <reified T> NamedParameterJdbcTemplate.queryForJson(
     sql: String,
@@ -30,10 +28,9 @@ inline fun <reified T> NamedParameterJdbcTemplate.queryForNullableObject(
     sql: String,
     paramSource: SqlParameterSource,
     rowMapper: RowMapper<T>,
-): T? {
-    return try {
+): T? =
+    try {
         this.queryForObject(sql, paramSource, rowMapper)
     } catch (emptyResultDataAccess: EmptyResultDataAccessException) {
         null
     }
-}

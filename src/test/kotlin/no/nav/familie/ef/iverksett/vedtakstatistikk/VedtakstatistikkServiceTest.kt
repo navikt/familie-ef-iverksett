@@ -78,9 +78,16 @@ class VedtakstatistikkServiceTest {
         assertThat(vedtakOvergangsstønadDVH).isNotNull
         assertThat(vedtakOvergangsstønadDVH.captured.vilkårsvurderinger.size).isEqualTo(2)
         // Egen test på vilkårtype, da det er mismatch mellom ekstern kontrakt og ef. F.eks. finnes ikke aktivitet i kontrakt.
-        assertThat(vedtakOvergangsstønadDVH.captured.vilkårsvurderinger.first().vilkår.name).isEqualTo(VilkårType.AKTIVITET.name)
-        assertThat(vedtakOvergangsstønadDVH.captured.vilkårsvurderinger.last().vilkår.name)
-            .isEqualTo(VilkårType.SAGT_OPP_ELLER_REDUSERT.name)
+        assertThat(
+            vedtakOvergangsstønadDVH.captured.vilkårsvurderinger
+                .first()
+                .vilkår.name,
+        ).isEqualTo(VilkårType.AKTIVITET.name)
+        assertThat(
+            vedtakOvergangsstønadDVH.captured.vilkårsvurderinger
+                .last()
+                .vilkår.name,
+        ).isEqualTo(VilkårType.SAGT_OPP_ELLER_REDUSERT.name)
     }
 
     private fun opprettVedtakstatistikkOvergangsstønad(
@@ -88,8 +95,8 @@ class VedtakstatistikkServiceTest {
         fagsakId: Long,
         tidspunktVedtak: LocalDate,
         barn: List<Barn> = emptyList(),
-    ): VedtakOvergangsstønadDVH {
-        return VedtakOvergangsstønadDVH(
+    ): VedtakOvergangsstønadDVH =
+        VedtakOvergangsstønadDVH(
             fagsakId = fagsakId,
             behandlingId = behandlingId,
             relatertBehandlingId = null,
@@ -148,5 +155,4 @@ class VedtakstatistikkServiceTest {
                 ),
             eøsUnntak = EøsUnntak(medlemMerEnn5ÅrEøs = false, medlemMerEnn5ÅrEøsAnnenForelderTrygdedekketINorge = false, oppholderSegIAnnetEøsLand = false),
         )
-    }
 }
