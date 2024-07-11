@@ -2,9 +2,6 @@ name: Build-Deploy dev
 on:
   workflow_dispatch:
 
-env:
-  IMAGE: ghcr.io/navikt/familie-ef-iverksett:${{ github.sha }}
-
 permissions:
   contents: "read"
   id-token: "write"
