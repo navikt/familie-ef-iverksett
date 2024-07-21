@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.1</version>
+        <version>3.3.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -17,7 +17,7 @@
         <java.version>21</java.version>
         <kotlin.version>2.0.0</kotlin.version>
         <springdoc.version>2.6.0</springdoc.version>
-        <felles.version>3.20240624143824_64bf8f2</felles.version>
+        <felles.version>3.20240715145751_fc025c1</felles.version>
         <familie.kontrakter.version>3.0_20240607101709_d35e18c</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20240425094647_26b983d</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
@@ -25,10 +25,10 @@
         <prosessering.version>2.20240603145215_c56e179</prosessering.version>
         <utbetalingsgenerator.version>1.0_20240624093832_8242223</utbetalingsgenerator.version>
         <brukernotifikasjon-schemas.version>2.6.0</brukernotifikasjon-schemas.version>
-        <maven-surefire-plugin.version>3.3.0</maven-surefire-plugin.version>
-        <confluent.version>7.6.1</confluent.version>
-        <mockk-jvm.version>1.13.11</mockk-jvm.version>
-        <cucumber.version>7.18.0</cucumber.version>
+        <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
+        <confluent.version>7.6.2</confluent.version>
+        <mockk-jvm.version>1.13.12</mockk-jvm.version>
+        <cucumber.version>7.18.1</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
@@ -243,7 +243,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>10.15.2</version>
+            <version>10.16.0</version>
             <scope>runtime</scope>
         </dependency>
         <!-- MQ / JMS -->
@@ -265,7 +265,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.19.8</version>
+            <version>1.20.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
