@@ -14,12 +14,12 @@ Egenskap: Revurdering tilbake i tid
 
     Så forvent følgende utbetalingsoppdrag
       | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 2            | 02.2021  | 02.2021  | 01.2021     | 700   | ENDR         | Ja         | 1          |                    |
+      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 0          |                    |
+      | 2            | 02.2021  | 02.2021  | 01.2021     | 700   | ENDR         | Ja         | 0          |                    |
 
     Så forvent følgende tilkjente ytelser for behandling 1 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      | 02.2021  | 02.2021  | 700   | 1          |                    | 1                   |
+      | 02.2021  | 02.2021  | 700   | 0          |                    | 1                   |
 
     Så forvent følgende tilkjente ytelser for behandling 2 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
@@ -37,13 +37,13 @@ Egenskap: Revurdering tilbake i tid
 
     Så forvent følgende utbetalingsoppdrag
       | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 2            | 01.2021  | 01.2021  |             | 600   | ENDR         | Nei        | 2          | 1                  |
+      | 1            | 02.2021  | 02.2021  |             | 700   | NY           | Nei        | 0          |                    |
+      | 2            | 01.2021  | 01.2021  |             | 600   | ENDR         | Nei        | 1          | 0                  |
 
     Så forvent følgende tilkjente ytelser for behandling 1 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      | 02.2021  | 02.2021  | 700   | 1          |                    | 1                   |
+      | 02.2021  | 02.2021  | 700   | 0          |                    | 1                   |
 
     Så forvent følgende tilkjente ytelser for behandling 2 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
-      | 01.2021  | 01.2021  | 600   | 2          | 1                  | 2                   |
+      | 01.2021  | 01.2021  | 600   | 1          | 0                  | 2                   |
