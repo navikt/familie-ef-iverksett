@@ -30,8 +30,8 @@ Egenskap: En enkel behandling
 
     Så forvent følgende utbetalingsoppdrag
       | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id | Type |
-      | 1            | 01.2021  | 01.2021  |             | 1     | NY           | Nei        | 1          |                    | MND  |
+      | 1            | 01.2021  | 01.2021  |             | 1     | NY           | Nei        | 0          |                    | MND  |
 
     Så forvent følgende tilkjente ytelser for behandling 1 med startdato 01.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id |
-      | 01.2021  | 01.2021  | 1     | 1          |                    |
+      | 01.2021  | 01.2021  | 1     | 0          |                    |

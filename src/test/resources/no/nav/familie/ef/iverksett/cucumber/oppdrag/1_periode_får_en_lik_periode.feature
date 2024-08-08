@@ -14,7 +14,7 @@ Egenskap: Har en periode, legger til en ny periode som er lik den forrige
 
     Så forvent følgende utbetalingsoppdrag
       | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 02.2021  | 03.2021  |             | 700   | NY           | Nei        | 1          |                    |
+      | 1            | 02.2021  | 03.2021  |             | 700   | NY           | Nei        | 0          |                    |
 
     Så forvent følgende utbetalingsoppdrag uten utbetalingsperiode
       | BehandlingId | Kode endring | Er endring |
@@ -23,4 +23,4 @@ Egenskap: Har en periode, legger til en ny periode som er lik den forrige
 
     Så forvent følgende tilkjente ytelser for behandling 1 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id |
-      | 02.2021  | 03.2021  | 700   | 1          |                    |
+      | 02.2021  | 03.2021  | 700   | 0          |                    |
