@@ -19,5 +19,8 @@ spec:
       application: familie-ef-iverksett
       access: readwrite
     - team: pto
-      application: veilarbportefolje
+      application: veilarbportefolje #ON-PREM
+      access: read
+    - team: obo
+      application: veilarbportefolje #GCP
       access: read
