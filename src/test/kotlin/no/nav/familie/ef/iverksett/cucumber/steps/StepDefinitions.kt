@@ -93,50 +93,9 @@ class StepDefinitions {
                             nyTilkjentYtelseMedMetaData,
                             forrigeTilkjentYtelse,
                         )
-                    acc + (holder.behandlingId to justerPeriodeId(forrigeTilkjentYtelse, nyTilkjentYtelse))
+                    acc + (holder.behandlingId to nyTilkjentYtelse)
                 }.toMap()
     }
-
-    /**
-     * Pga at nye utbetalingsgeneratorn begynner med periodeId på 0, så justeres periodeIdn her for å unngå å endre alle tester med periodeIdn nå
-     * Det trenger vi kun å justere for førstegangsbehandling som setter "startPeriodeId"
-     */
-    private fun justerPeriodeId(
-        forrigeTilkjentYtelse: TilkjentYtelse?,
-        nyTilkjentYtelse: TilkjentYtelse,
-    ): TilkjentYtelse =
-        if (forrigeTilkjentYtelse?.sisteAndelIKjede != null) {
-            nyTilkjentYtelse
-        } else {
-            nyTilkjentYtelse.copy(
-                andelerTilkjentYtelse =
-                    nyTilkjentYtelse.andelerTilkjentYtelse.map {
-                        it.copy(
-                            periodeId = it.periodeId?.plus(1),
-                            forrigePeriodeId = it.forrigePeriodeId?.plus(1),
-                        )
-                    },
-                utbetalingsoppdrag =
-                    nyTilkjentYtelse.utbetalingsoppdrag?.let { utbetalingsoppdrag ->
-                        utbetalingsoppdrag.copy(
-                            utbetalingsperiode =
-                                utbetalingsoppdrag.utbetalingsperiode.map {
-                                    it.copy(
-                                        periodeId = it.periodeId + 1,
-                                        forrigePeriodeId = it.forrigePeriodeId?.plus(1),
-                                    )
-                                },
-                        )
-                    },
-                sisteAndelIKjede =
-                    nyTilkjentYtelse.sisteAndelIKjede?.let {
-                        it.copy(
-                            periodeId = it.periodeId?.plus(1),
-                            forrigePeriodeId = it.forrigePeriodeId?.plus(1),
-                        )
-                    },
-            )
-        }
 
     @Så("forvent frist satt til {}")
     fun `forvent følgende frist`(forventetFrist: String) {

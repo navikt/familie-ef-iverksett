@@ -19,9 +19,9 @@ Egenskap: Startdato endrer seg men andelene blir de samme
 
     Så forvent følgende utbetalingsoppdrag
       | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 03.2021  | 03.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 2            | 03.2021  | 03.2021  | 02.2020     | 700   | ENDR         | Ja         | 1          |                    |
-      | 2            | 03.2021  | 03.2021  |             | 700   | ENDR         | Nei        | 2          | 1                  |
+      | 1            | 03.2021  | 03.2021  |             | 700   | NY           | Nei        | 0          |                    |
+      | 2            | 03.2021  | 03.2021  | 02.2020     | 700   | ENDR         | Ja         | 0          |                    |
+      | 2            | 03.2021  | 03.2021  |             | 700   | ENDR         | Nei        | 1          | 0                  |
 
 
   Scenario: Startdato endrer seg og det innvilges andre perioder underveis
@@ -42,8 +42,8 @@ Egenskap: Startdato endrer seg men andelene blir de samme
 
     Så forvent følgende utbetalingsoppdrag
       | BehandlingId | Fra dato | Til dato | Opphørsdato | Beløp | Kode endring | Er endring | Periode id | Forrige periode id |
-      | 1            | 03.2021  | 03.2021  |             | 700   | NY           | Nei        | 1          |                    |
-      | 2            | 03.2021  | 03.2021  | 02.2020     | 700   | ENDR         | Ja         | 1          |                    |
-      | 2            | 01.2021  | 04.2021  |             | 700   | ENDR         | Nei        | 2          | 1                  |
-      | 3            | 01.2021  | 04.2021  | 01.2020     | 700   | ENDR         | Ja         | 2          | 1                  |
-      | 3            | 06.2021  | 07.2021  |             | 700   | ENDR         | Nei        | 3          | 2                  |
+      | 1            | 03.2021  | 03.2021  |             | 700   | NY           | Nei        | 0          |                    |
+      | 2            | 03.2021  | 03.2021  | 02.2020     | 700   | ENDR         | Ja         | 0          |                    |
+      | 2            | 01.2021  | 04.2021  |             | 700   | ENDR         | Nei        | 1          | 0                  |
+      | 3            | 01.2021  | 04.2021  | 01.2020     | 700   | ENDR         | Ja         | 1          | 0                  |
+      | 3            | 06.2021  | 07.2021  |             | 700   | ENDR         | Nei        | 2          | 1                  |
