@@ -269,7 +269,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.doyaaaaaken</groupId>
+            <groupId>com.jsoizo</groupId>
             <artifactId>kotlin-csv-jvm</artifactId>
             <version>1.10.0</version>
             <scope>test</scope>
