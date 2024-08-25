@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.2</version>
+        <version>3.3.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -15,7 +15,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>2.0.10</kotlin.version>
+        <kotlin.version>2.0.20</kotlin.version>
         <springdoc.version>2.6.0</springdoc.version>
         <felles.version>3.20240806111424_fff2930</felles.version>
         <familie.kontrakter.version>3.0_20240816073331_933df6f</familie.kontrakter.version>
@@ -25,7 +25,7 @@
         <prosessering.version>2.20240809130157_d33fbc4</prosessering.version>
         <utbetalingsgenerator.version>1.0_20240729145155_57174aa</utbetalingsgenerator.version>
         <brukernotifikasjon-schemas.version>2.6.0</brukernotifikasjon-schemas.version>
-        <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.4.0</maven-surefire-plugin.version>
         <confluent.version>7.7.0</confluent.version>
         <mockk-jvm.version>1.13.12</mockk-jvm.version>
         <cucumber.version>7.18.1</cucumber.version>
@@ -243,7 +243,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>10.17.1</version>
+            <version>10.17.2</version>
             <scope>runtime</scope>
         </dependency>
         <!-- MQ / JMS -->
