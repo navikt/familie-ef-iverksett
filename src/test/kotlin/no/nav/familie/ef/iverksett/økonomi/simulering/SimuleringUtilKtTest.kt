@@ -71,4 +71,30 @@ class SimuleringUtilKtTest {
         every { simuleringsResultat.simuleringMottaker } returns emptyList()
         assertThat(summerManuellePosteringer(simuleringsResultat)).isEqualTo(BigDecimal.ZERO)
     }
+
+    @Test
+    fun `summerKreditorPosteringer skal returnere ZERO by default `() {
+        every { simuleringsResultat.simuleringMottaker } returns emptyList()
+        assertThat(summerKreditorPosteringer(simuleringsResultat)).isEqualTo(BigDecimal.ZERO)
+    }
+
+    @Test
+    fun `summer flere kreditorposteringer`() {
+        val simulertePosteringer =
+            posteringer(klassekode = "KREDKRED", beløp = 1, antallMåneder = 3)
+        val simulertePosteringerAnnenKlassekode =
+            posteringer(klassekode = "KLASSEKODE", beløp = 2)
+        val simuleringsMottaker =
+            listOf(
+                SimuleringMottaker(
+                    simulertPostering = simulertePosteringer + simulertePosteringerAnnenKlassekode,
+                    mottakerType = MottakerType.BRUKER,
+                ),
+            )
+
+        every { simuleringsResultat.simuleringMottaker } returns simuleringsMottaker
+
+        assertThat(summerKreditorPosteringer(simuleringsResultat)).isEqualTo(BigDecimal(3))
+    }
+
 }

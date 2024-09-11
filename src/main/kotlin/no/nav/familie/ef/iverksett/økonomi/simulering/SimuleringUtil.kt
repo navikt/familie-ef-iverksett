@@ -46,6 +46,7 @@ fun lagSimuleringsoppsummering(
         tidSimuleringHentet = tidSimuleringHentet,
         tomSisteUtbetaling = tomSisteUtbetaling,
         sumManuellePosteringer = summerManuellePosteringer(detaljertSimuleringResultat),
+        sumKreditorPosteringer = summerKreditorPosteringer(detaljertSimuleringResultat),
     )
 }
 
@@ -53,7 +54,13 @@ fun summerManuellePosteringer(detaljertSimuleringResultat: DetaljertSimuleringRe
     detaljertSimuleringResultat.simuleringMottaker
         .flatMap { simuleringMottaker -> simuleringMottaker.simulertPostering }
         .filter { simulertPostering -> simulertPostering.fagOmrådeKode.gjelderManuellPostering() }
-        .fold(ZERO) { acc, simulertPostering -> acc + simulertPostering.beløp }
+        .sumOf ( SimulertPostering::beløp )
+
+fun summerKreditorPosteringer(detaljertSimuleringResultat: DetaljertSimuleringResultat): BigDecimal =
+    detaljertSimuleringResultat.simuleringMottaker
+        .flatMap { simuleringMottaker -> simuleringMottaker.simulertPostering }
+        .filter { simulertPostering -> simulertPostering.gjelderKreditortrekk() }
+        .sumOf ( SimulertPostering::beløp )
 
 fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simuleringsperiode> =
     mottakere
