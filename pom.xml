@@ -18,7 +18,7 @@
         <kotlin.version>2.0.21</kotlin.version>
         <springdoc.version>2.6.0</springdoc.version>
         <felles.version>3.20240913110742_adb42f8</felles.version>
-        <familie.kontrakter.version>3.0_20241009100044_c0fcd51</familie.kontrakter.version>
+        <familie.kontrakter.version>3.0_20241018104853_fa92410</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20240425094647_26b983d</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
@@ -243,7 +243,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>10.19.0</version>
+            <version>10.20.0</version>
             <scope>runtime</scope>
         </dependency>
         <!-- MQ / JMS -->
