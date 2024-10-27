@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
+        <version>3.3.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -18,12 +18,12 @@
         <kotlin.version>2.0.21</kotlin.version>
         <springdoc.version>2.6.0</springdoc.version>
         <felles.version>3.20240913110742_adb42f8</felles.version>
-        <familie.kontrakter.version>3.0_20241018104853_fa92410</familie.kontrakter.version>
+        <familie.kontrakter.version>3.0_20241025090301_fcf1202</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20240425094647_26b983d</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20241011144712_deb1f2c</prosessering.version>
-        <utbetalingsgenerator.version>1.0_20240902095239_88c7bc0</utbetalingsgenerator.version>
+        <utbetalingsgenerator.version>1.0_20241021103522_3adb9fa</utbetalingsgenerator.version>
         <brukernotifikasjon-schemas.version>2.6.0</brukernotifikasjon-schemas.version>
         <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
         <confluent.version>7.7.1</confluent.version>
@@ -34,7 +34,7 @@
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <token-validation-spring.version>5.0.5</token-validation-spring.version>
-        <ibm-mq-client.version>9.4.0.5</ibm-mq-client.version>
+        <ibm-mq-client.version>9.4.1.0</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
     </properties>
@@ -243,7 +243,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>10.20.0</version>
+            <version>10.20.1</version>
             <scope>runtime</scope>
         </dependency>
         <!-- MQ / JMS -->
@@ -265,7 +265,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.20.2</version>
+            <version>1.20.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -405,7 +405,7 @@
                     <dependency>
                         <groupId>com.pinterest.ktlint</groupId>
                         <artifactId>ktlint-cli</artifactId>
-                        <version>1.3.1</version>
+                        <version>1.4.0</version>
                     </dependency>
                     <!-- additional 3rd party ruleset(s) can be specified here -->
                 </dependencies>
