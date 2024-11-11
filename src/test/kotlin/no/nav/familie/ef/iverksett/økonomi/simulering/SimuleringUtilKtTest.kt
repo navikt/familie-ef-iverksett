@@ -96,5 +96,4 @@ class SimuleringUtilKtTest {
 
         assertThat(summerKreditorPosteringer(simuleringsResultat)).isEqualTo(BigDecimal(3))
     }
-
 }

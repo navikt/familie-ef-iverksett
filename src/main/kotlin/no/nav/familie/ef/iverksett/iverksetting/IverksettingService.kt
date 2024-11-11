@@ -110,8 +110,7 @@ class IverksettingService(
             else -> hovedflyt().first().type
         }
 
-    private fun erIverksettingUtenVedtaksperioder(iverksett: IverksettData) =
-        iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT
+    private fun erIverksettingUtenVedtaksperioder(iverksett: IverksettData) = iverksett.vedtak.tilkjentYtelse == null && iverksett.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT
 
     fun utledStatus(behandlingId: UUID): IverksettStatus? {
         val iverksettResultat = iverksettResultatService.hentIverksettResultat(behandlingId)

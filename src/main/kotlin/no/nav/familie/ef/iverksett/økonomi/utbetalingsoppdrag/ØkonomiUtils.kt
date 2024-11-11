@@ -34,8 +34,7 @@ fun nullAndelTilkjentYtelse(
     )
 
 object ØkonomiUtils {
-    fun andelerUtenNullVerdier(tilkjentYtelse: TilkjentYtelse?): List<AndelTilkjentYtelse> =
-        tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.harNullBeløp() } ?: emptyList()
+    fun andelerUtenNullVerdier(tilkjentYtelse: TilkjentYtelse?): List<AndelTilkjentYtelse> = tilkjentYtelse?.andelerTilkjentYtelse?.filter { !it.harNullBeløp() } ?: emptyList()
 
     /**
      * Lager oversikt over siste andel i hver kjede som finnes uten endring i oppdatert tilstand.

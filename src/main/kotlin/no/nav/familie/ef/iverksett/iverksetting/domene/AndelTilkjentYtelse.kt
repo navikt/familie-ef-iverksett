@@ -21,10 +21,11 @@ data class AndelTilkjentYtelse(
     val forrigePeriodeId: Long? = null,
     val kildeBehandlingId: UUID? = null,
 ) {
-    private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean = (
-        this.periode == other.periode &&
-            this.beløp == other.beløp
-    )
+    private fun erTilsvarendeForUtbetaling(other: AndelTilkjentYtelse): Boolean =
+        (
+            this.periode == other.periode &&
+                this.beløp == other.beløp
+        )
 
     fun harNullBeløp() = this.beløp == 0
 

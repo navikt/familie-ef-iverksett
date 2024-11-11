@@ -237,9 +237,7 @@ internal class OpprettTilbakekrevingTaskTest {
         opprettTilbakekrevingTask.doTask(task)
     }
 
-    fun Tilbakekrevingsdetaljer.medFeilutbetaling(beløp: Long) =
-        this.copy(tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel?.copy(sumFeilutbetaling = beløp.toBigDecimal()))
+    fun Tilbakekrevingsdetaljer.medFeilutbetaling(beløp: Long) = this.copy(tilbakekrevingMedVarsel = this.tilbakekrevingMedVarsel?.copy(sumFeilutbetaling = beløp.toBigDecimal()))
 
-    fun BeriketSimuleringsresultat.medFeilutbetaling(beløp: Long) =
-        this.copy(oppsummering = this.oppsummering.copy(feilutbetaling = beløp.toBigDecimal()))
+    fun BeriketSimuleringsresultat.medFeilutbetaling(beløp: Long) = this.copy(oppsummering = this.oppsummering.copy(feilutbetaling = beløp.toBigDecimal()))
 }
