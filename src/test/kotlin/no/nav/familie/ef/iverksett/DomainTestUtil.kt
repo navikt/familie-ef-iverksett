@@ -139,7 +139,7 @@ fun posteringer(
     posteringstype: PosteringType = PosteringType.YTELSE,
     betalingstype: BetalingType = if (beløp >= 0) BetalingType.DEBIT else BetalingType.KREDIT,
     fagOmrådeKode: FagOmrådeKode = FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
-    klassekode: String = "EFOG"
+    klassekode: String = "EFOG",
 ): List<SimulertPostering> =
     MutableList(antallMåneder) { index ->
         SimulertPostering(
@@ -155,7 +155,7 @@ fun posteringer(
                     .atEndOfMonth(),
             // Forfallsdato i bank (dagen går til brukeren). Det sendes til banken kanskje en uke i forveien
             utenInntrekk = false,
-            klassekode = klassekode
+            klassekode = klassekode,
         ) // Brukes ikke for EF
     }
 

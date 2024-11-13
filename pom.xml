@@ -110,6 +110,13 @@
             <version>${confluent.version}</version>
         </dependency>
 
+        <!-- Transitive avhengighet som kan fjernes når når kafka-avro-serializer bumper versjonen til 1.11.4 eller nyere -->
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>1.11.4</version>
+        </dependency>
+
         <!-- Swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>
