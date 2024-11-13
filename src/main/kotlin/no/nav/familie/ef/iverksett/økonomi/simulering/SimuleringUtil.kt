@@ -54,13 +54,13 @@ fun summerManuellePosteringer(detaljertSimuleringResultat: DetaljertSimuleringRe
     detaljertSimuleringResultat.simuleringMottaker
         .flatMap { simuleringMottaker -> simuleringMottaker.simulertPostering }
         .filter { simulertPostering -> simulertPostering.fagOmrådeKode.gjelderManuellPostering() }
-        .sumOf ( SimulertPostering::beløp )
+        .sumOf(SimulertPostering::beløp)
 
 fun summerKreditorPosteringer(detaljertSimuleringResultat: DetaljertSimuleringResultat): BigDecimal =
     detaljertSimuleringResultat.simuleringMottaker
         .flatMap { simuleringMottaker -> simuleringMottaker.simulertPostering }
         .filter { simulertPostering -> simulertPostering.gjelderKreditortrekk() }
-        .sumOf ( SimulertPostering::beløp )
+        .sumOf(SimulertPostering::beløp)
 
 fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simuleringsperiode> =
     mottakere
