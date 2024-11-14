@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
-import no.nav.familie.ef.iverksett.brev.domain.tilIdType
+import no.nav.familie.ef.iverksett.brev.domain.tilAvsenderMottakerIdType
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
@@ -171,7 +171,7 @@ class JournalførVedtaksbrevTask(
                         avsenderMottaker =
                             AvsenderMottaker(
                                 id = mottaker.ident,
-                                idType = mottaker.identType.tilIdType(),
+                                idType = mottaker.identType.tilAvsenderMottakerIdType(),
                                 navn = mottaker.navn,
                             ),
                     )
@@ -223,8 +223,7 @@ class JournalførVedtaksbrevTask(
         }
     }
 
-    private fun lagDokumentTittel(iverksett: IverksettData): String =
-        lagVedtakstekst(iverksett) + lagStønadtypeTekst(iverksett.fagsak.stønadstype)
+    private fun lagDokumentTittel(iverksett: IverksettData): String = lagVedtakstekst(iverksett) + lagStønadtypeTekst(iverksett.fagsak.stønadstype)
 
     override fun onCompletion(task: Task) {
         taskService.save(task.opprettNesteTask())

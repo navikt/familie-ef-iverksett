@@ -294,6 +294,5 @@ object VedtakstatistikkMapper {
     private fun inneholderEøsUnntak(
         unntak: SvarId,
         vilkårsvurderinger: List<Vilkårsvurdering>,
-    ): Boolean =
-        vilkårsvurderinger.any { vilkårsvurdering -> vilkårsvurdering.delvilkårsvurderinger.any { delvilkårsvurdering -> delvilkårsvurdering.vurderinger.any { vurdering -> vurdering.svar == unntak } } }
+    ): Boolean = vilkårsvurderinger.any { vilkårsvurdering -> vilkårsvurdering.delvilkårsvurderinger.any { delvilkårsvurdering -> delvilkårsvurdering.vurderinger.any { vurdering -> vurdering.svar == unntak } } }
 }

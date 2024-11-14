@@ -105,11 +105,9 @@ fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode>
             )
     }
 
-private fun hentNyttBeløp(posteringer: List<SimulertPostering>) =
-    posteringer.sumBarePositiv(YTELSE) - posteringer.sumBarePositiv(FEILUTBETALING)
+private fun hentNyttBeløp(posteringer: List<SimulertPostering>) = posteringer.sumBarePositiv(YTELSE) - posteringer.sumBarePositiv(FEILUTBETALING)
 
-private fun hentTidligereUtbetalt(posteringer: List<SimulertPostering>) =
-    posteringer.sumBareNegativ(FEILUTBETALING) - posteringer.sumBareNegativ(YTELSE)
+private fun hentTidligereUtbetalt(posteringer: List<SimulertPostering>) = posteringer.sumBareNegativ(FEILUTBETALING) - posteringer.sumBareNegativ(YTELSE)
 
 private fun hentResultat(posteringer: List<SimulertPostering>): BigDecimal {
     val positivFeilutbetaling = posteringer.sumBarePositiv(FEILUTBETALING)
@@ -141,11 +139,9 @@ private fun hentTotalFeilutbetaling(
     .filter { fomDatoNestePeriode == null || it.fom < fomDatoNestePeriode }
     .sumOf { it.feilutbetaling }
 
-private fun List<SimulertPostering>.sumBarePositiv(type: PosteringType) =
-    this.filter { it.posteringType == type && it.beløp > ZERO }.sumOf { it.beløp }
+private fun List<SimulertPostering>.sumBarePositiv(type: PosteringType) = this.filter { it.posteringType == type && it.beløp > ZERO }.sumOf { it.beløp }
 
-private fun List<SimulertPostering>.sumBareNegativ(type: PosteringType) =
-    this.filter { it.posteringType == type && it.beløp < ZERO }.sumOf { it.beløp }
+private fun List<SimulertPostering>.sumBareNegativ(type: PosteringType) = this.filter { it.posteringType == type && it.beløp < ZERO }.sumOf { it.beløp }
 
 private data class PeriodeMedForfall(
     val fom: LocalDate,

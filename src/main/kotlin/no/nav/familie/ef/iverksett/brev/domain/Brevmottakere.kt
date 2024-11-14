@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.brev.domain
 
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle
-import no.nav.familie.kontrakter.felles.BrukerIdType
+import no.nav.familie.kontrakter.felles.journalpost.AvsenderMottakerIdType
 
 data class Brevmottakere(
     val mottakere: List<Brevmottaker>,
@@ -15,8 +15,8 @@ data class Brevmottaker(
     val mottakerRolle: MottakerRolle,
 )
 
-fun IdentType.tilIdType(): BrukerIdType =
+fun IdentType.tilAvsenderMottakerIdType(): AvsenderMottakerIdType =
     when (this) {
-        IdentType.ORGANISASJONSNUMMER -> BrukerIdType.ORGNR
-        IdentType.PERSONIDENT -> BrukerIdType.FNR
+        IdentType.ORGANISASJONSNUMMER -> AvsenderMottakerIdType.ORGNR
+        IdentType.PERSONIDENT -> AvsenderMottakerIdType.FNR
     }

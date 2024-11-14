@@ -5,7 +5,7 @@ import no.nav.familie.ef.iverksett.brev.domain.Brevmottaker
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultatMap
-import no.nav.familie.ef.iverksett.brev.domain.tilIdType
+import no.nav.familie.ef.iverksett.brev.domain.tilAvsenderMottakerIdType
 import no.nav.familie.ef.iverksett.brev.stønadstypeTilDokumenttype
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.felles.dokarkiv.AvsenderMottaker
@@ -98,7 +98,7 @@ class JournalførFrittståendeBrevTask(
     ) = if (frittståendeBrev.personIdent != brevmottaker.ident) {
         AvsenderMottaker(
             brevmottaker.ident,
-            brevmottaker.identType.tilIdType(),
+            brevmottaker.identType.tilAvsenderMottakerIdType(),
             brevmottaker.navn,
         )
     } else {
