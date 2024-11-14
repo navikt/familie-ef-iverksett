@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
     namespace = "http://nav.no/melding/virksomhet/vedtakHendelser/v1/vedtakHendelser",
 )
 data class VedtakHendelser(
-    val aktoerID: String,
+    val fodselsnr: String,
     val avslutningsstatus: String,
     val behandlingstema: String,
     val hendelsesprodusentREF: String,

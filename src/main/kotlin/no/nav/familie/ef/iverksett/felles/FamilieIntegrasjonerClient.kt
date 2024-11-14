@@ -63,11 +63,6 @@ class FamilieIntegrasjonerClient(
         return response.getDataOrThrow().identer
     }
 
-    fun hentAktørId(personident: String): String {
-        val response = postForEntity<Ressurs<MutableMap<*, *>>>(aktørUri, Ident(personident))
-        return response.getDataOrThrow()["aktørId"].toString()
-    }
-
     fun hentBehandlendeEnhetForOppfølging(personident: String): Enhet? {
         val response =
             postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingOppfølingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))

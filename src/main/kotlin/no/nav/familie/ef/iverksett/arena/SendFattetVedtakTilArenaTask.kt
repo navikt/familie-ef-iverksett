@@ -25,8 +25,7 @@ class SendFattetVedtakTilArenaTask(
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId)
-        val aktørId = integrasjonerClient.hentAktørId(iverksett.data.søker.personIdent)
-        vedtakhendelseProducer.produce(mapIverksettTilVedtakHendelser(iverksett.data, aktørId))
+        vedtakhendelseProducer.produce(mapIverksettTilVedtakHendelser(iverksett.data, iverksett.data.søker.personIdent))
     }
 
     override fun onCompletion(task: Task) {

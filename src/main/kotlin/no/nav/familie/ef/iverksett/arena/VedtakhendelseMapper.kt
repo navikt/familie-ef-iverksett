@@ -11,10 +11,10 @@ private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:
 
 fun mapIverksettTilVedtakHendelser(
     iverksettData: IverksettData,
-    aktørId: String,
+    fodselsnr: String,
 ): VedtakHendelser =
     VedtakHendelser(
-        aktoerID = aktørId,
+        fodselsnr = fodselsnr,
         avslutningsstatus = mapAvslutningsstatus(iverksettData.vedtak.vedtaksresultat),
         behandlingstema =
             Behandlingstema
