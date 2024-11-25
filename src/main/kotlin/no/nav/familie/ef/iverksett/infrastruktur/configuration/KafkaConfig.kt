@@ -28,7 +28,10 @@ class KafkaConfig {
     lateinit var schemaRegistryPassword: String
 
     @Bean
-    fun kafkaTemplate(properties: KafkaProperties, sslBundles: ObjectProvider<SslBundles>): KafkaTemplate<String, String> {
+    fun kafkaTemplate(
+        properties: KafkaProperties,
+        sslBundles: ObjectProvider<SslBundles>,
+    ): KafkaTemplate<String, String> {
         val producerListener = LoggingProducerListener<String, String>()
         producerListener.setIncludeContents(false)
         val producerFactory = DefaultKafkaProducerFactory<String, String>(properties.buildProducerProperties(sslBundles.getIfAvailable()))
@@ -39,7 +42,10 @@ class KafkaConfig {
     }
 
     @Bean
-    fun kafkaTemplateBrukerNotifikasjoner(properties: KafkaProperties, sslBundles: ObjectProvider<SslBundles>): KafkaTemplate<NokkelInput, BeskjedInput> {
+    fun kafkaTemplateBrukerNotifikasjoner(
+        properties: KafkaProperties,
+        sslBundles: ObjectProvider<SslBundles>,
+    ): KafkaTemplate<NokkelInput, BeskjedInput> {
         val producerListener = LoggingProducerListener<NokkelInput, BeskjedInput>()
         producerListener.setIncludeContents(false)
         val producerFactory =
