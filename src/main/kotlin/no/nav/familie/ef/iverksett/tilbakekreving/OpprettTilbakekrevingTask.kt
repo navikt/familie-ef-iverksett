@@ -122,8 +122,7 @@ class OpprettTilbakekrevingTask(
         )
     }
 
-    private fun finnesÅpenTilbakekrevingsbehandling(nyIverksett: IverksettData): Boolean =
-        tilbakekrevingClient.finnesÅpenBehandling(nyIverksett.fagsak.eksternId)
+    private fun finnesÅpenTilbakekrevingsbehandling(nyIverksett: IverksettData): Boolean = tilbakekrevingClient.finnesÅpenBehandling(nyIverksett.fagsak.eksternId)
 
     companion object {
         const val TYPE = "opprettTilbakekrevingsbehandling"

@@ -369,8 +369,7 @@ fun opprettIverksettOvergangsstønad(
     )
 }
 
-fun startmåned(andeler: List<AndelTilkjentYtelse>) =
-    andeler.minOfOrNull { it.periode.fom } ?: error("Trenger å sette startdato hvs det ikke finnes andeler")
+fun startmåned(andeler: List<AndelTilkjentYtelse>) = andeler.minOfOrNull { it.periode.fom } ?: error("Trenger å sette startdato hvs det ikke finnes andeler")
 
 fun opprettBrev(): Brev = Brev(ByteArray(256))
 
@@ -441,8 +440,7 @@ class IverksettResultatMockBuilder private constructor(
                     )
             }
 
-        fun tilbakekrevingResultat(tilbakekrevingResultat: TilbakekrevingResultat?) =
-            apply { this.tilbakekrevingResultat = tilbakekrevingResultat }
+        fun tilbakekrevingResultat(tilbakekrevingResultat: TilbakekrevingResultat?) = apply { this.tilbakekrevingResultat = tilbakekrevingResultat }
 
         fun build(
             behandlingId: UUID,
