@@ -73,7 +73,6 @@ class FamilieIntegrasjonerClient(
         private const val TEMA_ENSLIG_FORSØRGER = "ENF" // NAY - 4489
         const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet"
         const val PATH_ARBEIDSFORDELING_OPPFØLGING = "api/arbeidsfordeling/oppfolging"
-        const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
     }
 }
