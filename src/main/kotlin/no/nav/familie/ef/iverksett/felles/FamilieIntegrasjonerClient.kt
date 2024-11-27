@@ -27,12 +27,6 @@ class FamilieIntegrasjonerClient(
             .pathSegment(PATH_HENT_IDENTER)
             .build()
             .toUri()
-    private val aktørUri =
-        UriComponentsBuilder
-            .fromUri(integrasjonUri)
-            .pathSegment(PATH_AKTØR)
-            .build()
-            .toUri()
 
     private fun arbeidsfordelingOppfølingUri(tema: String) =
         UriComponentsBuilder
