@@ -27,12 +27,6 @@ class FamilieIntegrasjonerClient(
             .pathSegment(PATH_HENT_IDENTER)
             .build()
             .toUri()
-    private val aktørUri =
-        UriComponentsBuilder
-            .fromUri(integrasjonUri)
-            .pathSegment(PATH_AKTØR)
-            .build()
-            .toUri()
 
     private fun arbeidsfordelingOppfølingUri(tema: String) =
         UriComponentsBuilder
@@ -63,11 +57,6 @@ class FamilieIntegrasjonerClient(
         return response.getDataOrThrow().identer
     }
 
-    fun hentAktørId(personident: String): String {
-        val response = postForEntity<Ressurs<MutableMap<*, *>>>(aktørUri, Ident(personident))
-        return response.getDataOrThrow()["aktørId"].toString()
-    }
-
     fun hentBehandlendeEnhetForOppfølging(personident: String): Enhet? {
         val response =
             postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingOppfølingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))
@@ -84,7 +73,6 @@ class FamilieIntegrasjonerClient(
         private const val TEMA_ENSLIG_FORSØRGER = "ENF" // NAY - 4489
         const val PATH_ARBEIDSFORDELING = "api/arbeidsfordeling/enhet"
         const val PATH_ARBEIDSFORDELING_OPPFØLGING = "api/arbeidsfordeling/oppfolging"
-        const val PATH_AKTØR = "api/aktoer/v2/ENF"
         const val PATH_HENT_IDENTER = "api/personopplysning/v1/identer/ENF"
     }
 }

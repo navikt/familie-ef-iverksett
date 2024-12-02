@@ -22,7 +22,7 @@ class VedtakhendelseProducerTest {
         every { jmsTemplate.convertAndSend(capture(vedtakHendelseXmlSlot)) } just Runs
 
         val iverksett = opprettIverksettOvergangsstønad(UUID.randomUUID())
-        val vedtakHendelser = mapIverksettTilVedtakHendelser(iverksett, "a123")
+        val vedtakHendelser = mapIverksettTilVedtakHendelser(iverksett, "123")
         vedtakhendelseProducer.produce(vedtakHendelser)
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         val forventetXML = forventetXML(vedtakHendelser.hendelsesTidspunkt.format(formatter))
@@ -33,7 +33,7 @@ class VedtakhendelseProducerTest {
 private fun forventetXML(hendelsesTidspunkt: String): String =
     """
         <vedtakHendelser xmlns="http://nav.no/melding/virksomhet/vedtakHendelser/v1/vedtakHendelser">
-            <aktoerID xmlns="">a123</aktoerID>
+            <fodselsnr xmlns="">123</fodselsnr>
             <avslutningsstatus xmlns="">innvilget</avslutningsstatus>
             <behandlingstema xmlns="">ab0071</behandlingstema>
             <hendelsesprodusentREF xmlns="">EF</hendelsesprodusentREF>
