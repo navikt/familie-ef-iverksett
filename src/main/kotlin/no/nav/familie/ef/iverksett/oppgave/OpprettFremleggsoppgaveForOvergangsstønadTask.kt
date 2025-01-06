@@ -16,7 +16,7 @@ import java.util.UUID
 @Service
 @TaskStepBeskrivelse(
     taskStepType = OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE,
-    beskrivelse = "Oppretter fremleggsoppgave om kontroll av inntekt",
+    beskrivelse = "Oppretter fremleggsoppgave for overgangsstønad",
 )
 class OpprettFremleggsoppgaveForOvergangsstønadTask(
     private val oppgaveService: OppgaveService,
@@ -35,15 +35,11 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
             )
             return
         }
-        if (iverksett.data.vedtak.oppgaverForOpprettelse.oppgavetyper.contains(
-                OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID,
-            )
-        ) {
-            val oppgaveId = oppgaveService.opprettFremleggsoppgave(iverksett.data, "Inntekt")
-            logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
-        } else {
-            logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
-        }
+
+        opprettFremleggsoppgaveHvisOppgavetypeFinnes(iverksett.data, behandlingId, OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID, "Inntekt")
+        // TODO: Sende med år
+        val år = "2025"
+        opprettFremleggsoppgaveHvisOppgavetypeFinnes(iverksett.data, behandlingId, OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE, "Selvstendig næringsdrivende", år)
     }
 
     override fun onCompletion(task: Task) {
@@ -52,5 +48,23 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
 
     companion object {
         const val TYPE = "opprettFremleggsoppgaveForOvergangsstønad"
+    }
+
+    private fun opprettFremleggsoppgaveHvisOppgavetypeFinnes(
+        iverksettData: IverksettOvergangsstønad,
+        behandlingId: UUID,
+        oppgaveForOpprettelseType: OppgaveForOpprettelseType,
+        beskrivelse: String,
+        år: String? = null,
+    ) {
+        if (iverksettData.vedtak.oppgaverForOpprettelse.oppgavetyper.contains(
+                oppgaveForOpprettelseType,
+            )
+        ) {
+            val oppgaveId = oppgaveService.opprettFremleggsoppgave(iverksettData, beskrivelse, år)
+            logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
+        } else {
+            logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
+        }
     }
 }

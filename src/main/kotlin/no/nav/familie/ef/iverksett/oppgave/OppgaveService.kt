@@ -81,7 +81,9 @@ class OppgaveService(
     fun opprettFremleggsoppgave(
         iverksett: IverksettOvergangsstønad,
         beskrivelse: String,
+        år: String? = null,
     ): Long {
+        val frist = LocalDate.of(år?.toInt() ?: iverksett.vedtak.vedtakstidspunkt.year, 12, 15)
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 eksternFagsakId = iverksett.fagsak.eksternId,
@@ -91,7 +93,7 @@ class OppgaveService(
                 oppgavetype = Oppgavetype.Fremlegg,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
-                fristFerdigstillelse = lagFristFerdigstillelseFremleggsoppgaver(iverksett.vedtak.vedtakstidspunkt.toLocalDate()),
+                fristFerdigstillelse = if (år != null) frist else lagFristFerdigstillelseFremleggsoppgaver(iverksett.vedtak.vedtakstidspunkt.toLocalDate()),
                 mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId),
             )
 
