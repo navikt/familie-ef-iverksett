@@ -119,7 +119,8 @@
     "brevmottakere": [],
     "avslagÅrsak":null,
     "oppgaverForOpprettelse": {
-      "oppgavetyper": ["INNTEKTSKONTROLL_1_ÅR_FREM_I_TID"]
+      "oppgavetyper": ["INNTEKTSKONTROLL_1_ÅR_FREM_I_TID"],
+      "årForInntektskontrollSelvstendigNæringsdrivende": null
     },
     "grunnbeløp": {
       "grunnbeløp": 106399,
