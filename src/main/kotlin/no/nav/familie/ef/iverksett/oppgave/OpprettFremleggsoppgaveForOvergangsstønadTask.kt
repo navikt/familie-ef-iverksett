@@ -60,6 +60,7 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
         ) {
             val oppgaveId = oppgaveService.opprettFremleggsoppgave(iverksettData, beskrivelse, år)
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
+            logger.info("LOGG-FREMLEGG oppgaverForOpprettelse=${iverksettData.vedtak.oppgaverForOpprettelse} år=$år")
         } else {
             logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
         }
