@@ -83,7 +83,7 @@ class OppgaveService(
         beskrivelse: String,
         år: Int? = null,
     ): Long {
-        val frist = LocalDate.of(år ?: iverksett.vedtak.vedtakstidspunkt.year, 12, 15)
+        val frist = (år ?: iverksett.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende)?.let { LocalDate.of(it, 12, 15) }
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 eksternFagsakId = iverksett.fagsak.eksternId,
