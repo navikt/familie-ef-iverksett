@@ -222,4 +222,4 @@ fun IverksettDto.toDomain(): IverksettData =
         else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
     }
 
-fun OppgaverForOpprettelseDto.toDomain(): OppgaverForOpprettelse = OppgaverForOpprettelse(this.oppgavetyper)
+fun OppgaverForOpprettelseDto.toDomain(): OppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = this.oppgavetyper, årForInntektskontrollSelvstendigNæringsdrivende = this.årForInntektskontrollSelvstendigNæringsdrivende)
