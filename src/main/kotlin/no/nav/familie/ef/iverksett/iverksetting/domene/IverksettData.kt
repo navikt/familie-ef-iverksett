@@ -173,6 +173,7 @@ sealed class Vedtaksdetaljer {
 
 data class OppgaverForOpprettelse(
     val oppgavetyper: List<OppgaveForOpprettelseType>,
+    val årForInntektskontrollSelvstendigNæringsdrivende: Int? = null,
 )
 
 data class VedtaksdetaljerOvergangsstønad(
@@ -186,7 +187,7 @@ data class VedtaksdetaljerOvergangsstønad(
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeOvergangsstønad> = listOf(),
     override val avslagÅrsak: AvslagÅrsak? = null,
-    val oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = emptyList()),
+    val oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = emptyList(), årForInntektskontrollSelvstendigNæringsdrivende = null),
     val grunnbeløp: Grunnbeløp? = null,
 ) : Vedtaksdetaljer()
 

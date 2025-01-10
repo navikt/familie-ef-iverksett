@@ -35,11 +35,8 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
             )
             return
         }
-
         opprettFremleggsoppgaveHvisOppgavetypeFinnes(iverksett.data, behandlingId, OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID, "Inntekt")
-        // TODO: Sende med år
-        val år = "2025"
-        opprettFremleggsoppgaveHvisOppgavetypeFinnes(iverksett.data, behandlingId, OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE, "Selvstendig næringsdrivende", år)
+        opprettFremleggsoppgaveHvisOppgavetypeFinnes(iverksett.data, behandlingId, OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE, "Selvstendig næringsdrivende", iverksett.data.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende)
     }
 
     override fun onCompletion(task: Task) {
@@ -55,7 +52,7 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
         behandlingId: UUID,
         oppgaveForOpprettelseType: OppgaveForOpprettelseType,
         beskrivelse: String,
-        år: String? = null,
+        år: Int? = null,
     ) {
         if (iverksettData.vedtak.oppgaverForOpprettelse.oppgavetyper.contains(
                 oppgaveForOpprettelseType,

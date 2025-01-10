@@ -81,9 +81,9 @@ class OppgaveService(
     fun opprettFremleggsoppgave(
         iverksett: IverksettOvergangsstønad,
         beskrivelse: String,
-        år: String? = null,
+        år: Int? = null,
     ): Long {
-        val frist = LocalDate.of(år?.toInt() ?: iverksett.vedtak.vedtakstidspunkt.year, 12, 15)
+        val frist = LocalDate.of(år ?: iverksett.vedtak.vedtakstidspunkt.year, 12, 15)
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 eksternFagsakId = iverksett.fagsak.eksternId,
