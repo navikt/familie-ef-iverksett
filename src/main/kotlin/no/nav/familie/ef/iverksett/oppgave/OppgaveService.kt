@@ -13,6 +13,7 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.oppgave.MappeDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
@@ -81,9 +82,20 @@ class OppgaveService(
     fun opprettFremleggsoppgave(
         iverksett: IverksettOvergangsstønad,
         beskrivelse: String,
-        år: Int? = null,
     ): Long {
-        val frist = (år ?: iverksett.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende)?.let { LocalDate.of(it, 12, 15) }
+        val erKontrollAvSelvstendig =
+            iverksett.vedtak.oppgaverForOpprettelse.oppgavetyper
+                .contains(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE)
+        val årForKontrollAvSelvstendig = iverksett.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende
+        val fristKontrollAvSelvstendig: LocalDate? =
+            if (årForKontrollAvSelvstendig != null && erKontrollAvSelvstendig) {
+                LocalDate.of(årForKontrollAvSelvstendig, 12, 15)
+            } else {
+                null
+            }
+
+        val fristFerdigstillelse = if (fristKontrollAvSelvstendig != null) fristKontrollAvSelvstendig else lagFristFerdigstillelseFremleggsoppgaver(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
+
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 eksternFagsakId = iverksett.fagsak.eksternId,
@@ -93,7 +105,7 @@ class OppgaveService(
                 oppgavetype = Oppgavetype.Fremlegg,
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
-                fristFerdigstillelse = if (år != null) frist else lagFristFerdigstillelseFremleggsoppgaver(iverksett.vedtak.vedtakstidspunkt.toLocalDate()),
+                fristFerdigstillelse = fristFerdigstillelse,
                 mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId),
             )
 
