@@ -35,8 +35,8 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
             )
             return
         }
-        opprettFremleggsoppgaveHvisOppgavetypeFinnes(iverksett.data, behandlingId, OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID, "Inntekt")
-        opprettFremleggsoppgaveHvisOppgavetypeFinnes(iverksett.data, behandlingId, OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE, "Selvstendig næringsdrivende")
+        opprettFremleggsoppgaveHvisOppgavetypeFinnes(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID, "Inntekt", iverksett.data, behandlingId)
+        opprettFremleggsoppgaveHvisOppgavetypeFinnes(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE, "Selvstendig næringsdrivende", iverksett.data, behandlingId)
     }
 
     override fun onCompletion(task: Task) {
@@ -48,10 +48,10 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
     }
 
     private fun opprettFremleggsoppgaveHvisOppgavetypeFinnes(
-        iverksettData: IverksettOvergangsstønad,
-        behandlingId: UUID,
         oppgaveForOpprettelseType: OppgaveForOpprettelseType,
         beskrivelse: String,
+        iverksettData: IverksettOvergangsstønad,
+        behandlingId: UUID,
     ) {
         if (iverksettData.vedtak.oppgaverForOpprettelse.oppgavetyper.contains(
                 oppgaveForOpprettelseType,
@@ -59,7 +59,6 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
         ) {
             val oppgaveId = oppgaveService.opprettFremleggsoppgave(iverksettData, beskrivelse)
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
-            logger.info("LOGG-FREMLEGG oppgaverForOpprettelse=${iverksettData.vedtak.oppgaverForOpprettelse}") // TODO: Kan slettes
         } else {
             logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
         }

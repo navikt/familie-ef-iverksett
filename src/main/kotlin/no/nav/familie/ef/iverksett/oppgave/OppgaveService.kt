@@ -83,13 +83,17 @@ class OppgaveService(
         iverksett: IverksettOvergangsstønad,
         beskrivelse: String,
     ): Long {
+        val desember = 12
+        val femtende = 15
+
         val erKontrollAvSelvstendig =
             iverksett.vedtak.oppgaverForOpprettelse.oppgavetyper
                 .contains(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE)
         val årForKontrollAvSelvstendig = iverksett.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende
+
         val fristKontrollAvSelvstendig: LocalDate? =
             if (årForKontrollAvSelvstendig != null && erKontrollAvSelvstendig) {
-                LocalDate.of(årForKontrollAvSelvstendig, 12, 15)
+                LocalDate.of(årForKontrollAvSelvstendig, desember, femtende)
             } else {
                 null
             }
