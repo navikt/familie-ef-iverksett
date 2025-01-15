@@ -4,7 +4,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktBrevRepository
 import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.AktivitetspliktInnhentingBrevUtil.opprettBrev
 import no.nav.familie.ef.iverksett.brev.aktivitetsplikt.JournalførAktivitetspliktutskriftBrevTask
@@ -22,10 +21,9 @@ internal class FrittståendeBrevServiceTest {
     private val frittståendeBrevRepository = mockk<FrittståendeBrevRepository>()
     private val aktivitetspliktBrevRepository = mockk<AktivitetspliktBrevRepository>()
     private val taskService = mockk<TaskService>()
-    private val journalpostClient = mockk<JournalpostClient>()
 
     private val frittståendeBrevService =
-        FrittståendeBrevService(frittståendeBrevRepository, aktivitetspliktBrevRepository, taskService, journalpostClient)
+        FrittståendeBrevService(frittståendeBrevRepository, aktivitetspliktBrevRepository, taskService)
 
     private val brevSlot = slot<AktivitetspliktBrev>()
     private val taskSlot = slot<Task>()

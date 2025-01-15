@@ -21,11 +21,7 @@ class BrevController(
     fun distribuerFrittståendeBrev(
         @RequestBody data: FrittståendeBrevDto,
     ): ResponseEntity<Any> {
-        if (data.mottakere == null) {
-            frittståendeBrevService.journalførOgDistribuerBrev(data)
-        } else {
-            frittståendeBrevService.opprettTask(data)
-        }
+        frittståendeBrevService.opprettTask(data)
         return ResponseEntity.ok().build()
     }
 
