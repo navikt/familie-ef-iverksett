@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.Month
 import java.time.YearMonth
 import java.util.UUID
 
@@ -83,7 +84,6 @@ class OppgaveService(
         iverksett: IverksettOvergangsstønad,
         beskrivelse: String,
     ): Long {
-        val desember = 12
         val femtende = 15
 
         val erKontrollAvSelvstendig =
@@ -93,7 +93,7 @@ class OppgaveService(
 
         val fristKontrollAvSelvstendig: LocalDate? =
             if (årForKontrollAvSelvstendig != null && erKontrollAvSelvstendig) {
-                LocalDate.of(årForKontrollAvSelvstendig, desember, femtende)
+                LocalDate.of(årForKontrollAvSelvstendig, Month.DECEMBER, femtende)
             } else {
                 null
             }
