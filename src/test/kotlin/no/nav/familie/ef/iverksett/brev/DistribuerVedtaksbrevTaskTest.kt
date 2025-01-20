@@ -212,6 +212,54 @@ internal class DistribuerVedtaksbrevTaskTest {
         assertThat(distribuerVedtaksbrevResultatSlot.captured.bestillingId).isEqualTo(ikkeDistrbuertJournalpostBestillingId)
     }
 
+
+    @Test
+    fun `skal distribuere brev til mottakere som allerede er distribuert til dersom de ligger i spesiallista`() {
+        val identMottakerA = "123"
+
+        val distribuertBestillingId = "abc"
+        val distribuertJournalpost = "692172785"
+
+        val journalpostResultater =
+            mapOf(
+                identMottakerA to JournalpostResultat(distribuertJournalpost),
+            )
+        val distribuerteJournalposter =
+            mapOf(
+                journalpostResultater[identMottakerA]!!.journalpostId to
+                    DistribuerBrevResultat(
+                        distribuertBestillingId,
+                    ),
+            )
+        val nyBestillingId = "ny bestillingId"
+
+        val journalpostSlot = slot<String>()
+        val distribuerVedtaksbrevResultatSlot = slot<DistribuerBrevResultat>()
+
+        every { iverksettResultatService.hentJournalpostResultat(behandlingId) } returns journalpostResultater
+        every { iverksettResultatService.hentdistribuerVedtaksbrevResultat(behandlingId) } returns distribuerteJournalposter
+        every { journalpostClient.distribuerBrev(capture(journalpostSlot), any()) } returns nyBestillingId
+        every {
+            iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
+                behandlingId,
+                any(),
+                capture(distribuerVedtaksbrevResultatSlot),
+            )
+        } returns Unit
+
+        distribuerVedtaksbrevTask.doTask(Task(DistribuerVedtaksbrevTask.TYPE, behandlingId.toString(), Properties()))
+
+        verify(exactly = 1) { journalpostClient.distribuerBrev(distribuertJournalpost, any()) }
+        verify(exactly = 1) {
+            iverksettResultatService.oppdaterDistribuerVedtaksbrevResultat(
+                behandlingId,
+                distribuertJournalpost,
+                any(),
+            )
+        }
+        assertThat(distribuerVedtaksbrevResultatSlot.captured.bestillingId).isEqualTo(nyBestillingId)
+    }
+
     @Nested
     inner class `Død person` {
         @Test

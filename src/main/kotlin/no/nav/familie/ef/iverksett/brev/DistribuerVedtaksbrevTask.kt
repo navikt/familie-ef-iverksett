@@ -36,6 +36,8 @@ class DistribuerVedtaksbrevTask(
 ) : AsyncTaskStep {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
+    private val rekjørListe: List<String> = listOf("692172785", "692173443", "692173114", "692172868", "692177366", "692172731", "692173282", "692172887", "692172740", "692173010", "691145476", "692173481")
+
     private sealed class Resultat
 
     private object OK : Resultat()
@@ -62,7 +64,7 @@ class DistribuerVedtaksbrevTask(
         var resultat: Dødsbo? = null
         journalpostResultat
             .filter { (_, journalpostResultat) ->
-                journalpostResultat.journalpostId !in distribuerteJournalposter
+                (journalpostResultat.journalpostId !in distribuerteJournalposter || journalpostResultat.journalpostId in rekjørListe)
             }.forEach { (personIdent, journalpostResultat) ->
                 try {
                     distribuerBrevOgOppdaterVedtaksbrevResultat(journalpostResultat, behandlingId)
