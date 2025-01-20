@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.familie.ef.iverksett.iverksetting.domene.OppgaverForOpprettelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.util.behandlingsdetaljer
@@ -19,6 +20,7 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AndelTilkjentYtelseDto
 import no.nav.familie.kontrakter.ef.iverksett.Grunnbeløp
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.ef.iverksett.TilkjentYtelseDto
 import no.nav.familie.kontrakter.felles.Datoperiode
@@ -209,6 +211,8 @@ fun lagIverksettData(
         },
     grunnbeløp: Grunnbeløp? = null,
     avslagÅrsak: AvslagÅrsak? = null,
+    oppgavetyper: List<OppgaveForOpprettelseType> = emptyList(),
+    årForInntektskontrollSelvstendigNæringsdrivende: Int? = null,
 ): IverksettOvergangsstønad {
     val behandlingÅrsak = if (erMigrering) BehandlingÅrsak.MIGRERING else årsak
     return opprettIverksettOvergangsstønad(
@@ -227,6 +231,11 @@ fun lagIverksettData(
                 vedtaksTidspunkt = vedtakstidspunkt,
                 grunnbeløp = grunnbeløp,
                 avslagÅrsak = avslagÅrsak,
+                oppgaverForOpprettelse =
+                    OppgaverForOpprettelse(
+                        oppgavetyper = oppgavetyper,
+                        årForInntektskontrollSelvstendigNæringsdrivende = årForInntektskontrollSelvstendigNæringsdrivende,
+                    ),
             ),
     )
 }

@@ -84,6 +84,24 @@ class OppgaveService(
         iverksett: IverksettOvergangsstønad,
         beskrivelse: String,
     ): Long {
+        val opprettOppgaveRequest =
+            OppgaveUtil.opprettOppgaveRequest(
+                eksternFagsakId = iverksett.fagsak.eksternId,
+                personIdent = iverksett.søker.personIdent,
+                stønadstype = iverksett.fagsak.stønadstype,
+                enhetId = iverksett.søker.tilhørendeEnhet,
+                oppgavetype = Oppgavetype.Fremlegg,
+                beskrivelse = beskrivelse,
+                settBehandlesAvApplikasjon = false,
+                fristFerdigstillelse = lagFristFerdigstillelse(iverksett),
+                mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId),
+            )
+
+        return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
+            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+    }
+
+    fun lagFristFerdigstillelse(iverksett: IverksettOvergangsstønad): LocalDate? {
         val femtende = 15
 
         val erKontrollAvSelvstendig =
@@ -98,26 +116,14 @@ class OppgaveService(
                 null
             }
 
-        val fristFerdigstillelse = if (fristKontrollAvSelvstendig != null) fristKontrollAvSelvstendig else lagFristFerdigstillelseFremleggsoppgaver(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
+        val vedtaksDato = iverksett.vedtak.vedtakstidspunkt.toLocalDate()
 
-        val opprettOppgaveRequest =
-            OppgaveUtil.opprettOppgaveRequest(
-                eksternFagsakId = iverksett.fagsak.eksternId,
-                personIdent = iverksett.søker.personIdent,
-                stønadstype = iverksett.fagsak.stønadstype,
-                enhetId = iverksett.søker.tilhørendeEnhet,
-                oppgavetype = Oppgavetype.Fremlegg,
-                beskrivelse = beskrivelse,
-                settBehandlesAvApplikasjon = false,
-                fristFerdigstillelse = fristFerdigstillelse,
-                mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId),
-            )
+        val fristFerdigstillelse = fristKontrollAvSelvstendig ?: lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksDato)
 
-        return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
-            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+        return fristFerdigstillelse
     }
 
-    fun lagFristFerdigstillelseFremleggsoppgaver(vedtaksdato: LocalDate): LocalDate? {
+    fun lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksdato: LocalDate): LocalDate? {
         // Frist skal ikke falle på
         // - Den 6. dagen i måneden for det er en rutine i enhetene som sier at hvis man ikke får revurdert eller sjekket en sak fordi inntekten for den siste måneden ikke er innrapportert ennå, så oppretter man en fremleggsoppgave med frist den 6. neste måned for å sjekke inntekten. Grunnen til at fristen er den 6. er fordi arbeidsgivers frist til å innrapportere inntekt for forrige måned er den 5.
         // - 17. og 18. mai, for de er forbeholdt innhenting av aktivitetsplikt
