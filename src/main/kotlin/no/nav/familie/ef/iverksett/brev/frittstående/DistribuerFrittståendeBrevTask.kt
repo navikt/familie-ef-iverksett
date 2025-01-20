@@ -39,6 +39,7 @@ class DistribuerFrittståendeBrevTask(
     private val taskService: TaskService,
 ) : AsyncTaskStep {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    private val rekjørListe: List<String> = listOf("692173481")
 
     private sealed class Resultat
 
@@ -68,7 +69,7 @@ class DistribuerFrittståendeBrevTask(
 
         journalpostResultat
             .filter { (_, journalpostResultat) ->
-                journalpostResultat.journalpostId !in distribuertBrevResultat
+                (journalpostResultat.journalpostId !in distribuertBrevResultat || journalpostResultat.journalpostId in rekjørListe)
             }.forEach { (personIdent, journalpostResultat) ->
                 try {
                     val bestillingId = distribuerBrev(journalpostResultat)
