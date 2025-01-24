@@ -29,10 +29,13 @@ class BrukernotifikasjonKafkaProducerTest {
 
     private val brukernotifikasjonKafkaProducer =
         BrukernotifikasjonKafkaProducer(
-            kafkaTemplate = kafkaTemplate,
-            migrertKafkaTemplate = migrertKafkaTemplate,
             brukerNotifikasjontopic = "brukerNotifikasjontopic",
             nyBrukerNotifikasjonTopic = "nyBrukerNotifikasjonTopic",
+            applicationName = "test-app",
+            namespace = "test-namespace",
+            cluster = "test-cluster",
+            kafkaTemplate = kafkaTemplate,
+            migrertKafkaTemplate = migrertKafkaTemplate,
         )
 
     @Nested

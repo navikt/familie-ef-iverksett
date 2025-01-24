@@ -27,6 +27,12 @@ class BrukernotifikasjonKafkaProducer(
     private val brukerNotifikasjontopic: String,
     @Value("\${NY_KAFKA_TOPIC_DITTNAV}")
     private val nyBrukerNotifikasjonTopic: String,
+    @Value("\${NAIS_APP_NAME}")
+    val applicationName: String,
+    @Value("\${NAIS_NAMESPACE}")
+    val namespace: String,
+    @Value("\${NAIS_CLUSTER_NAME}")
+    val cluster: String,
     private val kafkaTemplate: KafkaTemplate<NokkelInput, BeskjedInput>,
     private val migrertKafkaTemplate: KafkaTemplate<String, String>,
 ) {
@@ -76,9 +82,9 @@ class BrukernotifikasjonKafkaProducer(
 
                 produsent =
                     Produsent(
-                        cluster = APPLICATION_CLUSTER,
-                        namespace = APPLICATION_NAMESPACE,
-                        appnavn = APPLICATION_NAME,
+                        cluster = cluster,
+                        namespace = namespace,
+                        appnavn = applicationName,
                     )
             }
 
@@ -123,13 +129,6 @@ class BrukernotifikasjonKafkaProducer(
         iverksett.vedtak.grunnbeløp?.let {
             """Fra ${it.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${it.grunnbeløp} kroner og overgangsstønaden din er derfor endret. Se nav.no/minside for detaljer.""".trimIndent()
         } ?: throw IllegalStateException("Mangler grunnbeløp")
-
-    companion object {
-        // TODO: Disse burde kanskje ligge i Application.yml filene, men lar de være her inntil videre.
-        const val APPLICATION_NAME = "familie-ef-iverksett"
-        const val APPLICATION_NAMESPACE = "teamfamilie"
-        const val APPLICATION_CLUSTER = "local"
-    }
 }
 
 private fun LocalDate.norskFormat() = this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))

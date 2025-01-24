@@ -34,6 +34,9 @@ FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev.intern.nav.no
 AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
 FAMILIE_INTEGRASJONER_API_URL: http://localhost:9085
 FAMILIE_TILBAKE_URL: http://localhost:8030
+
+NAIS_APP_NAME: familie-ef-iverksett
+NAIS_NAMESPACE: teamfamilie
 NAIS_CLUSTER_NAME: dev
 
 KAFKA_BROKERS: hostname:1234
