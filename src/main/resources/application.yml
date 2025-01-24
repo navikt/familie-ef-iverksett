@@ -148,7 +148,7 @@ ENSLIG_FORSORGER_BEHANDLING_TOPIC: teamfamilie.aapen-ensligforsorger-behandling-
 ARBEIDSOPPFOLGING_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-arbeidsoppfolging
 VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-iverksatt-vedtak
 FAGSYSTEMBEHANDLING_RESPONS_TOPIC: teamfamilie.privat-tbk-hentfagsystemsbehandling-respons-topic
-KAFKA_TOPIC_DITTNAV: min-side.aapen-brukernotifikasjon-beskjed-v1
+KAFKA_TOPIC_DITTNAV: min-side.aapen-brukervarsel-v1
 prosessering:
   continuousRunning.enabled: true
   fixedDelayString:
