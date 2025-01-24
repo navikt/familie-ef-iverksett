@@ -10,8 +10,8 @@ ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-test
 ENSLIG_FORSORGER_BEHANDLING_TOPIC: teamfamilie.aapen-ensligforsorger-behandling-test
 prosessering.rolle: "928636f4-fd0d-4149-978e-a6fb68bb19de" # 0000-GA-STDAPPS 928636f4-fd0d-4149-978e-a6fb68bb19de
 
-FAMILIE_TILBAKE_URL: http://tilbakekreving.tilbake
-FAMILIE_TILBAKE_SCOPE: api://${DEPLOY_ENV}-gcp.tilbake.tilbakekreving/.default
+FAMILIE_TILBAKE_URL: http://tilbakekreving-backend.tilbake
+FAMILIE_TILBAKE_SCOPE: api://${DEPLOY_ENV}-gcp.tilbake.tilbakekreving-backend/.default
 TILBAKEKREVING_REQUEST_TOPIC:
 FAGSYSTEMBEHANDLING_REQUEST_TOPIC: tilbake.privat-tbk-hentfagsystemsbehandling
 FAGSYSTEMBEHANDLING_RESPONS_TOPIC: tilbake.privat-tbk-hentfagsystemsbehandling-svar
