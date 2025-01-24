@@ -51,7 +51,8 @@ spec:
         - application: familie-ef-e2e
     outbound:
       rules:
-        - application: familie-tilbake
+        - application: tilbakekreving-backend
+          namespace: tilbake
       external:
         - host: b27apvl219.preprod.local
           ports:
