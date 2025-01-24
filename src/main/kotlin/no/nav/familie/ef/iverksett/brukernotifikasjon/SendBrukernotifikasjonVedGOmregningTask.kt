@@ -31,7 +31,7 @@ class SendBrukernotifikasjonVedGOmregningTask(
         // Dobbeltsjekk: Tasken skal egentlig ikke være lagd hvis det ikke er G-omregning
         if (iverksett is IverksettOvergangsstønad && iverksett.erGOmregning()) {
             if (featureToggleService.isEnabled("familie.ef.iverksett.brukernotifikasjon-med-kotlin-builder")) {
-                brukernotifikasjonKafkaProducer.sendBeskjedTilBrukerMedKafkaBuilder(
+                brukernotifikasjonKafkaProducer.sendBeskjedTilBrukerMedKotlinBuilder(
                     personIdent = iverksett.søker.personIdent,
                     iverksettOvergangsstønad = iverksett,
                     behandlingId = behandlingId,

@@ -23,12 +23,13 @@ import java.util.UUID
 
 @Service
 class BrukernotifikasjonKafkaProducer(
+    @Value("\${KAFKA_TOPIC_DITTNAV}")
+    private val brukerNotifikasjontopic: String,
+    @Value("\${NY_KAFKA_TOPIC_DITTNAV}")
+    private val nyBrukerNotifikasjonTopic: String,
     private val kafkaTemplate: KafkaTemplate<NokkelInput, BeskjedInput>,
     private val migrertKafkaTemplate: KafkaTemplate<String, String>,
 ) {
-    @Value("\${KAFKA_TOPIC_DITTNAV}")
-    private lateinit var topic: String
-
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
@@ -39,19 +40,19 @@ class BrukernotifikasjonKafkaProducer(
         val nokkel = lagNøkkel(iverksett.søker.personIdent, behandlingId)
         val beskjed = lagBeskjed(iverksett)
 
-        secureLogger.info("Sender til Kafka topic: {}: {}", topic, beskjed)
+        secureLogger.info("Sender til Kafka topic: {}: {}", brukerNotifikasjontopic, beskjed)
         runCatching {
-            val producerRecord = ProducerRecord(topic, nokkel, beskjed)
+            val producerRecord = ProducerRecord(brukerNotifikasjontopic, nokkel, beskjed)
             kafkaTemplate.send(producerRecord).get()
         }.onFailure {
-            val errorMessage = "Kunne ikke sende brukernotifikasjon til topic: $topic. Se secure logs for mer informasjon."
+            val errorMessage = "Kunne ikke sende brukernotifikasjon til topic: $brukerNotifikasjontopic. Se secure logs for mer informasjon."
             logger.error(errorMessage)
-            secureLogger.error("Kunne ikke sende brukernotifikasjon til topic: {}", topic, it)
+            secureLogger.error("Kunne ikke sende brukernotifikasjon til topic: {}", brukerNotifikasjontopic, it)
             throw RuntimeException(errorMessage)
         }
     }
 
-    fun sendBeskjedTilBrukerMedKafkaBuilder(
+    fun sendBeskjedTilBrukerMedKotlinBuilder(
         personIdent: String,
         iverksettOvergangsstønad: IverksettOvergangsstønad,
         behandlingId: UUID,
@@ -81,15 +82,15 @@ class BrukernotifikasjonKafkaProducer(
                     )
             }
 
-        secureLogger.info("Sender til Kafka topic: {}: {}", topic, opprettVarsel)
+        secureLogger.info("Sender til Kafka topic: {}: {}", nyBrukerNotifikasjonTopic, opprettVarsel)
 
         runCatching {
-            val producerRecord = ProducerRecord(topic, generertVarselId, opprettVarsel)
+            val producerRecord = ProducerRecord(nyBrukerNotifikasjonTopic, generertVarselId, opprettVarsel)
             migrertKafkaTemplate.send(producerRecord).get()
         }.onFailure {
-            val errorMessage = "Kunne ikke sende brukernotifikasjon til topic: $topic. Se secure logs for mer informasjon."
+            val errorMessage = "Kunne ikke sende brukernotifikasjon til topic: $nyBrukerNotifikasjonTopic. Se secure logs for mer informasjon."
             logger.error(errorMessage)
-            secureLogger.error("Kunne ikke sende brukernotifikasjon til topic: {}", topic, it)
+            secureLogger.error("Kunne ikke sende brukernotifikasjon til topic: {}", nyBrukerNotifikasjonTopic, it)
 
             throw RuntimeException(errorMessage)
         }

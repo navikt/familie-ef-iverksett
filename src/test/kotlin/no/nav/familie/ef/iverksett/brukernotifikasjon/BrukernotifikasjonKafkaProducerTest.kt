@@ -31,6 +31,8 @@ class BrukernotifikasjonKafkaProducerTest {
         BrukernotifikasjonKafkaProducer(
             kafkaTemplate = kafkaTemplate,
             migrertKafkaTemplate = migrertKafkaTemplate,
+            brukerNotifikasjontopic = "brukerNotifikasjontopic",
+            nyBrukerNotifikasjonTopic = "nyBrukerNotifikasjonTopic",
         )
 
     @Nested
