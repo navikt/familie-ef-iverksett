@@ -28,7 +28,7 @@ class TilbakekrevingListener(
 
     @KafkaListener(
         id = "familie-ef-iverksett",
-        topics = ["teamfamilie.privat-tbk-hentfagsystemsbehandling-request-topic"],
+        topics = ["\${FAGSYSTEMBEHANDLING_REQUEST_TOPIC}"],
         containerFactory = "concurrentTilbakekrevingListenerContainerFactory",
     )
     fun listen(consumerRecord: ConsumerRecord<String, String>) {
