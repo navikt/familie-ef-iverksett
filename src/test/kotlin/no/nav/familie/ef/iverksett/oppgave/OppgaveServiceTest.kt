@@ -18,6 +18,7 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.AktivitetType
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
 import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
@@ -49,6 +50,7 @@ internal class OppgaveServiceTest {
         every { OppgaveUtil.opprettOppgaveRequest(any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns mockk()
         every { oppgaveClient.finnMapper(any(), any()) } returns FinnMappeResponseDto(0, emptyList())
         every { familieIntegrasjonerClient.hentBehandlendeEnhetForOppfølging(any()) } returns Enhet("1234", "enhet")
+        every { oppgaveClient.finnMapper(any(), any()) } returns FinnMappeResponseDto(0, emptyList())
     }
 
     @AfterEach
@@ -488,6 +490,46 @@ internal class OppgaveServiceTest {
         val oppgave = oppgaveService.hentOppgave(GSAK_OPPGAVE_ID)
 
         assertThat(oppgave.id).isEqualTo(GSAK_OPPGAVE_ID)
+    }
+
+    @Test
+    fun `Frist for kontroll av selvstendig skal skje den femtende desember angitt år`() {
+        val årstallEttÅrFremITid = LocalDate.now().plusYears(1).year
+        val årstallToÅrFremITid = LocalDate.now().plusYears(2).year
+
+        val iverksett =
+            lagIverksettData(
+                behandlingType = BehandlingType.REVURDERING,
+                vedtaksresultat = Vedtaksresultat.INNVILGET,
+                vedtaksperioder = emptyList(),
+                oppgavetyper = listOf(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE),
+                årForInntektskontrollSelvstendigNæringsdrivende = årstallEttÅrFremITid,
+            )
+
+        val fristFerdigstillelse = oppgaveService.lagFristFerdigstillelse(iverksett)
+
+        assertThat(fristFerdigstillelse).isEqualTo(LocalDate.of(årstallEttÅrFremITid, 12, 15))
+        assertThat(fristFerdigstillelse).isNotEqualTo(LocalDate.of(årstallToÅrFremITid, 12, 15))
+    }
+
+    @Test
+    fun `Frist for kontroll av inntektskontroll ett år frem i tid skal skje en dag senere når det faller på den sjette i en måned`() {
+        val vedtaksdato = LocalDate.of(2022, 12, 6)
+        val nyForventetFrist = LocalDate.of(2023, 12, 7)
+
+        val fristFerdigstillelse = oppgaveService.lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksdato)
+
+        assertThat(nyForventetFrist).isEqualTo(fristFerdigstillelse)
+    }
+
+    @Test
+    fun `Frist for kontroll av inntektskontroll ett år frem i tid skal endre seg når det faller på en helg`() {
+        val vedtaksdato = LocalDate.of(2022, 12, 3)
+        val nyForventetFrist = LocalDate.of(2023, 12, 1)
+
+        val fristFerdigstillelse = oppgaveService.lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksdato)
+
+        assertThat(nyForventetFrist).isEqualTo(fristFerdigstillelse)
     }
 
     private fun lagMigreringsIverksetting() =
