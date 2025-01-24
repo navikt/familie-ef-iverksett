@@ -9,6 +9,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.prosessering.domene.Task
@@ -21,7 +22,14 @@ class SendBrukernotifikasjonVedGOmregningTaskTest {
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val brukernotifikasjonKafkaProducer = mockk<BrukernotifikasjonKafkaProducer>()
     private val taskService = mockk<TaskService>()
-    private val task = SendBrukernotifikasjonVedGOmregningTask(brukernotifikasjonKafkaProducer, iverksettingRepository, taskService)
+    private val featureToggleService = mockFeatureToggleService()
+    private val task =
+        SendBrukernotifikasjonVedGOmregningTask(
+            brukernotifikasjonKafkaProducer = brukernotifikasjonKafkaProducer,
+            iverksettingRepository = iverksettingRepository,
+            taskService = taskService,
+            featureToggleService = featureToggleService,
+        )
 
     @BeforeEach
     internal fun setUp() {

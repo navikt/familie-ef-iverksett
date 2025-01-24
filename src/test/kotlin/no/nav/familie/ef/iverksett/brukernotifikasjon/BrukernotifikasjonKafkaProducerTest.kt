@@ -27,10 +27,11 @@ class BrukernotifikasjonKafkaProducerTest {
     private val kafkaTemplate = mockk<KafkaTemplate<NokkelInput, BeskjedInput>>()
     private val migrertKafkaTemplate: KafkaTemplate<String, String> = mockk()
 
-    private val brukernotifikasjonKafkaProducer = BrukernotifikasjonKafkaProducer(
-        kafkaTemplate = kafkaTemplate,
-        migrertKafkaTemplate = migrertKafkaTemplate,
-    )
+    private val brukernotifikasjonKafkaProducer =
+        BrukernotifikasjonKafkaProducer(
+            kafkaTemplate = kafkaTemplate,
+            migrertKafkaTemplate = migrertKafkaTemplate,
+        )
 
     @Nested
     inner class GenererNotifikasjonMelding {
@@ -61,25 +62,28 @@ class BrukernotifikasjonKafkaProducerTest {
 
         @Test
         fun `lagBeskjed genererer riktig melding med ny builder komponent`() {
-            val opprettVarselJson = VarselActionBuilder.opprett {
-                type = Varseltype.Beskjed
-                varselId = UUID.randomUUID().toString()
-                sensitivitet = Sensitivitet.High
-                ident = "12345678910"
-                aktivFremTil = null
+            val opprettVarselJson =
+                VarselActionBuilder.opprett {
+                    type = Varseltype.Beskjed
+                    varselId = UUID.randomUUID().toString()
+                    sensitivitet = Sensitivitet.High
+                    ident = "12345678910"
+                    aktivFremTil = null
 
-                tekst = Tekst(
-                    spraakkode = "nb",
-                    tekst = brukernotifikasjonKafkaProducer.lagMelding(iverksettRevurderingInnvilget),
-                    default = true,
-                )
+                    tekst =
+                        Tekst(
+                            spraakkode = "nb",
+                            tekst = brukernotifikasjonKafkaProducer.lagMelding(iverksettRevurderingInnvilget),
+                            default = true,
+                        )
 
-                produsent = Produsent(
-                    cluster = "test-cluster",
-                    namespace = "test-namespace",
-                    appnavn = "test-app",
-                )
-            }
+                    produsent =
+                        Produsent(
+                            cluster = "test-cluster",
+                            namespace = "test-namespace",
+                            appnavn = "test-app",
+                        )
+                }
 
             val opprettVarsel: Map<String, Any> = objectMapper.readValue(opprettVarselJson)
             val tekster = opprettVarsel["tekster"]

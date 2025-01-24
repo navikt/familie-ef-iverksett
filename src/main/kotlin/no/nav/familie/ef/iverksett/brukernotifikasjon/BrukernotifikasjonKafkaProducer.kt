@@ -5,6 +5,11 @@ import no.nav.brukernotifikasjon.schemas.builders.NokkelInputBuilder
 import no.nav.brukernotifikasjon.schemas.input.BeskjedInput
 import no.nav.brukernotifikasjon.schemas.input.NokkelInput
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
+import no.nav.tms.varsel.action.Produsent
+import no.nav.tms.varsel.action.Sensitivitet
+import no.nav.tms.varsel.action.Tekst
+import no.nav.tms.varsel.action.Varseltype
+import no.nav.tms.varsel.builder.VarselActionBuilder
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -15,11 +20,6 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-import no.nav.tms.varsel.action.Produsent
-import no.nav.tms.varsel.action.Sensitivitet
-import no.nav.tms.varsel.action.Tekst
-import no.nav.tms.varsel.action.Varseltype
-import no.nav.tms.varsel.builder.VarselActionBuilder
 
 @Service
 class BrukernotifikasjonKafkaProducer(
@@ -51,32 +51,35 @@ class BrukernotifikasjonKafkaProducer(
         }
     }
 
-    fun sendBeskjedTilBrukerMedBuilder(
+    fun sendBeskjedTilBrukerMedKafkaBuilder(
         personIdent: String,
         iverksettOvergangsstønad: IverksettOvergangsstønad,
-        behandlingId: UUID
+        behandlingId: UUID,
     ) {
         val generertVarselId = behandlingId.toString()
 
-        val opprettVarsel = VarselActionBuilder.opprett {
-            type = Varseltype.Beskjed
-            varselId = generertVarselId
-            sensitivitet = Sensitivitet.High
-            ident = personIdent
-            aktivFremTil = null
+        val opprettVarsel =
+            VarselActionBuilder.opprett {
+                type = Varseltype.Beskjed
+                varselId = generertVarselId
+                sensitivitet = Sensitivitet.High
+                ident = personIdent
+                aktivFremTil = null
 
-            tekst = Tekst(
-                spraakkode = "nb",
-                tekst = lagMelding(iverksettOvergangsstønad),
-                default = true,
-            )
+                tekst =
+                    Tekst(
+                        spraakkode = "nb",
+                        tekst = lagMelding(iverksettOvergangsstønad),
+                        default = true,
+                    )
 
-            produsent = Produsent(
-                cluster = APPLICATION_CLUSTER,
-                namespace = APPLICATION_NAMESPACE,
-                appnavn = APPLICATION_NAME,
-            )
-        }
+                produsent =
+                    Produsent(
+                        cluster = APPLICATION_CLUSTER,
+                        namespace = APPLICATION_NAMESPACE,
+                        appnavn = APPLICATION_NAME,
+                    )
+            }
 
         secureLogger.info("Sender til Kafka topic: {}: {}", topic, opprettVarsel)
 
