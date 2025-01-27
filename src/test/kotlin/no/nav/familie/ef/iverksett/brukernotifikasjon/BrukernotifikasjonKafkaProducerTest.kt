@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.brukernotifikasjon
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.mockk
 import no.nav.brukernotifikasjon.schemas.input.BeskjedInput
 import no.nav.brukernotifikasjon.schemas.input.NokkelInput
@@ -8,18 +9,37 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.Grunnbeløp
 import no.nav.familie.kontrakter.felles.Månedsperiode
+import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.tms.varsel.action.Produsent
+import no.nav.tms.varsel.action.Sensitivitet
+import no.nav.tms.varsel.action.Tekst
+import no.nav.tms.varsel.action.Varseltype
+import no.nav.tms.varsel.builder.VarselActionBuilder
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.kafka.core.KafkaTemplate
 import java.time.LocalDate
 import java.time.YearMonth
+import java.util.UUID
 
 class BrukernotifikasjonKafkaProducerTest {
     private val kafkaTemplate = mockk<KafkaTemplate<NokkelInput, BeskjedInput>>()
-    private val brukernotifikasjonKafkaProducer = BrukernotifikasjonKafkaProducer(kafkaTemplate)
+    private val migrertKafkaTemplate: KafkaTemplate<String, String> = mockk()
 
-    @Test
-    fun `lagBeskjed genererer riktig melding`() {
+    private val brukernotifikasjonKafkaProducer =
+        BrukernotifikasjonKafkaProducer(
+            brukernotifikasjonTopic = "brukerNotifikasjontopic",
+            nyBrukernotifikasjonTopic = "nyBrukerNotifikasjonTopic",
+            applicationName = "test-app",
+            namespace = "test-namespace",
+            cluster = "test-cluster",
+            kafkaTemplate = kafkaTemplate,
+            migrertKafkaTemplate = migrertKafkaTemplate,
+        )
+
+    @Nested
+    inner class GenererNotifikasjonMelding {
         val forventetGOmregningTekst = "Fra 01.05.2023 har folketrygdens grunnbeløp økt til 118620 kroner og overgangsstønaden din er derfor endret. Se nav.no/minside for detaljer."
         val iverksettRevurderingInnvilget =
             lagIverksettData(
@@ -36,9 +56,52 @@ class BrukernotifikasjonKafkaProducerTest {
                         grunnbeløp = 118_620.toBigDecimal(),
                     ),
             )
-        Assertions
-            .assertThat(
-                brukernotifikasjonKafkaProducer.lagBeskjed(iverksettRevurderingInnvilget).getTekst(),
-            ).isEqualTo(forventetGOmregningTekst)
+
+        @Test
+        fun `lagBeskjed genererer riktig melding`() {
+            Assertions
+                .assertThat(
+                    brukernotifikasjonKafkaProducer.lagBeskjed(iverksettRevurderingInnvilget).tekst,
+                ).isEqualTo(forventetGOmregningTekst)
+        }
+
+        @Test
+        fun `lagBeskjed genererer riktig melding med ny builder komponent`() {
+            val opprettVarselJson =
+                VarselActionBuilder.opprett {
+                    type = Varseltype.Beskjed
+                    varselId = UUID.randomUUID().toString()
+                    sensitivitet = Sensitivitet.High
+                    ident = "12345678910"
+                    aktivFremTil = null
+
+                    tekst =
+                        Tekst(
+                            spraakkode = "nb",
+                            tekst = brukernotifikasjonKafkaProducer.lagMelding(iverksettRevurderingInnvilget),
+                            default = true,
+                        )
+
+                    produsent =
+                        Produsent(
+                            cluster = "test-cluster",
+                            namespace = "test-namespace",
+                            appnavn = "test-app",
+                        )
+                }
+
+            val opprettVarsel: Map<String, Any> = objectMapper.readValue(opprettVarselJson)
+            val tekster = opprettVarsel["tekster"]
+            if (tekster is List<*>) {
+                val tekstMap = tekster.firstOrNull() as? Map<*, *>
+                val tekst = tekstMap?.get("tekst") as? String
+
+                Assertions
+                    .assertThat(tekst)
+                    .isEqualTo(forventetGOmregningTekst)
+            } else {
+                Assertions.fail("Tekster feltet er ikke en liste.")
+            }
+        }
     }
 }

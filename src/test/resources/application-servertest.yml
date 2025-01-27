@@ -31,7 +31,7 @@ arena-mq:
   servicebrukerPassord: srvuserPassword
 
 unleash:
-  enabled: true
+  enabled: false
 
 FAMILIE_OPPDRAG_API_URL: http://localhost:8087
 FAMILIE_INTEGRASJONER_API_URL: http://localhost:9085
@@ -53,3 +53,4 @@ KAFKA_SCHEMA_REGISTRY_PASSWORD: kafkaSchemaRegistryPassword
 UNLEASH_SERVER_API_URL: http://localhost:4242/api
 UNLEASH_SERVER_API_TOKEN: token
 NAIS_APP_NAME: familie-ef-iverksett
+NAIS_NAMESPACE: teamfamilie

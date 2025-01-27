@@ -28,17 +28,26 @@ arena-mq:
   servicebrukerPassord: srvuserPassword
 
 unleash:
-  enabled: true
+  enabled: false
+UNLEASH_SERVER_API_URL: http://localhost:98765
+UNLEASH_SERVER_API_TOKEN: tulletoken-ikke-i-bruk
 
 FAMILIE_OPPDRAG_API_URL: https://familie-oppdrag.dev.intern.nav.no
 AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
 FAMILIE_INTEGRASJONER_API_URL: http://localhost:9085
 FAMILIE_TILBAKE_URL: http://localhost:8030
+
+NAIS_APP_NAME: familie-ef-iverksett
+NAIS_NAMESPACE: teamfamilie
 NAIS_CLUSTER_NAME: dev
 
 KAFKA_BROKERS: hostname:1234
 KAFKA_KEYSTORE_PATH: kafkaKeystorePath
 KAFKA_CREDSTORE_PASSWORD: kafkaCredstorePassword
 KAFKA_TRUSTSTORE_PATH: kafkaTruststorePath
+KAFKA_SCHEMA_REGISTRY: kafkaSchemaRegistry
+KAFKA_SCHEMA_REGISTRY_USER: kafkaSchemaRegistryUser
+KAFKA_SCHEMA_REGISTRY_PASSWORD: kafkaSchemaRegistryPassword
+
 
 prosessering.rolle: "928636f4-fd0d-4149-978e-a6fb68bb19de" # 0000-GA-STDAPPS 928636f4-fd0d-4149-978e-a6fb68bb19de
