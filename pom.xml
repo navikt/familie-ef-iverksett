@@ -24,10 +24,6 @@
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20250114104710_d9ad759</prosessering.version>
         <utbetalingsgenerator.version>1.0_20250106092521_bcb342f</utbetalingsgenerator.version>
-
-        <!--TODO: Trenges jeg mere?-->
-        <brukernotifikasjon-schemas.version>2.6.0</brukernotifikasjon-schemas.version>
-
         <brukervarsel-builder.version>2.1.1</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <confluent.version>7.8.0</confluent.version>
@@ -221,13 +217,6 @@
             <groupId>no.nav.familie.felles</groupId>
             <artifactId>http-client</artifactId>
             <version>${felles.version}</version>
-        </dependency>
-
-        <!--TODO: Trenges jeg mere?-->
-        <dependency>
-            <groupId>no.nav.tms</groupId>
-            <artifactId>brukernotifikasjon-schemas</artifactId>
-            <version>${brukernotifikasjon-schemas.version}</version>
         </dependency>
 
         <dependency>
