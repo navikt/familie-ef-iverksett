@@ -29,8 +29,8 @@ class BrukernotifikasjonKafkaProducerTest {
 
     private val brukernotifikasjonKafkaProducer =
         BrukernotifikasjonKafkaProducer(
-            brukerNotifikasjontopic = "brukerNotifikasjontopic",
-            nyBrukerNotifikasjonTopic = "nyBrukerNotifikasjonTopic",
+            brukernotifikasjonTopic = "brukerNotifikasjontopic",
+            nyBrukernotifikasjonTopic = "nyBrukerNotifikasjonTopic",
             applicationName = "test-app",
             namespace = "test-namespace",
             cluster = "test-cluster",
