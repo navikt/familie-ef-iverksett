@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.brukernotifikasjon
 
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
@@ -22,7 +21,6 @@ class SendBrukernotifikasjonVedGOmregningTask(
     val brukernotifikasjonKafkaProducer: BrukernotifikasjonKafkaProducer,
     val iverksettingRepository: IverksettingRepository,
     val taskService: TaskService,
-    val featureToggleService: FeatureToggleService,
 ) : AsyncTaskStep {
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
@@ -30,15 +28,14 @@ class SendBrukernotifikasjonVedGOmregningTask(
 
         // Dobbeltsjekk: Tasken skal egentlig ikke være lagd hvis det ikke er G-omregning
         if (iverksett is IverksettOvergangsstønad && iverksett.erGOmregning()) {
-            if (featureToggleService.isEnabled("familie.ef.iverksett.brukernotifikasjon-med-kotlin-builder")) {
-                brukernotifikasjonKafkaProducer.sendBeskjedTilBrukerMedKotlinBuilder(
-                    personIdent = iverksett.søker.personIdent,
-                    iverksettOvergangsstønad = iverksett,
-                    behandlingId = behandlingId,
-                )
-            } else {
-                brukernotifikasjonKafkaProducer.sendBeskjedTilBruker(iverksett, behandlingId)
-            }
+            val generertMelding = brukernotifikasjonKafkaProducer.lagMelding(iverksett)
+
+            brukernotifikasjonKafkaProducer.sendBeskjedTilBruker(
+                personIdent = iverksett.søker.personIdent,
+                iverksettOvergangsstønad = iverksett,
+                behandlingId = behandlingId,
+                melding = generertMelding,
+            )
         }
     }
 
