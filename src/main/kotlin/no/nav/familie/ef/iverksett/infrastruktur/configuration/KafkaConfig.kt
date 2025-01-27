@@ -1,11 +1,5 @@
 package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
-import io.confluent.kafka.serializers.KafkaAvroSerializer
-import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
-import no.nav.brukernotifikasjon.schemas.input.BeskjedInput
-import no.nav.brukernotifikasjon.schemas.input.NokkelInput
-import org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG
-import org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
@@ -37,29 +31,6 @@ class KafkaConfig {
         val producerFactory = DefaultKafkaProducerFactory<String, String>(properties.buildProducerProperties(sslBundles.getIfAvailable()))
 
         return KafkaTemplate(producerFactory).apply<KafkaTemplate<String, String>> {
-            setProducerListener(producerListener)
-        }
-    }
-
-    @Bean
-    fun kafkaTemplateBrukerNotifikasjoner(
-        properties: KafkaProperties,
-        sslBundles: ObjectProvider<SslBundles>,
-    ): KafkaTemplate<NokkelInput, BeskjedInput> {
-        val producerListener = LoggingProducerListener<NokkelInput, BeskjedInput>()
-        producerListener.setIncludeContents(false)
-        val producerFactory =
-            DefaultKafkaProducerFactory<NokkelInput, BeskjedInput>(
-                properties.buildProducerProperties(sslBundles.getIfAvailable()).apply {
-                    put(KEY_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer::class.java)
-                    put(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer::class.java)
-                    put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl)
-                    put(KafkaAvroSerializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO")
-                    put(KafkaAvroSerializerConfig.USER_INFO_CONFIG, "$schemaRegistryUser:$schemaRegistryPassword")
-                },
-            )
-
-        return KafkaTemplate(producerFactory).apply<KafkaTemplate<NokkelInput, BeskjedInput>> {
             setProducerListener(producerListener)
         }
     }

@@ -24,10 +24,6 @@
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20250102104603_293d453</prosessering.version>
         <utbetalingsgenerator.version>1.0_20241125101646_0fefaff</utbetalingsgenerator.version>
-
-        <!--TODO: Trenges jeg mere?-->
-        <brukernotifikasjon-schemas.version>2.6.0</brukernotifikasjon-schemas.version>
-
         <brukervarsel-builder.version>2.1.1</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <confluent.version>7.8.0</confluent.version>
@@ -222,14 +218,6 @@
             <artifactId>http-client</artifactId>
             <version>${felles.version}</version>
         </dependency>
-
-        <!--TODO: Trenges jeg mere?-->
-        <dependency>
-            <groupId>no.nav.tms</groupId>
-            <artifactId>brukernotifikasjon-schemas</artifactId>
-            <version>${brukernotifikasjon-schemas.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>no.nav.tms.varsel</groupId>
             <artifactId>kotlin-builder</artifactId>
