@@ -36,9 +36,7 @@ class VedtakstatistikkTask(
     override fun onCompletion(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        if (iverksett.erGOmregning() && featureToggleService.isEnabled("familie.ef.sak.g-beregning-scheduler")) {
-            taskService.save(task.opprettNestePubliseringTask())
-        }
+        taskService.save(task.opprettNestePubliseringTask())
     }
 
     companion object {

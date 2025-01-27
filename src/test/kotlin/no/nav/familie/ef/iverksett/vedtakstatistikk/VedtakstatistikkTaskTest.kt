@@ -64,10 +64,4 @@ internal class VedtakstatistikkTaskTest {
         verify(exactly = 1) { taskService.save(any()) }
         Assertions.assertThat(taskSlot.captured.type).isEqualTo(SendBrukernotifikasjonVedGOmregningTask.TYPE)
     }
-
-    @Test
-    internal fun `onCompletion - skal ikke opprette neste task hvis ikke G-omregning`() {
-        vedtakstatistikkTask.onCompletion(Task(VedtakstatistikkTask.TYPE, UUID.randomUUID().toString()))
-        verify(exactly = 0) { taskService.save(any()) }
-    }
 }
