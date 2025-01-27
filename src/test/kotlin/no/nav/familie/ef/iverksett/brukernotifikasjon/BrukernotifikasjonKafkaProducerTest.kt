@@ -2,8 +2,6 @@ package no.nav.familie.ef.iverksett.brukernotifikasjon
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.mockk
-import no.nav.brukernotifikasjon.schemas.input.BeskjedInput
-import no.nav.brukernotifikasjon.schemas.input.NokkelInput
 import no.nav.familie.ef.iverksett.lagIverksettData
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
@@ -24,18 +22,15 @@ import java.time.YearMonth
 import java.util.UUID
 
 class BrukernotifikasjonKafkaProducerTest {
-    private val kafkaTemplate = mockk<KafkaTemplate<NokkelInput, BeskjedInput>>()
-    private val migrertKafkaTemplate: KafkaTemplate<String, String> = mockk()
+    private val kafkaTemplate = mockk<KafkaTemplate<String, String>>()
 
     private val brukernotifikasjonKafkaProducer =
         BrukernotifikasjonKafkaProducer(
-            brukernotifikasjonTopic = "brukerNotifikasjontopic",
-            nyBrukernotifikasjonTopic = "nyBrukerNotifikasjonTopic",
+            kafkaTemplate = kafkaTemplate,
+            topic = "test-topic",
             applicationName = "test-app",
             namespace = "test-namespace",
             cluster = "test-cluster",
-            kafkaTemplate = kafkaTemplate,
-            migrertKafkaTemplate = migrertKafkaTemplate,
         )
 
     @Nested
@@ -59,14 +54,6 @@ class BrukernotifikasjonKafkaProducerTest {
 
         @Test
         fun `lagBeskjed genererer riktig melding`() {
-            Assertions
-                .assertThat(
-                    brukernotifikasjonKafkaProducer.lagBeskjed(iverksettRevurderingInnvilget).tekst,
-                ).isEqualTo(forventetGOmregningTekst)
-        }
-
-        @Test
-        fun `lagBeskjed genererer riktig melding med ny builder komponent`() {
             val opprettVarselJson =
                 VarselActionBuilder.opprett {
                     type = Varseltype.Beskjed
@@ -92,6 +79,7 @@ class BrukernotifikasjonKafkaProducerTest {
 
             val opprettVarsel: Map<String, Any> = objectMapper.readValue(opprettVarselJson)
             val tekster = opprettVarsel["tekster"]
+
             if (tekster is List<*>) {
                 val tekstMap = tekster.firstOrNull() as? Map<*, *>
                 val tekst = tekstMap?.get("tekst") as? String

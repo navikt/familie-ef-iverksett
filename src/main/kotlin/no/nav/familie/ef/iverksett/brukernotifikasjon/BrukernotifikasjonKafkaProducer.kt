@@ -1,9 +1,5 @@
 package no.nav.familie.ef.iverksett.brukernotifikasjon
 
-import no.nav.brukernotifikasjon.schemas.builders.BeskjedInputBuilder
-import no.nav.brukernotifikasjon.schemas.builders.NokkelInputBuilder
-import no.nav.brukernotifikasjon.schemas.input.BeskjedInput
-import no.nav.brukernotifikasjon.schemas.input.NokkelInput
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.tms.varsel.action.Produsent
 import no.nav.tms.varsel.action.Sensitivitet
@@ -16,52 +12,29 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 @Service
 class BrukernotifikasjonKafkaProducer(
-    @Value("\${KAFKA_TOPIC_DITTNAV}")
-    private val brukernotifikasjonTopic: String,
-    @Value("\${KAFKA_TOPIC_BRUKERVARSEL}")
-    private val nyBrukernotifikasjonTopic: String,
+    private val kafkaTemplate: KafkaTemplate<String, String>,
+    @Value("\${BRUKERNOTIFIKASJON_VARSEL_TOPIC}")
+    private val topic: String,
     @Value("\${NAIS_APP_NAME}")
     val applicationName: String,
     @Value("\${NAIS_NAMESPACE}")
     val namespace: String,
     @Value("\${NAIS_CLUSTER_NAME}")
     val cluster: String,
-    private val kafkaTemplate: KafkaTemplate<NokkelInput, BeskjedInput>,
-    private val migrertKafkaTemplate: KafkaTemplate<String, String>,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     fun sendBeskjedTilBruker(
-        iverksett: IverksettOvergangsstønad,
-        behandlingId: UUID,
-    ) {
-        val nokkel = lagNøkkel(iverksett.søker.personIdent, behandlingId)
-        val beskjed = lagBeskjed(iverksett)
-
-        secureLogger.info("Sender til Kafka topic: {}: {}", brukernotifikasjonTopic, beskjed)
-        runCatching {
-            val producerRecord = ProducerRecord(brukernotifikasjonTopic, nokkel, beskjed)
-            kafkaTemplate.send(producerRecord).get()
-        }.onFailure {
-            val errorMessage = "Kunne ikke sende brukernotifikasjon til topic: $brukernotifikasjonTopic. Se secure logs for mer informasjon."
-            logger.error(errorMessage)
-            secureLogger.error("Kunne ikke sende brukernotifikasjon til topic: {}", brukernotifikasjonTopic, it)
-            throw RuntimeException(errorMessage)
-        }
-    }
-
-    fun sendBeskjedTilBrukerMedKotlinBuilder(
         personIdent: String,
         iverksettOvergangsstønad: IverksettOvergangsstønad,
         behandlingId: UUID,
+        melding: String,
     ) {
         val generertVarselId = behandlingId.toString()
 
@@ -76,7 +49,7 @@ class BrukernotifikasjonKafkaProducer(
                 tekst =
                     Tekst(
                         spraakkode = "nb",
-                        tekst = lagMelding(iverksettOvergangsstønad),
+                        tekst = melding,
                         default = true,
                     )
 
@@ -88,41 +61,18 @@ class BrukernotifikasjonKafkaProducer(
                     )
             }
 
-        secureLogger.info("Sender til Kafka topic: {}: {}", nyBrukernotifikasjonTopic, opprettVarsel)
+        secureLogger.info("Sender til Kafka topic: {}: {}", topic, opprettVarsel)
 
         runCatching {
-            val producerRecord = ProducerRecord(nyBrukernotifikasjonTopic, generertVarselId, opprettVarsel)
-            migrertKafkaTemplate.send(producerRecord).get()
+            val producerRecord = ProducerRecord(topic, generertVarselId, opprettVarsel)
+            kafkaTemplate.send(producerRecord).get()
         }.onFailure {
-            val errorMessage = "Kunne ikke sende brukernotifikasjon til topic: $nyBrukernotifikasjonTopic. Se secure logs for mer informasjon."
+            val errorMessage = "Kunne ikke sende brukernotifikasjon til topic: $topic. Se secure logs for mer informasjon."
             logger.error(errorMessage)
-            secureLogger.error("Kunne ikke sende brukernotifikasjon til topic: {}", nyBrukernotifikasjonTopic, it)
+            secureLogger.error("Kunne ikke sende brukernotifikasjon til topic: {}", topic, it)
 
             throw RuntimeException(errorMessage)
         }
-    }
-
-    private fun lagNøkkel(
-        fnr: String,
-        behandlingId: UUID,
-    ): NokkelInput =
-        NokkelInputBuilder()
-            .withAppnavn("familie-ef-iverksett")
-            .withNamespace("teamfamilie")
-            .withFodselsnummer(fnr)
-            .withGrupperingsId(UUID.randomUUID().toString()) // Setter random UUID uten å lagre fordi feltet skal fjernes
-            .withEventId(behandlingId.toString())
-            .build()
-
-    fun lagBeskjed(iverksett: IverksettOvergangsstønad): BeskjedInput {
-        val builder =
-            BeskjedInputBuilder()
-                .withSikkerhetsnivaa(4)
-                .withSynligFremTil(null)
-                .withTekst(lagMelding(iverksett))
-                .withTidspunkt(LocalDateTime.now(ZoneOffset.UTC))
-
-        return builder.build()
     }
 
     fun lagMelding(iverksett: IverksettOvergangsstønad): String =
