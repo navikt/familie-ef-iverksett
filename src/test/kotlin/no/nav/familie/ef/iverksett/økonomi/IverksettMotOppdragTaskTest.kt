@@ -76,7 +76,7 @@ internal class IverksettMotOppdragTaskTest {
     }
 
     @Test
-    internal fun `har allerede sendt utbetaling til oppdrag - kaster feil hvis ikke 409 `() {
+    internal fun `kaster feil hvis ikke 409 `() {
         every { oppdragClient.iverksettOppdrag(any()) } throws lagRessursException(HttpClientErrorException(HttpStatus.BAD_REQUEST))
         every { iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
         every { iverksettResultatService.hentTilkjentYtelse(any<UUID>()) } returns null
