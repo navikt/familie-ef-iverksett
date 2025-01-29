@@ -5,6 +5,8 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator.lagTilkjentYtelseMedUtbetalingsoppdragNy
+import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsoppdrag
+import no.nav.familie.http.client.RessursException
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
@@ -12,7 +14,10 @@ import no.nav.familie.prosessering.internal.TaskService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import java.util.UUID
+
+private fun Utbetalingsoppdrag.harUtbetalingsperioder() = this.utbetalingsperiode.isNotEmpty()
 
 @Service
 @TaskStepBeskrivelse(
@@ -55,14 +60,36 @@ class IverksettMotOppdragTask(
             )
 
         iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId = behandlingId, utbetaling)
-        utbetaling.utbetalingsoppdrag?.let {
-            if (it.utbetalingsperiode.isNotEmpty()) {
-                oppdragClient.iverksettOppdrag(it)
+
+        when (utbetaling.utbetalingsoppdrag) {
+            null -> error("Utbetalingsoppdrag mangler for iverksetting")
+            else -> iverksettOppdrag(utbetaling.utbetalingsoppdrag, behandlingId)
+        }
+    }
+
+    private fun iverksettOppdrag(
+        utbetalingsoppdrag: Utbetalingsoppdrag,
+        behandlingId: UUID?,
+    ) {
+        when (utbetalingsoppdrag.harUtbetalingsperioder()) {
+            true -> utførIverksetting(utbetalingsoppdrag, behandlingId)
+            false -> log.warn("Iverksetter ikke noe mot oppdrag. Ingen utbetalingsperioder. behandlingId=$behandlingId")
+        }
+    }
+
+    private fun utførIverksetting(
+        utbetalingsoppdrag: Utbetalingsoppdrag,
+        behandlingId: UUID?,
+    ) {
+        try {
+            oppdragClient.iverksettOppdrag(utbetalingsoppdrag = utbetalingsoppdrag)
+        } catch (e: RessursException) {
+            if (e.cause is HttpClientErrorException.Conflict) {
+                log.warn("409 conflict ved iverksetting av oppdrag. behandlingId=$behandlingId")
             } else {
-                log.warn("Iverksetter ikke noe mot oppdrag. Ingen utbetalingsperioder. behandlingId=$behandlingId")
+                throw e
             }
         }
-            ?: error("Utbetalingsoppdrag mangler for iverksetting")
     }
 
     override fun onCompletion(task: Task) {
