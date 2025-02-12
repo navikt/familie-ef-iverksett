@@ -74,5 +74,10 @@ spec:
         databases:
           - name: familie-ef-iverksett
             envVarPrefix: DB
+        flags:
+          - name: "cloudsql.enable_pgaudit"
+            value: "on"
+          - name: "pgaudit.log"
+            value: "write"
   kafka:
     pool: nav-prod
