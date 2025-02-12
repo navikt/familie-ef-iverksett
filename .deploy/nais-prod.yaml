@@ -52,7 +52,8 @@ spec:
         - application: familie-prosessering
     outbound:
       rules:
-        - application: familie-tilbake
+        - application: tilbakekreving-backend
+          namespace: tilbake
       external:
         - host: mpls01.adeo.no
           ports:
