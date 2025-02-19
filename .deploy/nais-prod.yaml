@@ -52,7 +52,6 @@ spec:
         - application: familie-prosessering
     outbound:
       rules:
-        - application: familie-tilbake
         - application: tilbakekreving-backend
           namespace: tilbake
       external:
