@@ -36,7 +36,7 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
             return
         }
         opprettFremleggsoppgaveHvisOppgavetypeFinnes(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID, "Inntekt", iverksett.data, behandlingId)
-        opprettFremleggsoppgaveHvisOppgavetypeFinnes(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE, "Selvstendig næringsdrivende", iverksett.data, behandlingId)
+        opprettFremleggsoppgaveHvisOppgavetypeFinnes(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE, "Kontroll av næringsinntekt for ${iverksett.data.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende}", iverksett.data, behandlingId)
     }
 
     override fun onCompletion(task: Task) {
