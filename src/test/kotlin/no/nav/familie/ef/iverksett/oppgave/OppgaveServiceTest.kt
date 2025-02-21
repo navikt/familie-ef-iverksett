@@ -534,13 +534,13 @@ internal class OppgaveServiceTest {
 
     @Test
     internal fun `mapOppgaveForOpprettelseTypeTilMappeId skal returnere mappe 41 for INNTEKTSKONTROLL_1_ÅR_FREM_I_TID`() {
-        val result = oppgaveService.mapOppgaveForOpprettelseTypeTilMappeId(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)
+        val result = oppgaveService.mapOppgaveForOpprettelseTypeTilMappeNavn(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID)
         assertThat(result).isEqualTo(Enhetsmappe.REVURDERING)
     }
 
     @Test
     internal fun `mapOppgaveForOpprettelseTypeTilMappeId skal returnere mappe 61 for INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE`() {
-        val result = oppgaveService.mapOppgaveForOpprettelseTypeTilMappeId(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE)
+        val result = oppgaveService.mapOppgaveForOpprettelseTypeTilMappeNavn(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE)
         assertThat(result).isEqualTo(Enhetsmappe.SELVSTENDIG_NÆRINGSDRIVENDE)
     }
 

@@ -169,11 +169,11 @@ class OppgaveService(
         behandlingId: UUID,
         oppgaveForOpprettelseType: OppgaveForOpprettelseType,
     ): Long? {
-        val oppgaveForOpprettelseTypeMappeId = mapOppgaveForOpprettelseTypeTilMappeId(oppgaveForOpprettelseType)
+        val oppgaveForOpprettelseTypeMappeNavn = mapOppgaveForOpprettelseTypeTilMappeNavn(oppgaveForOpprettelseType)
 
         if (enhetsnummer == "4489" || enhetsnummer == "4483") {
             val mapper = finnMapper(enhetsnummer)
-            val mappeIdForFremleggsoppgave = mapper.find { it.navn.contains(oppgaveForOpprettelseTypeMappeId.dev) || it.navn.contains(oppgaveForOpprettelseTypeMappeId.prod) }?.id?.toLong()
+            val mappeIdForFremleggsoppgave = mapper.find { it.navn.contains(oppgaveForOpprettelseTypeMappeNavn.dev) || it.navn.contains(oppgaveForOpprettelseTypeMappeNavn.prod) }?.id?.toLong()
             mappeIdForFremleggsoppgave?.let {
                 logger.info("Legger oppgave i Revurdering vedtak-mappe")
             } ?: run {
@@ -186,7 +186,7 @@ class OppgaveService(
         return null
     }
 
-    fun mapOppgaveForOpprettelseTypeTilMappeId(oppgaveForOpprettelseType: OppgaveForOpprettelseType): Enhetsmappe =
+    fun mapOppgaveForOpprettelseTypeTilMappeNavn(oppgaveForOpprettelseType: OppgaveForOpprettelseType): Enhetsmappe =
         when (oppgaveForOpprettelseType) {
             OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID -> Enhetsmappe.REVURDERING
             OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE -> Enhetsmappe.SELVSTENDIG_NÆRINGSDRIVENDE
