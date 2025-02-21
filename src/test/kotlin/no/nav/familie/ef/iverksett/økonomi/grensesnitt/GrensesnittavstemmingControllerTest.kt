@@ -18,7 +18,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 
 class GrensesnittavstemmingControllerTest : ServerTest() {
-
     @Autowired
     private lateinit var taskService: TaskService
 
@@ -43,9 +42,10 @@ class GrensesnittavstemmingControllerTest : ServerTest() {
         }
     }
 
-    private fun startGrensesnittavstemming(grensesnittAvstemmingRequest: GrensesnittavstemmingRequestDto): ResponseEntity<Ressurs<Unit>> = restTemplate.exchange(
-        localhostUrl("/api/grensesnittavstemming"),
-        HttpMethod.POST,
-        HttpEntity(grensesnittAvstemmingRequest, headers),
-    )
+    private fun startGrensesnittavstemming(grensesnittAvstemmingRequest: GrensesnittavstemmingRequestDto): ResponseEntity<Ressurs<Unit>> =
+        restTemplate.exchange(
+            localhostUrl("/api/grensesnittavstemming"),
+            HttpMethod.POST,
+            HttpEntity(grensesnittAvstemmingRequest, headers),
+        )
 }

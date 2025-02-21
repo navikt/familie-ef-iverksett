@@ -83,6 +83,7 @@ class OppgaveService(
     fun opprettFremleggsoppgave(
         iverksett: IverksettOvergangsstønad,
         beskrivelse: String,
+        oppgaveForOpprettelseType: OppgaveForOpprettelseType,
     ): Long {
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
@@ -94,7 +95,7 @@ class OppgaveService(
                 beskrivelse = beskrivelse,
                 settBehandlesAvApplikasjon = false,
                 fristFerdigstillelse = lagFristFerdigstillelse(iverksett),
-                mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId),
+                mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId, oppgaveForOpprettelseType),
             )
 
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
@@ -166,12 +167,13 @@ class OppgaveService(
     private fun finnMappeForFremleggsoppgave(
         enhetsnummer: String?,
         behandlingId: UUID,
+        oppgaveForOpprettelseType: OppgaveForOpprettelseType,
     ): Long? {
+        val oppgaveForOpprettelseTypeMappeNavn = mapOppgaveForOpprettelseTypeTilMappeNavn(oppgaveForOpprettelseType)
+
         if (enhetsnummer == "4489" || enhetsnummer == "4483") {
-            val mappenavnProd = "41 Revurdering"
-            val mappenavnDev = "41 - Revurdering"
             val mapper = finnMapper(enhetsnummer)
-            val mappeIdForFremleggsoppgave = mapper.find { it.navn.contains(mappenavnDev) || it.navn.contains(mappenavnProd) }?.id?.toLong()
+            val mappeIdForFremleggsoppgave = mapper.find { it.navn.contains(oppgaveForOpprettelseTypeMappeNavn.dev) || it.navn.contains(oppgaveForOpprettelseTypeMappeNavn.prod) }?.id?.toLong()
             mappeIdForFremleggsoppgave?.let {
                 logger.info("Legger oppgave i Revurdering vedtak-mappe")
             } ?: run {
@@ -183,6 +185,12 @@ class OppgaveService(
         }
         return null
     }
+
+    fun mapOppgaveForOpprettelseTypeTilMappeNavn(oppgaveForOpprettelseType: OppgaveForOpprettelseType): Enhetsmappe =
+        when (oppgaveForOpprettelseType) {
+            OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID -> Enhetsmappe.REVURDERING
+            OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE -> Enhetsmappe.SELVSTENDIG_NÆRINGSDRIVENDE
+        }
 
     private fun finnMapper(enhet: String): List<MappeDto> {
         val mappeRespons =

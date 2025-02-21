@@ -30,11 +30,11 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
     @Test
     internal fun `skal opprette fremleggsoppgave for overgangsstønad`() {
         every { iverksettingRepository.findByIdOrThrow(any()) } returns lagIverksett(opprettIverksettOvergangsstønad())
-        every { oppgaveService.opprettFremleggsoppgave(any(), any()) } returns 1
+        every { oppgaveService.opprettFremleggsoppgave(any(), any(), any()) } returns 1
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 1) { oppgaveService.opprettFremleggsoppgave(any(), any()) }
+        verify(exactly = 1) { oppgaveService.opprettFremleggsoppgave(any(), any(), any()) }
     }
 
     @Test
@@ -51,11 +51,11 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
                         ),
                 ),
             )
-        every { oppgaveService.opprettFremleggsoppgave(any(), any()) } returns 1
+        every { oppgaveService.opprettFremleggsoppgave(any(), any(), any()) } returns 1
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 0) { oppgaveService.opprettFremleggsoppgave(any(), any()) }
+        verify(exactly = 0) { oppgaveService.opprettFremleggsoppgave(any(), any(), any()) }
     }
 
     @Test
@@ -64,7 +64,7 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
 
         taskStegService.doTask(opprettTask())
 
-        verify(exactly = 0) { oppgaveService.opprettFremleggsoppgave(any(), any()) }
+        verify(exactly = 0) { oppgaveService.opprettFremleggsoppgave(any(), any(), any()) }
     }
 
     @Test
