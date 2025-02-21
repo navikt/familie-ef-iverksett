@@ -1,8 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.grensesnitt
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import java.time.LocalDate
-import java.time.LocalDateTime
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
@@ -15,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/grensesnittavstemming")
@@ -40,5 +40,6 @@ class GrensesnittavstemmingController(
     }
 }
 
-data class GrensesnittavstemmingRequestDto(val stønadType: StønadType)
-
+data class GrensesnittavstemmingRequestDto(
+    val stønadType: StønadType,
+)
