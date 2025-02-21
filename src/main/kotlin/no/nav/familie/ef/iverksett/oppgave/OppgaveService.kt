@@ -186,15 +186,10 @@ class OppgaveService(
         return null
     }
 
-    data class MappeId(
-        val dev: String,
-        val prod: String,
-    )
-
-    private fun mapOppgaveForOpprettelseTypeTilMappeId(oppgaveForOpprettelseType: OppgaveForOpprettelseType): MappeId =
+    fun mapOppgaveForOpprettelseTypeTilMappeId(oppgaveForOpprettelseType: OppgaveForOpprettelseType): Enhetsmappe =
         when (oppgaveForOpprettelseType) {
-            OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID -> MappeId("41 - Revurdering", "41 Revurdering")
-            OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE -> MappeId("61 - Selvstendig næringsdrivende", "61 Selvstendig næringsdrivende")
+            OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID -> Enhetsmappe.REVURDERING
+            OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE -> Enhetsmappe.SELVSTENDIG_NÆRINGSDRIVENDE
         }
 
     private fun finnMapper(enhet: String): List<MappeDto> {
