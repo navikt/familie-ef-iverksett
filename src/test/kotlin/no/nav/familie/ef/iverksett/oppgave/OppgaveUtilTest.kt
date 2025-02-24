@@ -34,7 +34,7 @@ class OppgaveUtilTest {
     }
 
     @Test
-    fun `fristFerdigstillelse skal endres når den lander på 17 mai or det er  inntektskontroll ett år frem i tid`() {
+    fun `fristFerdigstillelse skal endres når den lander på 17 mai og det er inntektskontroll ett år frem i tid`() {
         val den17MaiNesteÅr =
             LocalDate
                 .now()
