@@ -96,6 +96,7 @@ class OppgaveService(
                 settBehandlesAvApplikasjon = false,
                 fristFerdigstillelse = lagFristFerdigstillelse(iverksett),
                 mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId, oppgaveForOpprettelseType),
+                oppgaveForOpprettelseType = oppgaveForOpprettelseType,
             )
 
         return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
