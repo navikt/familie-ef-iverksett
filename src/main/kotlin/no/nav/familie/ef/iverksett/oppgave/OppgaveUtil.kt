@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.oppgave
 
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.felles.Behandlingstema
 import no.nav.familie.kontrakter.felles.Tema
 import no.nav.familie.kontrakter.felles.ef.StønadType
@@ -33,13 +34,19 @@ object OppgaveUtil {
         settBehandlesAvApplikasjon: Boolean,
         fristFerdigstillelse: LocalDate? = null,
         mappeId: Long? = null,
+        oppgaveForOpprettelseType: OppgaveForOpprettelseType? = null,
     ): OpprettOppgaveRequest =
         OpprettOppgaveRequest(
             ident = OppgaveIdentV2(ident = personIdent, gruppe = IdentGruppe.FOLKEREGISTERIDENT),
             saksId = eksternFagsakId.toString(),
             tema = Tema.ENF,
             oppgavetype = oppgavetype,
-            fristFerdigstillelse = fristFerdigstillelse(fristFerdigstillelse),
+            fristFerdigstillelse =
+                if (oppgaveForOpprettelseType == OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE && fristFerdigstillelse != null) {
+                    fristFerdigstillelse
+                } else {
+                    fristFerdigstillelse(fristFerdigstillelse)
+                },
             beskrivelse = beskrivelse,
             enhetsnummer = enhetId,
             behandlingstema = opprettBehandlingstema(stønadstype).value,
