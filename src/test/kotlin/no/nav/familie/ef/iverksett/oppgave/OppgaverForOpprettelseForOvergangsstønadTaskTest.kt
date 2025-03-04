@@ -10,8 +10,10 @@ import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.opprettIverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.util.vedtaksdetaljerOvergangsstønad
+import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -73,6 +75,56 @@ class OppgaverForOpprettelseForOvergangsstønadTaskTest {
         val task = opprettTask()
         taskStegService.onCompletion(task)
         verify(exactly = 1) { taskService.save(any()) }
+    }
+
+    @Test
+    internal fun `beskrivelse skal inneholdet år som er ett år tidligere`() {
+        val iverksettOvergangsstønad =
+            opprettIverksettOvergangsstønad(
+                vedtaksdetaljer =
+                    vedtaksdetaljerOvergangsstønad(
+                        oppgaverForOpprettelse =
+                            OppgaverForOpprettelse(
+                                listOf(
+                                    OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE,
+                                ),
+                                årForInntektskontrollSelvstendigNæringsdrivende = 2025,
+                            ),
+                    ),
+            )
+
+        val beskrivelse =
+            taskStegService.lagBeskrivelseForFremleggsoppgave(
+                OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE,
+                iverksettOvergangsstønad,
+            )
+
+        assertThat(beskrivelse).contains("2024")
+    }
+
+    @Test
+    internal fun `beskrivelse for inntektskontroll ett år frem i tid skal være inntek`() {
+        val iverksettOvergangsstønad =
+            opprettIverksettOvergangsstønad(
+                vedtaksdetaljer =
+                    vedtaksdetaljerOvergangsstønad(
+                        oppgaverForOpprettelse =
+                            OppgaverForOpprettelse(
+                                listOf(
+                                    OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID,
+                                ),
+                                årForInntektskontrollSelvstendigNæringsdrivende = 2025,
+                            ),
+                    ),
+            )
+
+        val beskrivelse =
+            taskStegService.lagBeskrivelseForFremleggsoppgave(
+                OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID,
+                iverksettOvergangsstønad,
+            )
+
+        assertThat(beskrivelse).contains("Inntekt")
     }
 
     private fun opprettTask() = Task(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE, UUID.randomUUID().toString())

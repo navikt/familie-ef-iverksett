@@ -35,8 +35,9 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
             )
             return
         }
-        opprettFremleggsoppgaveHvisOppgavetypeFinnes(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID, "Inntekt", iverksett.data, behandlingId)
-        opprettFremleggsoppgaveHvisOppgavetypeFinnes(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE, "Kontroll av næringsinntekt for ${iverksett.data.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende}", iverksett.data, behandlingId)
+
+        opprettFremleggsoppgaveHvisOppgavetypeFinnes(OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID, iverksett.data, behandlingId)
+        opprettFremleggsoppgaveHvisOppgavetypeFinnes(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE, iverksett.data, behandlingId)
     }
 
     override fun onCompletion(task: Task) {
@@ -49,7 +50,6 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
 
     private fun opprettFremleggsoppgaveHvisOppgavetypeFinnes(
         oppgaveForOpprettelseType: OppgaveForOpprettelseType,
-        beskrivelse: String,
         iverksettData: IverksettOvergangsstønad,
         behandlingId: UUID,
     ) {
@@ -57,10 +57,27 @@ class OpprettFremleggsoppgaveForOvergangsstønadTask(
                 oppgaveForOpprettelseType,
             )
         ) {
+            val beskrivelse = lagBeskrivelseForFremleggsoppgave(oppgaveForOpprettelseType, iverksettData)
+
             val oppgaveId = oppgaveService.opprettFremleggsoppgave(iverksettData, beskrivelse, oppgaveForOpprettelseType)
             logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
         } else {
             logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
+        }
+    }
+
+    fun lagBeskrivelseForFremleggsoppgave(
+        oppgaveForOpprettelseType: OppgaveForOpprettelseType,
+        iverksettData: IverksettOvergangsstønad,
+    ): String {
+        val årInntektskontrollAvSelvstendig = (
+            iverksettData.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende
+                ?.minus(1)
+        )
+
+        return when (oppgaveForOpprettelseType) {
+            OppgaveForOpprettelseType.INNTEKTSKONTROLL_1_ÅR_FREM_I_TID -> "Inntekt"
+            OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE -> "Kontroll av næringsinntekt for $årInntektskontrollAvSelvstendig"
         }
     }
 }
