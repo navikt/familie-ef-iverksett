@@ -23,7 +23,7 @@
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20230214104704_706e9c0</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20250219093533_62416e5</prosessering.version>
-        <utbetalingsgenerator.version>1.0_20250206122712_9ec24df</utbetalingsgenerator.version>
+        <utbetalingsgenerator.version>1.0_20250306084157_636f980</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.1.1</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <confluent.version>7.9.0</confluent.version>
@@ -227,7 +227,7 @@
         <dependency>
             <groupId>no.nav.familie.felles</groupId>
             <artifactId>familie-utbetalingsgenerator</artifactId>
-            <version>1.0_20250306084157_636f980</version>
+            <version>${utbetalingsgenerator.version}</version>
         </dependency>
 
         <!-- Database -->
