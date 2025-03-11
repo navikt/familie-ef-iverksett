@@ -16,8 +16,8 @@ import java.time.YearMonth
 import java.util.UUID
 
 internal class UtbetalingsoppdragGeneratorTest {
-    private val behandlingA = UUID.randomUUID()
-    private val behandlingB = UUID.randomUUID()
+    private val behandlingA = (UUID.randomUUID() to 1L)
+    private val behandlingB = (UUID.randomUUID() to 2L)
 
     @Test
     fun `Andeler med behandlingId, periodeId og forrigePeriodeId blir oppdaterte i lagTilkjentYtelseMedUtbetalingsoppdrag`() {
@@ -92,44 +92,57 @@ internal class UtbetalingsoppdragGeneratorTest {
 
     private fun assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(
         utbetalingsoppdragB: TilkjentYtelse,
-        behandlingA: UUID?,
-        behandlingB: UUID?,
+        behandlingA: Pair<UUID, Long>,
+        behandlingB: Pair<UUID, Long>,
     ) {
         assertAndel(
             andelTilkjentYtelse = utbetalingsoppdragB.andelerTilkjentYtelse[0],
             expectedPeriodeId = 0,
             expectedForrigePeriodeId = null,
-            expectedKildeBehandlingId = behandlingA,
+            expectedKildeBehandlingId = behandlingA.first,
         )
         assertAndel(
             andelTilkjentYtelse = utbetalingsoppdragB.andelerTilkjentYtelse[1],
             expectedPeriodeId = 1,
             expectedForrigePeriodeId = 0,
-            expectedKildeBehandlingId = behandlingA,
+            expectedKildeBehandlingId = behandlingB.first,
         )
         assertAndel(
             andelTilkjentYtelse = utbetalingsoppdragB.andelerTilkjentYtelse[2],
             expectedPeriodeId = 2,
             expectedForrigePeriodeId = 1,
-            expectedKildeBehandlingId = behandlingB,
+            expectedKildeBehandlingId = behandlingB.first,
         )
+        // sjekk at behandlingsId vi sender til økonomi er fra samme behandling ( expectedKildeBehandlingId )
+        assertThat(
+            utbetalingsoppdragB.utbetalingsoppdrag
+                ?.utbetalingsperiode
+                ?.first()
+                ?.behandlingId,
+        ).isEqualTo(behandlingB.second)
+        assertThat(
+            utbetalingsoppdragB.utbetalingsoppdrag
+                ?.utbetalingsperiode
+                ?.last()
+                ?.behandlingId,
+        ).isEqualTo(behandlingB.second)
     }
 
     private fun assertFørsteBehandling(
         førsteTilkjentYtelse: TilkjentYtelse,
-        behandlingA: UUID?,
+        behandlingA: Pair<UUID, Long>,
     ) {
         assertAndel(
             andelTilkjentYtelse = førsteTilkjentYtelse.andelerTilkjentYtelse[0],
             expectedPeriodeId = 0,
             expectedForrigePeriodeId = null,
-            expectedKildeBehandlingId = behandlingA,
+            expectedKildeBehandlingId = behandlingA.first,
         )
         assertAndel(
             andelTilkjentYtelse = førsteTilkjentYtelse.andelerTilkjentYtelse[1],
             expectedPeriodeId = 1,
             expectedForrigePeriodeId = 0,
-            expectedKildeBehandlingId = behandlingA,
+            expectedKildeBehandlingId = behandlingA.first,
         )
     }
 
@@ -160,7 +173,7 @@ internal class UtbetalingsoppdragGeneratorTest {
     )
 
     private fun opprettTilkjentYtelseMedMetadata(
-        behandlingId: UUID,
+        behandlingId: Pair<UUID, Long>,
         startmåned: YearMonth,
         vararg andelTilkjentYtelse: AndelTilkjentYtelse,
     ) = TilkjentYtelseMedMetaData(
@@ -173,8 +186,8 @@ internal class UtbetalingsoppdragGeneratorTest {
                 startmåned = startmåned,
             ),
         personIdent = "1",
-        behandlingId = behandlingId,
-        eksternBehandlingId = 1,
+        behandlingId = behandlingId.first,
+        eksternBehandlingId = behandlingId.second,
         stønadstype = StønadType.OVERGANGSSTØNAD,
         eksternFagsakId = 1,
         saksbehandlerId = "VL",
