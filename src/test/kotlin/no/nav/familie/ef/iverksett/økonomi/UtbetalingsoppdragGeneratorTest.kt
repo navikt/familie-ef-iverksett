@@ -29,7 +29,7 @@ internal class UtbetalingsoppdragGeneratorTest {
             ) // endres ikke, beholder kildeBehandlingId
         val andel2 = opprettAndel(2, YearMonth.of(2021, 1), YearMonth.of(2021, 12)) // endres i behandling b
         val andel3 = opprettAndel(2, YearMonth.of(2022, 1), YearMonth.of(2022, 12)) // ny i behandling b
-        val førsteTilkjentYtelse =
+        val utbetalingsoppdragA =
             lagTilkjentYtelseMedUtbetalingsoppdragNy(
                 opprettTilkjentYtelseMedMetadata(
                     behandlingA,
@@ -39,7 +39,7 @@ internal class UtbetalingsoppdragGeneratorTest {
                 ),
             )
 
-        assertFørsteBehandling(førsteTilkjentYtelse, behandlingA)
+        assertFørsteBehandling(utbetalingsoppdragA, behandlingA)
 
         val nyePerioder =
             opprettTilkjentYtelseMedMetadata(
@@ -49,7 +49,7 @@ internal class UtbetalingsoppdragGeneratorTest {
                 andel2.copy(periode = andel2.periode.copy(tom = andel2.periode.tom.minusMonths(2))),
                 andel3,
             )
-        val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdragNy(nyePerioder, førsteTilkjentYtelse)
+        val utbetalingsoppdragB = lagTilkjentYtelseMedUtbetalingsoppdragNy(nyePerioder, utbetalingsoppdragA)
 
         assertThatAndreBehandlingIkkeEndrerPåKildeBehandlingIdPåAndel1(utbetalingsoppdragB, behandlingA, behandlingB)
     }
