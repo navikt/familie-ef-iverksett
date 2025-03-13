@@ -28,7 +28,7 @@ Egenskap: 2 perioder med endring på en av periodene
     Så forvent følgende tilkjente ytelser for behandling 2 med startdato 02.2021
       | Fra dato | Til dato | Beløp | Periode id | Forrige periode id | Kilde behandling id |
       | 02.2021  | 04.2021  | 700   | 0          |                    | 1                   |
-      | 05.2021  | 06.2021  | 900   | 1          | 0                  | 1                   |
+      | 05.2021  | 06.2021  | 900   | 1          | 0                  | 2                   |
 
   Scenario: : Har 2 perioder og får setter frem fra-datoet på andre perioden
 
