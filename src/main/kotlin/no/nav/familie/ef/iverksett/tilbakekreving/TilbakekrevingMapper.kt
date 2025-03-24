@@ -99,7 +99,7 @@ private fun BehandlingÅrsak.visningsTekst(): String =
         BehandlingÅrsak.MANUELT_OPPRETTET -> "Manuelt opprettet"
         BehandlingÅrsak.G_OMREGNING -> "G-omregning"
         BehandlingÅrsak.SATSENDRING -> "Satsendring"
-
+        BehandlingÅrsak.AUTOMATISK_INNTEKTSENDRING -> "Automatisk inntektsendring"
         BehandlingÅrsak.MIGRERING,
         BehandlingÅrsak.SANKSJON_1_MND,
         -> error("Skal ikke gi tilbakekreving for årsak=$this")
