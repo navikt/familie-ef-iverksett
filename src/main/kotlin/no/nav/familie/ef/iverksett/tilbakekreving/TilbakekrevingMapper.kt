@@ -9,13 +9,16 @@ import no.nav.familie.kontrakter.felles.Regelverk
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
+import no.nav.familie.kontrakter.felles.tilbakekreving.Brevmottaker
 import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
+import no.nav.familie.kontrakter.felles.tilbakekreving.MottakerType
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
+import no.nav.familie.kontrakter.felles.tilbakekreving.Vergetype
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 
 const val ENHETSNAVN_BREV = "NAV Arbeid og ytelser"
@@ -48,7 +51,48 @@ fun IverksettData.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
         faktainfo = lagFaktainfo(this),
         regelverk = tilRegelverk(this.behandling.kategori),
         begrunnelseForTilbakekreving = this.vedtak.tilbakekreving?.begrunnelseForTilbakekreving,
+        manuelleBrevmottakere = tilManuelleBrevmottakere(this.vedtak.brevmottakere?.mottakere),
     )
+
+fun tilManuelleBrevmottakere(brevmottakere: List<no.nav.familie.ef.iverksett.brev.domain.Brevmottaker>?): Set<Brevmottaker> {
+    return brevmottakere
+        ?.map { brevmottaker ->
+            val type =
+                when (brevmottaker.mottakerRolle) {
+                    no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.FULLMEKTIG -> MottakerType.FULLMEKTIG
+                    no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.VERGE -> MottakerType.VERGE
+                    else -> null
+                }
+
+            if (type == null) {
+                return emptySet()
+            }
+
+            val erMedPersonident = brevmottaker.identType == no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.PERSONIDENT
+
+            val vergetype =
+                when {
+                    !erMedPersonident -> Vergetype.ADVOKAT // Brukes her for generelt mottaker som er organisasjon, tilbakekreving behandler advokat som en organisasjon
+                    else -> Vergetype.UDEFINERT
+                }
+
+            if (erMedPersonident) {
+                Brevmottaker(
+                    type = type,
+                    navn = brevmottaker.navn,
+                    personIdent = brevmottaker.ident,
+                    vergetype = vergetype,
+                )
+            } else {
+                Brevmottaker(
+                    type = type,
+                    navn = brevmottaker.navn,
+                    organisasjonsnummer = brevmottaker.ident,
+                    vergetype = vergetype,
+                )
+            }
+        }?.toSet() ?: emptySet()
+}
 
 fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
     HentFagsystemsbehandlingRespons(
