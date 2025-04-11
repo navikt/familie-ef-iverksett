@@ -55,43 +55,29 @@ fun IverksettData.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
     )
 
 fun tilManuelleBrevmottakere(brevmottakere: List<no.nav.familie.ef.iverksett.brev.domain.Brevmottaker>?): Set<Brevmottaker> {
-    return brevmottakere
-        ?.map { brevmottaker ->
-            val type =
-                when (brevmottaker.mottakerRolle) {
-                    no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.FULLMEKTIG -> MottakerType.FULLMEKTIG
-                    no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.VERGE -> MottakerType.VERGE
-                    else -> null
-                }
-
-            if (type == null) {
-                return emptySet()
-            }
-
-            val erMedPersonident = brevmottaker.identType == no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.PERSONIDENT
-
-            val vergetype =
-                when {
-                    !erMedPersonident -> Vergetype.ADVOKAT // Brukes her for generelt mottaker som er organisasjon, tilbakekreving behandler advokat som en organisasjon
-                    else -> Vergetype.UDEFINERT
-                }
-
-            if (erMedPersonident) {
+    val manuelleBrevmottakere =
+        brevmottakere
+            ?.filter { it.mottakerRolle != no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.BRUKER }
+            ?.map {
                 Brevmottaker(
-                    type = type,
-                    navn = brevmottaker.navn,
-                    personIdent = brevmottaker.ident,
-                    vergetype = vergetype,
-                )
-            } else {
-                Brevmottaker(
-                    type = type,
-                    navn = brevmottaker.navn,
-                    organisasjonsnummer = brevmottaker.ident,
-                    vergetype = vergetype,
+                    type =
+                        when (it.mottakerRolle) {
+                            no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.FULLMEKTIG -> MottakerType.FULLMEKTIG
+                            no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.VERGE -> MottakerType.VERGE
+                            else -> {
+                                throw IllegalStateException("Skulle hatt mottaker-rolle som er enten verge eller fullmektig, men var: ${it.mottakerRolle}")
+                            }
+                        },
+                    navn = it.navn,
+                    personIdent = it.ident,
+                    vergetype =
+                        when {
+                            it.identType == no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.ORGANISASJONSNUMMER -> Vergetype.ADVOKAT // Brukes her for generelt mottaker som er organisasjon, tilbakekreving behandler advokat som en organisasjon
+                            else -> Vergetype.UDEFINERT
+                        },
                 )
             }
-        }?.toSet() ?: emptySet()
+    return manuelleBrevmottakere?.toSet() ?: emptySet()
 }
 
 fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
@@ -121,6 +107,7 @@ private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel?
                 tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder?.map { Periode(it.fom, it.tom) }
                     ?: error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
             )
+
         else -> null
     }
 

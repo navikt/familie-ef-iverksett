@@ -67,6 +67,8 @@ internal class TilbakekrevingMapperTest {
                         ?.perioder,
                 ),
             )
+
+        assertThat(request.manuelleBrevmottakere.size).isEqualTo(1)
     }
 
     @Test
@@ -175,3 +177,23 @@ internal class TilbakekrevingMapperTest {
         ).isTrue
     }
 }
+
+val brevmottakere =
+    """
+     "brevmottakere": {
+      "mottakere": [
+        {
+          "ident": "20410483905",
+          "navn": "SPESIFIKK SYL",
+          "identType": "PERSONIDENT",
+          "mottakerRolle": "BRUKER"
+        },
+        {
+          "ident": "22497947956",
+          "navn": "LYSEGRØNN LENSMANN",
+          "identType": "PERSONIDENT",
+          "mottakerRolle": "VERGE"
+        }
+      ]
+    }
+    """.trimIndent()
