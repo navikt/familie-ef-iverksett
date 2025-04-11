@@ -59,22 +59,29 @@ fun tilManuelleBrevmottakere(brevmottakere: List<no.nav.familie.ef.iverksett.bre
         brevmottakere
             ?.filter { it.mottakerRolle != no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.BRUKER }
             ?.map {
+                val type =
+                    when (it.mottakerRolle) {
+                        no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.FULLMEKTIG -> MottakerType.FULLMEKTIG
+                        no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.VERGE -> MottakerType.VERGE
+                        else -> {
+                            throw IllegalStateException("Skulle hatt mottaker-rolle som er enten verge eller fullmektig, men var: ${it.mottakerRolle}")
+                        }
+                    }
+
+                val erOrganisasjon = it.identType == no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.ORGANISASJONSNUMMER
+
+                val vergetype =
+                    when {
+                        erOrganisasjon -> Vergetype.ADVOKAT // Brukes her for generelt mottaker som er organisasjon, tilbakekreving behandler advokat som en organisasjon
+                        else -> Vergetype.UDEFINERT
+                    }
+
                 Brevmottaker(
-                    type =
-                        when (it.mottakerRolle) {
-                            no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.FULLMEKTIG -> MottakerType.FULLMEKTIG
-                            no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.VERGE -> MottakerType.VERGE
-                            else -> {
-                                throw IllegalStateException("Skulle hatt mottaker-rolle som er enten verge eller fullmektig, men var: ${it.mottakerRolle}")
-                            }
-                        },
+                    type = type,
                     navn = it.navn,
-                    personIdent = it.ident,
-                    vergetype =
-                        when {
-                            it.identType == no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.ORGANISASJONSNUMMER -> Vergetype.ADVOKAT // Brukes her for generelt mottaker som er organisasjon, tilbakekreving behandler advokat som en organisasjon
-                            else -> Vergetype.UDEFINERT
-                        },
+                    personIdent = if (!erOrganisasjon) it.ident else null,
+                    vergetype = vergetype,
+                    organisasjonsnummer = if (erOrganisasjon) it.ident else null,
                 )
             }
     return manuelleBrevmottakere?.toSet() ?: emptySet()
