@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottaker
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
@@ -9,7 +10,8 @@ import no.nav.familie.kontrakter.felles.Regelverk
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
-import no.nav.familie.kontrakter.felles.tilbakekreving.Brevmottaker
+import no.nav.familie.kontrakter.felles.tilbakekreving.Brevmottaker as TilbakekrevingBrevmottaker
+import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as IverksettBrevmottaker
 import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
@@ -54,21 +56,21 @@ fun IverksettData.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
         manuelleBrevmottakere = tilManuelleBrevmottakere(this.vedtak.brevmottakere?.mottakere),
     )
 
-fun tilManuelleBrevmottakere(brevmottakere: List<no.nav.familie.ef.iverksett.brev.domain.Brevmottaker>?): Set<Brevmottaker> {
+fun tilManuelleBrevmottakere(brevmottakere: List<Brevmottaker>?): Set<TilbakekrevingBrevmottaker> {
     val manuelleBrevmottakere =
         brevmottakere
-            ?.filter { it.mottakerRolle != no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.BRUKER }
+            ?.filter { it.mottakerRolle != IverksettBrevmottaker.MottakerRolle.BRUKER }
             ?.map {
                 val type =
                     when (it.mottakerRolle) {
-                        no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.FULLMEKTIG -> MottakerType.FULLMEKTIG
-                        no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.VERGE -> MottakerType.VERGE
+                        IverksettBrevmottaker.MottakerRolle.FULLMEKTIG -> MottakerType.FULLMEKTIG
+                        IverksettBrevmottaker.MottakerRolle.VERGE -> MottakerType.VERGE
                         else -> {
                             throw IllegalStateException("Skulle hatt mottaker-rolle som er enten verge eller fullmektig, men var: ${it.mottakerRolle}")
                         }
                     }
 
-                val erOrganisasjon = it.identType == no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.ORGANISASJONSNUMMER
+                val erOrganisasjon = it.identType == IverksettBrevmottaker.IdentType.ORGANISASJONSNUMMER
 
                 val vergetype =
                     when {
@@ -76,7 +78,7 @@ fun tilManuelleBrevmottakere(brevmottakere: List<no.nav.familie.ef.iverksett.bre
                         else -> Vergetype.UDEFINERT
                     }
 
-                Brevmottaker(
+                TilbakekrevingBrevmottaker(
                     type = type,
                     navn = it.navn,
                     personIdent = if (!erOrganisasjon) it.ident else null,
