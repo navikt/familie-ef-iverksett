@@ -13,51 +13,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4
       - name: deploy vedtaksstatistikk to dev
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@655191e618af58744d594ab4226aeac78dc739ec # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-vedtak/topic-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy behandlingsstatistikk to dev
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@655191e618af58744d594ab4226aeac78dc739ec # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-behandling/topic-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy to prod
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@655191e618af58744d594ab4226aeac78dc739ec # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-vedtak/topic-prod.yaml
           PRINT_PAYLOAD: true
       - name: deploy behandlingsstatistikk to prod
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@655191e618af58744d594ab4226aeac78dc739ec # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/statistikk-ensligforsorger-behandling/topic-prod.yaml
           PRINT_PAYLOAD: true
       - name: deploy vedtak kafka-topic to dev
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@655191e618af58744d594ab4226aeac78dc739ec # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/vedtak/topic-vedtak-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy vedtak to prod
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@655191e618af58744d594ab4226aeac78dc739ec # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/vedtak/topic-vedtak-prod.yaml
           PRINT_PAYLOAD: true
       - name: deploy arbeidsoppfølging topic to dev
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@655191e618af58744d594ab4226aeac78dc739ec # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: kafka-aiven/arbeidsoppfølging/topic-arbeidsoppfølging-dev.yaml
           PRINT_PAYLOAD: true
       - name: deploy arbeidsoppfølging topic to prod
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@655191e618af58744d594ab4226aeac78dc739ec # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-gcp
           RESOURCE: kafka-aiven/arbeidsoppfølging/topic-arbeidsoppfølging-prod.yaml
