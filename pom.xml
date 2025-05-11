@@ -16,17 +16,17 @@
     <properties>
         <java.version>21</java.version>
         <kotlin.version>2.1.20</kotlin.version>
-        <springdoc.version>2.8.6</springdoc.version>
-        <felles.version>3.20250422130733_4d831f9</felles.version>
-        <familie.kontrakter.version>3.0_20250508110054_895136e</familie.kontrakter.version>
+        <springdoc.version>2.8.8</springdoc.version>
+        <felles.version>3.20250505101905_835431d</felles.version>
+        <familie.kontrakter.version>3.0_20250508163827_676473b</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20250422132745_dfaa902</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20250422132745_dfaa902</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20250422132745_dfaa902</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20250428110730_a741d1c</prosessering.version>
+        <prosessering.version>2.20250505123518_aa76fed</prosessering.version>
         <utbetalingsgenerator.version>1.0_20250415144931_0dc88d8</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.1.1</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
-        <confluent.version>7.9.0</confluent.version>
+        <confluent.version>7.9.1</confluent.version>
         <mockk-jvm.version>1.14.2</mockk-jvm.version>
         <cucumber.version>7.22.1</cucumber.version>
         <revision>1.0</revision>
@@ -250,7 +250,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>11.8.0</version>
+            <version>11.8.1</version>
             <scope>runtime</scope>
         </dependency>
         <!-- MQ / JMS -->
