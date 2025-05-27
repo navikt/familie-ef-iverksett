@@ -56,8 +56,8 @@ class OppdaterAktivitetspliktInnhentingOppgaveTask(
 
     companion object {
         const val TYPE = "OppdaterAktivitetspliktInnhentingOppgaveTask"
-        const val FRIST_OPPFØLGINGSOPPGAVE = "2024-08-02"
-        const val FRIST_OPPRINNELIG_OPPGAVE = "2024-05-17"
+        const val FRIST_OPPFØLGINGSOPPGAVE = "2025-07-27"
+        const val FRIST_OPPRINNELIG_OPPGAVE = "2025-05-17"
 
         fun utledBeskrivelseForAktivitetspliktOppgave(oppgaveBeskrivelse: String?): String {
             val tidligereBeskrivelse = "\n${oppgaveBeskrivelse.orEmpty()}"
