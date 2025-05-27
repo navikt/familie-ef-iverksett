@@ -6,7 +6,6 @@ import no.nav.familie.ef.iverksett.behandlingsstatistikk.BehandlingsstatistikkTa
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brukernotifikasjon.SendBrukernotifikasjonVedGOmregningTask
-import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
@@ -34,7 +33,6 @@ fun hovedflyt() =
 
 fun publiseringsflyt() =
     listOf(
-        TaskType(SendFattetVedtakTilInfotrygdTask.TYPE),
         TaskType(SendPerioderTilInfotrygdTask.TYPE), // Hopper til vedtakstatistikk ved migrering
         TaskType(SendFattetVedtakTilArenaTask.TYPE),
         TaskType(PubliserVedtakTilKafkaTask.TYPE),

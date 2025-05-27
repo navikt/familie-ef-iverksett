@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.util
 
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottaker
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
@@ -268,7 +269,13 @@ fun vedtaksdetaljerOvergangsstønad(
         tilkjentYtelse = tilkjentYtelse,
         vedtaksperioder = vedtaksperioder,
         tilbakekreving = tilbakekreving,
-        brevmottakere = Brevmottakere(emptyList()),
+        brevmottakere =
+            Brevmottakere(
+                listOf(
+                    Brevmottaker("123", "Verge Navn", no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.PERSONIDENT, no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.VERGE),
+                    Brevmottaker("456", "Bruker Navn", no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.PERSONIDENT, no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.MottakerRolle.BRUKER),
+                ),
+            ),
         oppgaverForOpprettelse = oppgaverForOpprettelse,
         grunnbeløp = grunnbeløp,
         avslagÅrsak = avslagÅrsak,

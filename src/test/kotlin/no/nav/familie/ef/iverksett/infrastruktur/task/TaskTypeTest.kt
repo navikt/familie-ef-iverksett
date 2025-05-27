@@ -6,7 +6,6 @@ import no.nav.familie.ef.iverksett.behandlingsstatistikk.BehandlingsstatistikkTa
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brukernotifikasjon.SendBrukernotifikasjonVedGOmregningTask
-import no.nav.familie.ef.iverksett.infotrygd.SendFattetVedtakTilInfotrygdTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
@@ -48,13 +47,13 @@ class TaskTypeTest {
 
     @Test
     fun `test publiseringTaskflyt`() {
-        val sendFattetVedtakTilInfotrygdTask = Task(SendFattetVedtakTilInfotrygdTask.TYPE, "", Properties())
-        val sendPerioderTilInfotrygdTask = sendFattetVedtakTilInfotrygdTask.opprettNestePubliseringTask()
+        val sendPerioderTilInfotrygdTask = Task(SendPerioderTilInfotrygdTask.TYPE, "", Properties())
 
         assertThat(sendPerioderTilInfotrygdTask.type).isEqualTo(SendPerioderTilInfotrygdTask.TYPE)
         assertThat(sendPerioderTilInfotrygdTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
         val sendFattetVedtakTilArenaTask = sendPerioderTilInfotrygdTask.opprettNestePubliseringTask()
+
         assertThat(sendFattetVedtakTilArenaTask.type).isEqualTo(SendFattetVedtakTilArenaTask.TYPE)
         assertThat(sendFattetVedtakTilArenaTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 

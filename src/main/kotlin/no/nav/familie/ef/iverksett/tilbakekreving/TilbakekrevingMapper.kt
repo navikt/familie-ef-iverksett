@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
+import no.nav.familie.ef.iverksett.brev.domain.Brevmottaker
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Tilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
@@ -9,13 +10,17 @@ import no.nav.familie.kontrakter.felles.Regelverk
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
+import no.nav.familie.kontrakter.felles.tilbakekreving.Brevmottaker as TilbakekrevingBrevmottaker
+import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as IverksettBrevmottaker
 import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
+import no.nav.familie.kontrakter.felles.tilbakekreving.MottakerType
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.Periode
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
+import no.nav.familie.kontrakter.felles.tilbakekreving.Vergetype
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
 
 const val ENHETSNAVN_BREV = "NAV Arbeid og ytelser"
@@ -48,7 +53,41 @@ fun IverksettData.tilOpprettTilbakekrevingRequest(enhet: Enhet) =
         faktainfo = lagFaktainfo(this),
         regelverk = tilRegelverk(this.behandling.kategori),
         begrunnelseForTilbakekreving = this.vedtak.tilbakekreving?.begrunnelseForTilbakekreving,
+        manuelleBrevmottakere = tilManuelleBrevmottakere(this.vedtak.brevmottakere?.mottakere),
     )
+
+fun tilManuelleBrevmottakere(brevmottakere: List<Brevmottaker>?): Set<TilbakekrevingBrevmottaker> {
+    val manuelleBrevmottakere =
+        brevmottakere
+            ?.filter { it.mottakerRolle != IverksettBrevmottaker.MottakerRolle.BRUKER }
+            ?.map {
+                val type =
+                    when (it.mottakerRolle) {
+                        IverksettBrevmottaker.MottakerRolle.FULLMEKTIG -> MottakerType.FULLMEKTIG
+                        IverksettBrevmottaker.MottakerRolle.VERGE -> MottakerType.VERGE
+                        else -> {
+                            throw IllegalStateException("Skulle hatt mottaker-rolle som er enten verge eller fullmektig, men var: ${it.mottakerRolle}")
+                        }
+                    }
+
+                val erOrganisasjon = it.identType == IverksettBrevmottaker.IdentType.ORGANISASJONSNUMMER
+
+                val vergetype =
+                    when {
+                        erOrganisasjon -> Vergetype.ADVOKAT // Brukes her for generelt mottaker som er organisasjon, tilbakekreving behandler advokat som en organisasjon
+                        else -> Vergetype.UDEFINERT
+                    }
+
+                TilbakekrevingBrevmottaker(
+                    type = type,
+                    navn = it.navn,
+                    personIdent = if (!erOrganisasjon) it.ident else null,
+                    vergetype = vergetype,
+                    organisasjonsnummer = if (erOrganisasjon) it.ident else null,
+                )
+            }
+    return manuelleBrevmottakere?.toSet() ?: emptySet()
+}
 
 fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
     HentFagsystemsbehandlingRespons(
@@ -77,6 +116,7 @@ private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel?
                 tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder?.map { Periode(it.fom, it.tom) }
                     ?: error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
             )
+
         else -> null
     }
 
@@ -99,7 +139,7 @@ private fun BehandlingÅrsak.visningsTekst(): String =
         BehandlingÅrsak.MANUELT_OPPRETTET -> "Manuelt opprettet"
         BehandlingÅrsak.G_OMREGNING -> "G-omregning"
         BehandlingÅrsak.SATSENDRING -> "Satsendring"
-
+        BehandlingÅrsak.AUTOMATISK_INNTEKTSENDRING -> "Automatisk inntektsendring"
         BehandlingÅrsak.MIGRERING,
         BehandlingÅrsak.SANKSJON_1_MND,
         -> error("Skal ikke gi tilbakekreving for årsak=$this")
