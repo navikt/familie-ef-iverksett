@@ -10,8 +10,6 @@ import no.nav.familie.kontrakter.felles.Regelverk
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
-import no.nav.familie.kontrakter.felles.tilbakekreving.Brevmottaker as TilbakekrevingBrevmottaker
-import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as IverksettBrevmottaker
 import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
@@ -22,6 +20,8 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Varsel
 import no.nav.familie.kontrakter.felles.tilbakekreving.Vergetype
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
+import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker as IverksettBrevmottaker
+import no.nav.familie.kontrakter.felles.tilbakekreving.Brevmottaker as TilbakekrevingBrevmottaker
 
 const val ENHETSNAVN_BREV = "NAV Arbeid og ytelser"
 
