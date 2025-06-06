@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.5</version>
+        <version>3.5.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -18,22 +18,22 @@
         <kotlin.version>2.1.21</kotlin.version>
         <springdoc.version>2.8.8</springdoc.version>
         <felles.version>3.20250505101905_835431d</felles.version>
-        <familie.kontrakter.version>3.0_20250513140227_11db730</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20250422132745_dfaa902</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20250422132745_dfaa902</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20250422132745_dfaa902</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20250512065737_a9c3191</prosessering.version>
+        <familie.kontrakter.version>3.0_20250530161722_14f12e3</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20250528130257_514d030</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20250528130257_514d030</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20250528130257_514d030</familie.eksterne-kontrakter.arbeidsoppfolging>
+        <prosessering.version>2.20250526085951_e212049</prosessering.version>
         <utbetalingsgenerator.version>1.0_20250415144931_0dc88d8</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.1.1</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
         <confluent.version>7.9.1</confluent.version>
         <mockk-jvm.version>1.14.2</mockk-jvm.version>
-        <cucumber.version>7.22.2</cucumber.version>
+        <cucumber.version>7.23.0</cucumber.version>
         <revision>1.0</revision>
         <dotenv.version>6.4.1</dotenv.version>
         <changelist>-SNAPSHOT</changelist>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>5.0.27</token-validation-spring.version>
+        <token-validation-spring.version>5.0.29</token-validation-spring.version>
         <ibm-mq-client.version>9.4.2.1</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
@@ -272,7 +272,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.21.0</version>
+            <version>1.21.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -412,7 +412,7 @@
                     <dependency>
                         <groupId>com.pinterest.ktlint</groupId>
                         <artifactId>ktlint-cli</artifactId>
-                        <version>1.5.0</version>
+                        <version>1.6.0</version>
                     </dependency>
                     <!-- additional 3rd party ruleset(s) can be specified here -->
                 </dependencies>
