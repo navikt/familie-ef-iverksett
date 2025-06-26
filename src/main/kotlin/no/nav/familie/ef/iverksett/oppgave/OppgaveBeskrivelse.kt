@@ -11,9 +11,15 @@ object OppgaveBeskrivelse {
     fun beskrivelseFørstegangsbehandlingInnvilget(
         periode: Pair<LocalDate, LocalDate>,
         vedtak: VedtaksperiodeOvergangsstønad,
-    ): String =
-        "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
-            "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
+    ): String {
+        val beskrivelse =
+            "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
+                "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
+
+        val hensvisningServicerutine = " Du finner \"Enslig mor eller far - Servicerutiner\" på Navet. Den beskriver hvordan bruker skal følges opp i ulike situasjoner."
+
+        return beskrivelse + hensvisningServicerutine
+    }
 
     fun beskrivelseFørstegangsbehandlingAvslått(vedtaksdato: LocalDate): String = "Søknad om overgangsstønad er avslått i vedtak datert ${vedtaksdato.toReadable()}."
 
