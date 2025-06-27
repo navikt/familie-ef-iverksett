@@ -16,7 +16,8 @@ object OppgaveBeskrivelse {
             "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
                 "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
 
-        val hensvisningServicerutine = " Du finner \"Enslig mor eller far - Servicerutiner\" på Navet. Den beskriver hvordan bruker skal følges opp i ulike situasjoner."
+        val hensvisningServicerutine =
+            "\n\nDu finner \"Enslig mor eller far - Servicerutiner\" på Navet. Den beskriver hvordan bruker skal følges opp i ulike situasjoner."
 
         return beskrivelse + hensvisningServicerutine
     }
