@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
@@ -34,6 +35,7 @@ class OppgaveService(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    // if IverksettData i stedet for IverksettOvergangsstønad?
     fun skalOppretteVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Boolean {
         if (iverksett.skalIkkeSendeBrev()) {
             return false
@@ -103,6 +105,29 @@ class OppgaveService(
             ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
+    fun opprettFremleggsoppgaveViaBarnetilsyn(
+        iverksett: IverksettBarnetilsyn,
+        beskrivelse: String,
+        oppgaveForOpprettelseType: OppgaveForOpprettelseType,
+    ): Long {
+        val opprettOppgaveRequest =
+            OppgaveUtil.opprettOppgaveRequest(
+                eksternFagsakId = iverksett.fagsak.eksternId,
+                personIdent = iverksett.søker.personIdent,
+                stønadstype = iverksett.fagsak.stønadstype,
+                enhetId = iverksett.søker.tilhørendeEnhet,
+                oppgavetype = Oppgavetype.Fremlegg,
+                beskrivelse = beskrivelse,
+                settBehandlesAvApplikasjon = false,
+                fristFerdigstillelse = lagFristFerdigstillelseViaBarnetilsyn(iverksett),
+                mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId, oppgaveForOpprettelseType),
+                oppgaveForOpprettelseType = oppgaveForOpprettelseType,
+            )
+
+        return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
+            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+    }
+
     fun lagFristFerdigstillelse(iverksett: IverksettOvergangsstønad): LocalDate? {
         val femtende = 15
 
@@ -120,6 +145,26 @@ class OppgaveService(
 
         val vedtaksDato = iverksett.vedtak.vedtakstidspunkt.toLocalDate()
 
+        val fristFerdigstillelse = fristKontrollAvSelvstendig ?: lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksDato)
+
+        return fristFerdigstillelse
+    }
+
+    fun lagFristFerdigstillelseViaBarnetilsyn(iverksett: IverksettBarnetilsyn): LocalDate? {
+        val femtende = 15
+        val erKontrollAvSelvstendig =
+            iverksett.vedtak.oppgaverForOpprettelse.oppgavetyper
+                .contains(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE)
+        val årForKontrollAvSelvstendig = iverksett.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende
+
+        val fristKontrollAvSelvstendig: LocalDate? =
+            if (årForKontrollAvSelvstendig != null && erKontrollAvSelvstendig) {
+                LocalDate.of(årForKontrollAvSelvstendig, Month.DECEMBER, femtende)
+            } else {
+                null
+            }
+
+        val vedtaksDato = iverksett.vedtak.vedtakstidspunkt.toLocalDate()
         val fristFerdigstillelse = fristKontrollAvSelvstendig ?: lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksDato)
 
         return fristFerdigstillelse
@@ -248,6 +293,7 @@ class OppgaveService(
         return tilkjentYtelse.andelerTilkjentYtelse.maxOfOrNull { it.periode.tomDato }
     }
 
+    // if i change to general sann
     private fun aktivitetEllerPeriodeEndret(iverksett: IverksettOvergangsstønad): Boolean {
         val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId ?: return true
         val forrigeBehandling = iverksettingRepository.findByIdOrThrow(forrigeBehandlingId).data

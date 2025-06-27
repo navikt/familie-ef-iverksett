@@ -54,6 +54,7 @@
     "kategori": "NASJONAL"
   },
   "søker": {
+    "personIdent": "12345678901",
     "barn": [
       {
         "personIdent": "1234567910",
@@ -61,13 +62,33 @@
       }
     ],
     "tilhørendeEnhet": "4489",
-    "adressebeskyttelse": "STRENGT_FORTROLIG",
-    "personIdent": "12345678901"
+    "adressebeskyttelse": "STRENGT_FORTROLIG"
   },
   "vedtak": {
     "resultat": "AVSLÅTT",
-    "opphørÅrsak": "PERIODE_UTLØPT",
     "vedtakstidspunkt": "2021-05-10T01:00:00",
+    "opphørÅrsak": "PERIODE_UTLØPT",
+    "saksbehandlerId": "A123456",
+    "beslutterId": "B123456",
+    "tilkjentYtelse": {
+      "andelerTilkjentYtelse": [
+        {
+          "beløp": 0,
+          "inntekt": 0,
+          "inntektsreduksjon": 0,
+          "samordningsfradrag": 0,
+          "fraOgMed": null,
+          "tilOgMed": null,
+          "periode": {
+            "fom": "2021-05",
+            "tom": "2021-05"
+          },
+          "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        }
+      ],
+      "startdato": null,
+      "startmåned": "2020-03"
+    },
     "vedtaksperioder": [
       {
         "fraOgMed": null,
@@ -80,27 +101,6 @@
         "antallBarn": 2
       }
     ],
-    "saksbehandlerId": "A123456",
-    "beslutterId": "B123456",
-    "tilkjentYtelse": {
-      "andelerTilkjentYtelse": [
-        {
-          "kildeBehandlingId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-          "fraOgMed": null,
-          "tilOgMed": null,
-          "periode": {
-            "fom": "2021-05",
-            "tom": "2021-05"
-          },
-          "beløp": 0,
-          "inntekt": 0,
-          "samordningsfradrag": 0,
-          "inntektsreduksjon": 0
-        }
-      ],
-      "startdato": null,
-      "startmåned": "2020-03"
-    },
     "tilbakekreving": {
       "tilbakekrevingsvalg": "OPPRETT_TILBAKEKREVING_MED_VARSEL",
       "tilbakekrevingMedVarsel": {
@@ -117,6 +117,11 @@
       "begrunnelseForTilbakekreving": "Begrunnelse"
     },
     "brevmottakere": [],
+    "avslagÅrsak": null,
+    "oppgaverForOpprettelse": {
+      "oppgavetyper": [],
+      "årForInntektskontrollSelvstendigNæringsdrivende": null
+    },
     "kontantstøtte": [
       {
         "fraOgMed": null,
@@ -138,8 +143,7 @@
         },
         "beløp": 12
       }
-    ],
-    "avslagÅrsak":null
+    ]
   }
 }
 

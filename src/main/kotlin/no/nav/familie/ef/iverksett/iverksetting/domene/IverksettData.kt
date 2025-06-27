@@ -202,6 +202,7 @@ data class VedtaksdetaljerBarnetilsyn(
     override val brevmottakere: Brevmottakere? = null,
     override val vedtaksperioder: List<VedtaksperiodeBarnetilsyn> = listOf(),
     override val avslagÅrsak: AvslagÅrsak? = null,
+    val oppgaverForOpprettelse: OppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = emptyList(), årForInntektskontrollSelvstendigNæringsdrivende = null),
     val kontantstøtte: List<PeriodeMedBeløp> = listOf(),
     val tilleggsstønad: List<PeriodeMedBeløp> = listOf(),
 ) : Vedtaksdetaljer()
