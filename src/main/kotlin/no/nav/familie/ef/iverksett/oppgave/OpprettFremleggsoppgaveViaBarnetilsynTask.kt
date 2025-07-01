@@ -60,9 +60,9 @@ class OpprettFremleggsoppgaveViaBarnetilsynTask(
             val beskrivelse = lagBeskrivelseForFremleggsoppgave(oppgaveForOpprettelseType, iverksettData)
 
             val oppgaveId = oppgaveService.opprettFremleggsoppgaveViaBarnetilsyn(iverksettData, beskrivelse, oppgaveForOpprettelseType)
-            logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId")
+            logger.info("Opprettet oppgave for behandling=$behandlingId oppgave=$oppgaveId med barnetilsyn")
         } else {
-            logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
+            logger.info("Oppgave opprettes ikke for behandling=$behandlingId med barnetilsyn")
         }
     }
 
