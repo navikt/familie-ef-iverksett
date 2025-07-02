@@ -16,6 +16,7 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppgave.MappeDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
@@ -110,11 +111,20 @@ class OppgaveService(
         beskrivelse: String,
         oppgaveForOpprettelseType: OppgaveForOpprettelseType,
     ): Long {
+        val stønadstype: StønadType =
+            if (iverksett.vedtak.oppgaverForOpprettelse.oppgavetyper
+                    .contains(oppgaveForOpprettelseType)
+            ) {
+                StønadType.OVERGANGSSTØNAD
+            } else {
+                iverksett.fagsak.stønadstype
+            }
+
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 eksternFagsakId = iverksett.fagsak.eksternId,
                 personIdent = iverksett.søker.personIdent,
-                stønadstype = iverksett.fagsak.stønadstype,
+                stønadstype = stønadstype,
                 enhetId = iverksett.søker.tilhørendeEnhet,
                 oppgavetype = Oppgavetype.Fremlegg,
                 beskrivelse = beskrivelse,
