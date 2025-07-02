@@ -8,6 +8,9 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object OppgaveBeskrivelse {
+    val hensvisningServicerutine =
+        "\n\nDu finner \"Enslig mor eller far - Servicerutiner\" på Navet. Den beskriver hvordan bruker skal følges opp i ulike situasjoner."
+
     fun beskrivelseFørstegangsbehandlingInnvilget(
         periode: Pair<LocalDate, LocalDate>,
         vedtak: VedtaksperiodeOvergangsstønad,
@@ -16,25 +19,30 @@ object OppgaveBeskrivelse {
             "Overgangsstønad er innvilget fra ${periode.vedtaksPeriodeToString()}. " +
                 "Aktivitet: ${vedtak.aktivitet.beskrivelse()}."
 
-        val hensvisningServicerutine =
-            "\n\nDu finner \"Enslig mor eller far - Servicerutiner\" på Navet. Den beskriver hvordan bruker skal følges opp i ulike situasjoner."
-
         return beskrivelse + hensvisningServicerutine
     }
 
-    fun beskrivelseFørstegangsbehandlingAvslått(vedtaksdato: LocalDate): String = "Søknad om overgangsstønad er avslått i vedtak datert ${vedtaksdato.toReadable()}."
+    fun beskrivelseFørstegangsbehandlingAvslått(vedtaksdato: LocalDate): String = "Søknad om overgangsstønad er avslått i vedtak datert ${vedtaksdato.toReadable()}." + hensvisningServicerutine
 
     fun beskrivelseRevurderingInnvilget(
         vedtaksPeriode: Pair<LocalDate, LocalDate>,
         gjeldendeVedtak: VedtaksperiodeOvergangsstønad,
-    ): String =
-        "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
-            "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
+    ): String {
+        val beskrivelse =
+            "Overgangsstønad revurdert. Periode ${vedtaksPeriode.vedtaksPeriodeToString()}. " +
+                "Aktivitet: ${gjeldendeVedtak.aktivitet.beskrivelse()}."
 
-    fun beskrivelseRevurderingOpphørt(opphørsdato: LocalDate?): String =
-        opphørsdato?.let {
-            "Overgangsstønad er stanset fra ${opphørsdato.toReadable()}."
-        } ?: "Overgangsstønad er stanset"
+        return beskrivelse + hensvisningServicerutine
+    }
+
+    fun beskrivelseRevurderingOpphørt(opphørsdato: LocalDate?): String {
+        val beskrivelse =
+            opphørsdato?.let {
+                "Overgangsstønad er stanset fra ${opphørsdato.toReadable()}."
+            } ?: "Overgangsstønad er stanset"
+
+        return beskrivelse + hensvisningServicerutine
+    }
 
     private fun LocalDate.toReadable(): String = this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
