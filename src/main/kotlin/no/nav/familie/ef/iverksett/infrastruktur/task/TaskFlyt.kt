@@ -7,8 +7,7 @@ import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brukernotifikasjon.SendBrukernotifikasjonVedGOmregningTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
-import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaveForOvergangsstønadTask
-import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaveViaBarnetilsynTask
+import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaverTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.vedtak.PubliserVedtakTilKafkaTask
@@ -39,8 +38,9 @@ fun publiseringsflyt() =
         TaskType(PubliserVedtakTilKafkaTask.TYPE),
         TaskType(SendVedtakTilArbeidsoppfølgingTask.TYPE),
         TaskType(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE),
-        TaskType(OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE),
-        TaskType(OpprettFremleggsoppgaveViaBarnetilsynTask.TYPE), // testing for å se fremleggsoppgave kan opprettes via barnetilsyn i Gosys
+        TaskType(OpprettFremleggsoppgaverTask.TYPE),
+//        TaskType(OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE),
+//        TaskType(OpprettFremleggsoppgaveViaBarnetilsynTask.TYPE),
         TaskType(VedtakstatistikkTask.TYPE),
         TaskType(SendBrukernotifikasjonVedGOmregningTask.TYPE),
         TaskType(BehandlingsstatistikkTask.TYPE),

@@ -7,8 +7,7 @@ import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brukernotifikasjon.SendBrukernotifikasjonVedGOmregningTask
 import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
-import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaveForOvergangsstønadTask
-import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaveViaBarnetilsynTask
+import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaverTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.vedtak.PubliserVedtakTilKafkaTask
@@ -70,15 +69,15 @@ class TaskTypeTest {
         assertThat(opprettOppgaveTask.type).isEqualTo(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE)
         assertThat(opprettOppgaveTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
-        val opprettFremleggsOppgaveTask = opprettOppgaveTask.opprettNestePubliseringTask()
-        assertThat(opprettFremleggsOppgaveTask.type).isEqualTo(OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE)
-        assertThat(opprettFremleggsOppgaveTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+        val opprettFremleggsOppgaverTask = opprettOppgaveTask.opprettNestePubliseringTask()
+        assertThat(opprettFremleggsOppgaverTask.type).isEqualTo(OpprettFremleggsoppgaverTask.TYPE)
+        assertThat(opprettFremleggsOppgaverTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
-        val opprettFremleggsOppgaveViaBarnetilsynTask = opprettFremleggsOppgaveTask.opprettNestePubliseringTask()
-        assertThat(opprettFremleggsOppgaveViaBarnetilsynTask.type).isEqualTo(OpprettFremleggsoppgaveViaBarnetilsynTask.TYPE)
-        assertThat(opprettFremleggsOppgaveViaBarnetilsynTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
+//        val opprettFremleggsOppgaveViaBarnetilsynTask = opprettFremleggsOppgaveTask.opprettNestePubliseringTask()
+//        assertThat(opprettFremleggsOppgaveViaBarnetilsynTask.type).isEqualTo(OpprettFremleggsoppgaveViaBarnetilsynTask.TYPE)
+//        assertThat(opprettFremleggsOppgaveViaBarnetilsynTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
-        val vedtaksstatistikkTask = opprettFremleggsOppgaveViaBarnetilsynTask.opprettNestePubliseringTask()
+        val vedtaksstatistikkTask = opprettFremleggsOppgaverTask.opprettNestePubliseringTask()
         assertThat(vedtaksstatistikkTask.type).isEqualTo(VedtakstatistikkTask.TYPE)
         assertThat(vedtaksstatistikkTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
