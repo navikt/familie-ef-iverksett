@@ -39,8 +39,6 @@ fun publiseringsflyt() =
         TaskType(SendVedtakTilArbeidsoppfølgingTask.TYPE),
         TaskType(OpprettOppfølgingsOppgaveForOvergangsstønadTask.TYPE),
         TaskType(OpprettFremleggsoppgaverTask.TYPE),
-//        TaskType(OpprettFremleggsoppgaveForOvergangsstønadTask.TYPE),
-//        TaskType(OpprettFremleggsoppgaveViaBarnetilsynTask.TYPE),
         TaskType(VedtakstatistikkTask.TYPE),
         TaskType(SendBrukernotifikasjonVedGOmregningTask.TYPE),
         TaskType(BehandlingsstatistikkTask.TYPE),

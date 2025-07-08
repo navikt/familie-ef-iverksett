@@ -36,7 +36,6 @@ class OppgaveService(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    // if IverksettData i stedet for IverksettOvergangsstønad?
     fun skalOppretteVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Boolean {
         if (iverksett.skalIkkeSendeBrev()) {
             return false
@@ -303,7 +302,6 @@ class OppgaveService(
         return tilkjentYtelse.andelerTilkjentYtelse.maxOfOrNull { it.periode.tomDato }
     }
 
-    // if i change to general sann
     private fun aktivitetEllerPeriodeEndret(iverksett: IverksettOvergangsstønad): Boolean {
         val forrigeBehandlingId = iverksett.behandling.forrigeBehandlingId ?: return true
         val forrigeBehandling = iverksettingRepository.findByIdOrThrow(forrigeBehandlingId).data

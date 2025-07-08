@@ -73,10 +73,6 @@ class TaskTypeTest {
         assertThat(opprettFremleggsOppgaverTask.type).isEqualTo(OpprettFremleggsoppgaverTask.TYPE)
         assertThat(opprettFremleggsOppgaverTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
 
-//        val opprettFremleggsOppgaveViaBarnetilsynTask = opprettFremleggsOppgaveTask.opprettNestePubliseringTask()
-//        assertThat(opprettFremleggsOppgaveViaBarnetilsynTask.type).isEqualTo(OpprettFremleggsoppgaveViaBarnetilsynTask.TYPE)
-//        assertThat(opprettFremleggsOppgaveViaBarnetilsynTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
-
         val vedtaksstatistikkTask = opprettFremleggsOppgaverTask.opprettNestePubliseringTask()
         assertThat(vedtaksstatistikkTask.type).isEqualTo(VedtakstatistikkTask.TYPE)
         assertThat(vedtaksstatistikkTask.triggerTid).isBefore(LocalDateTime.now().plusMinutes(1))
