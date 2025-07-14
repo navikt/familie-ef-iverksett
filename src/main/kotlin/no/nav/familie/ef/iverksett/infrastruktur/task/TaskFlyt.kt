@@ -30,7 +30,7 @@ fun hovedflyt() =
         TaskType(JournalførVedtaksbrevTask.TYPE),
         TaskType(DistribuerVedtaksbrevTask.TYPE),
     )
-
+// skal testes
 fun publiseringsflyt() =
     listOf(
         TaskType(SendPerioderTilInfotrygdTask.TYPE), // Hopper til vedtakstatistikk ved migrering
