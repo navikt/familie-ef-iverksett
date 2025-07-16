@@ -145,6 +145,7 @@ fun VedtaksdetaljerBarnetilsynDto.toDomain(): VedtaksdetaljerBarnetilsyn =
         brevmottakere = this.brevmottakere.toDomain(),
         kontantstøtte = this.kontantstøtte.map { it.toDomain() },
         tilleggsstønad = this.tilleggsstønad.map { it.toDomain() },
+        oppgaverForOpprettelse = this.oppgaverForOpprettelse.toDomain(),
         avslagÅrsak = this.avslagÅrsak,
     )
 

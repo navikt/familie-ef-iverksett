@@ -2,6 +2,7 @@ package no.nav.familie.ef.iverksett.oppgave
 
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.iverksetting.domene.VedtaksperiodeOvergangsstønad
 import no.nav.familie.ef.iverksett.oppgave.OppgaveBeskrivelse.beskrivelseFørstegangsbehandlingAvslått
@@ -15,6 +16,7 @@ import no.nav.familie.kontrakter.ef.felles.BehandlingÅrsak
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.OppgaveForOpprettelseType
 import no.nav.familie.kontrakter.ef.iverksett.VedtaksperiodeType
+import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.oppgave.MappeDto
 import no.nav.familie.kontrakter.felles.oppgave.Oppgave
 import no.nav.familie.kontrakter.felles.oppgave.Oppgavetype
@@ -103,6 +105,38 @@ class OppgaveService(
             ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
+    fun opprettFremleggsoppgaveViaBarnetilsyn(
+        iverksett: IverksettBarnetilsyn,
+        beskrivelse: String,
+        oppgaveForOpprettelseType: OppgaveForOpprettelseType,
+    ): Long {
+        val stønadstype: StønadType =
+            if (iverksett.vedtak.oppgaverForOpprettelse.oppgavetyper
+                    .contains(oppgaveForOpprettelseType)
+            ) {
+                StønadType.OVERGANGSSTØNAD
+            } else {
+                iverksett.fagsak.stønadstype
+            }
+
+        val opprettOppgaveRequest =
+            OppgaveUtil.opprettOppgaveRequest(
+                eksternFagsakId = iverksett.fagsak.eksternId,
+                personIdent = iverksett.søker.personIdent,
+                stønadstype = stønadstype,
+                enhetId = iverksett.søker.tilhørendeEnhet,
+                oppgavetype = Oppgavetype.Fremlegg,
+                beskrivelse = beskrivelse,
+                settBehandlesAvApplikasjon = false,
+                fristFerdigstillelse = lagFristFerdigstillelseViaBarnetilsyn(iverksett),
+                mappeId = finnMappeForFremleggsoppgave(iverksett.søker.tilhørendeEnhet, iverksett.behandling.behandlingId, oppgaveForOpprettelseType),
+                oppgaveForOpprettelseType = oppgaveForOpprettelseType,
+            )
+
+        return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
+            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+    }
+
     fun lagFristFerdigstillelse(iverksett: IverksettOvergangsstønad): LocalDate? {
         val femtende = 15
 
@@ -121,6 +155,26 @@ class OppgaveService(
         val vedtaksDato = iverksett.vedtak.vedtakstidspunkt.toLocalDate()
 
         val fristFerdigstillelse = fristKontrollAvSelvstendig ?: lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksDato)
+
+        return fristFerdigstillelse
+    }
+
+    fun lagFristFerdigstillelseViaBarnetilsyn(iverksett: IverksettBarnetilsyn): LocalDate? {
+        val femtende = 15
+        val erKontrollAvSelvstendig =
+            iverksett.vedtak.oppgaverForOpprettelse.oppgavetyper
+                .contains(OppgaveForOpprettelseType.INNTEKTSKONTROLL_SELVSTENDIG_NÆRINGSDRIVENDE)
+        val årForKontrollAvSelvstendig = iverksett.vedtak.oppgaverForOpprettelse.årForInntektskontrollSelvstendigNæringsdrivende
+
+        val fristKontrollAvSelvstendig: LocalDate? =
+            if (årForKontrollAvSelvstendig != null && erKontrollAvSelvstendig) {
+                LocalDate.of(årForKontrollAvSelvstendig, Month.DECEMBER, femtende)
+            } else {
+                null
+            }
+
+        val vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate()
+        val fristFerdigstillelse = fristKontrollAvSelvstendig ?: lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksdato)
 
         return fristFerdigstillelse
     }
