@@ -173,8 +173,8 @@ class OppgaveService(
                 null
             }
 
-        val vedtaksDato = iverksett.vedtak.vedtakstidspunkt.toLocalDate()
-        val fristFerdigstillelse = fristKontrollAvSelvstendig ?: lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksDato)
+        val vedtaksdato = iverksett.vedtak.vedtakstidspunkt.toLocalDate()
+        val fristFerdigstillelse = fristKontrollAvSelvstendig ?: lagFristFerdigstillelseForInntektskontrollEttÅrFrem(vedtaksdato)
 
         return fristFerdigstillelse
     }
