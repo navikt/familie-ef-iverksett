@@ -110,20 +110,11 @@ class OppgaveService(
         beskrivelse: String,
         oppgaveForOpprettelseType: OppgaveForOpprettelseType,
     ): Long {
-        val stønadstype: StønadType =
-            if (iverksett.vedtak.oppgaverForOpprettelse.oppgavetyper
-                    .contains(oppgaveForOpprettelseType)
-            ) {
-                StønadType.OVERGANGSSTØNAD
-            } else {
-                iverksett.fagsak.stønadstype
-            }
-
         val opprettOppgaveRequest =
             OppgaveUtil.opprettOppgaveRequest(
                 eksternFagsakId = iverksett.fagsak.eksternId,
                 personIdent = iverksett.søker.personIdent,
-                stønadstype = stønadstype,
+                stønadstype = StønadType.OVERGANGSSTØNAD,
                 enhetId = iverksett.søker.tilhørendeEnhet,
                 oppgavetype = Oppgavetype.Fremlegg,
                 beskrivelse = beskrivelse,
