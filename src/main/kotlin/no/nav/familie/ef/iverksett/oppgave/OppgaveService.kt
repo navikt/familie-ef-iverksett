@@ -78,8 +78,7 @@ class OppgaveService(
                 settBehandlesAvApplikasjon = false,
             )
 
-        return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
-            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+        return oppgaveClient.opprettOppgave(opprettOppgaveRequest) ?: error("Kunne ikke opprette oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
     fun opprettFremleggsoppgave(
@@ -101,8 +100,7 @@ class OppgaveService(
                 oppgaveForOpprettelseType = oppgaveForOpprettelseType,
             )
 
-        return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
-            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+        return oppgaveClient.opprettOppgave(opprettOppgaveRequest) ?: error("Kunne ikke opprette oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
     fun opprettFremleggsoppgaveViaBarnetilsyn(
@@ -124,8 +122,7 @@ class OppgaveService(
                 oppgaveForOpprettelseType = oppgaveForOpprettelseType,
             )
 
-        return oppgaveClient.opprettOppgave(opprettOppgaveRequest)?.let { return it }
-            ?: error("Kunne ikke finne oppgave for behandlingId=${iverksett.behandling.behandlingId}")
+        return oppgaveClient.opprettOppgave(opprettOppgaveRequest) ?: error("Kunne ikke opprette oppgave for behandlingId=${iverksett.behandling.behandlingId}")
     }
 
     fun lagFristFerdigstillelse(iverksett: IverksettOvergangsstønad): LocalDate? {
