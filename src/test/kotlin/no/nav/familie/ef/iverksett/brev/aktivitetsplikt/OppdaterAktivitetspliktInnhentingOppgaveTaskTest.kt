@@ -172,7 +172,8 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
 
     private val nyBeskrivelseToTidligereInnslag =
         "Brev om innhenting av dokumentasjon på videre aktivitet er sendt til bruker.\n\n" +
-            "Oppgave opprettet.\n\n" + "Oppgave lagt i mappe 64."
+            "Oppgave opprettet.\n\n" +
+            "Oppgave lagt i mappe 64."
 
     private val nyBeskrivelseEtTidligereInnslag = "Brev om innhenting av dokumentasjon på videre aktivitet er sendt til bruker.\n\nOppgave opprettet."
 
