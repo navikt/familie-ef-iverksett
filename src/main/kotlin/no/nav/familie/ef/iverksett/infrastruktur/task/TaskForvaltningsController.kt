@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
 import no.nav.familie.prosessering.TaskStepBeskrivelse
+import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.internal.TaskService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
@@ -24,21 +25,32 @@ class TaskForvaltningsController(
     private val taskService: TaskService,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
 
     @PostMapping("/restart/{taskId}")
     fun hentStatus(
         @PathVariable taskId: Long,
     ): ResponseEntity<String> {
+
+        logger.info("Starter kloning av task id ${taskId}.")
+
         val task = taskService.findById(taskId)
+
+        check(task.status==Status.MANUELL_OPPFØLGING) { "Task må ha status MANUELL_OPPFØLGING" }
+        logger.info("Fant task: ${task.id} med type ${task.type}.")
 
         val annotation = task::class.findAnnotation<TaskStepBeskrivelse>()
         val maxAntallFeil = annotation?.maxAntallFeil ?: 3
         val antallGangerPlukket = taskService.antallGangerPlukket(taskId)
 
+        logger.info("Tasken har blitt plukket $antallGangerPlukket ganger. Maks antall feil tillatt: $maxAntallFeil.")
+
         check(antallGangerPlukket > maxAntallFeil){"Tasken kan ikke plukkes på nytt, da den ikke er plukket for mange ganger: $antallGangerPlukket"}
 
         val nyTask = task.copy(id = 0L, triggerTid = LocalDateTime.now().plusMinutes(15))
+        secureLogger.info(nyTask.toString())
+
         val lagretTask = taskService.save(nyTask) // For å restarte tasken, må vi sette id til 0, slik at den blir opprettet på nytt
 
         logger.info("Kloner task med id ${task.id}. Opprettet ny task: ${lagretTask.id}")
