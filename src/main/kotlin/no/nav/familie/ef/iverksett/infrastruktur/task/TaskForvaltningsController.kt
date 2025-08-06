@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -29,6 +30,7 @@ class TaskForvaltningsController(
 
 
     @PostMapping("/restart/{taskId}")
+    @Transactional
     fun hentStatus(
         @PathVariable taskId: Long,
     ): ResponseEntity<String> {
@@ -49,8 +51,11 @@ class TaskForvaltningsController(
         check(antallGangerPlukket > maxAntallFeil){"Tasken kan ikke plukkes på nytt, da den ikke er plukket for mange ganger: $antallGangerPlukket"}
 
         val nyTask = task.copy(id = 0L, triggerTid = LocalDateTime.now().plusMinutes(15))
+
+
         secureLogger.info(nyTask.toString())
 
+        taskService.save(task.copy(payload = task.payload+"-konet"))
         val lagretTask = taskService.save(nyTask) // For å restarte tasken, må vi sette id til 0, slik at den blir opprettet på nytt
 
         logger.info("Kloner task med id ${task.id}. Opprettet ny task: ${lagretTask.id}")
