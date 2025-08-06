@@ -49,6 +49,9 @@ spec:
         - application: familie-ef-sak-lokal
         - application: familie-prosessering
         - application: familie-ef-e2e
+        - application: azure-token-generator
+          namespace: nais
+          cluster: dev-gcp
     outbound:
       rules:
         - application: tilbakekreving-backend
