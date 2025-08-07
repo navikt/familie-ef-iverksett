@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
+import java.time.LocalDateTime.now
 import java.util.Properties
 
 @Service
@@ -31,12 +31,23 @@ class TaskForvaltningService(
         check(task.status == Status.MANUELL_OPPFØLGING) { "Task som skal kopieres må ha status MANUELL_OPPFØLGING" }
 
         val kopierProperties = kopierProperties(task)
-        val kopiertTask = task.copy(id = 0L, versjon = 0L, triggerTid = LocalDateTime.now().plusMinutes(15), metadataWrapper = PropertiesWrapper(kopierProperties))
+        val kopiertTask = task.copy(id = 0L, versjon = 0L, triggerTid = now().plusMinutes(15), metadataWrapper = PropertiesWrapper(kopierProperties))
 
-        taskService.save(task.copy(payload = "${task.payload}-klonetTilNy")) // Oppdaterer den originale tasken med et suffiks for å indikere at den er klonet
+        val gamleProperties = oppdaterGamleProperties(task)
+        taskService.save(task.copy(payload = "${now()}", metadataWrapper = PropertiesWrapper(gamleProperties)))
+
+
         val lagretTask = taskService.save(kopiertTask)
         logger.info("Klonet task med id ${task.id}. Opprettet ny task: ${lagretTask.id}")
         return lagretTask
+    }
+
+    private fun oppdaterGamleProperties(task: Task): Properties {
+        val oldProps = Properties()
+        oldProps.putAll(task.metadata)
+        oldProps.setProperty("Info", "Kopiert - kan avvikshåndteres")
+        oldProps.setProperty("GammelPayload", task.payload)
+        return oldProps
     }
 
     private fun kopierProperties(task: Task): Properties {
