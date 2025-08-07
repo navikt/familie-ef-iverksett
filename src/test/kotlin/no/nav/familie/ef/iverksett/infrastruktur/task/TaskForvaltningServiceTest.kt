@@ -47,12 +47,6 @@ class TaskForvaltningServiceTest : ServerTest() {
 
         val orginalTaskFraDb = taskService.findById(taskId)
 
-        println("orginalTaskFraDb ---------------------")
-        println(orginalTaskFraDb)
-        println("payload: ${orginalTaskFraDb.payload}")
-        println(orginalTaskFraDb.metadata)
-        println("slutt ---------------------")
-
         assertThat(LocalDateTime.parse(orginalTaskFraDb.payload)).isBeforeOrEqualTo(now())
         assertThat(taskService.antallGangerPlukket(kopi.id)).isEqualTo(0)
         assertThat(kopi.payload).isEqualTo(payload)
