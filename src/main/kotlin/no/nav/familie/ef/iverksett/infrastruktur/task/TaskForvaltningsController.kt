@@ -25,7 +25,6 @@ class TaskForvaltningService(
     private val taskService: TaskService,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val secureLogger = LoggerFactory.getLogger("secureLogger")
 
     @Transactional
     fun kopierTask(task: Task): Task {
@@ -35,10 +34,8 @@ class TaskForvaltningService(
         val kopiertTask = task.copy(id = 0L, versjon = 0L, triggerTid = LocalDateTime.now().plusMinutes(15), metadataWrapper = PropertiesWrapper(kopierProperties))
 
         taskService.save(task.copy(payload = "${task.payload}-klonetTilNy")) // Oppdaterer den originale tasken med et suffiks for å indikere at den er klonet
-        secureLogger.info(kopiertTask.toString())
         val lagretTask = taskService.save(kopiertTask)
-
-        logger.info("Kloner task med id ${task.id}. Opprettet ny task: ${lagretTask.id}")
+        logger.info("Klonet task med id ${task.id}. Opprettet ny task: ${lagretTask.id}")
         return lagretTask
     }
 
@@ -46,6 +43,7 @@ class TaskForvaltningService(
         val newProps = Properties()
         newProps.putAll(task.metadata)
         newProps.setProperty(MDCConstants.MDC_CALL_ID, IdUtils.generateId())
+        newProps.setProperty("Info", "Kopiert fra task med id ${task.id}")
         return newProps
     }
 }
