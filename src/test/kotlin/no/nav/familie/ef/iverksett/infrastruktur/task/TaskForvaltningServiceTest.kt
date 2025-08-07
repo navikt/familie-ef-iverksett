@@ -3,16 +3,17 @@ package no.nav.familie.ef.iverksett.infrastruktur.task
 import jakarta.annotation.PostConstruct
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
+import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import no.nav.familie.prosessering.internal.TaskWorker
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
 import java.util.UUID
-
 
 class TaskForvaltningServiceTest : ServerTest() {
     @Autowired
@@ -33,7 +34,7 @@ class TaskForvaltningServiceTest : ServerTest() {
         val savedTask = taskService.save(lagTask())
         assertThat(savedTask.status).isEqualTo(Status.UBEHANDLET)
         taskId = savedTask.id
-        kjørTask(taskId)
+        kjørTaskSomFeilerTilStatusBlirMANUELL_OPPFØLGING(taskId)
     }
 
     @Test
@@ -48,19 +49,29 @@ class TaskForvaltningServiceTest : ServerTest() {
         assertThat(taskService.antallGangerPlukket(kopi.id)).isEqualTo(0)
         assertThat(kopi.payload).isEqualTo(payload)
         assertThat(kopi.versjon).isEqualTo(1)
+
+        assertThat(kopi.callId).isNotEqualTo(orginalTaskFraDb.callId)
+    }
+
+    @Test
+    internal fun `Kast exception hvis ikke task er i manuell`() {
+        val task = Task(type = JournalførVedtaksbrevTask.TYPE, payload = this.payload, status = Status.UBEHANDLET)
+        taskService.save(task)
+
+        assertThrows<IllegalStateException> { taskForvaltningService.kopierTask(task) }
     }
 
     private fun lagTask(): Task = Task(type = DistribuerVedtaksbrevTask.TYPE, payload = this.payload, status = Status.UBEHANDLET).medTriggerTid(LocalDateTime.now().minusDays(1))
 
-    private fun kjørTask(taskId: Long) {
+    private fun kjørTaskSomFeilerTilStatusBlirMANUELL_OPPFØLGING(taskId: Long) {
         taskService.findById(taskId)
-        repeat(52, { doWork(taskId) })
+        val times = DistribuerVedtaksbrevTask.MAX_FORSØK + 1
+        repeat(times) { doWork(taskId) }
     }
 
     fun doWork(taskId: Long) {
         try {
             taskWorker.markerPlukket(taskId)
-            println("Nytt forsøk")
             taskWorker.doActualWork(taskId)
         } catch (e: IllegalStateException) {
             // forventet å få feil her
