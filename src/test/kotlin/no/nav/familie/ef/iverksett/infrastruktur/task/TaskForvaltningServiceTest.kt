@@ -11,7 +11,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
+
 
 class TaskForvaltningServiceTest : ServerTest() {
     @Autowired
