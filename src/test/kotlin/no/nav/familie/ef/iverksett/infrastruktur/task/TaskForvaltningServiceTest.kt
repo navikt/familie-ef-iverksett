@@ -42,7 +42,6 @@ class TaskForvaltningServiceTest : ServerTest() {
     internal fun `Klon eksisterende task`() {
         val task = taskService.findById(taskId)
         assertThat(taskService.antallGangerPlukket(task.id)).isEqualTo(DistribuerVedtaksbrevTask.MAX_FORSØK)
-
         val kopi = taskForvaltningService.kopierTask(task)
 
         val orginalTaskFraDb = taskService.findById(taskId)
@@ -51,8 +50,7 @@ class TaskForvaltningServiceTest : ServerTest() {
         assertThat(taskService.antallGangerPlukket(kopi.id)).isEqualTo(0)
         assertThat(kopi.payload).isEqualTo(payload)
         assertThat(kopi.versjon).isEqualTo(1)
-
-        assertThat(kopi.callId).isNotEqualTo(orginalTaskFraDb.callId)
+        assertThat(kopi.callId).isEqualTo(orginalTaskFraDb.callId)
     }
 
     @Test

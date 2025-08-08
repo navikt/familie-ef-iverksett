@@ -4,8 +4,6 @@ import no.nav.familie.prosessering.domene.PropertiesWrapper
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.familie.prosessering.util.IdUtils
-import no.nav.familie.prosessering.util.MDCConstants
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -36,7 +34,6 @@ class TaskForvaltningService(
         val gamleProperties = oppdaterGamleProperties(task)
         taskService.save(task.copy(payload = "${now()}", metadataWrapper = PropertiesWrapper(gamleProperties)))
 
-
         val lagretTask = taskService.save(kopiertTask)
         logger.info("Klonet task med id ${task.id}. Opprettet ny task: ${lagretTask.id}")
         return lagretTask
@@ -53,7 +50,6 @@ class TaskForvaltningService(
     private fun kopierProperties(task: Task): Properties {
         val newProps = Properties()
         newProps.putAll(task.metadata)
-        newProps.setProperty(MDCConstants.MDC_CALL_ID, IdUtils.generateId())
         newProps.setProperty("Info", "Kopiert fra task med id ${task.id}")
         return newProps
     }
