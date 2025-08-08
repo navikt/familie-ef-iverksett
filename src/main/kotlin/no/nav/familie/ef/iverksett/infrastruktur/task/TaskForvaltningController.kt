@@ -18,6 +18,29 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime.now
 import java.util.Properties
 
+@RestController
+@RequestMapping(
+    path = ["/api/forvaltning/task"],
+    produces = [MediaType.APPLICATION_JSON_VALUE],
+)
+@ProtectedWithClaims(issuer = "azuread")
+class TaskForvaltningController(
+    private val taskService: TaskService,
+    private val taskForvaltningService: TaskForvaltningService,
+) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
+    @PostMapping("/restart/{taskId}")
+    fun hentStatus(
+        @PathVariable taskId: Long,
+    ): ResponseEntity<String> {
+        logger.info("Starter kloning av task id $taskId.")
+        val task = taskService.findById(taskId)
+        val lagretTask = taskForvaltningService.kopierTask(task)
+        return ResponseEntity("OK - opprettet ${lagretTask.id}, fra ${task.id}", HttpStatus.OK)
+    }
+}
+
 @Service
 class TaskForvaltningService(
     private val taskService: TaskService,
@@ -55,25 +78,3 @@ class TaskForvaltningService(
     }
 }
 
-@RestController
-@RequestMapping(
-    path = ["/api/forvaltning/task"],
-    produces = [MediaType.APPLICATION_JSON_VALUE],
-)
-@ProtectedWithClaims(issuer = "azuread")
-class TaskForvaltningController(
-    private val taskService: TaskService,
-    private val taskForvaltningService: TaskForvaltningService,
-) {
-    private val logger = LoggerFactory.getLogger(javaClass)
-
-    @PostMapping("/restart/{taskId}")
-    fun hentStatus(
-        @PathVariable taskId: Long,
-    ): ResponseEntity<String> {
-        logger.info("Starter kloning av task id $taskId.")
-        val task = taskService.findById(taskId)
-        val lagretTask = taskForvaltningService.kopierTask(task)
-        return ResponseEntity("OK - opprettet ${lagretTask.id}, fra ${task.id}", HttpStatus.OK)
-    }
-}
