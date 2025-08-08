@@ -61,7 +61,7 @@ class TaskForvaltningService(
     produces = [MediaType.APPLICATION_JSON_VALUE],
 )
 @ProtectedWithClaims(issuer = "azuread")
-class TaskForvaltningsController(
+class TaskForvaltningController(
     private val taskService: TaskService,
     private val taskForvaltningService: TaskForvaltningService,
 ) {
