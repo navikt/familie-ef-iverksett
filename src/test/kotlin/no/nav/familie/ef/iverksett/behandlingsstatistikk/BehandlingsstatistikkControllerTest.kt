@@ -22,7 +22,7 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
 
     @BeforeEach
     fun setUp() {
-        headers.setBearerAuth(søkerBearerToken())
+        headers.setBearerAuth(oboBearerToken())
     }
 
     @Test

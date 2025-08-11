@@ -36,7 +36,7 @@ class SimuleringControllerTest : ServerTest() {
 
     @BeforeEach
     fun setUp() {
-        headers.setBearerAuth(søkerBearerToken())
+        headers.setBearerAuth(oboBearerToken())
     }
 
     @AfterEach

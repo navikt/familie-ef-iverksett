@@ -7,4 +7,6 @@ import org.springframework.context.annotation.Configuration
 class RolleConfig(
     @Value("\${rolle.forvalter}")
     val forvalter: String,
+    @Value("\${rolle.prosessering}")
+    val prosessering: String,
 )

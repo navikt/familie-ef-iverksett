@@ -54,3 +54,8 @@ UNLEASH_SERVER_API_URL: http://localhost:4242/api
 UNLEASH_SERVER_API_TOKEN: token
 NAIS_APP_NAME: familie-ef-iverksett
 NAIS_NAMESPACE: teamfamilie
+
+AZURE_APP_CLIENT_ID: test-client-id
+AZURE_APP_CLIENT_SECRET: test-client-secret
+AZURE_APP_WELL_KNOWN_URL: https://login.microsoftonline.com/navq.onmicrosoft.com/v2.0/.well-known/openid-configuration
+API_SCOPE: test

@@ -23,7 +23,7 @@ class GrensesnittavstemmingControllerTest : ServerTest() {
 
     @BeforeEach
     fun setUp() {
-        headers.setBearerAuth(søkerBearerToken())
+        headers.setBearerAuth(oboBearerToken())
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
     }
 

@@ -30,7 +30,7 @@ class IverksettingControllerTest : ServerTest() {
 
     @BeforeEach
     fun setUp() {
-        headers.setBearerAuth(søkerBearerToken())
+        headers.setBearerAuth(oboBearerToken())
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
     }
 
