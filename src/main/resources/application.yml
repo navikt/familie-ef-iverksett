@@ -55,10 +55,17 @@ logging:
   config: "classpath:logback-spring.xml"
 
 springdoc:
-  packagesToScan: no.nav.familie.ef.iverksett
-  pathsToMatch: /v3/api-docs,/api/**
   swagger-ui:
+    oauth:
+      use-pkce-with-authorization-code-grant: true
+      client-id: ${AZURE_APP_CLIENT_ID}
+      scope-separator: ","
     disable-swagger-default-url: true
+    persist-authorization: true
+#
+AUTHORIZATION_URL: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/oauth2/v2.0/authorize
+AZUREAD_TOKEN_ENDPOINT_URL: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/oauth2/v2.0/token
+API_SCOPE: api://${AZURE_APP_CLIENT_ID}/.default
 
 no.nav.security.jwt:
   issuer:
@@ -161,3 +168,6 @@ prosessering:
       weeks: 16
 
 prosessering.rolle: "87190cf3-b278-457d-8ab7-1a5c55a9edd7" # Gruppen teamfamilie
+rolle:
+  forvalter: "c62e908a-cf20-4ad0-b7b3-3ff6ca4bf38b" # teamfamilie-forvaltning
+  prosessering: "87190cf3-b278-457d-8ab7-1a5c55a9edd7" # Gruppen teamfamilie
