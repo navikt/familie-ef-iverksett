@@ -45,6 +45,7 @@ spec:
           - id: "59865891-62a0-4fe3-b282-2e38210d1fbb" # teamfamilie-ef-forvaltning
       replyURLs:
         - "https://familie-ef-iverksett.intern.dev.nav.no/swagger-ui/oauth2-redirect.html"
+      singlePageApplication: true
   accessPolicy:
     inbound:
       rules:
