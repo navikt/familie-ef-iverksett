@@ -77,4 +77,3 @@ class TaskForvaltningService(
         return newProps
     }
 }
-
