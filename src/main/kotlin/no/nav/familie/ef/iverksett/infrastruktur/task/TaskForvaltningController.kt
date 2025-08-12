@@ -1,5 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
+import no.nav.familie.kontrakter.felles.Ressurs
+import no.nav.familie.kontrakter.felles.Ressurs.Companion.success
 import no.nav.familie.prosessering.domene.PropertiesWrapper
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.domene.Task
@@ -31,13 +33,13 @@ class TaskForvaltningController(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @PostMapping("/restart/{taskId}")
-    fun hentStatus(
+    fun kopierTaskStartPåNytt(
         @PathVariable taskId: Long,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<Ressurs<String>> {
         logger.info("Starter kloning av task id $taskId.")
         val task = taskService.findById(taskId)
         val lagretTask = taskForvaltningService.kopierTask(task)
-        return ResponseEntity("OK - opprettet ${lagretTask.id}, fra ${task.id}", HttpStatus.OK)
+        return ResponseEntity.ok(success("OK - opprettet task: ${lagretTask.id}, kopiert fra task: ${task.id}"))
     }
 }
 
@@ -77,4 +79,3 @@ class TaskForvaltningService(
         return newProps
     }
 }
-
