@@ -8,9 +8,7 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PathVariable
@@ -35,11 +33,12 @@ class TaskForvaltningController(
     @PostMapping("/restart/{taskId}")
     fun kopierTaskStartPåNytt(
         @PathVariable taskId: Long,
-    ): ResponseEntity<Ressurs<String>> {
+    ): Ressurs<String> {
         logger.info("Starter kloning av task id $taskId.")
         val task = taskService.findById(taskId)
         val lagretTask = taskForvaltningService.kopierTask(task)
-        return ResponseEntity.ok(success("OK - opprettet task: ${lagretTask.id}, kopiert fra task: ${task.id}"))
+
+        return success(data= "OK - opprettet task: ${lagretTask.id}, kopiert fra task: ${task.id}")
     }
 }
 
