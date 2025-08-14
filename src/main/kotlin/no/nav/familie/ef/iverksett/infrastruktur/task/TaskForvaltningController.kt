@@ -43,7 +43,7 @@ class TaskForvaltningController(
     }
 }
 
-data class KopiertTaskResponse (val fra: Long, val til: Long)
+data class KopiertTaskResponse (val fraTaskId: Long, val tilNyTaskId: Long)
 
 @Service
 class TaskForvaltningService(
