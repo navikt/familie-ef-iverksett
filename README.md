@@ -4,6 +4,9 @@ App som tilbyr iverksettingstjenester av stønadene for enslige forsørgere.
 ## Swagger
 http://localhost:8094/swagger-ui/index.html
 
+"Bearer" + [Token]  
+Hent token til dev her: https://azure-token-generator.intern.dev.nav.no/api/m2m?aud=dev-gcp.teamfamilie.familie-ef-iverksett
+
 ## Bygging lokalt
 Appen kjører på JRE 11. Bygging gjøres ved å kjøre `mvn clean install`.
 

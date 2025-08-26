@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.4</version>
+        <version>3.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -15,23 +15,23 @@
 
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>2.2.0</kotlin.version>
-        <springdoc.version>2.8.9</springdoc.version>
-        <felles.version>3.20250616113100_41d23f2</felles.version>
-        <familie.kontrakter.version>3.0_20250724145643_3e1e3e4</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20250721082943_403d667</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20250721082943_403d667</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20250721082943_403d667</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20250718105310_e1cba2a</prosessering.version>
-        <utbetalingsgenerator.version>1.0_20250415144931_0dc88d8</utbetalingsgenerator.version>
+        <kotlin.version>2.2.10</kotlin.version>
+        <springdoc.version>2.8.11</springdoc.version>
+        <felles.version>3.20250804101327_a0f5fad</felles.version>
+        <familie.kontrakter.version>3.0_20250822084705_acb7066</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20250819081736_d4884f9</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20250819081736_d4884f9</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20250819081736_d4884f9</familie.eksterne-kontrakter.arbeidsoppfolging>
+        <prosessering.version>2.20250818131235_94bcc1a</prosessering.version>
+        <utbetalingsgenerator.version>1.0_20250804104526_5648100</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.1.1</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <confluent.version>8.0.0</confluent.version>
         <mockk-jvm.version>1.14.5</mockk-jvm.version>
-        <cucumber.version>7.26.0</cucumber.version>
+        <cucumber.version>7.27.2</cucumber.version>
         <dotenv.version>6.5.1</dotenv.version>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>5.0.33</token-validation-spring.version>
+        <token-validation-spring.version>5.0.34</token-validation-spring.version>
         <ibm-mq-client.version>9.4.3.0</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
@@ -260,7 +260,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>11.10.4</version>
+            <version>11.11.2</version>
             <scope>runtime</scope>
         </dependency>
         <!-- MQ / JMS -->

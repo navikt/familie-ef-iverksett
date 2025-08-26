@@ -24,7 +24,7 @@ import java.util.UUID
 @Service
 @TaskStepBeskrivelse(
     taskStepType = DistribuerVedtaksbrevTask.TYPE,
-    maxAntallFeil = 50,
+    maxAntallFeil = DistribuerVedtaksbrevTask.MAX_FORSØK,
     settTilManuellOppfølgning = true,
     triggerTidVedFeilISekunder = 15 * 60L,
     beskrivelse = "Distribuerer vedtaksbrev.",
@@ -141,5 +141,6 @@ class DistribuerVedtaksbrevTask(
 
     companion object {
         const val TYPE = "distribuerVedtaksbrev"
+        const val MAX_FORSØK = 50
     }
 }

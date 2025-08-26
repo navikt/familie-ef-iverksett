@@ -87,5 +87,7 @@ spec:
             value: "on"
           - name: "pgaudit.log"
             value: "write"
+          - name: "pgaudit.log_parameter"
+            value: "on"
   kafka:
     pool: nav-prod
