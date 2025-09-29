@@ -260,8 +260,6 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>11.13.2</version>
-            <scope>runtime</scope>
         </dependency>
         <!-- MQ / JMS -->
         <dependency>
