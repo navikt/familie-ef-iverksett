@@ -78,7 +78,7 @@ spec:
         tier: db-f1-micro
         diskAutoresize: true
         cascadingDelete: false
-        pointInTimeRecovery: true
+        pointInTimeRecovery: false
         maintenance:
           day: 7
           hour: 23
