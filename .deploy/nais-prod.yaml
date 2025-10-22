@@ -21,8 +21,8 @@ spec:
     enabled: true
     path: /internal/prometheus
   replicas:
-    min: 2
-    max: 4
+    min: 0 # TODO: Settes tilbake til: 2
+    max: 0 # TODO: Settes tilbake til: 4
   resources:
     limits:
       memory: 1024Mi
@@ -75,7 +75,7 @@ spec:
         tier: db-custom-1-3840
         diskAutoresize: true
         cascadingDelete: false
-        pointInTimeRecovery: true
+        pointInTimeRecovery: false # TODO: Settes tilbake til: true
         maintenance:
           day: 7
           hour: 23
