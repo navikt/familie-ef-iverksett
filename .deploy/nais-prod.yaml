@@ -75,7 +75,7 @@ spec:
         tier: db-custom-1-3840
         diskAutoresize: true
         cascadingDelete: false
-        pointInTimeRecovery: true
+        pointInTimeRecovery: false # TODO: Skal settes tilbake til true etter oppgradering
         maintenance:
           day: 7
           hour: 23
