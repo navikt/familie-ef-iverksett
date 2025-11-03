@@ -59,6 +59,13 @@ class OppdragClient(
             .build()
             .toUri()
 
+    private val timeoutTestUri: URI =
+        UriComponentsBuilder
+            .fromUri(familieOppdragUri)
+            .pathSegment("api/timeout-test")
+            .build()
+            .toUri()
+
     fun iverksettOppdrag(utbetalingsoppdrag: Utbetalingsoppdrag): String = postForEntity<Ressurs<String>>(postOppdragUri, utbetalingsoppdrag).getDataOrThrow()
 
     fun hentStatus(oppdragId: OppdragId): OppdragStatusMedMelding {
@@ -83,6 +90,18 @@ class OppdragClient(
                 .build()
                 .toUri()
         return postForEntity<Ressurs<String>>(url, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
+    }
+
+    fun testTimeout(
+        antallSekunderTimeout: Long,
+    ): String {
+        val uri =
+            UriComponentsBuilder
+                .fromUri(konsistensavstemmingUri)
+                .queryParam("sekunder", antallSekunderTimeout)
+                .build()
+                .toUri()
+        return getForEntity<Ressurs<String>>(uri).getDataOrThrow()
     }
 
     fun hentSimuleringsresultat(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat = postForEntity<Ressurs<DetaljertSimuleringResultat>>(postSimuleringUri, utbetalingsoppdrag).getDataOrThrow()

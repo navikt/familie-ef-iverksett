@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.økonomi.konsistens
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -32,5 +33,12 @@ class KonsistensavstemmingController(
             sendAvsluttmelding,
             transaksjonId,
         )
+    }
+
+    @GetMapping("timeout-test")
+    fun timeoutTest(
+        @RequestParam(name = "sekunder") sekunder: Long,
+    ): String {
+        return konsistensavstemmingService.testTimeout(sekunder)
     }
 }
