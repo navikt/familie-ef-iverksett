@@ -97,7 +97,7 @@ class OppdragClient(
     ): String {
         val uri =
             UriComponentsBuilder
-                .fromUri(konsistensavstemmingUri)
+                .fromUri(timeoutTestUri)
                 .queryParam("sekunder", antallSekunderTimeout)
                 .build()
                 .toUri()
