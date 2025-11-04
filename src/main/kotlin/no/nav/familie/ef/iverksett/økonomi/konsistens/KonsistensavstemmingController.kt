@@ -41,7 +41,5 @@ class KonsistensavstemmingController(
     @GetMapping("timeout-test", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun timeoutTest(
         @RequestParam(name = "sekunder") sekunder: Long,
-    ): ResponseEntity<String> {
-        return ResponseEntity(konsistensavstemmingService.testTimeout(sekunder), HttpStatus.OK)
-    }
+    ): ResponseEntity<String> = ResponseEntity(konsistensavstemmingService.testTimeout(sekunder), HttpStatus.OK)
 }
