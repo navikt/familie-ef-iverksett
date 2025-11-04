@@ -31,7 +31,7 @@
         <cucumber.version>7.31.0</cucumber.version>
         <dotenv.version>6.5.1</dotenv.version>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>5.0.39</token-validation-spring.version>
+        <token-validation-spring.version>5.0.35</token-validation-spring.version>
         <ibm-mq-client.version>9.4.4.0</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
