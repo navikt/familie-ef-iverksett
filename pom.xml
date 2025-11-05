@@ -17,21 +17,21 @@
         <java.version>21</java.version>
         <kotlin.version>2.2.21</kotlin.version>
         <springdoc.version>2.8.13</springdoc.version>
-        <felles.version>3.20251021101955_e5e7dd1</felles.version>
+        <felles.version>3.20251030143732_d6733bc</felles.version>
         <familie.kontrakter.version>3.0_20251030120445_40c2cd0</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20250929124738_f28327d</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20250929124738_f28327d</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20250929124738_f28327d</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20251021110731_39c1fd0</prosessering.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20251027085135_48de1e7</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20251027085135_48de1e7</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20251027085135_48de1e7</familie.eksterne-kontrakter.arbeidsoppfolging>
+        <prosessering.version>2.20251030085530_74c10e1</prosessering.version>
         <utbetalingsgenerator.version>1.0_20250922101633_e4c1c4d</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.1.1</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <confluent.version>8.1.0</confluent.version>
         <mockk-jvm.version>1.14.6</mockk-jvm.version>
-        <cucumber.version>7.30.0</cucumber.version>
+        <cucumber.version>7.31.0</cucumber.version>
         <dotenv.version>6.5.1</dotenv.version>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>5.0.37</token-validation-spring.version>
+        <token-validation-spring.version>5.0.39</token-validation-spring.version>
         <ibm-mq-client.version>9.4.4.0</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
@@ -57,7 +57,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>6.0.0</version> <!-- Denne inkluderer junit-platform 1.13.3 som kreves av cucumber 7.26, kan muligens fjernes når spring bumper til junit versjon 1.13.3 -->
+                <version>6.0.1</version> <!-- Denne inkluderer junit-platform 1.13.3 som kreves av cucumber 7.26, kan muligens fjernes når spring bumper til junit versjon 1.13.3 -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -107,11 +107,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Http Client - nyeste versjon fra spring skaper problemer. Issue: HTTPCLIENT-2405 -->
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
             <version>5.5</version>
         </dependency>
+
 
         <!-- Kotlin -->
         <dependency>
@@ -329,7 +331,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
-            <version>6.0.0</version>
+            <version>6.0.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
