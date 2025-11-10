@@ -50,6 +50,8 @@ class KonsistensavstemmingService(
         }
     }
 
+    fun testTimeout(sekunder: Long): String = oppdragKlient.testTimeout(sekunder)
+
     private fun lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto: KonsistensavstemmingDto): List<Utbetalingsoppdrag> {
         if (konsistensavstemmingDto.tilkjenteYtelser.isEmpty()) return emptyList()
 
