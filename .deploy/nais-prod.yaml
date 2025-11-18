@@ -54,6 +54,8 @@ spec:
       rules:
         - application: tilbakekreving-backend
           namespace: tilbake
+        - application: logging
+          namespace: nais-system
       external:
         - host: mpls01.adeo.no
           ports:
