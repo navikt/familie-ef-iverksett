@@ -56,6 +56,8 @@ spec:
       rules:
         - application: tilbakekreving-backend
           namespace: tilbake
+        - application: logging
+          namespace: nais-system
       external:
         - host: b27apvl219.preprod.local
           ports:
