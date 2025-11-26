@@ -52,13 +52,15 @@ For å se og verifisere konfigurasjon til gitt topic kan kommandoen `kubectl des
 Det er mulig å se hva som ligger på kø med Kafkacat uten å lage en egen applikasjon for både dev og prod.
 Kjør kommando `kafkacat -F <configFile.config> -C -t teamfamilie.<topicnavn> -o -1 -e` for å lese nyeste melding på topic. 
 Se dokumentasjon på kafkacat for å modifisere til å f.eks. se melding på gitt offset.
-Installasjon av kafkacat og oppsett av config-fil er dokumentert i familie-repoet under utvikling. 
+Installasjon av kafkacat og oppsett av config-fil er dokumentert i familie-repoet under utvikling.
 
 ## Produksjonssetting
-Applikasjonen vil deployes til produksjon ved ny commit på master-branchen. Det er dermed tilstrekkelig å merge PR for å trigge produksjonsbygget.
+Applikasjonen vil deployes til produksjon ved ny commit på main-branchen. Det er dermed tilstrekkelig å merge PR for å trigge produksjonsbygget.
+
+Alle commits krever godkjenning av minst én annen utvikler før de kan merges til main. (se Settings/Rules for oppsett av regler på github). Det er ikke mulig å pushe direkte til main branch.
+https://github.com/navikt/familie-ef-iverksett/settings/rules
 
 ## Henvendelser
-
 Spørsmål knyttet til koden eller prosjektet kan gjøres via issues her på github
 
 ### For NAV-ansatte
