@@ -52,6 +52,8 @@ spec:
         - application: azure-token-generator
           namespace: nais
           cluster: dev-gcp
+        - application: etterlatte-prosessering
+          namespace: etterlatte
     outbound:
       rules:
         - application: tilbakekreving-backend
