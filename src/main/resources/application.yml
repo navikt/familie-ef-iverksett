@@ -59,6 +59,10 @@ springdoc:
   pathsToMatch: /v3/api-docs,/api/**
   swagger-ui:
     disable-swagger-default-url: true
+    oauth:
+      use-pkce-with-authorization-code-grant: true
+      client-id: ${azure.app.client.id}
+      scope-separator: ","
 
 no.nav.security.jwt:
   issuer:
