@@ -3,27 +3,43 @@ package no.nav.familie.ef.iverksett.infrastruktur.configuration
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
+import io.swagger.v3.oas.models.security.OAuthFlow
+import io.swagger.v3.oas.models.security.OAuthFlows
+import io.swagger.v3.oas.models.security.Scopes
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class SwaggerConfiguration {
-    private val bearer = "Bearer"
-
+class SwaggerConfiguration(
+    @Value("\${AUTHORIZATION_URL}")
+    val authorizationUrl: String,
+    @Value("\${AZUREAD_TOKEN_ENDPOINT_URL}")
+    val tokenUrl: String,
+    @Value("\${API_SCOPE}")
+    val apiScope: String,
+) {
     @Bean
     fun openApi(): OpenAPI =
         OpenAPI()
-            .info(Info().title("Familie ef sak api"))
-            .components(Components().addSecuritySchemes(bearer, bearerTokenSecurityScheme()))
-            .addSecurityItem(SecurityRequirement().addList(bearer, listOf("read", "write")))
+            .components(Components().addSecuritySchemes("oauth2", securitySchemes()))
+            .addSecurityItem(SecurityRequirement().addList("oauth2", listOf("read", "write")))
 
-    private fun bearerTokenSecurityScheme(): SecurityScheme =
+    private fun securitySchemes(): SecurityScheme =
         SecurityScheme()
-            .type(SecurityScheme.Type.APIKEY)
-            .scheme(bearer)
-            .bearerFormat("JWT")
+            .name("oauth2")
+            .type(SecurityScheme.Type.OAUTH2)
+            .scheme("oauth2")
             .`in`(SecurityScheme.In.HEADER)
-            .name("Authorization")
+            .flows(
+                OAuthFlows()
+                    .authorizationCode(
+                        OAuthFlow()
+                            .authorizationUrl(authorizationUrl)
+                            .tokenUrl(tokenUrl)
+                            .scopes(Scopes().addString(apiScope, "read,write")),
+                    ),
+            )
 }
