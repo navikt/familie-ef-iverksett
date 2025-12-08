@@ -49,7 +49,7 @@ spec:
           - "NAVident"
           - "azp_name"
       replyURLs:
-        - https://gjenlevende-bs-sak.intern.dev.nav.no/swagger-ui/oauth2-redirect.html
+        - https://familie-ef-iverksett.intern.dev.nav.no/swagger-ui/oauth2-redirect.html
       singlePageApplication: true
   accessPolicy:
     inbound:
