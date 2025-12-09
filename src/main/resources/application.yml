@@ -54,16 +54,6 @@ spring:
 logging:
   config: "classpath:logback-spring.xml"
 
-springdoc:
-  packagesToScan: no.nav.familie.ef.iverksett
-  pathsToMatch: /v3/api-docs,/api/**
-  swagger-ui:
-    disable-swagger-default-url: true
-    oauth:
-      use-pkce-with-authorization-code-grant: true
-      client-id: ${azure.app.client.id}
-      scope-separator: ","
-
 no.nav.security.jwt:
   issuer:
     azuread:
@@ -165,18 +155,3 @@ prosessering:
       weeks: 16
 
 prosessering.rolle: "87190cf3-b278-457d-8ab7-1a5c55a9edd7" # Gruppen teamfamilie
-
-# Azure AD konfigurasjon
-azure:
-  app:
-    tenant:
-      id: ${AZURE_APP_TENANT_ID}
-    client:
-      id: ${AZURE_APP_CLIENT_ID}
-      secret: ${AZURE_APP_CLIENT_SECRET}
-
-# TODO: Kan fjernes
-# Azure AD miljøvariabler (for SwaggerConfig.kt)
-AZUREAD_TOKEN_ENDPOINT_URL: https://login.microsoftonline.com/${azure.app.tenant.id}/oauth2/v2.0/token
-AUTHORIZATION_URL: https://login.microsoftonline.com/${azure.app.tenant.id}/oauth2/v2.0/authorize
-API_SCOPE: api://${azure.app.client.id}/.default

@@ -46,9 +46,6 @@ spec:
         extra:
           - "NAVident"
           - "azp_name"
-      replyURLs:
-        - https://familie-ef-iverksett.intern.dev.nav.no/swagger-ui/oauth2-redirect.html
-      singlePageApplication: true
   accessPolicy:
     inbound:
       rules:
