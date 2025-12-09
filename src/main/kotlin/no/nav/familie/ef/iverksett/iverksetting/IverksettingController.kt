@@ -10,7 +10,6 @@ import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -32,15 +31,12 @@ import java.util.UUID
 class IverksettingController(
     private val iverksettingService: IverksettingService,
 ) {
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun iverksett(
         @RequestPart("data") iverksettDto: IverksettDto,
         @RequestPart("fil") fil: MultipartFile,
     ) {
         if (!SikkerhetContext.kallKommerFraEfSak()) {
-            logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
 
@@ -55,7 +51,6 @@ class IverksettingController(
         @RequestBody iverksettDto: IverksettDto,
     ) {
         if (!SikkerhetContext.kallKommerFraEfSak()) {
-            logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
 
@@ -70,7 +65,6 @@ class IverksettingController(
         @PathVariable behandlingId: UUID,
     ): IverksettStatus? {
         if (!SikkerhetContext.kallKommerFraEfSak()) {
-            logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
 
@@ -82,7 +76,6 @@ class IverksettingController(
         @PathVariable behandlingId: UUID,
     ) {
         if (!SikkerhetContext.kallKommerFraEfSak()) {
-            logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
 

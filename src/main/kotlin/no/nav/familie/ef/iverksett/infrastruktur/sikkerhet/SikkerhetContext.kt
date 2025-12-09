@@ -1,13 +1,8 @@
 package no.nav.familie.ef.iverksett.infrastruktur.sikkerhet
 
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
-import org.slf4j.LoggerFactory
-import org.slf4j.MarkerFactory
 
 object SikkerhetContext {
-    private val logger = LoggerFactory.getLogger(SikkerhetContext::class.java)
-    private val teamLogsMarker = MarkerFactory.getMarker("TEAM_LOGS")
-
     fun kallKommerFraEfSak(): Boolean = kallKommerFra("teamfamilie:familie-ef-sak")
 
     fun kallKommerFraFraProsessering(): Boolean = kallKommerFra("teamfamilie:familie-prosessering")
@@ -15,9 +10,8 @@ object SikkerhetContext {
     private fun kallKommerFra(forventetApplikasjonsSuffix: String): Boolean {
         val claims = SpringTokenValidationContextHolder().getTokenValidationContext().getClaims("azuread")
 
-        val applikasjonsnavn = claims.get("azp_name")?.toString() ?: "" // e.g. dev-gcp:some-team:application-name
+        val applikasjonsnavn = claims.get("azp_name")?.toString() ?: ""
 
-        logger.info(teamLogsMarker, "Applikasjonsnavn: $applikasjonsnavn")
         return applikasjonsnavn.endsWith(forventetApplikasjonsSuffix)
     }
 }

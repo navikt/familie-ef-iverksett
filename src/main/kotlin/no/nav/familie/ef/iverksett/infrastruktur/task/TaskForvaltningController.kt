@@ -36,7 +36,6 @@ class TaskForvaltningController(
         @PathVariable taskId: Long,
     ): KopiertTaskResponse {
         if (!SikkerhetContext.kallKommerFraFraProsessering()) {
-            logger.error("Kall kommer ikke fra familie-prosessering")
             throw ApiFeil("Kall kommer ikke fra familie-prosessering", HttpStatus.FORBIDDEN)
         }
 

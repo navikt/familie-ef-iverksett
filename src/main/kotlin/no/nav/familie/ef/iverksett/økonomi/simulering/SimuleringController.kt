@@ -7,7 +7,6 @@ import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,14 +21,11 @@ import org.springframework.web.bind.annotation.RestController
 class SimuleringController(
     private val simuleringService: SimuleringService,
 ) {
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     @PostMapping("v2")
     fun hentSimuleringV2(
         @RequestBody simuleringDto: SimuleringDto,
     ): Ressurs<BeriketSimuleringsresultat> {
         if (!SikkerhetContext.kallKommerFraEfSak()) {
-            logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
 

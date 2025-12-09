@@ -4,8 +4,6 @@ import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.slf4j.LoggerFactory
-import org.slf4j.MarkerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.validation.annotation.Validated
@@ -24,9 +22,6 @@ import java.util.UUID
 class KonsistensavstemmingController(
     private val konsistensavstemmingService: KonsistensavstemmingService,
 ) {
-    private val logger = LoggerFactory.getLogger(this::class.java)
-    private val teamLogsMarker = MarkerFactory.getMarker("TEAM_LOGS")
-
     // TODO må verifisere at man ikke lagrer ned kildeBehandlingId i iverksett
     // Og må verifisere at man ikke bruker kildeBehandlingId på andelsnivå fra KonsistensavstemmingDto
     @PostMapping
@@ -37,7 +32,6 @@ class KonsistensavstemmingController(
         @RequestParam(name = "transaksjonId") transaksjonId: UUID? = null,
     ) {
         if (!SikkerhetContext.kallKommerFraEfSak()) {
-            logger.error(teamLogsMarker, "Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
 
@@ -54,7 +48,6 @@ class KonsistensavstemmingController(
         @RequestParam(name = "sekunder") sekunder: Long,
     ): String {
         if (!SikkerhetContext.kallKommerFraEfSak() && !SikkerhetContext.kallKommerFraFraProsessering()) {
-            logger.error(teamLogsMarker, "Kall kommer ikke fra ef-sak eller familie-prosessering")
             throw ApiFeil("Kall kommer ikke fra ef-sak eller familie-prosessering", HttpStatus.FORBIDDEN)
         }
 
