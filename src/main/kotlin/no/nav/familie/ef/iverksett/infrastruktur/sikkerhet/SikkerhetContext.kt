@@ -8,10 +8,14 @@ object SikkerhetContext {
     fun kallKommerFraFraProsessering(): Boolean = kallKommerFra("teamfamilie:familie-prosessering")
 
     private fun kallKommerFra(forventetApplikasjonsSuffix: String): Boolean {
-        val claims = SpringTokenValidationContextHolder().getTokenValidationContext().getClaims("azuread")
+        return try {
+            val validationContext = SpringTokenValidationContextHolder().getTokenValidationContext()
+            val claims = validationContext?.getClaims("azuread") ?: return false
+            val applikasjonsnavn = claims.get("azp_name")?.toString() ?: ""
 
-        val applikasjonsnavn = claims.get("azp_name")?.toString() ?: ""
-
-        return applikasjonsnavn.endsWith(forventetApplikasjonsSuffix)
+            applikasjonsnavn.endsWith(forventetApplikasjonsSuffix)
+        } catch (e: Exception) {
+            false
+        }
     }
 }
