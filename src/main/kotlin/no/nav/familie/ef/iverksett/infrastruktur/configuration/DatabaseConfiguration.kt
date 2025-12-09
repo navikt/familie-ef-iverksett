@@ -83,14 +83,20 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
             val fagsakNode = objectMapper.readTree(pGobject.value).findValue("fagsak")
             val fagsakdetaljer: Fagsakdetaljer = objectMapper.treeToValue(fagsakNode)
             return when (fagsakdetaljer.stønadstype) {
-                StønadType.BARNETILSYN -> objectMapper.readValue(pGobject.value, IverksettBarnetilsyn::class.java)
-                StønadType.OVERGANGSSTØNAD ->
+                StønadType.BARNETILSYN -> {
+                    objectMapper.readValue(pGobject.value, IverksettBarnetilsyn::class.java)
+                }
+
+                StønadType.OVERGANGSSTØNAD -> {
                     objectMapper.readValue(
                         pGobject.value,
                         IverksettOvergangsstønad::class.java,
                     )
+                }
 
-                StønadType.SKOLEPENGER -> objectMapper.readValue(pGobject.value, IverksettSkolepenger::class.java)
+                StønadType.SKOLEPENGER -> {
+                    objectMapper.readValue(pGobject.value, IverksettSkolepenger::class.java)
+                }
             }
         }
     }

@@ -9,6 +9,7 @@ object SikkerthetContext {
     private val teamLogsMarker = MarkerFactory.getMarker("TEAM_LOGS")
 
     fun kallKommerFraEfSak(): Boolean = kallKommerFra("teamfamilie:familie-ef-sak")
+
     fun kallKommerFraFraProsessering(): Boolean = kallKommerFra("teamfamilie:familie-prosessering")
 
     private fun kallKommerFra(forventetApplikasjonsSuffix: String): Boolean {

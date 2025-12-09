@@ -55,29 +55,84 @@ object OppgaveBeskrivelse {
 
     private fun AktivitetType.beskrivelse(): String =
         when (this) {
-            AktivitetType.MIGRERING -> error("Skal ikke opprette oppfølgningsoppgave for migrering")
-            AktivitetType.IKKE_AKTIVITETSPLIKT -> ""
-            AktivitetType.BARN_UNDER_ETT_ÅR -> "Barn er under 1 år"
-            AktivitetType.FORSØRGER_I_ARBEID -> "Forsørger er i arbeid (§15-6 første ledd)"
-            AktivitetType.FORSØRGER_I_UTDANNING -> "Forsørger er i utdanning (§15-6 første ledd)"
-            AktivitetType.FORSØRGER_REELL_ARBEIDSSØKER -> "Forsørger er reell arbeidssøker (§15-6 første ledd)"
-            AktivitetType.FORSØRGER_ETABLERER_VIRKSOMHET -> "Forsørger etablerer egen virksomhet (§15-6 første ledd)"
-            AktivitetType.BARNET_SÆRLIG_TILSYNSKREVENDE -> "Barnet er særlig tilsynskrevende (§15-6 fjerde ledd)"
-            AktivitetType.FORSØRGER_MANGLER_TILSYNSORDNING -> "Forsørger mangler tilsynsordning (§15-6 femte ledd)"
-            AktivitetType.FORSØRGER_ER_SYK -> "Forsørger er syk (§15-6 femte ledd)"
-            AktivitetType.BARNET_ER_SYKT -> "Barnet er sykt (§15-6 femte ledd)"
-            AktivitetType.UTVIDELSE_BARNET_SÆRLIG_TILSYNSKREVENDE -> "Barnet er særlig tilsynskrevende (§15-8 tredje ledd)"
-            AktivitetType.UTVIDELSE_FORSØRGER_I_UTDANNING -> "Forsørgeren er i utdanning (§15-8 andre ledd)"
-            AktivitetType.FORLENGELSE_MIDLERTIDIG_SYKDOM -> "Forsørger eller barnet har en midlertidig sykdom (§15-8 fjerde ledd)"
-            AktivitetType.FORLENGELSE_STØNAD_UT_SKOLEÅRET -> "Stønad ut skoleåret (§15-8 andre ledd)"
-            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_ARBEID -> "Stønad i påvente av arbeid (§15-8 femte ledd)"
-            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_UTDANNING -> "Stønad i påvente av utdanning (§15-8 femte ledd)"
-            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_ARBEID_REELL_ARBEIDSSØKER ->
+            AktivitetType.MIGRERING -> {
+                error("Skal ikke opprette oppfølgningsoppgave for migrering")
+            }
+
+            AktivitetType.IKKE_AKTIVITETSPLIKT -> {
+                ""
+            }
+
+            AktivitetType.BARN_UNDER_ETT_ÅR -> {
+                "Barn er under 1 år"
+            }
+
+            AktivitetType.FORSØRGER_I_ARBEID -> {
+                "Forsørger er i arbeid (§15-6 første ledd)"
+            }
+
+            AktivitetType.FORSØRGER_I_UTDANNING -> {
+                "Forsørger er i utdanning (§15-6 første ledd)"
+            }
+
+            AktivitetType.FORSØRGER_REELL_ARBEIDSSØKER -> {
+                "Forsørger er reell arbeidssøker (§15-6 første ledd)"
+            }
+
+            AktivitetType.FORSØRGER_ETABLERER_VIRKSOMHET -> {
+                "Forsørger etablerer egen virksomhet (§15-6 første ledd)"
+            }
+
+            AktivitetType.BARNET_SÆRLIG_TILSYNSKREVENDE -> {
+                "Barnet er særlig tilsynskrevende (§15-6 fjerde ledd)"
+            }
+
+            AktivitetType.FORSØRGER_MANGLER_TILSYNSORDNING -> {
+                "Forsørger mangler tilsynsordning (§15-6 femte ledd)"
+            }
+
+            AktivitetType.FORSØRGER_ER_SYK -> {
+                "Forsørger er syk (§15-6 femte ledd)"
+            }
+
+            AktivitetType.BARNET_ER_SYKT -> {
+                "Barnet er sykt (§15-6 femte ledd)"
+            }
+
+            AktivitetType.UTVIDELSE_BARNET_SÆRLIG_TILSYNSKREVENDE -> {
+                "Barnet er særlig tilsynskrevende (§15-8 tredje ledd)"
+            }
+
+            AktivitetType.UTVIDELSE_FORSØRGER_I_UTDANNING -> {
+                "Forsørgeren er i utdanning (§15-8 andre ledd)"
+            }
+
+            AktivitetType.FORLENGELSE_MIDLERTIDIG_SYKDOM -> {
+                "Forsørger eller barnet har en midlertidig sykdom (§15-8 fjerde ledd)"
+            }
+
+            AktivitetType.FORLENGELSE_STØNAD_UT_SKOLEÅRET -> {
+                "Stønad ut skoleåret (§15-8 andre ledd)"
+            }
+
+            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_ARBEID -> {
+                "Stønad i påvente av arbeid (§15-8 femte ledd)"
+            }
+
+            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_UTDANNING -> {
+                "Stønad i påvente av utdanning (§15-8 femte ledd)"
+            }
+
+            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_ARBEID_REELL_ARBEIDSSØKER -> {
                 "Stønad i påvente av arbeid - reell arnbeidssøker (§15-8 femte ledd)"
+            }
 
-            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_OPPSTART_KVALIFISERINGSPROGRAM ->
+            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_OPPSTART_KVALIFISERINGSPROGRAM -> {
                 "Stønad i påvente av oppstart kvalifiseringsprogram"
+            }
 
-            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_TILSYNSORDNING -> "Stønad i påvente av tilsynsordning (§15-8 femte ledd)"
+            AktivitetType.FORLENGELSE_STØNAD_PÅVENTE_TILSYNSORDNING -> {
+                "Stønad i påvente av tilsynsordning (§15-8 femte ledd)"
+            }
         }
 }

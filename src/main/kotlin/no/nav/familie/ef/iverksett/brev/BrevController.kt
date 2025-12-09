@@ -1,11 +1,12 @@
 package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevService
+import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
+import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
 import no.nav.familie.kontrakter.ef.felles.PeriodiskAktivitetspliktBrevDto
-import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.http.ResponseEntity
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,16 +21,20 @@ class BrevController(
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(
         @RequestBody data: FrittståendeBrevDto,
-    ): ResponseEntity<Any> {
+    ) {
+        if (!SikkerthetContext.kallKommerFraEfSak()) {
+            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
+        }
         frittståendeBrevService.opprettTask(data)
-        return ResponseEntity.ok().build()
     }
 
     @PostMapping("/frittstaende/innhenting-aktivitetsplikt")
     fun journalførBrevForInnhentingAvAktivitetsplikt(
         @RequestBody data: PeriodiskAktivitetspliktBrevDto,
-    ): Ressurs<Unit> {
+    ) {
+        if (!SikkerthetContext.kallKommerFraEfSak()) {
+            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
+        }
         frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(data)
-        return Ressurs.success(Unit)
     }
 }

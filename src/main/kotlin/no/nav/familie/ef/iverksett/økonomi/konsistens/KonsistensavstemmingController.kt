@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.konsistens
 
+import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -22,8 +23,6 @@ import java.util.UUID
 class KonsistensavstemmingController(
     private val konsistensavstemmingService: KonsistensavstemmingService,
 ) {
-    // TODO må verifisere at man ikke lagrer ned kildeBehandlingId i iverksett
-    // Og må verifisere at man ikke bruker kildeBehandlingId på andelsnivå fra KonsistensavstemmingDto
     @PostMapping
     fun startKonsistensavstemming(
         @RequestBody konsistensavstemmingDto: KonsistensavstemmingDto,
@@ -31,6 +30,9 @@ class KonsistensavstemmingController(
         @RequestParam(name = "sendAvsluttmelding") sendAvsluttmelding: Boolean = true,
         @RequestParam(name = "transaksjonId") transaksjonId: UUID? = null,
     ) {
+        if (!SikkerthetContext.kallKommerFraEfSak()) {
+            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
+        }
         konsistensavstemmingService.sendKonsistensavstemming(
             konsistensavstemmingDto,
             sendStartmelding,
@@ -42,12 +44,10 @@ class KonsistensavstemmingController(
     @GetMapping("timeout-test", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun timeoutTest(
         @RequestParam(name = "sekunder") sekunder: Long,
-    ): ResponseEntity<String> {
-        return if (SikkerthetContext.kallKommerFraEfSak() || SikkerthetContext.kallKommerFraFraProsessering()) {
-            ResponseEntity(konsistensavstemmingService.testTimeout(sekunder), HttpStatus.OK)
-        } else {
-            // TODO: Fjern meg, jeg er her kun for test.
-            ResponseEntity("Kall kommer IKKE fra ef-sak eller familie-prosessering", HttpStatus.FORBIDDEN)
+    ): String {
+        if (!SikkerthetContext.kallKommerFraEfSak() && !SikkerthetContext.kallKommerFraFraProsessering()) {
+            throw ApiFeil("Kall kommer ikke fra ef-sak eller familie-prosessering", HttpStatus.FORBIDDEN)
         }
+        return konsistensavstemmingService.testTimeout(sekunder)
     }
 }

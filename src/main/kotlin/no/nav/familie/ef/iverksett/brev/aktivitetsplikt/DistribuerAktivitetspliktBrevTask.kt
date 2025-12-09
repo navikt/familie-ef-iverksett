@@ -65,12 +65,17 @@ class DistribuerAktivitetspliktBrevTask(
         } catch (e: RessursException) {
             val cause = e.cause
             when (cause) {
-                is HttpClientErrorException.Gone ->
+                is HttpClientErrorException.Gone -> {
                     return Dødsbo("Dødsbo personIdent=${brev.personIdent} ${cause.responseBodyAsString}")
+                }
+
                 is HttpClientErrorException.Conflict -> {
                     logger.warn("Conflict: Distribuering av aktivitetsplikt brev allerede utført for journalpost: $journalpostId")
                 }
-                else -> throw e
+
+                else -> {
+                    throw e
+                }
             }
         }
         return OK
