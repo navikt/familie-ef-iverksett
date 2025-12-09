@@ -63,8 +63,14 @@ fun tilManuelleBrevmottakere(brevmottakere: List<Brevmottaker>?): Set<Tilbakekre
             ?.map {
                 val type =
                     when (it.mottakerRolle) {
-                        IverksettBrevmottaker.MottakerRolle.FULLMEKTIG -> MottakerType.FULLMEKTIG
-                        IverksettBrevmottaker.MottakerRolle.VERGE -> MottakerType.VERGE
+                        IverksettBrevmottaker.MottakerRolle.FULLMEKTIG -> {
+                            MottakerType.FULLMEKTIG
+                        }
+
+                        IverksettBrevmottaker.MottakerRolle.VERGE -> {
+                            MottakerType.VERGE
+                        }
+
                         else -> {
                             throw IllegalStateException("Skulle hatt mottaker-rolle som er enten verge eller fullmektig, men var: ${it.mottakerRolle}")
                         }
@@ -74,7 +80,9 @@ fun tilManuelleBrevmottakere(brevmottakere: List<Brevmottaker>?): Set<Tilbakekre
 
                 val vergetype =
                     when {
-                        erOrganisasjon -> Vergetype.ADVOKAT // Brukes her for generelt mottaker som er organisasjon, tilbakekreving behandler advokat som en organisasjon
+                        erOrganisasjon -> Vergetype.ADVOKAT
+
+                        // Brukes her for generelt mottaker som er organisasjon, tilbakekreving behandler advokat som en organisasjon
                         else -> Vergetype.UDEFINERT
                     }
 
@@ -107,7 +115,7 @@ fun IverksettData.tilFagsystembehandling(enhet: Enhet) =
 
 private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel? =
     when (tilbakekrevingsdetaljer.tilbakekrevingsvalg) {
-        Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL ->
+        Tilbakekrevingsvalg.OPPRETT_TILBAKEKREVING_MED_VARSEL -> {
             Varsel(
                 tilbakekrevingsdetaljer.tilbakekrevingMedVarsel?.varseltekst
                     ?: error("varseltekst er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
@@ -116,8 +124,11 @@ private fun lagVarsel(tilbakekrevingsdetaljer: Tilbakekrevingsdetaljer): Varsel?
                 tilbakekrevingsdetaljer.tilbakekrevingMedVarsel.perioder?.map { Periode(it.fom, it.tom) }
                     ?: error("perioder er påkrevd for å map'e TilbakekrevingMedVarsel til Varsel"),
             )
+        }
 
-        else -> null
+        else -> {
+            null
+        }
     }
 
 private fun lagFaktainfo(iverksett: IverksettData): Faktainfo =
@@ -131,15 +142,25 @@ private fun lagFaktainfo(iverksett: IverksettData): Faktainfo =
 private fun BehandlingÅrsak.visningsTekst(): String =
     when (this) {
         BehandlingÅrsak.SØKNAD -> "Søknad"
+
         BehandlingÅrsak.KLAGE -> "Klage"
+
         BehandlingÅrsak.NYE_OPPLYSNINGER -> "Nye opplysninger"
+
         BehandlingÅrsak.KORRIGERING_UTEN_BREV -> "Korrigering uten brev"
+
         BehandlingÅrsak.IVERKSETTE_KA_VEDTAK -> "Iverksette KA-vedtak (uten brev)"
+
         BehandlingÅrsak.PAPIRSØKNAD -> "Papirsøknad"
+
         BehandlingÅrsak.MANUELT_OPPRETTET -> "Manuelt opprettet"
+
         BehandlingÅrsak.G_OMREGNING -> "G-omregning"
+
         BehandlingÅrsak.SATSENDRING -> "Satsendring"
+
         BehandlingÅrsak.AUTOMATISK_INNTEKTSENDRING -> "Automatisk inntektsendring"
+
         BehandlingÅrsak.MIGRERING,
         BehandlingÅrsak.SANKSJON_1_MND,
         -> error("Skal ikke gi tilbakekreving for årsak=$this")

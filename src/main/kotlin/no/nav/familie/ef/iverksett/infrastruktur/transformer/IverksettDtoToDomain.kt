@@ -196,31 +196,36 @@ fun PeriodeMedBeløpDto.toDomain(): PeriodeMedBeløp =
 
 fun IverksettDto.toDomain(): IverksettData =
     when (this) {
-        is IverksettOvergangsstønadDto ->
+        is IverksettOvergangsstønadDto -> {
             IverksettOvergangsstønad(
                 fagsak = this.fagsak.toDomain(),
                 søker = this.søker.toDomain(),
                 behandling = this.behandling.toDomain(),
                 vedtak = this.vedtak.toDomain(),
             )
+        }
 
-        is IverksettBarnetilsynDto ->
+        is IverksettBarnetilsynDto -> {
             IverksettBarnetilsyn(
                 fagsak = this.fagsak.toDomain(),
                 søker = this.søker.toDomain(),
                 behandling = this.behandling.toDomain(),
                 vedtak = this.vedtak.toDomain(),
             )
+        }
 
-        is IverksettSkolepengerDto ->
+        is IverksettSkolepengerDto -> {
             IverksettSkolepenger(
                 fagsak = this.fagsak.toDomain(),
                 søker = this.søker.toDomain(),
                 behandling = this.behandling.toDomain(),
                 vedtak = this.vedtak.toDomain(),
             )
+        }
 
-        else -> error("Støtter ikke mapping for ${this.javaClass.simpleName}")
+        else -> {
+            error("Støtter ikke mapping for ${this.javaClass.simpleName}")
+        }
     }
 
 fun OppgaverForOpprettelseDto.toDomain(): OppgaverForOpprettelse = OppgaverForOpprettelse(oppgavetyper = this.oppgavetyper, årForInntektskontrollSelvstendigNæringsdrivende = this.årForInntektskontrollSelvstendigNæringsdrivende)

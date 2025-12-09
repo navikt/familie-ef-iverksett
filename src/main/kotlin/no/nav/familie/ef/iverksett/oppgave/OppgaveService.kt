@@ -45,7 +45,10 @@ class OppgaveService(
             return true
         }
         return when (iverksett.behandling.behandlingType) {
-            BehandlingType.FØRSTEGANGSBEHANDLING -> true
+            BehandlingType.FØRSTEGANGSBEHANDLING -> {
+                true
+            }
+
             BehandlingType.REVURDERING -> {
                 when (iverksett.vedtak.vedtaksresultat) {
                     Vedtaksresultat.INNVILGET -> aktivitetEllerPeriodeEndret(iverksett)
@@ -54,7 +57,9 @@ class OppgaveService(
                 }
             }
 
-            else -> false
+            else -> {
+                false
+            }
         }
     }
 
@@ -254,14 +259,20 @@ class OppgaveService(
 
     private fun finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String =
         when (iverksett.vedtak.vedtaksresultat) {
-            Vedtaksresultat.INNVILGET ->
+            Vedtaksresultat.INNVILGET -> {
                 beskrivelseFørstegangsbehandlingInnvilget(
                     iverksett.totalVedtaksperiode(),
                     iverksett.gjeldendeVedtak(),
                 )
+            }
 
-            Vedtaksresultat.AVSLÅTT -> beskrivelseFørstegangsbehandlingAvslått(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
-            else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
+            Vedtaksresultat.AVSLÅTT -> {
+                beskrivelseFørstegangsbehandlingAvslått(iverksett.vedtak.vedtakstidspunkt.toLocalDate())
+            }
+
+            else -> {
+                error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
+            }
         }
 
     private fun finnBeskrivelseForRevurderingAvVedtaksresultat(iverksett: IverksettOvergangsstønad): String {
@@ -280,8 +291,13 @@ class OppgaveService(
                 } ?: finnBeskrivelseForFørstegangsbehandlingAvVedtaksresultat(iverksett)
             }
 
-            Vedtaksresultat.OPPHØRT -> beskrivelseRevurderingOpphørt(opphørsdato(iverksett))
-            else -> error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
+            Vedtaksresultat.OPPHØRT -> {
+                beskrivelseRevurderingOpphørt(opphørsdato(iverksett))
+            }
+
+            else -> {
+                error("Kunne ikke finne riktig vedtaksresultat for oppfølgingsoppgave")
+            }
         }
     }
 

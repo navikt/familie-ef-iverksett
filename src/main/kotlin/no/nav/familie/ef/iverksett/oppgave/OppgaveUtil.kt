@@ -66,8 +66,14 @@ object OppgaveUtil {
         }
 
         when (date.dayOfWeek) {
-            DayOfWeek.SATURDAY -> date = date.plusDays(2)
-            DayOfWeek.SUNDAY -> date = date.plusDays(1)
+            DayOfWeek.SATURDAY -> {
+                date = date.plusDays(2)
+            }
+
+            DayOfWeek.SUNDAY -> {
+                date = date.plusDays(1)
+            }
+
             else -> {
             }
         }
@@ -81,8 +87,14 @@ object OppgaveUtil {
         }
 
         when (date.dayOfWeek) {
-            DayOfWeek.SATURDAY -> date = date.plusDays(2)
-            DayOfWeek.SUNDAY -> date = date.plusDays(1)
+            DayOfWeek.SATURDAY -> {
+                date = date.plusDays(2)
+            }
+
+            DayOfWeek.SUNDAY -> {
+                date = date.plusDays(1)
+            }
+
             else -> {
             }
         }

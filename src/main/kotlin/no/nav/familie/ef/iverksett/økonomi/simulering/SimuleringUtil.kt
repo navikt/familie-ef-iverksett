@@ -81,28 +81,31 @@ fun grupperPosteringerEtterDato(mottakere: List<SimuleringMottaker>): List<Simul
 
 fun fagområdeKoderForPosteringer(stønadType: StønadType): Set<FagOmrådeKode> =
     when (stønadType) {
-        StønadType.OVERGANGSSTØNAD ->
+        StønadType.OVERGANGSSTØNAD -> {
             setOf(
                 FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD,
                 FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_INFOTRYGD,
                 FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING,
                 FagOmrådeKode.ENSLIG_FORSØRGER_OVERGANGSSTØNAD_MANUELL_POSTERING_INFOTRYGD,
             )
+        }
 
-        StønadType.BARNETILSYN ->
+        StønadType.BARNETILSYN -> {
             setOf(
                 FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN,
                 FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_INFOTRYGD,
                 FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
                 FagOmrådeKode.ENSLIG_FORSØRGER_BARNETILSYN_MANUELL_POSTERING,
             )
+        }
 
-        StønadType.SKOLEPENGER ->
+        StønadType.SKOLEPENGER -> {
             setOf(
                 FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER,
                 FagOmrådeKode.ENSLIG_FORSØRGER_SKOLEPENGER_INFOTRYGD,
                 FagOmrådeKode.TILBAKEKREVING_EF_MANUELL_POSTERING,
             )
+        }
     }
 
 private fun hentNyttBeløp(posteringer: List<SimulertPostering>) = posteringer.sumBarePositiv(YTELSE) - posteringer.sumBarePositiv(FEILUTBETALING)

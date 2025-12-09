@@ -76,7 +76,10 @@ class DistribuerFrittståendeBrevTask(
                 } catch (e: RessursException) {
                     val cause = e.cause
                     when (cause) {
-                        is HttpClientErrorException.Gone -> resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
+                        is HttpClientErrorException.Gone -> {
+                            resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
+                        }
+
                         is HttpClientErrorException.Conflict -> {
                             logger.warn(
                                 "Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}",
@@ -90,7 +93,10 @@ class DistribuerFrittståendeBrevTask(
                                     frittståendeBrevId,
                                 )
                         }
-                        else -> throw e
+
+                        else -> {
+                            throw e
+                        }
                     }
                 }
             }

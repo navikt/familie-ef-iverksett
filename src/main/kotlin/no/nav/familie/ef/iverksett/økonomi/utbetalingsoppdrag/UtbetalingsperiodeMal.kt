@@ -61,6 +61,8 @@ fun mapSatstype(stønadstype: StønadType) =
         StønadType.OVERGANGSSTØNAD,
         StønadType.BARNETILSYN,
         -> Utbetalingsperiode.SatsType.MND
+
         StønadType.SKOLEPENGER -> Utbetalingsperiode.SatsType.ENG
+
         else -> error("Støtter ikke periodetype=$stønadstype")
     }
