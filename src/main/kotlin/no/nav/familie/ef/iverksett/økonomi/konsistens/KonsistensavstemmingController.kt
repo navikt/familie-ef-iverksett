@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -23,6 +24,10 @@ import java.util.UUID
 class KonsistensavstemmingController(
     private val konsistensavstemmingService: KonsistensavstemmingService,
 ) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
+    // TODO må verifisere at man ikke lagrer ned kildeBehandlingId i iverksett
+    // Og må verifisere at man ikke bruker kildeBehandlingId på andelsnivå fra KonsistensavstemmingDto
     @PostMapping
     fun startKonsistensavstemming(
         @RequestBody konsistensavstemmingDto: KonsistensavstemmingDto,
@@ -31,8 +36,10 @@ class KonsistensavstemmingController(
         @RequestParam(name = "transaksjonId") transaksjonId: UUID? = null,
     ) {
         if (!SikkerthetContext.kallKommerFraEfSak()) {
+            logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
+
         konsistensavstemmingService.sendKonsistensavstemming(
             konsistensavstemmingDto,
             sendStartmelding,
@@ -46,8 +53,10 @@ class KonsistensavstemmingController(
         @RequestParam(name = "sekunder") sekunder: Long,
     ): String {
         if (!SikkerthetContext.kallKommerFraEfSak() && !SikkerthetContext.kallKommerFraFraProsessering()) {
+            logger.error("Kall kommer ikke fra ef-sak eller familie-prosessering")
             throw ApiFeil("Kall kommer ikke fra ef-sak eller familie-prosessering", HttpStatus.FORBIDDEN)
         }
+
         return konsistensavstemmingService.testTimeout(sekunder)
     }
 }

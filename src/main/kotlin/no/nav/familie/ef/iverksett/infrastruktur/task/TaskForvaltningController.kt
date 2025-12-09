@@ -36,8 +36,10 @@ class TaskForvaltningController(
         @PathVariable taskId: Long,
     ): KopiertTaskResponse {
         if (!SikkerthetContext.kallKommerFraFraProsessering()) {
+            logger.error("Kall kommer ikke fra familie-prosessering")
             throw ApiFeil("Kall kommer ikke fra familie-prosessering", HttpStatus.FORBIDDEN)
         }
+
         logger.info("Starter kloning av task id $taskId.")
         val task = taskService.findById(taskId)
         val kopiertTilTask = taskForvaltningService.kopierTask(task)

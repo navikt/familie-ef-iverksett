@@ -8,6 +8,7 @@ import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.internal.TaskService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,13 +25,17 @@ import java.time.LocalDateTime
 class GrensesnittavstemmingController(
     private val taskService: TaskService,
 ) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
     @PostMapping
     fun startGrensesnittavstemmingForStønad(
         @RequestBody grensesnittavstemmingRequest: GrensesnittavstemmingRequestDto,
     ) {
         if (!SikkerthetContext.kallKommerFraEfSak()) {
+            logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
+
         val stønadType = grensesnittavstemmingRequest.stønadType
         val eksisterendeGrensesnittAvstemmingTasker = taskService.finnTasksMedStatus(listOf(Status.UBEHANDLET, Status.KLAR_TIL_PLUKK), GrensesnittavstemmingTask.TYPE)
         eksisterendeGrensesnittAvstemmingTasker.forEach { task ->
