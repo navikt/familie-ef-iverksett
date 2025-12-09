@@ -16,27 +16,32 @@ class VedtakstatistikkService(
     ) {
         // Kunne ikke bruke sealed class i kontrakt mot datavarehus og det blir derfor if-else her
         when (iverksettData) {
-            is IverksettOvergangsstønad ->
+            is IverksettOvergangsstønad -> {
                 vedtakstatistikkKafkaProducer.sendVedtak(
                     VedtakstatistikkMapper.mapTilVedtakOvergangsstønadDVH(
                         iverksettData,
                         forrigeIverksett?.behandling?.eksternId,
                     ),
                 )
-            is IverksettBarnetilsyn ->
+            }
+
+            is IverksettBarnetilsyn -> {
                 vedtakstatistikkKafkaProducer.sendVedtak(
                     VedtakstatistikkMapper.mapTilVedtakBarnetilsynDVH(
                         iverksettData,
                         forrigeIverksett?.behandling?.eksternId,
                     ),
                 )
-            is IverksettSkolepenger ->
+            }
+
+            is IverksettSkolepenger -> {
                 vedtakstatistikkKafkaProducer.sendVedtak(
                     VedtakstatistikkMapper.mapTilVedtakSkolepengeDVH(
                         iverksettData,
                         forrigeIverksett?.behandling?.eksternId,
                     ),
                 )
+            }
         }
     }
 }

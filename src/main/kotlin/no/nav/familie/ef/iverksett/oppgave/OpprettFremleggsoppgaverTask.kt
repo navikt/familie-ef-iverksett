@@ -69,6 +69,7 @@ class OpprettFremleggsoppgaverTask(
                     logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
                 }
             }
+
             is IverksettBarnetilsyn -> {
                 if (iverksettData.vedtak.oppgaverForOpprettelse.oppgavetyper
                         .contains(oppgaveForOpprettelseType)
@@ -80,7 +81,10 @@ class OpprettFremleggsoppgaverTask(
                     logger.info("Oppgave opprettes ikke for behandling=$behandlingId")
                 }
             }
-            else -> return
+
+            else -> {
+                return
+            }
         }
     }
 

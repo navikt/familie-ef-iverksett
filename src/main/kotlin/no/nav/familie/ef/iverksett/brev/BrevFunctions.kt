@@ -31,15 +31,34 @@ fun lagStønadtypeTekst(stønadstype: StønadType): String =
 
 fun lagVedtakstekst(iverksettData: IverksettData): String =
     when {
-        iverksettData.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING ->
+        iverksettData.behandling.behandlingType == BehandlingType.FØRSTEGANGSBEHANDLING -> {
             lagVedtakstekstFørstegangsbehandling(iverksettData)
-        iverksettData.behandling.behandlingÅrsak == BehandlingÅrsak.SANKSJON_1_MND -> "Vedtak om sanksjon av "
-        iverksettData.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT && iverksettData.vedtak.avslagÅrsak == AvslagÅrsak.MINDRE_INNTEKTSENDRINGER -> "Vedtak om avslått endring av "
-        iverksettData.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT -> "Vedtak om avslått "
-        iverksettData.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT -> "Vedtak om opphørt "
+        }
+
+        iverksettData.behandling.behandlingÅrsak == BehandlingÅrsak.SANKSJON_1_MND -> {
+            "Vedtak om sanksjon av "
+        }
+
+        iverksettData.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT && iverksettData.vedtak.avslagÅrsak == AvslagÅrsak.MINDRE_INNTEKTSENDRINGER -> {
+            "Vedtak om avslått endring av "
+        }
+
+        iverksettData.vedtak.vedtaksresultat == Vedtaksresultat.AVSLÅTT -> {
+            "Vedtak om avslått "
+        }
+
+        iverksettData.vedtak.vedtaksresultat == Vedtaksresultat.OPPHØRT -> {
+            "Vedtak om opphørt "
+        }
+
         iverksettData.vedtak.vedtaksresultat == Vedtaksresultat.INNVILGET &&
-            iverksettData.behandling.behandlingÅrsak == BehandlingÅrsak.SØKNAD -> "Vedtak om innvilget "
-        else -> "Vedtak om revurdert "
+            iverksettData.behandling.behandlingÅrsak == BehandlingÅrsak.SØKNAD -> {
+            "Vedtak om innvilget "
+        }
+
+        else -> {
+            "Vedtak om revurdert "
+        }
     }
 
 fun lesPdfForVedleggForRettigheter(stønadType: StønadType): ByteArray {
