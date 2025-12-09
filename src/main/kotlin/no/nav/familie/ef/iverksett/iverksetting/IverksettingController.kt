@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
-import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
+import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
@@ -39,7 +39,7 @@ class IverksettingController(
         @RequestPart("data") iverksettDto: IverksettDto,
         @RequestPart("fil") fil: MultipartFile,
     ) {
-        if (!SikkerthetContext.kallKommerFraEfSak()) {
+        if (!SikkerhetContext.kallKommerFraEfSak()) {
             logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
@@ -54,7 +54,7 @@ class IverksettingController(
     fun iverksett(
         @RequestBody iverksettDto: IverksettDto,
     ) {
-        if (!SikkerthetContext.kallKommerFraEfSak()) {
+        if (!SikkerhetContext.kallKommerFraEfSak()) {
             logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
@@ -69,7 +69,7 @@ class IverksettingController(
     fun hentStatus(
         @PathVariable behandlingId: UUID,
     ): IverksettStatus? {
-        if (!SikkerthetContext.kallKommerFraEfSak()) {
+        if (!SikkerhetContext.kallKommerFraEfSak()) {
             logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
@@ -81,7 +81,7 @@ class IverksettingController(
     fun publiserVedtakshendelser(
         @PathVariable behandlingId: UUID,
     ) {
-        if (!SikkerthetContext.kallKommerFraEfSak()) {
+        if (!SikkerhetContext.kallKommerFraEfSak()) {
             logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }

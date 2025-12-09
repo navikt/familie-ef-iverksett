@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
-import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
+import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
@@ -24,7 +24,7 @@ class BehandlingsstatistikkController(
     fun sendBehandlingstatistikk(
         @RequestBody behandlingStatistikk: BehandlingsstatistikkDto,
     ) {
-        if (!SikkerthetContext.kallKommerFraEfSak()) {
+        if (!SikkerhetContext.kallKommerFraEfSak()) {
             logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }

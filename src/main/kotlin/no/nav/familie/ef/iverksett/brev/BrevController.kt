@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.brev
 
 import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevService
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
-import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
+import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
 import no.nav.familie.kontrakter.ef.felles.PeriodiskAktivitetspliktBrevDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -25,7 +25,7 @@ class BrevController(
     fun distribuerFrittståendeBrev(
         @RequestBody data: FrittståendeBrevDto,
     ) {
-        if (!SikkerthetContext.kallKommerFraEfSak()) {
+        if (!SikkerhetContext.kallKommerFraEfSak()) {
             logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
@@ -37,7 +37,7 @@ class BrevController(
     fun journalførBrevForInnhentingAvAktivitetsplikt(
         @RequestBody data: PeriodiskAktivitetspliktBrevDto,
     ) {
-        if (!SikkerthetContext.kallKommerFraEfSak()) {
+        if (!SikkerhetContext.kallKommerFraEfSak()) {
             logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }

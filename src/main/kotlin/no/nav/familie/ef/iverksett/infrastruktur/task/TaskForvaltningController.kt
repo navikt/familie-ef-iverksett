@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
-import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
+import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.prosessering.domene.PropertiesWrapper
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.domene.Task
@@ -35,7 +35,7 @@ class TaskForvaltningController(
     fun kopierTaskStartPåNytt(
         @PathVariable taskId: Long,
     ): KopiertTaskResponse {
-        if (!SikkerthetContext.kallKommerFraFraProsessering()) {
+        if (!SikkerhetContext.kallKommerFraFraProsessering()) {
             logger.error("Kall kommer ikke fra familie-prosessering")
             throw ApiFeil("Kall kommer ikke fra familie-prosessering", HttpStatus.FORBIDDEN)
         }

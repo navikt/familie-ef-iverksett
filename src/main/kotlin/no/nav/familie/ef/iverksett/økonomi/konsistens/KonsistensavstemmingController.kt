@@ -1,13 +1,12 @@
 package no.nav.familie.ef.iverksett.økonomi.konsistens
 
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
-import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
+import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -35,7 +34,7 @@ class KonsistensavstemmingController(
         @RequestParam(name = "sendAvsluttmelding") sendAvsluttmelding: Boolean = true,
         @RequestParam(name = "transaksjonId") transaksjonId: UUID? = null,
     ) {
-        if (!SikkerthetContext.kallKommerFraEfSak()) {
+        if (!SikkerhetContext.kallKommerFraEfSak()) {
             logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }
@@ -52,7 +51,7 @@ class KonsistensavstemmingController(
     fun timeoutTest(
         @RequestParam(name = "sekunder") sekunder: Long,
     ): String {
-        if (!SikkerthetContext.kallKommerFraEfSak() && !SikkerthetContext.kallKommerFraFraProsessering()) {
+        if (!SikkerhetContext.kallKommerFraEfSak() && !SikkerhetContext.kallKommerFraFraProsessering()) {
             logger.error("Kall kommer ikke fra ef-sak eller familie-prosessering")
             throw ApiFeil("Kall kommer ikke fra ef-sak eller familie-prosessering", HttpStatus.FORBIDDEN)
         }

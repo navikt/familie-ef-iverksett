@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
-import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
+import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -27,7 +27,7 @@ class VedtakstatistikkTestController(
     fun sendStatistikk(
         @RequestBody data: IverksettDto,
     ) {
-        if (!SikkerthetContext.kallKommerFraEfSak()) {
+        if (!SikkerhetContext.kallKommerFraEfSak()) {
             logger.error("Kall kommer ikke fra ef-sak")
             throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
         }

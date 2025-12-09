@@ -4,8 +4,8 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.slf4j.LoggerFactory
 import org.slf4j.MarkerFactory
 
-object SikkerthetContext {
-    private val logger = LoggerFactory.getLogger(SikkerthetContext::class.java)
+object SikkerhetContext {
+    private val logger = LoggerFactory.getLogger(SikkerhetContext::class.java)
     private val teamLogsMarker = MarkerFactory.getMarker("TEAM_LOGS")
 
     fun kallKommerFraEfSak(): Boolean = kallKommerFra("teamfamilie:familie-ef-sak")
