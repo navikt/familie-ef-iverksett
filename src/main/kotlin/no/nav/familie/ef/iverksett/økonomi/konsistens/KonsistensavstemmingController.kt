@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi.konsistens
 
+import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerthetContext
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.HttpStatus
@@ -41,5 +42,12 @@ class KonsistensavstemmingController(
     @GetMapping("timeout-test", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun timeoutTest(
         @RequestParam(name = "sekunder") sekunder: Long,
-    ): ResponseEntity<String> = ResponseEntity(konsistensavstemmingService.testTimeout(sekunder), HttpStatus.OK)
+    ): ResponseEntity<String> {
+        return if (SikkerthetContext.kallKommerFraEfSak() || SikkerthetContext.kallKommerFraFraProsessering()) {
+            ResponseEntity(konsistensavstemmingService.testTimeout(sekunder), HttpStatus.OK)
+        } else {
+            // TODO: Fjern meg, jeg er her kun for test.
+            ResponseEntity("Kall kommer IKKE fra ef-sak eller familie-prosessering", HttpStatus.FORBIDDEN)
+        }
+    }
 }
