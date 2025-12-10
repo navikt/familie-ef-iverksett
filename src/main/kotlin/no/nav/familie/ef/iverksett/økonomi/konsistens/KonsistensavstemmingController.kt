@@ -47,7 +47,7 @@ class KonsistensavstemmingController(
     fun timeoutTest(
         @RequestParam(name = "sekunder") sekunder: Long,
     ): String {
-        if (!SikkerhetContext.kallKommerFraEfSak() && !SikkerhetContext.kallKommerFraFraProsessering()) {
+        if (!SikkerhetContext.kallKommerFraEfSak() || !SikkerhetContext.kallKommerFraFraProsessering()) {
             throw ApiFeil("Kall kommer ikke fra ef-sak eller familie-prosessering", HttpStatus.FORBIDDEN)
         }
 
