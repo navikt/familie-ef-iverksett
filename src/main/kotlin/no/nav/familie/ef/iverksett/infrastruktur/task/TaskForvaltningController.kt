@@ -43,7 +43,7 @@ class TaskForvaltningController(
         val task = taskService.findById(taskId)
         val kopiertTilTask = taskForvaltningService.kopierTask(task)
 
-        logger.info("Kopiert til task id: ${taskId}.")
+        logger.info("Kopiert til task id: $taskId.")
         return KopiertTaskResponse(task.id, kopiertTilTask.id)
     }
 }
