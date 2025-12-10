@@ -22,10 +22,7 @@ class BrevController(
     fun distribuerFrittståendeBrev(
         @RequestBody data: FrittståendeBrevDto,
     ) {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
         frittståendeBrevService.opprettTask(data)
     }
 
@@ -33,10 +30,7 @@ class BrevController(
     fun journalførBrevForInnhentingAvAktivitetsplikt(
         @RequestBody data: PeriodiskAktivitetspliktBrevDto,
     ) {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
         frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(data)
     }
 }

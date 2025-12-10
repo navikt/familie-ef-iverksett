@@ -35,9 +35,7 @@ class TaskForvaltningController(
     fun kopierTaskStartPåNytt(
         @PathVariable taskId: Long,
     ): KopiertTaskResponse {
-        if (!SikkerhetContext.kallKommerFraFraProsessering()) {
-            throw ApiFeil("Kall kommer ikke fra familie-prosessering", HttpStatus.FORBIDDEN)
-        }
+        SikkerhetContext.kallKommerFraFraProsessering()
 
         logger.info("Starter kloning av task id $taskId.")
         val task = taskService.findById(taskId)

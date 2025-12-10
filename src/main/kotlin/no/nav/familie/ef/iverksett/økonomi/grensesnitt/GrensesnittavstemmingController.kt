@@ -28,10 +28,7 @@ class GrensesnittavstemmingController(
     fun startGrensesnittavstemmingForStønad(
         @RequestBody grensesnittavstemmingRequest: GrensesnittavstemmingRequestDto,
     ) {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
         val stønadType = grensesnittavstemmingRequest.stønadType
         val eksisterendeGrensesnittAvstemmingTasker = taskService.finnTasksMedStatus(listOf(Status.UBEHANDLET, Status.KLAR_TIL_PLUKK), GrensesnittavstemmingTask.TYPE)
         eksisterendeGrensesnittAvstemmingTasker.forEach { task ->

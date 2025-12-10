@@ -25,12 +25,8 @@ class SimuleringController(
     fun hentSimuleringV2(
         @RequestBody simuleringDto: SimuleringDto,
     ): Ressurs<BeriketSimuleringsresultat> {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
-        val beriketSimuleringResultat =
-            simuleringService.hentBeriketSimulering(simuleringDto.toDomain())
+        SikkerhetContext.kallKommerFraEfSak()
+        val beriketSimuleringResultat = simuleringService.hentBeriketSimulering(simuleringDto.toDomain())
         return Ressurs.success(beriketSimuleringResultat)
     }
 }

@@ -24,10 +24,7 @@ class VedtakstatistikkTestController(
     fun sendStatistikk(
         @RequestBody data: IverksettDto,
     ) {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
         vedtakstatistikkService.sendTilKafka(data.toDomain(), null)
     }
 }

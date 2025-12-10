@@ -31,10 +31,7 @@ class KonsistensavstemmingController(
         @RequestParam(name = "sendAvsluttmelding") sendAvsluttmelding: Boolean = true,
         @RequestParam(name = "transaksjonId") transaksjonId: UUID? = null,
     ) {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
         konsistensavstemmingService.sendKonsistensavstemming(
             konsistensavstemmingDto,
             sendStartmelding,
@@ -47,10 +44,8 @@ class KonsistensavstemmingController(
     fun timeoutTest(
         @RequestParam(name = "sekunder") sekunder: Long,
     ): String {
-        if (!SikkerhetContext.kallKommerFraEfSak() || !SikkerhetContext.kallKommerFraFraProsessering()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak eller familie-prosessering", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
+        SikkerhetContext.kallKommerFraFraProsessering()
         return konsistensavstemmingService.testTimeout(sekunder)
     }
 }

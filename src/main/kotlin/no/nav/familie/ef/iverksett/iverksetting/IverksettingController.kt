@@ -36,10 +36,7 @@ class IverksettingController(
         @RequestPart("data") iverksettDto: IverksettDto,
         @RequestPart("fil") fil: MultipartFile,
     ) {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         validerSkalHaBrev(iverksett)
@@ -50,10 +47,7 @@ class IverksettingController(
     fun iverksett(
         @RequestBody iverksettDto: IverksettDto,
     ) {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         validerUtenBrev(iverksett)
@@ -64,10 +58,7 @@ class IverksettingController(
     fun hentStatus(
         @PathVariable behandlingId: UUID,
     ): IverksettStatus? {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
         return iverksettingService.utledStatus(behandlingId)
     }
 
@@ -75,10 +66,7 @@ class IverksettingController(
     fun publiserVedtakshendelser(
         @PathVariable behandlingId: UUID,
     ) {
-        if (!SikkerhetContext.kallKommerFraEfSak()) {
-            throw ApiFeil("Kall kommer ikke fra ef-sak", HttpStatus.FORBIDDEN)
-        }
-
+        SikkerhetContext.kallKommerFraEfSak()
         iverksettingService.publiserVedtak(behandlingId)
     }
 
