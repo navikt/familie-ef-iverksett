@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
+import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -21,6 +22,7 @@ class VedtakstatistikkTestController(
     fun sendStatistikk(
         @RequestBody data: IverksettDto,
     ) {
+        SikkerhetContext.validerKallKommerFraEfSak()
         vedtakstatistikkService.sendTilKafka(data.toDomain(), null)
     }
 }
