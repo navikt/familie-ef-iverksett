@@ -69,7 +69,6 @@ abstract class ServerTest {
 
     protected fun søkerBearerToken(
         personident: String = "12345678911",
-        azpName: String = "dev-gcp:teamfamilie:familie-ef-sak",
     ): String {
         val clientId = "lokal:teamfamilie:familie-ef-iverksett"
         return mockOAuth2Server
@@ -80,7 +79,7 @@ abstract class ServerTest {
                     issuerId = "azuread",
                     subject = personident,
                     audience = listOf("aud-localhost"),
-                    claims = mapOf("oid" to UUID.randomUUID().toString(), "azp" to clientId, "azp_name" to azpName, "name" to "saksbehandler", "NAVIdent" to "saksbehandler"),
+                    claims = mapOf("oid" to UUID.randomUUID().toString(), "azp" to clientId, "name" to "saksbehandler", "NAVIdent" to "saksbehandler"),
                     expiry = 3600,
                 ),
             ).serialize()
