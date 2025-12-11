@@ -49,7 +49,7 @@ FAMILIE_OPPDRAG_API_URL: http://localhost:8087
 FAMILIE_INTEGRASJONER_API_URL: http://localhost:9085
 FAMILIE_TILBAKE_URL: http://localhost:8030
 AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
-
+AZURE_APP_CLIENT_ID: test_client_id
 AZURE_APP_TENANT_ID: navq.onmicrosoft.com
 
 NAIS_CLUSTER_NAME: dev
