@@ -28,7 +28,7 @@ class GrensesnittavstemmingController(
     fun startGrensesnittavstemmingForStønad(
         @RequestBody grensesnittavstemmingRequest: GrensesnittavstemmingRequestDto,
     ) {
-        SikkerhetContext.kallKommerFraEfSak()
+        SikkerhetContext.validerKallKommerFraEfSak()
         val stønadType = grensesnittavstemmingRequest.stønadType
         val eksisterendeGrensesnittAvstemmingTasker = taskService.finnTasksMedStatus(listOf(Status.UBEHANDLET, Status.KLAR_TIL_PLUKK), GrensesnittavstemmingTask.TYPE)
         eksisterendeGrensesnittAvstemmingTasker.forEach { task ->

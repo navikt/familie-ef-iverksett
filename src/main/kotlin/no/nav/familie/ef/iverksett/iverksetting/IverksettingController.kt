@@ -36,7 +36,7 @@ class IverksettingController(
         @RequestPart("data") iverksettDto: IverksettDto,
         @RequestPart("fil") fil: MultipartFile,
     ) {
-        SikkerhetContext.kallKommerFraEfSak()
+        SikkerhetContext.validerKallKommerFraEfSak()
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         validerSkalHaBrev(iverksett)
@@ -47,7 +47,7 @@ class IverksettingController(
     fun iverksett(
         @RequestBody iverksettDto: IverksettDto,
     ) {
-        SikkerhetContext.kallKommerFraEfSak()
+        SikkerhetContext.validerKallKommerFraEfSak()
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         validerUtenBrev(iverksett)
@@ -58,7 +58,7 @@ class IverksettingController(
     fun hentStatus(
         @PathVariable behandlingId: UUID,
     ): IverksettStatus? {
-        SikkerhetContext.kallKommerFraEfSak()
+        SikkerhetContext.validerKallKommerFraEfSak()
         return iverksettingService.utledStatus(behandlingId)
     }
 
@@ -66,7 +66,7 @@ class IverksettingController(
     fun publiserVedtakshendelser(
         @PathVariable behandlingId: UUID,
     ) {
-        SikkerhetContext.kallKommerFraEfSak()
+        SikkerhetContext.validerKallKommerFraEfSak()
         iverksettingService.publiserVedtak(behandlingId)
     }
 

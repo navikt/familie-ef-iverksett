@@ -1,10 +1,8 @@
 package no.nav.familie.ef.iverksett.økonomi.konsistens
 
-import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -31,7 +29,7 @@ class KonsistensavstemmingController(
         @RequestParam(name = "sendAvsluttmelding") sendAvsluttmelding: Boolean = true,
         @RequestParam(name = "transaksjonId") transaksjonId: UUID? = null,
     ) {
-        SikkerhetContext.kallKommerFraEfSak()
+        SikkerhetContext.validerKallKommerFraEfSak()
         konsistensavstemmingService.sendKonsistensavstemming(
             konsistensavstemmingDto,
             sendStartmelding,
@@ -44,8 +42,7 @@ class KonsistensavstemmingController(
     fun timeoutTest(
         @RequestParam(name = "sekunder") sekunder: Long,
     ): String {
-        SikkerhetContext.kallKommerFraEfSak()
-        SikkerhetContext.kallKommerFraFraProsessering()
+        SikkerhetContext.validerKallKommerFraEnAv(listOf("teamfamilie:familie-ef-sak", "teamfamilie:familie-prosessering"))
         return konsistensavstemmingService.testTimeout(sekunder)
     }
 }

@@ -19,7 +19,7 @@ class BehandlingsstatistikkController(
     fun sendBehandlingstatistikk(
         @RequestBody behandlingStatistikk: BehandlingsstatistikkDto,
     ) {
-        SikkerhetContext.kallKommerFraEfSak()
+        SikkerhetContext.validerKallKommerFraEfSak()
         behandlingsstatistikkService.sendBehandlingstatistikk(behandlingStatistikk)
     }
 }

@@ -1,12 +1,10 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
-import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.context.annotation.Profile
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -24,7 +22,7 @@ class VedtakstatistikkTestController(
     fun sendStatistikk(
         @RequestBody data: IverksettDto,
     ) {
-        SikkerhetContext.kallKommerFraEfSak()
+        SikkerhetContext.validerKallKommerFraEfSak()
         vedtakstatistikkService.sendTilKafka(data.toDomain(), null)
     }
 }
