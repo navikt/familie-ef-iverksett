@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
-import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.prosessering.domene.PropertiesWrapper
 import no.nav.familie.prosessering.domene.Status
@@ -8,7 +7,6 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -35,7 +33,7 @@ class TaskForvaltningController(
     fun kopierTaskStartPåNytt(
         @PathVariable taskId: Long,
     ): KopiertTaskResponse {
-        SikkerhetContext.kallKommerFraFraProsessering()
+        SikkerhetContext.validerKallKommerFraFraProsessering()
 
         logger.info("Starter kloning av task id $taskId.")
         val task = taskService.findById(taskId)

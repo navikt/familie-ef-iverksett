@@ -5,11 +5,11 @@ import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
 import org.springframework.http.HttpStatus
 
 object SikkerhetContext {
-    fun kallKommerFraEfSak(): Boolean = kallKommerFra("teamfamilie:familie-ef-sak")
+    fun validerKallKommerFraEfSak(): Boolean = validerKallKommerFra("teamfamilie:familie-ef-sak")
 
-    fun kallKommerFraFraProsessering(): Boolean = kallKommerFra("teamfamilie:familie-prosessering")
+    fun validerKallKommerFraFraProsessering(): Boolean = validerKallKommerFra("teamfamilie:familie-prosessering")
 
-    private fun kallKommerFra(forventetApplikasjonsSuffix: String): Boolean {
+    private fun validerKallKommerFra(forventetApplikasjonsSuffix: String): Boolean {
         val claims = SpringTokenValidationContextHolder().getTokenValidationContext().getClaims("azuread")
         val applikasjonsnavn = claims.get("azp_name")?.toString() ?: ""
 
