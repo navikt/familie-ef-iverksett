@@ -44,7 +44,7 @@ import java.time.temporal.ChronoUnit
         ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class]),
     ],
 )
-@EnableJwtTokenValidation(ignore = ["org.springframework"])
+@EnableJwtTokenValidation(ignore = ["org.springframework", "org.springdoc"])
 @Import(
     RestTemplateAzure::class,
     KafkaErrorHandler::class,
