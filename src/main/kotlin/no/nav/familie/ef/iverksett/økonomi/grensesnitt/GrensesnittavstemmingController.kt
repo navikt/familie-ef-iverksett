@@ -2,7 +2,6 @@ package no.nav.familie.ef.iverksett.økonomi.grensesnitt
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
-import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.domene.Status
@@ -28,7 +27,6 @@ class GrensesnittavstemmingController(
     fun startGrensesnittavstemmingForStønad(
         @RequestBody grensesnittavstemmingRequest: GrensesnittavstemmingRequestDto,
     ) {
-        SikkerhetContext.validerKallKommerFraEfSak()
         val stønadType = grensesnittavstemmingRequest.stønadType
         val eksisterendeGrensesnittAvstemmingTasker = taskService.finnTasksMedStatus(listOf(Status.UBEHANDLET, Status.KLAR_TIL_PLUKK), GrensesnittavstemmingTask.TYPE)
         eksisterendeGrensesnittAvstemmingTasker.forEach { task ->

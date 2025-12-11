@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
-import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
@@ -19,7 +18,6 @@ class BehandlingsstatistikkController(
     fun sendBehandlingstatistikk(
         @RequestBody behandlingStatistikk: BehandlingsstatistikkDto,
     ) {
-        SikkerhetContext.validerKallKommerFraEfSak()
         behandlingsstatistikkService.sendBehandlingstatistikk(behandlingStatistikk)
     }
 }

@@ -1,6 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.task
 
-import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
+import no.nav.familie.kontrakter.felles.Ressurs
+import no.nav.familie.kontrakter.felles.Ressurs.Companion.success
 import no.nav.familie.prosessering.domene.PropertiesWrapper
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.domene.Task
@@ -8,6 +9,7 @@ import no.nav.familie.prosessering.internal.TaskService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PathVariable
@@ -32,15 +34,12 @@ class TaskForvaltningController(
     @PostMapping("/restart/{taskId}")
     fun kopierTaskStartPåNytt(
         @PathVariable taskId: Long,
-    ): KopiertTaskResponse {
-        SikkerhetContext.validerKallKommerFraFraProsessering()
-
+    ): ResponseEntity<KopiertTaskResponse> {
         logger.info("Starter kloning av task id $taskId.")
         val task = taskService.findById(taskId)
         val kopiertTilTask = taskForvaltningService.kopierTask(task)
-
         logger.info("Kopiert til task id: $taskId.")
-        return KopiertTaskResponse(task.id, kopiertTilTask.id)
+        return ResponseEntity.ok(KopiertTaskResponse(task.id, kopiertTilTask.id))
     }
 }
 
