@@ -1,24 +1,27 @@
 package no.nav.familie.ef.iverksett
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import no.nav.familie.ef.iverksett.infrastruktur.configuration.ApplicationConfig
 import no.nav.familie.ef.iverksett.infrastruktur.database.DbContainerInitializer
+import no.nav.familie.ef.iverksett.util.ObjectMapperProvider
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.restclient.RestTemplateBuilder
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.context.ApplicationContext
 import org.springframework.http.HttpHeaders
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.web.client.RestTemplate
 import java.util.UUID
 
 @ExtendWith(SpringExtension::class)
@@ -26,9 +29,11 @@ import java.util.UUID
 @SpringBootTest(classes = [ApplicationLocal::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("servertest", "mock-oppdrag", "mock-kafkatemplate", "mock-tilbakekreving", "mock-oauth", "mock-integrasjoner")
 @EnableMockOAuth2Server
+@AutoConfigureTestRestTemplate
 abstract class ServerTest {
-    protected val restTemplate = TestRestTemplate(ApplicationConfig().restTemplateBuilder())
     protected val headers = HttpHeaders()
+    protected val jackson2HttpMessageConverter = MappingJackson2HttpMessageConverter(ObjectMapperProvider.objectMapper)
+    protected val restTemplate = RestTemplateBuilder().additionalMessageConverters(listOf(jackson2HttpMessageConverter) + RestTemplate().messageConverters).build()
 
     @Autowired
     private lateinit var applicationContext: ApplicationContext

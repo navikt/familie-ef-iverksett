@@ -1,9 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
 import no.nav.familie.kafka.KafkaErrorHandler
-import org.springframework.beans.factory.ObjectProvider
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties
-import org.springframework.boot.ssl.SslBundles
+import org.springframework.boot.kafka.autoconfigure.KafkaProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.annotation.EnableKafka
@@ -17,10 +15,10 @@ class KafkaConsumerConfig {
     fun concurrentTilbakekrevingListenerContainerFactory(
         properties: KafkaProperties,
         kafkaErrorHandler: KafkaErrorHandler,
-        sslBundles: ObjectProvider<SslBundles>,
     ): ConcurrentKafkaListenerContainerFactory<String, String> {
+        val consumerFactory = DefaultKafkaConsumerFactory<String, String>(properties.buildConsumerProperties())
         val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
-        factory.consumerFactory = DefaultKafkaConsumerFactory(properties.buildConsumerProperties(sslBundles.getIfAvailable()))
+        factory.setConsumerFactory(consumerFactory)
         factory.setCommonErrorHandler(kafkaErrorHandler)
         return factory
     }

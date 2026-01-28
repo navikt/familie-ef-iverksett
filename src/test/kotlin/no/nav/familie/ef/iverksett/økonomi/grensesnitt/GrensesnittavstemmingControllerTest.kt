@@ -8,14 +8,16 @@ import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.web.client.exchange
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.exchange
 
 class GrensesnittavstemmingControllerTest : ServerTest() {
     @Autowired
@@ -34,10 +36,11 @@ class GrensesnittavstemmingControllerTest : ServerTest() {
             val grensesnittAvstemmingRequest = GrensesnittavstemmingRequestDto(stønadType = stønadType)
 
             val responsOk: ResponseEntity<Ressurs<Unit>> = startGrensesnittavstemming(grensesnittAvstemmingRequest)
-            val responsDuplikat: ResponseEntity<Ressurs<Unit>> = startGrensesnittavstemming(grensesnittAvstemmingRequest)
+            assertThrows<HttpClientErrorException.BadRequest> {
+                startGrensesnittavstemming(grensesnittAvstemmingRequest)
+            }
 
             assertThat(responsOk.statusCode.value()).isEqualTo(HttpStatus.OK.value())
-            assertThat(responsDuplikat.statusCode.value()).isEqualTo(HttpStatus.BAD_REQUEST.value())
             assertThat(taskService.finnTasksMedStatus(listOf(Status.UBEHANDLET, Status.KLAR_TIL_PLUKK), GrensesnittavstemmingTask.TYPE)).hasSize(antall)
         }
     }
