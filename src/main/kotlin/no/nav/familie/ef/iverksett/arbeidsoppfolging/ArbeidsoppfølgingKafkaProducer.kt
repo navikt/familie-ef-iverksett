@@ -33,7 +33,7 @@ class ArbeidsoppfølgingKafkaProducer(
         vedtakArbeidsoppfølging: String,
     ) {
         logger.info("Sending to Kafka topic: {}", topic)
-        secureLogger.debug("Sending to Kafka topic: {}\nArbeidsoppfølging: {}", topic, vedtakArbeidsoppfølging)
+        secureLogger.info("Sending to Kafka topic: {}\nArbeidsoppfølging: {}", topic, vedtakArbeidsoppfølging)
 
         runCatching {
             kafkaProducerService.sendMedStønadstypeIHeader(

@@ -1,9 +1,12 @@
 package no.nav.familie.ef.iverksett.infotrygd
 
+import no.nav.familie.ef.iverksett.util.medContentTypeJsonUTF8
 import no.nav.familie.http.client.AbstractPingableRestClient
 import no.nav.familie.kontrakter.ef.infotrygd.OpprettPeriodeHendelseDto
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
@@ -24,7 +27,11 @@ class InfotrygdFeedClient(
             .toUri()
 
     fun opprettPeriodeHendelse(hendelseDto: OpprettPeriodeHendelseDto) {
-        postForEntity<Any>(opprettPeriodeUri, hendelseDto)
+        val headers =
+            HttpHeaders().apply {
+                accept = listOf(MediaType.TEXT_PLAIN)
+            }
+        postForEntity<Any>(opprettPeriodeUri, hendelseDto, headers)
     }
 
     override val pingUri: URI
