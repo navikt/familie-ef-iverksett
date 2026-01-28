@@ -36,13 +36,14 @@ class FrittståendeBrevControllerTest : ServerTest() {
                 HttpEntity(brevDto1, headers),
             )
 
-        val exception = assertThrows<HttpClientErrorException.BadRequest> {
-            restTemplate.exchange<ResponseEntity<Ressurs<Unit>>>(
-                localhostUrl("/api/brev/frittstaende/innhenting-aktivitetsplikt"),
-                HttpMethod.POST,
-                HttpEntity(brevDto2, headers),
-            )
-        }
+        val exception =
+            assertThrows<HttpClientErrorException.BadRequest> {
+                restTemplate.exchange<ResponseEntity<Ressurs<Unit>>>(
+                    localhostUrl("/api/brev/frittstaende/innhenting-aktivitetsplikt"),
+                    HttpMethod.POST,
+                    HttpEntity(brevDto2, headers),
+                )
+            }
         assertThat(respons.statusCode.value()).isEqualTo(200)
         assertThat(exception.message).contains("Skal ikke kunne opprette flere identiske brev til mottaker. Fagsak med eksternId=")
     }
