@@ -24,7 +24,7 @@ class InfotrygdFeedClient(
             .toUri()
 
     fun opprettPeriodeHendelse(hendelseDto: OpprettPeriodeHendelseDto) {
-        postForEntity<Void>(opprettPeriodeUri, hendelseDto)
+        postForEntity<String>(opprettPeriodeUri, hendelseDto)
     }
 
     override val pingUri: URI
