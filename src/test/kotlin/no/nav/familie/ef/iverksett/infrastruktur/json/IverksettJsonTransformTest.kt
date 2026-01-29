@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.infrastruktur.json
 
+import com.fasterxml.jackson.databind.exc.InvalidNullException
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
@@ -98,7 +98,7 @@ class IverksettJsonTransformTest {
         (tree.get("fagsak") as ObjectNode).put("stønadstype", stønadType.name)
         val jsonMedFeilStønadstype = objectMapper.writeValueAsString(tree)
         assertThatThrownBy { objectMapper.readValue<IverksettDto>(jsonMedFeilStønadstype) }
-            .isInstanceOf(MissingKotlinParameterException::class.java)
+            .isInstanceOf(InvalidNullException::class.java)
     }
 
     @Test

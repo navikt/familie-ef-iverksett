@@ -13,13 +13,15 @@ import no.nav.familie.prosessering.internal.TaskService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.web.client.exchange
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.exchange
 import java.util.UUID
 
 class IverksettingControllerTest : ServerTest() {
@@ -88,14 +90,13 @@ class IverksettingControllerTest : ServerTest() {
                 .withJson("data", iverksettJsonUtenTilkjentYtelse)
                 .withByteArray("fil", "1", byteArrayOf(12))
                 .build()
-
-        val respons: ResponseEntity<Ressurs<Nothing>> =
-            restTemplate.exchange(
+        assertThrows<HttpClientErrorException.BadRequest> {
+            restTemplate.exchange<Ressurs<Nothing>>(
                 localhostUrl("/api/iverksett"),
                 HttpMethod.POST,
                 HttpEntity(request, headers),
             )
-        assertThat(respons.statusCode.value()).isEqualTo(400)
+        }
     }
 
     @Test
@@ -106,14 +107,13 @@ class IverksettingControllerTest : ServerTest() {
                 .withJson("data", iverksettJson)
                 .build()
 
-        val respons: ResponseEntity<Any> =
-            restTemplate.exchange(
+        assertThrows<HttpClientErrorException.BadRequest> {
+            restTemplate.exchange<ResponseEntity<Any>>(
                 localhostUrl("/api/iverksett"),
                 HttpMethod.POST,
                 HttpEntity(request, headers),
             )
-
-        assertThat(respons.statusCode.value()).isEqualTo(400)
+        }
     }
 
     @Test
