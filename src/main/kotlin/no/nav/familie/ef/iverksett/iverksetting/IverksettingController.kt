@@ -9,9 +9,11 @@ import no.nav.familie.ef.iverksett.tilbakekreving.validerTilbakekreving
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -65,9 +67,10 @@ class IverksettingController(
     @PostMapping("/vedtakshendelse/{behandlingId}")
     fun publiserVedtakshendelser(
         @PathVariable behandlingId: UUID,
-    ) {
+    ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
         iverksettingService.publiserVedtak(behandlingId)
+        return ResponseEntity.ok(Ressurs.success("OK"))
     }
 
     private fun opprettBrev(fil: MultipartFile): Brev = Brev(fil.bytes)
