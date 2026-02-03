@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.util.opprettBehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
+import no.nav.familie.kontrakter.felles.Ressurs
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -49,7 +50,7 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
         Assertions.assertThat(kafkaProducerPayloadSlot.captured).doesNotContain("Z\",")
     }
 
-    private fun send(behandlingStatistikkDto: BehandlingsstatistikkDto): ResponseEntity<String> =
+    private fun send(behandlingStatistikkDto: BehandlingsstatistikkDto): ResponseEntity<Ressurs<String>> =
         restTemplate.exchange(
             localhostUrl("/api/statistikk/behandlingsstatistikk"),
             HttpMethod.POST,
