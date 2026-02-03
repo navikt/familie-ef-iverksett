@@ -4,6 +4,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingsstatistikkDto
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -14,12 +15,13 @@ import org.springframework.web.bind.annotation.RestController
 @ProtectedWithClaims(issuer = "azuread")
 class BehandlingsstatistikkController(
     private val behandlingsstatistikkService: BehandlingsstatistikkService,
-) {
-    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
+){
+    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.TEXT_PLAIN_VALUE])
     fun sendBehandlingstatistikk(
         @RequestBody behandlingStatistikk: BehandlingsstatistikkDto,
-    ) {
+    ): ResponseEntity<String> {
         SikkerhetContext.validerKallKommerFraEfSak()
         behandlingsstatistikkService.sendBehandlingstatistikk(behandlingStatistikk)
+        return ResponseEntity.ok("OK")
     }
 }

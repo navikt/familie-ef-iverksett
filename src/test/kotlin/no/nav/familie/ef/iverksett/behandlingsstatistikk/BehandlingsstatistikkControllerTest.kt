@@ -49,7 +49,7 @@ class BehandlingsstatistikkControllerTest : ServerTest() {
         Assertions.assertThat(kafkaProducerPayloadSlot.captured).doesNotContain("Z\",")
     }
 
-    private fun send(behandlingStatistikkDto: BehandlingsstatistikkDto): ResponseEntity<HttpStatus> =
+    private fun send(behandlingStatistikkDto: BehandlingsstatistikkDto): ResponseEntity<String> =
         restTemplate.exchange(
             localhostUrl("/api/statistikk/behandlingsstatistikk"),
             HttpMethod.POST,
