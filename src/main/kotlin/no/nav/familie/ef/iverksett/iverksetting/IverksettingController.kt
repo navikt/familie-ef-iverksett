@@ -49,12 +49,13 @@ class IverksettingController(
     @PostMapping("migrering", "uten-brev")
     fun iverksett(
         @RequestBody iverksettDto: IverksettDto,
-    ) {
+    ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         validerUtenBrev(iverksett)
         iverksettingService.startIverksetting(iverksett, null)
+        return ResponseEntity.ok(Ressurs.success("OK"))
     }
 
     @GetMapping("/status/{behandlingId}")
