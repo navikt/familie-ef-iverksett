@@ -28,7 +28,8 @@ class SendVedtakTilArbeidsoppfølgingTask(
     }
 
     override fun onCompletion(task: Task) {
-        taskService.save(task.opprettNestePubliseringTask())
+        val iverksett = iverksettingRepository.findByIdOrThrow(UUID.fromString(task.payload)).data
+        taskService.save(task.opprettNestePubliseringTask(iverksett.erMigrering()))
     }
 
     companion object {

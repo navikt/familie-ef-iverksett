@@ -6,7 +6,6 @@ import no.nav.familie.ef.iverksett.behandlingsstatistikk.BehandlingsstatistikkTa
 import no.nav.familie.ef.iverksett.brev.DistribuerVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.brukernotifikasjon.SendBrukernotifikasjonVedGOmregningTask
-import no.nav.familie.ef.iverksett.infotrygd.SendPerioderTilInfotrygdTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettFremleggsoppgaverTask
 import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergangsstønadTask
 import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
@@ -33,7 +32,6 @@ fun hovedflyt() =
 
 fun publiseringsflyt() =
     listOf(
-        TaskType(SendPerioderTilInfotrygdTask.TYPE), // Hopper til vedtakstatistikk ved migrering
         TaskType(SendFattetVedtakTilArenaTask.TYPE),
         TaskType(PubliserVedtakTilKafkaTask.TYPE),
         TaskType(SendVedtakTilArbeidsoppfølgingTask.TYPE),
@@ -55,7 +53,7 @@ fun Task.opprettNesteTask(): Task {
 
 fun Task.opprettNestePubliseringTask(erMigrering: Boolean = false): Task {
     val nesteTask =
-        if (erMigrering && this.type == SendPerioderTilInfotrygdTask.TYPE) {
+        if (erMigrering && this.type == SendVedtakTilArbeidsoppfølgingTask.TYPE) {
             TaskType(VedtakstatistikkTask.TYPE)
         } else {
             TaskType(this.type).nestePubliseringsflytTask()
