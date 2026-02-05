@@ -38,6 +38,6 @@ class ArbeidsoppfølgingMapperTest {
         assertThat(vedtakTilArbeidsoppfølging.periode).isEqualTo(listOf(forventetPeriode))
 
         val forventetBarnList = listOf(Barn("01010199999"), Barn(null, LocalDate.of(2023, 1, 1)))
-        assertThat(vedtakTilArbeidsoppfølging.barn).isEqualTo(listOf(forventetBarnList))
+        assertThat(vedtakTilArbeidsoppfølging.barn).isEqualTo(forventetBarnList)
     }
 }
