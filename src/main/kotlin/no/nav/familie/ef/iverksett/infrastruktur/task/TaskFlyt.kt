@@ -51,13 +51,9 @@ fun Task.opprettNesteTask(): Task {
     return lagTask(nesteTask)
 }
 
-fun Task.opprettNestePubliseringTask(erMigrering: Boolean = false): Task {
-    val nesteTask =
-        if (erMigrering && this.type == SendVedtakTilArbeidsoppfølgingTask.TYPE) {
-            TaskType(VedtakstatistikkTask.TYPE)
-        } else {
-            TaskType(this.type).nestePubliseringsflytTask()
-        }
+fun Task.opprettNestePubliseringTask(): Task {
+    val nesteTask = TaskType(this.type).nestePubliseringsflytTask()
+
     return lagTask(nesteTask)
 }
 
