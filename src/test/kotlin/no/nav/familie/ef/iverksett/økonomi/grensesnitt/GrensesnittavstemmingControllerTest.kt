@@ -33,8 +33,8 @@ class GrensesnittavstemmingControllerTest : ServerTest() {
             val antall = index + 1
             val grensesnittAvstemmingRequest = GrensesnittavstemmingRequestDto(stønadType = stønadType)
 
-            val responsOk: ResponseEntity<Ressurs<Unit>> = startGrensesnittavstemming(grensesnittAvstemmingRequest)
-            val responsDuplikat: ResponseEntity<Ressurs<Unit>> = startGrensesnittavstemming(grensesnittAvstemmingRequest)
+            val responsOk: ResponseEntity<Ressurs<Any>> = startGrensesnittavstemming(grensesnittAvstemmingRequest)
+            val responsDuplikat: ResponseEntity<Ressurs<Any>> = startGrensesnittavstemming(grensesnittAvstemmingRequest)
 
             assertThat(responsOk.statusCode.value()).isEqualTo(HttpStatus.OK.value())
             assertThat(responsDuplikat.statusCode.value()).isEqualTo(HttpStatus.BAD_REQUEST.value())
@@ -42,7 +42,7 @@ class GrensesnittavstemmingControllerTest : ServerTest() {
         }
     }
 
-    private fun startGrensesnittavstemming(grensesnittAvstemmingRequest: GrensesnittavstemmingRequestDto): ResponseEntity<Ressurs<Unit>> =
+    private fun startGrensesnittavstemming(grensesnittAvstemmingRequest: GrensesnittavstemmingRequestDto): ResponseEntity<Ressurs<Any>> =
         restTemplate.exchange(
             localhostUrl("/api/grensesnittavstemming"),
             HttpMethod.POST,

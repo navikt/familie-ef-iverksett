@@ -37,23 +37,25 @@ class IverksettingController(
     fun iverksett(
         @RequestPart("data") iverksettDto: IverksettDto,
         @RequestPart("fil") fil: MultipartFile,
-    ) {
+    ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         validerSkalHaBrev(iverksett)
         iverksettingService.startIverksetting(iverksett, opprettBrev(fil))
+        return ResponseEntity.ok(Ressurs.success("OK"))
     }
 
     @PostMapping("migrering", "uten-brev")
     fun iverksett(
         @RequestBody iverksettDto: IverksettDto,
-    ) {
+    ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
         validerUtenBrev(iverksett)
         iverksettingService.startIverksetting(iverksett, null)
+        return ResponseEntity.ok(Ressurs.success("OK"))
     }
 
     @GetMapping("/status/{behandlingId}")
