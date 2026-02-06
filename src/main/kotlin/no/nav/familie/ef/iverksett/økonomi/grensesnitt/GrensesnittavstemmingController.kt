@@ -3,12 +3,14 @@ package no.nav.familie.ef.iverksett.økonomi.grensesnitt
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.internal.TaskService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -27,7 +29,7 @@ class GrensesnittavstemmingController(
     @PostMapping
     fun startGrensesnittavstemmingForStønad(
         @RequestBody grensesnittavstemmingRequest: GrensesnittavstemmingRequestDto,
-    ) {
+    ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
         val stønadType = grensesnittavstemmingRequest.stønadType
         val eksisterendeGrensesnittAvstemmingTasker = taskService.finnTasksMedStatus(listOf(Status.UBEHANDLET, Status.KLAR_TIL_PLUKK), GrensesnittavstemmingTask.TYPE)
@@ -39,6 +41,7 @@ class GrensesnittavstemmingController(
         }
         val grensesnittavstemmingDto = GrensesnittavstemmingDto(grensesnittavstemmingRequest.stønadType, LocalDate.now(), LocalDateTime.now())
         taskService.save(grensesnittavstemmingDto.tilTask())
+        return ResponseEntity.ok(Ressurs.success("OK"))
     }
 }
 

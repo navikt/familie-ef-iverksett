@@ -3,9 +3,11 @@ package no.nav.familie.ef.iverksett.vedtakstatistikk
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.context.annotation.Profile
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,8 +23,9 @@ class VedtakstatistikkTestController(
     @PostMapping("/", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun sendStatistikk(
         @RequestBody data: IverksettDto,
-    ) {
+    ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
         vedtakstatistikkService.sendTilKafka(data.toDomain(), null)
+        return ResponseEntity.ok(Ressurs.success("OK"))
     }
 }

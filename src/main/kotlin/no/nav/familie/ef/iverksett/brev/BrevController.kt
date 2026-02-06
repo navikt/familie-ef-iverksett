@@ -4,7 +4,9 @@ import no.nav.familie.ef.iverksett.brev.frittstående.FrittståendeBrevService
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.felles.FrittståendeBrevDto
 import no.nav.familie.kontrakter.ef.felles.PeriodiskAktivitetspliktBrevDto
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,16 +21,18 @@ class BrevController(
     @PostMapping("/frittstaende")
     fun distribuerFrittståendeBrev(
         @RequestBody data: FrittståendeBrevDto,
-    ) {
+    ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
         frittståendeBrevService.opprettTask(data)
+        return ResponseEntity.ok(Ressurs.success("OK"))
     }
 
     @PostMapping("/frittstaende/innhenting-aktivitetsplikt")
     fun journalførBrevForInnhentingAvAktivitetsplikt(
         @RequestBody data: PeriodiskAktivitetspliktBrevDto,
-    ) {
+    ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
         frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(data)
+        return ResponseEntity.ok(Ressurs.success("OK"))
     }
 }
