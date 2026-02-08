@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
+        <version>4.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -15,8 +15,8 @@
 
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>2.2.21</kotlin.version>
-        <springdoc.version>2.8.14</springdoc.version>
+        <kotlin.version>2.3.0</kotlin.version>
+        <springdoc.version>3.0.1</springdoc.version>
         <felles.version>3.20251105152539_b03ed80</felles.version>
         <familie.kontrakter.version>3.0_20251112142340_c5baa9c</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20251111094125_cdf5bf2</familie.eksterne-kontrakter.stonadsstatistikk-ef>
@@ -26,13 +26,13 @@
         <utbetalingsgenerator.version>1.0_20250922101633_e4c1c4d</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.1.1</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-        <confluent.version>8.1.0</confluent.version>
-        <mockk-jvm.version>1.14.6</mockk-jvm.version>
-        <cucumber.version>7.32.0</cucumber.version>
+        <confluent.version>8.1.1</confluent.version>
+        <mockk-jvm.version>1.14.9</mockk-jvm.version>
+        <cucumber.version>7.34.2</cucumber.version>
         <dotenv.version>6.5.1</dotenv.version>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
-        <token-validation-spring.version>5.0.39</token-validation-spring.version>
-        <ibm-mq-client.version>9.4.4.0</ibm-mq-client.version>
+        <token-validation-spring.version>6.0.2</token-validation-spring.version>
+        <ibm-mq-client.version>9.4.5.0</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
     </properties>
@@ -57,7 +57,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>6.0.1</version> <!-- Denne inkluderer junit-platform 1.13.3 som kreves av cucumber 7.26, kan muligens fjernes når spring bumper til junit versjon 1.13.3 -->
+                <version>6.0.2</version> <!-- Denne inkluderer junit-platform 1.13.3 som kreves av cucumber 7.26, kan muligens fjernes når spring bumper til junit versjon 1.13.3 -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -111,7 +111,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
-            <version>5.5</version>
+            <version>5.6</version>
         </dependency>
 
 
@@ -288,7 +288,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.21.3</version>
+            <version>1.21.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -331,7 +331,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
