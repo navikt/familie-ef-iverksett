@@ -117,7 +117,7 @@ class IverksettingControllerTest : ServerTest() {
     }
 
     @Test
-    internal fun `skal starte publiseringsflyt og gi 200 OK - samt gi 200OK dersom det kalles en gang til`() {
+    internal fun `skal starte publiseringsflyt og gi 200 OK - samt gi 200 OK dersom det kalles en gang til`() {
         val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
         val request =
             MultipartBuilder()
@@ -125,7 +125,7 @@ class IverksettingControllerTest : ServerTest() {
                 .withByteArray("fil", "1", byteArrayOf(12))
                 .build()
 
-        restTemplate.exchange<ResponseEntity<Any>>(
+        restTemplate.exchange<Any>(
             localhostUrl("/api/iverksett"),
             HttpMethod.POST,
             HttpEntity(request, headers),

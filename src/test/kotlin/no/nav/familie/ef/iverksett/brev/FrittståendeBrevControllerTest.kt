@@ -29,7 +29,7 @@ class FrittståendeBrevControllerTest : ServerTest() {
         val brevDto1 = brevDto(eksternFagsakId, 1L)
         val brevDto2 = brevDto(eksternFagsakId, 2L)
 
-        val respons: ResponseEntity<Ressurs<Unit>> =
+        val respons: ResponseEntity<Ressurs<Any>> =
             restTemplate.exchange(
                 localhostUrl("/api/brev/frittstaende/innhenting-aktivitetsplikt"),
                 HttpMethod.POST,
@@ -38,7 +38,7 @@ class FrittståendeBrevControllerTest : ServerTest() {
 
         val exception =
             assertThrows<HttpClientErrorException.BadRequest> {
-                restTemplate.exchange<ResponseEntity<Ressurs<Unit>>>(
+                restTemplate.exchange<ResponseEntity<Ressurs<Any>>>(
                     localhostUrl("/api/brev/frittstaende/innhenting-aktivitetsplikt"),
                     HttpMethod.POST,
                     HttpEntity(brevDto2, headers),

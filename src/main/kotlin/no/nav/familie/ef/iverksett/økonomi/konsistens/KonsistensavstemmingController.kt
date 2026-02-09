@@ -2,8 +2,10 @@ package no.nav.familie.ef.iverksett.økonomi.konsistens
 
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -28,7 +30,7 @@ class KonsistensavstemmingController(
         @RequestParam(name = "sendStartmelding") sendStartmelding: Boolean = true,
         @RequestParam(name = "sendAvsluttmelding") sendAvsluttmelding: Boolean = true,
         @RequestParam(name = "transaksjonId") transaksjonId: UUID? = null,
-    ) {
+    ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
         konsistensavstemmingService.sendKonsistensavstemming(
             konsistensavstemmingDto,
@@ -36,6 +38,7 @@ class KonsistensavstemmingController(
             sendAvsluttmelding,
             transaksjonId,
         )
+        return ResponseEntity.ok(Ressurs.success("OK"))
     }
 
     @GetMapping("timeout-test", produces = [MediaType.TEXT_PLAIN_VALUE])
