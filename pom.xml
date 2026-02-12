@@ -17,8 +17,8 @@
         <java.version>21</java.version>
         <kotlin.version>2.2.21</kotlin.version>
         <springdoc.version>2.8.14</springdoc.version>
-        <felles.version>4.20260113213435_0e5b861</felles.version>
-        <familie.kontrakter.version>3.0_20251112142340_c5baa9c</familie.kontrakter.version>
+        <felles.version>4.20260205114838_3a4c3dc</felles.version>
+        <familie.kontrakter.version>4.0_20260204122732_558ee1d</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20251111094125_cdf5bf2</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20251111094125_cdf5bf2</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20251111094125_cdf5bf2</familie.eksterne-kontrakter.arbeidsoppfolging>
@@ -237,7 +237,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.familie.felles</groupId>
-            <artifactId>http-client</artifactId>
+            <artifactId>rest-klient</artifactId>
             <version>${felles.version}</version>
         </dependency>
 

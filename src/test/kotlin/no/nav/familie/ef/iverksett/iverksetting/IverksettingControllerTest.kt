@@ -6,10 +6,10 @@ import no.nav.familie.ef.iverksett.infrastruktur.task.publiseringsflyt
 import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
-import no.nav.familie.http.client.MultipartBuilder
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.prosessering.internal.TaskService
+import no.nav.familie.restklient.client.MultipartBuilder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

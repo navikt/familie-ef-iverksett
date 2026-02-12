@@ -7,7 +7,7 @@
       "startdato":  "2020-03-01",
       "andelerTilkjentYtelse": [
         {
-          "utbetaltPerPeriode": 3800,
+          "beløp": 3800,
           "periodetype": "MÅNED",
           "fraOgMed": "2021-03-01",
           "tilOgMed": "2022-08-31",

@@ -5,7 +5,7 @@ import no.nav.familie.eksterne.kontrakter.ef.StønadType
 import no.nav.familie.eksterne.kontrakter.ef.VedtakBarnetilsynDVH
 import no.nav.familie.eksterne.kontrakter.ef.VedtakOvergangsstønadDVH
 import no.nav.familie.eksterne.kontrakter.ef.VedtakSkolepenger
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -52,4 +52,4 @@ class VedtakstatistikkKafkaProducer(
     }
 }
 
-fun Any.toJson(): String = objectMapper.writeValueAsString(this)
+fun Any.toJson(): String = jsonMapper.writeValueAsString(this)

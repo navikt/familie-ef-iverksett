@@ -1,14 +1,13 @@
 package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import no.nav.familie.ef.iverksett.util.ObjectMapperProvider
-import no.nav.familie.http.client.RetryOAuth2HttpClient
-import no.nav.familie.http.config.RestTemplateAzure
+import no.nav.familie.ef.iverksett.util.JsonMapperProvider
 import no.nav.familie.kafka.KafkaErrorHandler
 import no.nav.familie.log.NavSystemtype
 import no.nav.familie.log.filter.LogFilter
 import no.nav.familie.log.filter.RequestTimeFilter
 import no.nav.familie.prosessering.config.ProsesseringInfoProvider
+import no.nav.familie.restklient.client.RetryOAuth2HttpClient
+import no.nav.familie.restklient.config.RestTemplateAzure
 import no.nav.security.token.support.client.core.http.OAuth2HttpClient
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
@@ -24,7 +23,7 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.FilterType
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.web.client.RestClient
@@ -54,9 +53,6 @@ class ApplicationConfig {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
-    fun kotlinModule(): KotlinModule = KotlinModule.Builder().build()
-
-    @Bean
     fun logFilter(): FilterRegistrationBean<LogFilter> =
         FilterRegistrationBean(LogFilter(systemtype = NavSystemtype.NAV_INTEGRASJON)).apply {
             logger.info("Registering LogFilter filter")
@@ -72,7 +68,7 @@ class ApplicationConfig {
 
     @Bean
     @Primary
-    fun objectMapper() = ObjectMapperProvider.objectMapper
+    fun jsonMapper() = JsonMapperProvider.jsonMapper
 
     /**
      * Overskrever felles sin som bruker proxy, som ikke skal brukes på gcp
@@ -80,11 +76,11 @@ class ApplicationConfig {
     @Bean
     @Primary
     fun restTemplateBuilder(): RestTemplateBuilder {
-        val jackson2HttpMessageConverter = MappingJackson2HttpMessageConverter(ObjectMapperProvider.objectMapper)
+        val jacksonJsonHttpMessageConverter = JacksonJsonHttpMessageConverter(JsonMapperProvider.jsonMapper)
         return RestTemplateBuilder()
             .connectTimeout(Duration.of(2, ChronoUnit.SECONDS))
             .readTimeout(Duration.of(60, ChronoUnit.SECONDS))
-            .messageConverters(listOf(jackson2HttpMessageConverter) + RestTemplate().messageConverters)
+            .messageConverters(listOf(jacksonJsonHttpMessageConverter) + RestTemplate().messageConverters)
     }
 
     /**
@@ -95,13 +91,13 @@ class ApplicationConfig {
     @Primary
     @Bean
     fun oAuth2HttpClient(): OAuth2HttpClient {
-        val jackson2HttpMessageConverter = MappingJackson2HttpMessageConverter(ObjectMapperProvider.objectMapper)
+        val jacksonJsonHttpMessageConverter = JacksonJsonHttpMessageConverter(JsonMapperProvider.jsonMapper)
         return RetryOAuth2HttpClient(
             RestClient.create(
                 RestTemplateBuilder()
                     .connectTimeout(Duration.of(2, ChronoUnit.SECONDS))
                     .readTimeout(Duration.of(4, ChronoUnit.SECONDS))
-                    .messageConverters(listOf(jackson2HttpMessageConverter) + RestTemplate().messageConverters)
+                    .messageConverters(listOf(jacksonJsonHttpMessageConverter) + RestTemplate().messageConverters)
                     .build(),
             ),
         )

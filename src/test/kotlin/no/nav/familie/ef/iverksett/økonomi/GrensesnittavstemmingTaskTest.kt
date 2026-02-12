@@ -8,7 +8,7 @@ import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.grensesnitt.GrensesnittavstemmingPayload
 import no.nav.familie.ef.iverksett.økonomi.grensesnitt.GrensesnittavstemmingTask
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
@@ -56,7 +56,7 @@ internal class GrensesnittavstemmingTaskTest {
             ),
         )
         val forventetPayload =
-            objectMapper.writeValueAsString(
+            jsonMapper.writeValueAsString(
                 GrensesnittavstemmingPayload(
                     fraDato = LocalDate.of(2018, 4, 19),
                     stønadstype = StønadType.OVERGANGSSTØNAD,
@@ -67,7 +67,7 @@ internal class GrensesnittavstemmingTaskTest {
 
     companion object {
         val payload: String =
-            objectMapper.writeValueAsString(
+            jsonMapper.writeValueAsString(
                 GrensesnittavstemmingPayload(
                     fraDato = LocalDate.of(2018, 4, 18),
                     stønadstype = StønadType.OVERGANGSSTØNAD,

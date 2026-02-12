@@ -1,13 +1,12 @@
 package no.nav.familie.ef.iverksett.iverksetting
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
-import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
+import no.nav.familie.ef.iverksett.util.JsonMapperProvider.jsonMapper
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import org.assertj.core.api.Assertions.assertThat
@@ -21,7 +20,7 @@ class IverksettingRepositoryTest : ServerTest() {
     @Test
     fun `lagre og hent iverksett overgangsstønad, forvent likhet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
-        val iverksettData: IverksettData = objectMapper.readValue<IverksettDto>(json).toDomain()
+        val iverksettData: IverksettData = jsonMapper.readValue(json, IverksettDto::class.java).toDomain()
         val iverksett = iverksettingRepository.insert(lagIverksett(iverksettData, opprettBrev()))
 
         val iverksettResultat = iverksettingRepository.findByIdOrThrow(iverksett.behandlingId)
@@ -31,7 +30,7 @@ class IverksettingRepositoryTest : ServerTest() {
     @Test
     fun `lagre og hent iverksett barnetilsyn, forvent likhet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettBarnetilsynDtoEksempel.json")
-        val iverksettData: IverksettData = objectMapper.readValue<IverksettDto>(json).toDomain()
+        val iverksettData: IverksettData = jsonMapper.readValue(json, IverksettDto::class.java).toDomain()
         val iverksett = iverksettingRepository.insert(lagIverksett(iverksettData, opprettBrev()))
 
         val iverksettResultat = iverksettingRepository.findByIdOrThrow(iverksett.behandlingId)
@@ -42,7 +41,7 @@ class IverksettingRepositoryTest : ServerTest() {
     @Test
     fun `lagre og hent iverksett skolepenger, forvent likhet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettSkolepengerDtoEksempel.json")
-        val iverksettData: IverksettData = objectMapper.readValue<IverksettDto>(json).toDomain()
+        val iverksettData: IverksettData = jsonMapper.readValue(json, IverksettDto::class.java).toDomain()
         val iverksett = iverksettingRepository.insert(lagIverksett(iverksettData, opprettBrev()))
 
         val iverksettResultat = iverksettingRepository.findByIdOrThrow(iverksett.behandlingId)
@@ -52,7 +51,7 @@ class IverksettingRepositoryTest : ServerTest() {
     @Test
     fun `lagre og hent iverksett av eksternId, forvent likhet`() {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
-        val iverksettData: IverksettData = objectMapper.readValue<IverksettDto>(json).toDomain()
+        val iverksettData: IverksettData = jsonMapper.readValue(json, IverksettDto::class.java).toDomain()
         val iverksett = iverksettingRepository.insert(lagIverksett(iverksettData, opprettBrev()))
 
         val iverksettResultat = iverksettingRepository.findByEksternId(iverksett.eksternId)

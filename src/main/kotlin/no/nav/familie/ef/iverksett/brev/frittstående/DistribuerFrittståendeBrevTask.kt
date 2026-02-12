@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.brev.frittstående
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.brev.DistribuerJournalpostResponseTo
 import no.nav.familie.ef.iverksett.brev.JournalpostClient
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
@@ -8,9 +7,8 @@ import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
-import no.nav.familie.http.client.RessursException
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Loggtype
@@ -18,6 +16,7 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.RekjørSenereException
 import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
 import no.nav.familie.prosessering.internal.TaskService
+import no.nav.familie.restklient.client.RessursException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -84,7 +83,7 @@ class DistribuerFrittståendeBrevTask(
                             logger.warn(
                                 "Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}",
                             )
-                            val response: DistribuerJournalpostResponseTo = objectMapper.readValue(e.ressurs.data.toString())
+                            val response: DistribuerJournalpostResponseTo = jsonMapper.readValue(e.ressurs.data.toString(), DistribuerJournalpostResponseTo::class.java)
                             frittståendeBrev =
                                 oppdaterOgLagreResultat(
                                     frittståendeBrev,

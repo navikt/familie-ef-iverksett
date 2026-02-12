@@ -15,9 +15,11 @@ class VedtakhendelseProducer(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val xmlMapper =
-        XmlMapper()
-            .registerModule(JavaTimeModule())
-            .setDateFormat(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"))
+        XmlMapper
+            .builder()
+            .addModule(JavaTimeModule())
+            .defaultDateFormat(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"))
+            .build()
 
     @Transactional
     fun produce(vedtakHendelse: VedtakHendelser) {
