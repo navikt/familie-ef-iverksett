@@ -89,7 +89,7 @@ internal class IverksettMotOppdragTaskTest {
         RessursException(
             cause = restClientResponseException,
             ressurs = Ressurs.failure("feil"),
-            httpStatus = HttpStatus.valueOf(restClientResponseException.rawStatusCode),
+            httpStatus = HttpStatus.valueOf(restClientResponseException.statusCode.value()),
         )
 
     @Test
