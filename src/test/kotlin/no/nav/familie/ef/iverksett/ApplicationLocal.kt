@@ -3,8 +3,8 @@ package no.nav.familie.ef.iverksett
 import no.nav.familie.ef.iverksett.infrastruktur.configuration.ApplicationConfig
 import no.nav.familie.ef.iverksett.infrastruktur.database.DbContainerInitializer
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 import org.springframework.boot.builder.SpringApplicationBuilder
+import org.springframework.boot.webmvc.autoconfigure.error.ErrorMvcAutoConfiguration
 
 @SpringBootApplication(exclude = [ErrorMvcAutoConfiguration::class])
 class ApplicationLocal
