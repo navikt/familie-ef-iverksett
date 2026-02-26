@@ -11,6 +11,7 @@ import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -33,11 +34,14 @@ import java.util.UUID
 class IverksettingController(
     private val iverksettingService: IverksettingService,
 ) {
+    private val secureLogger = LoggerFactory.getLogger("secureLogger")
+
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun iverksett(
         @RequestPart("data") iverksettDto: IverksettDto,
         @RequestPart("fil") fil: MultipartFile,
     ): ResponseEntity<Ressurs<String>> {
+        secureLogger.info("IverksettDto etter serialisering: $iverksettDto")
         SikkerhetContext.validerKallKommerFraEfSak()
         val iverksett = iverksettDto.toDomain()
         valider(iverksett)
