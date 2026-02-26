@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.vedtakstatistikk
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -8,7 +7,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import no.nav.familie.ef.iverksett.ResourceLoaderTestUtil
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
-import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
+import no.nav.familie.ef.iverksett.util.JsonMapperProvider.jsonMapper
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.eksterne.kontrakter.ef.Adressebeskyttelse
 import no.nav.familie.eksterne.kontrakter.ef.AktivitetType
@@ -68,7 +67,7 @@ class VedtakstatistikkServiceTest {
     internal fun `map fra iverksettDtoEksempel til behandlingDVH`() {
         val iverksettDtoJson: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
 
-        val iverksettDto = objectMapper.readValue<IverksettDto>(iverksettDtoJson)
+        val iverksettDto = jsonMapper.readValue(iverksettDtoJson, IverksettDto::class.java)
         val iverksett = iverksettDto.toDomain()
 
         val vedtakOvergangsstønadDVH = slot<VedtakOvergangsstønadDVH>()

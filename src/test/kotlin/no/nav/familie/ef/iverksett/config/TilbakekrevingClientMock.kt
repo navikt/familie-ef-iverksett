@@ -9,7 +9,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Ressurs
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandling
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingsstatus
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
@@ -27,11 +27,11 @@ class TilbakekrevingClientMock {
     private val pingUri: URI = URI("/ping")
 
     private val pdf = "Dette er en PDF!"
-    private val ok = objectMapper.writeValueAsString(Ressurs.success("ok"))
-    private val behandlingId = objectMapper.writeValueAsString(Ressurs.success(UUID.randomUUID().toString()))
-    private val finnesBehandlingResponse = objectMapper.writeValueAsString(Ressurs.success(FinnesBehandlingResponse(true)))
+    private val ok = jsonMapper.writeValueAsString(Ressurs.success("ok"))
+    private val behandlingId = jsonMapper.writeValueAsString(Ressurs.success(UUID.randomUUID().toString()))
+    private val finnesBehandlingResponse = jsonMapper.writeValueAsString(Ressurs.success(FinnesBehandlingResponse(true)))
     private val behandlinger =
-        objectMapper.writeValueAsString(
+        jsonMapper.writeValueAsString(
             Ressurs.success(
                 listOf(
                     Behandling(
@@ -48,7 +48,7 @@ class TilbakekrevingClientMock {
             ),
         )
     private val kanOpprettesManuelt =
-        objectMapper.writeValueAsString(Ressurs.success(KanBehandlingOpprettesManueltRespons(true, "Bob")))
+        jsonMapper.writeValueAsString(Ressurs.success(KanBehandlingOpprettesManueltRespons(true, "Bob")))
 
     val responses =
         listOf(

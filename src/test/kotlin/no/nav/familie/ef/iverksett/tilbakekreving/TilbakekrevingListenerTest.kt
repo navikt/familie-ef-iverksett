@@ -12,7 +12,7 @@ import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.Faktainfo
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandling
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
@@ -72,7 +72,7 @@ internal class TilbakekrevingListenerTest {
         eksternFagsakId: String = "0",
     ): ConsumerRecord<String, String> {
         val behandling =
-            objectMapper.writeValueAsString(
+            jsonMapper.writeValueAsString(
                 HentFagsystemsbehandling(
                     eksternFagsakId = "0",
                     eksternId = "1",

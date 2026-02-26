@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import no.nav.familie.ef.iverksett.infrastruktur.database.DbContainerInitializer
-import no.nav.familie.ef.iverksett.util.ObjectMapperProvider
+import no.nav.familie.ef.iverksett.util.JsonMapperProvider
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.context.ApplicationContext
 import org.springframework.http.HttpHeaders
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.ActiveProfiles
@@ -30,8 +30,8 @@ import java.util.UUID
 @EnableMockOAuth2Server
 abstract class ServerTest {
     protected val headers = HttpHeaders()
-    protected val jackson2HttpMessageConverter = MappingJackson2HttpMessageConverter(ObjectMapperProvider.objectMapper)
-    protected val restTemplate = RestTemplateBuilder().additionalMessageConverters(listOf(jackson2HttpMessageConverter) + RestTemplate().messageConverters).build()
+    protected val jacksonJsonHttpMessageConverter = JacksonJsonHttpMessageConverter(JsonMapperProvider.jsonMapper)
+    protected val restTemplate = RestTemplateBuilder().additionalMessageConverters(listOf(jacksonJsonHttpMessageConverter) + RestTemplate().messageConverters).build()
 
     @Autowired
     private lateinit var applicationContext: ApplicationContext

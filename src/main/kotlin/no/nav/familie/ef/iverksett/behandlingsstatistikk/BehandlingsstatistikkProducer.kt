@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
 import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -32,5 +32,5 @@ class BehandlingsstatistikkProducer(
         }
     }
 
-    private fun Any.toJson(): String = objectMapper.writeValueAsString(this)
+    private fun Any.toJson(): String = jsonMapper.writeValueAsString(this)
 }

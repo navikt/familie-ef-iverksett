@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.økonomi.grensesnitt
 
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.util.VirkedagerProvider
 import java.time.LocalDate
@@ -16,7 +16,7 @@ data class GrensesnittavstemmingDto(
 fun GrensesnittavstemmingDto.tilTask(): Task {
     val nesteVirkedag: LocalDateTime = triggerTid ?: VirkedagerProvider.nesteVirkedag(fraDato).atTime(8, 0)
     val payload =
-        objectMapper.writeValueAsString(
+        jsonMapper.writeValueAsString(
             GrensesnittavstemmingPayload(
                 fraDato = this.fraDato,
                 stønadstype = this.stønadstype,
