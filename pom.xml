@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.2</version>
+        <version>4.0.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -24,8 +24,8 @@
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20251111094125_cdf5bf2</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20251117095517_cc54714</prosessering.version>
         <utbetalingsgenerator.version>1.0_20250922101633_e4c1c4d</utbetalingsgenerator.version>
-        <brukervarsel-builder.version>2.1.1</brukervarsel-builder.version>
-        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+        <brukervarsel-builder.version>2.2.0</brukervarsel-builder.version>
+        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <confluent.version>8.1.1</confluent.version>
         <mockk-jvm.version>1.14.9</mockk-jvm.version>
         <cucumber.version>7.34.2</cucumber.version>
