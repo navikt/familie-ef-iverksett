@@ -83,23 +83,6 @@ class ApplicationConfig {
             .messageConverters(listOf(jacksonJsonHttpMessageConverter) + RestTemplate().messageConverters)
     }
 
-    /**
-     * Overskrever OAuth2HttpClient som settes opp i token-support som ikke kan få med objectMapper fra felles
-     * pga .setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE)
-     * og [OAuth2AccessTokenResponse] som burde settes med setters, då feltnavn heter noe annet enn feltet i json
-     */
-    @Primary
-    @Bean
-    fun oAuth2HttpClient(): OAuth2HttpClient =
-        RetryOAuth2HttpClient(
-            RestClient.create(
-                RestTemplateBuilder()
-                    .connectTimeout(Duration.of(2, ChronoUnit.SECONDS))
-                    .readTimeout(Duration.of(4, ChronoUnit.SECONDS))
-                    .build(),
-            ),
-        )
-
     @Bean
     fun prosesseringInfoProvider(
         @Value("\${prosessering.rolle}") prosesseringRolle: String,
