@@ -1,10 +1,9 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.felles.FamilieIntegrasjonerClient
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
@@ -55,7 +54,7 @@ class TilbakekrevingListener(
     ) {
         try {
             val request: HentFagsystemsbehandlingRequest =
-                objectMapper.readValue(data)
+                jsonMapper.readValue(data, HentFagsystemsbehandlingRequest::class.java)
             if (!request.erEfYtelse()) {
                 return
             }

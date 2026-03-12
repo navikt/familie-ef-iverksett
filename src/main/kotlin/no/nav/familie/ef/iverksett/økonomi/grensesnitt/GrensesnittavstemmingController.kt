@@ -1,11 +1,10 @@
 package no.nav.familie.ef.iverksett.økonomi.grensesnitt
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.infrastruktur.advice.ApiFeil
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.internal.TaskService
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -34,7 +33,7 @@ class GrensesnittavstemmingController(
         val stønadType = grensesnittavstemmingRequest.stønadType
         val eksisterendeGrensesnittAvstemmingTasker = taskService.finnTasksMedStatus(listOf(Status.UBEHANDLET, Status.KLAR_TIL_PLUKK), GrensesnittavstemmingTask.TYPE)
         eksisterendeGrensesnittAvstemmingTasker.forEach { task ->
-            val payload = objectMapper.readValue<GrensesnittavstemmingPayload>(task.payload)
+            val payload = jsonMapper.readValue(task.payload, GrensesnittavstemmingPayload::class.java)
             if (payload.stønadstype == stønadType) {
                 throw ApiFeil("Det finnes allerede en task for grensesnittavstemming for stønad=$stønadType", HttpStatus.BAD_REQUEST)
             }

@@ -3,10 +3,10 @@ package no.nav.familie.ef.iverksett.iverksetting
 import no.nav.familie.ef.iverksett.ServerTest
 import no.nav.familie.ef.iverksett.brev.JournalførVedtaksbrevTask
 import no.nav.familie.ef.iverksett.infrastruktur.task.publiseringsflyt
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettMedBrevRequest
 import no.nav.familie.ef.iverksett.tilbakekreving.OpprettTilbakekrevingTask
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.ef.iverksett.økonomi.IverksettMotOppdragTask
-import no.nav.familie.http.client.MultipartBuilder
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.prosessering.internal.TaskService
@@ -33,17 +33,13 @@ class IverksettingControllerTest : ServerTest() {
     @BeforeEach
     fun setUp() {
         headers.setBearerAuth(søkerBearerToken())
-        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
     }
 
     @Test
     internal fun `starte iverksetting gir 200 OK`() {
-        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        val request =
-            MultipartBuilder()
-                .withJson("data", iverksettJson)
-                .withByteArray("fil", "1", byteArrayOf(12))
-                .build()
+        val iverksettDto = opprettIverksettDto(behandlingId = behandlingId)
+        val request = IverksettMedBrevRequest(iverksettDto, byteArrayOf())
 
         val respons: ResponseEntity<Any> =
             restTemplate.exchange(
@@ -59,15 +55,10 @@ class IverksettingControllerTest : ServerTest() {
 
     @Test
     internal fun `starte iverksetting for avslag ytelse gir 200 OK`() {
-        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        // Copy skal legges inn som egen metode i egen PR
-        val iverksettJsonMedAvslag =
-            iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null, resultat = Vedtaksresultat.AVSLÅTT))
-        val request =
-            MultipartBuilder()
-                .withJson("data", iverksettJsonMedAvslag)
-                .withByteArray("fil", "1", byteArrayOf(12))
-                .build()
+        val iverksettDto = opprettIverksettDto(behandlingId = behandlingId)
+        val iverksettDtoMedAvslag =
+            iverksettDto.copy(vedtak = iverksettDto.vedtak.copy(tilkjentYtelse = null, resultat = Vedtaksresultat.AVSLÅTT))
+        val request = IverksettMedBrevRequest(iverksettDtoMedAvslag, byteArrayOf())
 
         val respons: ResponseEntity<Any> =
             restTemplate.exchange(
@@ -83,13 +74,10 @@ class IverksettingControllerTest : ServerTest() {
 
     @Test
     internal fun `Innvilget vedtak uten tilkjent ytelse gir 400 feil`() {
-        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        val iverksettJsonUtenTilkjentYtelse = iverksettJson.copy(vedtak = iverksettJson.vedtak.copy(tilkjentYtelse = null))
-        val request =
-            MultipartBuilder()
-                .withJson("data", iverksettJsonUtenTilkjentYtelse)
-                .withByteArray("fil", "1", byteArrayOf(12))
-                .build()
+        val iverksettDto = opprettIverksettDto(behandlingId = behandlingId)
+        val iverksettDtoUtenTilkjentYtelse = iverksettDto.copy(vedtak = iverksettDto.vedtak.copy(tilkjentYtelse = null))
+        val request = IverksettMedBrevRequest(iverksettDtoUtenTilkjentYtelse, byteArrayOf())
+
         assertThrows<HttpClientErrorException.BadRequest> {
             restTemplate.exchange<Ressurs<Nothing>>(
                 localhostUrl("/api/iverksett"),
@@ -101,29 +89,21 @@ class IverksettingControllerTest : ServerTest() {
 
     @Test
     internal fun `mangler brev, forvent 400`() {
-        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        val request =
-            MultipartBuilder()
-                .withJson("data", iverksettJson)
-                .build()
+        val iverksettDto = opprettIverksettDto(behandlingId = behandlingId)
 
         assertThrows<HttpClientErrorException.BadRequest> {
             restTemplate.exchange<ResponseEntity<Any>>(
                 localhostUrl("/api/iverksett"),
                 HttpMethod.POST,
-                HttpEntity(request, headers),
+                HttpEntity(iverksettDto, headers),
             )
         }
     }
 
     @Test
     internal fun `skal starte publiseringsflyt og gi 200 OK - samt gi 200 OK dersom det kalles en gang til`() {
-        val iverksettJson = opprettIverksettDto(behandlingId = behandlingId)
-        val request =
-            MultipartBuilder()
-                .withJson("data", iverksettJson)
-                .withByteArray("fil", "1", byteArrayOf(12))
-                .build()
+        val iverksettDto = opprettIverksettDto(behandlingId = behandlingId)
+        val request = IverksettMedBrevRequest(iverksettDto, byteArrayOf(12))
 
         restTemplate.exchange<Any>(
             localhostUrl("/api/iverksett"),
@@ -131,7 +111,6 @@ class IverksettingControllerTest : ServerTest() {
             HttpEntity(request, headers),
         )
 
-        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         val respons: ResponseEntity<Any> =
             restTemplate.exchange(
                 localhostUrl("/api/iverksett/vedtakshendelse/$behandlingId"),

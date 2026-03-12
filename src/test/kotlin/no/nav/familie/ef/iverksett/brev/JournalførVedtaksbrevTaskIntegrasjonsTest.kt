@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.brev
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import jakarta.annotation.PostConstruct
@@ -15,7 +14,7 @@ import no.nav.familie.ef.iverksett.iverksetting.domene.Iverksett
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
 import no.nav.familie.ef.iverksett.iverksetting.domene.Vedtaksdetaljer
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
-import no.nav.familie.ef.iverksett.util.ObjectMapperProvider.objectMapper
+import no.nav.familie.ef.iverksett.util.JsonMapperProvider.jsonMapper
 import no.nav.familie.ef.iverksett.util.copy
 import no.nav.familie.ef.iverksett.util.opprettBrev
 import no.nav.familie.kontrakter.ef.iverksett.Brevmottaker.IdentType.PERSONIDENT
@@ -221,6 +220,6 @@ class JournalførVedtaksbrevTaskIntegrasjonsTest : ServerTest() {
 
     companion object {
         val json: String = ResourceLoaderTestUtil.readResource("json/IverksettDtoEksempel.json")
-        val iverksett: IverksettData = objectMapper.readValue<IverksettDto>(json).toDomain()
+        val iverksett: IverksettData = jsonMapper.readValue(json, IverksettDto::class.java).toDomain()
     }
 }

@@ -1,10 +1,9 @@
 package no.nav.familie.ef.iverksett.økonomi.grensesnitt
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.felles.ef.StønadType
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
 import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
@@ -29,7 +28,7 @@ class GrensesnittavstemmingTask(
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun doTask(task: Task) {
-        with(objectMapper.readValue<GrensesnittavstemmingPayload>(task.payload)) {
+        with(jsonMapper.readValue(task.payload, GrensesnittavstemmingPayload::class.java)) {
             val fraTidspunkt = fraDato.atStartOfDay()
             val tilTidspunkt = task.triggerTid.toLocalDate().atStartOfDay()
 
@@ -45,7 +44,7 @@ class GrensesnittavstemmingTask(
     }
 
     override fun onCompletion(task: Task) {
-        val payload = objectMapper.readValue<GrensesnittavstemmingPayload>(task.payload)
+        val payload = jsonMapper.readValue(task.payload, GrensesnittavstemmingPayload::class.java)
         val nesteFradato = task.triggerTid.toLocalDate()
         opprettGrensesnittavstemmingTask(GrensesnittavstemmingDto(stønadstype = payload.stønadstype, fraDato = nesteFradato))
     }

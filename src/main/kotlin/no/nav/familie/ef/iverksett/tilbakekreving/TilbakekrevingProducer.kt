@@ -1,7 +1,7 @@
 package no.nav.familie.ef.iverksett.tilbakekreving
 
 import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.HentFagsystemsbehandlingRespons
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -33,5 +33,5 @@ class TilbakekrevingProducer(
         }
     }
 
-    private fun Any.toJson(): String = objectMapper.writeValueAsString(this)
+    private fun Any.toJson(): String = jsonMapper.writeValueAsString(this)
 }

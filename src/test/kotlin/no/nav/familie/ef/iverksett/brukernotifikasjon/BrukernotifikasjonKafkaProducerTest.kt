@@ -1,13 +1,12 @@
 package no.nav.familie.ef.iverksett.brukernotifikasjon
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.mockk
 import no.nav.familie.ef.iverksett.lagIverksettData
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.Grunnbeløp
 import no.nav.familie.kontrakter.felles.Månedsperiode
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.tms.varsel.action.Produsent
 import no.nav.tms.varsel.action.Sensitivitet
 import no.nav.tms.varsel.action.Tekst
@@ -77,7 +76,7 @@ class BrukernotifikasjonKafkaProducerTest {
                         )
                 }
 
-            val opprettVarsel: Map<String, Any> = objectMapper.readValue(opprettVarselJson)
+            val opprettVarsel: Map<String, Any> = jsonMapper.readValue(opprettVarselJson, Map::class.java) as Map<String, Any>
             val tekster = opprettVarsel["tekster"]
 
             if (tekster is List<*>) {

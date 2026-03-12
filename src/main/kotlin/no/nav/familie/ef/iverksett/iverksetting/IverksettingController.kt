@@ -5,6 +5,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.Brev
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettData
+import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettMedBrevRequest
 import no.nav.familie.ef.iverksett.tilbakekreving.validerTilbakekreving
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettDto
@@ -19,9 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.multipart.MultipartFile
 import java.util.UUID
 
 @RestController
@@ -33,16 +32,15 @@ import java.util.UUID
 class IverksettingController(
     private val iverksettingService: IverksettingService,
 ) {
-    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping
     fun iverksett(
-        @RequestPart("data") iverksettDto: IverksettDto,
-        @RequestPart("fil") fil: MultipartFile,
+        @RequestBody request: IverksettMedBrevRequest,
     ): ResponseEntity<Ressurs<String>> {
         SikkerhetContext.validerKallKommerFraEfSak()
-        val iverksett = iverksettDto.toDomain()
+        val iverksett = request.iverksettDto.toDomain()
         valider(iverksett)
         validerSkalHaBrev(iverksett)
-        iverksettingService.startIverksetting(iverksett, opprettBrev(fil))
+        iverksettingService.startIverksetting(iverksett, Brev(request.fil))
         return ResponseEntity.ok(Ressurs.success("OK"))
     }
 
@@ -74,8 +72,6 @@ class IverksettingController(
         iverksettingService.publiserVedtak(behandlingId)
         return ResponseEntity.ok(Ressurs.success("OK"))
     }
-
-    private fun opprettBrev(fil: MultipartFile): Brev = Brev(fil.bytes)
 
     private fun validerUtenBrev(iverksettData: IverksettData) {
         if (!iverksettData.skalIkkeSendeBrev()) {

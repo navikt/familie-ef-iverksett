@@ -1,10 +1,5 @@
 package no.nav.familie.ef.iverksett.iverksetting.domene
 
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import no.nav.familie.ef.iverksett.brev.domain.Brevmottakere
 import no.nav.familie.kontrakter.ef.felles.AvslagÅrsak
 import no.nav.familie.kontrakter.ef.felles.BehandlingType
@@ -32,6 +27,10 @@ import no.nav.familie.kontrakter.felles.Datoperiode
 import no.nav.familie.kontrakter.felles.Månedsperiode
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
+import tools.jackson.core.JsonParser
+import tools.jackson.databind.DeserializationContext
+import tools.jackson.databind.JsonNode
+import tools.jackson.databind.ValueDeserializer
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -270,43 +269,41 @@ data class TilbakekrevingMedVarsel(
     val perioder: List<Datoperiode>?,
 )
 
-private class IverksettDeserializer : StdDeserializer<IverksettData>(IverksettData::class.java) {
+private class IverksettDeserializer : ValueDeserializer<IverksettData>() {
     override fun deserialize(
         p: JsonParser,
-        ctxt: DeserializationContext?,
+        ctxt: DeserializationContext,
     ): IverksettData {
-        val mapper = p.codec as ObjectMapper
-        val node: JsonNode = mapper.readTree(p)
+        val node: JsonNode = ctxt.readTree(p)
 
         val stønadstype = node.get("fagsak").get("stønadstype").asText()
         return when (StønadType.valueOf(stønadstype)) {
-            StønadType.OVERGANGSSTØNAD -> mapper.treeToValue(node, IverksettOvergangsstønad::class.java)
-            StønadType.BARNETILSYN -> mapper.treeToValue(node, IverksettBarnetilsyn::class.java)
-            StønadType.SKOLEPENGER -> mapper.treeToValue(node, IverksettSkolepenger::class.java)
+            StønadType.OVERGANGSSTØNAD -> ctxt.readTreeAsValue(node, IverksettOvergangsstønad::class.java)
+            StønadType.BARNETILSYN -> ctxt.readTreeAsValue(node, IverksettBarnetilsyn::class.java)
+            StønadType.SKOLEPENGER -> ctxt.readTreeAsValue(node, IverksettSkolepenger::class.java)
             else -> error("Har ikke mapping for $stønadstype")
         }
     }
 }
 
-class IverksettDtoDeserializer : StdDeserializer<IverksettDto>(IverksettDto::class.java) {
+class IverksettDtoDeserializer : ValueDeserializer<IverksettDto>() {
     override fun deserialize(
         p: JsonParser,
-        ctxt: DeserializationContext?,
+        ctxt: DeserializationContext,
     ): IverksettDto {
-        val mapper = p.codec as ObjectMapper
-        val node: JsonNode = mapper.readTree(p)
+        val node: JsonNode = ctxt.readTree(p)
 
         val stønadstype = node.get("fagsak").get("stønadstype").asText()
         return when (StønadType.valueOf(stønadstype)) {
-            StønadType.OVERGANGSSTØNAD -> mapper.treeToValue(node, IverksettOvergangsstønadDto::class.java)
-            StønadType.BARNETILSYN -> mapper.treeToValue(node, IverksettBarnetilsynDto::class.java)
-            StønadType.SKOLEPENGER -> mapper.treeToValue(node, IverksettSkolepengerDto::class.java)
+            StønadType.OVERGANGSSTØNAD -> ctxt.readTreeAsValue(node, IverksettOvergangsstønadDto::class.java)
+            StønadType.BARNETILSYN -> ctxt.readTreeAsValue(node, IverksettBarnetilsynDto::class.java)
+            StønadType.SKOLEPENGER -> ctxt.readTreeAsValue(node, IverksettSkolepengerDto::class.java)
             else -> error("Har ikke mapping for $stønadstype")
         }
     }
 }
 
-class IverksettModule : com.fasterxml.jackson.databind.module.SimpleModule() {
+class IverksettModule : tools.jackson.databind.module.SimpleModule() {
     init {
         addDeserializer(IverksettDto::class.java, IverksettDtoDeserializer())
         addDeserializer(IverksettData::class.java, IverksettDeserializer())

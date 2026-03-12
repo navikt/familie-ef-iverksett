@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokarkiv.ArkiverDokumentResponse
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
@@ -46,11 +46,11 @@ class JournalpostClientMock(
             WireMock
                 .post(WireMock.urlMatching("${dokarkivUri.path}.*"))
                 .atPriority(2)
-                .willReturn(WireMock.okJson(objectMapper.writeValueAsString(arkiverDokumentResponse))),
+                .willReturn(WireMock.okJson(jsonMapper.writeValueAsString(arkiverDokumentResponse))),
             WireMock
                 .post(WireMock.urlEqualTo(distribuerDokumentUri.path))
                 .atPriority(2)
-                .willReturn(WireMock.okJson(objectMapper.writeValueAsString(bestillingId))),
+                .willReturn(WireMock.okJson(jsonMapper.writeValueAsString(bestillingId))),
             WireMock
                 .post(WireMock.urlEqualTo(distribuerDokumentUri.path))
                 .atPriority(1)

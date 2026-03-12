@@ -2,7 +2,7 @@ package no.nav.familie.ef.iverksett.vedtak
 
 import no.nav.familie.ef.iverksett.infrastruktur.service.KafkaProducerService
 import no.nav.familie.kontrakter.felles.ef.EnsligForsørgerVedtakhendelse
-import no.nav.familie.kontrakter.felles.objectMapper
+import no.nav.familie.kontrakter.felles.jsonMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -14,6 +14,6 @@ class VedtakKafkaProducer(
     lateinit var topic: String
 
     fun sendVedtak(hendelse: EnsligForsørgerVedtakhendelse) {
-        kafkaProducerService.send(topic, hendelse.behandlingId.toString(), objectMapper.writeValueAsString(hendelse))
+        kafkaProducerService.send(topic, hendelse.behandlingId.toString(), jsonMapper.writeValueAsString(hendelse))
     }
 }

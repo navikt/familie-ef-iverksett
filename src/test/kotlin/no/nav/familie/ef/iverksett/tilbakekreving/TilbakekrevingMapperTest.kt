@@ -7,7 +7,6 @@ import no.nav.familie.ef.iverksett.util.opprettTilbakekrevingsdetaljer
 import no.nav.familie.kontrakter.felles.Fagsystem
 import no.nav.familie.kontrakter.felles.Språkkode
 import no.nav.familie.kontrakter.felles.arbeidsfordeling.Enhet
-import no.nav.familie.kontrakter.felles.objectMapper
 import no.nav.familie.kontrakter.felles.tilbakekreving.Behandlingstype
 import no.nav.familie.kontrakter.felles.tilbakekreving.Tilbakekrevingsvalg
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
@@ -59,14 +58,17 @@ internal class TilbakekrevingMapperTest {
                     ?.tilbakekrevingMedVarsel
                     ?.sumFeilutbetaling,
             )
-        assertThat(objectMapper.writeValueAsString(request.varsel?.perioder))
-            .isEqualTo(
-                objectMapper.writeValueAsString(
-                    iverksett.vedtak.tilbakekreving
-                        ?.tilbakekrevingMedVarsel
-                        ?.perioder,
-                ),
-            )
+        // Verifiser at periodene har samme innhold (fom/tom), selv om typene er forskjellige
+        val expectedPerioder =
+            iverksett.vedtak.tilbakekreving
+                ?.tilbakekrevingMedVarsel
+                ?.perioder
+        val actualPerioder = request.varsel?.perioder
+        assertThat(actualPerioder?.size).isEqualTo(expectedPerioder?.size)
+        expectedPerioder?.zip(actualPerioder ?: emptyList())?.forEach { (expected, actual) ->
+            assertThat(actual.fom).isEqualTo(expected.fom)
+            assertThat(actual.tom).isEqualTo(expected.tom)
+        }
 
         assertThat(request.manuelleBrevmottakere.size).isEqualTo(1)
     }
