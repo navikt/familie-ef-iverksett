@@ -61,7 +61,7 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
                 BrevmottakereTilStringConverter(),
                 StringTilBrevmottakereConverter(),
                 YearTilJdbcValueConverter(),
-                SqlDateTilYearConverter(),
+                LocalDateTilYearConverter(),
             ),
         )
 
@@ -174,7 +174,7 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
     }
 
     @ReadingConverter
-    class SqlDateTilYearConverter : Converter<Date, Year> {
+    class LocalDateTilYearConverter : Converter<Date, Year> {
         override fun convert(date: Date): Year = Year.from(date.toLocalDate())
     }
 }
