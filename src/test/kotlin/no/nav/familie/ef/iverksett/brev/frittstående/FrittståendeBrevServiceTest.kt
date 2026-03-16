@@ -34,8 +34,8 @@ internal class FrittståendeBrevServiceTest {
             val brev = opprettBrev()
             val brevDto = brev.tilDto()
 
-            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns false
-            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndGjeldendeÅr(any(), any()) } returns false
+            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndÅr(any(), any(), any()) } returns false
+            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndÅr(any(), any()) } returns false
             every {
                 aktivitetspliktBrevRepository.insert(
                     capture(brevSlot),
@@ -57,7 +57,7 @@ internal class FrittståendeBrevServiceTest {
             val brev = opprettBrev()
             val brevDto = brev.tilDto()
 
-            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns true
+            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndÅr(any(), any(), any()) } returns true
 
             val feil = assertThrows<ApiFeil> { frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(brevDto) }
 
@@ -73,8 +73,8 @@ internal class FrittståendeBrevServiceTest {
             val brev = opprettBrev()
             val brevDto = brev.tilDto()
 
-            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(any(), any(), any()) } returns false
-            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndGjeldendeÅr(any(), any()) } returns true
+            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndÅr(any(), any(), any()) } returns false
+            every { aktivitetspliktBrevRepository.existsByEksternFagsakIdAndÅr(any(), any()) } returns true
 
             val feil = assertThrows<ApiFeil> { frittståendeBrevService.opprettTaskForInnhentingAvAktivitetsplikt(brevDto) }
 
