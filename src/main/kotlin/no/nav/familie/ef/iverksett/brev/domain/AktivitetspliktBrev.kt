@@ -20,8 +20,8 @@ data class AktivitetspliktBrev(
     @Column("journalforende_enhet")
     val journalførendeEnhet: String,
     val fil: ByteArray,
-    @Column("gjeldende_ar")
-    val gjeldendeÅr: Year,
+    @Column("ar")
+    val år: Year,
     @Column("stonad_type")
     val stønadType: StønadType,
     val journalpostId: String? = null,
@@ -35,7 +35,7 @@ fun AktivitetspliktBrev.tilDto(): PeriodiskAktivitetspliktBrevDto =
         personIdent = this.personIdent,
         eksternFagsakId = this.eksternFagsakId,
         journalførendeEnhet = this.journalførendeEnhet,
-        gjeldendeÅr = this.gjeldendeÅr,
+        år = this.år,
         stønadType = this.stønadType,
     )
 
@@ -46,7 +46,7 @@ fun PeriodiskAktivitetspliktBrevDto.tilDomene(journalpostId: String? = null): Ak
         personIdent = this.personIdent,
         eksternFagsakId = this.eksternFagsakId,
         journalførendeEnhet = this.journalførendeEnhet,
-        gjeldendeÅr = this.gjeldendeÅr,
+        år = this.år,
         stønadType = this.stønadType,
         journalpostId = journalpostId,
     )

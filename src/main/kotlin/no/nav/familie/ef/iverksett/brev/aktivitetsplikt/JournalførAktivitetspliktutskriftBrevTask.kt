@@ -42,7 +42,7 @@ class JournalførAktivitetspliktutskriftBrevTask(
     }
 
     private fun opprettArkiverDokumentRequest(brev: AktivitetspliktBrev): ArkiverDokumentRequest {
-        val eksternReferanseId = "${brev.eksternFagsakId}_${brev.gjeldendeÅr}_innhentingAktivitetsplikt"
+        val eksternReferanseId = "${brev.eksternFagsakId}_${brev.år}_innhentingAktivitetsplikt"
 
         return ArkiverDokumentRequest(
             fnr = brev.personIdent,

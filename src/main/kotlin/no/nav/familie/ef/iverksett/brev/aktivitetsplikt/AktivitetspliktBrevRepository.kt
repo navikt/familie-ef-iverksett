@@ -11,14 +11,14 @@ import java.util.UUID
 interface AktivitetspliktBrevRepository :
     RepositoryInterface<AktivitetspliktBrev, UUID>,
     InsertUpdateRepository<AktivitetspliktBrev> {
-    fun existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
+    fun existsByEksternFagsakIdAndOppgaveIdAndÅr(
         eksternFagsakId: Long,
         oppgaveId: Long,
-        gjeldendeÅr: Year,
+        år: Year,
     ): Boolean
 
-    fun existsByEksternFagsakIdAndGjeldendeÅr(
+    fun existsByEksternFagsakIdAndÅr(
         eksternFagsakId: Long,
-        gjeldendeÅr: Year,
+        år: Year,
     ): Boolean
 }

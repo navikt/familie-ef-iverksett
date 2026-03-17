@@ -26,8 +26,6 @@ import org.springframework.data.jdbc.core.convert.JdbcCustomConversions
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import java.sql.Date
-import java.time.LocalDate
 import java.time.Year
 import javax.sql.DataSource
 
@@ -59,8 +57,8 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
                 PGobjectConverterTilIverksettData(),
                 BrevmottakereTilStringConverter(),
                 StringTilBrevmottakereConverter(),
-                YearTilLocalDateConverter(),
-                LocalDateTilYearConverter(),
+                YearTilIntConverter(),
+                IntTilYearConverter(),
             ),
         )
 
@@ -168,12 +166,12 @@ class DatabaseConfiguration : AbstractJdbcConfiguration() {
     }
 
     @WritingConverter
-    class YearTilLocalDateConverter : Converter<Year, LocalDate> {
-        override fun convert(year: Year): LocalDate = year.atDay(1)
+    class YearTilIntConverter : Converter<Year, Int> {
+        override fun convert(year: Year): Int = year.value
     }
 
     @ReadingConverter
-    class LocalDateTilYearConverter : Converter<Date, Year> {
-        override fun convert(date: Date): Year = Year.from(date.toLocalDate())
+    class IntTilYearConverter : Converter<Int, Year> {
+        override fun convert(value: Int): Year = Year.of(value)
     }
 }
