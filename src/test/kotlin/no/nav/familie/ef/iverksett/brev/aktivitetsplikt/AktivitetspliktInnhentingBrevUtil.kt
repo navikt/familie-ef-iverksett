@@ -16,7 +16,7 @@ object AktivitetspliktInnhentingBrevUtil {
         eksternFagsakId = 6L,
         journalførendeEnhet = "enhet",
         fil = ByteArray(1),
-        gjeldendeÅr = Year.of(2023),
+        år = Year.of(2023),
         stønadType = StønadType.OVERGANGSSTØNAD,
         journalpostId = journalpostId,
     )

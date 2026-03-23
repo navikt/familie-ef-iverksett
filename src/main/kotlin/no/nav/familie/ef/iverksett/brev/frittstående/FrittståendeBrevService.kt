@@ -59,10 +59,10 @@ class FrittståendeBrevService(
     }
 
     private fun validerKanLagreAktivitetspliktutskriftBrev(brevDto: PeriodiskAktivitetspliktBrevDto) {
-        if (aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
+        if (aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndÅr(
                 brevDto.eksternFagsakId,
                 brevDto.oppgaveId,
-                brevDto.gjeldendeÅr,
+                brevDto.år,
             )
         ) {
             throw ApiFeil(
@@ -70,9 +70,9 @@ class FrittståendeBrevService(
                 HttpStatus.BAD_REQUEST,
             )
         }
-        if (aktivitetspliktBrevRepository.existsByEksternFagsakIdAndGjeldendeÅr(
+        if (aktivitetspliktBrevRepository.existsByEksternFagsakIdAndÅr(
                 brevDto.eksternFagsakId,
-                brevDto.gjeldendeÅr,
+                brevDto.år,
             )
         ) {
             throw ApiFeil(
