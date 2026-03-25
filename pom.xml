@@ -16,7 +16,7 @@
     <properties>
         <java.version>21</java.version>
         <kotlin.version>2.3.10</kotlin.version>
-        <springdoc.version>3.0.1</springdoc.version>
+
         <felles.version>4.20260205114838_3a4c3dc</felles.version>
         <familie.kontrakter.version>4.0_20260204122732_558ee1d</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20251111094125_cdf5bf2</familie.eksterne-kontrakter.stonadsstatistikk-ef>
@@ -130,18 +130,6 @@
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>1.12.1</version>
-        </dependency>
-
-        <!-- Swagger -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-common</artifactId>
-            <version>${springdoc.version}</version>
         </dependency>
 
         <!-- Metrics -->
