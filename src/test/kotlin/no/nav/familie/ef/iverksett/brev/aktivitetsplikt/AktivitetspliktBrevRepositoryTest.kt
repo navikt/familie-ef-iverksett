@@ -26,7 +26,7 @@ internal class AktivitetspliktBrevRepositoryTest : ServerTest() {
         assertThat(oppdatertBrev.stønadType).isEqualTo(brev.stønadType)
         assertThat(oppdatertBrev.fil).isEqualTo(brev.fil)
         assertThat(oppdatertBrev.journalførendeEnhet).isEqualTo(brev.journalførendeEnhet)
-        assertThat(oppdatertBrev.gjeldendeÅr).isEqualTo(brev.gjeldendeÅr)
+        assertThat(oppdatertBrev.år).isEqualTo(brev.år)
         assertThat(oppdatertBrev.opprettetTid).isEqualTo(brev.opprettetTid)
     }
 
@@ -51,17 +51,17 @@ internal class AktivitetspliktBrevRepositoryTest : ServerTest() {
         aktivitetspliktBrevRepository.insert(brev)
 
         assertThat(
-            aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
+            aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndÅr(
                 brev.eksternFagsakId,
                 brev.oppgaveId,
-                brev.gjeldendeÅr,
+                brev.år,
             ),
         ).isTrue
         assertThat(
-            aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndGjeldendeÅr(
+            aktivitetspliktBrevRepository.existsByEksternFagsakIdAndOppgaveIdAndÅr(
                 brev.eksternFagsakId,
                 brev.oppgaveId,
-                brev.gjeldendeÅr.plusYears(1),
+                brev.år.plusYears(1),
             ),
         ).isFalse
     }
@@ -72,15 +72,15 @@ internal class AktivitetspliktBrevRepositoryTest : ServerTest() {
         aktivitetspliktBrevRepository.insert(brev)
 
         assertThat(
-            aktivitetspliktBrevRepository.existsByEksternFagsakIdAndGjeldendeÅr(
+            aktivitetspliktBrevRepository.existsByEksternFagsakIdAndÅr(
                 brev.eksternFagsakId,
-                brev.gjeldendeÅr,
+                brev.år,
             ),
         ).isTrue
         assertThat(
-            aktivitetspliktBrevRepository.existsByEksternFagsakIdAndGjeldendeÅr(
+            aktivitetspliktBrevRepository.existsByEksternFagsakIdAndÅr(
                 brev.eksternFagsakId,
-                brev.gjeldendeÅr.plusYears(1),
+                brev.år.plusYears(1),
             ),
         ).isFalse
     }

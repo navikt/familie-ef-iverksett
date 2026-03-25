@@ -190,7 +190,7 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
             oppgaveId = 5L,
             journalførendeEnhet = "",
             fil = ByteArray(1),
-            gjeldendeÅr = Year.now(),
+            år = Year.now(),
             stønadType = StønadType.OVERGANGSSTØNAD,
         )
 }
