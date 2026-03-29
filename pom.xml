@@ -17,10 +17,10 @@
         <java.version>21</java.version>
         <kotlin.version>2.3.20</kotlin.version>
         <felles.version>4.20260315040340_f2acdc7</felles.version>
-        <familie.kontrakter.version>4.0_20260316145734_3c2b7db</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20260309094311_c41dbc7</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20260309094311_c41dbc7</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20260309094311_c41dbc7</familie.eksterne-kontrakter.arbeidsoppfolging>
+        <familie.kontrakter.version>4.0_20260326091316_bc0649b</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20260323170751_4c02e3c</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20260323170751_4c02e3c</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20260323170751_4c02e3c</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20260306133947_d473c40</prosessering.version>
         <utbetalingsgenerator.version>1.0_20251127080440_b935966</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.2.0</brukervarsel-builder.version>
