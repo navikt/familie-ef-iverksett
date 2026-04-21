@@ -16,7 +16,7 @@
     <properties>
         <java.version>21</java.version>
         <kotlin.version>2.3.20</kotlin.version>
-        <felles.version>4.20260417151548_4d00bd4</felles.version>
+        <felles.version>4.20260420125050_76c5fea</felles.version>
         <familie.kontrakter.version>4.0_20260417102447_88161c0</familie.kontrakter.version>
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20260323170751_4c02e3c</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20260323170751_4c02e3c</familie.eksterne-kontrakter.saksstatistikk-ef>
