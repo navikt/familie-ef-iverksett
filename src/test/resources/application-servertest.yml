@@ -62,7 +62,5 @@ UNLEASH_SERVER_API_TOKEN: token
 NAIS_APP_NAME: familie-ef-iverksett
 NAIS_NAMESPACE: teamfamilie
 
-TEAMFAMILIE_FORVALTNING_GROUP_ID: forvaltning-group-id
 TEAMFAMILIE_SAKSBEHANDLER_GROUP_ID: saksbehandler-group-id
-TEAMFAMILIE_VEILEDER_GROUP_ID: veileder-group-id
 TEAMFAMILIE_BESLUTTER_GROUP_ID: beslutter-group-id

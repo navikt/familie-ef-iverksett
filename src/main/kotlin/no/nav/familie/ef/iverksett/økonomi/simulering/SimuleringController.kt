@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/simulering")
-@PreAuthorize("hasRole('FORVALTER') or hasRole('APPLICATION')")
+@PreAuthorize("hasRole('BESLUTTER') or hasRole('SAKSBEHANDLER') or hasRole('APPLICATION')")
 @Validated
 class SimuleringController(
     private val simuleringService: SimuleringService,

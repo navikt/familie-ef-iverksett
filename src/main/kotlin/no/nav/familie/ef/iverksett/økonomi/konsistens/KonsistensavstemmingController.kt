@@ -17,7 +17,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/konsistensavstemming")
-@PreAuthorize("hasRole('FORVALTER') or hasRole('APPLICATION')")
+@PreAuthorize("hasRole('BESLUTTER') or hasRole('SAKSBEHANDLER') or hasRole('APPLICATION')")
 @Validated
 class KonsistensavstemmingController(
     private val konsistensavstemmingService: KonsistensavstemmingService,

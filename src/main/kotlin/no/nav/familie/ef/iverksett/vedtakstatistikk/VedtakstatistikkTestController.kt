@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(path = ["/api/statistikk/vedtakstatistikk"])
-@PreAuthorize("hasRole('FORVALTER') or hasRole('APPLICATION')")
+@PreAuthorize("hasRole('BESLUTTER') or hasRole('SAKSBEHANDLER') or hasRole('APPLICATION')")
 @Profile("dev", "local")
 class VedtakstatistikkTestController(
     private val vedtakstatistikkService: VedtakstatistikkService,
