@@ -6,12 +6,8 @@ import no.nav.familie.log.NavSystemtype
 import no.nav.familie.log.filter.LogFilter
 import no.nav.familie.log.filter.RequestTimeFilter
 import no.nav.familie.prosessering.config.ProsesseringInfoProvider
-import no.nav.familie.restklient.client.RetryOAuth2HttpClient
 import no.nav.familie.restklient.config.RestTemplateAzure
-import no.nav.security.token.support.client.core.http.OAuth2HttpClient
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client
-import no.nav.security.token.support.spring.SpringTokenValidationContextHolder
-import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringBootConfiguration
@@ -26,7 +22,8 @@ import org.springframework.context.annotation.Primary
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.web.client.RestClient
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.client.RestTemplate
 import java.time.Duration
 import java.time.temporal.ChronoUnit
@@ -42,7 +39,6 @@ import java.time.temporal.ChronoUnit
         ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class]),
     ],
 )
-@EnableJwtTokenValidation(ignore = ["org.springframework"])
 @Import(
     RestTemplateAzure::class,
     KafkaErrorHandler::class,
@@ -87,28 +83,19 @@ class ApplicationConfig {
     fun prosesseringInfoProvider(
         @Value("\${prosessering.rolle}") prosesseringRolle: String,
     ) = object : ProsesseringInfoProvider {
-        override fun hentBrukernavn(): String =
-            try {
-                SpringTokenValidationContextHolder()
-                    .getTokenValidationContext()
-                    .getClaims("azuread")
-                    .getStringClaim("preferred_username")
-            } catch (e: Exception) {
-                throw e
+        override fun hentBrukernavn(): String {
+            val authentication = SecurityContextHolder.getContext().authentication
+
+            if (authentication is JwtAuthenticationToken) {
+                return authentication.token.getClaimAsString("preferred_username")
             }
 
+            error("Finner ikke brukernavn i security context")
+        }
+
         override fun harTilgang(): Boolean {
-            val grupper =
-                Result
-                    .runCatching { SpringTokenValidationContextHolder().getTokenValidationContext() }
-                    .fold(
-                        onSuccess = {
-                            @Suppress("UNCHECKED_CAST")
-                            val groups = it.getClaims("azuread").get("groups") as List<String>?
-                            groups?.toSet() ?: emptySet()
-                        },
-                        onFailure = { emptySet() },
-                    )
+            val authentication = SecurityContextHolder.getContext().authentication as? JwtAuthenticationToken
+            val grupper = authentication?.token?.getClaimAsStringList("groups")?.toSet() ?: emptySet()
 
             return grupper.contains(prosesseringRolle)
         }

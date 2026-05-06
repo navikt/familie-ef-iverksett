@@ -7,9 +7,9 @@ import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/grensesnittavstemming")
-@ProtectedWithClaims(issuer = "azuread")
+@PreAuthorize("hasRole('FORVALTER') or hasRole('APPLICATION')")
 @Validated
 class GrensesnittavstemmingController(
     private val taskService: TaskService,

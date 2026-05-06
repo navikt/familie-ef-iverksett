@@ -3,9 +3,9 @@ package no.nav.familie.ef.iverksett.økonomi.konsistens
 import no.nav.familie.ef.iverksett.infrastruktur.sikkerhet.SikkerhetContext
 import no.nav.familie.kontrakter.ef.iverksett.KonsistensavstemmingDto
 import no.nav.familie.kontrakter.felles.Ressurs
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,7 +17,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/konsistensavstemming")
-@ProtectedWithClaims(issuer = "azuread")
+@PreAuthorize("hasRole('FORVALTER') or hasRole('APPLICATION')")
 @Validated
 class KonsistensavstemmingController(
     private val konsistensavstemmingService: KonsistensavstemmingService,

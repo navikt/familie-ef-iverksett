@@ -5,9 +5,9 @@ import no.nav.familie.prosessering.domene.PropertiesWrapper
 import no.nav.familie.prosessering.domene.Status
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PathVariable
@@ -22,7 +22,7 @@ import java.util.Properties
     path = ["/api/forvaltning/task"],
     produces = [MediaType.APPLICATION_JSON_VALUE],
 )
-@ProtectedWithClaims(issuer = "azuread")
+@PreAuthorize("hasRole('FORVALTER') or hasRole('APPLICATION')")
 class TaskForvaltningController(
     private val taskService: TaskService,
     private val taskForvaltningService: TaskForvaltningService,
