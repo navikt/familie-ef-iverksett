@@ -32,6 +32,10 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
+    - name: TEAMFAMILIE_SAKSBEHANDLER_GROUP_ID
+      value: "6406aba2-b930-41d3-a85b-dd13731bc974"
+    - name: TEAMFAMILIE_BESLUTTER_GROUP_ID
+      value: "5fcc0e1d-a4c2-49f0-93dc-27c9fea41e54"
   envFrom:
     - secret: familie-ef-iverksett
     - secret: familie-ef-iverksett-unleash-api-token
