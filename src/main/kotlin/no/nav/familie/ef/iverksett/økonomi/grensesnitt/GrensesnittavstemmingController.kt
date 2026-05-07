@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/grensesnittavstemming")
-@PreAuthorize("hasRole('BESLUTTER') or hasRole('SAKSBEHANDLER') or hasRole('APPLICATION')")
+@PreAuthorize("hasRole('APPLICATION')")
 @Validated
 class GrensesnittavstemmingController(
     private val taskService: TaskService,

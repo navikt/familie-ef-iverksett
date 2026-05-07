@@ -28,7 +28,7 @@ import java.util.UUID
     path = ["/api/iverksett"],
     produces = [MediaType.APPLICATION_JSON_VALUE],
 )
-@PreAuthorize("hasRole('BESLUTTER') or hasRole('SAKSBEHANDLER') or hasRole('APPLICATION')")
+@PreAuthorize("hasRole('APPLICATION')")
 class IverksettingController(
     private val iverksettingService: IverksettingService,
 ) {
