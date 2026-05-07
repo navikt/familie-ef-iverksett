@@ -15,6 +15,18 @@ class TestControllerSlettMeg {
     @PreAuthorize("hasRole('BESLUTTER') or hasRole('SAKSBEHANDLER') or hasRole('APPLICATION')")
     fun testMedRolle(): ResponseEntity<Ressurs<String>> = ResponseEntity.ok(Ressurs.success("OK - du har en gyldig rolle"))
 
+    @GetMapping("/med-beslutter")
+    @PreAuthorize("hasRole('BESLUTTER')")
+    fun testMedBeslutter(): ResponseEntity<Ressurs<String>> = ResponseEntity.ok(Ressurs.success("OK - du har en gyldig rolle"))
+
+    @GetMapping("/med-saksbehandler")
+    @PreAuthorize("hasRole('SAKSBEHANDLER')")
+    fun testMedSaksbehandler(): ResponseEntity<Ressurs<String>> = ResponseEntity.ok(Ressurs.success("OK - du har en gyldig rolle"))
+
+    @GetMapping("/med-application")
+    @PreAuthorize("hasRole('APPLICATION')")
+    fun testMedApplikasjon(): ResponseEntity<Ressurs<String>> = ResponseEntity.ok(Ressurs.success("OK - du har en gyldig rolle"))
+
     @GetMapping("/uauthenticated")
     fun testUtenAuth(): ResponseEntity<Ressurs<String>> = ResponseEntity.ok(Ressurs.success("OK - ingen auth krevet"))
 
