@@ -17,6 +17,5 @@ class SpringSecurityTokenValidationContextHolder : TokenValidationContextHolder 
     }
 
     override fun setTokenValidationContext(tokenValidationContext: TokenValidationContext?) {
-        // no-op: context is managed by the Spring Security filter chain
     }
 }
