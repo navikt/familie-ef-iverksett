@@ -12,7 +12,7 @@ object SikkerhetContext {
 
     private fun validerKallKommerFra(forventetApplikasjonsSuffix: String): Boolean {
         val claims = SecurityContextHolder.getContext().authentication as JwtAuthenticationToken
-        val applikasjonsnavn = claims.token.claims["azp_name"] as String
+        val applikasjonsnavn = claims.token.claims["azp_name"]?.toString() ?: ""
 
         return if (applikasjonsnavn.endsWith(forventetApplikasjonsSuffix)) {
             true
