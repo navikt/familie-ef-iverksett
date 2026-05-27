@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(path = ["/api/brev"])
-@PreAuthorize("hasRole('APPLICATION')")
+@PreAuthorize("hasRole('APPLICATION') or hasRole('SAKSBEHANDLER')")
 class BrevController(
     private val frittståendeBrevService: FrittståendeBrevService,
 ) {
