@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -77,8 +80,17 @@ class BrukernotifikasjonKafkaProducer(
 
     fun lagMelding(iverksett: IverksettOvergangsstønad): String =
         iverksett.vedtak.grunnbeløp?.let {
-            """Fra ${it.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${it.grunnbeløp} kroner og overgangsstønaden din er derfor endret. Se nav.no/minside for detaljer.""".trimIndent()
+            """Fra ${it.periode.fomDato.norskFormat()} har folketrygdens grunnbeløp økt til ${medTusenskille(it.grunnbeløp)} kroner og overgangsstønaden din er derfor endret. Se nav.no/minside for detaljer.""".trimIndent()
         } ?: throw IllegalStateException("Mangler grunnbeløp")
 }
 
 private fun LocalDate.norskFormat() = this.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+
+private fun medTusenskille(
+    verdi: BigDecimal,
+): String {
+    val symbols = DecimalFormatSymbols.getInstance()
+    symbols.groupingSeparator = ' '
+    val formatter = DecimalFormat("###,###", symbols)
+    return formatter.format(verdi.toLong())
+}
