@@ -1,13 +1,13 @@
 package no.nav.familie.ef.iverksett.infrastruktur.advice
 
 import no.nav.familie.kontrakter.felles.Ressurs
-import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import org.slf4j.LoggerFactory
 import org.springframework.core.NestedExceptionUtils
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -48,14 +48,14 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
         responseStatus: ResponseStatus,
     ): ResponseEntity<Ressurs<Nothing>> {
         val status = if (responseStatus.value != HttpStatus.INTERNAL_SERVER_ERROR) responseStatus.value else responseStatus.code
-        val loggMelding =
-            "En håndtert feil har oppstått" +
-                " throwable=${rootCause(throwable)}" +
-                " reason=${responseStatus.reason}" +
-                " status=$status"
 
-        loggFeil(throwable, loggMelding)
         return ResponseEntity.status(status).body(Ressurs.failure("Håndtert feil"))
+    }
+
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDenied(e: AccessDeniedException): ResponseEntity<Ressurs<Nothing>> {
+        logger.warn("Tilgang nektet - ${e.message}")
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Ressurs.ikkeTilgang(e.message ?: "Ingen tilgang"))
     }
 
     @ExceptionHandler(ApiFeil::class)
@@ -69,15 +69,5 @@ class ApiExceptionHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(Ressurs.failure("Uventet feil"))
-    }
-
-    private fun loggFeil(
-        throwable: Throwable,
-        loggMelding: String,
-    ) {
-        when (throwable) {
-            is JwtTokenUnauthorizedException -> logger.debug(loggMelding)
-            else -> logger.error(loggMelding)
-        }
     }
 }

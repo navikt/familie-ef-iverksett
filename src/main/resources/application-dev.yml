@@ -25,4 +25,7 @@ ENSLIG_FORSORGER_VEDTAK_TOPIC: teamfamilie.aapen-ensligforsorger-vedtak-test
 ENSLIG_FORSORGER_BEHANDLING_TOPIC: teamfamilie.aapen-ensligforsorger-behandling-test
 prosessering.rolle: "928636f4-fd0d-4149-978e-a6fb68bb19de" # 0000-GA-STDAPPS 928636f4-fd0d-4149-978e-a6fb68bb19de
 
+TEAMFAMILIE_SAKSBEHANDLER_GROUP_ID: "ee5e0b5e-454c-4612-b931-1fe363df7c2c" # 0000-GA-Enslig-Forsorger-Saksbehandler
+TEAMFAMILIE_BESLUTTER_GROUP_ID: "01166863-22f1-4e16-9785-d7a05a22df74" # 0000-GA-Enslig-Forsorger-Beslutter
+
 TILBAKEKREVING_REQUEST_TOPIC:

@@ -1,11 +1,12 @@
 package no.nav.familie.ef.iverksett
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import no.nav.familie.ef.iverksett.config.MockOAuth2ServerConfig
 import no.nav.familie.ef.iverksett.infrastruktur.database.DbContainerInitializer
 import no.nav.familie.ef.iverksett.util.JsonMapperProvider
+import no.nav.familie.ef.iverksett.util.MockOAuth2ServerInitializer
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
-import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,10 +25,9 @@ import org.springframework.web.client.RestTemplate
 import java.util.UUID
 
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(initializers = [DbContainerInitializer::class])
-@SpringBootTest(classes = [ApplicationLocal::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(initializers = [DbContainerInitializer::class, MockOAuth2ServerInitializer::class])
+@SpringBootTest(classes = [ApplicationLocal::class, MockOAuth2ServerConfig::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("servertest", "mock-oppdrag", "mock-kafkatemplate", "mock-tilbakekreving", "mock-oauth", "mock-integrasjoner")
-@EnableMockOAuth2Server
 abstract class ServerTest {
     protected val headers = HttpHeaders()
     protected val jacksonJsonHttpMessageConverter = JacksonJsonHttpMessageConverter(JsonMapperProvider.jsonMapper)
@@ -83,7 +83,7 @@ abstract class ServerTest {
                     issuerId = "azuread",
                     subject = personident,
                     audience = listOf("aud-localhost"),
-                    claims = mapOf("oid" to UUID.randomUUID().toString(), "azp" to clientId, "azp_name" to azpName, "name" to "saksbehandler", "NAVIdent" to "saksbehandler"),
+                    claims = mapOf("oid" to UUID.randomUUID().toString(), "azp" to clientId, "azp_name" to azpName, "name" to "saksbehandler", "NAVIdent" to "saksbehandler", "roles" to listOf("access_as_application")),
                     expiry = 3600,
                 ),
             ).serialize()
