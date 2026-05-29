@@ -5,7 +5,7 @@ import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.kontrakter.ef.iverksett.SimuleringDto
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
-import no.nav.security.token.support.core.api.ProtectedWithClaims
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/simulering")
-@ProtectedWithClaims(issuer = "azuread")
+@PreAuthorize("hasRole('APPLICATION') or hasRole('SAKSBEHANDLER') or hasRole('BESLUTTER')")
 @Validated
 class SimuleringController(
     private val simuleringService: SimuleringService,

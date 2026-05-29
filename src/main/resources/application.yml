@@ -19,6 +19,14 @@ spring:
       minimum-idle: 1
   application:
     name: iverksett
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          audiences:
+            - ${AZURE_APP_CLIENT_ID}
+            - api://${AZURE_APP_CLIENT_ID}
   jackson:
     mapper:
       accept-case-insensitive-properties: true
@@ -55,10 +63,6 @@ logging:
   config: "classpath:logback-spring.xml"
 
 no.nav.security.jwt:
-  issuer:
-    azuread:
-      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-      accepted_audience: ${AZURE_APP_CLIENT_ID}
   client:
     registration:
       familie-oppdrag:
@@ -155,3 +159,5 @@ prosessering:
       weeks: 16
 
 prosessering.rolle: "87190cf3-b278-457d-8ab7-1a5c55a9edd7" # Gruppen teamfamilie
+TEAMFAMILIE_SAKSBEHANDLER_GROUP_ID: "6406aba2-b930-41d3-a85b-dd13731bc974" # 0000-GA-Enslig-Forsorger-Saksbehandler
+TEAMFAMILIE_BESLUTTER_GROUP_ID: "5fcc0e1d-a4c2-49f0-93dc-27c9fea41e54" # 0000-GA-Enslig-Forsorger-Beslutter

@@ -11,11 +11,11 @@ spring:
 
 logging:
   config: "classpath:logback-local.xml"
-no.nav.security.jwt:
-  issuer:
-    azuread:
-      discoveryurl: https://login.microsoftonline.com/navq.onmicrosoft.com/v2.0/.well-known/openid-configuration
-      accepted_audience: ${AZURE_APP_CLIENT_ID}
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
 management.health.jms.enabled: false #Skrur av MQ-helsesjekk - da dette kobles fra lokalt
 
 arena-mq:
