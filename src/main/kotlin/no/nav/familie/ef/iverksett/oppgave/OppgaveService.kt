@@ -41,6 +41,10 @@ class OppgaveService(
             return false
         }
 
+        if (iverksett.behandling.erRegelendring2026) {
+            return false
+        }
+
         if (iverksett.behandling.behandlingÅrsak == BehandlingÅrsak.SANKSJON_1_MND) {
             return true
         }
