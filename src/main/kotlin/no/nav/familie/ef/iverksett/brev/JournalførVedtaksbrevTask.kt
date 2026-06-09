@@ -134,8 +134,10 @@ class JournalførVedtaksbrevTask(
         }
     }
 
-    private fun skalHaVedleggOmRettigheter(iverksett: Iverksett): Boolean =
-        when (iverksett.data.behandling.behandlingÅrsak) {
+    private fun skalHaVedleggOmRettigheter(iverksett: Iverksett): Boolean {
+        if (iverksett.data.behandling.erRegelendring2026) return false
+
+        return when (iverksett.data.behandling.behandlingÅrsak) {
             BehandlingÅrsak.G_OMREGNING -> false
             BehandlingÅrsak.MIGRERING -> false
             BehandlingÅrsak.SATSENDRING -> false
@@ -143,6 +145,7 @@ class JournalførVedtaksbrevTask(
             BehandlingÅrsak.KORRIGERING_UTEN_BREV -> false
             else -> iverksett.data.vedtak.vedtaksresultat == Vedtaksresultat.INNVILGET
         }
+    }
 
     private fun vedleggsdokumentForStønad(stønadType: StønadType): List<Dokument> {
         val pdf = lesPdfForVedleggForRettigheter(stønadType)

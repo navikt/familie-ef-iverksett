@@ -80,6 +80,7 @@ fun BehandlingsdetaljerDto.toDomain(): Behandlingsdetaljer =
         kravMottatt = this.kravMottatt,
         årsakRevurdering = this.årsakRevurdering?.let { ÅrsakRevurdering(it.opplysningskilde, it.årsak) },
         kategori = this.kategori,
+        erRegelendring2026 = this.erRegelendring2026,
     )
 
 fun VedtaksperiodeOvergangsstønadDto.toDomain(): VedtaksperiodeOvergangsstønad =
