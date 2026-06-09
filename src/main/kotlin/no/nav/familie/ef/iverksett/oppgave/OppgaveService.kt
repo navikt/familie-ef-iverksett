@@ -36,7 +36,7 @@ class OppgaveService(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun skalOppretteVurderHenvendelseOppgave(iverksett: IverksettOvergangsstønad): Boolean {
+    fun skalOppretteOppgaveMedOppfølgingsenhet(iverksett: IverksettOvergangsstønad): Boolean {
         if (iverksett.skalIkkeSendeBrev()) {
             return false
         }

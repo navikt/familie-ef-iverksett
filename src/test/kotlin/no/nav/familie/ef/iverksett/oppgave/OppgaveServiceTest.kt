@@ -66,7 +66,7 @@ internal class OppgaveServiceTest {
                 vedtaksresultat = Vedtaksresultat.INNVILGET,
                 vedtaksperioder = emptyList(),
             )
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue
     }
 
     @Test
@@ -78,7 +78,7 @@ internal class OppgaveServiceTest {
                 vedtaksperioder = emptyList(),
             )
 
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue
     }
 
     @Test
@@ -91,7 +91,7 @@ internal class OppgaveServiceTest {
                 emptyList(),
             )
         every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(iverksettData)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksettData)).isFalse
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksettData)).isFalse
     }
 
     @Test
@@ -111,7 +111,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT)),
             )
         every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue()
     }
 
     @Test
@@ -131,7 +131,7 @@ internal class OppgaveServiceTest {
                 emptyList(),
             )
         every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue()
     }
 
     @Test
@@ -151,7 +151,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.FORSØRGER_I_ARBEID)),
             )
         every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue()
     }
 
     @Test
@@ -164,7 +164,7 @@ internal class OppgaveServiceTest {
                 listOf(vedtaksPeriode(aktivitet = AktivitetType.IKKE_AKTIVITETSPLIKT)),
             )
         every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(iverksettData)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksettData)).isTrue()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksettData)).isTrue()
     }
 
     @Test
@@ -213,7 +213,7 @@ internal class OppgaveServiceTest {
             lagIverksett(
                 forrigeBehandlingIverksett,
             )
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue()
 
         verify(exactly = 1) { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) }
     }
@@ -241,7 +241,7 @@ internal class OppgaveServiceTest {
                 ),
             )
         every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue()
     }
 
     @Test
@@ -266,7 +266,7 @@ internal class OppgaveServiceTest {
                 ),
             )
         every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isFalse()
     }
 
     @Test
@@ -393,7 +393,7 @@ internal class OppgaveServiceTest {
                 erMigrering = true,
             )
         every { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) } returns lagIverksett(forrigeIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue()
     }
 
     @Test
@@ -425,7 +425,7 @@ internal class OppgaveServiceTest {
                 årsak = BehandlingÅrsak.G_OMREGNING,
             )
         every { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) } returns lagIverksett(forrigeIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isFalse()
     }
 
     @Test
@@ -456,7 +456,7 @@ internal class OppgaveServiceTest {
                 vedtaksperioder = forrigeVedtaksperioder,
             )
         every { iverksettRepository.findByIdOrThrow(forrigeBehandlingId) } returns lagIverksett(forrigeIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue()
     }
 
     @Test
@@ -471,7 +471,7 @@ internal class OppgaveServiceTest {
             )
         val forrigeBehandlingIverksett = lagMigreringsIverksetting()
         every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isFalse()
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isFalse()
     }
 
     @Test
@@ -481,7 +481,7 @@ internal class OppgaveServiceTest {
 
         every { iverksettRepository.findByIdOrThrow(any()) } returns lagIverksett(forrigeBehandlingIverksett)
 
-        assertThat(oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett)).isTrue
+        assertThat(oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett)).isTrue
     }
 
     @Test
