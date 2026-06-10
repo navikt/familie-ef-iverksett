@@ -233,6 +233,7 @@ data class Behandlingsdetaljer(
     val kravMottatt: LocalDate? = null,
     val årsakRevurdering: ÅrsakRevurdering? = null,
     val kategori: BehandlingKategori? = null,
+    val erRegelendring2026: Boolean = false,
 )
 
 data class ÅrsakRevurdering(
