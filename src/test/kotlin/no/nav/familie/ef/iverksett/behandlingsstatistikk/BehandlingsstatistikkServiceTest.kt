@@ -161,7 +161,7 @@ internal class BehandlingsstatistikkServiceTest {
 
             behandlingstatistikkService.sendBehandlingstatistikk(dto)
 
-            assertThat(captureSlot.captured.behandlingType).isEqualTo("${behandlingType.name}_erRegelendring2026")
+            assertThat(captureSlot.captured.behandlingType).isEqualTo("${behandlingType.name}_ERREGELENDRING2026")
         }
     }
 
