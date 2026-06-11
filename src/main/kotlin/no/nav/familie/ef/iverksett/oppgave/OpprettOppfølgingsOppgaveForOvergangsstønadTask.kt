@@ -36,7 +36,7 @@ class OpprettOppfølgingsOppgaveForOvergangsstønadTask(
             return
         }
 
-        if (oppgaveService.skalOppretteVurderHenvendelseOppgave(iverksett.data)) {
+        if (oppgaveService.skalOppretteOppgaveMedOppfølgingsenhet(iverksett.data)) {
             val oppgaveId =
                 oppgaveService.opprettOppgaveMedOppfølgingsenhet(
                     iverksett.data,
