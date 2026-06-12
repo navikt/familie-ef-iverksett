@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.brukernotifikasjon
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNestePubliseringTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
@@ -21,8 +22,13 @@ class SendBrukernotifikasjonVedGOmregningTask(
     val brukernotifikasjonKafkaProducer: BrukernotifikasjonKafkaProducer,
     val iverksettingRepository: IverksettingRepository,
     val taskService: TaskService,
-) : AsyncTaskStep {
+    val featureToggleService: FeatureToggleService,
+    ) : AsyncTaskStep {
     override fun doTask(task: Task) {
+        // dersom toggle ikke er skrudd på kaster vi en feil. Da har vi mulighet til å gjøre en vurdering på om
+        // denne bør avvikshåndteres, eller re-kjøres med toggle på.
+        require(featureToggleService.isEnabled("familie.ef.sak.g-beregning-scheduler"))
+
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
 
