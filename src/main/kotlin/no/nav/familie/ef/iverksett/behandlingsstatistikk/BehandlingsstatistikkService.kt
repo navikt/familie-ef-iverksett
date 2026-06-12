@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.behandlingsstatistikk
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.eksterne.kontrakter.ef.BehandlingÅrsak
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
+import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.iverksett.AdressebeskyttelseGradering
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingKategori
 import no.nav.familie.kontrakter.ef.iverksett.BehandlingMetode
@@ -113,7 +114,7 @@ class BehandlingsstatistikkService(
             behandlingMetode = behandlingsstatistikkDto.behandlingMetode?.name ?: "MANUELL",
             behandlingÅrsak = behandlingsstatistikkDto.behandlingÅrsak.name,
             avsender = "NAV enslig forelder",
-            behandlingType = behandlingsstatistikkDto.behandlingstype.name,
+            behandlingType = mapTilBehandlingTypeMedRegelendringStreng(behandlingsstatistikkDto.behandlingstype, behandlingsstatistikkDto.erRegelEndring2026),
             sakYtelse = behandlingsstatistikkDto.stønadstype.name,
             behandlingResultat = behandlingsstatistikkDto.behandlingResultat,
             resultatBegrunnelse = behandlingsstatistikkDto.resultatBegrunnelse,
@@ -171,6 +172,11 @@ class BehandlingsstatistikkService(
             BehandlingKategori.NASJONAL -> "Nasjonal"
             null -> "Nasjonal"
         }
+
+    private fun mapTilBehandlingTypeMedRegelendringStreng(
+        behandlingType: BehandlingType,
+        erRegelEndring2026: Boolean,
+    ) = if (erRegelEndring2026) behandlingType.name + "_ER_REGELENDRING_2026" else behandlingType.name
 
     companion object {
         const val MASKINELL_JOURNALFOERENDE_ENHET = "9999"

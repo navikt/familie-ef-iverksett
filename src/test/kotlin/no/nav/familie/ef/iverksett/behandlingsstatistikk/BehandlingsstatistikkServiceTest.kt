@@ -8,6 +8,7 @@ import io.mockk.slot
 import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettBehandlingsstatistikkDto
 import no.nav.familie.eksterne.kontrakter.saksstatistikk.ef.BehandlingDVH
+import no.nav.familie.kontrakter.ef.felles.BehandlingType
 import no.nav.familie.kontrakter.ef.felles.Opplysningskilde
 import no.nav.familie.kontrakter.ef.felles.Revurderingsårsak
 import no.nav.familie.kontrakter.ef.iverksett.Hendelse
@@ -149,5 +150,31 @@ internal class BehandlingsstatistikkServiceTest {
         assertThat(captureSlot.captured.opprettetAv).isEqualTo("-5")
         assertThat(captureSlot.captured.opprettetEnhet).isEqualTo("-5")
         assertThat(captureSlot.captured.ansvarligEnhet).isEqualTo("-5")
+    }
+
+    @Test
+    fun `sendBehandlingsstatistikkDto med erRegelEndring2026 lik true, legger til suffiks på behandlingType`() {
+        listOf(BehandlingType.FØRSTEGANGSBEHANDLING, BehandlingType.REVURDERING).forEach { behandlingType ->
+            val dto =
+                opprettBehandlingsstatistikkDto(UUID.randomUUID(), Hendelse.MOTTATT, fortrolig = false)
+                    .copy(behandlingstype = behandlingType, erRegelEndring2026 = true)
+
+            behandlingstatistikkService.sendBehandlingstatistikk(dto)
+
+            assertThat(captureSlot.captured.behandlingType).isEqualTo("${behandlingType.name}_ER_REGELENDRING_2026")
+        }
+    }
+
+    @Test
+    fun `sendBehandlingsstatistikkDto med erRegelEndring2026 lik false, beholder opprinnelig behandlingType`() {
+        listOf(BehandlingType.FØRSTEGANGSBEHANDLING, BehandlingType.REVURDERING).forEach { behandlingType ->
+            val dto =
+                opprettBehandlingsstatistikkDto(UUID.randomUUID(), Hendelse.MOTTATT, fortrolig = false)
+                    .copy(behandlingstype = behandlingType, erRegelEndring2026 = false)
+
+            behandlingstatistikkService.sendBehandlingstatistikk(dto)
+
+            assertThat(captureSlot.captured.behandlingType).isEqualTo(behandlingType.name)
+        }
     }
 }
