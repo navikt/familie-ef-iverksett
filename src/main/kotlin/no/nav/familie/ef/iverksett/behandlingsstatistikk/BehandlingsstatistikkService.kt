@@ -176,7 +176,7 @@ class BehandlingsstatistikkService(
     private fun mapTilBehandlingTypeMedRegelendringStreng(
         behandlingType: BehandlingType,
         erRegelEndring2026: Boolean,
-    ) = if (erRegelEndring2026) behandlingType.name + "_ERREGELENDRING2026" else behandlingType.name
+    ) = if (erRegelEndring2026) behandlingType.name + "_ER_REGELENDRING_2026" else behandlingType.name
 
     companion object {
         const val MASKINELL_JOURNALFOERENDE_ENHET = "9999"
