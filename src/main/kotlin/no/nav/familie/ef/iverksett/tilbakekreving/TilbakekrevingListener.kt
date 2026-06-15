@@ -29,6 +29,7 @@ class TilbakekrevingListener(
         id = "familie-ef-iverksett",
         topics = ["\${FAGSYSTEMBEHANDLING_REQUEST_TOPIC}"],
         containerFactory = "concurrentTilbakekrevingListenerContainerFactory",
+        groupId = "familie-ef-iverksett",
     )
     fun listen(consumerRecord: ConsumerRecord<String, String>) {
         val key: String = consumerRecord.key()
