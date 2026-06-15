@@ -160,6 +160,7 @@ object VedtakstatistikkMapper {
             årsakRevurdering = mapÅrsakRevurdering(iverksett.behandling),
             avslagÅrsak = iverksett.vedtak.avslagÅrsak?.name,
             eøsUnntak = mapEøsUnntak(iverksett.behandling.vilkårsvurderinger),
+            erRegelEndring2026 = iverksett.behandling.erRegelendring2026,
         )
 
     private fun mapTilUtbetaling(
