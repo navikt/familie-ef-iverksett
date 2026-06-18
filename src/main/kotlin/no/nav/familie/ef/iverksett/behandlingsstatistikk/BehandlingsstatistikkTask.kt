@@ -1,6 +1,5 @@
 package no.nav.familie.ef.iverksett.behandlingsstatistikk
 
-import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettOvergangsstønad
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
@@ -20,7 +19,6 @@ class BehandlingsstatistikkTask(
     val behandlingsstatistikkService: BehandlingsstatistikkService,
     val behandlingsstatistikkProducer: BehandlingsstatistikkProducer,
     val iverksettingRepository: IverksettingRepository,
-    val featureToggleService: FeatureToggleService,
 ) : AsyncTaskStep {
     override fun doTask(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
