@@ -7,10 +7,10 @@ import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatServic
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsoppdragGenerator
 import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsoppdrag
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.simulering.BeriketSimuleringsresultat
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
-import no.nav.familie.restklient.client.RessursException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -55,9 +55,9 @@ class SimuleringService(
                 simulering.nyTilkjentYtelseMedMetaData.stønadstype,
             )
         } catch (feil: Throwable) {
-            val cause = feil.cause
-            if (feil is RessursException && cause is HttpClientErrorException.BadRequest) {
-                throw ApiFeil(feil.ressurs.melding, HttpStatus.BAD_REQUEST)
+            if (feil is HttpClientErrorException.BadRequest) {
+                val melding = feil.getResponseBodyAs(Ressurs::class.java)?.melding ?: feil.message
+                throw ApiFeil(melding ?: "Simulering feilet", HttpStatus.BAD_REQUEST)
             }
             throw Exception("Henting av simuleringsresultat feilet", feil)
         }

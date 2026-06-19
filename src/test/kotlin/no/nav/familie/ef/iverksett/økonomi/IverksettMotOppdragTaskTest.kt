@@ -16,7 +16,6 @@ import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.familie.restklient.client.RessursException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -25,7 +24,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpClientErrorException.Conflict
-import org.springframework.web.client.RestClientResponseException
 import java.util.Properties
 import java.util.UUID
 
@@ -65,7 +63,7 @@ internal class IverksettMotOppdragTaskTest {
 
     @Test
     internal fun `har allerede sendt utbetaling til oppdrag - kaster ikke feil ved 409-Conflict feil `() {
-        every { oppdragClient.iverksettOppdrag(any()) } throws lagRessursException(conflictException)
+        every { oppdragClient.iverksettOppdrag(any()) } throws conflictException
         every { iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
         every { iverksettResultatService.hentTilkjentYtelse(any<UUID>()) } returns null
 
@@ -77,20 +75,13 @@ internal class IverksettMotOppdragTaskTest {
 
     @Test
     internal fun `kaster feil hvis ikke 409 `() {
-        every { oppdragClient.iverksettOppdrag(any()) } throws lagRessursException(HttpClientErrorException(HttpStatus.BAD_REQUEST))
+        every { oppdragClient.iverksettOppdrag(any()) } throws HttpClientErrorException(HttpStatus.BAD_REQUEST)
         every { iverksettResultatService.oppdaterTilkjentYtelseForUtbetaling(behandlingId, any()) } returns Unit
         every { iverksettResultatService.hentTilkjentYtelse(any<UUID>()) } returns null
-        assertThrows<RessursException> {
+        assertThrows<HttpClientErrorException> {
             iverksettMotOppdragTask.doTask(Task(IverksettMotOppdragTask.TYPE, behandlingId.toString(), Properties()))
         }
     }
-
-    private fun lagRessursException(restClientResponseException: RestClientResponseException): RessursException =
-        RessursException(
-            cause = restClientResponseException,
-            ressurs = Ressurs.failure("feil"),
-            httpStatus = HttpStatus.valueOf(restClientResponseException.statusCode.value()),
-        )
 
     @Test
     internal fun `skal ikke iverksette utbetaling til oppdrag når det ikke er noen utbetalinger`() {

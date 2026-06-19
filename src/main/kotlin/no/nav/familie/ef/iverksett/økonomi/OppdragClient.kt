@@ -8,11 +8,11 @@ import no.nav.familie.kontrakter.felles.oppdrag.GrensesnittavstemmingRequest
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragId
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
 import no.nav.familie.kontrakter.felles.simulering.DetaljertSimuleringResultat
-import no.nav.familie.restklient.client.AbstractPingableRestClient
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestOperations
+import org.springframework.web.client.RestClient
+import org.springframework.web.client.body
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 import java.util.UUID
@@ -21,9 +21,9 @@ import java.util.UUID
 class OppdragClient(
     @Value("\${FAMILIE_OPPDRAG_API_URL}")
     private val familieOppdragUri: URI,
-    @Qualifier("azure")
-    restOperations: RestOperations,
-) : AbstractPingableRestClient(restOperations, "familie.oppdrag") {
+    @Qualifier("oppdragRestClient")
+    private val restClient: RestClient,
+) {
     private val postOppdragUri: URI =
         UriComponentsBuilder
             .fromUri(familieOppdragUri)
@@ -66,14 +66,34 @@ class OppdragClient(
             .build()
             .toUri()
 
-    fun iverksettOppdrag(utbetalingsoppdrag: Utbetalingsoppdrag): String = postForEntity<Ressurs<String>>(postOppdragUri, utbetalingsoppdrag).getDataOrThrow()
+    fun iverksettOppdrag(utbetalingsoppdrag: Utbetalingsoppdrag): String =
+        restClient
+            .post()
+            .uri(postOppdragUri)
+            .body(utbetalingsoppdrag)
+            .retrieve()
+            .body<Ressurs<String>>()!!
+            .getDataOrThrow()
 
     fun hentStatus(oppdragId: OppdragId): OppdragStatusMedMelding {
-        val ressurs = postForEntity<Ressurs<OppdragStatus>>(getStatusUri, oppdragId)
+        val ressurs =
+            restClient
+                .post()
+                .uri(getStatusUri)
+                .body(oppdragId)
+                .retrieve()
+                .body<Ressurs<OppdragStatus>>()!!
         return OppdragStatusMedMelding(ressurs.getDataOrThrow(), ressurs.melding)
     }
 
-    fun grensesnittavstemming(grensesnittavstemmingRequest: GrensesnittavstemmingRequest): String = postForEntity<Ressurs<String>>(grensesnittavstemmingUri, grensesnittavstemmingRequest).getDataOrThrow()
+    fun grensesnittavstemming(grensesnittavstemmingRequest: GrensesnittavstemmingRequest): String =
+        restClient
+            .post()
+            .uri(grensesnittavstemmingUri)
+            .body(grensesnittavstemmingRequest)
+            .retrieve()
+            .body<Ressurs<String>>()!!
+            .getDataOrThrow()
 
     fun konsistensavstemming(
         konsistensavstemmingUtbetalingsoppdrag: KonsistensavstemmingUtbetalingsoppdrag,
@@ -89,26 +109,36 @@ class OppdragClient(
                 .queryParam("transaksjonId", transaksjonId.toString())
                 .build()
                 .toUri()
-        return postForEntity<Ressurs<String>>(url, konsistensavstemmingUtbetalingsoppdrag).getDataOrThrow()
+        return restClient
+            .post()
+            .uri(url)
+            .body(konsistensavstemmingUtbetalingsoppdrag)
+            .retrieve()
+            .body<Ressurs<String>>()!!
+            .getDataOrThrow()
     }
 
-    fun testTimeout(
-        antallSekunderTimeout: Long,
-    ): String {
+    fun testTimeout(antallSekunderTimeout: Long): String {
         val uri =
             UriComponentsBuilder
                 .fromUri(timeoutTestUri)
                 .queryParam("sekunder", antallSekunderTimeout)
                 .build()
                 .toUri()
-        return getForEntity<Ressurs<String>>(uri).getDataOrThrow()
+        return restClient
+            .get()
+            .uri(uri)
+            .retrieve()
+            .body<Ressurs<String>>()!!
+            .getDataOrThrow()
     }
 
-    fun hentSimuleringsresultat(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat = postForEntity<Ressurs<DetaljertSimuleringResultat>>(postSimuleringUri, utbetalingsoppdrag).getDataOrThrow()
-
-    override val pingUri = postOppdragUri
-
-    override fun ping() {
-        operations.optionsForAllow(pingUri)
-    }
+    fun hentSimuleringsresultat(utbetalingsoppdrag: Utbetalingsoppdrag): DetaljertSimuleringResultat =
+        restClient
+            .post()
+            .uri(postSimuleringUri)
+            .body(utbetalingsoppdrag)
+            .retrieve()
+            .body<Ressurs<DetaljertSimuleringResultat>>()!!
+            .getDataOrThrow()
 }
