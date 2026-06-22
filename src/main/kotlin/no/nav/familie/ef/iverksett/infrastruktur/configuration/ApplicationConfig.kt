@@ -6,28 +6,21 @@ import no.nav.familie.log.NavSystemtype
 import no.nav.familie.log.filter.LogFilter
 import no.nav.familie.log.filter.RequestTimeFilter
 import no.nav.familie.prosessering.config.ProsesseringInfoProvider
-import no.nav.familie.restklient.config.RestTemplateAzure
 import no.nav.familie.sikkerhet.context.FamilieFellesSpringSecurityKonfigurasjon
-import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
-import org.springframework.boot.restclient.RestTemplateBuilder
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.FilterType
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
-import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
-import org.springframework.web.client.RestTemplate
-import java.time.Duration
-import java.time.temporal.ChronoUnit
 
 @SpringBootConfiguration
 @ConfigurationPropertiesScan("no.nav.familie.ef.iverksett")
@@ -36,16 +29,15 @@ import java.time.temporal.ChronoUnit
     "no.nav.familie.prosessering",
     "no.nav.familie.sikkerhet",
     "no.nav.familie.unleash",
+    "no.nav.familie.felles.tokenklient",
     excludeFilters = [
         ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class]),
     ],
 )
 @Import(
-    RestTemplateAzure::class,
     KafkaErrorHandler::class,
     FamilieFellesSpringSecurityKonfigurasjon::class,
 )
-@EnableOAuth2Client(cacheEnabled = true)
 @EnableScheduling
 class ApplicationConfig {
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -67,19 +59,6 @@ class ApplicationConfig {
     @Bean
     @Primary
     fun jsonMapper() = JsonMapperProvider.jsonMapper
-
-    /**
-     * Overskrever felles sin som bruker proxy, som ikke skal brukes på gcp
-     */
-    @Bean
-    @Primary
-    fun restTemplateBuilder(): RestTemplateBuilder {
-        val jacksonJsonHttpMessageConverter = JacksonJsonHttpMessageConverter(JsonMapperProvider.jsonMapper)
-        return RestTemplateBuilder()
-            .connectTimeout(Duration.of(2, ChronoUnit.SECONDS))
-            .readTimeout(Duration.of(60, ChronoUnit.SECONDS))
-            .messageConverters(listOf(jacksonJsonHttpMessageConverter) + RestTemplate().messageConverters)
-    }
 
     @Bean
     fun prosesseringInfoProvider(

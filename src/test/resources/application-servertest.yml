@@ -43,9 +43,13 @@ unleash:
 FAMILIE_OPPDRAG_API_URL: http://localhost:8087
 FAMILIE_INTEGRASJONER_API_URL: http://localhost:9085
 FAMILIE_TILBAKE_URL: http://localhost:8030
-AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/navq.onmicrosoft.com/oauth2/v2.0/token
+NAIS_TOKEN_ENDPOINT: http://localhost/token
+NAIS_TOKEN_EXCHANGE_ENDPOINT: http://localhost/token/exchange
 AZURE_APP_CLIENT_ID: test_client_id
 AZURE_APP_TENANT_ID: navq.onmicrosoft.com
+FAMILIE_OPPDRAG_SCOPE: dummy
+FAMILIE_INTEGRASJONER_SCOPE: dummy
+FAMILIE_TILBAKE_SCOPE: dummy
 
 NAIS_CLUSTER_NAME: dev
 
