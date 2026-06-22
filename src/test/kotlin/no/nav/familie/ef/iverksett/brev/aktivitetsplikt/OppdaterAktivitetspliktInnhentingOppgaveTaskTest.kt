@@ -30,7 +30,7 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
     private val oppgaveService = mockk<OppgaveService>()
 
     private val initiellFristPåOppgave = "2026-05-17"
-    private val oppdatertFrist = "2026-07-27"
+    private val oppdatertFrist = "2026-07-26"
 
     private val oppdaterOppgaveTask = OppdaterAktivitetspliktInnhentingOppgaveTask(aktivitetspliktBrevRepository, oppgaveService)
     private val oppgaveSlot = slot<Oppgave>()
