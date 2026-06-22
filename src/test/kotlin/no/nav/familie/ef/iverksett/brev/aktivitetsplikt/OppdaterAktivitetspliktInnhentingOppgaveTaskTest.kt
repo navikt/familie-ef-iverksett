@@ -29,8 +29,8 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
     private val aktivitetspliktBrevRepository = mockk<AktivitetspliktBrevRepository>()
     private val oppgaveService = mockk<OppgaveService>()
 
-    private val initiellFristPåOppgave = "2025-05-17"
-    private val oppdatertFrist = "2025-07-27"
+    private val initiellFristPåOppgave = "2026-05-17"
+    private val oppdatertFrist = "2026-07-27"
 
     private val oppdaterOppgaveTask = OppdaterAktivitetspliktInnhentingOppgaveTask(aktivitetspliktBrevRepository, oppgaveService)
     private val oppgaveSlot = slot<Oppgave>()
@@ -141,7 +141,6 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
         assertThat(feil.message).contains("Oppgaven har blitt endret på underveis i flyten for innhenting av aktivitetsplikt.")
     }
 
-    /*
     @Test
     fun `skal huske å oppdatere gjeldende frist innen juni neste år`() {
         if (YearMonth.now().month >= Month.JUNE) {
@@ -149,7 +148,6 @@ internal class OppdaterAktivitetspliktInnhentingOppgaveTaskTest {
             assertThat(LocalDate.parse(OppdaterAktivitetspliktInnhentingOppgaveTask.FRIST_OPPFØLGINGSOPPGAVE).year).isEqualTo(YearMonth.now().year)
         }
     }
-     */
 
     @Nested
     inner class Beskrivelse {
