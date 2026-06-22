@@ -69,6 +69,7 @@ class ApplicationConfig {
 
             if (authentication is JwtAuthenticationToken) {
                 return authentication.token.getClaimAsString("preferred_username")
+                    ?: error("Finner ikke preferred_username i token")
             }
 
             error("Finner ikke brukernavn i security context")
