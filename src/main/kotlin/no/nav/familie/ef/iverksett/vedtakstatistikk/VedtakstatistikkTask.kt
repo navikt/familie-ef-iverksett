@@ -34,7 +34,7 @@ class VedtakstatistikkTask(
     override fun onCompletion(task: Task) {
         val behandlingId = UUID.fromString(task.payload)
         val iverksett = iverksettingRepository.findByIdOrThrow(behandlingId).data
-        if (iverksett.erGOmregning() ) {
+        if (iverksett.erGOmregning()) {
             taskService.save(task.opprettNestePubliseringTask())
         }
     }
