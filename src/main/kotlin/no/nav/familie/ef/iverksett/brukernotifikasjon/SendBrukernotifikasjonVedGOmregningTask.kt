@@ -23,7 +23,7 @@ class SendBrukernotifikasjonVedGOmregningTask(
     val iverksettingRepository: IverksettingRepository,
     val taskService: TaskService,
     val featureToggleService: FeatureToggleService,
-    ) : AsyncTaskStep {
+) : AsyncTaskStep {
     override fun doTask(task: Task) {
         // dersom toggle ikke er skrudd på kaster vi en feil. Da har vi mulighet til å gjøre en vurdering på om
         // denne bør avvikshåndteres, eller re-kjøres med toggle på.
