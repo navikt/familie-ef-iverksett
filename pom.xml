@@ -16,12 +16,12 @@
     <properties>
         <java.version>21</java.version>
         <kotlin.version>2.4.0</kotlin.version>
-        <felles.version>4.20260529121328_2754f7c</felles.version>
-        <familie.kontrakter.version>4.0_20260611084408_a47ed94</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20260615091551_d0827d6</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20260615091551_d0827d6</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20260615091551_d0827d6</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20260615101707_c105ab0</prosessering.version>
+        <felles.version>4.20260622095330_affbfcf</felles.version>
+        <familie.kontrakter.version>4.0_20260622103258_a3e0997</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20260623154817_f726581</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20260623154817_f726581</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20260623154817_f726581</familie.eksterne-kontrakter.arbeidsoppfolging>
+        <prosessering.version>2.20260622101837_623782e</prosessering.version>
         <utbetalingsgenerator.version>1.0_20260527092003_ed16208</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.2.0</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
@@ -212,12 +212,12 @@
         <dependency>
             <groupId>no.nav.familie</groupId>
             <artifactId>prosessering-web-spring-security</artifactId>
-            <version>2.20260615101707_c105ab0</version>
+            <version>2.20260622101837_623782e</version>
         </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>token-client-spring</artifactId>
-            <version>6.0.10</version>
+            <version>6.0.11</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -298,7 +298,7 @@
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>mock-oauth2-server</artifactId>
-            <version>4.0.1</version>
+            <version>5.0.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -423,7 +423,7 @@
                 <!-- For å få dependency graph i SLSA som pushes av docker-build-push parameter byosbom -->
                 <groupId>org.cyclonedx</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>2.9.2</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
