@@ -45,6 +45,9 @@ FAMILIE_INTEGRASJONER_API_URL: http://localhost:9085
 FAMILIE_TILBAKE_URL: http://localhost:8030
 NAIS_TOKEN_ENDPOINT: http://localhost/token
 NAIS_TOKEN_EXCHANGE_ENDPOINT: http://localhost/token/exchange
+STS_URL: http://localhost/sts
+CREDENTIAL_USERNAME: dummy
+CREDENTIAL_PASSWORD: dummy
 AZURE_APP_CLIENT_ID: test_client_id
 AZURE_APP_TENANT_ID: navq.onmicrosoft.com
 FAMILIE_OPPDRAG_SCOPE: dummy

@@ -32,7 +32,7 @@
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <ibm-mq-client.version>10.0.0.0</ibm-mq-client.version>
         <unleash.version>8.3.1</unleash.version>
-        <okhttp3.version>4.9.1</okhttp3.version> <!-- overskrever spring sin versjon, blir brukt av mock-oauth2-server -->
+        <okhttp3-jvm.version>5.2.1</okhttp3-jvm.version> <!-- OkHttp 5.x (okhttp-jvm) brukt av mock-oauth2-server 5.x og unleash -->
     </properties>
 
     <repositories>
@@ -173,6 +173,19 @@
             <groupId>no.nav.familie.felles</groupId>
             <artifactId>unleash</artifactId>
             <version>${felles.version}</version>
+            <exclusions>
+                <!-- Exclude OkHttp 4.x — replaced by okhttp-jvm (5.x) below to avoid classpath conflict with mock-oauth2-server 5.x -->
+                <exclusion>
+                    <groupId>com.squareup.okhttp3</groupId>
+                    <artifactId>okhttp</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp-jvm</artifactId>
+            <version>${okhttp3-jvm.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.familie</groupId>
