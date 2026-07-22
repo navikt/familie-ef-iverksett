@@ -18,7 +18,6 @@ import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.RekjørSenereException
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.familie.restklient.client.RessursException
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -223,33 +222,16 @@ internal class DistribuerFrittståendeBrevTaskTest {
         assertThat(entries[1].value.bestillingId).isEqualTo("journalpostId2-bestillingId")
     }
 
-    private fun ressursExceptionGone() =
-        RessursException(
-            Ressurs.failure(""),
-            HttpClientErrorException.create(HttpStatus.GONE, "", HttpHeaders(), byteArrayOf(), null),
-        )
+    private fun ressursExceptionGone() = HttpClientErrorException.create(HttpStatus.GONE, "", HttpHeaders(), byteArrayOf(), null)
 
-    private fun ressursExceptionConflict(bestillingsId: String): RessursException {
-        val e =
-            HttpClientErrorException.create(
-                HttpStatus.CONFLICT,
-                "",
-                HttpHeaders(),
-                DistribuerJournalpostResponseTo(bestillingsId).toJson().toByteArray(),
-                null,
-            )
-
-        val ressurs: Ressurs<Any> =
-            Ressurs(
-                data = e.responseBodyAsString,
-                status = Ressurs.Status.FEILET,
-                melding = e.message.toString(),
-                stacktrace = e.stackTraceToString(),
-            )
-
-        return RessursException(
-            ressurs,
-            e,
+    private fun ressursExceptionConflict(bestillingsId: String): HttpClientErrorException {
+        val ressurs = Ressurs.success(DistribuerJournalpostResponseTo(bestillingsId))
+        return HttpClientErrorException.create(
+            HttpStatus.CONFLICT,
+            "",
+            HttpHeaders(),
+            ressurs.toJson().toByteArray(),
+            null,
         )
     }
 }

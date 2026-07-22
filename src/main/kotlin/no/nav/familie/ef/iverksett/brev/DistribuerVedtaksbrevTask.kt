@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.brev
 import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultat
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -12,7 +13,6 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.RekjørSenereException
 import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.familie.restklient.client.RessursException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -65,13 +65,8 @@ class DistribuerVedtaksbrevTask(
             }.forEach { (personIdent, journalpostResultat) ->
                 try {
                     distribuerBrevOgOppdaterVedtaksbrevResultat(journalpostResultat, behandlingId)
-                } catch (e: RessursException) {
-                    val cause = e.cause
-                    if (cause is HttpClientErrorException.Gone) {
-                        resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
-                    } else {
-                        throw e
-                    }
+                } catch (e: HttpClientErrorException.Gone) {
+                    resultat = Dødsbo("Dødsbo personIdent=$personIdent ${e.responseBodyAsString}")
                 }
             }
         return resultat ?: OK
@@ -84,15 +79,18 @@ class DistribuerVedtaksbrevTask(
         val bestillingId =
             try {
                 journalpostClient.distribuerBrev(journalpostResultat.journalpostId, Distribusjonstype.VEDTAK)
-            } catch (e: RessursException) {
-                val cause = e.cause
-                if (cause is HttpClientErrorException.Conflict) {
-                    logger.warn("Conflict: distribuering av brev allerede utført for journalpost: ${journalpostResultat.journalpostId}")
-                    val response: DistribuerJournalpostResponseTo = jsonMapper.readValue(e.ressurs.data.toString(), DistribuerJournalpostResponseTo::class.java)
-                    response.bestillingsId
-                } else {
-                    throw e
-                }
+            } catch (e: HttpClientErrorException.Conflict) {
+                logger.warn("Conflict: distribuering av brev allerede utført for journalpost: ${journalpostResultat.journalpostId}")
+                val ressurs: Ressurs<DistribuerJournalpostResponseTo> =
+                    jsonMapper.readValue(
+                        e.responseBodyAsString,
+                        jsonMapper.typeFactory.constructParametricType(
+                            Ressurs::class.java,
+                            DistribuerJournalpostResponseTo::class.java,
+                        ),
+                    )
+                ressurs.data?.bestillingsId
+                    ?: error("Mangler bestillingsId i Conflict-respons for journalpost ${journalpostResultat.journalpostId}")
             }
 
         loggBrevDistribuert(journalpostResultat.journalpostId, behandlingId, bestillingId)
