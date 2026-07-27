@@ -29,7 +29,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
     "no.nav.familie.prosessering",
     "no.nav.familie.sikkerhet",
     "no.nav.familie.unleash",
-    "no.nav.familie.felles.tokenklient",
+    "no.nav.familie.felles.tokenklient.entraid",
     excludeFilters = [
         ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = [MappingJackson2XmlHttpMessageConverter::class]),
     ],
