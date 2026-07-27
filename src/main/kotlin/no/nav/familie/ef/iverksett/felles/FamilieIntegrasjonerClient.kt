@@ -7,20 +7,21 @@ import no.nav.familie.kontrakter.felles.getDataOrThrow
 import no.nav.familie.kontrakter.felles.personopplysning.FinnPersonidenterResponse
 import no.nav.familie.kontrakter.felles.personopplysning.Ident
 import no.nav.familie.kontrakter.felles.personopplysning.PersonIdentMedHistorikk
-import no.nav.familie.restklient.client.AbstractRestClient
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestOperations
+import org.springframework.web.client.RestClient
+import org.springframework.web.client.body
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
 @Component
 class FamilieIntegrasjonerClient(
-    @Qualifier("azure") restOperations: RestOperations,
+    @Qualifier("integrasjonerRestClient")
+    private val restClient: RestClient,
     @Value("\${FAMILIE_INTEGRASJONER_API_URL}")
     private val integrasjonUri: URI,
-) : AbstractRestClient(restOperations, "familie.integrasjoner") {
+) {
     private val hentIdenterURI =
         UriComponentsBuilder
             .fromUri(integrasjonUri)
@@ -53,19 +54,35 @@ class FamilieIntegrasjonerClient(
                 .queryParam("historikk", medHistprikk)
                 .build()
                 .toUri()
-        val response = postForEntity<Ressurs<FinnPersonidenterResponse>>(uri, PersonIdent(personident))
+        val response =
+            restClient
+                .post()
+                .uri(uri)
+                .body(PersonIdent(personident))
+                .retrieve()
+                .body<Ressurs<FinnPersonidenterResponse>>()!!
         return response.getDataOrThrow().identer
     }
 
     fun hentBehandlendeEnhetForOppfølging(personident: String): Enhet? {
         val response =
-            postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingOppfølingUri(TEMA_ENSLIG_FORSØRGER), Ident(personident))
+            restClient
+                .post()
+                .uri(arbeidsfordelingOppfølingUri(TEMA_ENSLIG_FORSØRGER))
+                .body(Ident(personident))
+                .retrieve()
+                .body<Ressurs<List<Enhet>>>()!!
         return response.getDataOrThrow().firstOrNull()
     }
 
     fun hentBehandlendeEnhetForBehandlingMedRelasjoner(personident: String): List<Enhet> {
         val response =
-            postForEntity<Ressurs<List<Enhet>>>(arbeidsfordelingUriMedRelasjoner(TEMA_ENSLIG_FORSØRGER), Ident(personident))
+            restClient
+                .post()
+                .uri(arbeidsfordelingUriMedRelasjoner(TEMA_ENSLIG_FORSØRGER))
+                .body(Ident(personident))
+                .retrieve()
+                .body<Ressurs<List<Enhet>>>()!!
         return response.getDataOrThrow()
     }
 

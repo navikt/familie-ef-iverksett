@@ -7,6 +7,7 @@ import no.nav.familie.ef.iverksett.brev.domain.DistribuerBrevResultatMap
 import no.nav.familie.ef.iverksett.brev.domain.FrittståendeBrev
 import no.nav.familie.ef.iverksett.brev.domain.JournalpostResultat
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.kontrakter.felles.Ressurs
 import no.nav.familie.kontrakter.felles.dokdist.Distribusjonstype
 import no.nav.familie.kontrakter.felles.jsonMapper
 import no.nav.familie.prosessering.AsyncTaskStep
@@ -16,7 +17,6 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.RekjørSenereException
 import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.familie.restklient.client.RessursException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -72,23 +72,30 @@ class DistribuerFrittståendeBrevTask(
                 try {
                     val bestillingId = distribuerBrev(journalpostResultat)
                     frittståendeBrev = oppdaterOgLagreResultat(frittståendeBrev, journalpostResultat, bestillingId, frittståendeBrevId)
-                } catch (e: RessursException) {
-                    val cause = e.cause
-                    when (cause) {
+                } catch (e: HttpClientErrorException) {
+                    when (e) {
                         is HttpClientErrorException.Gone -> {
-                            resultat = Dødsbo("Dødsbo personIdent=$personIdent ${cause.responseBodyAsString}")
+                            resultat = Dødsbo("Dødsbo personIdent=$personIdent ${e.responseBodyAsString}")
                         }
 
                         is HttpClientErrorException.Conflict -> {
+                            val ressurs: Ressurs<DistribuerJournalpostResponseTo> =
+                                jsonMapper.readValue(
+                                    e.responseBodyAsString,
+                                    jsonMapper.typeFactory.constructParametricType(
+                                        Ressurs::class.java,
+                                        DistribuerJournalpostResponseTo::class.java,
+                                    ),
+                                )
                             logger.warn(
-                                "Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer betillingId: ${e.ressurs.data}",
+                                "Conflict: Distribuering av frittstående brev allerede utført for journalpost: ${journalpostResultat.journalpostId} - lagrer bestillingId: ${ressurs.data?.bestillingsId}",
                             )
-                            val response: DistribuerJournalpostResponseTo = jsonMapper.readValue(e.ressurs.data.toString(), DistribuerJournalpostResponseTo::class.java)
                             frittståendeBrev =
                                 oppdaterOgLagreResultat(
                                     frittståendeBrev,
                                     journalpostResultat,
-                                    response.bestillingsId,
+                                    ressurs.data?.bestillingsId
+                                        ?: error("Mangler bestillingsId i Conflict-respons for journalpost ${journalpostResultat.journalpostId}"),
                                     frittståendeBrevId,
                                 )
                         }

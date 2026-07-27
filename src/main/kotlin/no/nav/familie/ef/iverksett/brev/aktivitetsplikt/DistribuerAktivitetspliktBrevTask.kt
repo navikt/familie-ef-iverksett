@@ -10,7 +10,6 @@ import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.error.RekjørSenereException
 import no.nav.familie.prosessering.error.TaskExceptionUtenStackTrace
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.familie.restklient.client.RessursException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -62,11 +61,10 @@ class DistribuerAktivitetspliktBrevTask(
 
         try {
             distribuerBrev(journalpostId)
-        } catch (e: RessursException) {
-            val cause = e.cause
-            when (cause) {
+        } catch (e: HttpClientErrorException) {
+            when (e) {
                 is HttpClientErrorException.Gone -> {
-                    return Dødsbo("Dødsbo personIdent=${brev.personIdent} ${cause.responseBodyAsString}")
+                    return Dødsbo("Dødsbo personIdent=${brev.personIdent} ${e.responseBodyAsString}")
                 }
 
                 is HttpClientErrorException.Conflict -> {
