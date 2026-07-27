@@ -23,7 +23,6 @@ import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.familie.restklient.client.RessursException
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
@@ -62,17 +61,13 @@ class JournalførVedtaksbrevTask(
         val journalpostId =
             try {
                 journalpostClient.arkiverDokument(arkiverDokumentRequest, beslutterId).journalpostId
-            } catch (e: RessursException) {
-                if (e.cause is HttpClientErrorException.Conflict) {
-                    val eksternReferanseId = arkiverDokumentRequest.eksternReferanseId
-                    logger.warn(
-                        "Konflikt ved arkivering av dokument, " +
-                            "prøver å hente journalpostId med eksternReferanseId=$eksternReferanseId",
-                    )
-                    finnJournalpostIdForEksternReferanseId(mottakerIdent, eksternReferanseId)
-                } else {
-                    throw e
-                }
+            } catch (e: HttpClientErrorException.Conflict) {
+                val eksternReferanseId = arkiverDokumentRequest.eksternReferanseId
+                logger.warn(
+                    "Konflikt ved arkivering av dokument, " +
+                        "prøver å hente journalpostId med eksternReferanseId=$eksternReferanseId",
+                )
+                finnJournalpostIdForEksternReferanseId(mottakerIdent, eksternReferanseId)
             }
         iverksettResultatService.oppdaterJournalpostResultat(
             behandlingId = behandlingId,

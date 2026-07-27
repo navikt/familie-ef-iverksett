@@ -9,21 +9,21 @@ import no.nav.familie.kontrakter.felles.tilbakekreving.ForhåndsvisVarselbrevReq
 import no.nav.familie.kontrakter.felles.tilbakekreving.KanBehandlingOpprettesManueltRespons
 import no.nav.familie.kontrakter.felles.tilbakekreving.OpprettTilbakekrevingRequest
 import no.nav.familie.kontrakter.felles.tilbakekreving.Ytelsestype
-import no.nav.familie.restklient.client.AbstractRestClient
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestOperations
+import org.springframework.web.client.RestClient
+import org.springframework.web.client.body
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
 @Component
 class TilbakekrevingClient(
-    @Qualifier("azure") restOperations: RestOperations,
+    @Qualifier("tilbakekrevingRestClient")
+    private val restClient: RestClient,
     @Value("\${FAMILIE_TILBAKE_URL}") private val familieTilbakeUri: URI,
-) : AbstractRestClient(restOperations, "familie.tilbakekreving") {
+) {
     private val hentForhåndsvisningVarselbrevUri: URI =
         UriComponentsBuilder
             .fromUri(familieTilbakeUri)
@@ -63,31 +63,47 @@ class TilbakekrevingClient(
         fagsakId: Long,
         ytelsestype: Ytelsestype,
     ) = UriComponentsBuilder
-        .fromUri(
-            familieTilbakeUri,
-        ).pathSegment("api", "ytelsestype", ytelsestype.name, "fagsak", fagsakId.toString(), "kanBehandlingOpprettesManuelt", "v1")
+        .fromUri(familieTilbakeUri)
+        .pathSegment("api", "ytelsestype", ytelsestype.name, "fagsak", fagsakId.toString(), "kanBehandlingOpprettesManuelt", "v1")
         .encode()
         .build()
         .toUri()
 
     fun hentForhåndsvisningVarselbrev(forhåndsvisVarselbrevRequest: ForhåndsvisVarselbrevRequest): ByteArray =
-        postForEntity(
-            hentForhåndsvisningVarselbrevUri,
-            forhåndsvisVarselbrevRequest,
-            HttpHeaders().apply { accept = listOf(MediaType.APPLICATION_PDF) },
-        )
+        restClient
+            .post()
+            .uri(hentForhåndsvisningVarselbrevUri)
+            .accept(MediaType.APPLICATION_PDF)
+            .body(forhåndsvisVarselbrevRequest)
+            .retrieve()
+            .body<ByteArray>()!!
 
     fun opprettBehandling(opprettTilbakekrevingRequest: OpprettTilbakekrevingRequest) {
-        postForEntity<Ressurs<String>>(opprettTilbakekrevingUri, opprettTilbakekrevingRequest)
+        restClient
+            .post()
+            .uri(opprettTilbakekrevingUri)
+            .body(opprettTilbakekrevingRequest)
+            .retrieve()
+            .toBodilessEntity()
     }
 
     fun finnesÅpenBehandling(fagsakId: Long): Boolean {
-        val response: Ressurs<FinnesBehandlingResponse> = getForEntity(finnesÅpenBehandlingUri(fagsakId))
+        val response =
+            restClient
+                .get()
+                .uri(finnesÅpenBehandlingUri(fagsakId))
+                .retrieve()
+                .body<Ressurs<FinnesBehandlingResponse>>()!!
         return response.getDataOrThrow().finnesÅpenBehandling
     }
 
     fun finnBehandlinger(fagsakId: Long): List<Behandling> {
-        val response: Ressurs<List<Behandling>> = getForEntity(finnBehandlingerUri(fagsakId))
+        val response =
+            restClient
+                .get()
+                .uri(finnBehandlingerUri(fagsakId))
+                .retrieve()
+                .body<Ressurs<List<Behandling>>>()!!
         return response.getDataOrThrow()
     }
 
@@ -95,8 +111,12 @@ class TilbakekrevingClient(
         fagsakId: Long,
         ytelsestype: Ytelsestype,
     ): KanBehandlingOpprettesManueltRespons {
-        val response: Ressurs<KanBehandlingOpprettesManueltRespons> =
-            getForEntity(kanBehandlingOpprettesManueltUri(fagsakId, ytelsestype))
+        val response =
+            restClient
+                .get()
+                .uri(kanBehandlingOpprettesManueltUri(fagsakId, ytelsestype))
+                .retrieve()
+                .body<Ressurs<KanBehandlingOpprettesManueltRespons>>()!!
         return response.getDataOrThrow()
     }
 }

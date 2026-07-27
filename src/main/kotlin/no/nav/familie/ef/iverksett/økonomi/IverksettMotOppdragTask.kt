@@ -10,7 +10,6 @@ import no.nav.familie.prosessering.AsyncTaskStep
 import no.nav.familie.prosessering.TaskStepBeskrivelse
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.familie.restklient.client.RessursException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -83,12 +82,8 @@ class IverksettMotOppdragTask(
     ) {
         try {
             oppdragClient.iverksettOppdrag(utbetalingsoppdrag = utbetalingsoppdrag)
-        } catch (e: RessursException) {
-            if (e.cause is HttpClientErrorException.Conflict) {
-                log.warn("409 conflict ved iverksetting av oppdrag. behandlingId=$behandlingId")
-            } else {
-                throw e
-            }
+        } catch (e: HttpClientErrorException.Conflict) {
+            log.warn("409 conflict ved iverksetting av oppdrag. behandlingId=$behandlingId")
         }
     }
 

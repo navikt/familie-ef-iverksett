@@ -29,7 +29,6 @@ import no.nav.familie.kontrakter.felles.journalpost.Journalposttype
 import no.nav.familie.kontrakter.felles.journalpost.Journalstatus
 import no.nav.familie.prosessering.domene.Task
 import no.nav.familie.prosessering.internal.TaskService
-import no.nav.familie.restklient.client.RessursException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -572,10 +571,7 @@ internal class JournalførVedtaksbrevTaskTest {
     @Test
     internal fun `skal finne journalpostId for eksternReferanseId vid konflikt ved arkivering`() {
         every { journalpostClient.arkiverDokument(capture(arkiverDokumentRequestSlot), any()) } throws
-            RessursException(
-                Ressurs.failure(""),
-                HttpClientErrorException.create(HttpStatus.CONFLICT, "Feil", HttpHeaders(), byteArrayOf(), null),
-            )
+            HttpClientErrorException.create(HttpStatus.CONFLICT, "Feil", HttpHeaders(), byteArrayOf(), null)
         every { journalpostClient.finnJournalposter(any()) } answers {
             listOf(
                 Journalpost(
