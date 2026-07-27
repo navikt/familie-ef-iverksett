@@ -40,6 +40,9 @@ arena-mq:
 unleash:
   enabled: false
 
+prosessering:
+  continuousRunning.enabled: false
+
 FAMILIE_OPPDRAG_API_URL: http://localhost:8087
 FAMILIE_INTEGRASJONER_API_URL: http://localhost:9085
 FAMILIE_TILBAKE_URL: http://localhost:8030
