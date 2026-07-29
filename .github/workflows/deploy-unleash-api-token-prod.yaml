@@ -18,5 +18,5 @@ jobs:
         uses: nais/deploy/actions/deploy@5fdd91aaf69bb0d6dd5e5118cdacb639f487b93b # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-gcp
-          RESOURCE: .deploy/unleash-apitoken-prod.yaml
+          RESOURCE: .nais/unleash-apitoken-prod.yaml
           PRINT_PAYLOAD: true
