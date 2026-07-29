@@ -43,5 +43,5 @@ jobs:
       - uses: nais/deploy/actions/deploy@5fdd91aaf69bb0d6dd5e5118cdacb639f487b93b # ratchet:nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: .deploy/nais-preprod.yaml
+          RESOURCE: .nais/nais-preprod.yaml
           IMAGE: ${{ needs.build.outputs.image }}
