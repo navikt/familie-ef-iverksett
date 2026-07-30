@@ -4,8 +4,9 @@ import no.nav.familie.felles.tokenklient.entraid.EntraIDRestClientFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.client.SimpleClientHttpRequestFactory
+import org.springframework.http.client.JdkClientHttpRequestFactory
 import org.springframework.web.client.RestClient
+import java.net.http.HttpClient
 import java.time.Duration
 
 @Configuration
@@ -14,8 +15,12 @@ class RestClientConfig(
 ) {
     private fun lagMaskinTilMaskinRestKlient(scope: String): RestClient {
         val requestFactory =
-            SimpleClientHttpRequestFactory().apply {
-                setConnectTimeout(Duration.ofSeconds(2))
+            JdkClientHttpRequestFactory(
+                HttpClient
+                    .newBuilder()
+                    .connectTimeout(Duration.ofSeconds(2))
+                    .build(),
+            ).apply {
                 setReadTimeout(Duration.ofSeconds(60))
             }
         return entraIDRestClientFactory
