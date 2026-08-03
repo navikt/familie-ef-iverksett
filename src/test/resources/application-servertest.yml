@@ -42,6 +42,7 @@ unleash:
 
 prosessering:
   continuousRunning.enabled: false
+  cronRetryTasks: "0 0 0 29 2 ?"
 
 FAMILIE_OPPDRAG_API_URL: http://localhost:8087
 FAMILIE_INTEGRASJONER_API_URL: http://localhost:9085
