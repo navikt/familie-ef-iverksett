@@ -40,6 +40,8 @@ FAMILIE_TILBAKE_URL: http://localhost:8030
 FAMILIE_OPPDRAG_SCOPE: dummy
 FAMILIE_INTEGRASJONER_SCOPE: dummy
 FAMILIE_TILBAKE_SCOPE: dummy
+FAMILIE_OPPDRAG_BACKEND_API_URL: https://familie-oppdrag-backend.dev.intern.nav.no
+FAMILIE_OPPDRAG_BACKEND_SCOPE: dummy
 
 NAIS_APP_NAME: familie-ef-iverksett
 NAIS_NAMESPACE: teamfamilie
