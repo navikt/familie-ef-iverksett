@@ -52,6 +52,8 @@ spec:
       rules:
         - application: tilbakekreving-backend
           namespace: tilbake
+        - application: familie-oppdrag-backend
+          cluster: prod-gcp
         - application: logging
           namespace: nais-system
       external:
