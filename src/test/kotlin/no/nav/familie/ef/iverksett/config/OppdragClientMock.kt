@@ -3,6 +3,7 @@ package no.nav.familie.ef.iverksett.config
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.familie.ef.iverksett.detaljertSimuleringResultat
+import no.nav.familie.ef.iverksett.økonomi.OppdragBackendClient
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.OppdragStatusMedMelding
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
@@ -26,5 +27,15 @@ class OppdragClientMock {
         every { oppdragClientMock.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
 
         return oppdragClientMock
+    }
+
+    @Bean
+    @Primary
+    fun oppdragBackendClient(): OppdragBackendClient {
+        val oppdragBackendClientMock = mockk<OppdragBackendClient>()
+
+        every { oppdragBackendClientMock.hentSimuleringsresultat(any()) } returns detaljertSimuleringResultat()
+
+        return oppdragBackendClientMock
     }
 }

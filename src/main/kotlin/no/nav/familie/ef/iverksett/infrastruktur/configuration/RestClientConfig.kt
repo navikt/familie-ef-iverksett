@@ -35,6 +35,11 @@ class RestClientConfig(
         @Value("\${FAMILIE_OPPDRAG_SCOPE}") scope: String,
     ): RestClient = lagMaskinTilMaskinRestKlient(scope)
 
+    @Bean("oppdragBackendRestClient")
+    fun oppdragBackendRestClient(
+        @Value("\${FAMILIE_OPPDRAG_BACKEND_SCOPE}") scope: String,
+    ): RestClient = lagMaskinTilMaskinRestKlient(scope)
+
     @Bean("integrasjonerRestClient")
     fun integrasjonerRestClient(
         @Value("\${FAMILIE_INTEGRASJONER_SCOPE}") scope: String,
