@@ -1,10 +1,12 @@
 package no.nav.familie.ef.iverksett.infrastruktur.configuration
 
 import no.nav.familie.felles.tokenklient.entraid.EntraIDRestClientFactory
+import no.nav.familie.kontrakter.felles.jsonMapper
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.JdkClientHttpRequestFactory
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter
 import org.springframework.web.client.RestClient
 import java.net.http.HttpClient
 import java.time.Duration
@@ -18,6 +20,7 @@ class RestClientConfig(
             JdkClientHttpRequestFactory(
                 HttpClient
                     .newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
                     .connectTimeout(Duration.ofSeconds(2))
                     .build(),
             ).apply {
@@ -27,7 +30,11 @@ class RestClientConfig(
             .lagMaskinTilMaskinRestKlient(scope)
             .mutate()
             .requestFactory(requestFactory)
-            .build()
+            .configureMessageConverters { converters ->
+                converters
+                    .registerDefaults()
+                    .withJsonConverter(JacksonJsonHttpMessageConverter(jsonMapper))
+            }.build()
     }
 
     @Bean("oppdragRestClient")
