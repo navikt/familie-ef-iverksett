@@ -1,10 +1,12 @@
 package no.nav.familie.ef.iverksett.økonomi.konsistens
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.transformer.toDomain
 import no.nav.familie.ef.iverksett.iverksetting.domene.AndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
+import no.nav.familie.ef.iverksett.økonomi.OppdragBackendClient
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.UtbetalingsgeneratorHelper
 import no.nav.familie.ef.iverksett.økonomi.utbetalingsoppdrag.lagPeriodeFraAndel
@@ -21,6 +23,8 @@ import java.util.UUID
 @Service
 class KonsistensavstemmingService(
     private val oppdragKlient: OppdragClient,
+    private val oppdragBackendKlient: OppdragBackendClient,
+    private val featureToggleService: FeatureToggleService,
     private val iverksettResultatService: IverksettResultatService,
 ) {
     private val secureLogger = LoggerFactory.getLogger("secureLogger")
@@ -39,18 +43,32 @@ class KonsistensavstemmingService(
                     utbetalingsoppdrag = utbetalingsoppdrag,
                     avstemmingstidspunkt = konsistensavstemmingDto.avstemmingstidspunkt ?: LocalDateTime.now(),
                 )
-            oppdragKlient.konsistensavstemming(
-                konsistensavstemmingUtbetalingsoppdrag,
-                sendStartmelding,
-                sendAvsluttmelding,
-                transaksjonId,
-            )
+            if (featureToggleService.isEnabled("familie.ef.iverksett.oppdrag-migrering-gcp")) {
+                oppdragBackendKlient.konsistensavstemming(
+                    konsistensavstemmingUtbetalingsoppdrag,
+                    sendStartmelding,
+                    sendAvsluttmelding,
+                    transaksjonId,
+                )
+            } else {
+                oppdragKlient.konsistensavstemming(
+                    konsistensavstemmingUtbetalingsoppdrag,
+                    sendStartmelding,
+                    sendAvsluttmelding,
+                    transaksjonId,
+                )
+            }
         } catch (feil: Throwable) {
             throw Exception("Sending av utbetalingsoppdrag til konsistensavtemming feilet", feil)
         }
     }
 
-    fun testTimeout(sekunder: Long): String = oppdragKlient.testTimeout(sekunder)
+    fun testTimeout(sekunder: Long): String =
+        if (featureToggleService.isEnabled("familie.ef.iverksett.oppdrag-migrering-gcp")) {
+            oppdragBackendKlient.testTimeout(sekunder)
+        } else {
+            oppdragKlient.testTimeout(sekunder)
+        }
 
     private fun lagUtbetalingsoppdragForKonsistensavstemming(konsistensavstemmingDto: KonsistensavstemmingDto): List<Utbetalingsoppdrag> {
         if (konsistensavstemmingDto.tilkjenteYtelser.isEmpty()) return emptyList()

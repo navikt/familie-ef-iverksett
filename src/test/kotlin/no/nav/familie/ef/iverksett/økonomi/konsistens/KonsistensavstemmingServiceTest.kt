@@ -6,6 +6,8 @@ import io.mockk.slot
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelse
 import no.nav.familie.ef.iverksett.iverksetting.domene.TilkjentYtelseMedMetaData
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
+import no.nav.familie.ef.iverksett.økonomi.OppdragBackendClient
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelse
 import no.nav.familie.ef.iverksett.økonomi.lagAndelTilkjentYtelseDto
@@ -24,9 +26,11 @@ import java.util.UUID
 
 internal class KonsistensavstemmingServiceTest {
     private val oppdragClient = mockk<OppdragClient>()
+    private val oppdragBackendKlient = mockk<OppdragBackendClient>()
     private val iverksettResultatService = mockk<IverksettResultatService>()
 
-    private val konsistensavstemmingService = KonsistensavstemmingService(oppdragClient, iverksettResultatService)
+    private val konsistensavstemmingService =
+        KonsistensavstemmingService(oppdragClient, oppdragBackendKlient, mockFeatureToggleService(), iverksettResultatService)
 
     private val saksbehandlerId = "1"
     private val eksternBehandlingId = 1L

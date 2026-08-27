@@ -11,6 +11,7 @@ import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
 import no.nav.familie.ef.iverksett.lagIverksett
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettIverksettDto
 import no.nav.familie.felles.utbetalingsgenerator.domain.Utbetalingsoppdrag
 import no.nav.familie.kontrakter.felles.Ressurs
@@ -29,6 +30,7 @@ import java.util.UUID
 
 internal class IverksettMotOppdragTaskTest {
     private val oppdragClient = mockk<OppdragClient>()
+    private val oppdragBackendKlient = mockk<OppdragBackendClient>()
     val taskService = mockk<TaskService>()
     val iverksettingRepository = mockk<IverksettingRepository>()
     val iverksettResultatService = mockk<IverksettResultatService>()
@@ -37,8 +39,10 @@ internal class IverksettMotOppdragTaskTest {
         IverksettMotOppdragTask(
             iverksettingRepository = iverksettingRepository,
             oppdragClient = oppdragClient,
+            oppdragBackendKlient = oppdragBackendKlient,
             taskService = taskService,
             iverksettResultatService = iverksettResultatService,
+            featureToggleService = mockFeatureToggleService(),
         )
 
     @BeforeEach

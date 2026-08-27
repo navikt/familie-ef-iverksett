@@ -35,6 +35,7 @@ import java.util.UUID
 
 internal class VentePåStatusFraØkonomiTaskTest {
     private val oppdragClient = mockk<OppdragClient>()
+    private val oppdragBackendKlient = mockk<OppdragBackendClient>()
     private val iverksettingRepository = mockk<IverksettingRepository>()
     private val taskService = mockk<TaskService>()
     private val iverksettResultatService = mockk<IverksettResultatService>()
@@ -43,6 +44,7 @@ internal class VentePåStatusFraØkonomiTaskTest {
         IverksettingService(
             taskService = taskService,
             oppdragClient = oppdragClient,
+            oppdragBackendKlient = oppdragBackendKlient,
             iverksettingRepository = iverksettingRepository,
             iverksettResultatService = iverksettResultatService,
             featureToggleService = mockFeatureToggleService(),

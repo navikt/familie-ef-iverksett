@@ -84,7 +84,7 @@ class SimuleringService(
     ): DetaljertSimuleringResultat {
         val fagOmrådeKoder = fagområdeKoderForPosteringer(stønadType)
         val simuleringsResultat =
-            if (featureToggleService.isEnabled("familie.ef.iverksett.oppdrag-migrering-hent-simulering-gcp")) {
+            if (featureToggleService.isEnabled("familie.ef.iverksett.oppdrag-migrering-gcp")) {
                 oppdragBackendKlient.hentSimuleringsresultat(utbetalingsoppdrag)
             } else {
                 oppdragKlient.hentSimuleringsresultat(utbetalingsoppdrag)

@@ -35,6 +35,10 @@ class OppdragClientMock {
         val oppdragBackendClientMock = mockk<OppdragBackendClient>()
 
         every { oppdragBackendClientMock.hentSimuleringsresultat(any()) } returns detaljertSimuleringResultat()
+        every { oppdragBackendClientMock.iverksettOppdrag(any()) } returns "OK"
+        every { oppdragBackendClientMock.hentStatus(any()) } returns OppdragStatusMedMelding(OppdragStatus.KVITTERT_OK, "OK")
+        every { oppdragBackendClientMock.grensesnittavstemming(any()) } returns "OK"
+        every { oppdragBackendClientMock.konsistensavstemming(any()) } returns "OK"
 
         return oppdragBackendClientMock
     }

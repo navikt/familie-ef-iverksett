@@ -1,5 +1,6 @@
 package no.nav.familie.ef.iverksett.økonomi
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.infrastruktur.task.opprettNesteTask
 import no.nav.familie.ef.iverksett.iverksetting.IverksettingRepository
 import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatService
@@ -26,8 +27,10 @@ private fun Utbetalingsoppdrag.harUtbetalingsperioder() = this.utbetalingsperiod
 class IverksettMotOppdragTask(
     private val iverksettingRepository: IverksettingRepository,
     private val oppdragClient: OppdragClient,
+    private val oppdragBackendKlient: OppdragBackendClient,
     private val taskService: TaskService,
     private val iverksettResultatService: IverksettResultatService,
+    private val featureToggleService: FeatureToggleService,
 ) : AsyncTaskStep {
     private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -81,7 +84,11 @@ class IverksettMotOppdragTask(
         behandlingId: UUID?,
     ) {
         try {
-            oppdragClient.iverksettOppdrag(utbetalingsoppdrag = utbetalingsoppdrag)
+            if (featureToggleService.isEnabled("familie.ef.iverksett.oppdrag-migrering-gcp")) {
+                oppdragBackendKlient.iverksettOppdrag(utbetalingsoppdrag = utbetalingsoppdrag)
+            } else {
+                oppdragClient.iverksettOppdrag(utbetalingsoppdrag = utbetalingsoppdrag)
+            }
         } catch (e: HttpClientErrorException.Conflict) {
             log.warn("409 conflict ved iverksetting av oppdrag. behandlingId=$behandlingId")
         }

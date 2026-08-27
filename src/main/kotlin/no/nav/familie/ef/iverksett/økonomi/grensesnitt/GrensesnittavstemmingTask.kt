@@ -1,6 +1,8 @@
 package no.nav.familie.ef.iverksett.økonomi.grensesnitt
 
+import no.nav.familie.ef.iverksett.featuretoggle.FeatureToggleService
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
+import no.nav.familie.ef.iverksett.økonomi.OppdragBackendClient
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.felles.ef.StønadType
 import no.nav.familie.kontrakter.felles.jsonMapper
@@ -23,6 +25,8 @@ data class GrensesnittavstemmingPayload(
 @TaskStepBeskrivelse(taskStepType = GrensesnittavstemmingTask.TYPE, beskrivelse = "Utfører grensesnittavstemming mot økonomi.")
 class GrensesnittavstemmingTask(
     private val oppdragClient: OppdragClient,
+    private val oppdragBackendKlient: OppdragBackendClient,
+    private val featureToggleService: FeatureToggleService,
     private val taskService: TaskService,
 ) : AsyncTaskStep {
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
@@ -39,7 +43,11 @@ class GrensesnittavstemmingTask(
                     fra = fraTidspunkt,
                     til = tilTidspunkt,
                 )
-            oppdragClient.grensesnittavstemming(grensesnittavstemmingRequest)
+            if (featureToggleService.isEnabled("familie.ef.iverksett.oppdrag-migrering-gcp")) {
+                oppdragBackendKlient.grensesnittavstemming(grensesnittavstemmingRequest)
+            } else {
+                oppdragClient.grensesnittavstemming(grensesnittavstemmingRequest)
+            }
         }
     }
 
