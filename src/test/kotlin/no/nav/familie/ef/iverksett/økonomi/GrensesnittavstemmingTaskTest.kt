@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.økonomi.grensesnitt.GrensesnittavstemmingPayload
 import no.nav.familie.ef.iverksett.økonomi.grensesnitt.GrensesnittavstemmingTask
@@ -19,8 +20,9 @@ import java.time.LocalDateTime
 
 internal class GrensesnittavstemmingTaskTest {
     private val oppdragClient = mockk<OppdragClient>()
+    private val oppdragBackendKlient = mockk<OppdragBackendClient>()
     val taskService = mockk<TaskService>()
-    private val grensesnittavstemmingTask = GrensesnittavstemmingTask(oppdragClient, taskService)
+    private val grensesnittavstemmingTask = GrensesnittavstemmingTask(oppdragClient, oppdragBackendKlient, mockFeatureToggleService(), taskService)
 
     @Test
     fun `doTask skal kalle oppdragClient med fradato fra payload og dato for triggerTid som parametere`() {

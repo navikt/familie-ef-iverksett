@@ -13,6 +13,7 @@ import no.nav.familie.ef.iverksett.oppgave.OpprettOppfølgingsOppgaveForOvergang
 import no.nav.familie.ef.iverksett.repository.findByIdOrThrow
 import no.nav.familie.ef.iverksett.util.tilKlassifisering
 import no.nav.familie.ef.iverksett.vedtakstatistikk.VedtakstatistikkTask
+import no.nav.familie.ef.iverksett.økonomi.OppdragBackendClient
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.ef.felles.Vedtaksresultat
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
@@ -32,6 +33,7 @@ import java.util.UUID
 class IverksettingService(
     val taskService: TaskService,
     val oppdragClient: OppdragClient,
+    val oppdragBackendKlient: OppdragBackendClient,
     val iverksettingRepository: IverksettingRepository,
     val iverksettResultatService: IverksettResultatService,
     val featureToggleService: FeatureToggleService,
@@ -151,7 +153,12 @@ class IverksettingService(
                 behandlingsId = eksternBehandlingId.toString(),
             )
 
-        val (status, melding) = oppdragClient.hentStatus(oppdragId)
+        val (status, melding) =
+            if (featureToggleService.isEnabled("familie.ef.iverksett.oppdrag-migrering-gcp")) {
+                oppdragBackendKlient.hentStatus(oppdragId)
+            } else {
+                oppdragClient.hentStatus(oppdragId)
+            }
 
         if (status != OppdragStatus.KVITTERT_OK) {
             throw TaskExceptionUtenStackTrace("Status fra oppdrag er ikke ok, status=$status melding=$melding")

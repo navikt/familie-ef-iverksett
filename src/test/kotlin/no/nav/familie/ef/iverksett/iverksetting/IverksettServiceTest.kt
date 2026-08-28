@@ -7,6 +7,7 @@ import no.nav.familie.ef.iverksett.iverksetting.tilstand.IverksettResultatServic
 import no.nav.familie.ef.iverksett.util.IverksettResultatMockBuilder
 import no.nav.familie.ef.iverksett.util.mockFeatureToggleService
 import no.nav.familie.ef.iverksett.util.opprettTilkjentYtelse
+import no.nav.familie.ef.iverksett.økonomi.OppdragBackendClient
 import no.nav.familie.ef.iverksett.økonomi.OppdragClient
 import no.nav.familie.kontrakter.ef.iverksett.IverksettStatus
 import no.nav.familie.kontrakter.felles.oppdrag.OppdragStatus
@@ -20,6 +21,7 @@ internal class IverksettServiceTest {
     val taskService = mockk<TaskService>()
     val iverksettingRepository = mockk<IverksettingRepository>()
     private val oppdragClient = mockk<OppdragClient>()
+    private val oppdragBackendKlient = mockk<OppdragBackendClient>()
 
     private var iverksettStatusService: IverksettingService =
         IverksettingService(
@@ -27,6 +29,7 @@ internal class IverksettServiceTest {
             iverksettResultatService = iverksettResultatService,
             iverksettingRepository = iverksettingRepository,
             oppdragClient = oppdragClient,
+            oppdragBackendKlient = oppdragBackendKlient,
             featureToggleService = mockFeatureToggleService(),
         )
 

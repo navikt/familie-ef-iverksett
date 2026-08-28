@@ -8,6 +8,6 @@ fun mockFeatureToggleService(enabled: Boolean = true): FeatureToggleService {
     val mockk = mockk<FeatureToggleService>()
     every { mockk.isEnabled(any()) } returns enabled
     every { mockk.isEnabled("familie.ef.iverksett.stopp-iverksetting") } returns false
-    every { mockk.isEnabled("familie.ef.iverksett.oppdrag-migrering-hent-simulering-gcp") } returns false
+    every { mockk.isEnabled("familie.ef.iverksett.oppdrag-migrering-gcp") } returns false
     return mockk
 }
