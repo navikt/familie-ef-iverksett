@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -18,9 +18,9 @@
         <kotlin.version>2.4.10</kotlin.version>
         <felles.version>4.20260818093920_16ad74a</felles.version>
         <familie.kontrakter.version>4.0_20260821102510_33ea755</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20260810095205_3065826</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20260810095205_3065826</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20260810095205_3065826</familie.eksterne-kontrakter.arbeidsoppfolging>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20260824124128_f3bb214</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20260824124128_f3bb214</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20260824124128_f3bb214</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20260817115650_f13f507</prosessering.version>
         <utbetalingsgenerator.version>1.0_20260527092003_ed16208</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.2.0</brukervarsel-builder.version>
@@ -306,7 +306,7 @@
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>mock-oauth2-server</artifactId>
-            <version>6.0.1</version>
+            <version>6.0.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
