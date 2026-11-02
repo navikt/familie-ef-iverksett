@@ -9,7 +9,7 @@ import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Periodetype
 import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Stønadstype
 import no.nav.familie.eksterne.kontrakter.arbeidsoppfolging.Vedtaksresultat
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.UUID
