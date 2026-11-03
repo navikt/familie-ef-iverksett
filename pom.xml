@@ -21,7 +21,7 @@
         <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20261026123216_f55dd20</familie.eksterne-kontrakter.stonadsstatistikk-ef>
         <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20261026123216_f55dd20</familie.eksterne-kontrakter.saksstatistikk-ef>
         <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20261026123216_f55dd20</familie.eksterne-kontrakter.arbeidsoppfolging>
-        <prosessering.version>2.20261027150838_57ccae7</prosessering.version>
+        <prosessering.version>2.20260817115650_f13f507</prosessering.version>
         <utbetalingsgenerator.version>1.0_20260923084625_49defa2</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.2.0</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.6.1</maven-surefire-plugin.version>
@@ -235,7 +235,7 @@
         <dependency>
             <groupId>no.nav.familie</groupId>
             <artifactId>prosessering-web-spring-security</artifactId>
-            <version>2.20261027150838_57ccae7</version>
+            <version>${prosessering.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.familie.felles</groupId>
