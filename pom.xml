@@ -53,6 +53,19 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Lås prosessering-artifacts til Java 21-kompatibel versjon.
+                 Nyere prosessering (f.eks. 2.202610...) er kompilert med class file 69 (Java 25)
+                 og gir UnsupportedClassVersionError i våre Java 21 test-runs. -->
+            <dependency>
+                <groupId>no.nav.familie</groupId>
+                <artifactId>prosessering-core</artifactId>
+                <version>${prosessering.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.familie</groupId>
+                <artifactId>prosessering-web-spring-security</artifactId>
+                <version>${prosessering.version}</version>
+            </dependency>
             <!-- Overstyrer Bouncy Castle fra IBM MQ for å rette Name Constraints-bypass (CVE-2026-8763). -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
