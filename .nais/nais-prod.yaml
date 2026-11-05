@@ -21,8 +21,8 @@ spec:
     enabled: true
     path: /internal/prometheus
   replicas:
-    min: 2
-    max: 4
+    min: 0 # TODO: Skalerer ned appen slik at vi får oppgradet database versjoner trygt. Skal opp igjen.
+    max: 0 # TODO: Skalerer ned appen slik at vi får oppgradet database versjoner trygt. Skal opp igjen.
   resources:
     limits:
       memory: 896Mi
