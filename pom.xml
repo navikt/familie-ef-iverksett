@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -16,24 +16,24 @@
     <properties>
         <java.version>25</java.version>
         <kotlin.version>2.4.21</kotlin.version>
-        <felles.version>4.20261014144209_63578dc</felles.version>
-        <familie.kontrakter.version>4.0_20261023114950_9ae0359</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20261023114954_0543fb5</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20261023114954_0543fb5</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20261023114954_0543fb5</familie.eksterne-kontrakter.arbeidsoppfolging>
+        <felles.version>4.20261026180911_c3ff6d9</felles.version>
+        <familie.kontrakter.version>4.0_20261026123216_8087cb5</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20261026123216_f55dd20</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20261026123216_f55dd20</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20261026123216_f55dd20</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20261027150838_57ccae7</prosessering.version>
         <utbetalingsgenerator.version>1.0_20260923084625_49defa2</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.2.0</brukervarsel-builder.version>
-        <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
-        <confluent.version>8.3.2</confluent.version>
+        <maven-surefire-plugin.version>3.6.1</maven-surefire-plugin.version>
+        <confluent.version>8.4.0</confluent.version>
         <mockk-jvm.version>1.14.11</mockk-jvm.version>
-        <cucumber.version>7.34.9</cucumber.version>
+        <cucumber.version>8.0.4</cucumber.version>
         <dotenv.version>6.5.1</dotenv.version>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <ibm-mq-client.version>10.0.1.0</ibm-mq-client.version>
         <bouncycastle.version>1.86.2</bouncycastle.version>
         <unleash.version>8.3.1</unleash.version>
-        <okhttp3-jvm.version>5.5.0</okhttp3-jvm.version> <!-- OkHttp 5.x (okhttp-jvm) brukt av mock-oauth2-server 5.x og unleash -->
+        <okhttp3-jvm.version>5.5.1</okhttp3-jvm.version> <!-- OkHttp 5.x (okhttp-jvm) brukt av mock-oauth2-server 5.x og unleash -->
     </properties>
 
     <repositories>
@@ -115,6 +115,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>test</scope>
         </dependency>
 
@@ -229,7 +235,7 @@
         <dependency>
             <groupId>no.nav.familie</groupId>
             <artifactId>prosessering-web-spring-security</artifactId>
-            <version>2.20260817115650_f13f507</version>
+            <version>${prosessering.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.familie.felles</groupId>
@@ -315,7 +321,7 @@
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>mock-oauth2-server</artifactId>
-            <version>6.1.2</version>
+            <version>6.1.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -350,7 +356,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.15</version>
+                    <version>0.8.16</version>
                     <executions>
                         <execution>
                             <goals>
@@ -394,6 +400,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <excludeJUnit5Engines>
+                        <engine>junit-vintage</engine>
+                    </excludeJUnit5Engines>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

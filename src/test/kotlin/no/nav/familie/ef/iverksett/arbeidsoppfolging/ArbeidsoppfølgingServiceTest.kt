@@ -6,7 +6,7 @@ import io.mockk.verify
 import no.nav.familie.ef.iverksett.iverksetting.domene.IverksettSkolepenger
 import no.nav.familie.ef.iverksett.util.opprettIverksettBarnetilsyn
 import no.nav.familie.ef.iverksett.util.opprettIverksettOvergangsstønad
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class ArbeidsoppfølgingServiceTest {
     private val arbeidsoppfølgingKafkaProducer = mockk<ArbeidsoppfølgingKafkaProducer>()
