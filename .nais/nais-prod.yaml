@@ -73,11 +73,11 @@ spec:
       runtime: java
   gcp:
     sqlInstances:
-      - type: POSTGRES_14 # IF This is changed, all data will be lost. Read on nais.io how to upgrade
+      - type: POSTGRES_18
         tier: db-custom-1-3840
         diskAutoresize: true
         cascadingDelete: false
-        pointInTimeRecovery: false # TODO: Skal settes tilbake til true etter oppgradering
+        pointInTimeRecovery: true
         maintenance:
           day: 7
           hour: 23
