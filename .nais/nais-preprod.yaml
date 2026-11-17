@@ -83,7 +83,7 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_18
-        name: familie-ef-iverksett-17
+        name: familie-ef-iverksett
         tier: db-f1-micro
         diskAutoresize: true
         cascadingDelete: false
