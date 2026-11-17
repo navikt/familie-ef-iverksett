@@ -82,7 +82,7 @@ spec:
       runtime: java
   gcp:
     sqlInstances:
-      - type: POSTGRES_17
+      - type: POSTGRES_18
         name: familie-ef-iverksett-17
         tier: db-f1-micro
         diskAutoresize: true
