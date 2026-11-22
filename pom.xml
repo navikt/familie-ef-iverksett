@@ -17,21 +17,21 @@
         <java.version>25</java.version>
         <kotlin.version>2.4.21</kotlin.version>
         <felles.version>4.20261026180911_c3ff6d9</felles.version>
-        <familie.kontrakter.version>4.0_20261103100223_424278c</familie.kontrakter.version>
-        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20261026123216_f55dd20</familie.eksterne-kontrakter.stonadsstatistikk-ef>
-        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20261026123216_f55dd20</familie.eksterne-kontrakter.saksstatistikk-ef>
-        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20261026123216_f55dd20</familie.eksterne-kontrakter.arbeidsoppfolging>
+        <familie.kontrakter.version>4.0_20261120100915_9bfc3c0</familie.kontrakter.version>
+        <familie.eksterne-kontrakter.stonadsstatistikk-ef>2.0_20261117082713_c4832c6</familie.eksterne-kontrakter.stonadsstatistikk-ef>
+        <familie.eksterne-kontrakter.saksstatistikk-ef>2.0_20261117082713_c4832c6</familie.eksterne-kontrakter.saksstatistikk-ef>
+        <familie.eksterne-kontrakter.arbeidsoppfolging>2.0_20261117082713_c4832c6</familie.eksterne-kontrakter.arbeidsoppfolging>
         <prosessering.version>2.20261102130928_50eba5f</prosessering.version>
         <utbetalingsgenerator.version>1.0_20260923084625_49defa2</utbetalingsgenerator.version>
         <brukervarsel-builder.version>2.2.0</brukervarsel-builder.version>
         <maven-surefire-plugin.version>3.6.1</maven-surefire-plugin.version>
-        <confluent.version>8.4.0</confluent.version>
-        <mockk-jvm.version>1.14.11</mockk-jvm.version>
-        <cucumber.version>8.0.4</cucumber.version>
+        <confluent.version>8.4.1</confluent.version>
+        <mockk-jvm.version>1.14.12</mockk-jvm.version>
+        <cucumber.version>8.1.0</cucumber.version>
         <dotenv.version>6.5.1</dotenv.version>
         <start-class>no.nav.familie.ef.iverksett.ApplicationKt</start-class>
         <ibm-mq-client.version>10.0.1.0</ibm-mq-client.version>
-        <bouncycastle.version>1.86.2</bouncycastle.version>
+        <bouncycastle.version>1.87</bouncycastle.version>
         <unleash.version>8.3.1</unleash.version>
         <okhttp3-jvm.version>5.5.1</okhttp3-jvm.version> <!-- OkHttp 5.x (okhttp-jvm) brukt av mock-oauth2-server 5.x og unleash -->
     </properties>
@@ -321,7 +321,7 @@
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>mock-oauth2-server</artifactId>
-            <version>6.1.4</version>
+            <version>7.0.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
