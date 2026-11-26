@@ -14,7 +14,7 @@ data class GrensesnittavstemmingDto(
 )
 
 fun GrensesnittavstemmingDto.tilTask(): Task {
-    val nesteVirkedag: LocalDateTime = triggerTid ?: VirkedagerProvider.nesteVirkedag(fraDato).atTime(8, 0)
+    val nesteVirkedag: LocalDateTime = triggerTid ?: VirkedagerProvider.nesteVirkedag(fraDato).atTime(7, 45)
     val payload =
         jsonMapper.writeValueAsString(
             GrensesnittavstemmingPayload(
